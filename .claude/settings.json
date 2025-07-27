@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "tools": {
+      "bash": "allow",
+      "webSearch": "allow",
+      "webFetch": "allow",
+      "edit": "allow",
+      "write": "allow",
+      "multiEdit": "allow",
+      "read": "allow",
+      "glob": "allow",
+      "grep": "allow"
+    }
+  }
+}
