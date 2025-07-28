@@ -512,19 +512,21 @@ so we need to create them?
 
 dont do anything
 i have two questions
-1- in the DOCUMENTATION section shouldnt we use mcp server for better performance and result instead of just add the doc url? the repo creator said to use mcp server not just add the doc url
-2- in the initials we didnt use the examples folder to reference them use them for reference when creating the PRPs, i checked the INITIAL_PYDANTIC_AI.md it didnt add links to the examples folder, but it has examples files in the examples folder, why is that?
+1- in the DOCUMENTATION section shouldn't we use mcp server for better performance and result instead of just add the doc url? the repo creator said to use mcp server not just add the doc url
+2- in the initials we didn't use the examples folder to reference them use them for reference when creating the PRPs, i checked the INITIAL_PYDANTIC_AI.md it didn't add links to the examples folder, but it has examples files in the examples folder, why is that?
 
 
+https://github.com/disler/claude-code-hooks-mastery
+
+https://docs.anthropic.com/en/docs/claude-code/sub-agents
+
+https://docs.anthropic.com/en/docs/claude-code/settings#tools-available-to-claude
 
 
+https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/work-completion-summary.md
+https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/meta-agent.md
 
-
-
-
-
-
-
+https://github.com/ruvnet/claude-flow
 
 
 

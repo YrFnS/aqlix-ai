@@ -9,7 +9,12 @@
       "multiEdit": "allow",
       "read": "allow",
       "glob": "allow",
-      "grep": "allow"
+      "grep": "allow",
+      "task": "allow",
+      "todoWrite": "allow",
+      "notebookRead": "allow",
+      "notebookEdit": "allow",
+      "ls": "allow"
     }
   }
 }
