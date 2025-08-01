@@ -38,7 +38,7 @@ This guide shows which command to use for each initial file when creating and ex
 
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 8 general features**
+**Total: 9 general features**
 
 ### Phase 1: Foundation & UI
 - **03_rtl_arabic.md** → `/generate-prp` + `/execute-prp`
@@ -64,9 +64,12 @@ This guide shows which command to use for each initial file when creating and ex
 - **14_voice_ui.md** → `/generate-prp` + `/execute-prp`
   - *Reason: Frontend voice user interface components with cultural context*
 
-### Phase 4: Infrastructure
+### Phase 4: Infrastructure & Performance
 - **17_deployment.md** → `/generate-prp` + `/execute-prp`
   - *Reason: Infrastructure deployment and Iraqi payment gateway setup*
+
+- **18_scalability_performance.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Multi-API key management, caching, monitoring, and performance optimization*
 
 ## 📋 Usage Examples
 
@@ -130,11 +133,12 @@ All generated PRPs will be saved in the `PRPs/` directory:
 - `PRPs/13_arabic_tts.md`
 - `PRPs/14_voice_ui.md`
 - `PRPs/17_deployment.md`
+- `PRPs/18_scalability_performance.md`
 
 ## ✅ Quick Reference Summary
 
-**All 17 Initial Files Complete:**
+**All 18 Initial Files Complete:**
 - **9 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-- **8 General features** → use `/generate-prp` + `/execute-prp`
+- **9 General features** → use `/generate-prp` + `/execute-prp`
 
 Ready for testing and PRP generation!

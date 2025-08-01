@@ -367,4 +367,25 @@ Create an Iraqi business analyst agent that bridges business requirements with t
 ### **Business Integration** (Phase 15+)
 - **Business Analyst**: Iraqi business process alignment
 
+### **Workflow Orchestration** (Phase 18+)
+- **PRP Orchestrator**: Intelligent PRP execution workflow management
+
+---
+
+## 🤖 Agent 13: Iraqi PRP Orchestrator
+
+**Wizard Description:**
+```
+Create an Iraqi PRP execution orchestrator agent that intelligently manages Product Requirement Prompt (PRP) execution workflow for the Iraqi AI Chat System development process. The agent should assess app health after each PRP implementation with comprehensive compilation and integration testing, determine PRP execution dependencies and optimal sequencing, make intelligent decisions about next development steps based on project priorities, coordinate with specialized agents for specific issue resolution, and track overall progress against Iraqi AI Chat System requirements. It should handle post-PRP validation including Arabic RTL functionality, cultural appropriateness testing, and Iraqi payment gateway readiness, classify issues by severity (critical/high/medium/low) with clear go/no-go decisions, and maintain development workflow efficiency while ensuring cultural compliance. Target 95%+ dependency analysis accuracy and 2-3 minute comprehensive PRP health assessment time. The agent integrates with Sequential MCP for workflow analysis and delegates to specialized Iraqi agents for issue resolution.
+```
+
+**Key Capabilities Expected from Wizard:**
+- Comprehensive post-PRP health assessment with Iraqi-specific validation
+- PRP dependency analysis and intelligent execution sequencing
+- Issue severity classification with blocking vs non-blocking determination
+- Specialized agent coordination for targeted problem resolution
+- Overall project progress tracking with cultural compliance monitoring
+
+---
+
 Use these descriptions in the Claude Code wizard and compare the generated agents with our custom implementations to validate alignment with best practices and Iraqi-specific requirements.

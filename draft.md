@@ -535,10 +535,11 @@ now i generated all the prps check them, but before we implement them i have a s
 the payment well leave it for now and create it after we finish all the mvp feature first after we finish all the PRPs we will create the payment prp right? we dont have anything related to payment yet?
 well use the api key for the AI from openai, my concern is if i have tens of users using the app, at the same time, will it be able to handle it?
 
-you'll do most of the work, what i want to know is the app on windows and you are on wsl, do i move the app to wsl or keep it on windows?
-
 when we execute one prp, i we need agent to check the app to know what to do, do we need continue with the next prp or the app need fix etc and it what do you think? check the current agents to know do we have it or need it?
 
+you'll do most of the work, what i want to know is the app on windows and you are on wsl ubuntu, do i move the app to wsl or keep it on windows?
+
+you created the agent and its good, but i want also to use the agent wizard to create the agent to compare them so we know which one to use, give me the description i need to give to the wizard to create the agent, add it here '/mnt/c/Users/Itokoro/aqlix-ai/WIZARD_AGENT_DESCRIPTIONS.md'
 
 
 
