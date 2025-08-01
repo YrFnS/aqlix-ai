@@ -1,0 +1,4 @@
+# Session Logs Directory
+
+This directory stores temporary session logs from agent interactions.
+Files here are automatically cleaned up after sessions end.

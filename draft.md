@@ -76,7 +76,7 @@ https://github.com/coleam00/context-engineering-intro
 so we make PRP for each feature
 
 and i found this too
-
+i created the initials and then created the prps from them 
 https://github.com/bmadcode/BMAD-METHOD
 
 
@@ -518,7 +518,21 @@ i have two questions
 
 https://github.com/disler/claude-code-hooks-mastery
 
+and i created the agents, and have the claude.md file
+check the official docs
 https://docs.anthropic.com/en/docs/claude-code/sub-agents
+
+https://docs.anthropic.com/en/docs/claude-code/memory
+
+https://www.anthropic.com/engineering/claude-code-best-practices
+
+check the official docs
+
+what i want is to make some changes to agents and claude.md file
+
+i want to add to claude.md file to make it know its the primary agent and he should use the sub-agents to do the work as each sub-agent has its own role and responsibility and if we dont have sub-agents for a specific task then he can do it himself other wise he should use the sub-agents to do the work, i added it to claude.md file in line 5 check it but i dont think its good check the official docs i provided
+and check the agents i found a repo that use the agents in a different way i took a look at it and i think its better i add some to here '/mnt/c/Users/Itokoro/aqlix-ai/agents' we have one agent ui/ux agent but he made it into six agents check it 
+
 
 https://docs.anthropic.com/en/docs/claude-code/settings#tools-available-to-claude
 
@@ -542,73 +556,130 @@ you'll do most of the work, what i want to know is the app on windows and you ar
 you created the agent and its good, but i want also to use the agent wizard to create the agent to compare them so we know which one to use, give me the description i need to give to the wizard to create the agent, add it here '/mnt/c/Users/Itokoro/aqlix-ai/WIZARD_AGENT_DESCRIPTIONS.md'
 
 
+do i execute the prps in the same order as the initial files?
+I want to start implementing PRPs. What's the optimal order?
 
+before we implement any prp i want know, now well use api key to power the app, but in the future i want to host the ai on my own server, what will happen to the app?
 
+i have another question, after we build the frontend and after the mvp if i want to change the whole frontend ui/ux, is it easy to do it? you know after i get the feedback from the users
 
 
 
+🚀 Recommended Implementation Sequence
 
+  PHASE 1 - FOUNDATION (Start Here)
 
+  1. dev_environment_setup.md - Development environment
+  2. monorepo_setup.md - Project structure
+  3. type_safety_iraqi_ai.md - Type system
+  4. arabic_rtl_text_handling.md - Arabic RTL support
 
+  PHASE 2 - CORE AI SYSTEM
 
+  5. iraqi_cultural_framework_agent.md - Cultural validation
+  6. iraqi_basic_chat_agent.md - Basic chat AI
+  7. streaming-responses-iraqi-ai.md - Real-time responses
 
+  PHASE 3 - PROFESSIONAL FEATURES
 
+  8. iraqi-professional-domains-agent.md - Professional context
+  9. iraqi_rag_integration_agent.md - Knowledge retrieval
+  10. iraqi-template-generation-agent.md - Document templates
 
+  PHASE 4 & 5 - PARALLEL DEVELOPMENT
 
+  Document Processing:
+  11. secure_file_upload_iraqi_ai.md
+  12. pdf_processing_agent.md
 
+  Voice Features:
+  13. voice_recording_iraqi_ai.md
+  14. voice_streaming_iraqi_ai.md
+  15. voice-ui-components-iraqi-ai.md
+  16. arabic-tts-integration.md
 
+  PHASE 6 - PRODUCTION
 
+  17. scalability-performance-management.md
+  18. production-deployment.md
 
+  🎯 Key Benefits of This Order
 
+  - Foundation-first: Infrastructure established before features
+  - Iraqi-centric: Cultural framework and Arabic RTL support early
+  - Incremental validation: Each phase builds on previous success
+  - Risk minimization: Complex features isolated from core functionality
+  - Parallel opportunities: Phases 4 & 5 can run simultaneously
 
+Recommended start: Begin with Phase 1 (dev_environment_setup.md) to establish your development foundation.
 
 
+what to do next implement the next prp or we need to do something else before we implement the next prp?
 
 
+@agent-iraqi-prp-execution-orchestrator what to do next implement the next prp or we need to do something else before we implement the next prp?
 
 
 
 
+can you generate commit message and push to github?
 
 
+duplicate agents or am i wrong?
 
 
-initial\01_monorepo_setup.md
+ill make this app using the new context engineering which is a good method and itll set new standards for building with AI,
+the repo https://github.com/coleam00/context-engineering-intro
+i created the initials and then created the prps from them,
+and i created the agents, and have the claude.md file
 
-initial\02_basic_chat.md
+what i want is to make some changes to agents
 
-initial\03_rtl_arabic.md
+check the agents i found a repo that use the agents in a different way i took a look at it and i think its better i add some to here '/mnt/c/Users/Itokoro/aqlix-ai/lab' check them throughly, they are good espeically ux-researcher.md and whimsy-injector.md
+but we cant use them like this we can use them as a reference the idea is good
+we have one agent ui/ux agent but he made it into six agents check it
+the agents i created using the claude code wizard
 
-initial\04_streaming_responses.md
+check the official docs
+https://docs.anthropic.com/en/docs/claude-code/sub-agents
 
-initial\05_type_safety.md
+and we need a agents workflow
+Chaining subagents
+this is an example of agent to agent communication fron anthropic official docs
+> First use the code-analyzer subagent to find performance issues, then use the optimizer subagent to fix them
+check the official docs for more info
 
-initial\06_dev_environment.md
+i generated the agents using these prompt '/mnt/c/Users/Itokoro/Documents/projects/aqlix-ai/WIZARD_AGENT_DESCRIPTIONS.md' and there's a problem in this. The context each agent generates or requires is often too large and cannot be passed on. Context must be recorded somewhere ideally in MD files
+check every thing throughly dont skip any thing
+and give me your opinion?
 
-initial\07_file_upload.md
 
-initial\08_pdf_processing.md
+'/mnt/c/Users/Itokoro/Documents/projects/aqlix-ai/CLAUDE.md',
 
-initial\09_rag_integration.md
+i want to add to claude.md file to make it know its the primary agent and he should use the sub-agents to do the work as each sub-agent has its own role and responsibility and if we dont have sub-agents for a specific task then he can do it himself other wise he should use the sub-agents to do the work, i added it to claude.md file in line 5 check it and not just line five the whole section "# Rules Must Follow",
+i dont think its good check the official docs i provided,
+https://docs.anthropic.com/en/docs/claude-code/memory
+https://www.anthropic.com/engineering/claude-code-best-practices
 
-initial\10_iraqi_templates.md
+is CLAUDE.md file is it aligned with the best practices from anthropic? check the official docs thoroughly for more info
 
-initial\11_voice_recording.md
+https://docs.anthropic.com/en/docs/claude-code/memory
+https://www.anthropic.com/engineering/claude-code-best-practices
 
-initial\12_voice_streaming.md
 
-initial\13_arabic_tts.md
 
-initial\14_voice_ui.md
+after we finish one prp i need to know if we need to do something else before we implement the next prp or we can implement the next prp?
+cus when i implement a prp i do slash command like this {/execute-prp PRPs/prp-name.md} so do i ask the primary agent to run the orchestrator to tell me what we do next?
 
-initial\15_cultural_framework.md
 
-initial\16_professional_domains.md
+Use iraqi-prp-execution-orchestrator to assess system health and determine next PRP sequence
 
-initial\17_deployment.md
 
+in the previous claude.md we had this section
 
+## Project Structure
 
+do we need it or not?
 
 
 
@@ -639,12 +710,23 @@ initial\17_deployment.md
 
 
 
-and as for the payment well leave it for now and create it after we finish all the mvp feature first
 
-but before you create anything check these "PRPs" for reference we create them as the mvp plan for the app using new frame work called PRPs (Product Requirements Prompts) and its core is Context Engineering
-from this repo "https://github.com/coleam00/context-engineering-intro" and "https://www.philschmid.de/context-engineering" and it has more to make the app iraqi with its writing and voice
 
-we created the PRPs from the "initial" directory and used "examples" when creating the RPPs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
