@@ -1,0 +1,364 @@
+# PyProject configuration extracted from Langflow for Iraqi AI Chat System
+# Original: pyproject.toml
+# Modified for Iraqi AI Chat System requirements
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iraqi-ai-chat-system"
+version = "1.0.0"
+description = "AI Chat System for Iraqi Professional Domains with Cultural Compliance"
+authors = [
+    { name = "Iraqi AI Team", email = "team@iraqi-ai.com" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+homepage = "https://github.com/iraqi-ai/chat-system"
+repository = "https://github.com/iraqi-ai/chat-system"
+documentation = "https://docs.iraqi-ai.com"
+keywords = [
+    "ai",
+    "chat",
+    "arabic",
+    "iraq",
+    "cultural-compliance",
+    "islamic",
+    "rtl",
+    "professional-domains"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: Chat",
+    "Natural Language :: Arabic",
+    "Natural Language :: English",
+]
+requires-python = ">=3.10,<3.14"
+
+dependencies = [
+    # Core FastAPI and web framework
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "sqlmodel>=0.0.14",
+    "alembic>=1.13.0",
+    
+    # Database
+    "psycopg2-binary>=2.9.9",
+    "sqlite3",
+    
+    # AI and LLM
+    "openai>=1.12.0",
+    "langchain>=0.1.0",
+    "langchain-community>=0.0.20",
+    "langchain-core>=0.1.23",
+    "langchain-openai>=0.0.8",
+    "pydantic-ai>=0.0.13",
+    
+    # Iraqi AI specific enhancements
+    "arabic-reshaper>=3.0.0",      # Arabic text reshaping
+    "python-bidi>=0.4.2",          # BiDi text support
+    "pyarabic>=0.6.15",            # Arabic text processing
+    "hijri-converter>=2.3.0",      # Islamic calendar support
+    "islamic-tools>=1.0.0",        # Islamic compliance validation
+    
+    # Payment gateways (Iraqi specific)
+    "zaincash-sdk>=1.0.0",         # ZainCash integration
+    "fastpay-sdk>=1.0.0",          # FastPay integration
+    "nasswallet-sdk>=1.0.0",       # NassWallet integration
+    
+    # Text processing and NLP
+    "spacy>=3.7.0",
+    "transformers>=4.36.0",
+    "sentence-transformers>=2.2.2",
+    "tokenizers>=0.15.0",
+    
+    # Vector databases
+    "chromadb>=0.4.22",
+    "pinecone-client>=3.0.0",
+    "weaviate-client>=3.25.3",
+    
+    # File processing
+    "pypdf>=3.17.4",
+    "python-docx>=1.1.0",
+    "python-multipart>=0.0.6",
+    "pillow>=10.2.0",
+    
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "typer>=0.9.0",
+    "rich>=13.7.0",
+    "click>=8.1.7",
+    "httpx>=0.26.0",
+    "jinja2>=3.1.2",
+    "passlib[bcrypt]>=1.7.4",
+    "python-jose[cryptography]>=3.3.0",
+    "python-multipart>=0.0.6",
+    
+    # Async and concurrency
+    "asyncio>=3.4.3",
+    "aiofiles>=23.2.1",
+    "aiohttp>=3.9.1",
+    
+    # Monitoring and logging
+    "prometheus-client>=0.19.0",
+    "structlog>=23.2.0",
+    "sentry-sdk[fastapi]>=1.40.0",
+    
+    # Cultural and language processing
+    "polyglot>=16.7.4",            # Multi-language support
+    "langdetect>=1.0.9",           # Language detection
+    "deep-translator>=1.11.4",     # Translation services
+]
+
+[project.optional-dependencies]
+dev = [
+    # Testing
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.2",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "pytest-xdist>=3.5.0",
+    "httpx>=0.26.0",
+    
+    # Code quality
+    "ruff>=0.1.9",
+    "mypy>=1.8.0",
+    "black>=23.12.1",
+    "isort>=5.13.2",
+    "pre-commit>=3.6.0",
+    
+    # Documentation
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.5.3",
+    "mkdocstrings[python]>=0.24.0",
+    
+    # Development utilities
+    "watchdog>=3.0.0",
+    "ipython>=8.18.1",
+    "jupyter>=1.0.0",
+]
+
+cultural-testing = [
+    # Islamic compliance testing
+    "islamic-content-validator>=1.0.0",
+    "arabic-text-validator>=1.0.0",
+    "cultural-appropriateness-checker>=1.0.0",
+    
+    # RTL testing
+    "rtl-layout-tester>=1.0.0",
+    "bidi-text-validator>=1.0.0",
+    
+    # Professional domain testing
+    "iraqi-legal-validator>=1.0.0",
+    "medical-terminology-ar>=1.0.0",
+    "educational-content-ar>=1.0.0",
+]
+
+payment-testing = [
+    # Payment gateway testing
+    "zaincash-test-sdk>=1.0.0",
+    "fastpay-test-sdk>=1.0.0",
+    "nasswallet-test-sdk>=1.0.0",
+    
+    # Security testing
+    "payment-security-tester>=1.0.0",
+    "encryption-validator>=1.0.0",
+]
+
+all = [
+    "iraqi-ai-chat-system[dev,cultural-testing,payment-testing]",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/iraqi-ai/chat-system"
+"Repository" = "https://github.com/iraqi-ai/chat-system"
+"Documentation" = "https://docs.iraqi-ai.com"
+"Bug Tracker" = "https://github.com/iraqi-ai/chat-system/issues"
+"Changelog" = "https://github.com/iraqi-ai/chat-system/blob/main/CHANGELOG.md"
+
+[project.scripts]
+iraqi-ai = "iraqi_ai_chat.cli:main"
+iraqi-ai-dev = "iraqi_ai_chat.cli:dev"
+iraqi-ai-cultural-test = "iraqi_ai_chat.testing:cultural_test"
+
+[tool.hatch.version]
+path = "src/backend/iraqi_ai_chat/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/backend/iraqi_ai_chat"]
+
+[tool.ruff]
+extend-exclude = ["src/frontend"]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+ignore = [
+    "E501",  # Line too long
+    "E203",  # Whitespace before ':'
+    "W503",  # Line break before binary operator
+]
+select = [
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "F",     # pyflakes
+    "I",     # isort
+    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+    "UP",    # pyupgrade
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "arabic_reshaper.*",
+    "bidi.*",
+    "pyarabic.*",
+    "hijri_converter.*",
+    "islamic_tools.*",
+    "zaincash_sdk.*",
+    "fastpay_sdk.*",
+    "nasswallet_sdk.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--verbose",
+    "--cov=src/backend/iraqi_ai_chat",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-fail-under=90",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "cultural: marks tests as cultural compliance tests",
+    "arabic: marks tests as Arabic language tests",
+    "rtl: marks tests as RTL layout tests",
+    "payment: marks tests as payment gateway tests",
+    "security: marks tests as security tests",
+    "professional: marks tests for Iraqi professional domains",
+]
+timeout = 300
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["src/backend/iraqi_ai_chat"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__init__.py",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+known_first_party = ["iraqi_ai_chat"]
+known_third_party = ["arabic_reshaper", "bidi", "pyarabic", "islamic_tools"]
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | src/frontend
+)/
+'''
+
+# Iraqi AI Chat System specific configuration
+[tool.iraqi-ai]
+default_language = "arabic"
+supported_languages = ["arabic", "english"]
+cultural_validation = true
+rtl_support = true
+professional_domains = ["legal", "medical", "educational", "business"]
+payment_providers = ["zaincash", "fastpay", "nasswallet"]
+islamic_compliance = true
+
+[tool.iraqi-ai.cultural]
+islamic_calendar = true
+prayer_times = true
+halal_validation = true
+cultural_sensitivity = "high"
+content_filtering = "strict"
+
+[tool.iraqi-ai.rtl]
+arabic_reshaping = true
+bidi_support = true
+font_fallback = ["Amiri", "Noto Sans Arabic", "Arial Unicode MS"]
+text_direction = "auto"
+
+[tool.iraqi-ai.payment]
+min_amounts = { zaincash = 1000, fastpay = 500, nasswallet = 1000 }
+currency = "IQD"
+security_level = "high"
+encryption = "AES-256"
+
+[tool.iraqi-ai.professional]
+legal_terminology = "iraqi_civil_law"
+medical_standards = "iraqi_medical_council"
+educational_curriculum = "iraqi_ministry_education"
+business_regulations = "iraqi_commercial_law"

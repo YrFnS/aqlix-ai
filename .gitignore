@@ -115,3 +115,5 @@ coverage/
 # Temporary folders
 tmp/
 temp/
+references/
+repo-structure/

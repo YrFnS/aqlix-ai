@@ -1,0 +1,45 @@
+{
+    "mcpServers": {
+        "@21st-dev/magic": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@21st-dev/magic@latest",
+                "API_KEY=19b6c77503c190a81e3c901df21102d2ba0dd4216cce5ba0abad609c05ed7022"
+            ]
+        },
+        "Puppeteer": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-puppeteer"
+            ]
+        },
+        "context7": {
+            "type": "http",
+            "url": "https://mcp.context7.com/mcp"
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        },
+        "playwright": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ],
+            "env": {}
+        },
+        "desktop-commander": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@wonderwhy-er/desktop-commander"
+            ]
+        }
+    }
+}

@@ -682,56 +682,164 @@ in the previous claude.md we had this section
 do we need it or not?
 
 
+before we implement any prp i want to know did we have these points in the prps or not? did we include them or exclude them or didnt mention them
+can the user see their chat history and can use it to continue the conversation?
+and the AI agent keep learning from the user, and when the user keep use it and it'll get better and better. and learn to answer to that specific user. like chatGPT when the user keep talk to it it'll create memory for that user check the web to know what i mean
+I want the user to have the option to add their job, profession, and how the agent should respond to the user etc., which is optional. This allows the agent to respond more effectively to the user based on their job, profession, etc. how the user want the agent to respond to the user like chatGPT check the web to know what i mean
+
+check the prps thoroughly to know if we have these points or not
+
+
+check this repo
+https://github.com/open-webui/open-webui
+
+the repo structure 
+
+can we use it for our app use it as a reference or use some of its components? why reinvent the wheel when someone already invented the rocket
+what do you think?
+
+i also found this repo
+https://github.com/agent0ai/agent-zero
+
+the repo structure
+
+
+i still didnt start with the app yet, i just laid the prp which well use to create the app, if i clone the repo and use it, i want know anything about it, and it doesnt have what i want to create which is
+check the app plan
+
+i think if i download both repos and use them as al ready made templates and components take what i need from them and use it in our app is the best way to create the app
+what do you think? i want your recommendation
+
+read throughly
+
+
+i add both of them in the app root, where do i add them? so we can use them as we talked to extract what we need from them and use it in our app
+
+do we we move them ot a new folder or we keep them in the root? i think we need to move them to a new folder or to examples folder
+
+
+first do we need this references\extraction-plan-old.md file?
+
+secound why did added the extracted files in the app we should add them to the examples folder or another folder and add them as we need or use them as a reference rigt?
+
+we shouldnt create anything now well create them as we progress when we start creating the app using the prps so we should remove 
+
+
+just to let you know the current prps isnt the app final version, they are the mvp
+
+the final app versino you can find it in the app-plan
+
+
+now what did you extarct from both repos and added them in the examples folder and what we need more to extract from them?
+
+
+before we continue i found these repos check them thoroughly to know can we take something from them?
+
+https://github.com/langflow-ai/langflow
+https://github.com/MervinPraison/PraisonAI
+https://github.com/browser-use/browser-use
+https://github.com/Doriandarko/make-it-heavy
+https://github.com/block/goose
+https://github.com/kortix-ai/suna
+https://github.com/bytedance/deer-flow
+https://github.com/Fosowl/agenticSeek
+https://github.com/stackblitz-labs/bolt.diy
+https://github.com/microsoft/autogen
+https://github.com/Skyvern-AI/skyvern
+https://github.com/NirDiamant/GenAI_Agents
+https://github.com/assafelovic/gpt-researcher
+
+these are older repos
+
+https://github.com/e2b-dev/fragments
+https://github.com/browser-use/web-ui
+https://github.com/srcbookdev/srcbook
+
+
+check the one at a time create a todo list, and lets check the first one
+
+
+do you want me to extract the repos structure and save them so you can check the repo easily?
+
+
+i added the structure of the repos in the repo-structure folder
+do you want me to add the repo too?
 
 
 
 
+did you realy check all the repos to know can we take something from them? not just look at them surfecly, check them thoroughly use the structure file to know what where to look
+
+did you check all of them for real?
+
+so now we know what to take from all of them? first we need plan to know what to take from each repo including the previous ones agent-zero and open-webui, and any repe we dont need we should remove it
+
+
+so now from the 18 repo we know what to take from them and add it in the examples folder right? not just for the mvp but for the final app right?
+
+i need you to re check agent-zero and open-webui and check what we extracted from them and add it in the examples folder to make sure do we need them or take something from them and what we took from them well take it from another repo cus its better
+
+now we have a comprehensive plan to know what to take from each repo including the previous ones agent-zero and open-webui?
+but before we take any thing from them we need to clean the examples folder so we dont have duplicate files or not needed files cus we found a better one
+so clean the examples folder
 
 
 
+so now we can start the extraction process and add to the examples folder right? we have the plan to know what to do and we cleaned the examples folder
+
+
+did you extract everything we need from the repos? 
+so i can remove all of them
+
+just to remind you my app vision
+is to build an AI chat system. like manus.im, genspark.ai, etc..,
+I want to the AI to speak and write mainly Arabic Iraqi accent in both speech and writing, and secondly, English. It depends on the user whether they use Arabic or English.
+I want it to be able to take PDF files, image files, text files, and Excel files, etc.
+and create PDF, Word, Excel, etc.
+and the AI agent keep learning from the user, and when the user keep use it and it'll get better and better. and learn to answer to that specific user. like chatGPT when the user keep talk to it it'll create memory for that user
+and it should be able to read and understand the content of the files and answer the user based on the content of the files. or what the user asks it to do.
+and I want it to be able to have access to the web and search for information and can answer today's events, etc, real-time data
+I want the user to have the option to add their job, profession, etc., which is optional. This allows the agent to respond more effectively to the user based on their job, profession, etc.
+I want to train the agent with real Iraq data like a lawyer or teacher, etc.
+So if the user adds his job, and tells him to do something related to his job, the agent should be able to answer it based on the training data, like the teacher can ask the agent to create an exam for subject x, etc, endless possibilities.
+I want to train the agent with the user data, but don't save the user data; it's just for training the agent. All the data is just for training the agent, and only the user can see the data.
+i want to make the agent access different data sources and answer the user based on the data sources.
+i want to make the agent to be able to access the different sites and do the tasks the user asks it to do. like file form online, etc.
+or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
+and a lot more other features
+
+
+before we remove anything i found this repo can we take anything from it?
+or it has a better components than the ones we extracted from the other repos?
+check it thoroughly
+
+https://github.com/dyad-sh/dyad
+
+i have it here for you
+
+so we dont need anything new but we need to replace the ones we have with the new better components right?
+lets create a plan to do it
+
+
+first lets extract all we need them remove all the repos, we dont need them anymore we have all we need from them in the examples folder, after word we can start with our app, i think this is better, what do you think?
+
+ask me before you start removing the repos
 
 
 
+i want you to do a thorough check to know did we extract everything we need from the repos including the new one we found and added it to the examples folder
+
+
+do we need repo-structure folder or not? is there anything in it we need?
+
+what about references folder?
+
+
+check our tech stack are they good for our use case? or we need to make some changes to them?
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+https://www.better-t-stack.dev/new
 
 
 
