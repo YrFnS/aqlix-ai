@@ -837,6 +837,45 @@ what about references folder?
 
 check our tech stack are they good for our use case? or we need to make some changes to them?
 
+organize the app
+
+
+now before we start with our app i want you to check the current sub-agents do we need to make some changes to them?
+
+also i found these two repos they are for claude code, i think they work in smillar way to claude code sub-agents can we get something useful from them?
+
+https://github.com/bmadcode/BMAD-METHOD
+
+https://github.com/ruvnet/claude-flow
+
+check anthropic official docs for sub-agents
+
+https://docs.anthropic.com/en/docs/claude-code/sub-agents
+
+check anthropic official docs for best practices
+https://www.anthropic.com/engineering/claude-code-best-practices
+
+i have them here locally for you if you want to check them instead of using the url
+
+
+
+this is the memory section CLAUDE.md file which 
+https://docs.anthropic.com/en/docs/claude-code/memory
+
+
+
+
+
+https://docs.anthropic.com/en/docs/claude-code/settings
+
+https://docs.anthropic.com/en/docs/claude-code/hooks
+
+
+
+
+
+
+
 
 
 https://www.better-t-stack.dev/new
