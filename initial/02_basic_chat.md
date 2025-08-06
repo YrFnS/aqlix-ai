@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**PydanticAI agent framework** with OpenAI GPT-4o integration, Iraqi cultural context awareness, Arabic dialect processing, and professional domain expertise for Iraqi users.
+**PydanticAI agent framework** with OpenAI GPT-4o integration, Iraqi cultural context awareness, Arabic dialect processing, and session management with privacy compliance.
 
-**Specific technologies:** PydanticAI for agent creation, OpenAI API for language model, Arabic NLP libraries for dialect recognition, cultural validation services, and session management with privacy compliance.
+**Specific technologies:** PydanticAI for agent creation, OpenAI GPT-4o API for language model, Arabic NLP libraries for Iraqi dialect recognition, cultural validation services, and session-only storage with privacy compliance.
 
 ---
 

@@ -1,6 +1,6 @@
 ## TECHNOLOGY/FRAMEWORK:
 
-**Your technology:** TypeScript strict mode with Zod validation, Pydantic models, and comprehensive type safety for Iraqi AI Chat System with Arabic text handling and cross-platform compatibility
+**Your technology:** TypeScript strict mode with Zod validation, Pydantic models, Drizzle ORM with type-safe database operations, and comprehensive type safety for Iraqi AI Chat System with Arabic text handling and cross-platform compatibility
 
 ---
 
@@ -24,6 +24,7 @@
 - Cross-platform type compatibility for web (Next.js) and mobile (React Native)
 - Zod schema validation for API inputs and form validation
 - Pydantic model integration for backend type safety
+- Drizzle ORM schemas for type-safe database operations (100x faster than Prisma)
 - Cultural context types for Iraqi regional and professional validation
 - Type-safe API client with proper error handling and response types
 - Professional terminology types for Arabic-English translation
@@ -42,6 +43,7 @@
 - Complete TypeScript configuration with strict mode and Iraqi-specific types
 - Zod schemas for Arabic text validation and cultural content filtering
 - Pydantic models for backend API with Iraqi professional domain types
+- Drizzle ORM schemas for database tables with Arabic text columns and cultural data
 - Cross-platform type definitions for shared business logic
 - Type-safe React components with Arabic text and RTL support
 - API client types with comprehensive error handling
@@ -60,6 +62,7 @@
 - https://www.typescriptlang.org/docs/ - TypeScript official documentation
 - https://zod.dev/ - Zod schema validation and type inference
 - https://docs.pydantic.dev/ - Pydantic models for Python backend
+- https://orm.drizzle.team/ - Drizzle ORM for TypeScript-first database operations
 - https://nextjs.org/docs/basic-features/typescript - Next.js TypeScript integration
 - https://reactnative.dev/docs/typescript - React Native TypeScript support
 - TypeScript monorepo configuration and shared package patterns
@@ -74,7 +77,7 @@
 
 **Your development patterns:**
 - Monorepo TypeScript configuration with shared types across apps and packages
-- Type-safe API development workflow with Zod validation and Pydantic models
+- Type-safe API development workflow with Zod validation, Pydantic models, and Drizzle ORM
 - Cross-platform type definitions for shared business logic components
 - Arabic text handling type patterns with RTL direction and validation
 - Professional domain type organization for Iraqi expertise areas

@@ -4,7 +4,7 @@ This guide shows which command to use for each initial file when creating and ex
 
 ## 🤖 PydanticAI Features (Use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`)
 
-**Total: 9 PydanticAI features**
+**Total: 11 PydanticAI features**
 
 ### Phase 1: Foundation & Setup
 - **01_monorepo_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
@@ -36,9 +36,16 @@ This guide shows which command to use for each initial file when creating and ex
 - **16_professional_domains.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
   - *Reason: PydanticAI agents specialized for Iraqi professional domains*
 
+### Phase 4: Advanced AI Systems
+- **19_persistent_chat_history.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Conversation search and context requires PydanticAI intelligence for semantic search and conversation understanding*
+
+- **20_user_personalization_learning.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Core AI learning system with PydanticAI agents for user behavior analysis and response personalization*
+
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 9 general features**
+**Total: 10 general features**
 
 ### Phase 1: Foundation & UI
 - **03_rtl_arabic.md** → `/generate-prp` + `/execute-prp`
@@ -71,6 +78,10 @@ This guide shows which command to use for each initial file when creating and ex
 - **18_scalability_performance.md** → `/generate-prp` + `/execute-prp`
   - *Reason: Multi-API key management, caching, monitoring, and performance optimization*
 
+### Phase 5: User Management
+- **21_user_profile_management.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: User registration, authentication, profile settings, and preference management system*
+
 ## 📋 Usage Examples
 
 ```bash
@@ -78,15 +89,18 @@ This guide shows which command to use for each initial file when creating and ex
 /generate-pydantic-ai-prp initial/02_basic_chat.md
 /execute-pydantic-ai-prp PRPs/02_basic_chat.md
 
-/generate-pydantic-ai-prp initial/15_cultural_framework.md
-/execute-pydantic-ai-prp PRPs/15_cultural_framework.md
+/generate-pydantic-ai-prp initial/19_persistent_chat_history.md
+/execute-pydantic-ai-prp PRPs/19_persistent_chat_history.md
 
-# For general features (UI, infrastructure)
+/generate-pydantic-ai-prp initial/20_user_personalization_learning.md
+/execute-pydantic-ai-prp PRPs/20_user_personalization_learning.md
+
+# For general features (UI, infrastructure, user management)
 /generate-prp initial/03_rtl_arabic.md
 /execute-prp PRPs/03_rtl_arabic.md
 
-/generate-prp initial/11_voice_recording.md
-/execute-prp PRPs/11_voice_recording.md
+/generate-prp initial/21_user_profile_management.md
+/execute-prp PRPs/21_user_profile_management.md
 ```
 
 ## 🎯 Command Selection Logic
@@ -99,6 +113,9 @@ This guide shows which command to use for each initial file when creating and ex
 - Professional domain AI expertise and knowledge
 - RAG integration and knowledge base access
 - Template generation with AI intelligence
+- AI learning systems and personalization
+- Intelligent conversation history and semantic search
+- User behavior analytics and AI adaptation
 
 **Use `/generate-prp` when the feature involves:**
 - Frontend UI components and interfaces
@@ -107,6 +124,7 @@ This guide shows which command to use for each initial file when creating and ex
 - Voice recording and streaming interfaces
 - Deployment and infrastructure setup
 - TypeScript types and validation schemas
+- User authentication and profile management
 - General system integration (non-AI)
 
 ## 📁 Generated Files Location
@@ -123,6 +141,8 @@ All generated PRPs will be saved in the `PRPs/` directory:
 - `PRPs/10_iraqi_templates.md`
 - `PRPs/15_cultural_framework.md`
 - `PRPs/16_professional_domains.md`
+- `PRPs/19_persistent_chat_history.md`
+- `PRPs/20_user_personalization_learning.md`
 
 **General PRPs:**
 - `PRPs/03_rtl_arabic.md`
@@ -134,11 +154,25 @@ All generated PRPs will be saved in the `PRPs/` directory:
 - `PRPs/14_voice_ui.md`
 - `PRPs/17_deployment.md`
 - `PRPs/18_scalability_performance.md`
+- `PRPs/21_user_profile_management.md`
 
 ## ✅ Quick Reference Summary
 
-**All 18 Initial Files Complete:**
-- **9 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-- **9 General features** → use `/generate-prp` + `/execute-prp`
+**All 21 Initial Files Complete:**
+- **11 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+- **10 General features** → use `/generate-prp` + `/execute-prp`
 
-Ready for testing and PRP generation!
+## 🎯 Commands for PRPs 19, 20, 21:
+
+```bash
+# PRP 19: Persistent Chat History (AI-powered search & intelligence)
+/generate-pydantic-ai-prp initial/19_persistent_chat_history.md
+
+# PRP 20: User Personalization Learning (AI learning system)  
+/generate-pydantic-ai-prp initial/20_user_personalization_learning.md
+
+# PRP 21: User Profile Management (Authentication & user settings)
+/generate-prp initial/21_user_profile_management.md
+```
+
+Ready for PRP generation and testing!

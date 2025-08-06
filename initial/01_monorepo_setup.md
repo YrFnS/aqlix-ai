@@ -4,7 +4,7 @@
 
 **Monorepo architecture** with Next.js 15+ web application, Python FastAPI backend with PydanticAI agents, and shared TypeScript packages for future React Native mobile development.
 
-**Specific technologies:** Turborepo/Lerna for workspace management, Next.js with Arabic RTL support, FastAPI with PydanticAI integration, TypeScript for cross-platform types, and Arabic font optimization.
+**Specific technologies:** Bun workspaces for workspace management (30x faster than npm), Next.js with Arabic RTL support, FastAPI with PydanticAI and SQLAlchemy 2.0 integration, Drizzle ORM for TypeScript database operations, custom Iraqi-enhanced UI components, and Arabic font optimization.
 
 ---
 
@@ -20,11 +20,11 @@
 
 **Essential monorepo infrastructure for Iraqi AI system:**
 
-- **Workspace Configuration:** Turborepo/Lerna setup with apps/ and packages/ organization
+- **Workspace Configuration:** Bun workspaces setup with apps/ and packages/ organization (30x faster installs)
 - **Next.js Web App:** Frontend application with Arabic RTL support and TypeScript integration
-- **FastAPI Backend:** Python backend with PydanticAI agents and environment configuration
-- **Shared Packages:** Cross-platform TypeScript packages for types, utilities, and business logic
-- **Development Scripts:** Concurrent development with hot reloading and proper port management
+- **FastAPI Backend:** Python backend with PydanticAI agents, SQLAlchemy 2.0 async ORM, and environment configuration
+- **Shared Packages:** Cross-platform TypeScript packages for types, utilities, Drizzle ORM schemas, and business logic
+- **Development Scripts:** Concurrent development with Bun runtime, hot reloading, and proper port management
 - **Build Optimization:** Intelligent caching and parallel builds across all applications
 - **Code Quality:** Unified ESLint, Prettier, and TypeScript configuration across projects
 - **Arabic Font Management:** Centralized Arabic font loading and optimization
@@ -36,10 +36,10 @@
 
 **Working monorepo configuration examples:**
 
-- **Complete Workspace Setup:** Turborepo configuration with proper dependencies and scripts
+- **Complete Workspace Setup:** Bun workspaces configuration with proper dependencies and scripts
 - **Next.js App Configuration:** Web application with Arabic RTL support and shared packages
-- **FastAPI Backend Setup:** Python application with PydanticAI agents and proper structure
-- **Shared Package Examples:** TypeScript packages for types, utilities, and business logic
+- **FastAPI Backend Setup:** Python application with PydanticAI agents, SQLAlchemy 2.0 async patterns, and proper structure
+- **Shared Package Examples:** TypeScript packages for types, Drizzle ORM schemas, custom Iraqi UI components, and business logic
 - **Development Workflow:** Scripts for concurrent development and testing across all apps
 - **Build Configuration:** Optimized build pipeline with caching and dependency management
 - **Code Quality Setup:** ESLint, Prettier, and TypeScript configuration for all projects
@@ -52,10 +52,12 @@
 
 **Monorepo and framework documentation:**
 
-- **Turborepo Documentation:** https://turbo.build/repo/docs - Modern monorepo build system
+- **Bun Workspaces:** https://bun.sh/docs/install/workspaces - Ultra-fast monorepo management
 - **Next.js Documentation:** https://nextjs.org/docs - React framework with Arabic i18n support
 - **FastAPI Documentation:** https://fastapi.tiangolo.com/ - Python API framework
 - **PydanticAI Documentation:** https://ai.pydantic.dev/ - AI agent framework integration
+- **SQLAlchemy 2.0:** https://docs.sqlalchemy.org/en/20/ - Modern async Python ORM
+- **Drizzle ORM:** https://orm.drizzle.team/ - TypeScript-first ORM (100x faster than Prisma)
 - **TypeScript Monorepo:** https://www.typescriptlang.org/docs/handbook/project-references.html
 - **Arabic Font Loading:** Web font optimization strategies for Arabic typography
 - **Cross-Platform Development:** React Native and Next.js shared component patterns
@@ -83,12 +85,12 @@
 **Monorepo security and operational considerations:**
 
 - **Environment Variable Security:** Secure handling of API keys across different application types
-- **Dependency Security:** Automated vulnerability scanning for both npm and Python dependencies
+- **Dependency Security:** Automated vulnerability scanning for both Bun and Python dependencies
 - **Access Control:** Proper permissions and secrets management for CI/CD pipeline
 - **Code Quality Gates:** Automated linting, testing, and security checks across all projects
 - **Build Security:** Secure build pipeline with dependency verification and artifact signing
 - **Development Environment:** Secure local development setup with proper isolation
-- **Package Management:** Lock file management and dependency audit across workspaces
+- **Package Management:** Bun.lockb management and dependency audit across workspaces
 - **Git Security:** Proper .gitignore configuration to prevent secret leakage
 
 ---
@@ -97,10 +99,10 @@
 
 **Monorepo development challenges and edge cases:**
 
-- **Dependency Hoisting Issues:** Package version conflicts between different application types
+- **Dependency Hoisting Issues:** Package version conflicts between different application types (mitigated by Bun's superior resolution)
 - **Build Order Dependencies:** Circular dependencies and proper build sequence management
 - **Port Conflicts:** Development server port allocation and proxy configuration
-- **Python Virtual Environment:** Integration with Node.js workspace and proper isolation
+- **Python Virtual Environment:** Integration with Bun workspace and proper isolation
 - **TypeScript Path Resolution:** Complex path mapping across packages and applications
 - **Hot Reloading:** Development server coordination between Next.js and FastAPI
 - **Docker Volume Mapping:** Proper volume configuration for monorepo development
@@ -130,7 +132,7 @@
 - **Version Control Integration:** Git hooks and workflow optimization for monorepo
 - **CI/CD Pipeline:** GitHub Actions or similar with matrix builds for multiple applications
 - **Development Tools:** IDE configuration for monorepo with proper TypeScript support
-- **Package Registries:** npm/PyPI integration for shared package publishing
+- **Package Registries:** Bun registry and PyPI integration for shared package publishing
 - **Monitoring Integration:** Development metrics and build performance monitoring
 - **Docker Integration:** Multi-stage builds and development container orchestration
 - **Testing Frameworks:** Jest, Pytest integration across different application types
@@ -160,7 +162,7 @@
 - [x] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 
-**Advanced complexity selected** because monorepo setup requires coordination of multiple technologies (Node.js, Python, TypeScript), build optimization, cross-platform development patterns, and integration with specialized frameworks like PydanticAI for the Iraqi AI Chat System.
+**Advanced complexity selected** because monorepo setup requires coordination of multiple technologies (Bun runtime, Python, TypeScript), build optimization, cross-platform development patterns, and integration with specialized frameworks like PydanticAI for the Iraqi AI Chat System.
 
 ---
 

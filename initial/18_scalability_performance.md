@@ -2,17 +2,17 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Scalability and performance management infrastructure** for multi-API key rotation, intelligent caching, real-time monitoring, and cost optimization for OpenAI API usage with Iraqi-specific optimizations.
+**Scalability infrastructure** for handling concurrent users, API rate limiting, and automatic scaling for the Iraqi AI Chat System with FastAPI backend optimization.
 
-**Specific technologies:** Multiple OpenAI API key management, Redis caching for Iraqi cultural responses, FastAPI middleware for rate limiting, performance monitoring with Prometheus/Grafana, and geographic optimization for Middle East latency.
+**Specific technologies:** FastAPI middleware for rate limiting, Redis caching for responses, automatic scaling configuration, load balancing setup, and concurrent user management for Iraqi-specific usage patterns.
 
 ---
 
 ## TEMPLATE PURPOSE:
 
-**Implementing production-ready scalability and performance system** for the Iraqi AI Chat System that handles hundreds of concurrent users, optimizes OpenAI API costs, manages multi-API key rotation, and maintains sub-3 second response times despite Iraq-to-US geographic latency.
+**Implementing scalability infrastructure** for the Iraqi AI Chat System that handles concurrent users, manages API rate limiting, and provides automatic scaling capabilities for production deployment.
 
-**Developers should be able to:** Configure multiple OpenAI API keys with automatic rotation, implement intelligent caching for Iraqi cultural responses, monitor real-time costs and performance, set up automatic scaling triggers, and optimize Arabic text processing for better performance.
+**Developers should be able to:** Configure rate limiting middleware, implement response caching, set up automatic scaling triggers, configure load balancing, and optimize concurrent request handling for Iraqi user patterns.
 
 ---
 
@@ -20,14 +20,14 @@
 
 **Essential scalability infrastructure for Iraqi AI system:**
 
-- **Multi-API Key Management:** Automated rotation between 3-5 OpenAI API keys for increased rate limits
-- **Intelligent Caching:** Redis-based caching for Iraqi cultural responses and professional templates
-- **Real-time Monitoring:** Cost tracking, performance metrics, and automated alerts for budget thresholds
-- **Rate Limiting:** Per-user rate limiting with Iraqi market considerations and usage tiers
-- **Geographic Optimization:** CDN configuration and connection pooling optimized for Middle East latency
-- **Arabic Processing Optimization:** Cached Iraqi dialect recognition and RTL text processing
-- **Auto-scaling Configuration:** Automatic scaling triggers based on concurrent users and API usage
-- **Session Management:** Efficient session storage with 1-hour auto-expiry for privacy compliance
+- **Rate Limiting Middleware:** Per-user rate limiting with configurable limits for Iraqi usage patterns
+- **Response Caching:** Redis-based caching for frequently requested responses and templates
+- **Concurrent User Management:** Connection pooling and request queuing for high user loads
+- **Auto-scaling Configuration:** Automatic scaling triggers based on concurrent users and resource usage
+- **Load Balancing Setup:** Distribution of requests across multiple FastAPI instances
+- **Session Scaling:** Efficient session storage scaling with automatic cleanup
+- **API Optimization:** Request batching and connection optimization for external APIs
+- **Resource Monitoring:** Basic resource usage monitoring and scaling triggers
 
 ---
 

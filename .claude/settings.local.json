@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "tools": {
-      "bash": "allow"
-    }
-  }
-}

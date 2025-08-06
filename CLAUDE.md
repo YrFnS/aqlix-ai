@@ -24,22 +24,25 @@ Always use these MCP servers:
 
 ## Bash commands
 
-- `npm run dev`: Start all applications in development mode
-- `npm run build`: Build all applications for production  
-- `npm run test`: Run all tests (unit, integration, cultural)
-- `npm run typecheck`: TypeScript compilation check
-- `npm run lint`: Code style validation
-- `npm run test:cultural`: Run Iraqi cultural validation tests
-- `npm run test:arabic`: Run Arabic RTL and dialect tests
+**Bun-Optimized Commands (30x faster than npm):**
+- `bun run dev`: Start all applications in development mode
+- `bun run build`: Build all applications for production  
+- `bun test`: Run all tests (built-in Bun test runner)
+- `bun run typecheck`: TypeScript compilation check
+- `bun run lint`: Code style validation
+- `bun run test:cultural`: Run Iraqi cultural validation tests
+- `bun run test:arabic`: Run Arabic RTL and dialect tests
+- `bun install`: Install dependencies (30x faster than npm)
 
 ## Project structure
 
-- **Frontend**: Next.js 15+ with TypeScript, Arabic RTL support in `apps/web/`
-- **Backend**: Python FastAPI with PydanticAI agents in `apps/api/`
-- **Shared packages**: Cross-platform code in `packages/` (ui, types, features, api-client, arabic-nlp)
+- **Frontend**: Next.js 15.1 + React 19 + Bun in `apps/web/`
+- **Backend**: FastAPI + SQLAlchemy 2.0 + PydanticAI in `apps/api/`
+- **Shared packages**: Bun workspaces in `packages/` (ui, types, features, api-client, arabic-nlp)
+- **UI Components**: 44 Iraqi-enhanced custom components from `examples/dyad-extracted/`
 - **Sub-agents**: 20 specialized agents in `.claude/agents/`
 - **Context management**: Persistent knowledge base in `project-context/`
-- **Examples**: PydanticAI reference implementations in `examples/`
+- **Examples**: Production reference implementations in `examples/`
 - **PRPs**: Product Requirement Prompts in `PRPs/`
 - **Data**: Iraqi knowledge base in `data/` (iraqi-law, education, templates)
 
@@ -74,18 +77,31 @@ Always use these MCP servers:
 
 ## Tech stack
 
-- **Frontend**: Next.js 15+, TypeScript, Arabic RTL support
-- **Backend**: Python FastAPI, PydanticAI, OpenAI GPT-4o  
-- **Payment gateways**: ZainCash (1000 IQD min), FastPay (500 IQD min), NassWallet (1000 IQD min)
+**Frontend (Optimized 2025 Stack):**
+- **Runtime**: Bun (30x faster installs, native TypeScript)
+- **Framework**: Next.js 15.1+ with React 19
+- **UI**: Tailwind CSS v4 + 44 Custom Iraqi-Enhanced Components
+- **ORM**: Drizzle ORM (100x faster than Prisma, SQL-first)
+- **State**: Zustand + TanStack Query
+- **TypeScript**: Strict mode, zero external UI dependencies
+
+**Backend:**
+- **Framework**: Python FastAPI with SQLAlchemy 2.0 (async/await)
+- **AI**: PydanticAI + OpenAI GPT-4o
+- **Database**: PostgreSQL + Redis
+
+**Payment & Languages:**
+- **Gateways**: ZainCash (1000 IQD min), FastPay (500 IQD min), NassWallet (1000 IQD min)
 - **Languages**: Iraqi Arabic (primary), Standard Arabic, English
 
 ## Code style
 
-- **TypeScript**: Strict mode enabled, zero `any` types
-- **Python**: Always use python-dotenv with `load_dotenv()`, never hardcode API keys
-- **RTL Support**: All UI components handle `dir={language === 'arabic' ? 'rtl' : 'ltr'}`
-- **Imports**: Absolute imports with `@/` for src, `@iraqi-ai/` for packages
+- **TypeScript**: Strict mode enabled, zero `any` types, Bun native support
+- **Python**: SQLAlchemy 2.0 async patterns, python-dotenv with `load_dotenv()`, never hardcode API keys
+- **RTL Support**: Built-in Iraqi components with `cultural="iraqi"` prop and automatic RTL
+- **Imports**: Absolute imports with `@/` for src, `@iraqi-ai/` for Bun workspaces
 - **File organization**: Group by features (chat/, documents/, payments/), not technology
+- **Components**: Use custom Iraqi-enhanced components from `examples/dyad-extracted/`
 
 ## Iraqi cultural requirements
 
@@ -119,17 +135,30 @@ When complex tasks require specialized expertise, delegate to appropriate agents
 
 ## Environment setup
 
+**Bun + PydanticAI + SQLAlchemy 2.0 Pattern:**
+```bash
+# Frontend setup with Bun
+bun install
+bun add drizzle-orm pg @types/pg
+bun add -D drizzle-kit
+```
+
 ```python
-# Always use this pattern for PydanticAI agents
+# Backend: PydanticAI + SQLAlchemy 2.0 pattern
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 class Settings(BaseSettings):
     llm_api_key: str = Field(..., description="API key for LLM")
+    database_url: str = Field(..., description="Async PostgreSQL URL")
     
 def load_settings():
     load_dotenv()  # CRITICAL: Always load .env first
     return Settings()
+
+# SQLAlchemy 2.0 async setup
+async_engine = create_async_engine(settings.database_url)
 ```
 
 ## Security requirements
@@ -141,11 +170,17 @@ def load_settings():
 
 ## Key directories to know
 
-- `apps/web/src/`: Next.js frontend application
-- `apps/api/src/`: FastAPI backend with PydanticAI agents
-- `packages/features/`: Shared business logic (chat, documents, payments)
+**Core Architecture:**
+- `apps/web/src/`: Next.js 15.1 + React 19 + Bun frontend
+- `apps/api/src/`: FastAPI + SQLAlchemy 2.0 + PydanticAI backend
+- `packages/`: Bun workspaces with shared logic (ui, types, features, api-client, arabic-nlp)
+
+**UI Components (Iraqi-Enhanced):**
+- `examples/dyad-extracted/components/ui/`: 44 production-ready components
+- `examples/dyad-extracted/IRAQI_ENHANCEMENT_STRATEGY.md`: Cultural customization guide
+
+**AI & Context:**
 - `examples/main_agent_reference/`: Production PydanticAI patterns
 - `.claude/agents/`: 20 specialized agents for complex tasks
-- `project-context/agents/knowledge-base/`: Persistent agent decisions and patterns
-- `project-context/agents/workflows/`: Multi-agent workflow templates
+- `project-context/agents/knowledge-base/`: Persistent agent decisions
 - `project-context/current-context.md`: Active session context

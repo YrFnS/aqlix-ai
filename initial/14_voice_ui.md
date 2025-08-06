@@ -10,26 +10,26 @@
 
 ## TEMPLATE PURPOSE:
 
-**Building comprehensive voice user interface components** for the Iraqi AI Chat System that provide intuitive voice recording controls, real-time audio feedback, Arabic text-to-speech integration, and culturally appropriate voice interaction patterns optimized for Iraqi users.
+**Building voice user interface components** for the Iraqi AI Chat System that provide intuitive voice recording controls with visual feedback and Arabic RTL support for voice-enabled chat interfaces.
 
-**Developers should be able to:** Create accessible voice interfaces with Arabic RTL support, implement voice recording controls with visual feedback, integrate TTS playback controls, and provide seamless voice-text interaction patterns for Iraqi professional and casual users.
+**Developers should be able to:** Create accessible voice UI components with Arabic RTL support, implement voice recording controls with visual feedback states, design culturally appropriate voice interface patterns, and integrate voice controls seamlessly with existing chat components.
 
 ---
 
 ## CORE FEATURES:
 
-**Essential voice UI components for Iraqi AI integration:**
+**Essential voice UI components for Iraqi AI chat interface:**
 
-- **Voice Recording Controls:** Intuitive microphone buttons with recording states, permissions, and visual feedback
-- **Audio Visualization:** Real-time waveform display and voice activity indicators during recording and playback
-- **TTS Playback Controls:** Play/pause/stop controls for Arabic text-to-speech with speed and volume adjustment
-- **Voice Activity Detection:** Automatic silence detection and recording management with visual indicators
-- **Arabic RTL Layout Support:** Proper RTL layout for voice controls and Arabic text integration
-- **Accessibility Features:** Screen reader support, keyboard navigation, and voice control accessibility
-- **Mobile-Optimized Controls:** Touch-friendly voice controls optimized for mobile devices and tablets
-- **Cultural Voice Patterns:** UI patterns that respect Iraqi communication customs and preferences
-- **Permission Management:** User-friendly microphone permission requests and error handling
-- **Cross-Platform Compatibility:** Consistent voice UI across web browsers and mobile devices
+- **Voice Recording Button Component:** Microphone button with recording states (idle, recording, processing) and visual feedback
+- **Audio Visualization Component:** Waveform display component for visual recording feedback
+- **Voice Controls Panel:** Start/stop recording controls with Arabic RTL layout support
+- **Recording Status Indicator:** Visual indicators showing recording state and duration
+- **Arabic RTL Voice Layout:** Proper RTL positioning for voice controls in Arabic interface
+- **Accessibility Support:** Screen reader compatible voice controls with keyboard navigation
+- **Mobile Voice Controls:** Touch-optimized voice components for mobile devices
+- **Permission Request UI:** User-friendly microphone permission request components
+- **Voice Button States:** Visual states for voice controls (enabled, disabled, error)
+- **Cultural Design Patterns:** UI patterns that respect Iraqi communication preferences
 
 ---
 

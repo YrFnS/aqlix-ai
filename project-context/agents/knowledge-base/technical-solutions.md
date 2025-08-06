@@ -104,6 +104,53 @@ const IRAQI_ERROR_MESSAGES = {
 }
 ```
 
+## 2025 Tech Stack Integration
+
+### Bun + Drizzle + SQLAlchemy Stack
+```bash
+# Bun commands (30x faster than npm)
+bun install --legacy-peer-deps  # Handle React 19 compatibility
+bun run dev    # Start development with Bun runtime
+bun test       # Built-in test runner
+```
+
+### Drizzle ORM Pattern (Frontend)
+```typescript
+// 100x faster than Prisma, SQL-first approach
+import { pgTable, serial, text, timestamp, jsonb } from 'drizzle-orm/pg-core';
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  profession: text('profession'), // Iraqi-specific
+  preferences: jsonb('preferences'), // RTL, cultural settings
+  createdAt: timestamp('created_at').defaultNow(),
+});
+```
+
+### SQLAlchemy 2.0 Async Pattern (Backend)
+```python
+# Production-ready async patterns
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base
+
+class IraqiUserModel(Base):
+    __tablename__ = "users"
+    profession = Column(String)  # Iraqi professional domain
+    preferences = Column(JSON)   # Cultural settings
+```
+
+### Custom Iraqi Components
+```typescript
+// Use 44 custom components from examples/dyad-extracted/
+import { Button } from '@/components/ui/button';
+
+<Button cultural="iraqi" dir="rtl" className="font-arabic">
+  إرسال الرسالة
+</Button>
+```
+
 ## Recent Technical Decisions
-- Date: 2025-08-01 - Implemented context management system for technical solution persistence
+- Date: 2025-08-05 - Updated entire tech stack to Bun + Drizzle + SQLAlchemy 2.0
+- Decision: Replace shadcn/ui with 44 custom Iraqi-enhanced components
+- Performance: 30x faster installs (Bun), 100x faster queries (Drizzle)
 - Decision: Use project-context structure for agent knowledge sharing

@@ -2,24 +2,24 @@
 
 ## FEATURE:
 
-**Building an adaptive AI learning system** for the Iraqi AI Chat System that learns from individual user interactions, adapts response patterns to match user preferences, improves cultural appropriateness over time, and develops personalized understanding of each user's professional context, communication style, and cultural preferences while maintaining Islamic privacy principles.
+**Building a basic user learning system** for the Iraqi AI Chat System that adapts response patterns to match user communication preferences and learns basic cultural settings while maintaining Islamic privacy principles.
 
-**Developers should be able to:** Create a machine learning system that tracks user interaction patterns, learns from conversation feedback, adapts cultural responses to user preferences, personalizes professional domain expertise, maintains user-specific memory across sessions, and continuously improves Iraqi dialect recognition and cultural appropriateness for individual users.
+**Developers should be able to:** Create a simple learning system that tracks user interaction patterns, stores basic user preferences, adapts response formality levels, and maintains user-specific settings for cultural appropriateness and communication style.
 
 ## TOOLS:
 
 **What specific tools and capabilities should this learning system have?**
 
-**Essential AI personalization capabilities for Iraqi users:**
+**Essential basic personalization capabilities for Iraqi users:**
 
-- **User Behavior Analytics Tool:** Service for tracking user interaction patterns, response preferences, and cultural adaptation needs
-- **Personalized Response Generator:** ML-powered tool that adapts AI responses based on individual user learning history
-- **Cultural Preference Learner:** System that learns user-specific cultural appropriateness preferences and Islamic compliance levels
-- **Professional Context Adapter:** Tool that personalizes professional domain responses based on user's field and experience level
-- **Dialect Pattern Learner:** Service that adapts to individual user's Iraqi dialect patterns and vocabulary preferences
-- **Feedback Processing System:** Tool for learning from user corrections, preferences, and satisfaction indicators
-- **Memory Consolidation Service:** System for converting interaction patterns into persistent user-specific knowledge
-- **Adaptive Response Optimizer:** ML service that improves response quality based on user engagement and satisfaction metrics
+- **User Preference Storage:** Simple database service for storing user communication preferences and cultural settings
+- **Basic Learning Tracker:** Service for tracking user interaction patterns and response preferences
+- **Cultural Setting Adapter:** Simple system that adapts responses based on user's cultural formality preferences
+- **Communication Style Learner:** Basic tool that learns user preferences for response length and formality level
+- **Feedback Collection Service:** Simple service for collecting user feedback on response appropriateness
+- **Preference Application Service:** Tool that applies stored user preferences to AI agent responses
+- **Basic Memory Service:** Simple system for maintaining user preferences across sessions
+- **Setting Management API:** API endpoints for updating and retrieving user learning preferences
 
 ## DEPENDENCIES:
 

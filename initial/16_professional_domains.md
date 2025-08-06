@@ -2,7 +2,7 @@
 
 ## FEATURE:
 
-**Building specialized professional domain agents** for the Iraqi AI Chat System that provide expert knowledge across Iraqi professional domains (legal, medical, educational, engineering) with domain-specific expertise, terminology, cultural context, and professional standards while maintaining appropriate ethical boundaries.
+**Building specialized professional domain agents** for the Iraqi AI Chat System that provide expert knowledge across Iraqi professional domains (legal, medical, educational, engineering) with Iraqi-specific terminology, cultural context, and professional standards while maintaining appropriate ethical boundaries.
 
 **Developers should be able to:** Create PydanticAI agents that provide accurate Iraqi professional domain knowledge for lawyers, doctors, teachers, and engineers, ensure appropriate professional boundaries and ethical guidance, deliver culturally contextual professional advice, and maintain authentic Iraqi professional terminology and standards.
 

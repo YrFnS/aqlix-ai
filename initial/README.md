@@ -1,6 +1,6 @@
 # Initial Requirements - Iraqi AI Chat System
 
-This directory contains the 17 initial feature requirements for building the Iraqi AI Chat System. Each file represents a specific feature or component that needs to be implemented.
+This directory contains the 21 initial feature requirements for building the Iraqi AI Chat System. Each file represents a specific feature or component that needs to be implemented.
 
 ## Feature Overview
 
@@ -21,6 +21,10 @@ This directory contains the 17 initial feature requirements for building the Ira
 15. **15_cultural_framework.md** - Iraqi cultural context and Islamic values
 16. **16_professional_domains.md** - Professional expertise for Iraqi professionals
 17. **17_deployment.md** - Production deployment with Iraqi payment gateways
+18. **18_scalability_performance.md** - Performance optimization and scalability patterns
+19. **19_persistent_chat_history.md** - Chat history persistence and retrieval
+20. **20_user_personalization_learning.md** - User personalization and learning systems
+21. **21_user_profile_management.md** - User profile and preference management
 
 ## Usage
 

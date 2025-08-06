@@ -859,26 +859,221 @@ i have them here locally for you if you want to check them instead of using the 
 
 
 
+what anthropic official docs for sub-agents says?
+
+and dont we have a context manager for sub-agents here
+
+
+so the sub-agents we have are good, and they know how to use the context manager? check them
+
+
+
+check CLAUDE.md file is it good does it align with the best practices from anthropic? and is it good for our app?
+
 this is the memory section CLAUDE.md file which 
 https://docs.anthropic.com/en/docs/claude-code/memory
 
+https://www.anthropic.com/engineering/claude-code-best-practices
+
+i have them here locally for you if you want to check them instead of using the url
 
 
 
+
+do we need hooks? of for code formatting and one for code linting
 
 https://docs.anthropic.com/en/docs/claude-code/settings
 
 https://docs.anthropic.com/en/docs/claude-code/hooks
 
 
+i think what you did is wrong we need one code formatting for python and one formatting for JavaScript cus there arent one for all languages or am i wrong? what languages are we going to use for our app?
+
+
+we have sub-agents and hooks are they overlapping each other?
 
 
 
-
-
-
-
+i have another question
+i found this website check it
 https://www.better-t-stack.dev/new
+
+
+
+before anything else check the app plan to know what tech stack we are using
+
+so what should we do?
+
+we still didnt start with the app 
+
+t-stack has sections
+
+Web Frontend
+Native Frontend
+Backend
+Runtime
+Api
+Database
+Orm
+Db Setup
+Web Deploy
+Auth
+Package Manager
+Addons
+
+
+what is your recommendation for our app what is the best for our use case?
+for ORM and Package Manager
+what do you think?
+i think for package manager bun cus we can use it with npm its not replacement for npm, its Compatible with npm or im worng, i want your opinion
+dont take my word for granted check the web for more info
+
+
+
+lets go with bun and Drizzle ORM and SQLAlchemy 2.0
+
+but i want you to check the whole tech stack with all well use for our app is there anything isn't compatible with each other so we dont have any compatibility issues
+
+
+arent we gonna drop shadcn/ui cus well use the components from the examples folder or use them as a refernce to create our own components or customize them for our app?
+
+so now we need to update the plan and claude.md file with the new tech stack
+
+now we need to update the sub-agents also while we are at it i want you to check also check anthropic docs for sub-agents some sub-agents have some code snippets is that allowed is it algin with best practices from anthropic?
+
+https://docs.anthropic.com/en/docs/claude-code/sub-agents
+
+or check it here
+
+
+1- fix all sub-agents that have code snippets
+2- update the sub-agents
+3- the custom fields are you talking about the project context?
+
+
+
+
+so now we wont use shadcn/ui cus we have the components from the examples folder or use them as a refernce to create our own components or customize them for our app?
+but is the components we extracted from the examples folder are they use shadcn/ui or dont depend on any ui components library?
+
+
+now we need to update the initials and prps with minimal changes to them
+lets start with the initial files first
+
+now lets update the prps files with minimal changes to them
+
+
+do i proceed with PRPs which is the new Context Engineering which is the new standard for working with AI? i used this repo when i created the prps "https://github.com/coleam00/context-engineering-intro" as a reference
+
+or do i generate a phases folder and breack each into smaller tasks to implement them one by one?
+
+i think prps is better
+
+what do you think? don't take my word for granted check the web for more info
+
+
+do you remember my app vision?
+
+this is my app vision if you forgot it
+is to build an AI chat system. like manus.im, genspark.ai, etc..,
+I want to the AI to speak and write mainly Arabic Iraqi accent in both speech and writing, and secondly, English. It depends on the user whether they use Arabic or English.
+I want it to be able to take PDF files, image files, text files, and Excel files, etc.
+and create PDF, Word, Excel, etc.
+and the AI agent keep learning from the user, and when the user keep use it and it'll get better and better. and learn to answer to that specific user. like chatGPT when the user keep talk to it it'll create memory for that user
+and it should be able to read and understand the content of the files and answer the user based on the content of the files. or what the user asks it to do.
+and I want it to be able to have access to the web and search for information and can answer today's events, etc, real-time data
+I want the user to have the option to add their job, profession, etc., which is optional. This allows the agent to respond more effectively to the user based on their job, profession, etc.
+I want to train the agent with real Iraq data like a lawyer or teacher, etc.
+So if the user adds his job, and tells him to do something related to his job, the agent should be able to answer it based on the training data, like the teacher can ask the agent to create an exam for subject x, etc, endless possibilities.
+I want to train the agent with the user data, but don't save the user data; it's just for training the agent. All the data is just for training the agent, and only the user can see the data.
+i want to make the agent access different data sources and answer the user based on the data sources.
+i want to make the agent to be able to access the different sites and do the tasks the user asks it to do. like file form online, etc.
+or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
+and a lot more other features
+
+
+i had a conversation with you before about the app vision and we created the plan "app-plan.md"
+
+check the initials, what more initials do we need?
+each initial is responsible for a small feature like we did with the first 21 initials
+
+ultrathink and give me a list of the initials we need for my app vision, and do we need to change any initials we have?
+the initials we have they for the mvp, we need to list all the initials we need for the app vision, so we can develop the app step by step and know what we need to do
+
+
+
+my app vision not just to match manus.im and genspark.ai, but to surpass them i just use them to know where to start and to take inspiration from them
+create a md file to list all the initials we need to create and the ones we need to update
+
+
+lets update the existing 3 initials
+
+i have a question
+initial 02 you created new one and and for the other two you updated them why is that?
+
+and in the 02 you added a lot of features, and that isnt good, the beauty of the prps we have is that each initial is responsible for a small feature and all of combined make the app dont overcomplicate it or overlap each other
+
+
+
+you check the prps, i generated the first 18 prps using this guide "INITIAL_TO_PRP_GUIDE.md"
+which is using slash commands to generate the prps
+like this "/generate-prp initial/02_basic_chat.md" or "/generate-pydantic-ai-prp initial/02_basic_chat.md"
+
+now i need to generate the prps 19, 20, 21
+but which slash command should i use?
+update the INITIAL_TO_PRP_GUIDE.md file
+
+these are the slash commands
+
+i want you to check the intials are each of them responsible for a small feature?
+
+and then check the generated prps for the first 18 initials are they good and each of them is responsible for a small feature from the initial?
+
+
+now i need to regenerate prp right?
+PRPs\voice-ui-components-iraqi-ai.md we generated it using initial/14_voice_ui.md
+PRPs\scalability-performance.md we generated it using initial/18_scalability_performance.md
+
+what do you think?
+
+
+
+i have a question
+do we regenerate all the prps not just the two we made changes to?
+if you remember we updated the examples folder, when we generate the prps we had the old examples folder before we extracted the components from the repos, or it doesn't matter?
+when we use the slash commands execute-prp or execute-pydantic-ai-prp it will use the examples folder we have now?
+
+
+do i use the INITIAL_TO_PRP_GUIDE.md to regenerate the prps?
+
+before we generate the prps
+
+do we create all the new initials from COMPREHENSIVE_INITIALS_ROADMAP.md?
+
+or we do it later after the MVP?
+
+
+
+generate a commit message i want to read it before i commit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

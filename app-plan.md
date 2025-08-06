@@ -16,18 +16,21 @@
 #### Frontend Stack
 ```
 Web Application: Next.js 15.1+ + TypeScript + React 19
-├── UI Framework: Tailwind CSS v4 + shadcn/ui
+├── Package Manager: Bun (30x faster installs, native TypeScript)
+├── UI Framework: Tailwind CSS v4 + Custom Components (44 Iraqi-enhanced components)
+├── ORM: Drizzle ORM (100x faster than Prisma, SQL-first)
 ├── State Management: Zustand (client) + TanStack Query (server state)
 ├── Real-time: Server-Sent Events (Next.js 15 streaming) + WebSockets (fallback)
 ├── Forms: React Hook Form + Zod validation
 ├── File Upload: react-dropzone + progress tracking
-├── Arabic Support: react-rtl-support, arabic-reshaper
+├── Arabic Support: Built-in RTL components, arabic-reshaper
 └── Voice: Web Audio API + OpenAI Whisper/TTS integration
 ```
 
 #### Backend Stack
 ```
 Primary API: Python FastAPI + Node.js Express (real-time)
+├── ORM: SQLAlchemy 2.0 (async/await, production-ready)
 ├── AI Framework: PydanticAI (primary) + LangGraph (orchestration)
 ├── AI Models: OpenAI GPT-4o + Jais API (Arabic)
 ├── Document Processing: LangChain + PyMuPDF + pytesseract
@@ -54,7 +57,28 @@ packages/
 └── docs/             # Documentation and PRPs
 ```
 
-### Database Schema Design
+### Database Architecture
+
+#### Dual-ORM Strategy
+```typescript
+// Frontend: Drizzle ORM (TypeScript-native)
+const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  profession: text('profession'), // Iraqi-specific
+  preferences: jsonb('preferences'), // RTL, cultural settings
+  createdAt: timestamp('created_at').defaultNow(),
+});
+```
+
+```python
+# Backend: SQLAlchemy 2.0 (Async Python)
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    profession = Column(String)  # Iraqi professional domain
+    preferences = Column(JSON)   # Cultural settings
+```
 
 #### Core Tables
 ```sql
@@ -92,14 +116,15 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 
 #### Week 1-2: Project Setup & Infrastructure
 **PRP: PROJECT-SETUP**
-- [ ] Initialize monorepo with Turborepo/Nx
-- [ ] Set up Next.js app with TypeScript + Tailwind
-- [ ] Configure FastAPI backend with proper project structure
-- [ ] Set up PostgreSQL + Redis databases
-- [ ] Create shared packages architecture
+- [ ] Initialize monorepo with Bun workspaces (30x faster than npm)
+- [ ] Set up Next.js 15.1 + React 19 + TypeScript + Tailwind v4
+- [ ] Configure FastAPI + SQLAlchemy 2.0 backend structure
+- [ ] Set up Drizzle ORM with PostgreSQL connection
+- [ ] Import and enhance 44 custom UI components for Iraqi context
+- [ ] Create shared packages architecture with Bun
 - [ ] Set up development environment (Docker containers)
-- [ ] Configure ESLint, Prettier, pre-commit hooks
-- [ ] Set up CI/CD pipeline basics (GitHub Actions)
+- [ ] Configure ESLint, Prettier, pre-commit hooks with Bun
+- [ ] Set up CI/CD pipeline with Bun build optimization
 
 #### Week 3-4: Authentication & User Management
 **PRP: AUTH-SYSTEM**
@@ -319,16 +344,24 @@ PROCESSORS = {
     'png': OCRProcessor
 }
 
-# Embedding and search
+# Embedding and search with SQLAlchemy 2.0
 class DocumentEmbedding:
-    def __init__(self):
+    def __init__(self, db_session: AsyncSession):
         self.embedder = OpenAIEmbeddings()
         self.vector_store = PineconeVectorStore()
+        self.db = db_session
     
-    def process_document(self, doc_content: str):
+    async def process_document(self, doc_content: str):
         chunks = self.chunk_text(doc_content)
         embeddings = self.embedder.embed_documents(chunks)
-        return self.vector_store.add_embeddings(embeddings)
+        # Store in PostgreSQL with SQLAlchemy 2.0
+        async with self.db.begin():
+            result = await self.db.execute(
+                insert(document_embeddings).values(
+                    embeddings=embeddings, content=chunks
+                )
+            )
+        return result
 ```
 
 ### Real-time Communication (2025 Optimized)
@@ -420,11 +453,16 @@ function useChatMessages(conversationId: string) {
 ### MVP Deployment (Cost-Effective)
 ```yaml
 Infrastructure:
-  Web Hosting: Vercel (Next.js)
-  API Hosting: Railway/Render (FastAPI)
-  Database: Supabase (PostgreSQL + real-time)
+  Web Hosting: Vercel (Next.js + Bun optimization)
+  API Hosting: Railway/Render (FastAPI + SQLAlchemy)
+  Database: Supabase (PostgreSQL + Drizzle integration)
   File Storage: Supabase Storage
   Cache: Upstash Redis
+  
+Performance Benefits:
+  - Bun: 30x faster installs, faster builds
+  - Drizzle: 100x faster queries than Prisma
+  - Custom Components: Zero external UI dependencies
   
 Cost Estimate:
   - Vercel: Free tier initially
@@ -469,11 +507,16 @@ Branches:
   feature/*: Feature development
   hotfix/*: Critical fixes
   
-Release Process:
-  1. Feature branch → develop
-  2. develop → staging deployment
-  3. QA testing on staging
-  4. develop → main (production)
+Bun-Optimized Release Process:
+  1. Feature branch → develop (bun install --frozen-lockfile)
+  2. develop → staging deployment (bun run build)
+  3. QA testing on staging (bun test)
+  4. develop → main (production with Bun optimization)
+  
+Performance Benefits:
+  - Build time: 50-70% faster with Bun
+  - Install time: 30x faster dependency installation
+  - Test execution: Built-in Bun test runner
 ```
 
 ### Quality Assurance

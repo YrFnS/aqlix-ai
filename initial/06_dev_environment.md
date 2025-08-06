@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Comprehensive development environment** with Python virtual environments for PydanticAI agents, Node.js monorepo tooling, Arabic text development support, and Iraqi cultural validation tools.
+**Comprehensive development environment** with Python virtual environments for PydanticAI agents, Bun monorepo tooling, Arabic text development support, and Iraqi cultural validation tools.
 
-**Specific technologies:** Python 3.11+ with virtual environments, Node.js with workspace management, VS Code with Arabic text extensions, Docker for consistency, Git hooks for validation, and comprehensive testing frameworks.
+**Specific technologies:** Python 3.11+ with virtual environments, Bun runtime with workspace management (30x faster than Node.js), VS Code with Arabic text extensions, Docker for consistency, Git hooks for validation, and comprehensive testing frameworks.
 
 ---
 
@@ -23,7 +23,7 @@
 - **Python Environment Setup:** Virtual environment configuration for PydanticAI agent development with Iraqi context
 - **Arabic Text Development:** Consistent Arabic font rendering and RTL layout support across all development tools
 - **Cultural Validation Tools:** Automated testing and validation for Iraqi cultural appropriateness and Islamic values
-- **Monorepo Development:** Unified workspace configuration for web, mobile, and backend development
+- **Monorepo Development:** Unified Bun workspace configuration for web, mobile, and backend development (30x faster installs)
 - **Code Quality Automation:** ESLint, Prettier, and Git hooks for consistent code formatting and validation
 - **Testing Framework:** Comprehensive testing setup with Arabic text fixtures and cultural validation
 - **Performance Monitoring:** Development tools for Arabic text rendering optimization and performance tracking
@@ -54,7 +54,7 @@
 - **Python Virtual Environments:** https://docs.python.org/3/tutorial/venv.html - Virtual environment management
 - **Docker Development:** Containerized development environment setup and Arabic font handling
 - **Git Hooks Documentation:** Automated validation and cultural appropriateness checking
-- **Node.js Monorepo:** Workspace management and cross-platform development tooling
+- **Bun Workspaces:** https://bun.sh/docs/install/workspaces - Ultra-fast workspace management and cross-platform development tooling
 - **Testing Frameworks:** Jest and pytest setup with internationalization and cultural testing
 - **Performance Monitoring:** Development tools for Arabic text rendering optimization
 
@@ -82,7 +82,7 @@
 - **Environment Variable Security:** Secure handling of API keys and cultural validation service credentials
 - **Development Secrets:** Proper management of development-only credentials and testing data
 - **Code Quality Gates:** Automated validation for security vulnerabilities and cultural appropriateness
-- **Dependency Security:** Regular security updates for Python and Node.js dependencies
+- **Dependency Security:** Regular security updates for Python and Bun dependencies
 - **Cultural Validation Security:** Secure handling of cultural validation data and testing scenarios
 - **Development Access Control:** Proper permissions and access control for development tools and services
 - **Git Security:** Secure Git configuration with proper .gitignore for sensitive development files
