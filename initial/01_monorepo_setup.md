@@ -26,7 +26,7 @@
 - **Shared Packages:** Cross-platform TypeScript packages for types, utilities, Drizzle ORM schemas, and business logic
 - **Development Scripts:** Concurrent development with Bun runtime, hot reloading, and proper port management
 - **Build Optimization:** Intelligent caching and parallel builds across all applications
-- **Code Quality:** Unified ESLint, Prettier, and TypeScript configuration across projects
+- **Code Quality:** Unified ESLint, Prettier, Ruff (Python), and TypeScript configuration across projects
 - **Arabic Font Management:** Centralized Arabic font loading and optimization
 - **Environment Management:** Environment variable handling across different application types
 
@@ -42,7 +42,7 @@
 - **Shared Package Examples:** TypeScript packages for types, Drizzle ORM schemas, custom Iraqi UI components, and business logic
 - **Development Workflow:** Scripts for concurrent development and testing across all apps
 - **Build Configuration:** Optimized build pipeline with caching and dependency management
-- **Code Quality Setup:** ESLint, Prettier, and TypeScript configuration for all projects
+- **Code Quality Setup:** ESLint, Prettier, Ruff (Python), and TypeScript configuration for all projects
 - **Docker Development:** Containerized development environment with all services
 - **Git Configuration:** Proper .gitignore and Git hooks for monorepo with Python environments
 

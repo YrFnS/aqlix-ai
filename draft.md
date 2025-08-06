@@ -1057,32 +1057,51 @@ or we do it later after the MVP?
 generate a commit message i want to read it before i commit
 
 
+my team is just you and me no one else
+and the code is in english not arabic? there is no arabic code and english code, is the standard right?
+
+in the future after the mvp we will consider adding more team members
+but for now i just you and me i dont need anyone else other than you
+you are my best team member and i trust you
 
 
 
 
 
+hooks do we need all these hooks?
+
+i think we just need two hooks one for formatting and one for linting
+what do you think?
 
 
+lets remove the cultural validation hook
+
+and now we have two hooks format-by-language.sh and format.sh
+but will they work?
+from what i know there isnt any unified formatting and linting tool for all languages
 
 
+i have a question
+how will they handle tool calling? 
+check anthropic docs
+and check the web for more info
 
 
+in the youtube i saw a video where they have a file called tools.md and in he said it used with the hooks
+if you can check the video
+
+this is the video link
+https://www.youtube.com/watch?v=ytn0aXK2gzE
+
+do a thorough research through the web and check anthropic docs for more info
 
 
+lets keep our hooks simple
+now i have a question
+for the hooks to work we need the tools installed in the app right?
+so when well we install them? with which prp? after we generate the prps from the initials
 
-
-
-
-
-
-
-
-
-
-
-
-
+will they auto install the tools? or we need to add them in the initial?
 
 
 

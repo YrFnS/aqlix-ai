@@ -32,39 +32,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format-by-language.sh",
-            "timeout": 45
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command", 
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/cultural-validation.sh",
-            "timeout": 15
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format.sh",
+            "timeout": 30
+          },
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/load-context.sh",
-            "timeout": 10
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/lint.sh",
+            "timeout": 30
           }
         ]
       }
     ]
-  },
-  "env": {
-    "IRAQI_AI_PROJECT": "1",
-    "RTL_SUPPORT": "enabled", 
-    "CULTURAL_VALIDATION": "strict"
   }
 }
