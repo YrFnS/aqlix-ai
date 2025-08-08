@@ -2,9 +2,9 @@
 
 ## FEATURE:
 
-**Building a comprehensive user profile and preferences system** for the Iraqi AI Chat System that allows users to set their profession, job details, communication preferences, cultural settings, and AI response customization options, enabling personalized interactions that respect Islamic principles, Iraqi cultural norms, and professional contexts.
+**Building a comprehensive user profile and preferences system** with Supabase Auth integration, @21st-dev/magic UI components, for the Iraqi AI Chat System that allows users to set their profession, job details, communication preferences, cultural settings, and AI response customization options, enabling personalized interactions that respect Islamic principles, Iraqi cultural norms, and professional contexts with real-time synchronization.
 
-**Developers should be able to:** Create a user management system with profile creation, preference settings, professional context configuration, cultural customization options, privacy controls, authentication integration, and seamless PydanticAI agent personalization based on user-defined preferences and professional requirements.
+**Developers should be able to:** Create a user management system with Supabase Auth integration, @21st-dev/magic profile components, profile creation, preference settings, professional context configuration, cultural customization options, privacy controls with Islamic data handling, iraqi-cultural-validator coordination, real-time profile synchronization, and seamless PydanticAI agent personalization based on user-defined preferences and professional requirements.
 
 ## TOOLS:
 

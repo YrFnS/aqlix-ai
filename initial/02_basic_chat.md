@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**PydanticAI agent framework** with OpenAI GPT-4o integration, Iraqi cultural context awareness, Arabic dialect processing, and session management with privacy compliance.
+**PydanticAI agent framework** with OpenAI GPT-4o integration, Supabase real-time chat storage, Iraqi cultural context awareness, Arabic dialect processing, and MCP server coordination for specialized agent workflows.
 
-**Specific technologies:** PydanticAI for agent creation, OpenAI GPT-4o API for language model, Arabic NLP libraries for Iraqi dialect recognition, cultural validation services, and session-only storage with privacy compliance.
+**Specific technologies:** PydanticAI for agent creation, OpenAI GPT-4o API for language model, Supabase for chat history and real-time features, Arabic NLP libraries for Iraqi dialect recognition, Sequential MCP for complex reasoning, iraqi-cultural-validator agent coordination, and Sentry monitoring for agent performance.
 
 ---
 
@@ -24,7 +24,9 @@
 - **Iraqi Dialect Processing:** Recognition and appropriate use of Iraqi Arabic dialect vocabulary
 - **Professional Domain Expertise:** Knowledge of Iraqi legal, medical, educational, and engineering contexts
 - **Language Switching:** Seamless Arabic-English code-switching based on user preferences and context
-- **Privacy-First Architecture:** Session-only conversation memory with automatic 1-hour expiration
+- **Supabase Chat Storage:** Real-time chat synchronization with Supabase database and secure conversation history
+- **MCP Agent Coordination:** Integration with iraqi-cultural-validator, arabic-rtl-processor, and iraqi-professional-domain-expert agents
+- **Privacy-First Architecture:** Secure conversation storage with automatic expiration and Islamic data handling principles
 - **Islamic Values Integration:** Respectful integration of Islamic principles without compromising professional accuracy
 - **Regional Adaptation:** Understanding of Baghdad, Basra, Kurdistan, and other Iraqi regional differences
 - **Professional Ethics:** Clear boundaries for legal, medical, and professional advice
@@ -40,7 +42,11 @@
 - **Cultural Validation Tool:** Agent tool for validating responses against Iraqi cultural norms
 - **Dialect Recognition Tool:** Iraqi Arabic dialect detection and processing functionality
 - **Professional Context Tool:** Domain-specific knowledge integration for Iraqi professions
-- **Session Management:** Privacy-compliant conversation memory with automatic expiration
+- **Supabase Real-time Integration:** Live chat synchronization and conversation persistence with Islamic privacy compliance
+- **MCP Server Coordination:** Sequential MCP for complex reasoning, iraqi-cultural-validator for compliance checks
+- **Agent Collaboration:** Coordinate with specialized agents for cultural validation, dialect processing, and domain expertise
+- **Session Management:** Privacy-compliant conversation memory with Supabase storage and automatic expiration
+- **Sentry Monitoring:** Performance tracking, error detection, and conversation quality metrics
 - **Language Detection Tool:** Automatic Arabic-English language switching based on user input
 - **Islamic Values Integration:** Respectful religious context without compromising functionality
 - **Testing Patterns:** Comprehensive testing with TestModel and cultural validation scenarios

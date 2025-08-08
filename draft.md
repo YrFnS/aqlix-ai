@@ -1054,7 +1054,7 @@ or we do it later after the MVP?
 
 
 
-generate a commit message i want to read it before i commit
+generate a commit message i want to read it before i commit, check git status and git diff
 
 
 my team is just you and me no one else
@@ -1104,8 +1104,115 @@ so when well we install them? with which prp? after we generate the prps from th
 will they auto install the tools? or we need to add them in the initial?
 
 
+now do we need to do one final check for all we have or start generating the prps?
 
 
+i have a question
+do we need other tools or services?
+
+
+claude mcp add supabase -s local -e SUPABASE_ACCESS_TOKEN=sbp_401e6a73e0c345f4ec86907396028a43882d091b -- npx -y @supabase/mcp-server-supabase@latest
+
+
+
+isnt sentry has free tier? cant we use it?
+
+we have these mcp:
+serena
+Sentry
+@21st-dev/magic
+Puppeteer
+context7
+sequential-thinking
+playwright
+desktop-commander
+supabase
+
+
+
+AI & Processing:
+
+- Vector Database - Pinecone, Chroma for RAG?
+- Image Processing - For document OCR, image handling?
+- Backup Services - Data backup solutions?
+
+Security & Compliance:
+
+- SSL/TLS - Certificate management?
+- Authentication - OAuth, social login?
+- Rate Limiting - API protection?
+
+dont we need them?
+
+now we need to update CLAUDE.md and the agents that need to be updated to know about the new mcp servers and the changes we made
+check the agents and CLAUDE.md and update what we need to update
+
+
+now lets one thorough check for all we have
+
+
+now we need to check anthropic docs for best practices for all agents we need to check the offical docs then check one agent at a time
+
+
+we are in 2025 and also check https://docs.anthropic.com/en/docs/claude-code/sub-agents
+
+https://docs.anthropic.com/en/docs/claude-code/memory
+https://www.anthropic.com/engineering/claude-code-best-practices
+
+
+now you know the best practices for the agents from the official docs and the best practices from anthropic
+so know we need to update the agents right?
+
+check all 20 agents and update the one that need to be updated check one agent at a time using the best practices from anthropic for the AGENT
+
+check are all agents still has access or use the project-context? not all angents need it?
+
+now check CLAUDE.md is it aligned with the best practices from anthropic? for CLAUDE.md file, and update it if needed
+and does it has awareness of all 20 sub-agents, and mcp servers? and does it need to know about the project-context?
+
+anthropic best practices for CLAUDE.md file
+
+
+claude.md file is not project documentation its like claude code rules its get loaded in the memory of claude when we start a conversation with claude claude code session
+
+
+
+check the web for best practices for claude.md file, but first check the web to know what is claude.md file to make sure maybe im wrong
+
+deep search through the web
+
+
+
+i have a question
+now claude.md does it know about all 20 agents?
+
+
+and also the agents have the best practices for claude code sub-agents? check to make sure
+
+
+i have a question
+now when i make a slash command to execute a prp
+
+like this "/execute-prp initial/initial_name.md"
+
+will claude code use sub-agents, you know each sub-agent is has a role and focus on that rule
+
+
+it should be auto claude code which is the primary agent and it should use the sub-agents not the user, the user cant interact with the sub-agents but claude code which is the primary agent can interact with the sub-agents and give the tasks to the sub-agents as he see fit 
+e.g task x need to use sub-agent y etc 
+
+and this is how anthropic does it
+
+what do you think? check the web do a deep search through the web
+
+so do we need to do any changes?
+
+
+i have a question
+sub-agent iraqi-workflow-orchestrator.md, what will it do?
+
+the primary agent claude code talk to the sub-agents, but the sub-agents cant talk to each other, so how will orchestrator know what to do? will the primary agent claude code tell it to do the coordination? and then it tell the primary agent what to do and which sub-agents to use?
+and as we said the user can talk to the sub-agents directly all goes through claude code primary agent
 
 
 

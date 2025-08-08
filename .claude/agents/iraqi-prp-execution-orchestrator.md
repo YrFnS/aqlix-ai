@@ -6,6 +6,8 @@ context_sources:
   - project-context/agents/workflows/
 context_management: true
 proactive_triggers: ["PRP completion", "workflow planning", "dependency analysis", "system health", "next steps", "orchestration"]
+tools: Task, Read, Write, MultiEdit, Bash, Grep, Glob
+mcp_servers: ["sequential", "supabase", "sentry", "playwright"]
 model: sonnet
 ---
 

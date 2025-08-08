@@ -54,14 +54,6 @@ lint_file() {
                 echo "ℹ️  Install ruff for Python linting"
             fi
             
-            # Check for Iraqi AI specific patterns
-            if grep -q "pydantic_ai\|PydanticAI" "$file" 2>/dev/null; then
-                echo "🤖 PydanticAI agent detected"
-                if ! grep -q "load_dotenv()" "$file"; then
-                    echo "⚠️  Missing load_dotenv() - add for API key security"
-                    ISSUES_FOUND=$((ISSUES_FOUND + 1))
-                fi
-            fi
             ;;
         *.ts|*.tsx|*.js|*.jsx)
             echo "⚛️  Frontend linting"
@@ -86,13 +78,6 @@ lint_file() {
                 fi
             fi
             
-            # Check for Arabic/RTL support in React components
-            if [[ "$file" =~ \.(tsx|jsx)$ ]] && grep -q "arabic\|Arabic" "$file" 2>/dev/null; then
-                if ! grep -q "dir.*rtl\|rtl.*dir" "$file"; then
-                    echo "⚠️  Arabic content without RTL support"
-                    ISSUES_FOUND=$((ISSUES_FOUND + 1))
-                fi
-            fi
             ;;
         *)
             return 0

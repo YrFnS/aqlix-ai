@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Arabic TTS services** with Iraqi dialect support, voice synthesis libraries, and real-time audio processing for AI chat responses.
+**Arabic TTS services** with Iraqi dialect support, arabic-rtl-processor agent coordination, voice synthesis libraries, Sequential MCP for audio processing workflows, and real-time audio processing for AI chat responses with Sentry monitoring.
 
-**Specific technologies:** Web Speech API, Azure Cognitive Services Speech SDK, Google Cloud Text-to-Speech, Amazon Polly, or specialized Arabic TTS services with browser audio integration.
+**Specific technologies:** Web Speech API, Azure Cognitive Services Speech SDK, Google Cloud Text-to-Speech, Amazon Polly, specialized Arabic TTS services, arabic-rtl-processor for dialect preprocessing, Sequential MCP for audio workflow coordination, browser audio integration, and Sentry performance tracking.
 
 ---
 

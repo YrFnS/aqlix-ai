@@ -1,6 +1,6 @@
 ## TECHNOLOGY/FRAMEWORK:
 
-**Your technology:** Next.js 15+ with CSS-in-JS, Arabic typography, RTL layout system, and Iraqi dialect text processing for comprehensive Arabic language support
+**Your technology:** Next.js 15+ with @21st-dev/magic UI component generation, CSS-in-JS, Arabic typography, RTL layout system, arabic-rtl-processor agent coordination, and Iraqi dialect text processing for comprehensive Arabic language support
 
 ---
 
@@ -8,7 +8,7 @@
 
 **What specific use case should this template be optimized for?**
 
-**Your purpose:** Building a complete Arabic RTL text handling system for Iraqi AI Chat System that supports proper Arabic typography, Iraqi dialect recognition, bidirectional text rendering, and culturally appropriate text presentation across web and mobile platforms
+**Your purpose:** Building a complete Arabic RTL text handling system for Iraqi AI Chat System with @21st-dev/magic component generation, arabic-rtl-processor agent coordination, proper Arabic typography, Iraqi dialect recognition, bidirectional text rendering, and culturally appropriate text presentation across web and mobile platforms
 
 ---
 

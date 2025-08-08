@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**React voice UI components** with Arabic RTL support, Web Audio API integration, voice activity detection, and responsive design for voice-enabled chat interfaces.
+**React voice UI components** with @21st-dev/magic component generation, Arabic RTL support, iraqi-ui-designer agent coordination, Web Audio API integration, voice activity detection, and responsive design for voice-enabled chat interfaces with iraqi-accessibility-specialist validation.
 
-**Specific technologies:** React 19+, TypeScript, Web Audio API, MediaRecorder API, Arabic-aware audio visualization libraries, and responsive voice control components with RTL layout support.
+**Specific technologies:** @21st-dev/magic for voice UI generation, React 19+, TypeScript, Web Audio API, MediaRecorder API, iraqi-ui-designer for cultural design patterns, Arabic-aware audio visualization libraries, iraqi-accessibility-specialist for voice accessibility, responsive voice control components with RTL layout support, and Sentry user interaction tracking.
 
 ---
 

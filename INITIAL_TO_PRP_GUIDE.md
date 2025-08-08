@@ -4,7 +4,7 @@ This guide shows which command to use for each initial file when creating and ex
 
 ## 🤖 PydanticAI Features (Use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`)
 
-**Total: 11 PydanticAI features**
+**Total: 14 PydanticAI features**
 
 ### Phase 1: Foundation & Setup
 - **01_monorepo_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
@@ -43,6 +43,16 @@ This guide shows which command to use for each initial file when creating and ex
 - **20_user_personalization_learning.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
   - *Reason: Core AI learning system with PydanticAI agents for user behavior analysis and response personalization*
 
+### Phase 5: Production Infrastructure & Monitoring
+- **22_monitoring_sentry.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: PydanticAI agent integration with Sentry for intelligent error analysis and monitoring*
+
+- **23_authentication_system.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: PydanticAI agents for user authentication workflows and cultural compliance validation*
+
+- **24_vector_database_rag.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Advanced PydanticAI RAG system with pgvector for Arabic semantic search and knowledge retrieval*
+
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
 **Total: 10 general features**
@@ -80,7 +90,7 @@ This guide shows which command to use for each initial file when creating and ex
 
 ### Phase 5: User Management
 - **21_user_profile_management.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: User registration, authentication, profile settings, and preference management system*
+  - *Reason: Frontend user profile management, settings UI, and preference components*
 
 ## 📋 Usage Examples
 
@@ -143,6 +153,9 @@ All generated PRPs will be saved in the `PRPs/` directory:
 - `PRPs/16_professional_domains.md`
 - `PRPs/19_persistent_chat_history.md`
 - `PRPs/20_user_personalization_learning.md`
+- `PRPs/22_monitoring_sentry.md`
+- `PRPs/23_authentication_system.md`
+- `PRPs/24_vector_database_rag.md`
 
 **General PRPs:**
 - `PRPs/03_rtl_arabic.md`
@@ -158,11 +171,11 @@ All generated PRPs will be saved in the `PRPs/` directory:
 
 ## ✅ Quick Reference Summary
 
-**All 21 Initial Files Complete:**
-- **11 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+**All 24 Initial Files Complete:**
+- **14 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
 - **10 General features** → use `/generate-prp` + `/execute-prp`
 
-## 🎯 Commands for PRPs 19, 20, 21:
+## 🎯 Commands for PRPs 19-24:
 
 ```bash
 # PRP 19: Persistent Chat History (AI-powered search & intelligence)
@@ -171,8 +184,17 @@ All generated PRPs will be saved in the `PRPs/` directory:
 # PRP 20: User Personalization Learning (AI learning system)  
 /generate-pydantic-ai-prp initial/20_user_personalization_learning.md
 
-# PRP 21: User Profile Management (Authentication & user settings)
+# PRP 21: User Profile Management (Frontend user settings)
 /generate-prp initial/21_user_profile_management.md
+
+# PRP 22: Monitoring with Sentry (AI-powered error analysis)
+/generate-pydantic-ai-prp initial/22_monitoring_sentry.md
+
+# PRP 23: Authentication System (AI-enhanced user flows)
+/generate-pydantic-ai-prp initial/23_authentication_system.md
+
+# PRP 24: Vector Database & RAG (Advanced AI search)
+/generate-pydantic-ai-prp initial/24_vector_database_rag.md
 ```
 
 Ready for PRP generation and testing!

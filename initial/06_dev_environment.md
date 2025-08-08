@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Production deployment environment** with optimized runtime configurations, environment variables, and Iraqi-specific deployment settings for scalable chat system operation.
+**Production deployment environment** with Supabase configuration, Sentry monitoring setup, optimized runtime configurations, environment variables, MCP server integration, and Iraqi-specific deployment settings for scalable chat system operation.
 
-**Specific technologies:** Python 3.11+ production runtime, Bun production build optimization, environment variable management, deployment configuration, logging setup, and production monitoring for Iraqi user traffic patterns.
+**Specific technologies:** Python 3.11+ production runtime, Bun production build optimization, Supabase client configuration, Sentry SDK integration, MCP server setup (Sequential, Context7, Playwright, @21st-dev/magic), environment variable management, deployment configuration, and production monitoring for Iraqi user traffic patterns.
 
 ---
 
@@ -25,6 +25,9 @@
 - **Arabic Font Configuration:** Production font serving and RTL text rendering optimization
 - **Cultural Settings:** Production configuration for Iraqi cultural validation and Islamic compliance
 - **Performance Configuration:** Production caching, database connection pools, and response optimization
+- **Sentry Integration:** Comprehensive error tracking, performance monitoring, and production analytics
+- **Supabase Configuration:** Database connection, authentication setup, and real-time subscription configuration
+- **MCP Server Setup:** Sequential, Context7, Playwright, and @21st-dev/magic server configuration for agent coordination
 - **Logging Configuration:** Structured logging for production monitoring and debugging
 - **Security Configuration:** Production security headers, CORS, and rate limiting settings
 - **Production Health Checks:** System monitoring and health check endpoints for deployment

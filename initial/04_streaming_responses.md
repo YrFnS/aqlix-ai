@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Real-time streaming infrastructure** with FastAPI Server-Sent Events (SSE), PydanticAI streaming integration, Arabic RTL text processing, and robust connection management for Iraqi AI chat responses.
+**Real-time streaming infrastructure** with FastAPI Server-Sent Events (SSE), PydanticAI streaming integration, Supabase real-time synchronization, Arabic RTL text processing, MCP agent coordination, and robust connection management for Iraqi AI chat responses with Sentry monitoring.
 
-**Specific technologies:** FastAPI with SSE support, PydanticAI streaming responses, WebSocket fallback, Arabic text rendering optimization, Redis for stream state management, and network quality monitoring.
+**Specific technologies:** FastAPI with SSE support, PydanticAI streaming responses, Supabase real-time subscriptions, WebSocket fallback, Arabic text rendering optimization, Sequential MCP for stream processing, iraqi-cultural-validator for real-time filtering, and network quality monitoring with Sentry performance tracking.
 
 ---
 

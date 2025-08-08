@@ -2,9 +2,9 @@
 
 ## FEATURE:
 
-**Building a basic user learning system** for the Iraqi AI Chat System that adapts response patterns to match user communication preferences and learns basic cultural settings while maintaining Islamic privacy principles.
+**Building an advanced user learning system** with Supabase database storage, PydanticAI agent coordination, for the Iraqi AI Chat System that adapts response patterns to match user communication preferences, learns cultural settings through iraqi-cultural-validator insights, and maintains Islamic privacy principles with real-time personalization updates.
 
-**Developers should be able to:** Create a simple learning system that tracks user interaction patterns, stores basic user preferences, adapts response formality levels, and maintains user-specific settings for cultural appropriateness and communication style.
+**Developers should be able to:** Create an intelligent learning system with Supabase real-time synchronization, Sequential MCP for pattern analysis, that tracks user interaction patterns, stores comprehensive user preferences, coordinates with iraqi-cultural-validator for cultural adaptation, adapts response formality levels through PydanticAI agent learning, maintains user-specific settings for cultural appropriateness, and provides real-time communication style optimization with Sentry analytics.
 
 ## TOOLS:
 
@@ -12,7 +12,9 @@
 
 **Essential basic personalization capabilities for Iraqi users:**
 
-- **User Preference Storage:** Simple database service for storing user communication preferences and cultural settings
+- **Supabase User Preference Storage:** Real-time database service for storing user communication preferences and cultural settings with instant synchronization
+- **PydanticAI Learning Coordination:** Integration with AI agents for personalized response adaptation and cultural learning
+- **MCP Agent Learning Integration:** Coordinate with iraqi-cultural-validator and Sequential MCP for intelligent preference analysis
 - **Basic Learning Tracker:** Service for tracking user interaction patterns and response preferences
 - **Cultural Setting Adapter:** Simple system that adapts responses based on user's cultural formality preferences
 - **Communication Style Learner:** Basic tool that learns user preferences for response length and formality level

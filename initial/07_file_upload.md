@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Secure file upload infrastructure** with React drag-and-drop components, FastAPI backend processing, Arabic content extraction, temporary storage, and privacy-compliant automatic deletion.
+**Secure file upload infrastructure** with @21st-dev/magic UI components, Supabase Storage integration, React drag-and-drop components, FastAPI backend processing, Arabic content extraction, iraqi-cultural-validator agent coordination, and privacy-compliant automatic deletion with Sentry monitoring.
 
-**Specific technologies:** React Dropzone for frontend uploads, FastAPI with file handling, Arabic text extraction libraries, temporary file storage, virus scanning integration, and automated cleanup processes.
+**Specific technologies:** @21st-dev/magic for upload UI components, Supabase Storage for secure file management, React Dropzone for frontend uploads, FastAPI with file handling, Arabic text extraction libraries, iraqi-cultural-validator for content screening, virus scanning integration, automated cleanup processes, and Sentry performance tracking.
 
 ---
 

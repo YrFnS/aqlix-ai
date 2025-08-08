@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Real-time voice streaming infrastructure** with WebSocket connections, Arabic speech processing, bidirectional audio communication, low-latency streaming, and network optimization for voice chat interactions in the Iraqi AI Chat System.
+**Real-time voice streaming infrastructure** with Supabase real-time subscriptions, WebSocket connections, Arabic speech processing, Sequential MCP coordination, bidirectional audio communication, low-latency streaming, and network optimization for voice chat interactions in the Iraqi AI Chat System with Sentry monitoring.
 
-**Specific technologies:** WebSocket API, real-time audio streaming protocols, Arabic speech processing engines, audio buffering and compression, network latency optimization, and cultural context-aware voice processing.
+**Specific technologies:** Supabase real-time for voice coordination, WebSocket API, real-time audio streaming protocols, Arabic speech processing engines, Sequential MCP for voice workflow management, iraqi-cultural-validator for voice content screening, audio buffering and compression, network latency optimization, cultural context-aware voice processing, and Sentry performance monitoring.
 
 ---
 

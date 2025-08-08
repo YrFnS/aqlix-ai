@@ -4,7 +4,7 @@
 
 **Monorepo architecture** with Next.js 15+ web application, Python FastAPI backend with PydanticAI agents, and shared TypeScript packages for future React Native mobile development.
 
-**Specific technologies:** Bun workspaces for workspace management (30x faster than npm), Next.js with Arabic RTL support, FastAPI with PydanticAI and SQLAlchemy 2.0 integration, Drizzle ORM for TypeScript database operations, custom Iraqi-enhanced UI components, and Arabic font optimization.
+**Specific technologies:** Bun workspaces for workspace management (30x faster than npm), Next.js with Arabic RTL support, FastAPI with PydanticAI and Supabase integration, Supabase client for unified database operations, MCP server integration (Sequential, Context7, Playwright, @21st-dev/magic), custom Iraqi-enhanced UI components, Sentry monitoring, and Arabic font optimization.
 
 ---
 
@@ -22,8 +22,8 @@
 
 - **Workspace Configuration:** Bun workspaces setup with apps/ and packages/ organization (30x faster installs)
 - **Next.js Web App:** Frontend application with Arabic RTL support and TypeScript integration
-- **FastAPI Backend:** Python backend with PydanticAI agents, SQLAlchemy 2.0 async ORM, and environment configuration
-- **Shared Packages:** Cross-platform TypeScript packages for types, utilities, Drizzle ORM schemas, and business logic
+- **FastAPI Backend:** Python backend with PydanticAI agents, Supabase integration, MCP server coordination, and Sentry monitoring
+- **Shared Packages:** Cross-platform TypeScript packages for types, utilities, Supabase client, MCP server types, and business logic
 - **Development Scripts:** Concurrent development with Bun runtime, hot reloading, and proper port management
 - **Build Optimization:** Intelligent caching and parallel builds across all applications
 - **Code Quality:** Unified ESLint, Prettier, Ruff (Python), and TypeScript configuration across projects
@@ -38,8 +38,9 @@
 
 - **Complete Workspace Setup:** Bun workspaces configuration with proper dependencies and scripts
 - **Next.js App Configuration:** Web application with Arabic RTL support and shared packages
-- **FastAPI Backend Setup:** Python application with PydanticAI agents, SQLAlchemy 2.0 async patterns, and proper structure
-- **Shared Package Examples:** TypeScript packages for types, Drizzle ORM schemas, custom Iraqi UI components, and business logic
+- **FastAPI Backend Setup:** Python application with PydanticAI agents, Supabase integration, MCP server coordination, and Sentry monitoring
+- **Shared Package Examples:** TypeScript packages for types, Supabase client, MCP server integration, custom Iraqi UI components, and business logic
+- **MCP Server Setup:** Sequential, Context7, Playwright, and @21st-dev/magic server configuration and coordination
 - **Development Workflow:** Scripts for concurrent development and testing across all apps
 - **Build Configuration:** Optimized build pipeline with caching and dependency management
 - **Code Quality Setup:** ESLint, Prettier, Ruff (Python), and TypeScript configuration for all projects
@@ -56,8 +57,8 @@
 - **Next.js Documentation:** https://nextjs.org/docs - React framework with Arabic i18n support
 - **FastAPI Documentation:** https://fastapi.tiangolo.com/ - Python API framework
 - **PydanticAI Documentation:** https://ai.pydantic.dev/ - AI agent framework integration
-- **SQLAlchemy 2.0:** https://docs.sqlalchemy.org/en/20/ - Modern async Python ORM
-- **Drizzle ORM:** https://orm.drizzle.team/ - TypeScript-first ORM (100x faster than Prisma)
+- **Supabase Documentation:** https://supabase.com/docs - Backend-as-a-Service with real-time features
+- **Sentry Documentation:** https://docs.sentry.io/ - Error tracking and performance monitoring
 - **TypeScript Monorepo:** https://www.typescriptlang.org/docs/handbook/project-references.html
 - **Arabic Font Loading:** Web font optimization strategies for Arabic typography
 - **Cross-Platform Development:** React Native and Next.js shared component patterns

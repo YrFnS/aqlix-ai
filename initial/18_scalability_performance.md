@@ -2,15 +2,15 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Scalability infrastructure** for handling concurrent users, API rate limiting, and automatic scaling for the Iraqi AI Chat System with FastAPI backend optimization.
+**Scalability infrastructure** with Supabase Edge Functions, Sentry performance monitoring, handling concurrent users, API rate limiting, MCP server coordination, and automatic scaling for the Iraqi AI Chat System with FastAPI backend optimization.
 
-**Specific technologies:** FastAPI middleware for rate limiting, Redis caching for responses, automatic scaling configuration, load balancing setup, and concurrent user management for Iraqi-specific usage patterns.
+**Specific technologies:** Supabase Edge Functions for scaling, Sentry performance monitoring, FastAPI middleware for rate limiting, Supabase caching for responses, Sequential MCP for load balancing, automatic scaling configuration, and concurrent user management for Iraqi-specific usage patterns.
 
 ---
 
 ## TEMPLATE PURPOSE:
 
-**Implementing scalability infrastructure** for the Iraqi AI Chat System that handles concurrent users, manages API rate limiting, and provides automatic scaling capabilities for production deployment.
+**Implementing scalability infrastructure** with Supabase scalability features and Sentry monitoring for the Iraqi AI Chat System that handles concurrent users, manages API rate limiting, coordinates MCP server load balancing, and provides automatic scaling capabilities for production deployment.
 
 **Developers should be able to:** Configure rate limiting middleware, implement response caching, set up automatic scaling triggers, configure load balancing, and optimize concurrent request handling for Iraqi user patterns.
 

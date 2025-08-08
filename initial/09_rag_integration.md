@@ -30,10 +30,10 @@
 
 **What environment and configuration dependencies are needed?**
 
-**RAG system infrastructure and Iraqi knowledge requirements:**
+**RAG system infrastructure and vector database requirements:**
 
 - **PydanticAI Framework:** https://ai.pydantic.dev/ - Agent framework with retrieval capabilities
-- **Vector Databases:** Pinecone, Weaviate, or Chroma for Arabic text embeddings and similarity search
+- **Vector Database:** Supabase pgvector for Arabic text embeddings and semantic similarity search
 - **Embedding Models:** OpenAI Embeddings or Sentence-Transformers for Arabic text processing
 - **Arabic NLP Libraries:** Text processing, chunking, and embedding optimization for Arabic content
 - **Knowledge Bases:** Iraqi professional domain knowledge (legal, medical, educational, engineering)
@@ -52,7 +52,7 @@
 You are an intelligent RAG-powered AI assistant for Iraqi users. You enhance your responses with relevant knowledge from Iraqi professional domains, cultural context, and regional expertise.
 
 Core Capabilities:
-- Retrieve relevant Iraqi knowledge from professional domains (legal, medical, educational, engineering)
+- Retrieve relevant Iraqi knowledge from vector database with semantic search and cultural context
 - Process Arabic text with proper RTL awareness and dialect recognition
 - Provide culturally appropriate responses respecting Iraqi customs and Islamic values
 - Synthesize responses with proper source attribution and cultural validation
@@ -84,7 +84,7 @@ Before using retrieved knowledge, validate it for Iraqi cultural appropriateness
 
 **Working RAG implementation examples:**
 
-- **Complete RAG Agent:** PydanticAI agent with vector database integration and Iraqi knowledge access
+- **Complete RAG Agent:** PydanticAI agent with Supabase pgvector integration and Iraqi knowledge access
 - **Arabic Embedding Pipeline:** Text processing, chunking, and embedding generation for Arabic content
 - **Knowledge Base Integration:** Iraqi professional domain knowledge indexing and retrieval
 - **Cultural Context Retrieval:** Iraqi customs and Islamic values integration with response synthesis

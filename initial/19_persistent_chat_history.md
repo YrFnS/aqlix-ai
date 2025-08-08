@@ -2,9 +2,9 @@
 
 ## FEATURE:
 
-**Building a chat history storage system** for the Iraqi AI Chat System that provides persistent storage of chat conversations with privacy-compliant data handling and Islamic data principles.
+**Building a comprehensive chat history system** with Supabase storage, pgvector semantic search, Iraqi cultural context preservation, MCP agent coordination for conversation analysis, and privacy-compliant data handling with Islamic data principles.
 
-**Developers should be able to:** Create a database storage system for chat conversations, implement privacy-compliant data retention, store conversation messages with cultural context, and provide basic conversation retrieval for Iraqi users.
+**Developers should be able to:** Create a Supabase-powered storage system with real-time synchronization, implement pgvector semantic search for Arabic conversations, coordinate with iraqi-context-manager and Sequential MCP for intelligent conversation analysis, store conversation messages with cultural context, implement privacy-compliant data retention with Islamic data handling, and provide advanced conversation search and retrieval with cultural awareness.
 
 ## TOOLS:
 

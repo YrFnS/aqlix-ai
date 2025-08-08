@@ -106,7 +106,7 @@ const IRAQI_ERROR_MESSAGES = {
 
 ## 2025 Tech Stack Integration
 
-### Bun + Drizzle + SQLAlchemy Stack
+### Bun + Supabase + MCP Integration Stack
 ```bash
 # Bun commands (30x faster than npm)
 bun install --legacy-peer-deps  # Handle React 19 compatibility
@@ -114,43 +114,76 @@ bun run dev    # Start development with Bun runtime
 bun test       # Built-in test runner
 ```
 
-### Drizzle ORM Pattern (Frontend)
+### Supabase Integration Pattern (Frontend & Backend)
 ```typescript
-// 100x faster than Prisma, SQL-first approach
-import { pgTable, serial, text, timestamp, jsonb } from 'drizzle-orm/pg-core';
+// Modern BaaS approach with real-time capabilities
+import { createClient } from '@supabase/supabase-js'
+import { Database } from './types/supabase'
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  profession: text('profession'), // Iraqi-specific
-  preferences: jsonb('preferences'), // RTL, cultural settings
-  createdAt: timestamp('created_at').defaultNow(),
-});
+export const supabase = createClient<Database>(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+// Iraqi-specific table operations
+const { data: users } = await supabase
+  .from('users')
+  .select('profession, preferences, created_at')
+  .eq('cultural_context', 'iraqi')
 ```
 
-### SQLAlchemy 2.0 Async Pattern (Backend)
+### Sentry Monitoring Integration
 ```python
-# Production-ready async patterns
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base
+# Production-ready monitoring patterns
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from supabase import create_client, Client
 
-class IraqiUserModel(Base):
-    __tablename__ = "users"
-    profession = Column(String)  # Iraqi professional domain
-    preferences = Column(JSON)   # Cultural settings
+# Initialize Sentry monitoring
+sentry_sdk.init(
+    dsn=settings.sentry_dsn,
+    integrations=[FastApiIntegration()],
+    environment="production"
+)
+
+# Supabase client with monitoring
+supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
 ```
 
-### Custom Iraqi Components
+### Custom Iraqi Components with MCP Integration
 ```typescript
-// Use 44 custom components from examples/dyad-extracted/
+// Use 44 custom components from examples/dyad-extracted/ with @21st-dev/magic MCP
 import { Button } from '@/components/ui/button';
 
 <Button cultural="iraqi" dir="rtl" className="font-arabic">
   إرسال الرسالة
 </Button>
+
+// MCP-generated components using @21st-dev/magic
+// Sequential MCP for complex component logic
+// Context7 MCP for component documentation patterns
+```
+
+## MCP Server Integration Patterns
+
+### Supabase MCP Integration
+```python
+# Use Supabase MCP for database operations
+# Automatic schema generation and type safety
+# Real-time subscriptions for Iraqi chat features
+```
+
+### Sentry MCP Monitoring
+```python
+# Automated error tracking with Sentry MCP
+# Performance monitoring for Iraqi user patterns
+# Arabic-specific error categorization
 ```
 
 ## Recent Technical Decisions
-- Date: 2025-08-05 - Updated entire tech stack to Bun + Drizzle + SQLAlchemy 2.0
-- Decision: Replace shadcn/ui with 44 custom Iraqi-enhanced components
-- Performance: 30x faster installs (Bun), 100x faster queries (Drizzle)
-- Decision: Use project-context structure for agent knowledge sharing
+- Date: 2025-01-08 - Migrated from SQLAlchemy/Drizzle to Supabase BaaS integration
+- Decision: Integrate MCP servers (Sentry, Supabase, @21st-dev/magic, Sequential, Context7, Playwright)
+- Architecture: Replace ORM complexity with Supabase real-time database and authentication
+- Monitoring: Added Sentry integration for production error tracking and performance monitoring
+- Performance: 30x faster installs (Bun), simplified database operations (Supabase)
+- Decision: Use project-context structure for agent knowledge sharing with MCP coordination

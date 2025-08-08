@@ -2,9 +2,9 @@
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Voice recording and speech recognition** with browser-based audio capture, Arabic speech recognition, Iraqi dialect support, real-time audio processing, and cultural context integration for the Iraqi AI Chat System.
+**Voice recording and speech recognition** with @21st-dev/magic UI components, Supabase Storage for audio files, browser-based audio capture, Arabic speech recognition, Iraqi dialect support, arabic-rtl-processor agent coordination, real-time audio processing, and cultural context integration for the Iraqi AI Chat System with Sentry monitoring.
 
-**Specific technologies:** WebRTC MediaRecorder API, Web Audio API, Arabic speech recognition services, browser microphone access, audio format conversion, noise reduction libraries, and privacy-compliant temporary storage.
+**Specific technologies:** @21st-dev/magic for voice UI components, Supabase Storage for secure audio handling, WebRTC MediaRecorder API, Web Audio API, Arabic speech recognition services, Sequential MCP for voice processing workflows, iraqi-cultural-validator for content screening, browser microphone access, audio format conversion, noise reduction libraries, privacy-compliant temporary storage, and Sentry performance tracking.
 
 ---
 

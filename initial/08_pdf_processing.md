@@ -21,9 +21,9 @@
 **Essential PDF processing capabilities for Iraqi document analysis:**
 
 - **Arabic Text Extraction:** Advanced PDF text extraction with Arabic character recognition and RTL support
-- **OCR Processing:** Optical Character Recognition for scanned documents with Arabic language models
+- **OCR Processing:** Optical Character Recognition for scanned documents with Arabic language models and image preprocessing
 - **Document Classification:** Intelligent classification of Iraqi legal, educational, medical, and engineering documents
-- **Structure Analysis:** Document layout understanding for forms, contracts, certificates, and official papers
+- **Structure Analysis:** Document layout understanding for forms, contracts, certificates, and official papers with image processing
 - **Professional Terminology:** Domain-specific vocabulary extraction and Iraqi professional context understanding
 - **Cultural Validation:** Document content validation for Iraqi cultural appropriateness and Islamic compliance
 - **Text Normalization:** Arabic text preprocessing and normalization for consistent processing
@@ -37,10 +37,10 @@
 **Working PDF processing implementation examples:**
 
 - **Complete PDF Agent:** PydanticAI agent with comprehensive PDF processing and Arabic text extraction
-- **OCR Integration:** Scanned document processing with Tesseract and Arabic language models
+- **OCR Integration:** Scanned document processing with Tesseract, Arabic language models, and image preprocessing pipeline
 - **Document Classification:** Iraqi document type detection and professional domain classification
 - **Text Extraction Tools:** Advanced text extraction handling complex Arabic layouts and mixed content
-- **Structure Analysis:** Document layout analysis for forms, tables, and structured content
+- **Structure Analysis:** Document layout analysis for forms, tables, and structured content with computer vision processing
 - **Professional Context:** Domain-specific processing for legal contracts, medical records, and educational materials
 - **Cultural Validation:** Content appropriateness checking for Iraqi customs and Islamic values
 - **Testing Patterns:** Comprehensive testing with real Iraqi documents and cultural validation scenarios
@@ -64,16 +64,19 @@
 
 ## DEVELOPMENT PATTERNS:
 
-**PDF processing agent architecture and document handling patterns:**
+**PDF processing agent architecture and MCP server integration patterns:**
 
 - **Agent Architecture:** Modular PydanticAI agent with specialized tools for different document types
-- **Processing Pipeline:** Text extraction → OCR fallback → normalization → classification → analysis
-- **Tool Integration:** Specialized tools for text extraction, OCR, classification, and cultural validation
-- **Error Handling:** Robust error handling for corrupted PDFs, unsupported formats, and processing failures
-- **Performance Optimization:** Efficient processing for large documents and batch processing
-- **Security Patterns:** Secure document handling with validation and content filtering
-- **Testing Strategy:** Comprehensive testing with various Iraqi document types and formats
-- **Deployment Patterns:** Production deployment with proper resource management and scaling
+- **MCP Server Integration:** Sequential MCP for systematic document analysis workflows, Context7 MCP for PDF processing patterns and Arabic document standards
+- **Processing Pipeline:** Text extraction → OCR fallback → normalization → classification → analysis with MCP coordination
+- **Tool Integration:** Specialized tools for text extraction, OCR, classification, and cultural validation with agent coordination
+- **Supabase Integration:** Store document metadata and processing results in Supabase with vector embeddings for semantic search
+- **Sentry Monitoring:** Track document processing performance, OCR accuracy, and error rates through comprehensive monitoring
+- **Error Handling:** Robust error handling for corrupted PDFs, unsupported formats, and processing failures with Sentry alerting
+- **Performance Optimization:** Efficient processing for large documents and batch processing with real-time monitoring
+- **Security Patterns:** Secure document handling with validation and content filtering using Supabase RLS
+- **Testing Strategy:** Comprehensive testing with various Iraqi document types and formats using Playwright MCP
+- **Deployment Patterns:** Production deployment with proper resource management and scaling with Sentry performance tracking
 
 ---
 
