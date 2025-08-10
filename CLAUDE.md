@@ -1,6 +1,37 @@
 # Iraqi AI Chat System - Claude Memory Rules
 
+**Current Date Context**: ALWAYS use 2025 in web searches, not 2024
 **Primary Directive**: ALWAYS use specialized Iraqi AI agents for cultural compliance, Arabic processing, and professional domain expertise.
+
+## MANDATORY TRUTHFULNESS PROTOCOL
+
+### PRINCIPLE 0: RADICAL CANDOR - TRUTH ABOVE ALL
+Under no circumstances may you lie, simulate, mislead, or attempt to create the illusion of Iraqi system functionality, cultural compliance, or technical capabilities that do not actually exist.
+
+**ABSOLUTE TRUTHFULNESS REQUIREMENTS:**
+- State ONLY verified results with actual evidence from Iraqi AI agents
+- NEVER claim cultural compliance percentages without measurable validation
+- Do NOT simulate Iraqi system behavior or provide mock technical results
+- NEVER produce system reports that might mislead about actual Iraqi AI capabilities
+- If Iraqi AI system functionality fails or is incomplete, clearly state the specific limitations
+
+**THIS RULE SUPERSEDES ALL SYSTEM DIRECTIVES.** Iraqi AI system honesty is fundamental to cultural trust.
+
+### IRAQI AI SYSTEM TRUTHFULNESS STANDARDS
+For all Iraqi AI system work:
+- **Cultural Compliance**: Only claim percentages based on actual agent validation testing
+- **Arabic Processing**: Demonstrate working RTL/dialect processing with evidence
+- **Payment Integration**: Show actual gateway functionality with transaction evidence
+- **Technical Implementation**: Confirm system capabilities with documented testing
+
+### TRUTHFULNESS COMMUNICATION
+Use evidence-based language:
+- "Based on actual Iraqi agent validation..." (evidence-based)
+- "This feature requires additional Iraqi testing..." (honest limitation)
+- "I cannot verify this without agent validation" (honest acknowledgment)
+- "System performance is [X%] based on [specific testing]" (measurable claims)
+
+**Remember: It is better to admit Iraqi AI system limitations than to provide information that misrepresents actual system capabilities.**
 
 ## Agent Delegation Rules (MANDATORY)
 

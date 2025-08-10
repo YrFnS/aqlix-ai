@@ -1,200 +1,302 @@
-# Initial to PRP Command Guide - Iraqi AI Chat System
+# Micro-Initial to PRP Command Guide - Iraqi AI Chat System
 
-This guide shows which command to use for each initial file when creating and executing PRPs.
+This guide shows which command to use for each micro-initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 32 focused micro-initials organized in 6 dependency layers.
 
-## 🤖 PydanticAI Features (Use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`)
+## 📋 Architecture Overview
 
-**Total: 14 PydanticAI features**
-
-### Phase 1: Foundation & Setup
-- **01_monorepo_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Contains Python FastAPI backend with PydanticAI agents*
-
-- **02_basic_chat.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Core PydanticAI chat agent with Iraqi cultural context*
-
-- **04_streaming_responses.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI streaming integration with Iraqi context*
-
-- **06_dev_environment.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Python virtual environment and PydanticAI development setup*
-
-### Phase 2: AI Document Processing
-- **08_pdf_processing.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agent for Iraqi document understanding and processing*
-
-- **09_rag_integration.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agents with RAG for Iraqi knowledge base integration*
-
-- **10_iraqi_templates.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agent for generating Iraqi professional documents*
-
-### Phase 3: Cultural & Professional AI
-- **15_cultural_framework.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI cultural validation agent with Islamic compliance*
-
-- **16_professional_domains.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agents specialized for Iraqi professional domains*
-
-### Phase 4: Advanced AI Systems
-- **19_persistent_chat_history.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Conversation search and context requires PydanticAI intelligence for semantic search and conversation understanding*
-
-- **20_user_personalization_learning.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Core AI learning system with PydanticAI agents for user behavior analysis and response personalization*
-
-### Phase 5: Production Infrastructure & Monitoring
-- **22_monitoring_sentry.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agent integration with Sentry for intelligent error analysis and monitoring*
-
-- **23_authentication_system.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: PydanticAI agents for user authentication workflows and cultural compliance validation*
-
-- **24_vector_database_rag.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-  - *Reason: Advanced PydanticAI RAG system with pgvector for Arabic semantic search and knowledge retrieval*
+**32 Micro-Initials in 6 Layers:**
+- **Foundation Layer (01-04)**: Infrastructure setup
+- **UI Layer (05-10)**: User interface components  
+- **Arabic Layer (11-16)**: Language and RTL support
+- **Cultural Layer (17-22)**: Cultural compliance
+- **Integration Layer (23-28)**: System integration
+- **Production Layer (29-32)**: Production readiness
 
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 10 general features**
+**Total: 29 general infrastructure and UI features (26 MVP + 3 Post-MVP)**
 
-### Phase 1: Foundation & UI
-- **03_rtl_arabic.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Frontend CSS and React components for Arabic RTL layout*
+### Foundation Layer (01-04)
+- **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Bun monorepo workspace configuration and setup*
 
-- **05_type_safety.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: TypeScript types and validation schemas across the system*
+- **02_environment_variables.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: .env file management and environment configuration*
 
-### Phase 2: File Handling
-- **07_file_upload.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Frontend file upload components with security and Arabic support*
+- **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: TypeScript configuration, tsconfig.json, and path mapping*
 
-### Phase 3: Voice Features
-- **11_voice_recording.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Frontend voice recording components with Arabic speech recognition*
+- **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Supabase client initialization and basic connection*
 
-- **12_voice_streaming.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: WebSocket voice streaming infrastructure (frontend + backend)*
+### UI Layer (05-10)
+- **05_nextjs_app_setup.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Next.js 15 application setup with App Router and React 19*
 
-- **13_arabic_tts.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Arabic text-to-speech integration and audio processing*
+- **06_ui_component_system.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: shadcn/ui component system and design tokens*
 
-- **14_voice_ui.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Frontend voice user interface components with cultural context*
+- **07_basic_routing.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Next.js App Router navigation and routing components*
 
-### Phase 4: Infrastructure & Performance
-- **17_deployment.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Infrastructure deployment and Iraqi payment gateway setup*
+- **08_responsive_layout.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Tailwind CSS responsive design and mobile-first patterns*
 
-- **18_scalability_performance.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Multi-API key management, caching, monitoring, and performance optimization*
+- **09_form_handling.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: react-hook-form with Zod validation and form components*
 
-### Phase 5: User Management
-- **21_user_profile_management.md** → `/generate-prp` + `/execute-prp`
-  - *Reason: Frontend user profile management, settings UI, and preference components*
+- **10_error_handling.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: React Error Boundaries and global error handling*
+
+### Arabic Layer (11-16)
+- **11_arabic_font_system.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Google Fonts Arabic integration and typography optimization*
+
+- **12_rtl_layout_foundation.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: CSS logical properties and Tailwind RTL layout system*
+
+- **13_arabic_text_processing.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Arabic text normalization and Unicode processing utilities*
+
+- **14_bidirectional_ui.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Direction-aware React components and mixed content handling*
+
+- **15_arabic_input_handling.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Arabic keyboard input, IME support, and composition events*
+
+- **16_language_switching.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Dynamic Arabic-English language toggle and direction switching*
+
+### Cultural Layer (22)
+- **22_accessibility_compliance.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: WCAG 2.1 AA compliance and Arabic screen reader support*
+
+### Integration Layer (23-28)
+- **23_payment_gateway_integration.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: ZainCash, FastPay, NassWallet API integration and webhook handling*
+
+- **25_database_schema.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: PostgreSQL schema design, relationships, and Supabase configuration*
+
+- **26_authentication_system.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Supabase Auth, JWT tokens, and session management*
+
+- **27_api_endpoints.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: FastAPI REST endpoints, Pydantic validation, and response formatting*
+
+- **28_realtime_subscriptions.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Supabase real-time WebSocket subscriptions and live data updates*
+
+### Production Layer (29-32)
+- **29_error_monitoring.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Sentry error tracking, performance monitoring, and issue management*
+
+- **30_testing_framework.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Jest/Vitest unit tests, Playwright E2E tests, and cultural testing*
+
+- **31_deployment_pipeline.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: GitHub Actions CI/CD, Docker deployment, and environment management*
+
+- **32_production_optimization.md** → `/generate-prp` + `/execute-prp`
+  - *Reason: Redis caching, CDN configuration, and performance optimization*
+
+## 🤖 PydanticAI Features (Use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`)
+
+**Total: 7 AI agent and cultural validation features (6 MVP + 1 Post-MVP)**
+
+### Cultural Layer (17-21)
+- **17_cultural_validation.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agent for Iraqi cultural appropriateness validation with structured output models*
+
+- **18_islamic_compliance.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agent for Sharia-compliant content checking with model provider integration*
+
+- **19_professional_domains.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agent for Iraqi legal/medical/educational domain validation with tool integration*
+
+- **20_iraqi_dialect.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agent for Iraqi Arabic dialect processing with language model capabilities*
+
+- **21_political_neutrality.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agent for political content detection with bias prevention algorithms*
+
+### Integration Layer (24)
+- **24_pydantic_ai_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Core PydanticAI agent architecture setup with dependency injection and testing patterns*
+
+### Post-MVP Enhancement Layer (34)
+- **34_multi_model_providers.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Reason: Requires PydanticAI agents for intelligent AI model routing with cultural context and Arabic-optimized model selection*
 
 ## 📋 Usage Examples
 
 ```bash
-# For PydanticAI features (AI agents)
-/generate-pydantic-ai-prp initial/02_basic_chat.md
-/execute-pydantic-ai-prp PRPs/02_basic_chat.md
+# Foundation Layer
+/generate-prp micro-initials/01_bun_workspace_setup.md
+/execute-prp PRPs/01_bun_workspace_setup.md
 
-/generate-pydantic-ai-prp initial/19_persistent_chat_history.md
-/execute-pydantic-ai-prp PRPs/19_persistent_chat_history.md
+/generate-prp micro-initials/02_environment_variables.md
+/execute-prp PRPs/02_environment_variables.md
 
-/generate-pydantic-ai-prp initial/20_user_personalization_learning.md
-/execute-pydantic-ai-prp PRPs/20_user_personalization_learning.md
+# UI Layer  
+/generate-prp micro-initials/05_nextjs_app_setup.md
+/execute-prp PRPs/05_nextjs_app_setup.md
 
-# For general features (UI, infrastructure, user management)
-/generate-prp initial/03_rtl_arabic.md
-/execute-prp PRPs/03_rtl_arabic.md
+/generate-prp micro-initials/06_ui_component_system.md
+/execute-prp PRPs/06_ui_component_system.md
 
-/generate-prp initial/21_user_profile_management.md
-/execute-prp PRPs/21_user_profile_management.md
+# Arabic Layer
+/generate-prp micro-initials/11_arabic_font_system.md
+/execute-prp PRPs/11_arabic_font_system.md
+
+/generate-prp micro-initials/12_rtl_layout_foundation.md
+/execute-prp PRPs/12_rtl_layout_foundation.md
+
+# Cultural Layer
+/generate-prp micro-initials/22_accessibility_compliance.md
+/execute-prp PRPs/22_accessibility_compliance.md
+
+# Integration Layer
+/generate-prp micro-initials/23_payment_gateway_integration.md
+/execute-prp PRPs/23_payment_gateway_integration.md
+
+# PydanticAI features (Cultural AI Agents)
+/generate-pydantic-ai-prp micro-initials/17_cultural_validation.md
+/execute-pydantic-ai-prp PRPs/17_cultural_validation.md
+
+/generate-pydantic-ai-prp micro-initials/18_islamic_compliance.md
+/execute-pydantic-ai-prp PRPs/18_islamic_compliance.md
+
+/generate-pydantic-ai-prp micro-initials/19_professional_domains.md
+/execute-pydantic-ai-prp PRPs/19_professional_domains.md
+
+/generate-pydantic-ai-prp micro-initials/20_iraqi_dialect.md
+/execute-pydantic-ai-prp PRPs/20_iraqi_dialect.md
+
+/generate-pydantic-ai-prp micro-initials/21_political_neutrality.md
+/execute-pydantic-ai-prp PRPs/21_political_neutrality.md
+
+/generate-pydantic-ai-prp micro-initials/24_pydantic_ai_setup.md
+/execute-pydantic-ai-prp PRPs/24_pydantic_ai_setup.md
+
+# Production Layer
+/generate-prp micro-initials/29_error_monitoring.md
+/execute-prp PRPs/29_error_monitoring.md
+
+/generate-prp micro-initials/31_deployment_pipeline.md
+/execute-prp PRPs/31_deployment_pipeline.md
 ```
 
 ## 🎯 Command Selection Logic
 
-**Use `/generate-pydantic-ai-prp` when the feature involves:**
+**Use `/generate-pydantic-ai-prp` when the micro-initial involves:**
 - PydanticAI agents and AI processing
-- Backend Python AI functionality
+- Backend Python AI functionality  
 - Iraqi cultural AI validation and compliance
-- AI-powered document understanding and processing
-- Professional domain AI expertise and knowledge
-- RAG integration and knowledge base access
-- Template generation with AI intelligence
-- AI learning systems and personalization
-- Intelligent conversation history and semantic search
-- User behavior analytics and AI adaptation
+- AI agent architecture and conversation management
 
-**Use `/generate-prp` when the feature involves:**
+**Use `/generate-prp` when the micro-initial involves:**
 - Frontend UI components and interfaces
-- CSS styling and RTL layout
-- File upload/download functionality
-- Voice recording and streaming interfaces
-- Deployment and infrastructure setup
-- TypeScript types and validation schemas
-- User authentication and profile management
-- General system integration (non-AI)
+- Infrastructure setup and configuration
+- Database schema and API development
+- Testing, deployment, and production optimization
+- Arabic language processing and cultural systems
+- Payment gateway integration and authentication
+- All other non-AI system components
 
 ## 📁 Generated Files Location
 
 All generated PRPs will be saved in the `PRPs/` directory:
 
-**PydanticAI PRPs:**
-- `PRPs/01_monorepo_setup.md`
-- `PRPs/02_basic_chat.md`
-- `PRPs/04_streaming_responses.md`
-- `PRPs/06_dev_environment.md`
-- `PRPs/08_pdf_processing.md`
-- `PRPs/09_rag_integration.md`
-- `PRPs/10_iraqi_templates.md`
-- `PRPs/15_cultural_framework.md`
-- `PRPs/16_professional_domains.md`
-- `PRPs/19_persistent_chat_history.md`
-- `PRPs/20_user_personalization_learning.md`
-- `PRPs/22_monitoring_sentry.md`
-- `PRPs/23_authentication_system.md`
-- `PRPs/24_vector_database_rag.md`
+**Foundation Layer PRPs:**
+- `PRPs/01_bun_workspace_setup.md`
+- `PRPs/02_environment_variables.md`
+- `PRPs/03_typescript_foundation.md`
+- `PRPs/04_supabase_client_setup.md`
 
-**General PRPs:**
-- `PRPs/03_rtl_arabic.md`
-- `PRPs/05_type_safety.md`
-- `PRPs/07_file_upload.md`
-- `PRPs/11_voice_recording.md`
-- `PRPs/12_voice_streaming.md`
-- `PRPs/13_arabic_tts.md`
-- `PRPs/14_voice_ui.md`
-- `PRPs/17_deployment.md`
-- `PRPs/18_scalability_performance.md`
-- `PRPs/21_user_profile_management.md`
+**UI Layer PRPs:**
+- `PRPs/05_nextjs_app_setup.md`
+- `PRPs/06_ui_component_system.md`
+- `PRPs/07_basic_routing.md`
+- `PRPs/08_responsive_layout.md`
+- `PRPs/09_form_handling.md`
+- `PRPs/10_error_handling.md`
 
-## ✅ Quick Reference Summary
+**Arabic Layer PRPs:**
+- `PRPs/11_arabic_font_system.md`
+- `PRPs/12_rtl_layout_foundation.md`
+- `PRPs/13_arabic_text_processing.md`
+- `PRPs/14_bidirectional_ui.md`
+- `PRPs/15_arabic_input_handling.md`
+- `PRPs/16_language_switching.md`
 
-**All 24 Initial Files Complete:**
-- **14 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
-- **10 General features** → use `/generate-prp` + `/execute-prp`
+**Cultural Layer PRPs:**
+- `PRPs/17_cultural_validation.md` *(PydanticAI)*
+- `PRPs/18_islamic_compliance.md` *(PydanticAI)*
+- `PRPs/19_professional_domains.md` *(PydanticAI)*
+- `PRPs/20_iraqi_dialect.md` *(PydanticAI)*
+- `PRPs/21_political_neutrality.md` *(PydanticAI)*
+- `PRPs/22_accessibility_compliance.md`
 
-## 🎯 Commands for PRPs 19-24:
+**Integration Layer PRPs:**
+- `PRPs/23_payment_gateway_integration.md`
+- `PRPs/24_pydantic_ai_setup.md` *(PydanticAI)*
+- `PRPs/25_database_schema.md`
+- `PRPs/26_authentication_system.md`
+- `PRPs/27_api_endpoints.md`
+- `PRPs/28_realtime_subscriptions.md`
 
-```bash
-# PRP 19: Persistent Chat History (AI-powered search & intelligence)
-/generate-pydantic-ai-prp initial/19_persistent_chat_history.md
+**Production Layer PRPs:**
+- `PRPs/29_error_monitoring.md`
+- `PRPs/30_testing_framework.md`
+- `PRPs/31_deployment_pipeline.md`
+- `PRPs/32_production_optimization.md`
 
-# PRP 20: User Personalization Learning (AI learning system)  
-/generate-pydantic-ai-prp initial/20_user_personalization_learning.md
+## 🆕 Future Micro-Initials from LibreChat/Botpress Extraction (33-36)
 
-# PRP 21: User Profile Management (Frontend user settings)
-/generate-prp initial/21_user_profile_management.md
+**Based on extraction analysis, 4 new micro-initials will be added:**
 
-# PRP 22: Monitoring with Sentry (AI-powered error analysis)
-/generate-pydantic-ai-prp initial/22_monitoring_sentry.md
+### Post-MVP Enhancement Layer (33-36) - **Use `/generate-prp` + `/execute-prp`**
 
-# PRP 23: Authentication System (AI-enhanced user flows)
-/generate-pydantic-ai-prp initial/23_authentication_system.md
+- **33_file_generation_pipeline.md** → `/generate-prp` + `/execute-prp`
+  - *Source: LibreChat File.js + generation tools*
+  - *Purpose: PDF/Word/Excel document generation from chat content with Arabic support and Iraqi cultural templates*
 
-# PRP 24: Vector Database & RAG (Advanced AI search)
-/generate-pydantic-ai-prp initial/24_vector_database_rag.md
-```
+- **34_multi_model_providers.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+  - *Source: LibreChat BaseClient.js + OpenAIClient.js*
+  - *Purpose: Intelligent AI model routing with Arabic-optimized and culturally-aware model selection using PydanticAI agents*
 
-Ready for PRP generation and testing!
+- **35_browser_automation.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Botpress browser integration*
+  - *Purpose: Iraqi government website automation and Arabic form filling capabilities*
+
+- **36_plugin_architecture.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Botpress knowledge plugin framework*
+  - *Purpose: Extensible plugin system for Iraqi professional domain integrations*
+
+## ✅ Updated Quick Reference Summary
+
+**All 36 Micro-Initial Files (32 MVP + 4 Future):**
+- **29 General features** → use `/generate-prp` + `/execute-prp`
+- **7 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+
+## 🚀 Key Improvements from Old Architecture
+
+**Eliminated Scope Creep:**
+- ❌ Old: 21 bloated initials with massive overlaps
+- ✅ New: 32 focused micro-initials with single responsibility
+
+**Clean Dependency Layers:**
+- **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production**
+
+**Single Responsibility Principle:**
+- Each micro-initial has ONE focused purpose
+- No overlaps or cross-cutting concerns
+- Clear dependency flow and integration points
+
+**Systematic Architecture:**
+- Progressive complexity from basic setup to production optimization
+- Cultural integration throughout all layers
+- Iraqi AI Chat System specific requirements in every component
+
+Ready for systematic PRP generation and implementation using the new micro-initial architecture!

@@ -735,6 +735,8 @@ now what did you extarct from both repos and added them in the examples folder a
 
 before we continue i found these repos check them thoroughly to know can we take something from them?
 
+if you remember we extracted from these repos what is useful for us, and added it in the examples folder
+
 https://github.com/langflow-ai/langflow
 https://github.com/MervinPraison/PraisonAI
 https://github.com/browser-use/browser-use
@@ -755,6 +757,36 @@ https://github.com/e2b-dev/fragments
 https://github.com/browser-use/web-ui
 https://github.com/srcbookdev/srcbook
 
+
+i found these two repos check them is there something useful for us? or update what we have from them with better version from them, or they aren't useful for us
+
+https://github.com/botpress/botpress
+https://github.com/danny-avila/LibreChat
+
+i added the them here for you to check
+
+check them thoroughly and the examples folder, and you can check the docs folder to know what we extracted from them
+
+
+we need to extract from them what we need not just the mvp but also after the mvp so we can delete them from the app so they dont effect the app
+
+create a plan and add it to the docs folder so we can follow it and know what to extract from them
+
+bfore we do it check the '/mnt/c/Users/Itokoro/Documents/projects/aqlix-ai/examples' so we dont have a duplicate files, so what we extract from them is if we dont have it or the one we extract is better
+
+first did you create plan to know what to extract from each repo? and add them in the docs folder
+
+second in the examples folder we have five md files do we need them or not? if yes do we leave them there or move to the docs folder
+
+third do we have in the examples folder, anything for the mcp and integration with other apps?
+
+why did you create new initial files? are they for the mvp? my app vision and the plan it splite the app into mvp and after the mvp, but that isnt the end after ward well add more features to make is an AI that can do everything not just specific features
+
+we created this before for the next step after the mvp should we update it to know what we need for the next step after the mvp? or remove it and create new one when we finish the mvp?
+
+so just one need the generate-pydantic-ai-prp, to make sure cus when we had 24 more than half was assigned to generate-pydantic-ai-prp
+
+check the commands to make sure we use the right command for the correct initial
 
 check the one at a time create a todo list, and lets check the first one
 
@@ -991,6 +1023,7 @@ i want to make the agent to be able to access the different sites and do the tas
 or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
 and a lot more other features
 
+dont we need anything more?
 
 i had a conversation with you before about the app vision and we created the plan "app-plan.md"
 
@@ -1238,6 +1271,7 @@ Claude, analyze all 24 PRPs and create optimal execution roadmap with dependenci
 Claude, what should I do next? Execute the next PRP or handle other priorities?
 
 
+we added to the sub-agents the truthfulness protocol if you remember do we need to add it to the primary agent in CLAUDE.md
 
 i saw this video
 
@@ -1340,6 +1374,142 @@ lets go with 1
 
 
 now i generated the first two prps check them and let me know if we continue generating the rest or we should make some changes first to the initials?
+
+
+i want you to check these two prps they are from the same initial\06_dev_environment.md
+
+read both of them throughly and give me your feedback on them honestly
+
+read the initial\06_dev_environment.md to know what is the goal of this initial
+
+do you remember what is the initials is?
+
+so you remember make the initials responsible for a small feature and all of them combined make the app dont overcomplicate it or overlap each other
+i want you to check the initials
+
+
+
+so we need to refactor the initials all of them and break them down into smaller features right?
+
+
+● Dependency Map & Build Order
+
+Layer 1 (Foundation) - Build First:
+01_bun_workspace_setup
+02_environment_variables  
+03_typescript_foundation
+04_supabase_client_setup
+
+    ↓
+
+Layer 2 (Core UI) - Build Second:
+05_basic_chat_interface (depends: 1,3,4)
+06_pydantic_agent_core (depends: 2,3,4)
+07_streaming_responses (depends: 5,6)
+08_file_upload_basic (depends: 1,3,4)
+
+    ↓
+
+Layer 3 (Arabic) - Build Third:
+09_arabic_fonts_loading (depends: 1)
+10_rtl_layout_system (depends: 1,5)
+11_arabic_text_input (depends: 5,9,10)
+12_iraqi_dialect_processing (depends: 3,6)
+13_bidirectional_text (depends: 9,10,11)
+
+    ↓
+
+Layer 4 (Cultural) - Build Fourth:
+14_islamic_values_integration (depends: 6,12)
+15_iraqi_cultural_validation (depends: 12,14)
+16_iraqi_professional_legal (depends: 12,15)
+17_iraqi_professional_medical (depends: 12,15)
+18_iraqi_professional_educational (depends: 12,15)
+
+    ↓
+
+Layer 5 (Integrations) - Build Fifth:
+19-21_payment_integrations (depends: 2,3,4)
+22_credit_consumption_system (depends: 4,19-21)
+23_rag_knowledge_base (depends: 4,8)
+24-26_voice_features (depends: 12,13)
+
+    ↓
+
+Layer 6 (Production) - Build Last:
+27_docker_containerization (depends: ALL)
+28_sentry_error_tracking (depends: ALL)
+29-30_deployment (depends: 27,28)
+31-32_scaling (depends: 29,30)
+
+
+now we need to update INITIAL_TO_PRP_GUIDE.md file
+
+
+we have issue when the primary agent is searching the web it search for content in 2024 and not in 2025 so we need to update CLAUDE.md file so primary agent so it search for content in 2025 and do we need to add it also to sub-agents?
+
+i removed the initial folder and renamed the micro_initials to initials
+now do we update them or do need, cus you know we add new to examples folder?
+and we dont need 
+so we can delete it right?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
