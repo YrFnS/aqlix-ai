@@ -1,18 +1,18 @@
-# Payment Gateway Integration for Iraqi AI Chat System
+# Unified Global Payment Gateway for Iraqi AI Chat System
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Iraqi payment gateway integration system** with ZainCash, FastPay, and NassWallet support, secure payment processing, and Iraqi payment workflow handling.
+**Single unified payment gateway system** that accepts payments from any country worldwide (Iraqi and international), providing one seamless payment experience without the complexity of multiple payment providers.
 
-**Specific technologies:** Payment gateway APIs, secure payment processing, webhook handling, transaction validation, and Iraqi payment provider integration patterns.
+**Specific technologies:** Universal payment processing API, secure transaction handling, webhook management, multi-currency support, fraud detection, and global payment acceptance infrastructure.
 
 ---
 
 ## TEMPLATE PURPOSE:
 
-**Setting up comprehensive Iraqi payment gateway integration** for the Iraqi AI Chat System that provides secure payment processing through ZainCash, FastPay, and NassWallet with proper transaction handling and validation.
+**Setting up one unified global payment gateway** for the Iraqi AI Chat System that accepts payments from any country worldwide through a single payment interface, eliminating the complexity of managing multiple payment providers.
 
-**Developers should be able to:** Integrate Iraqi payment gateways, process secure transactions, handle payment webhooks, validate payments, implement payment flows, and manage payment security.
+**Developers should be able to:** Integrate one universal payment gateway, process secure international transactions from any country, handle unified webhook processing, validate payments across all currencies, implement one consistent payment flow, and manage simplified payment security.
 
 ---
 
@@ -20,12 +20,14 @@
 
 **Essential payment gateway integration infrastructure:**
 
-- **Multi-Gateway Support:** ZainCash, FastPay, and NassWallet integration and management
-- **Secure Payment Processing:** PCI-compliant payment processing and transaction security
-- **Webhook Management:** Payment webhook handling and transaction status updates
-- **Transaction Validation:** Payment transaction validation and verification
-- **Payment Flow Management:** Iraqi payment workflow and user experience handling
-- **Error Handling:** Payment error handling and transaction failure management
+- **Universal Payment Acceptance:** One gateway accepting payments from any country (Iraqi and international)
+- **Secure Payment Processing:** PCI-compliant payment processing with global transaction security
+- **Multi-Currency Support:** Support for IQD, USD, EUR and 100+ global currencies with automatic conversion
+- **Unified Webhook System:** Single webhook endpoint for all transaction status updates
+- **Global Transaction Validation:** Consistent payment validation regardless of customer location
+- **Localized User Experience:** Payment interface adapted for Iraqi users while supporting international customers
+- **Fraud Protection:** Global fraud detection and prevention across all countries
+- **Error Handling:** Consistent error handling and user feedback across all payment scenarios
 
 ---
 
@@ -33,21 +35,28 @@
 
 **Working payment gateway integration examples:**
 
-- **Gateway Configuration:** ZainCash, FastPay, and NassWallet API configuration and setup
-- **Payment Processing:** Secure payment transaction processing and handling
-- **Webhook Handlers:** Payment webhook processing and status update handling
-- **Transaction Validation:** Payment transaction validation and verification utilities
-- **Payment Components:** Payment form components and Iraqi payment flow UI
-- **Error Management:** Payment error handling and user feedback systems
+- **Single Gateway Configuration:** One unified payment gateway API configuration and setup
+- **Universal Payment Processing:** Secure payment processing accepting any country's payment methods
+- **Payment Flow Components:** Single payment form supporting all countries with localized Iraqi interface
+- **Webhook Integration:** Unified webhook processing for all transaction updates
+- **Transaction Management:** Consistent payment validation and verification for global transactions
+- **Currency Handling:** Automatic currency detection and conversion for any country
+- **Localization Support:** Iraqi Arabic interface with international payment method support
+- **Error Management:** Unified error handling system with multilingual support
 
 ---
 
 ## DOCUMENTATION TO RESEARCH:
 
-**Iraqi payment gateway documentation:**
+**Global payment gateway documentation:**
 
-- **ZainCash API:** ZainCash payment gateway API documentation and integration guide
-- **FastPay Integration:** FastPay payment processing API and webhook handling
+**Unified Payment Gateway Options:**
+- **Paddle:** Global payment processing with tax handling for 200+ countries
+- **Lemonsqueezy:** International payment gateway with global coverage and simple integration
+- **2Checkout (Verifone):** Global payment platform supporting 200+ countries and territories
+- **PayPro Global:** International payment processor with multi-currency support
+- **Payoneer:** Global payment platform with worldwide coverage and currency support
+- **Adyen:** Global payment company supporting payments from any country worldwide
 - **NassWallet API:** NassWallet payment gateway integration and transaction processing
 - **Payment Security:** PCI compliance standards and secure payment processing best practices
 - **Iraqi Payment Standards:** Iraqi payment processing regulations and compliance requirements

@@ -52,6 +52,11 @@ Use evidence-based language:
 - **Triggers**: ZainCash/FastPay/NassWallet, financial transactions
 - **Rule**: 100% security compliance, comprehensive testing required
 
+### Application Security (MANDATORY for Security)
+- **Agent**: `iraqi-security-specialist`
+- **Triggers**: Security implementations, vulnerability assessments, compliance requirements, security audits, access control, threat detection
+- **Rule**: 100% security validation, Iraqi regulatory compliance required
+
 ### Technical Implementation
 - **Agents**: `iraqi-ai-agent-architect` + `iraqi-technical-debugger` + `iraqi-devops-engineer`
 - **Triggers**: PydanticAI development, debugging, deployment
@@ -137,11 +142,12 @@ Use for decisions requiring historical context:
 - **Architecture**: iraqi-ai-agent-architect, iraqi-devops-engineer
 - **System Coordination**: iraqi-workflow-orchestrator, iraqi-context-manager, iraqi-prp-execution-orchestrator
 
-### Specialized Tool Agents (7)
+### Specialized Tool Agents (8)
 Use for immediate processing without context overhead:
 - **Language Processing**: arabic-rtl-processor, iraqi-arabic-tester
 - **Testing/Validation**: iraqi-payment-tester, iraqi-accessibility-specialist  
-- **Technical Tools**: iraqi-technical-debugger, payment-security-guardian, external-service-coordinator
+- **Security Tools**: iraqi-security-specialist, payment-security-guardian
+- **Technical Tools**: iraqi-technical-debugger, external-service-coordinator
 
 ## MCP Server Coordination
 
@@ -168,8 +174,10 @@ Use for immediate processing without context overhead:
 1. **Cultural Validation**: iraqi-cultural-validator → iraqi-cultural-tester → arabic-rtl-processor
 2. **UI Development**: iraqi-ux-researcher → iraqi-ui-designer → iraqi-interaction-designer → iraqi-accessibility-specialist  
 3. **Payment Integration**: payment-security-guardian → iraqi-payment-tester → external-service-coordinator
-4. **Professional Domain**: iraqi-professional-domain-expert → iraqi-business-analyst → iraqi-product-manager
-5. **Technical Implementation**: iraqi-ai-agent-architect → iraqi-technical-debugger → iraqi-devops-engineer
+4. **Application Security**: iraqi-security-specialist → iraqi-technical-debugger → iraqi-devops-engineer
+5. **Web Search Integration**: iraqi-cultural-validator → arabic-rtl-processor → external-service-coordinator
+6. **Professional Domain**: iraqi-professional-domain-expert → iraqi-business-analyst → iraqi-product-manager
+7. **Technical Implementation**: iraqi-ai-agent-architect → iraqi-technical-debugger → iraqi-devops-engineer
 
 **System Orchestration**:
 - **iraqi-workflow-orchestrator**: Complex multi-agent task coordination
@@ -200,7 +208,7 @@ Use for immediate processing without context overhead:
 - **Monitoring**: Sentry for error tracking and performance
 
 **Key Directories**:
-- **Agents**: `.claude/agents/` (20 specialized agents)
+- **Agents**: `.claude/agents/` (21 specialized agents)
 - **Context**: `project-context/` (persistent knowledge base)
 - **Examples**: `examples/` (44 Iraqi-enhanced UI components)
 - **Shared**: `packages/` (ui, types, features, supabase-client, arabic-nlp)

@@ -1,20 +1,21 @@
-# Micro-Initial to PRP Command Guide - Iraqi AI Chat System
+# Initial to PRP Command Guide - Iraqi AI Chat System
 
-This guide shows which command to use for each micro-initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 32 focused micro-initials organized in 6 dependency layers.
+This guide shows which command to use for each initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 42 focused initials organized in 7 dependency layers.
 
 ## 📋 Architecture Overview
 
-**32 Micro-Initials in 6 Layers:**
+**42 Initials in 7 Layers:**
 - **Foundation Layer (01-04)**: Infrastructure setup
 - **UI Layer (05-10)**: User interface components  
 - **Arabic Layer (11-16)**: Language and RTL support
 - **Cultural Layer (17-22)**: Cultural compliance
 - **Integration Layer (23-28)**: System integration
 - **Production Layer (29-32)**: Production readiness
+- **Post-MVP Enhancement Layer (33-41)**: Advanced AI capabilities and SaaS features
 
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 29 general infrastructure and UI features (26 MVP + 3 Post-MVP)**
+**Total: 35 general infrastructure and UI features (27 MVP + 8 Post-MVP)**
 
 ### Foundation Layer (01-04)
 - **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp`
@@ -132,58 +133,58 @@ This guide shows which command to use for each micro-initial file when creating 
 
 ```bash
 # Foundation Layer
-/generate-prp micro-initials/01_bun_workspace_setup.md
+/generate-prp initials/01_bun_workspace_setup.md
 /execute-prp PRPs/01_bun_workspace_setup.md
 
-/generate-prp micro-initials/02_environment_variables.md
+/generate-prp initials/02_environment_variables.md
 /execute-prp PRPs/02_environment_variables.md
 
 # UI Layer  
-/generate-prp micro-initials/05_nextjs_app_setup.md
+/generate-prp initials/05_nextjs_app_setup.md
 /execute-prp PRPs/05_nextjs_app_setup.md
 
-/generate-prp micro-initials/06_ui_component_system.md
+/generate-prp initials/06_ui_component_system.md
 /execute-prp PRPs/06_ui_component_system.md
 
 # Arabic Layer
-/generate-prp micro-initials/11_arabic_font_system.md
+/generate-prp initials/11_arabic_font_system.md
 /execute-prp PRPs/11_arabic_font_system.md
 
-/generate-prp micro-initials/12_rtl_layout_foundation.md
+/generate-prp initials/12_rtl_layout_foundation.md
 /execute-prp PRPs/12_rtl_layout_foundation.md
 
 # Cultural Layer
-/generate-prp micro-initials/22_accessibility_compliance.md
+/generate-prp initials/22_accessibility_compliance.md
 /execute-prp PRPs/22_accessibility_compliance.md
 
 # Integration Layer
-/generate-prp micro-initials/23_payment_gateway_integration.md
+/generate-prp initials/23_payment_gateway_integration.md
 /execute-prp PRPs/23_payment_gateway_integration.md
 
 # PydanticAI features (Cultural AI Agents)
-/generate-pydantic-ai-prp micro-initials/17_cultural_validation.md
+/generate-pydantic-ai-prp initials/17_cultural_validation.md
 /execute-pydantic-ai-prp PRPs/17_cultural_validation.md
 
-/generate-pydantic-ai-prp micro-initials/18_islamic_compliance.md
+/generate-pydantic-ai-prp initials/18_islamic_compliance.md
 /execute-pydantic-ai-prp PRPs/18_islamic_compliance.md
 
-/generate-pydantic-ai-prp micro-initials/19_professional_domains.md
+/generate-pydantic-ai-prp initials/19_professional_domains.md
 /execute-pydantic-ai-prp PRPs/19_professional_domains.md
 
-/generate-pydantic-ai-prp micro-initials/20_iraqi_dialect.md
+/generate-pydantic-ai-prp initials/20_iraqi_dialect.md
 /execute-pydantic-ai-prp PRPs/20_iraqi_dialect.md
 
-/generate-pydantic-ai-prp micro-initials/21_political_neutrality.md
+/generate-pydantic-ai-prp initials/21_political_neutrality.md
 /execute-pydantic-ai-prp PRPs/21_political_neutrality.md
 
-/generate-pydantic-ai-prp micro-initials/24_pydantic_ai_setup.md
+/generate-pydantic-ai-prp initials/24_pydantic_ai_setup.md
 /execute-pydantic-ai-prp PRPs/24_pydantic_ai_setup.md
 
 # Production Layer
-/generate-prp micro-initials/29_error_monitoring.md
+/generate-prp initials/29_error_monitoring.md
 /execute-prp PRPs/29_error_monitoring.md
 
-/generate-prp micro-initials/31_deployment_pipeline.md
+/generate-prp initials/31_deployment_pipeline.md
 /execute-prp PRPs/31_deployment_pipeline.md
 ```
 
@@ -252,11 +253,11 @@ All generated PRPs will be saved in the `PRPs/` directory:
 - `PRPs/31_deployment_pipeline.md`
 - `PRPs/32_production_optimization.md`
 
-## 🆕 Future Micro-Initials from LibreChat/Botpress Extraction (33-36)
+## 🆕 Micro-Initials from LibreChat/Botpress Extraction (33-40)
 
-**Based on extraction analysis, 4 new micro-initials will be added:**
+**Based on extraction analysis and security requirements, 8 new initials have been added:**
 
-### Post-MVP Enhancement Layer (33-36) - **Use `/generate-prp` + `/execute-prp`**
+### Post-MVP Enhancement Layer (33-40) - **Use `/generate-prp` + `/execute-prp`**
 
 - **33_file_generation_pipeline.md** → `/generate-prp` + `/execute-prp`
   - *Source: LibreChat File.js + generation tools*
@@ -274,23 +275,46 @@ All generated PRPs will be saved in the `PRPs/` directory:
   - *Source: Botpress knowledge plugin framework*
   - *Purpose: Extensible plugin system for Iraqi professional domain integrations*
 
+- **37_reserved** → *Skipped for future use*
+
+- **38_subscription_management_system.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Kortix-SUNA billing system*
+  - *Purpose: Multi-tier subscription plans with billing cycles, feature access control, and subscription lifecycle management*
+
+- **39_usage_tracking_rate_limiting.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Kortix-SUNA usage tracking + custom rate limiting*
+  - *Purpose: Real-time usage monitoring, subscription-based rate limits, and token consumption tracking*
+
+- **40_application_security_system.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Security patterns from examples folder (botpress, open-webui, skyvern)*
+  - *Purpose: Comprehensive application security framework with vulnerability protection, Iraqi compliance, and threat detection*
+
+- **41_web_search_integration.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Kortix-Suna web_search_tool.py + Brave Search integration*
+  - *Purpose: Real-time web search with user toggle controls, cultural filtering, and Iraqi context-aware search results*
+
+- **42_railway_deployment_configuration.md** → `/generate-prp` + `/execute-prp`
+  - *Source: Railway platform-specific deployment patterns*
+  - *Purpose: Railway monorepo deployment configuration with service orchestration and production optimization*
+
 ## ✅ Updated Quick Reference Summary
 
-**All 36 Micro-Initial Files (32 MVP + 4 Future):**
-- **29 General features** → use `/generate-prp` + `/execute-prp`
+**All 42 Initial Files (33 MVP + 9 Post-MVP):**
+- **35 General features** → use `/generate-prp` + `/execute-prp`  
 - **7 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
 
 ## 🚀 Key Improvements from Old Architecture
 
 **Eliminated Scope Creep:**
-- ❌ Old: 21 bloated initials with massive overlaps
-- ✅ New: 32 focused micro-initials with single responsibility
+- ❌ Old: 21 bloated initials with massive overlaps  
+- ✅ New: 32 focused MVP initials with single responsibility
+- ✅ Additional: 8 Post-MVP enhancement initials for complete SaaS platform
 
 **Clean Dependency Layers:**
-- **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production**
+- **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production** → **Post-MVP Enhancement**
 
 **Single Responsibility Principle:**
-- Each micro-initial has ONE focused purpose
+- Each initial has ONE focused purpose
 - No overlaps or cross-cutting concerns
 - Clear dependency flow and integration points
 
