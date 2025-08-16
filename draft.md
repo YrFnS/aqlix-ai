@@ -750,23 +750,30 @@ https://github.com/microsoft/autogen
 https://github.com/Skyvern-AI/skyvern
 https://github.com/NirDiamant/GenAI_Agents
 https://github.com/assafelovic/gpt-researcher
-
-these are older repos
+https://github.com/botpress/botpress
+https://github.com/danny-avila/LibreChat
 
 https://github.com/e2b-dev/fragments
 https://github.com/browser-use/web-ui
 https://github.com/srcbookdev/srcbook
+https://github.com/cline/cline
 
 
-i found these two repos check them is there something useful for us? or update what we have from them with better version from them, or they aren't useful for us
 
-https://github.com/botpress/botpress
-https://github.com/danny-avila/LibreChat
+i found these repos too check them thoroughly to know can we take something from them? or update what we have from them with better version from them, or they aren't useful for us check them and check the examples folder
+check thoroughly, and you can also check the docs folder to know what we extracted from them
 
-i added the them here for you to check
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/QwenLM/qwen-code
+https://github.com/musistudio/claude-code-router
 
-check them thoroughly and the examples folder, and you can check the docs folder to know what we extracted from them
+i have them here for you to check reference folder
 
+check thoroughly the code from the repos i added in the reference folder and compare it with what we have in the examples folder
+make a deep search
+
+create a plan for what we need to extract from each repo in the reference folder and to add it to the examples folder or update what we have in the examples folder for a better version
 
 we need to extract from them what we need not just the mvp but also after the mvp so we can delete them from the app so they dont effect the app
 
@@ -1536,6 +1543,881 @@ lets go with railway
 do we need to create initial?
 
 
+i saw a video about Coolify + hostinger
+for deployment using Coolify on hostinger vps
+make a deep research about it
+and compare it with railway
+and give me your recommendation
+
+
+give me a detailed summary of what you know about what you know about
+
+
+
+sub-agents mcp and check
+wizard sub-agent
+
+**Required MCP Servers**:
+- **Sequential**: Complex analysis, systematic workflows
+- **Context7**: Official documentation, patterns
+- **@21st-dev/magic**: UI component generation
+- **Playwright**: E2E testing, browser automation
+- **Supabase**: Database operations, real-time features
+- **Sentry**: Error tracking, performance monitoring
+- **Desktop Commander**: File operations, system tasks
+- **Serena**: Code search, semantic analysis and editing capabilities
+- **Puppeteer**: Advanced browser automation
+
+
+
+just to make sure did you created the plan file for what we need to do?
+
+just to make sure you remember this is the plan you suggested to me and we are following it
+
+
+● Comprehensive Reference Repository Extraction Plan
+
+  Executive Summary
+
+  Based on deep code analysis, here's a strategic plan to extract and integrate the most valuable patterns from each reference repository into our examples folder, enhancing our Iraqi AI chat system with proven architectural patterns while preserving our unique cultural and professional domain
+  advantages.
+
+  1. Roo-Code Repository Extraction Plan
+
+  Target Files for Extraction
+
+  A. Tool Orchestration System
+
+  # EXTRACT FROM:
+  /reference/Roo-Code/src/core/tools/
+  ├── ToolRepetitionDetector.ts       # Advanced repetition detection
+  ├── validateToolUse.ts              # Tool validation patterns
+  └── __tests__/                      # Comprehensive tool testing
+
+  # EXTRACT TO:
+  /examples/roo-code-extracted/
+  ├── tool-orchestration/
+  │   ├── iraqi_tool_repetition_detector.py
+  │   ├── cultural_tool_validator.py
+  │   └── tool_validation_patterns.py
+
+  Enhancement Strategy:
+  # New File: /examples/roo-code-extracted/tool-orchestration/iraqi_tool_repetition_detector.py
+  class IraqiToolRepetitionDetector:
+      """Enhanced tool repetition detection with cultural validation"""
+
+      def __init__(self, cultural_validator: IraqiCulturalValidator):
+          self.consecutive_limit = 3
+          self.cultural_validator = cultural_validator
+          self.islamic_compliance_tracker = IslamicComplianceTracker()
+          self.professional_context_tracker = ProfessionalContextTracker()
+
+      async def check_with_cultural_context(self, tool_call: ToolCall, context: IraqiContext):
+          # Original repetition detection logic from Roo-Code
+          base_check = self._check_repetition(tool_call)
+
+          # Enhanced with Iraqi cultural validation
+          cultural_check = await self.cultural_validator.validate_tool_repetition(
+              tool_call, context, self.consecutive_limit
+          )
+
+          # Islamic compliance for repetitive actions
+          islamic_check = await self.islamic_compliance_tracker.validate_repetitive_action(
+              tool_call, context.islamic_context
+          )
+
+          return {
+              "allow_execution": base_check and cultural_check and islamic_check,
+              "cultural_compliance": cultural_check,
+              "islamic_approval": islamic_check,
+              "professional_appropriateness": self.professional_context_tracker.validate(tool_call)
+          }
+
+  B. MCP Integration Architecture
+
+  # EXTRACT FROM:
+  /reference/Roo-Code/src/services/mcp/
+  ├── McpHub.ts                       # Sophisticated MCP server management
+  ├── McpServerManager.ts             # Server lifecycle management
+  └── types/ (MCP type definitions)
+
+  # EXTRACT TO:
+  /examples/roo-code-extracted/
+  ├── mcp-integration/
+  │   ├── iraqi_mcp_hub.py
+  │   ├── cultural_server_manager.py
+  │   ├── payment_gateway_mcp_server.py
+  │   └── government_portal_mcp_server.py
+
+  Enhancement Strategy:
+  # New File: /examples/roo-code-extracted/mcp-integration/iraqi_mcp_hub.py
+  from enum import Enum
+  from dataclasses import dataclass
+  from typing import Dict, List, Optional, Union
+
+  class IraqiMCPServerType(Enum):
+      CULTURAL_VALIDATION = "cultural"
+      PAYMENT_GATEWAY = "payment"
+      GOVERNMENT_PORTAL = "government"
+      ARABIC_PROCESSING = "arabic"
+      PROFESSIONAL_DOMAIN = "professional"
+
+  @dataclass
+  class IraqiMCPServerConfig:
+      """Enhanced MCP server configuration with Iraqi-specific settings"""
+      server_type: IraqiMCPServerType
+      cultural_compliance_level: float = 0.95
+      islamic_approval_required: bool = True
+      professional_domain: Optional[str] = None
+      timeout: int = 60
+      always_allow: List[str] = None
+      disabled_tools: List[str] = None
+      watch_paths: List[str] = None
+      iraqi_government_portals: List[str] = None
+
+  class IraqiMCPHub:
+      """Advanced MCP hub with Iraqi cultural and professional context"""
+
+      def __init__(self):
+          # Adopt Roo-Code's connection management patterns
+          self.connections: Dict[str, IraqiMCPConnection] = {}
+          self.server_configs: Dict[str, IraqiMCPServerConfig] = {}
+
+          # Iraqi-specific enhancements
+          self.cultural_validator = IraqiCulturalValidator()
+          self.islamic_compliance_checker = IslamicComplianceChecker()
+          self.professional_domain_manager = ProfessionalDomainManager()
+          self.payment_gateway_coordinator = PaymentGatewayCoordinator()
+
+      async def connect_server_with_cultural_validation(self, config: IraqiMCPServerConfig):
+          """Enhanced server connection with cultural pre-validation"""
+          # Pre-validate server against Iraqi cultural standards
+          cultural_approval = await self.cultural_validator.validate_server_config(config)
+          if not cultural_approval.approved:
+              raise CulturalComplianceError(f"Server fails Iraqi standards: {cultural_approval.reason}")
+
+          # Islamic compliance check for server capabilities
+          islamic_approval = await self.islamic_compliance_checker.validate_server_tools(config)
+          if not islamic_approval.approved:
+              raise IslamicComplianceError(f"Server tools violate Islamic principles: {islamic_approval.reason}")
+
+          # Professional domain validation
+          if config.professional_domain:
+              domain_approval = await self.professional_domain_manager.validate_server_for_domain(
+                  config, config.professional_domain
+              )
+              if not domain_approval.approved:
+                  raise ProfessionalDomainError(f"Server not suitable for {config.professional_domain}")
+
+          # Proceed with Roo-Code's connection logic enhanced for Iraqi context
+          return await self._establish_iraqi_connection(config)
+
+  C. Browser Automation Patterns
+
+  # EXTRACT FROM:
+  /reference/Roo-Code/src/services/browser/
+  ├── BrowserSession.ts              # Advanced browser session management
+  ├── UrlContentFetcher.ts           # Content fetching patterns
+  └── browserDiscovery.ts            # Browser discovery logic
+
+  # UPDATE EXISTING:
+  /examples/browser-use-extracted/browser_use/
+  ├── browser/iraqi_browser.py       # Enhance with Roo-Code patterns
+  ├── dom/arabic_processor.py        # Enhance DOM processing
+  └── examples/iraqi_government/     # Add advanced automation patterns
+
+  Enhancement Strategy:
+  # Update: /examples/browser-use-extracted/browser_use/browser/iraqi_browser.py
+  class EnhancedIraqiBrowser(IraqiBrowser):
+      """Enhanced browser with Roo-Code session management patterns"""
+
+      def __init__(self):
+          super().__init__()
+          # Adopt Roo-Code's session management
+          self.session_manager = BrowserSessionManager()
+          self.content_fetcher = ArabicContentFetcher()
+          self.network_optimizer = IraqiNetworkOptimizer()
+
+      async def create_session_with_cultural_context(self, context: IraqiContext):
+          """Enhanced session creation with cultural awareness"""
+          # Roo-Code's browser discovery enhanced for Iraqi government portals
+          optimal_browser = await self._discover_optimal_browser_for_iraqi_portals()
+
+          # Create session with cultural settings
+          session_config = BrowserSessionConfig(
+              arabic_support=True,
+              rtl_layout_preference=True,
+              iraqi_government_portal_optimizations=True,
+              islamic_content_filtering=context.islamic_filtering_enabled,
+              professional_domain_settings=context.professional_domain
+          )
+
+          return await self.session_manager.create_culturally_aware_session(
+              optimal_browser, session_config, context
+          )
+
+  D. Internationalization System
+
+  # EXTRACT FROM:
+  /reference/Roo-Code/src/i18n/
+  ├── setup.ts                       # i18n initialization patterns
+  ├── index.ts                       # Translation loading logic
+  └── locales/                       # Multi-language structure
+
+  # UPDATE EXISTING:
+  /examples/dyad-extracted/           # Enhance UI components with i18n
+  └── components/ui/                  # Add internationalization
+
+  # NEW:
+  /examples/roo-code-extracted/
+  └── internationalization/
+      ├── iraqi_i18n_manager.py
+      ├── arabic_translation_loader.py
+      └── cultural_localization.py
+
+  Enhancement Strategy:
+  // New: /examples/roo-code-extracted/internationalization/iraqi_i18n_setup.ts
+  interface IraqiLocalizationConfig {
+      primaryLanguage: 'ar-IQ' | 'en-US';
+      dialectSupport: boolean;
+      islamicCalendarSupport: boolean;
+      professionalTerminology: ProfessionalDomain[];
+      governmentPortalTerminology: boolean;
+      culturalContextAwareness: boolean;
+  }
+
+  class IraqiInternationalizationManager {
+      private translations: Map<string, TranslationBundle> = new Map();
+      private dialectProcessor: IraqiDialectProcessor;
+      private culturalContextManager: CulturalContextManager;
+
+      constructor(config: IraqiLocalizationConfig) {
+          // Adopt Roo-Code's translation loading patterns
+          this.setupTranslationLoading(config);
+
+          // Iraqi-specific enhancements
+          this.dialectProcessor = new IraqiDialectProcessor();
+          this.culturalContextManager = new CulturalContextManager();
+      }
+
+      async loadIraqiTranslations(): Promise<void> {
+          // Load standard Arabic translations
+          await this.loadTranslationBundle('ar-IQ', 'standard');
+
+          // Load Iraqi dialect translations
+          await this.loadTranslationBundle('ar-IQ', 'iraqi-dialect');
+
+          // Load professional domain translations
+          await this.loadProfessionalDomainTranslations();
+
+          // Load government portal terminology
+          await this.loadGovernmentPortalTranslations();
+
+          // Load Islamic terminology and cultural references
+          await this.loadIslamicCulturalTranslations();
+      }
+  }
+
+  2. Claude-Code-Router Repository Extraction Plan
+
+  Target Files for Extraction
+
+  A. API Routing and Middleware
+
+  # EXTRACT FROM:
+  /reference/claude-code-router/src/
+  ├── utils/router.ts                 # Advanced routing patterns
+  ├── middleware/auth.ts              # Authentication middleware
+  └── server.ts                       # Server configuration
+
+  # EXTRACT TO:
+  /examples/claude-code-router-extracted/
+  ├── routing/
+  │   ├── iraqi_api_router.py
+  │   ├── payment_gateway_router.py
+  │   └── government_portal_router.py
+  ├── middleware/
+  │   ├── cultural_validation_middleware.py
+  │   ├── islamic_compliance_middleware.py
+  │   └── professional_auth_middleware.py
+
+  Enhancement Strategy:
+  # New: /examples/claude-code-router-extracted/routing/iraqi_api_router.py
+  class IraqiAPIRouter:
+      """Enhanced API router with Iraqi-specific routing logic"""
+
+      def __init__(self):
+          # Adopt claude-code-router's routing patterns
+          self.base_router = BaseRouter()
+
+          # Iraqi-specific enhancements
+          self.cultural_routes = CulturalValidationRoutes()
+          self.payment_routes = PaymentGatewayRoutes()
+          self.government_routes = GovernmentPortalRoutes()
+          self.professional_routes = ProfessionalDomainRoutes()
+
+      def setup_iraqi_routes(self):
+          """Setup culturally-aware routing patterns"""
+
+          # Cultural validation routes
+          self.add_route('/api/cultural/validate',
+                        self.cultural_routes.validate_content,
+                        middleware=[CulturalValidationMiddleware()])
+
+          # Payment gateway routes with Iraqi compliance
+          self.add_route('/api/payment/zaincash/*',
+                        self.payment_routes.handle_zaincash,
+                        middleware=[IraqiBankingComplianceMiddleware()])
+
+          self.add_route('/api/payment/fastpay/*',
+                        self.payment_routes.handle_fastpay,
+                        middleware=[IraqiBankingComplianceMiddleware()])
+
+          # Government portal interaction routes
+          self.add_route('/api/government/passport/*',
+                        self.government_routes.handle_passport_services,
+                        middleware=[IraqiGovernmentAuthMiddleware()])
+
+          # Professional domain routes
+          self.add_route('/api/professional/legal/*',
+                        self.professional_routes.handle_legal_services,
+                        middleware=[IraqiLegalComplianceMiddleware()])
+
+  B. Provider Management System
+
+  # EXTRACT FROM:
+  /reference/claude-code-router/ui/src/components/
+  ├── Providers.tsx                   # Provider management UI
+  ├── ProviderList.tsx               # Provider listing patterns
+  └── TransformerList.tsx            # Transformation patterns
+
+  # UPDATE EXISTING:
+  /examples/kortix-suna-extracted/frontend/agents/
+  └── agent-tools-configuration.tsx  # Enhance with provider patterns
+
+  # NEW:
+  /examples/claude-code-router-extracted/
+  └── provider-management/
+      ├── iraqi_provider_manager.py
+      ├── payment_provider_coordinator.py
+      └── government_service_providers.py
+
+  3. Open-SWE Repository Extraction Plan
+
+  Target Files for Extraction
+
+  A. LangGraph Agent Orchestration
+
+  # EXTRACT FROM:
+  /reference/open-swe/apps/open-swe/src/graphs/
+  ├── manager/index.ts               # Manager graph orchestration
+  ├── planner/index.ts              # Planning graph patterns
+  ├── programmer/index.ts           # Programming graph patterns
+  └── reviewer/index.ts             # Review graph patterns
+
+  # UPDATE EXISTING:
+  /examples/autogen-extracted/        # Enhance agent coordination
+  └── agentchat/autogen_agentchat/   # Add LangGraph patterns
+
+  # NEW:
+  /examples/open-swe-extracted/
+  ├── agent-orchestration/
+  │   ├── iraqi_agent_manager.py
+  │   ├── professional_planner_graph.py
+  │   ├── cultural_reviewer_graph.py
+  │   └── government_service_programmer.py
+
+  Enhancement Strategy:
+  # New: /examples/open-swe-extracted/agent-orchestration/iraqi_agent_manager.py
+  from langgraph import StateGraph, END, START
+  from typing import TypedDict, Annotated, List
+
+  class IraqiAgentState(TypedDict):
+      """Enhanced state with Iraqi cultural context"""
+      messages: Annotated[List[BaseMessage], add_messages]
+      cultural_context: IraqiCulturalContext
+      professional_domain: ProfessionalDomain
+      islamic_compliance_status: IslamicComplianceStatus
+      government_service_context: Optional[GovernmentServiceContext]
+      payment_gateway_context: Optional[PaymentGatewayContext]
+      arabic_processing_context: ArabicProcessingContext
+
+  class IraqiAgentManager:
+      """Enhanced agent manager with Iraqi professional workflows"""
+
+      def __init__(self):
+          self.workflow = StateGraph(IraqiAgentState)
+          self._setup_iraqi_workflow()
+
+      def _setup_iraqi_workflow(self):
+          """Setup Iraqi-specific agent workflow"""
+
+          # Cultural validation nodes
+          self.workflow.add_node("cultural_validation", self.validate_cultural_context)
+          self.workflow.add_node("islamic_compliance_check", self.check_islamic_compliance)
+
+          # Professional domain nodes
+          self.workflow.add_node("professional_classification", self.classify_professional_domain)
+          self.workflow.add_node("legal_service_planning", self.plan_legal_services)
+          self.workflow.add_node("medical_service_planning", self.plan_medical_services)
+          self.workflow.add_node("education_service_planning", self.plan_education_services)
+
+          # Government service nodes
+          self.workflow.add_node("government_service_detection", self.detect_government_services)
+          self.workflow.add_node("passport_service_automation", self.automate_passport_services)
+          self.workflow.add_node("university_application_automation", self.automate_university_applications)
+
+          # Payment processing nodes
+          self.workflow.add_node("payment_gateway_selection", self.select_payment_gateway)
+          self.workflow.add_node("zaincash_processing", self.process_zaincash_payment)
+          self.workflow.add_node("fastpay_processing", self.process_fastpay_payment)
+
+          # Arabic processing nodes
+          self.workflow.add_node("arabic_text_processing", self.process_arabic_text)
+          self.workflow.add_node("dialect_detection", self.detect_iraqi_dialect)
+          self.workflow.add_node("rtl_layout_optimization", self.optimize_rtl_layout)
+
+          # Setup Iraqi-specific workflow edges
+          self._setup_workflow_edges()
+
+      def _setup_workflow_edges(self):
+          """Define Iraqi agent workflow transitions"""
+          # Start with cultural validation
+          self.workflow.add_edge(START, "cultural_validation")
+          self.workflow.add_edge("cultural_validation", "islamic_compliance_check")
+
+          # Branch based on professional domain
+          self.workflow.add_conditional_edges(
+              "islamic_compliance_check",
+              self._route_by_professional_domain,
+              {
+                  "legal": "legal_service_planning",
+                  "medical": "medical_service_planning",
+                  "education": "education_service_planning",
+                  "government": "government_service_detection",
+                  "general": "arabic_text_processing"
+              }
+          )
+
+          # Government service routing
+          self.workflow.add_conditional_edges(
+              "government_service_detection",
+              self._route_government_services,
+              {
+                  "passport": "passport_service_automation",
+                  "university": "university_application_automation",
+                  "general": "arabic_text_processing"
+              }
+          )
+
+  B. Tool Integration Patterns
+
+  # EXTRACT FROM:
+  /reference/open-swe/apps/open-swe/src/tools/
+  ├── index.ts                       # Tool registry patterns
+  ├── shell.ts                      # Shell execution patterns
+  ├── search-documents-for/         # Document search patterns
+  └── builtin-tools/                # Built-in tool patterns
+
+  # UPDATE EXISTING:
+  /examples/kortix-suna-extracted/backend/agent/tools/
+  └── *.py                          # Enhance with Open-SWE patterns
+
+  # NEW:
+  /examples/open-swe-extracted/
+  └── tool-integration/
+      ├── iraqi_tool_registry.py
+      ├── government_portal_tools.py
+      ├── arabic_document_search.py
+      └── professional_domain_tools.py
+
+  4. Qwen-Code Repository Extraction Plan
+
+  Target Files for Extraction
+
+  A. Memory Management System
+
+  # EXTRACT FROM:
+  /reference/qwen-code/packages/core/src/tools/
+  ├── memoryTool.ts                  # Advanced memory management
+  └── multi-file/                   # Multi-file handling patterns
+
+  # UPDATE EXISTING:
+  /examples/praisonai-extracted/src/memory/
+  └── *.py                          # Enhance memory patterns
+
+  # NEW:
+  /examples/qwen-code-extracted/
+  ├── memory-management/
+  │   ├── iraqi_memory_manager.py
+  │   ├── cultural_context_persistence.py
+  │   ├── professional_memory_store.py
+  │   └── islamic_context_preservation.py
+
+  Enhancement Strategy:
+  # New: /examples/qwen-code-extracted/memory-management/iraqi_memory_manager.py
+  class IraqiMemoryManager:
+      """Enhanced memory management with Iraqi cultural context preservation"""
+
+      def __init__(self):
+          # Adopt Qwen-Code's memory architecture
+          self.base_memory = BaseMemoryManager()
+
+          # Iraqi-specific memory layers
+          self.cultural_memory = CulturalContextMemory()
+          self.professional_memory = ProfessionalDomainMemory()
+          self.islamic_memory = IslamicContextMemory()
+          self.family_memory = FamilyContextMemory()
+          self.government_service_memory = GovernmentServiceMemory()
+
+      async def store_with_cultural_context(self,
+                                          content: str,
+                                          context: IraqiContext) -> MemoryEntry:
+          """Store memory with comprehensive Iraqi cultural context"""
+
+          # Base memory storage from Qwen-Code patterns
+          base_entry = await self.base_memory.store(content)
+
+          # Enhance with cultural context
+          cultural_context = await self.cultural_memory.extract_cultural_context(content, context)
+          professional_context = await self.professional_memory.extract_professional_context(content, context)
+          islamic_context = await self.islamic_memory.extract_islamic_context(content, context)
+          family_context = await self.family_memory.extract_family_context(content, context)
+
+          # Create comprehensive Iraqi memory entry
+          iraqi_entry = IraqiMemoryEntry(
+              base_entry=base_entry,
+              cultural_context=cultural_context,
+              professional_context=professional_context,
+              islamic_context=islamic_context,
+              family_context=family_context,
+              timestamp=datetime.now(),
+              cultural_compliance_score=cultural_context.compliance_score,
+              islamic_approval_status=islamic_context.approval_status
+          )
+
+          return await self._store_iraqi_memory_entry(iraqi_entry)
+
+      async def retrieve_with_cultural_filtering(self,
+                                               query: str,
+                                               context: IraqiContext) -> List[IraqiMemoryEntry]:
+          """Retrieve memories with cultural appropriateness filtering"""
+
+          # Base retrieval with Qwen-Code patterns
+          base_results = await self.base_memory.retrieve(query)
+
+          # Filter and enhance with Iraqi context
+          filtered_results = []
+          for result in base_results:
+              # Cultural appropriateness check
+              if await self.cultural_memory.is_culturally_appropriate(result, context):
+                  # Islamic compliance check
+                  if await self.islamic_memory.is_islamically_compliant(result, context):
+                      # Professional relevance check
+                      if await self.professional_memory.is_professionally_relevant(result, context):
+                          enhanced_result = await self._enhance_with_current_context(result, context)
+                          filtered_results.append(enhanced_result)
+
+          return filtered_results
+
+  B. Web Search Integration
+
+  # EXTRACT FROM:
+  /reference/qwen-code/docs/tools/web-search.md
+  /reference/qwen-code/packages/core/src/tools/webSearchTool.ts
+
+  # UPDATE EXISTING:
+  /examples/main_agent_reference/        # Enhance web search patterns
+  └── research_agent.py
+
+  # ENHANCE EXISTING:
+  /examples/initials/41_web_search_integration.md
+
+  # NEW:
+  /examples/qwen-code-extracted/
+  └── web-search/
+      ├── iraqi_web_search_manager.py
+      ├── arabic_search_optimizer.py
+      ├── government_portal_search.py
+      └── cultural_content_filter.py
+
+  5. Integration Strategy for Existing Examples
+
+  Enhanced Examples Folder Structure
+
+  /examples/
+  ├── existing-folders/              # Keep existing implementations
+  ├── roo-code-extracted/           # NEW: Roo-Code patterns
+  │   ├── tool-orchestration/
+  │   ├── mcp-integration/
+  │   ├── browser-automation/
+  │   └── internationalization/
+  ├── claude-code-router-extracted/ # NEW: Router patterns
+  │   ├── routing/
+  │   ├── middleware/
+  │   └── provider-management/
+  ├── open-swe-extracted/           # NEW: Agent orchestration
+  │   ├── agent-orchestration/
+  │   ├── tool-integration/
+  │   └── workflow-management/
+  ├── qwen-code-extracted/          # NEW: Memory and search
+  │   ├── memory-management/
+  │   ├── web-search/
+  │   └── context-persistence/
+  └── unified-integration/          # NEW: Cross-repo integration
+      ├── iraqi_system_orchestrator.py
+      ├── cultural_compliance_manager.py
+      ├── professional_domain_coordinator.py
+      └── government_service_automation.py
+
+  6. Implementation Timeline and Dependencies
+
+  Phase 1: Foundation Enhancement (Weeks 1-6)
+
+  Week 1-2: Roo-Code Tool Orchestration
+  Priority: HIGH
+  Dependencies: None
+  Tasks:
+  - Extract ToolRepetitionDetector patterns
+  - Create IraqiToolRepetitionDetector with cultural validation
+  - Enhance existing kortix-suna tool wrappers
+  - Test with existing agent workflows
+
+  Week 3-4: MCP Integration Architecture
+  Priority: HIGH
+  Dependencies: Tool orchestration
+  Tasks:
+  - Extract McpHub patterns from Roo-Code
+  - Create IraqiMCPHub with cultural server management
+  - Integrate with existing kortix-suna MCP tools
+  - Test payment gateway MCP servers
+
+  Week 5-6: Agent Workflow Orchestration
+  Priority: HIGH
+  Dependencies: MCP integration
+  Tasks:
+  - Extract LangGraph patterns from Open-SWE
+  - Create IraqiAgentManager with professional workflows
+  - Enhance existing autogen agent coordination
+  - Test legal/medical/education workflows
+
+  Phase 2: Advanced Features (Weeks 7-14)
+
+  Week 7-8: Memory Management
+  Priority: MEDIUM
+  Dependencies: Agent workflows
+  Tasks:
+  - Extract memory patterns from Qwen-Code
+  - Create IraqiMemoryManager with cultural persistence
+  - Enhance existing praisonai memory systems
+  - Test cross-session cultural continuity
+
+  Week 9-10: Routing and Middleware
+  Priority: MEDIUM
+  Dependencies: Memory management
+  Tasks:
+  - Extract routing patterns from claude-code-router
+  - Create IraqiAPIRouter with cultural middleware
+  - Enhance existing API structures
+  - Test payment gateway routing
+
+  Week 11-12: Browser Automation Enhancement
+  Priority: MEDIUM
+  Dependencies: Routing systems
+  Tasks:
+  - Extract browser patterns from Roo-Code
+  - Enhance existing browser-use automation
+  - Add government portal automation
+  - Test Iraqi government service automation
+
+  Week 13-14: Web Search and Internationalization
+  Priority: LOW
+  Dependencies: Browser automation
+  Tasks:
+  - Extract web search patterns from Qwen-Code
+  - Enhance existing web search (Initial 41)
+  - Extract i18n patterns from Roo-Code
+  - Test Arabic search and localization
+
+  Phase 3: Integration and Optimization (Weeks 15-18)
+
+  Week 15-16: Unified Integration
+  Priority: HIGH
+  Dependencies: All previous phases
+  Tasks:
+  - Create unified system orchestrator
+  - Integrate all extracted patterns
+  - Test comprehensive Iraqi AI workflows
+  - Performance optimization
+
+  Week 17-18: Testing and Documentation
+  Priority: HIGH
+  Dependencies: Unified integration
+  Tasks:
+  - Comprehensive testing framework
+  - Documentation updates
+  - Performance benchmarking
+  - Production readiness validation
+
+  7. Specific Integration Commands
+
+  Extraction Commands
+
+
+
+
+
+
+these are the repos in the reference folder i dont have autogen in the reference folder from where are you getting it?
+
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/QwenLM/qwen-code
+https://github.com/musistudio/claude-code-router
+
+
+
+i told you to check the reference folder and compare it with the examples folder, to know what are need to extract from them and add it to the examples folder or update what we have in the examples folder for a better version
+so we have three options:
+1. extract from the reference folder and add it to the examples folder
+2. change what we have in the examples folder for a better version from the reference folder
+3. nothing need to extract from the reference folder
+
+remove what you done wrong in the examples folder
+
+
+check the git diff
+to know what you did wrong
+
+
+
+do you remember my app vision?
+
+this is my app vision if you forgot it
+is to build an AI chat system. like manus.im, genspark.ai, etc..,
+I want to the AI to speak and write mainly Arabic Iraqi accent in both speech and writing, and secondly, English. It depends on the user whether they use Arabic or English.
+I want it to be able to take PDF files, image files, text files, and Excel files, etc.
+and create PDF, Word, Excel, etc.
+and the AI agent keep learning from the user, and when the user keep use it and it'll get better and better. and learn to answer to that specific user. like chatGPT when the user keep talk to it it'll create memory for that user
+and it should be able to read and understand the content of the files and answer the user based on the content of the files. or what the user asks it to do.
+and I want it to be able to have access to the web and search for information and can answer today's events, etc, real-time data
+I want the user to have the option to add their job, profession, etc., which is optional. This allows the agent to respond more effectively to the user based on their job, profession, etc.
+I want to train the agent with real Iraq data like a lawyer or teacher, etc.
+So if the user adds his job, and tells him to do something related to his job, the agent should be able to answer it based on the training data, like the teacher can ask the agent to create an exam for subject x, etc, endless possibilities.
+I want to train the agent with the user data, but don't save the user data; it's just for training the agent. All the data is just for training the agent, and only the user can see the data.
+i want to make the agent access different data sources and answer the user based on the data sources.
+i want to make the agent to be able to access the different sites and do the tasks the user asks it to do. like file form online, etc.
+or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
+and a lot more other features
+
+
+
+if you remember we extracted from these repos what is useful for us, and added it in the examples folder
+
+https://github.com/langflow-ai/langflow
+https://github.com/MervinPraison/PraisonAI
+https://github.com/browser-use/browser-use
+https://github.com/Doriandarko/make-it-heavy
+https://github.com/block/goose
+https://github.com/kortix-ai/suna
+https://github.com/bytedance/deer-flow
+https://github.com/Fosowl/agenticSeek
+https://github.com/stackblitz-labs/bolt.diy
+https://github.com/microsoft/autogen
+https://github.com/Skyvern-AI/skyvern
+https://github.com/NirDiamant/GenAI_Agents
+https://github.com/assafelovic/gpt-researcher
+https://github.com/botpress/botpress
+https://github.com/danny-avila/LibreChat
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/QwenLM/qwen-code
+https://github.com/musistudio/claude-code-router
+https://github.com/bytedance/trae-agent
+https://github.com/sst/opencode
+https://github.com/coleam00/Archon
+https://github.com/google-gemini/gemini-cli
+
+https://github.com/e2b-dev/fragments
+https://github.com/browser-use/web-ui
+https://github.com/srcbookdev/srcbook
+
+
+i found these repos too check them thoroughly to know can we take something from them? or update what we have from them with better version from them, or they aren't useful for us check them and check the examples folder
+check thoroughly, and you can also check the docs folder to know what we extracted from them
+so we either extract from them or update what we have from them with better version or don't extract from them we have a better version in the examples folder
+
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/QwenLM/qwen-code
+https://github.com/musistudio/claude-code-router
+
+i have them here for you to check reference folder
+
+check thoroughly the code from the repos i added in the reference folder and compare it with what we have in the examples folder
+make a deep search
+
+before we start extracting from the repos i added in the reference folder
+create a plan for what we need to extract from each repo in the reference folder and to add it to the examples folder or update what we have in the examples folder for a better version
+make the plan file type md
+
+
+
+
+before we start execute the plan
+i want you to make a deep check to make sure the plan is good
+so check the examples folder and compare it with the reference folder
+
+and while we are checking the examples folder and the reference folder
+i found this repo check it too
+
+https://github.com/bytedance/trae-agent
+
+i added the repo in the reference folder
+
+and then update the plan
+https://github.com/bytedance/trae-agent
+https://github.com/sst/opencode
+https://github.com/coleam00/Archon
+https://github.com/google-gemini/gemini-cli
+
+
+
+before we start execute the plan
+i found these repos check it too
+
+https://github.com/sst/opencode
+https://github.com/coleam00/Archon
+https://github.com/google-gemini/gemini-cli
+
+i added the repos in the reference folder check them thoroughly make a deep research
+
+and then update the plan
+
+check archon rag system i think it's a good system check it and check what we have in the examples folder make a deep research
+
+
+before we implement the plan compare the plan for what we will extract from each repo in the reference folder with what we have in the examples folder to make sure we will either extract from the repos or update what we have in the examples folder or don't extract from the repos we have a better version in the examples folder make deep research
+
+
+
+https://github.com/cline/cline
+
+check cline repo you can find it in the reference folder
+cline which you'll find it similar to roo-code cus roo-code is a fork from cline
+what it catch my attention is the new feature it released which is three phase planning
+deep-planning, focus-chain and auto compact
+its the its just released it you can check the repo
+make a deep analysis
+and give me your opinion do we need it or not for our app, or do we have something better in the examples folder
+and check the repo for anything useful
+
+
+before we update the plan
+check the examples folder to check if we have anything and if we have compare them and then update the plan with the new findings 
+
+now we can start extracting from the repos following the plan
+lets start with the first step from the plan one step at a time and dont forget to update the plan after each step to know what we extracted and what we need to extract
 
 
 
@@ -1556,16 +2438,30 @@ do we need to create initial?
 
 
 
+**Code Splitting**: When a file exceeds ~300 lines or becomes unwieldy, refactor it
+into smaller, more modular files. When a function exceeds ~30 lines or does more than
+one thing, split it into smaller, purpose-driven functions.|
+
+File and Function Limits
+Never create a file longer than 500 lines of code. If approaching this limit, refactor by splitting into modules.
+Functions should be under 50 lines with a single, clear responsibility.
+Classes should be under 100 lines and represent a single concept or entity.
+Organize code into clearly separated modules, grouped by feature or responsibility.
+Line lenght should be max 100 characters ruff rule in pyproject.toml
+Use venv_linux (the virtual environment) whenever executing Python commands, including for unit tests.
+
+KISS (Keep It Simple, Stupid)
+Simplicity should be a key goal in design. Choose straightforward solutions over complex ones whenever possible. Simple solutions are easier to understand, maintain, and debug.
+
+YAGNI (You Aren't Gonna Need It)
+Avoid building functionality on speculation. Implement features only when they are needed, not when you anticipate they might be useful in the future.
 
 
-
-
-
-
-
-
-
-
+Design Principles
+Dependency Inversion: High-level modules should not depend on low-level modules. Both should depend on abstractions.
+Open/Closed Principle: Software entities should be open for extension but closed for modification.
+Single Responsibility: Each function, class, and module should have one clear purpose.
+Fail Fast: Check for potential errors early and raise exceptions immediately when issues occur.
 
 
 

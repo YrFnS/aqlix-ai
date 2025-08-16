@@ -159,7 +159,7 @@ Use for immediate processing without context overhead:
 - **Supabase**: Database operations, real-time features
 - **Sentry**: Error tracking, performance monitoring
 - **Desktop Commander**: File operations, system tasks
-- **Serena**: Code search, semantic analysis
+- **Serena**: Code search, semantic analysis and editing capabilities
 - **Puppeteer**: Advanced browser automation
 
 **Selection Rules**:
