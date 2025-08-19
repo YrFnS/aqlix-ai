@@ -2421,6 +2421,8 @@ lets start with the first step from the plan one step at a time and dont forget 
 
 
 
+why did you create this file?
+in this phase of the app we are extracting from the repos in the reference folder and adding them to the examples folder
 
 
 
@@ -2433,6 +2435,22 @@ lets start with the first step from the plan one step at a time and dont forget 
 
 
 
+https://github.com/onlook-dev/onlook
+https://github.com/botpress/botpress
+https://github.com/anthropics/claude-code
+
+
+
+
+
+
+
+
+
+
+update sub-agents mcp
+
+new sub-agent doc
 
 
 
