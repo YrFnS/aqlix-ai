@@ -1,1149 +1,516 @@
 """
-Cultural Server Manager - Enhanced MCP server lifecycle management with Iraqi cultural compliance
-Part of Roo-Code extraction with comprehensive Iraqi cultural integration
+Cultural Server Manager - MCP Server Configuration and Management
 
-Extends Roo-Code's McpServerManager patterns with Iraqi cultural validation,
-Islamic compliance checking, and professional domain expertise for managing
-MCP server instances with cultural awareness and automated compliance monitoring.
-- Cultural server registry and lifecycle management
-- Islamic compliance monitoring and automated remediation
-- Professional domain-specific server orchestration
-- Government service integration and security compliance
+Enhanced server management with Iraqi cultural intelligence and Arabic support.
+Extracted from Roo-Code MCP server management patterns.
 
-Based on: RooCodeInc/Roo-Code MCP server lifecycle patterns
-Enhanced for: Iraqi AI Chat System with cultural and professional compliance
+Key features:
+- Cultural compliance validation for MCP servers
+- Arabic language capability detection and configuration
+- Professional domain-specific server routing
+- Islamic compliance enforcement for server operations
 """
 
-from typing import Dict, List, Optional, Any, Set, Callable, Awaitable
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from typing import Dict, List, Any, Optional, Set
 from enum import Enum
+from dataclasses import dataclass
 import asyncio
 import json
 import logging
-import threading
-import weakref
 from pathlib import Path
-from contextlib import asynccontextmanager
 
-# Cultural integration imports
-from .iraqi_mcp_hub import IraqiMcpHub, IraqiMcpServerConfig, McpServerStatus, CulturalValidationLevel
-from ..tool-orchestration.cultural_tool_validator import CulturalToolValidator
-from ..sequential-thinking.government_thinking_framework import GovernmentThinkingFramework, MinistryDomain
+from iraqi_mcp_hub import IraqiProfessionalDomain, CulturalValidationLevel
 
+class ServerType(Enum):
+    CULTURAL_VALIDATOR = "cultural_validator"
+    ARABIC_PROCESSOR = "arabic_processor"
+    PROFESSIONAL_DOMAIN = "professional_domain"
+    GENERAL_PURPOSE = "general_purpose"
+    SECURITY_VALIDATOR = "security_validator"
 
-class ServerLifecycleEvent(Enum):
-    """Server lifecycle events for cultural monitoring"""
-    REGISTRATION = "registration"
-    CONNECTION_ATTEMPT = "connection_attempt"
-    CONNECTED = "connected"
-    DISCONNECTED = "disconnected"
-    CULTURAL_VALIDATION = "cultural_validation"
-    ISLAMIC_COMPLIANCE_CHECK = "islamic_compliance_check"
-    PROFESSIONAL_AUDIT = "professional_audit"
-    ERROR_OCCURRED = "error_occurred"
-    SHUTDOWN = "shutdown"
-
-
-class CulturalServerCategory(Enum):
-    """Categories for cultural server classification"""
-    GENERAL_PURPOSE = "general_purpose"           # General purpose servers
-    PROFESSIONAL_LEGAL = "professional_legal"    # Legal domain servers
-    PROFESSIONAL_MEDICAL = "professional_medical" # Medical domain servers  
-    EDUCATIONAL = "educational"                   # Educational servers
-    GOVERNMENT_SERVICES = "government_services"   # Government service servers
-    FAMILY_ORIENTED = "family_oriented"          # Family-safe servers
-    RELIGIOUS_STUDIES = "religious_studies"      # Islamic studies servers
-    ARABIC_LANGUAGE = "arabic_language"          # Arabic language processing
-    CULTURAL_HERITAGE = "cultural_heritage"      # Iraqi cultural content
-
+class ServerStatus(Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+    VALIDATING = "validating"
+    ERROR = "error"
+    CULTURALLY_NON_COMPLIANT = "culturally_non_compliant"
 
 @dataclass
-class ServerLifecycleRecord:
-    """Record of server lifecycle events with cultural context"""
-    server_name: str
-    event: ServerLifecycleEvent
-    timestamp: datetime
-    details: Dict[str, Any]
-    cultural_context: Optional[Dict[str, Any]] = None
-    islamic_compliance_status: Optional[bool] = None
-    professional_domain: Optional[str] = None
-    error_message: Optional[str] = None
-
+class ServerCapability:
+    name: str
+    description: str
+    arabic_support: bool
+    rtl_support: bool
+    professional_domains: List[IraqiProfessionalDomain]
+    cultural_validation_level: CulturalValidationLevel
 
 @dataclass
-class CulturalServerPolicy:
-    """Policy definition for cultural server management"""
-    category: CulturalServerCategory
-    required_validation_level: CulturalValidationLevel
-    islamic_compliance_mandatory: bool
-    family_filtering_required: bool
-    professional_oversight_needed: bool
-    government_approval_required: bool
+class ServerConfiguration:
+    name: str
+    server_type: ServerType
+    endpoint: str
+    capabilities: List[ServerCapability]
+    status: ServerStatus
+    cultural_compliance_score: float
+    arabic_language_support: bool
+    supported_domains: List[IraqiProfessionalDomain]
+    validation_errors: List[str]
     
-    # Operational constraints
-    max_concurrent_connections: int = 5
-    health_check_interval: int = 30
-    cultural_audit_interval: int = 3600  # 1 hour
+class CulturalServerManager:
+    """Manages MCP servers with Iraqi cultural intelligence and compliance"""
     
-    # Cultural requirements
-    required_cultural_features: Set[str] = field(default_factory=set)
-    blocked_cultural_patterns: Set[str] = field(default_factory=set)
-    
-    # Monitoring settings
-    log_all_interactions: bool = False
-    alert_on_cultural_violations: bool = True
-    auto_disconnect_on_violations: bool = False
-
-
-@dataclass
-class ServerProvider:
-    """Provider information for server registration"""
-    provider_id: str
-    provider_name: str
-    cultural_context: Dict[str, Any]
-    registration_timestamp: datetime
-    active_servers: Set[str] = field(default_factory=set)
-
-
-class CulturalServerRegistry:
-    """Registry for managing culturally-compliant MCP servers"""
-    
-    def __init__(self):
-        self.registered_servers: Dict[str, IraqiMcpServerConfig] = {}
-        self.server_categories: Dict[str, CulturalServerCategory] = {}
-        self.cultural_policies: Dict[CulturalServerCategory, CulturalServerPolicy] = {}
-        self.lifecycle_history: List[ServerLifecycleRecord] = []
-        self.providers: Dict[str, ServerProvider] = {}
+    def __init__(self, validation_level: CulturalValidationLevel = CulturalValidationLevel.PROFESSIONAL):
+        self.validation_level = validation_level
+        self.servers: Dict[str, ServerConfiguration] = {}
+        self.cultural_validators: Set[str] = set()
+        self.arabic_processors: Set[str] = set()
+        self.domain_specialists: Dict[IraqiProfessionalDomain, Set[str]] = {}
+        self.server_priority_matrix: Dict[str, int] = {}
+        self._setup_logging()
         
-        # Initialize default cultural policies
-        self._initialize_default_policies()
+    def _setup_logging(self):
+        """Setup culturally appropriate logging system"""
+        self.logger = logging.getLogger("cultural_server_manager")
+        self.logger.setLevel(logging.INFO)
+        
+        # Add Arabic RTL formatting support for logs
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        
+        handler = logging.StreamHandler()
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
     
-    def register_server(self, 
-                       config: IraqiMcpServerConfig, 
-                       category: CulturalServerCategory,
-                       provider_id: str) -> bool:
-        """Register server with cultural validation"""
+    async def register_server(self, server_config: Dict[str, Any]) -> bool:
+        """Register an MCP server with cultural validation"""
         try:
-            # Validate against cultural policy
-            policy = self.cultural_policies.get(category)
-            if not policy:
-                logging.error(f"No policy defined for category {category}")
+            server_name = server_config.get('name', 'unknown_server')
+            
+            # Validate server configuration structure
+            validation_result = await self._validate_server_structure(server_config)
+            if not validation_result['is_valid']:
+                self.logger.error(f"Server {server_name} failed structure validation: {validation_result['errors']}")
                 return False
             
-            if not self._validate_server_against_policy(config, policy):
-                logging.error(f"Server {config.name} failed cultural policy validation")
+            # Perform cultural compliance assessment
+            compliance_result = await self._assess_cultural_compliance(server_config)
+            
+            # Create server capabilities
+            capabilities = await self._extract_server_capabilities(server_config)
+            
+            # Determine server type based on capabilities
+            server_type = self._determine_server_type(capabilities)
+            
+            # Create server configuration
+            configuration = ServerConfiguration(
+                name=server_name,
+                server_type=server_type,
+                endpoint=server_config.get('endpoint', ''),
+                capabilities=capabilities,
+                status=ServerStatus.VALIDATING,
+                cultural_compliance_score=compliance_result['score'],
+                arabic_language_support=compliance_result['arabic_support'],
+                supported_domains=compliance_result['domains'],
+                validation_errors=compliance_result.get('errors', [])
+            )
+            
+            # Final validation check
+            if compliance_result['score'] < 0.7 and self.validation_level == CulturalValidationLevel.STRICT:
+                configuration.status = ServerStatus.CULTURALLY_NON_COMPLIANT
+                self.logger.warning(f"Server {server_name} marked as culturally non-compliant")
                 return False
             
             # Register server
-            self.registered_servers[config.name] = config
-            self.server_categories[config.name] = category
+            self.servers[server_name] = configuration
+            await self._update_server_classifications(server_name, configuration)
             
-            # Update provider registry
-            if provider_id in self.providers:
-                self.providers[provider_id].active_servers.add(config.name)
+            # Set server status based on validation
+            configuration.status = ServerStatus.ACTIVE if compliance_result['score'] >= 0.6 else ServerStatus.ERROR
             
-            # Record lifecycle event
-            self._record_lifecycle_event(
-                config.name, 
-                ServerLifecycleEvent.REGISTRATION,
-                {"category": category.value, "provider_id": provider_id}
-            )
-            
+            self.logger.info(f"Successfully registered server {server_name} with compliance score: {compliance_result['score']:.2f}")
             return True
             
         except Exception as e:
-            logging.error(f"Server registration failed: {str(e)}")
+            self.logger.error(f"Failed to register server: {str(e)}")
             return False
     
-    def unregister_server(self, server_name: str, provider_id: str) -> bool:
-        """Unregister server from cultural registry"""
-        try:
-            if server_name not in self.registered_servers:
-                return False
-            
-            # Remove from registries
-            del self.registered_servers[server_name]
-            category = self.server_categories.pop(server_name, None)
-            
-            # Update provider registry
-            if provider_id in self.providers:
-                self.providers[provider_id].active_servers.discard(server_name)
-            
-            # Record lifecycle event
-            self._record_lifecycle_event(
-                server_name,
-                ServerLifecycleEvent.SHUTDOWN,
-                {"category": category.value if category else None, "provider_id": provider_id}
-            )
-            
-            return True
-            
-        except Exception as e:
-            logging.error(f"Server unregistration failed: {str(e)}")
-            return False
+    async def get_servers_by_domain(self, domain: IraqiProfessionalDomain) -> List[ServerConfiguration]:
+        """Get servers specialized for a specific professional domain"""
+        domain_servers = []
+        
+        for server_name, config in self.servers.items():
+            if (config.status == ServerStatus.ACTIVE and 
+                domain in config.supported_domains):
+                domain_servers.append(config)
+        
+        # Sort by cultural compliance score (highest first)
+        domain_servers.sort(key=lambda x: x.cultural_compliance_score, reverse=True)
+        
+        return domain_servers
     
-    def get_servers_by_category(self, category: CulturalServerCategory) -> List[IraqiMcpServerConfig]:
-        """Get all servers in a cultural category"""
-        return [
-            config for name, config in self.registered_servers.items()
-            if self.server_categories.get(name) == category
-        ]
-    
-    def get_culturally_appropriate_servers(self, 
-                                         cultural_context: Dict[str, Any]) -> List[IraqiMcpServerConfig]:
-        """Get servers appropriate for cultural context"""
-        appropriate_servers = []
+    async def get_arabic_capable_servers(self) -> List[ServerConfiguration]:
+        """Get servers with Arabic language processing capabilities"""
+        arabic_servers = []
         
-        family_context = cultural_context.get("family_context", False)
-        professional_domain = cultural_context.get("professional_domain")
-        islamic_compliance = cultural_context.get("islamic_compliance", True)
+        for server_name in self.arabic_processors:
+            if (server_name in self.servers and 
+                self.servers[server_name].status == ServerStatus.ACTIVE):
+                arabic_servers.append(self.servers[server_name])
         
-        for name, config in self.registered_servers.items():
-            # Check family context requirements
-            if family_context and not config.family_context_sensitive:
-                continue
-            
-            # Check professional domain compatibility
-            if professional_domain and config.professional_domain != professional_domain:
-                continue
-            
-            # Check Islamic compliance
-            if islamic_compliance and not config.islamic_compliance_required:
-                continue
-            
-            appropriate_servers.append(config)
-        
-        return appropriate_servers
-    
-    def _validate_server_against_policy(self, 
-                                       config: IraqiMcpServerConfig, 
-                                       policy: CulturalServerPolicy) -> bool:
-        """Validate server configuration against cultural policy"""
-        # Check validation level
-        if config.cultural_validation_level.value < policy.required_validation_level.value:
-            return False
-        
-        # Check Islamic compliance
-        if policy.islamic_compliance_mandatory and not config.islamic_compliance_required:
-            return False
-        
-        # Check family filtering
-        if policy.family_filtering_required and not config.family_context_sensitive:
-            return False
-        
-        # Check required cultural features
-        server_features = set()
-        if config.arabic_language_support:
-            server_features.add("arabic_support")
-        if config.islamic_compliance_required:
-            server_features.add("islamic_compliance")
-        if config.family_context_sensitive:
-            server_features.add("family_filtering")
-        
-        if not policy.required_cultural_features.issubset(server_features):
-            return False
-        
-        return True
-    
-    def _initialize_default_policies(self):
-        """Initialize default cultural policies for server categories"""
-        self.cultural_policies = {
-            CulturalServerCategory.GENERAL_PURPOSE: CulturalServerPolicy(
-                category=CulturalServerCategory.GENERAL_PURPOSE,
-                required_validation_level=CulturalValidationLevel.BASIC,
-                islamic_compliance_mandatory=True,
-                family_filtering_required=False,
-                professional_oversight_needed=False,
-                government_approval_required=False,
-                required_cultural_features={"islamic_compliance"}
-            ),
-            
-            CulturalServerCategory.PROFESSIONAL_LEGAL: CulturalServerPolicy(
-                category=CulturalServerCategory.PROFESSIONAL_LEGAL,
-                required_validation_level=CulturalValidationLevel.PROFESSIONAL,
-                islamic_compliance_mandatory=True,
-                family_filtering_required=False,
-                professional_oversight_needed=True,
-                government_approval_required=True,
-                max_concurrent_connections=3,
-                health_check_interval=15,
-                required_cultural_features={"islamic_compliance", "professional_validation"},
-                log_all_interactions=True
-            ),
-            
-            CulturalServerCategory.FAMILY_ORIENTED: CulturalServerPolicy(
-                category=CulturalServerCategory.FAMILY_ORIENTED,
-                required_validation_level=CulturalValidationLevel.FAMILY,
-                islamic_compliance_mandatory=True,
-                family_filtering_required=True,
-                professional_oversight_needed=False,
-                government_approval_required=False,
-                required_cultural_features={"islamic_compliance", "family_filtering"},
-                alert_on_cultural_violations=True,
-                auto_disconnect_on_violations=True
-            ),
-            
-            CulturalServerCategory.GOVERNMENT_SERVICES: CulturalServerPolicy(
-                category=CulturalServerCategory.GOVERNMENT_SERVICES,
-                required_validation_level=CulturalValidationLevel.GOVERNMENT,
-                islamic_compliance_mandatory=True,
-                family_filtering_required=False,
-                professional_oversight_needed=True,
-                government_approval_required=True,
-                max_concurrent_connections=2,
-                health_check_interval=10,
-                cultural_audit_interval=1800,  # 30 minutes
-                required_cultural_features={"islamic_compliance", "government_compliance"},
-                log_all_interactions=True,
-                alert_on_cultural_violations=True
-            ),
-            
-            CulturalServerCategory.RELIGIOUS_STUDIES: CulturalServerPolicy(
-                category=CulturalServerCategory.RELIGIOUS_STUDIES,
-                required_validation_level=CulturalValidationLevel.RELIGIOUS,
-                islamic_compliance_mandatory=True,
-                family_filtering_required=True,
-                professional_oversight_needed=True,
-                government_approval_required=False,
-                required_cultural_features={"islamic_compliance", "family_filtering", "religious_validation"},
-                alert_on_cultural_violations=True,
-                auto_disconnect_on_violations=True
-            )
-        }
-    
-    def _record_lifecycle_event(self, 
-                               server_name: str, 
-                               event: ServerLifecycleEvent,
-                               details: Dict[str, Any]):
-        """Record server lifecycle event"""
-        record = ServerLifecycleRecord(
-            server_name=server_name,
-            event=event,
-            timestamp=datetime.now(),
-            details=details
+        # Sort by Arabic support quality
+        arabic_servers.sort(
+            key=lambda x: sum(1 for cap in x.capabilities if cap.arabic_support and cap.rtl_support),
+            reverse=True
         )
         
-        self.lifecycle_history.append(record)
-        
-        # Keep only last 1000 events
-        if len(self.lifecycle_history) > 1000:
-            self.lifecycle_history = self.lifecycle_history[-1000:]
-
-
-class CulturalServerManager:
-    """
-    Enhanced MCP Server Manager with comprehensive Iraqi cultural integration
+        return arabic_servers
     
-    Based on Roo-Code patterns with advanced cultural monitoring, Islamic 
-    compliance enforcement, and professional domain management.
-    """
+    async def get_cultural_validators(self) -> List[ServerConfiguration]:
+        """Get servers specialized in cultural validation"""
+        validator_servers = []
+        
+        for server_name in self.cultural_validators:
+            if (server_name in self.servers and 
+                self.servers[server_name].status == ServerStatus.ACTIVE):
+                validator_servers.append(self.servers[server_name])
+        
+        return validator_servers
     
-    def __init__(self, 
-                 cultural_validator: Optional[CulturalToolValidator] = None,
-                 government_framework: Optional[GovernmentThinkingFramework] = None):
+    async def select_optimal_server(self, requirements: Dict[str, Any]) -> Optional[ServerConfiguration]:
+        """Select optimal server based on requirements and cultural preferences"""
         
-        self.hub_instances: Dict[str, IraqiMcpHub] = {}
-        self.registry = CulturalServerRegistry()
-        self.cultural_validator = cultural_validator or CulturalToolValidator()
-        self.government_framework = government_framework or GovernmentThinkingFramework()
+        required_domain = requirements.get('domain')
+        needs_arabic = requirements.get('arabic_support', False)
+        needs_cultural_validation = requirements.get('cultural_validation', False)
+        content_sensitivity = requirements.get('sensitivity_level', 'standard')
         
-        # Provider management
-        self.providers: weakref.WeakSet = weakref.WeakSet()
-        self.initialization_lock = threading.Lock()
-        self.shutdown_event = threading.Event()
+        candidates = []
         
-        # Cultural monitoring
-        self.cultural_monitors: Dict[str, asyncio.Task] = {}
-        self.compliance_alerts: List[Dict[str, Any]] = []
+        # Get servers that meet basic requirements
+        for server_name, config in self.servers.items():
+            if config.status != ServerStatus.ACTIVE:
+                continue
+            
+            # Check domain compatibility
+            if required_domain and required_domain not in config.supported_domains:
+                continue
+            
+            # Check Arabic support if needed
+            if needs_arabic and not config.arabic_language_support:
+                continue
+            
+            # Check cultural validation capability if needed
+            if needs_cultural_validation and server_name not in self.cultural_validators:
+                continue
+            
+            candidates.append(config)
         
-        # Performance tracking
-        self.performance_metrics = {
-            "total_servers_managed": 0,
-            "active_connections": 0,
-            "cultural_violations_detected": 0,
-            "islamic_compliance_failures": 0,
-            "professional_audit_failures": 0,
-            "government_approval_pending": 0
+        if not candidates:
+            self.logger.warning("No suitable servers found for requirements")
+            return None
+        
+        # Score candidates based on cultural and functional criteria
+        scored_candidates = []
+        for candidate in candidates:
+            score = await self._score_server_suitability(candidate, requirements)
+            scored_candidates.append((candidate, score))
+        
+        # Sort by score (highest first)
+        scored_candidates.sort(key=lambda x: x[1], reverse=True)
+        
+        selected_server = scored_candidates[0][0]
+        self.logger.info(f"Selected server {selected_server.name} with score {scored_candidates[0][1]:.2f}")
+        
+        return selected_server
+    
+    async def _validate_server_structure(self, server_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Validate server configuration structure"""
+        errors = []
+        required_fields = ['name', 'capabilities']
+        
+        for field in required_fields:
+            if field not in server_config:
+                errors.append(f"Missing required field: {field}")
+        
+        # Validate capabilities structure
+        capabilities = server_config.get('capabilities', {})
+        if not isinstance(capabilities, dict):
+            errors.append("Capabilities must be a dictionary")
+        
+        return {
+            'is_valid': len(errors) == 0,
+            'errors': errors
+        }
+    
+    async def _assess_cultural_compliance(self, server_config: Dict[str, Any]) -> Dict[str, Any]:
+        """Assess server's cultural compliance and appropriateness"""
+        score = 1.0
+        errors = []
+        capabilities = server_config.get('capabilities', {})
+        
+        # Check for inappropriate content indicators
+        inappropriate_patterns = [
+            'adult', 'gambling', 'alcohol', 'dating', 'inappropriate',
+            'explicit', 'mature', 'nsfw'
+        ]
+        
+        config_text = json.dumps(server_config, default=str).lower()
+        
+        for pattern in inappropriate_patterns:
+            if pattern in config_text:
+                score -= 0.2
+                errors.append(f"Inappropriate content pattern detected: {pattern}")
+        
+        # Check for Arabic language support indicators
+        arabic_indicators = [
+            'arabic', 'عربي', 'rtl', 'right-to-left', 'بالعربية',
+            'i18n', 'internationalization', 'multilingual'
+        ]
+        
+        arabic_support = any(indicator in config_text for indicator in arabic_indicators)
+        
+        # Bonus for Arabic support
+        if arabic_support:
+            score += 0.1
+        
+        # Detect supported professional domains
+        domains = []
+        domain_indicators = {
+            IraqiProfessionalDomain.LEGAL: ['legal', 'law', 'court', 'قانون', 'محكمة'],
+            IraqiProfessionalDomain.MEDICAL: ['medical', 'health', 'طبي', 'صحة'],
+            IraqiProfessionalDomain.EDUCATIONAL: ['education', 'school', 'تعليم', 'مدرسة'],
+            IraqiProfessionalDomain.GOVERNMENT: ['government', 'حكومة', 'وزارة'],
+            IraqiProfessionalDomain.BUSINESS: ['business', 'تجارة', 'شركة'],
+            IraqiProfessionalDomain.TECHNICAL: ['technical', 'تقني', 'برمجة']
         }
         
-        # Start background monitoring
-        asyncio.create_task(self._cultural_monitoring_loop())
-        asyncio.create_task(self._compliance_audit_loop())
+        for domain, indicators in domain_indicators.items():
+            if any(indicator in config_text for indicator in indicators):
+                domains.append(domain)
+        
+        # Always include general domain
+        if IraqiProfessionalDomain.GENERAL not in domains:
+            domains.append(IraqiProfessionalDomain.GENERAL)
+        
+        return {
+            'score': max(0.0, min(1.0, score)),
+            'arabic_support': arabic_support,
+            'domains': domains,
+            'errors': errors,
+            'assessment_details': {
+                'inappropriate_content_detected': len(errors) > 0,
+                'arabic_language_capabilities': arabic_support,
+                'professional_domain_coverage': len(domains)
+            }
+        }
     
-    async def get_hub_instance(self, 
-                             context_id: str, 
-                             provider: Any,
-                             cultural_context: Optional[Dict[str, Any]] = None) -> IraqiMcpHub:
-        """Get singleton hub instance with cultural context"""
-        with self.initialization_lock:
-            if context_id not in self.hub_instances:
-                # Create new hub instance
-                hub = IraqiMcpHub(
-                    cultural_validator=self.cultural_validator
+    async def _extract_server_capabilities(self, server_config: Dict[str, Any]) -> List[ServerCapability]:
+        """Extract and structure server capabilities"""
+        capabilities = []
+        raw_capabilities = server_config.get('capabilities', {})
+        
+        for cap_name, cap_details in raw_capabilities.items():
+            if isinstance(cap_details, dict):
+                # Extract capability information
+                description = cap_details.get('description', '')
+                
+                # Detect Arabic and RTL support
+                cap_text = json.dumps(cap_details, default=str).lower()
+                arabic_support = any(indicator in cap_text for indicator in ['arabic', 'عربي', 'rtl'])
+                rtl_support = any(indicator in cap_text for indicator in ['rtl', 'right-to-left'])
+                
+                # Determine professional domains for this capability
+                domains = self._detect_capability_domains(cap_text)
+                
+                # Determine validation level
+                validation_level = CulturalValidationLevel.STANDARD
+                if 'strict' in cap_text or 'professional' in cap_text:
+                    validation_level = CulturalValidationLevel.STRICT
+                elif 'basic' in cap_text:
+                    validation_level = CulturalValidationLevel.BASIC
+                
+                capability = ServerCapability(
+                    name=cap_name,
+                    description=description,
+                    arabic_support=arabic_support,
+                    rtl_support=rtl_support,
+                    professional_domains=domains,
+                    cultural_validation_level=validation_level
                 )
                 
-                self.hub_instances[context_id] = hub
-                
-                # Register provider
-                provider_id = f"{context_id}_{id(provider)}"
-                self.registry.providers[provider_id] = ServerProvider(
-                    provider_id=provider_id,
-                    provider_name=str(provider),
-                    cultural_context=cultural_context or {},
-                    registration_timestamp=datetime.now()
-                )
-                
-                self.providers.add(provider)
-            
-            return self.hub_instances[context_id]
-    
-    async def register_culturally_compliant_server(self,
-                                                 context_id: str,
-                                                 config: IraqiMcpServerConfig,
-                                                 category: CulturalServerCategory,
-                                                 provider_id: str) -> Dict[str, Any]:
-        """Register server with comprehensive cultural validation"""
-        try:
-            # Validate cultural compliance
-            if not await self._perform_cultural_pre_registration_audit(config, category):
-                return {
-                    "success": False,
-                    "error": "Failed cultural pre-registration audit",
-                    "cultural_compliance": False
-                }
-            
-            # Check government approval if required
-            policy = self.registry.cultural_policies.get(category)
-            if policy and policy.government_approval_required:
-                approval_result = await self._request_government_approval(config, category)
-                if not approval_result["approved"]:
-                    return {
-                        "success": False,
-                        "error": f"Government approval denied: {approval_result['reason']}",
-                        "government_approval": False
-                    }
-            
-            # Register in cultural registry
-            if not self.registry.register_server(config, category, provider_id):
-                return {
-                    "success": False,
-                    "error": "Failed to register in cultural registry",
-                    "registry_error": True
-                }
-            
-            # Get hub instance and register server
-            hub = await self.get_hub_instance(context_id, provider_id)
-            
-            if await hub.register_server(config):
-                # Start cultural monitoring
-                await self._start_cultural_monitoring(config.name, category)
-                
-                self.performance_metrics["total_servers_managed"] += 1
-                
-                return {
-                    "success": True,
-                    "server_name": config.name,
-                    "category": category.value,
-                    "cultural_compliance": True,
-                    "monitoring_active": True
-                }
-            else:
-                # Registration failed, remove from cultural registry
-                self.registry.unregister_server(config.name, provider_id)
-                return {
-                    "success": False,
-                    "error": "Hub registration failed",
-                    "hub_error": True
-                }
-            
-        except Exception as e:
-            logging.error(f"Server registration failed: {str(e)}")
-            return {
-                "success": False,
-                "error": str(e),
-                "exception_occurred": True
-            }
-    
-    async def unregister_server(self, 
-                              context_id: str, 
-                              server_name: str, 
-                              provider_id: str) -> bool:
-        """Unregister server with cultural cleanup"""
-        try:
-            # Stop cultural monitoring
-            await self._stop_cultural_monitoring(server_name)
-            
-            # Remove from hub
-            if context_id in self.hub_instances:
-                hub = self.hub_instances[context_id]
-                await hub.unregister_server(server_name)
-            
-            # Remove from cultural registry
-            success = self.registry.unregister_server(server_name, provider_id)
-            
-            if success:
-                self.performance_metrics["total_servers_managed"] -= 1
-            
-            return success
-            
-        except Exception as e:
-            logging.error(f"Server unregistration failed: {str(e)}")
-            return False
-    
-    async def get_culturally_appropriate_servers(self,
-                                               context_id: str,
-                                               cultural_context: Dict[str, Any]) -> List[Dict[str, Any]]:
-        """Get servers appropriate for cultural context"""
-        try:
-            # Get hub instance
-            if context_id not in self.hub_instances:
-                return []
-            
-            hub = self.hub_instances[context_id]
-            
-            # Get culturally appropriate servers from registry
-            appropriate_configs = self.registry.get_culturally_appropriate_servers(cultural_context)
-            
-            # Get server status from hub
-            server_list = await hub.list_available_servers(include_disabled=False)
-            server_status_map = {s["name"]: s for s in server_list}
-            
-            # Combine registry and hub information
-            result = []
-            for config in appropriate_configs:
-                server_info = server_status_map.get(config.name, {})
-                category = self.registry.server_categories.get(config.name)
-                
-                result.append({
-                    "name": config.name,
-                    "category": category.value if category else "unknown",
-                    "status": server_info.get("status", "unknown"),
-                    "cultural_features": server_info.get("cultural_features", {}),
-                    "validation_level": config.cultural_validation_level.value,
-                    "professional_domain": config.professional_domain,
-                    "cultural_score": await self._calculate_cultural_match_score(config, cultural_context)
-                })
-            
-            # Sort by cultural score (highest first)
-            result.sort(key=lambda x: x["cultural_score"], reverse=True)
-            
-            return result
-            
-        except Exception as e:
-            logging.error(f"Failed to get culturally appropriate servers: {str(e)}")
-            return []
-    
-    async def perform_cultural_audit(self, server_name: str) -> Dict[str, Any]:
-        """Perform comprehensive cultural audit of server"""
-        try:
-            if server_name not in self.registry.registered_servers:
-                return {"error": f"Server {server_name} not found in registry"}
-            
-            config = self.registry.registered_servers[server_name]
-            category = self.registry.server_categories[server_name]
-            policy = self.registry.cultural_policies[category]
-            
-            audit_result = {
-                "server_name": server_name,
-                "audit_timestamp": datetime.now().isoformat(),
-                "category": category.value,
-                "compliance_status": "unknown",
-                "findings": [],
-                "recommendations": [],
-                "cultural_score": 0.0,
-                "islamic_compliance": False,
-                "family_appropriate": False,
-                "professional_standards": False
-            }
-            
-            # Validate against cultural policy
-            policy_compliance = self.registry._validate_server_against_policy(config, policy)
-            if not policy_compliance:
-                audit_result["findings"].append("Server configuration does not meet cultural policy requirements")
-            
-            # Check Islamic compliance
-            islamic_compliance = config.islamic_compliance_required
-            audit_result["islamic_compliance"] = islamic_compliance
-            if not islamic_compliance and policy.islamic_compliance_mandatory:
-                audit_result["findings"].append("Islamic compliance required but not enabled")
-            
-            # Check family appropriateness
-            family_appropriate = config.family_context_sensitive or not policy.family_filtering_required
-            audit_result["family_appropriate"] = family_appropriate
-            if not family_appropriate:
-                audit_result["findings"].append("Family filtering required but not enabled")
-            
-            # Check professional standards
-            professional_standards = bool(config.professional_domain) if policy.professional_oversight_needed else True
-            audit_result["professional_standards"] = professional_standards
-            if not professional_standards:
-                audit_result["findings"].append("Professional domain oversight required")
-            
-            # Calculate overall cultural score
-            score_components = []
-            if policy_compliance:
-                score_components.append(0.3)
-            if islamic_compliance:
-                score_components.append(0.3)
-            if family_appropriate:
-                score_components.append(0.2)
-            if professional_standards:
-                score_components.append(0.2)
-            
-            audit_result["cultural_score"] = sum(score_components)
-            
-            # Determine compliance status
-            if audit_result["cultural_score"] >= 0.8:
-                audit_result["compliance_status"] = "compliant"
-            elif audit_result["cultural_score"] >= 0.6:
-                audit_result["compliance_status"] = "partially_compliant"
-            else:
-                audit_result["compliance_status"] = "non_compliant"
-            
-            # Generate recommendations
-            if not policy_compliance:
-                audit_result["recommendations"].append("Update server configuration to meet cultural policy")
-            if not islamic_compliance and policy.islamic_compliance_mandatory:
-                audit_result["recommendations"].append("Enable Islamic compliance features")
-            if not family_appropriate:
-                audit_result["recommendations"].append("Implement family content filtering")
-            if not professional_standards:
-                audit_result["recommendations"].append("Assign professional domain oversight")
-            
-            # Record audit in performance metrics
-            if audit_result["compliance_status"] == "non_compliant":
-                self.performance_metrics["cultural_violations_detected"] += 1
-            
-            return audit_result
-            
-        except Exception as e:
-            logging.error(f"Cultural audit failed for {server_name}: {str(e)}")
-            return {
-                "error": str(e),
-                "server_name": server_name,
-                "audit_timestamp": datetime.now().isoformat()
-            }
-    
-    async def get_cultural_compliance_report(self) -> Dict[str, Any]:
-        """Generate comprehensive cultural compliance report"""
-        try:
-            report = {
-                "generated_at": datetime.now().isoformat(),
-                "total_servers": len(self.registry.registered_servers),
-                "performance_metrics": self.performance_metrics.copy(),
-                "servers_by_category": {},
-                "compliance_summary": {},
-                "recent_violations": self.compliance_alerts[-10:],  # Last 10 alerts
-                "recommendations": []
-            }
-            
-            # Analyze servers by category
-            for category in CulturalServerCategory:
-                servers = self.registry.get_servers_by_category(category)
-                report["servers_by_category"][category.value] = {
-                    "count": len(servers),
-                    "servers": [s.name for s in servers]
-                }
-            
-            # Perform compliance analysis
-            compliance_scores = []
-            islamic_compliance_count = 0
-            family_filtering_count = 0
-            professional_oversight_count = 0
-            
-            for config in self.registry.registered_servers.values():
-                # Calculate compliance score for each server
-                score = 0.0
-                if config.islamic_compliance_required:
-                    score += 0.4
-                    islamic_compliance_count += 1
-                if config.family_context_sensitive:
-                    score += 0.3
-                    family_filtering_count += 1
-                if config.professional_domain:
-                    score += 0.3
-                    professional_oversight_count += 1
-                
-                compliance_scores.append(score)
-            
-            # Calculate compliance summary
-            if compliance_scores:
-                report["compliance_summary"] = {
-                    "average_compliance_score": sum(compliance_scores) / len(compliance_scores),
-                    "islamic_compliance_rate": islamic_compliance_count / len(compliance_scores),
-                    "family_filtering_rate": family_filtering_count / len(compliance_scores),
-                    "professional_oversight_rate": professional_oversight_count / len(compliance_scores),
-                    "fully_compliant_servers": sum(1 for score in compliance_scores if score >= 0.8),
-                    "partially_compliant_servers": sum(1 for score in compliance_scores if 0.6 <= score < 0.8),
-                    "non_compliant_servers": sum(1 for score in compliance_scores if score < 0.6)
-                }
-            
-            # Generate recommendations
-            if report["compliance_summary"].get("islamic_compliance_rate", 0) < 0.9:
-                report["recommendations"].append("Improve Islamic compliance across servers")
-            
-            if report["compliance_summary"].get("family_filtering_rate", 0) < 0.7:
-                report["recommendations"].append("Implement family filtering for family-oriented servers")
-            
-            if self.performance_metrics["cultural_violations_detected"] > 10:
-                report["recommendations"].append("Review cultural violation patterns and implement preventive measures")
-            
-            return report
-            
-        except Exception as e:
-            logging.error(f"Failed to generate compliance report: {str(e)}")
-            return {"error": str(e), "generated_at": datetime.now().isoformat()}
-    
-    async def cleanup(self, context_id: str) -> None:
-        """Clean up hub instance and all resources"""
-        try:
-            if context_id in self.hub_instances:
-                hub = self.hub_instances[context_id]
-                await hub.shutdown()
-                del self.hub_instances[context_id]
-            
-            # Stop all cultural monitoring for this context
-            tasks_to_stop = [
-                task for name, task in self.cultural_monitors.items()
-                if name.startswith(context_id)
-            ]
-            
-            for task in tasks_to_stop:
-                task.cancel()
-                try:
-                    await task
-                except asyncio.CancelledError:
-                    pass
-            
-            # Remove monitoring tasks
-            self.cultural_monitors = {
-                name: task for name, task in self.cultural_monitors.items()
-                if not name.startswith(context_id)
-            }
-            
-        except Exception as e:
-            logging.error(f"Cleanup failed for context {context_id}: {str(e)}")
-    
-    async def _perform_cultural_pre_registration_audit(self, 
-                                                     config: IraqiMcpServerConfig,
-                                                     category: CulturalServerCategory) -> bool:
-        """Perform cultural audit before server registration"""
-        try:
-            policy = self.registry.cultural_policies.get(category)
-            if not policy:
-                return False
-            
-            # Validate configuration against policy
-            return self.registry._validate_server_against_policy(config, policy)
-            
-        except Exception as e:
-            logging.error(f"Cultural pre-registration audit failed: {str(e)}")
-            return False
-    
-    async def _request_government_approval(self, 
-                                         config: IraqiMcpServerConfig,
-                                         category: CulturalServerCategory) -> Dict[str, Any]:
-        """Request government approval for sensitive server categories"""
-        try:
-            # Determine relevant ministries based on server category and domain
-            relevant_ministries = self._determine_relevant_ministries(category, config.professional_domain)
-            
-            if not relevant_ministries:
-                return {"approved": True, "reason": "No government oversight required"}
-            
-            # Use government thinking framework for approval process
-            approval_request = {
-                "server_name": config.name,
-                "category": category.value,
-                "professional_domain": config.professional_domain,
-                "islamic_compliance": config.islamic_compliance_required,
-                "family_context": config.family_context_sensitive,
-                "cultural_validation_level": config.cultural_validation_level.value
-            }
-            
-            # Simulate government approval process
-            # In real implementation, this would integrate with government systems
-            approval_result = await self.government_framework.analyze_government_thinking(
-                json.dumps(approval_request),
-                "technology_approval",
-                relevant_ministries
-            )
-            
-            # Process approval result
-            if approval_result.get("approval_recommendation", "denied") == "approved":
-                return {
-                    "approved": True,
-                    "ministries": [m.value for m in relevant_ministries],
-                    "approval_id": f"GOV_{datetime.now().timestamp()}",
-                    "conditions": approval_result.get("conditions", [])
-                }
-            else:
-                return {
-                    "approved": False,
-                    "reason": approval_result.get("denial_reason", "Government approval denied"),
-                    "ministries": [m.value for m in relevant_ministries]
-                }
-            
-        except Exception as e:
-            logging.error(f"Government approval request failed: {str(e)}")
-            return {"approved": False, "reason": f"Approval process error: {str(e)}"}
-    
-    def _determine_relevant_ministries(self, 
-                                     category: CulturalServerCategory,
-                                     professional_domain: Optional[str]) -> List[MinistryDomain]:
-        """Determine relevant government ministries for approval"""
-        ministries = []
+                capabilities.append(capability)
         
-        if category == CulturalServerCategory.GOVERNMENT_SERVICES:
-            ministries.extend([MinistryDomain.DIGITAL_TRANSFORMATION, MinistryDomain.INTERIOR])
+        return capabilities
+    
+    def _detect_capability_domains(self, capability_text: str) -> List[IraqiProfessionalDomain]:
+        """Detect professional domains supported by a capability"""
+        domains = [IraqiProfessionalDomain.GENERAL]  # Always include general
         
-        if category == CulturalServerCategory.PROFESSIONAL_LEGAL:
-            ministries.append(MinistryDomain.JUSTICE)
+        domain_keywords = {
+            IraqiProfessionalDomain.LEGAL: ['legal', 'law', 'court', 'lawyer', 'قانون'],
+            IraqiProfessionalDomain.MEDICAL: ['medical', 'health', 'doctor', 'طبي'],
+            IraqiProfessionalDomain.EDUCATIONAL: ['education', 'school', 'academic', 'تعليم'],
+            IraqiProfessionalDomain.GOVERNMENT: ['government', 'official', 'حكومة'],
+            IraqiProfessionalDomain.BUSINESS: ['business', 'commerce', 'تجارة'],
+            IraqiProfessionalDomain.TECHNICAL: ['technical', 'software', 'تقني']
+        }
         
-        if category == CulturalServerCategory.PROFESSIONAL_MEDICAL:
-            ministries.append(MinistryDomain.HEALTH)
+        for domain, keywords in domain_keywords.items():
+            if any(keyword in capability_text for keyword in keywords):
+                domains.append(domain)
         
-        if category == CulturalServerCategory.EDUCATIONAL:
-            ministries.extend([MinistryDomain.EDUCATION, MinistryDomain.HIGHER_EDUCATION])
+        return domains
+    
+    def _determine_server_type(self, capabilities: List[ServerCapability]) -> ServerType:
+        """Determine server type based on capabilities"""
         
-        if professional_domain:
-            domain_ministry_map = {
-                "agriculture": MinistryDomain.AGRICULTURE,
-                "finance": MinistryDomain.FINANCE,
-                "oil": MinistryDomain.OIL,
-                "transportation": MinistryDomain.TRANSPORTATION,
-                "telecommunications": MinistryDomain.COMMUNICATIONS
-            }
-            
-            if professional_domain in domain_ministry_map:
-                ministries.append(domain_ministry_map[professional_domain])
+        # Check for cultural validation capabilities
+        cultural_keywords = ['cultural', 'compliance', 'validation', 'islamic', 'appropriate']
+        has_cultural_validation = any(
+            any(keyword in cap.description.lower() for keyword in cultural_keywords)
+            for cap in capabilities
+        )
         
-        return list(set(ministries))  # Remove duplicates
+        if has_cultural_validation:
+            return ServerType.CULTURAL_VALIDATOR
+        
+        # Check for Arabic processing capabilities
+        has_arabic_processing = any(cap.arabic_support and cap.rtl_support for cap in capabilities)
+        if has_arabic_processing:
+            return ServerType.ARABIC_PROCESSOR
+        
+        # Check for professional domain specialization
+        domain_counts = {}
+        for cap in capabilities:
+            for domain in cap.professional_domains:
+                if domain != IraqiProfessionalDomain.GENERAL:
+                    domain_counts[domain] = domain_counts.get(domain, 0) + 1
+        
+        if domain_counts:
+            return ServerType.PROFESSIONAL_DOMAIN
+        
+        return ServerType.GENERAL_PURPOSE
     
-    async def _start_cultural_monitoring(self, 
-                                       server_name: str, 
-                                       category: CulturalServerCategory) -> None:
-        """Start cultural monitoring for server"""
-        try:
-            monitor_task = asyncio.create_task(
-                self._cultural_monitor_loop(server_name, category)
-            )
-            self.cultural_monitors[server_name] = monitor_task
-            
-        except Exception as e:
-            logging.error(f"Failed to start cultural monitoring for {server_name}: {str(e)}")
+    async def _update_server_classifications(self, server_name: str, config: ServerConfiguration):
+        """Update server classification indexes"""
+        
+        # Add to cultural validators if applicable
+        if config.server_type == ServerType.CULTURAL_VALIDATOR:
+            self.cultural_validators.add(server_name)
+        
+        # Add to Arabic processors if applicable
+        if config.arabic_language_support:
+            self.arabic_processors.add(server_name)
+        
+        # Add to domain specialists
+        for domain in config.supported_domains:
+            if domain not in self.domain_specialists:
+                self.domain_specialists[domain] = set()
+            self.domain_specialists[domain].add(server_name)
+        
+        # Set priority based on compliance score
+        self.server_priority_matrix[server_name] = int(config.cultural_compliance_score * 100)
     
-    async def _stop_cultural_monitoring(self, server_name: str) -> None:
-        """Stop cultural monitoring for server"""
-        try:
-            if server_name in self.cultural_monitors:
-                task = self.cultural_monitors[server_name]
-                task.cancel()
-                try:
-                    await task
-                except asyncio.CancelledError:
-                    pass
-                del self.cultural_monitors[server_name]
-                
-        except Exception as e:
-            logging.error(f"Failed to stop cultural monitoring for {server_name}: {str(e)}")
+    async def _score_server_suitability(self, server: ServerConfiguration, requirements: Dict[str, Any]) -> float:
+        """Score server suitability for given requirements"""
+        base_score = server.cultural_compliance_score
+        
+        # Bonus for Arabic support if needed
+        if requirements.get('arabic_support') and server.arabic_language_support:
+            base_score += 0.1
+        
+        # Bonus for domain specialization
+        required_domain = requirements.get('domain')
+        if required_domain in server.supported_domains:
+            base_score += 0.05
+        
+        # Bonus for cultural validation capability
+        if (requirements.get('cultural_validation') and 
+            server.name in self.cultural_validators):
+            base_score += 0.15
+        
+        # Penalty for validation errors
+        base_score -= len(server.validation_errors) * 0.02
+        
+        return min(1.0, base_score)
     
-    async def _cultural_monitor_loop(self, 
-                                   server_name: str, 
-                                   category: CulturalServerCategory) -> None:
-        """Background cultural monitoring loop for server"""
-        try:
-            policy = self.registry.cultural_policies.get(category)
-            if not policy:
-                return
-            
-            audit_interval = policy.cultural_audit_interval
-            
-            while not self.shutdown_event.is_set():
-                try:
-                    # Perform cultural audit
-                    audit_result = await self.perform_cultural_audit(server_name)
-                    
-                    # Check for violations
-                    if audit_result.get("compliance_status") == "non_compliant":
-                        await self._handle_cultural_violation(server_name, audit_result, policy)
-                    
-                    # Wait for next audit interval
-                    await asyncio.sleep(audit_interval)
-                    
-                except asyncio.CancelledError:
-                    break
-                except Exception as e:
-                    logging.error(f"Cultural monitoring error for {server_name}: {str(e)}")
-                    await asyncio.sleep(30)  # Brief pause on error
-                    
-        except Exception as e:
-            logging.error(f"Cultural monitoring loop failed for {server_name}: {str(e)}")
-    
-    async def _handle_cultural_violation(self, 
-                                       server_name: str, 
-                                       audit_result: Dict[str, Any],
-                                       policy: CulturalServerPolicy) -> None:
-        """Handle detected cultural violations"""
-        try:
-            violation_alert = {
-                "timestamp": datetime.now().isoformat(),
-                "server_name": server_name,
-                "violation_type": "cultural_compliance",
-                "severity": "high" if audit_result["cultural_score"] < 0.4 else "medium",
-                "findings": audit_result.get("findings", []),
-                "cultural_score": audit_result["cultural_score"],
-                "auto_action_taken": False
-            }
-            
-            # Add to compliance alerts
-            self.compliance_alerts.append(violation_alert)
-            
-            # Take automatic action if configured
-            if policy.auto_disconnect_on_violations:
-                # Find hub instance and disconnect server
-                for hub in self.hub_instances.values():
-                    try:
-                        await hub.unregister_server(server_name)
-                        violation_alert["auto_action_taken"] = True
-                        violation_alert["action"] = "server_disconnected"
-                        break
-                    except:
-                        continue
-            
-            # Update performance metrics
-            self.performance_metrics["cultural_violations_detected"] += 1
-            
-            # Log violation
-            logging.warning(f"Cultural violation detected for {server_name}: {audit_result}")
-            
-        except Exception as e:
-            logging.error(f"Failed to handle cultural violation for {server_name}: {str(e)}")
-    
-    async def _calculate_cultural_match_score(self, 
-                                            config: IraqiMcpServerConfig,
-                                            cultural_context: Dict[str, Any]) -> float:
-        """Calculate cultural match score between server and context"""
-        try:
-            score = 0.0
-            max_score = 1.0
-            
-            # Islamic compliance match
-            if cultural_context.get("islamic_compliance", True):
-                if config.islamic_compliance_required:
-                    score += 0.3
-            else:
-                score += 0.3  # No penalty for not requiring when not needed
-            
-            # Family context match
-            if cultural_context.get("family_context", False):
-                if config.family_context_sensitive:
-                    score += 0.25
-                else:
-                    score -= 0.1  # Penalty for family context without filtering
-            else:
-                score += 0.25  # No family requirements
-            
-            # Professional domain match
-            required_domain = cultural_context.get("professional_domain")
-            if required_domain:
-                if config.professional_domain == required_domain:
-                    score += 0.25
-                else:
-                    score -= 0.2  # Penalty for domain mismatch
-            else:
-                score += 0.25  # No domain requirements
-            
-            # Arabic language support
-            if cultural_context.get("arabic_content", False):
-                if config.arabic_language_support:
-                    score += 0.2
-                else:
-                    score -= 0.15  # Penalty for Arabic content without support
-            else:
-                score += 0.2  # No Arabic requirements
-            
-            return max(0.0, min(1.0, score))  # Clamp to [0, 1]
-            
-        except Exception as e:
-            logging.error(f"Failed to calculate cultural match score: {str(e)}")
-            return 0.0
-    
-    async def _cultural_monitoring_loop(self) -> None:
-        """Main cultural monitoring loop for all servers"""
-        while not self.shutdown_event.is_set():
-            try:
-                # Update active connections count
-                total_active = 0
-                for hub in self.hub_instances.values():
-                    metrics = await hub.get_cultural_metrics()
-                    total_active += metrics.get("active_connections", 0)
-                
-                self.performance_metrics["active_connections"] = total_active
-                
-                # Clean up old compliance alerts (keep last 100)
-                if len(self.compliance_alerts) > 100:
-                    self.compliance_alerts = self.compliance_alerts[-100:]
-                
-                await asyncio.sleep(60)  # Update every minute
-                
-            except Exception as e:
-                logging.error(f"Cultural monitoring loop error: {str(e)}")
-                await asyncio.sleep(10)
-    
-    async def _compliance_audit_loop(self) -> None:
-        """Background compliance audit loop"""
-        while not self.shutdown_event.is_set():
-            try:
-                # Perform periodic compliance audits
-                for server_name in self.registry.registered_servers.keys():
-                    audit_result = await self.perform_cultural_audit(server_name)
-                    
-                    # Update performance metrics based on audit results
-                    if not audit_result.get("islamic_compliance", True):
-                        self.performance_metrics["islamic_compliance_failures"] += 1
-                    
-                    if not audit_result.get("professional_standards", True):
-                        self.performance_metrics["professional_audit_failures"] += 1
-                
-                await asyncio.sleep(3600)  # Audit every hour
-                
-            except Exception as e:
-                logging.error(f"Compliance audit loop error: {str(e)}")
-                await asyncio.sleep(300)  # Brief pause on error
+    def get_server_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive server management statistics"""
+        total_servers = len(self.servers)
+        active_servers = sum(1 for s in self.servers.values() if s.status == ServerStatus.ACTIVE)
+        
+        return {
+            'total_servers': total_servers,
+            'active_servers': active_servers,
+            'cultural_validators': len(self.cultural_validators),
+            'arabic_processors': len(self.arabic_processors),
+            'domain_coverage': {
+                domain.value: len(servers) 
+                for domain, servers in self.domain_specialists.items()
+            },
+            'average_compliance_score': (
+                sum(s.cultural_compliance_score for s in self.servers.values()) / total_servers
+                if total_servers > 0 else 0.0
+            ),
+            'validation_level': self.validation_level.value
+        }
 
+# Example usage
+async def main():
+    """Example usage of Cultural Server Manager"""
+    manager = CulturalServerManager(validation_level=CulturalValidationLevel.PROFESSIONAL)
+    
+    # Register sample servers
+    servers = [
+        {
+            'name': 'iraqi_legal_analyzer',
+            'endpoint': 'ws://localhost:8001',
+            'capabilities': {
+                'document_analysis': {
+                    'description': 'Legal document analysis for Iraqi courts',
+                    'domains': ['legal'],
+                    'arabic_support': True
+                },
+                'compliance_check': {
+                    'description': 'Islamic law compliance verification',
+                    'validation_level': 'strict'
+                }
+            }
+        },
+        {
+            'name': 'arabic_nlp_processor',
+            'endpoint': 'ws://localhost:8002',
+            'capabilities': {
+                'text_processing': {
+                    'description': 'Arabic text processing with RTL support',
+                    'arabic_support': True,
+                    'rtl_support': True
+                },
+                'dialect_detection': {
+                    'description': 'Iraqi dialect recognition and processing'
+                }
+            }
+        }
+    ]
+    
+    for server_config in servers:
+        success = await manager.register_server(server_config)
+        print(f"Server {server_config['name']} registration: {'Success' if success else 'Failed'}")
+    
+    # Get statistics
+    stats = manager.get_server_statistics()
+    print(f"Server management statistics: {stats}")
+    
+    # Find optimal server for legal document processing
+    optimal_server = await manager.select_optimal_server({
+        'domain': IraqiProfessionalDomain.LEGAL,
+        'arabic_support': True,
+        'cultural_validation': True
+    })
+    
+    if optimal_server:
+        print(f"Optimal server for legal processing: {optimal_server.name}")
 
-# Example usage and testing
 if __name__ == "__main__":
-    async def test_cultural_server_manager():
-        """Test the Cultural Server Manager with various scenarios"""
-        
-        # Create manager
-        manager = CulturalServerManager()
-        
-        # Test server configurations for different categories
-        test_configs = [
-            {
-                "config": IraqiMcpServerConfig(
-                    name="legal_compliance_server",
-                    server_type=McpServerType.STDIO,
-                    connection_params={"command": "python", "args": ["-m", "legal_server"]},
-                    professional_domain="legal",
-                    islamic_compliance_required=True,
-                    cultural_validation_level=CulturalValidationLevel.PROFESSIONAL
-                ),
-                "category": CulturalServerCategory.PROFESSIONAL_LEGAL,
-                "provider": "legal_services_provider"
-            },
-            {
-                "config": IraqiMcpServerConfig(
-                    name="family_content_server", 
-                    server_type=McpServerType.STDIO,
-                    connection_params={"command": "python", "args": ["-m", "family_server"]},
-                    family_context_sensitive=True,
-                    islamic_compliance_required=True,
-                    cultural_validation_level=CulturalValidationLevel.FAMILY
-                ),
-                "category": CulturalServerCategory.FAMILY_ORIENTED,
-                "provider": "family_services_provider"
-            },
-            {
-                "config": IraqiMcpServerConfig(
-                    name="government_portal_server",
-                    server_type=McpServerType.STDIO, 
-                    connection_params={"command": "python", "args": ["-m", "gov_server"]},
-                    government_service_context=True,
-                    islamic_compliance_required=True,
-                    cultural_validation_level=CulturalValidationLevel.GOVERNMENT
-                ),
-                "category": CulturalServerCategory.GOVERNMENT_SERVICES,
-                "provider": "government_services_provider"
-            }
-        ]
-        
-        context_id = "test_context_001"
-        
-        # Register test servers
-        for server_config in test_configs:
-            print(f"\n🔧 Registering {server_config['config'].name}:")
-            
-            result = await manager.register_culturally_compliant_server(
-                context_id,
-                server_config["config"],
-                server_config["category"],
-                server_config["provider"]
-            )
-            
-            if result["success"]:
-                print(f"  ✅ Success - Category: {result['category']}, Monitoring: {result['monitoring_active']}")
-            else:
-                print(f"  ❌ Failed: {result['error']}")
-        
-        # Test cultural context matching
-        cultural_contexts = [
-            {
-                "name": "Family Context",
-                "context": {"family_context": True, "islamic_compliance": True}
-            },
-            {
-                "name": "Legal Professional Context",
-                "context": {"professional_domain": "legal", "islamic_compliance": True}
-            },
-            {
-                "name": "Government Services Context", 
-                "context": {"government_service": True, "islamic_compliance": True}
-            }
-        ]
-        
-        for context_test in cultural_contexts:
-            print(f"\n🎯 Testing {context_test['name']}:")
-            
-            appropriate_servers = await manager.get_culturally_appropriate_servers(
-                context_id, context_test["context"]
-            )
-            
-            for server in appropriate_servers:
-                print(f"  📋 {server['name']}: Score {server['cultural_score']:.2f}, Status: {server['status']}")
-        
-        # Perform cultural audits
-        print(f"\n🔍 Cultural Compliance Audits:")
-        for server_config in test_configs:
-            server_name = server_config["config"].name
-            audit_result = await manager.perform_cultural_audit(server_name)
-            
-            status_icon = "✅" if audit_result["compliance_status"] == "compliant" else "⚠️"
-            print(f"  {status_icon} {server_name}: {audit_result['compliance_status']} (Score: {audit_result['cultural_score']:.2f})")
-            
-            if audit_result.get("findings"):
-                for finding in audit_result["findings"]:
-                    print(f"    🔍 Finding: {finding}")
-        
-        # Generate compliance report
-        print(f"\n📊 Cultural Compliance Report:")
-        report = await manager.get_cultural_compliance_report()
-        
-        print(f"  📈 Total Servers: {report['total_servers']}")
-        print(f"  📊 Performance Metrics:")
-        for metric, value in report["performance_metrics"].items():
-            if isinstance(value, (int, float)):
-                print(f"    {metric}: {value}")
-        
-        if report.get("compliance_summary"):
-            summary = report["compliance_summary"]
-            print(f"  🎯 Compliance Summary:")
-            print(f"    Average Score: {summary['average_compliance_score']:.2%}")
-            print(f"    Islamic Compliance Rate: {summary['islamic_compliance_rate']:.2%}")
-            print(f"    Family Filtering Rate: {summary['family_filtering_rate']:.2%}")
-        
-        if report.get("recommendations"):
-            print(f"  💡 Recommendations:")
-            for rec in report["recommendations"]:
-                print(f"    • {rec}")
-        
-        # Cleanup
-        await manager.cleanup(context_id)
-        print("\n🔚 Cultural Server Manager test complete")
-    
-    # Run the test
-    asyncio.run(test_cultural_server_manager())
+    asyncio.run(main())

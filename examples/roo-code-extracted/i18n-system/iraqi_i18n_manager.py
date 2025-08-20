@@ -1,973 +1,664 @@
 """
-Iraqi Internationalization Manager - Enhanced i18n system with Arabic and cultural support
-Part of Roo-Code extraction with comprehensive Iraqi cultural compliance
+Iraqi I18n Manager - Enhanced Internationalization with Cultural Intelligence
 
-Extends Roo-Code's i18next-based internationalization patterns with Iraqi localization,
-Arabic language processing, and cultural context awareness to provide:
-- Professional Arabic terminology for Iraqi domains (legal, medical, educational)
-- Cultural context-aware message formatting with Islamic principles
-- Government service integration with official Iraqi Arabic terminology
+Extracted from Roo-Code i18n/index.ts and enhanced with Iraqi cultural patterns,
+Arabic language support, and professional domain localization.
 
-Based on: RooCodeInc/Roo-Code i18n system patterns
-Enhanced for: Iraqi AI Chat System with cultural and professional compliance
+Key enhancements:
+- Iraqi dialect recognition and processing
+- RTL (Right-to-Left) text formatting
+- Cultural context-aware translations
+- Professional domain terminology management
+- Islamic calendar and number formatting
+- Gender-appropriate language handling
 """
 
-from typing import Dict, List, Optional, Any, Union, Tuple
-from dataclasses import dataclass, field
-from datetime import datetime
+from dataclasses import dataclass
 from enum import Enum
-import asyncio
+from typing import Dict, List, Any, Optional, Union, Callable
 import json
-from pathlib import Path
-import re
+import asyncio
 import logging
+from pathlib import Path
+from datetime import datetime
+import re
 
-
-class LanguageSupport(Enum):
-    """Supported languages with Iraqi enhancements"""
-    ARABIC = "ar"                      # Standard Arabic
-    IRAQI_ARABIC = "ar-IQ"            # Iraqi dialect
-    ENGLISH = "en"                    # English
-    KURDISH = "ku"                    # Kurdish (Iraq)
-    TURKMEN = "tk-IQ"                # Iraqi Turkmen
-    SYRIAC = "syc"                   # Syriac/Assyrian
-
+class IraqiDialect(Enum):
+    BAGHDADI = "baghdadi"
+    BASRAWI = "basrawi"
+    MOSLAWI = "moslawi"
+    KURDISH_ARABIC = "kurdish_arabic"
+    STANDARD_ARABIC = "standard_arabic"
+    MIXED = "mixed"
 
 class ProfessionalDomain(Enum):
-    """Professional domains requiring specialized terminology"""
-    LEGAL = "legal"                   # Iraqi legal system
-    MEDICAL = "medical"               # Iraqi healthcare system
-    EDUCATION = "education"           # Iraqi educational system
-    GOVERNMENT = "government"         # Iraqi government services
-    ENGINEERING = "engineering"       # Iraqi engineering standards
-    FINANCE = "finance"              # Iraqi banking and finance
-    RELIGIOUS = "religious"          # Islamic and Iraqi religious context
-    CULTURAL = "cultural"            # Iraqi cultural context
+    LEGAL = "legal"
+    MEDICAL = "medical"
+    EDUCATIONAL = "educational"
+    GOVERNMENT = "government"
+    BUSINESS = "business"
+    TECHNICAL = "technical"
+    RELIGIOUS = "religious"
+    GENERAL = "general"
 
-
-class MessagePriority(Enum):
-    """Message priority levels for cultural filtering"""
-    EMERGENCY = "emergency"           # Emergency messages
-    HIGH = "high"                    # High priority messages
-    NORMAL = "normal"                # Normal messages
-    LOW = "low"                      # Low priority messages
-    CULTURAL = "cultural"            # Culturally sensitive messages
-
+class GenderContext(Enum):
+    MALE = "male"
+    FEMALE = "female"
+    NEUTRAL = "neutral"
+    MIXED_AUDIENCE = "mixed"
 
 @dataclass
-class CulturalContext:
-    """Cultural context for message localization"""
-    region: str = "baghdad"           # Iraqi region (baghdad, basra, erbil, etc.)
-    professional_domain: Optional[str] = None
-    religious_context: bool = True    # Islamic context awareness
-    family_context: bool = False      # Family-appropriate messaging
-    government_context: bool = False  # Government service context
-    formal_tone: bool = True         # Formal Arabic vs informal
-    gender_context: Optional[str] = None  # Gender-appropriate messaging
-    time_context: Optional[str] = None    # Prayer times, work hours, etc.
-
-
+class LocalizationContext:
+    """Context information for culturally appropriate localization"""
+    dialect: IraqiDialect
+    domain: ProfessionalDomain
+    gender_context: GenderContext
+    formality_level: str  # casual, formal, very_formal
+    target_audience: str  # students, professionals, general_public
+    religious_sensitivity: bool
+    political_neutrality: bool
+    
 @dataclass
 class TranslationEntry:
-    """Enhanced translation entry with cultural metadata"""
+    """Translation entry with cultural metadata"""
     key: str
-    content: Dict[str, str]           # Language -> translation mapping
-    namespace: str
-    priority: MessagePriority = MessagePriority.NORMAL
-    cultural_context: Optional[CulturalContext] = None
-    professional_domain: Optional[ProfessionalDomain] = None
-    variables: List[str] = field(default_factory=list)
-    pluralization_rules: Dict[str, Dict[str, str]] = field(default_factory=dict)
-    rtl_aware: bool = True            # Right-to-left layout awareness
-    islamic_compliant: bool = True    # Islamic compliance status
-    created_at: datetime = field(default_factory=datetime.now)
-    updated_at: datetime = field(default_factory=datetime.now)
-
-
-@dataclass
-class IraqiI18nConfig:
-    """Configuration for Iraqi i18n system"""
-    default_language: LanguageSupport = LanguageSupport.ARABIC
-    fallback_language: LanguageSupport = LanguageSupport.ENGLISH
-    supported_languages: List[LanguageSupport] = field(default_factory=lambda: [
-        LanguageSupport.ARABIC, LanguageSupport.IRAQI_ARABIC, 
-        LanguageSupport.ENGLISH, LanguageSupport.KURDISH
-    ])
+    arabic_text: str
+    english_text: str
+    dialect: IraqiDialect
+    domain: ProfessionalDomain
+    rtl_formatted: str
+    cultural_notes: Optional[str]
+    gender_variants: Optional[Dict[str, str]]
+    formality_variants: Optional[Dict[str, str]]
     
-    # Cultural settings
-    enable_cultural_filtering: bool = True
-    enable_islamic_compliance: bool = True
-    enable_professional_terminology: bool = True
+class IraqiI18nManager:
+    """Enhanced internationalization manager with Iraqi cultural intelligence"""
     
-    # Performance settings
-    cache_translations: bool = True
-    lazy_load_namespaces: bool = True
-    preload_common_translations: bool = True
+    def __init__(self, default_dialect: IraqiDialect = IraqiDialect.STANDARD_ARABIC):
+        self.default_dialect = default_dialect
+        self.translations: Dict[str, Dict[str, TranslationEntry]] = {}
+        self.cultural_formatters: Dict[str, Callable] = {}
+        self.dialect_processors: Dict[IraqiDialect, Callable] = {}
+        self.domain_terminologies: Dict[ProfessionalDomain, Dict[str, str]] = {}
+        self.rtl_processors: Dict[str, Callable] = {}
+        self._setup_logging()
+        self._initialize_cultural_systems()
+        
+    def _setup_logging(self):
+        """Setup culturally appropriate logging with Arabic support"""
+        self.logger = logging.getLogger("iraqi_i18n_manager")
+        self.logger.setLevel(logging.INFO)
+        
+        # Custom formatter that handles Arabic text properly
+        class CulturalFormatter(logging.Formatter):
+            def format(self, record):
+                formatted = super().format(record)
+                # Ensure proper RTL formatting for Arabic content
+                if self._contains_arabic(formatted):
+                    formatted = self._apply_rtl_formatting(formatted)
+                return formatted
+                
+            def _contains_arabic(self, text: str) -> bool:
+                arabic_range = range(0x0600, 0x06FF + 1)
+                return any(ord(char) in arabic_range for char in text)
+                
+            def _apply_rtl_formatting(self, text: str) -> str:
+                # Simple RTL formatting with direction markers
+                return f"‏{text}‏"
+        
+        handler = logging.StreamHandler()
+        handler.setFormatter(CulturalFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        self.logger.addHandler(handler)
     
-    # Arabic-specific settings
-    enable_arabic_shaping: bool = True
-    enable_bidi_support: bool = True
-    arabic_numeral_format: str = "arabic"  # "arabic" or "hindi"
-
-
-class IraqiTerminologyManager:
-    """Manager for Iraqi professional terminology"""
+    def _initialize_cultural_systems(self):
+        """Initialize cultural and linguistic processing systems"""
+        
+        # Setup dialect processors
+        self.dialect_processors = {
+            IraqiDialect.BAGHDADI: self._process_baghdadi_dialect,
+            IraqiDialect.BASRAWI: self._process_basrawi_dialect,
+            IraqiDialect.MOSLAWI: self._process_moslawi_dialect,
+            IraqiDialect.KURDISH_ARABIC: self._process_kurdish_arabic_dialect,
+            IraqiDialect.STANDARD_ARABIC: self._process_standard_arabic,
+            IraqiDialect.MIXED: self._process_mixed_dialect
+        }
+        
+        # Setup cultural formatters
+        self.cultural_formatters = {
+            'date': self._format_islamic_date,
+            'time': self._format_islamic_time,
+            'number': self._format_arabic_numbers,
+            'currency': self._format_iraqi_currency,
+            'name': self._format_arabic_name,
+            'address': self._format_iraqi_address,
+            'phone': self._format_iraqi_phone
+        }
+        
+        # Setup RTL processors
+        self.rtl_processors = {
+            'text': self._format_rtl_text,
+            'mixed': self._format_mixed_content,
+            'list': self._format_rtl_list,
+            'table': self._format_rtl_table
+        }
+        
+        # Initialize professional domain terminologies
+        self._load_professional_terminologies()
     
-    def __init__(self):
-        self.terminology_db = {
+    async def register_translations(self, translations: Dict[str, Any], 
+                                  context: LocalizationContext) -> bool:
+        """Register translations with cultural context"""
+        try:
+            language_key = f"{context.dialect.value}_{context.domain.value}"
+            
+            if language_key not in self.translations:
+                self.translations[language_key] = {}
+            
+            for key, translation_data in translations.items():
+                # Create translation entry with cultural enhancement
+                entry = await self._create_translation_entry(
+                    key, translation_data, context
+                )
+                
+                self.translations[language_key][key] = entry
+            
+            self.logger.info(f"Registered {len(translations)} translations for {language_key}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to register translations: {str(e)}")
+            return False
+    
+    async def translate(self, key: str, context: LocalizationContext,
+                       parameters: Optional[Dict[str, Any]] = None) -> str:
+        """Translate with cultural context and parameter substitution"""
+        
+        # Try to find translation in order of preference
+        language_key = f"{context.dialect.value}_{context.domain.value}"
+        
+        # Try specific dialect + domain combination first
+        if language_key in self.translations and key in self.translations[language_key]:
+            entry = self.translations[language_key][key]
+        else:
+            # Fallback to standard Arabic + domain
+            fallback_key = f"{IraqiDialect.STANDARD_ARABIC.value}_{context.domain.value}"
+            if fallback_key in self.translations and key in self.translations[fallback_key]:
+                entry = self.translations[fallback_key][key]
+            else:
+                # Final fallback to standard Arabic + general domain
+                general_key = f"{IraqiDialect.STANDARD_ARABIC.value}_{ProfessionalDomain.GENERAL.value}"
+                if general_key in self.translations and key in self.translations[general_key]:
+                    entry = self.translations[general_key][key]
+                else:
+                    self.logger.warning(f"Translation not found for key: {key}")
+                    return key  # Return key as fallback
+        
+        # Get appropriate text variant based on context
+        text = await self._select_text_variant(entry, context)
+        
+        # Apply parameter substitution if provided
+        if parameters:
+            text = await self._apply_parameter_substitution(text, parameters, context)
+        
+        # Apply cultural formatting
+        text = await self._apply_cultural_formatting(text, context)
+        
+        return text
+    
+    async def detect_dialect(self, text: str) -> IraqiDialect:
+        """Detect Iraqi dialect from text content"""
+        
+        # Dialect-specific patterns and indicators
+        dialect_patterns = {
+            IraqiDialect.BAGHDADI: [
+                r'\bشلونك\b',  # How are you (Baghdadi)
+                r'\bماكو\b',   # There isn't (Baghdadi)
+                r'\bوية\b',    # Very (Baghdadi)
+                r'\bشگد\b'     # How much (Baghdadi)
+            ],
+            IraqiDialect.BASRAWI: [
+                r'\bشلونكم\b', # How are you (Basrawi)
+                r'\bماكو شي\b', # Nothing (Basrawi)
+                r'\bهوايا\b'    # A lot (Basrawi)
+            ],
+            IraqiDialect.MOSLAWI: [
+                r'\bشلوناتكم\b', # How are you (Moslawi)
+                r'\bليت\b',      # Nothing (Moslawi)
+                r'\bجثير\b'      # A lot (Moslawi)
+            ],
+            IraqiDialect.KURDISH_ARABIC: [
+                r'\bچوني\b',    # How (Kurdish Arabic)
+                r'\bهانا\b',    # Here (Kurdish Arabic)
+                r'\bچ\b'        # What (Kurdish Arabic)
+            ]
+        }
+        
+        # Count matches for each dialect
+        dialect_scores = {}
+        
+        for dialect, patterns in dialect_patterns.items():
+            score = 0
+            for pattern in patterns:
+                matches = len(re.findall(pattern, text, re.UNICODE))
+                score += matches * 2  # Weight dialect-specific terms heavily
+            
+            dialect_scores[dialect] = score
+        
+        # Check for standard Arabic patterns
+        standard_arabic_patterns = [
+            r'\bكيف حالك\b',  # How are you (Standard)
+            r'\bلا يوجد\b',   # There isn't (Standard)
+            r'\bجداً\b',      # Very (Standard)
+            r'\bكم\b'        # How much (Standard)
+        ]
+        
+        standard_score = 0
+        for pattern in standard_arabic_patterns:
+            matches = len(re.findall(pattern, text, re.UNICODE))
+            standard_score += matches
+        
+        dialect_scores[IraqiDialect.STANDARD_ARABIC] = standard_score
+        
+        # Return dialect with highest score, or mixed if close scores
+        if not dialect_scores or max(dialect_scores.values()) == 0:
+            return self.default_dialect
+        
+        max_score = max(dialect_scores.values())
+        best_dialects = [d for d, s in dialect_scores.items() if s == max_score]
+        
+        if len(best_dialects) > 1:
+            return IraqiDialect.MIXED
+        
+        return best_dialects[0]
+    
+    def format_cultural_content(self, content_type: str, value: Any, 
+                              context: LocalizationContext) -> str:
+        """Format content according to Iraqi cultural conventions"""
+        
+        if content_type in self.cultural_formatters:
+            formatter = self.cultural_formatters[content_type]
+            return formatter(value, context)
+        else:
+            self.logger.warning(f"No formatter found for content type: {content_type}")
+            return str(value)
+    
+    def apply_rtl_formatting(self, text: str, content_type: str = 'text') -> str:
+        """Apply RTL (Right-to-Left) formatting to Arabic content"""
+        
+        if content_type in self.rtl_processors:
+            processor = self.rtl_processors[content_type]
+            return processor(text)
+        else:
+            # Default RTL formatting
+            return self._format_rtl_text(text)
+    
+    # Dialect processors
+    def _process_baghdadi_dialect(self, text: str) -> str:
+        """Process text for Baghdadi dialect conventions"""
+        # Convert standard Arabic greetings to Baghdadi
+        text = re.sub(r'\bكيف حالك\b', 'شلونك', text)
+        text = re.sub(r'\bلا يوجد\b', 'ماكو', text)
+        text = re.sub(r'\bجداً\b', 'وية', text)
+        return text
+    
+    def _process_basrawi_dialect(self, text: str) -> str:
+        """Process text for Basrawi dialect conventions"""
+        text = re.sub(r'\bكيف حالكم\b', 'شلونكم', text)
+        text = re.sub(r'\bكثير\b', 'هوايا', text)
+        return text
+    
+    def _process_moslawi_dialect(self, text: str) -> str:
+        """Process text for Moslawi dialect conventions"""
+        text = re.sub(r'\bكيف حالكم\b', 'شلوناتكم', text)
+        text = re.sub(r'\bكثير\b', 'جثير', text)
+        return text
+    
+    def _process_kurdish_arabic_dialect(self, text: str) -> str:
+        """Process text for Kurdish Arabic dialect conventions"""
+        text = re.sub(r'\bكيف\b', 'چوني', text)
+        text = re.sub(r'\bهنا\b', 'هانا', text)
+        return text
+    
+    def _process_standard_arabic(self, text: str) -> str:
+        """Process text for Standard Arabic conventions"""
+        # Ensure proper diacritics and formal structure
+        return text  # Standard Arabic typically doesn't need conversion
+    
+    def _process_mixed_dialect(self, text: str) -> str:
+        """Process text that contains mixed dialectal elements"""
+        # Apply light processing that works across dialects
+        return text
+    
+    # Cultural formatters
+    def _format_islamic_date(self, date_value: datetime, context: LocalizationContext) -> str:
+        """Format dates according to Islamic calendar preferences"""
+        # This would integrate with Islamic calendar conversion
+        gregorian_format = date_value.strftime("%Y/%m/%d")
+        
+        # Add Arabic month names if appropriate
+        arabic_months = [
+            "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
+            "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+        ]
+        
+        if context.dialect in [IraqiDialect.STANDARD_ARABIC, IraqiDialect.MIXED]:
+            month_name = arabic_months[date_value.month - 1]
+            return f"{date_value.day} {month_name} {date_value.year}"
+        
+        return gregorian_format
+    
+    def _format_islamic_time(self, time_value: datetime, context: LocalizationContext) -> str:
+        """Format time with cultural considerations"""
+        # Use 12-hour format which is common in Iraq
+        time_str = time_value.strftime("%I:%M %p")
+        
+        # Convert AM/PM to Arabic if context requires
+        if context.dialect in [IraqiDialect.STANDARD_ARABIC, IraqiDialect.MIXED]:
+            time_str = time_str.replace("AM", "صباحاً").replace("PM", "مساءً")
+        
+        return time_str
+    
+    def _format_arabic_numbers(self, number: Union[int, float], context: LocalizationContext) -> str:
+        """Format numbers using Arabic-Indic digits when appropriate"""
+        # Arabic-Indic digits mapping
+        arabic_digits = str.maketrans('0123456789', '٠١٢٣٤٥٦٧٨٩')
+        
+        if context.dialect == IraqiDialect.STANDARD_ARABIC:
+            return str(number).translate(arabic_digits)
+        else:
+            # Use Western Arabic numerals (0-9) for dialects
+            return str(number)
+    
+    def _format_iraqi_currency(self, amount: float, context: LocalizationContext) -> str:
+        """Format currency amounts in Iraqi Dinar"""
+        formatted_amount = f"{amount:,.0f}"
+        
+        if context.dialect == IraqiDialect.STANDARD_ARABIC:
+            formatted_amount = self._format_arabic_numbers(formatted_amount, context)
+            return f"{formatted_amount} دينار عراقي"
+        else:
+            return f"{formatted_amount} IQD"
+    
+    def _format_arabic_name(self, name: str, context: LocalizationContext) -> str:
+        """Format Arabic names according to cultural conventions"""
+        # Apply proper name formatting with cultural considerations
+        if context.gender_context == GenderContext.FEMALE and context.formality_level == "formal":
+            # Add appropriate feminine markers if needed
+            pass
+        
+        return name
+    
+    def _format_iraqi_address(self, address: Dict[str, str], context: LocalizationContext) -> str:
+        """Format Iraqi addresses according to local conventions"""
+        parts = []
+        
+        # Iraqi address format: Street, District, City, Province
+        if 'street' in address:
+            parts.append(address['street'])
+        if 'district' in address:
+            parts.append(address['district'])
+        if 'city' in address:
+            parts.append(address['city'])
+        if 'province' in address:
+            parts.append(address['province'])
+        
+        formatted_address = '، '.join(parts)  # Arabic comma separator
+        
+        if context.dialect != IraqiDialect.STANDARD_ARABIC:
+            formatted_address = ', '.join(parts)  # Western comma for dialects
+        
+        return formatted_address
+    
+    def _format_iraqi_phone(self, phone: str, context: LocalizationContext) -> str:
+        """Format Iraqi phone numbers according to local conventions"""
+        # Clean phone number
+        cleaned = re.sub(r'[^\d+]', '', phone)
+        
+        # Iraqi mobile format: +964 XXX XXX XXXX
+        if cleaned.startswith('+964'):
+            formatted = f"+964 {cleaned[4:7]} {cleaned[7:10]} {cleaned[10:]}"
+        elif cleaned.startswith('964'):
+            formatted = f"+964 {cleaned[3:6]} {cleaned[6:9]} {cleaned[9:]}"
+        else:
+            formatted = phone
+        
+        return formatted
+    
+    # RTL processors
+    def _format_rtl_text(self, text: str) -> str:
+        """Apply RTL formatting to Arabic text"""
+        if self._contains_arabic(text):
+            # Add RTL direction markers
+            return f"‏{text}‏"
+        return text
+    
+    def _format_mixed_content(self, text: str) -> str:
+        """Format mixed Arabic-English content with proper directionality"""
+        # Split text into segments and apply appropriate direction markers
+        segments = []
+        current_segment = ""
+        current_is_arabic = False
+        
+        for char in text:
+            char_is_arabic = self._is_arabic_char(char)
+            
+            if current_is_arabic != char_is_arabic and current_segment:
+                # Direction change detected
+                if current_is_arabic:
+                    segments.append(f"‏{current_segment}‏")  # RTL
+                else:
+                    segments.append(f"‎{current_segment}‎")  # LTR
+                current_segment = ""
+            
+            current_segment += char
+            current_is_arabic = char_is_arabic
+        
+        # Add final segment
+        if current_segment:
+            if current_is_arabic:
+                segments.append(f"‏{current_segment}‏")
+            else:
+                segments.append(f"‎{current_segment}‎")
+        
+        return "".join(segments)
+    
+    def _format_rtl_list(self, items: List[str]) -> str:
+        """Format lists with RTL considerations"""
+        formatted_items = [self._format_rtl_text(item) for item in items]
+        return "، ".join(formatted_items)  # Arabic comma separator
+    
+    def _format_rtl_table(self, table_data: List[List[str]]) -> str:
+        """Format table data with RTL alignment"""
+        # This would generate RTL-appropriate table formatting
+        formatted_rows = []
+        for row in table_data:
+            formatted_row = " | ".join([self._format_rtl_text(cell) for cell in reversed(row)])
+            formatted_rows.append(formatted_row)
+        
+        return "\n".join(formatted_rows)
+    
+    # Helper methods
+    def _contains_arabic(self, text: str) -> bool:
+        """Check if text contains Arabic characters"""
+        arabic_range = range(0x0600, 0x06FF + 1)
+        return any(ord(char) in arabic_range for char in text)
+    
+    def _is_arabic_char(self, char: str) -> bool:
+        """Check if a character is Arabic"""
+        return 0x0600 <= ord(char) <= 0x06FF
+    
+    async def _create_translation_entry(self, key: str, translation_data: Any,
+                                      context: LocalizationContext) -> TranslationEntry:
+        """Create enhanced translation entry with cultural metadata"""
+        
+        if isinstance(translation_data, str):
+            # Simple string translation
+            arabic_text = translation_data
+            english_text = key  # Use key as English fallback
+        elif isinstance(translation_data, dict):
+            arabic_text = translation_data.get('ar', translation_data.get('arabic', key))
+            english_text = translation_data.get('en', translation_data.get('english', key))
+        else:
+            arabic_text = str(translation_data)
+            english_text = key
+        
+        # Apply dialect processing
+        if context.dialect in self.dialect_processors:
+            processor = self.dialect_processors[context.dialect]
+            arabic_text = processor(arabic_text)
+        
+        # Format for RTL
+        rtl_formatted = self.apply_rtl_formatting(arabic_text)
+        
+        # Extract variants if available
+        gender_variants = None
+        formality_variants = None
+        
+        if isinstance(translation_data, dict):
+            gender_variants = translation_data.get('gender_variants')
+            formality_variants = translation_data.get('formality_variants')
+        
+        return TranslationEntry(
+            key=key,
+            arabic_text=arabic_text,
+            english_text=english_text,
+            dialect=context.dialect,
+            domain=context.domain,
+            rtl_formatted=rtl_formatted,
+            cultural_notes=translation_data.get('cultural_notes') if isinstance(translation_data, dict) else None,
+            gender_variants=gender_variants,
+            formality_variants=formality_variants
+        )
+    
+    async def _select_text_variant(self, entry: TranslationEntry, 
+                                 context: LocalizationContext) -> str:
+        """Select appropriate text variant based on context"""
+        
+        # Check for gender-specific variants
+        if (entry.gender_variants and 
+            context.gender_context != GenderContext.NEUTRAL):
+            
+            gender_key = context.gender_context.value
+            if gender_key in entry.gender_variants:
+                return entry.gender_variants[gender_key]
+        
+        # Check for formality variants
+        if entry.formality_variants and context.formality_level in entry.formality_variants:
+            return entry.formality_variants[context.formality_level]
+        
+        # Return default Arabic text
+        return entry.arabic_text
+    
+    async def _apply_parameter_substitution(self, text: str, parameters: Dict[str, Any],
+                                          context: LocalizationContext) -> str:
+        """Apply parameter substitution with cultural formatting"""
+        
+        for param_name, param_value in parameters.items():
+            placeholder = f"{{{param_name}}}"
+            
+            if placeholder in text:
+                # Apply cultural formatting to parameter value
+                if isinstance(param_value, datetime):
+                    formatted_value = self._format_islamic_date(param_value, context)
+                elif isinstance(param_value, (int, float)) and param_name.endswith('_amount'):
+                    formatted_value = self._format_iraqi_currency(param_value, context)
+                elif isinstance(param_value, (int, float)):
+                    formatted_value = self._format_arabic_numbers(param_value, context)
+                else:
+                    formatted_value = str(param_value)
+                
+                text = text.replace(placeholder, formatted_value)
+        
+        return text
+    
+    async def _apply_cultural_formatting(self, text: str, context: LocalizationContext) -> str:
+        """Apply final cultural formatting to translated text"""
+        
+        # Apply RTL formatting if needed
+        if self._contains_arabic(text):
+            text = self.apply_rtl_formatting(text, 'mixed' if self._has_mixed_content(text) else 'text')
+        
+        return text
+    
+    def _has_mixed_content(self, text: str) -> bool:
+        """Check if text contains both Arabic and Latin characters"""
+        has_arabic = self._contains_arabic(text)
+        has_latin = any(char.isascii() and char.isalpha() for char in text)
+        return has_arabic and has_latin
+    
+    def _load_professional_terminologies(self):
+        """Load professional domain terminologies"""
+        # This would typically load from configuration files
+        self.domain_terminologies = {
             ProfessionalDomain.LEGAL: {
-                "ar": {
-                    "contract": "عقد",
-                    "agreement": "اتفاقية", 
-                    "court": "محكمة",
-                    "judge": "قاضي",
-                    "lawyer": "محامي",
-                    "law": "قانون",
-                    "case": "قضية",
-                    "evidence": "دليل",
-                    "witness": "شاهد",
-                    "verdict": "حكم"
-                },
-                "ar-IQ": {
-                    "contract": "عقد",
-                    "agreement": "اتفاقية",
-                    "court": "محكمة",
-                    "judge": "قاضي",
-                    "lawyer": "محامي",
-                    "law": "قانون عراقي",
-                    "case": "قضية",
-                    "evidence": "دليل",
-                    "witness": "شاهد",
-                    "verdict": "حكم قضائي"
-                },
-                "en": {
-                    "contract": "Contract",
-                    "agreement": "Agreement",
-                    "court": "Court",
-                    "judge": "Judge", 
-                    "lawyer": "Lawyer",
-                    "law": "Law",
-                    "case": "Case",
-                    "evidence": "Evidence",
-                    "witness": "Witness",
-                    "verdict": "Verdict"
-                }
+                'contract': 'عقد',
+                'court': 'محكمة',
+                'lawyer': 'محامي',
+                'evidence': 'دليل',
+                'judgment': 'حكم'
             },
             ProfessionalDomain.MEDICAL: {
-                "ar": {
-                    "doctor": "طبيب",
-                    "patient": "مريض",
-                    "hospital": "مستشفى",
-                    "clinic": "عيادة",
-                    "diagnosis": "تشخيص",
-                    "treatment": "علاج",
-                    "medicine": "دواء",
-                    "prescription": "وصفة طبية",
-                    "surgery": "جراحة",
-                    "emergency": "طوارئ"
-                },
-                "ar-IQ": {
-                    "doctor": "دكتور",
-                    "patient": "مريض",
-                    "hospital": "مستشفى",
-                    "clinic": "عيادة",
-                    "diagnosis": "تشخيص",
-                    "treatment": "معالجة",
-                    "medicine": "دوة",
-                    "prescription": "وصفة",
-                    "surgery": "عملية",
-                    "emergency": "طوارئ"
-                }
+                'patient': 'مريض',
+                'doctor': 'طبيب',
+                'medicine': 'دواء',
+                'hospital': 'مستشفى',
+                'diagnosis': 'تشخيص'
             },
-            ProfessionalDomain.GOVERNMENT: {
-                "ar": {
-                    "ministry": "وزارة",
-                    "minister": "وزير",
-                    "department": "دائرة",
-                    "office": "مكتب",
-                    "official": "مسؤول",
-                    "document": "وثيقة",
-                    "license": "رخصة",
-                    "permit": "تصريح",
-                    "application": "طلب",
-                    "approval": "موافقة"
-                },
-                "ar-IQ": {
-                    "ministry": "وزارة",
-                    "minister": "وزير",
-                    "department": "دائرة",
-                    "office": "مكتب",
-                    "official": "مسؤول حكومي",
-                    "document": "وثيقة رسمية",
-                    "license": "إجازة",
-                    "permit": "تصريح",
-                    "application": "معاملة",
-                    "approval": "موافقة رسمية"
-                }
+            ProfessionalDomain.EDUCATIONAL: {
+                'student': 'طالب',
+                'teacher': 'معلم',
+                'school': 'مدرسة',
+                'lesson': 'درس',
+                'exam': 'امتحان'
             }
         }
-    
-    async def get_term(self, 
-                      term: str, 
-                      domain: ProfessionalDomain, 
-                      language: LanguageSupport) -> str:
-        """Get professional terminology for specific domain and language"""
-        
-        domain_terms = self.terminology_db.get(domain, {})
-        language_terms = domain_terms.get(language.value, {})
-        
-        return language_terms.get(term, term)  # Return original if not found
-    
-    async def validate_terminology(self, 
-                                 text: str, 
-                                 domain: ProfessionalDomain, 
-                                 language: LanguageSupport) -> Tuple[bool, List[str]]:
-        """Validate terminology usage against professional standards"""
-        
-        issues = []
-        domain_terms = self.terminology_db.get(domain, {})
-        language_terms = domain_terms.get(language.value, {})
-        
-        # Check for inappropriate informal terms in formal context
-        if language.value == "ar-IQ" and domain in [ProfessionalDomain.LEGAL, ProfessionalDomain.GOVERNMENT]:
-            informal_patterns = ["شلون", "وين", "شوكت"]  # Informal Iraqi dialect
-            for pattern in informal_patterns:
-                if pattern in text:
-                    issues.append(f"Informal dialect '{pattern}' used in formal {domain.value} context")
-        
-        # Check for missing professional terminology
-        for english_term, arabic_term in language_terms.items():
-            if english_term.lower() in text.lower() and arabic_term not in text:
-                issues.append(f"Consider using professional term '{arabic_term}' for '{english_term}'")
-        
-        is_valid = len(issues) == 0
-        return is_valid, issues
 
-
-class ArabicTextProcessor:
-    """Specialized processor for Arabic text handling"""
+# Example usage
+async def main():
+    """Example usage of Iraqi I18n Manager"""
+    i18n = IraqiI18nManager(default_dialect=IraqiDialect.STANDARD_ARABIC)
     
-    def __init__(self):
-        self.arabic_reshaper = None
-        self.bidi = None
-        self._initialize_arabic_support()
+    # Setup localization context
+    context = LocalizationContext(
+        dialect=IraqiDialect.BAGHDADI,
+        domain=ProfessionalDomain.LEGAL,
+        gender_context=GenderContext.MIXED_AUDIENCE,
+        formality_level="formal",
+        target_audience="professionals",
+        religious_sensitivity=True,
+        political_neutrality=True
+    )
     
-    def _initialize_arabic_support(self):
-        """Initialize Arabic text shaping and BiDi support"""
-        try:
-            import arabic_reshaper
-            from bidi.algorithm import get_display
-            self.arabic_reshaper = arabic_reshaper.get_reshaper()
-            self.bidi = get_display
-        except ImportError:
-            logging.warning("Arabic text processing libraries not available")
-    
-    async def process_arabic_text(self, text: str, enable_shaping: bool = True) -> str:
-        """Process Arabic text for proper display"""
-        
-        if not self.arabic_reshaper or not self.bidi:
-            return text
-        
-        try:
-            # Apply Arabic reshaping if enabled
-            if enable_shaping:
-                reshaped_text = self.arabic_reshaper.reshape(text)
-                # Apply bidirectional algorithm
-                display_text = self.bidi(reshaped_text)
-                return display_text
-            else:
-                return text
-        except Exception as e:
-            logging.error(f"Error processing Arabic text: {e}")
-            return text
-    
-    async def detect_language(self, text: str) -> LanguageSupport:
-        """Detect language of text with Iraqi dialect awareness"""
-        
-        # Arabic script detection
-        arabic_chars = re.findall(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]', text)
-        if len(arabic_chars) > len(text) * 0.5:
-            # Iraqi dialect indicators
-            iraqi_indicators = ["شلون", "وين", "شوكت", "هوايه", "يالله", "ماكو"]
-            if any(indicator in text for indicator in iraqi_indicators):
-                return LanguageSupport.IRAQI_ARABIC
-            return LanguageSupport.ARABIC
-        
-        # Kurdish detection (basic)
-        kurdish_chars = re.findall(r'[ئ]', text)  # Kurdish-specific characters
-        if kurdish_chars:
-            return LanguageSupport.KURDISH
-        
-        return LanguageSupport.ENGLISH
-    
-    async def format_numbers(self, text: str, format_type: str = "arabic") -> str:
-        """Format numbers according to Arabic/Iraqi conventions"""
-        
-        if format_type == "arabic":
-            # Convert to Arabic-Indic digits
-            arabic_digits = "٠١٢٣٤٥٦٧٨٩"
-            english_digits = "0123456789"
-            
-            for eng, ara in zip(english_digits, arabic_digits):
-                text = text.replace(eng, ara)
-        
-        return text
-
-
-class IslamicComplianceValidator:
-    """Islamic compliance validation for translations"""
-    
-    def __init__(self):
-        self.prohibited_terms = {
-            "ar": ["خمر", "قمار", "ربا"],  # Alcohol, gambling, usury
-            "en": ["alcohol", "gambling", "usury", "interest"]
-        }
-        
-        self.preferred_greetings = {
-            "ar": ["السلام عليكم", "بسم الله", "الحمد لله"],
-            "en": ["Peace be upon you", "In the name of Allah", "Praise be to Allah"]
-        }
-    
-    async def validate_islamic_compliance(self, 
-                                        text: str, 
-                                        language: LanguageSupport) -> Tuple[bool, List[str], float]:
-        """Validate text against Islamic principles"""
-        
-        issues = []
-        compliance_score = 1.0
-        
-        # Check for prohibited terms
-        prohibited = self.prohibited_terms.get(language.value, [])
-        for term in prohibited:
-            if term.lower() in text.lower():
-                issues.append(f"Prohibited term '{term}' found in content")
-                compliance_score -= 0.3
-        
-        # Check for appropriate Islamic greetings in formal context
-        if language.value in ["ar", "ar-IQ"]:
-            has_islamic_greeting = any(
-                greeting in text for greeting in self.preferred_greetings.get("ar", [])
-            )
-            if len(text) > 100 and not has_islamic_greeting:
-                # This is guidance, not a failure
-                compliance_score -= 0.1
-        
-        # Time-based validation (e.g., prayer times)
-        current_hour = datetime.now().hour
-        if 12 <= current_hour <= 13:  # Jummah prayer time on Friday
-            if datetime.now().weekday() == 4:  # Friday
-                issues.append("Consider prayer time context in messaging")
-                compliance_score -= 0.1
-        
-        is_compliant = compliance_score >= 0.7 and len(issues) == 0
-        return is_compliant, issues, max(0.0, compliance_score)
-
-
-class IraqiI18nManager:
-    """
-    Enhanced internationalization manager for Iraqi AI Chat System
-    
-    Provides comprehensive Arabic language support, Iraqi cultural context awareness,
-    and professional domain terminology management based on Roo-Code's i18n patterns
-    """
-    
-    def __init__(self, 
-                 config: IraqiI18nConfig = None,
-                 terminology_manager: IraqiTerminologyManager = None,
-                 arabic_processor: ArabicTextProcessor = None,
-                 islamic_validator: IslamicComplianceValidator = None):
-        
-        self.config = config or IraqiI18nConfig()
-        self.terminology_manager = terminology_manager or IraqiTerminologyManager()
-        self.arabic_processor = arabic_processor or ArabicTextProcessor()
-        self.islamic_validator = islamic_validator or IslamicComplianceValidator()
-        
-        # Translation storage
-        self.translations: Dict[str, Dict[str, TranslationEntry]] = {}
-        self.namespace_cache: Dict[str, Dict[str, Any]] = {}
-        
-        # Current context
-        self.current_language = self.config.default_language
-        self.current_context = CulturalContext()
-        
-        # Performance tracking
-        self.translation_metrics = {
-            "total_translations": 0,
-            "cache_hits": 0,
-            "cache_misses": 0,
-            "cultural_validations": 0,
-            "islamic_validations": 0,
-            "terminology_lookups": 0
-        }
-    
-    async def initialize(self, translations_path: Path) -> Dict[str, Any]:
-        """Initialize the i18n system with Iraqi translations"""
-        
-        initialization_result = {
-            "status": "success",
-            "loaded_languages": [],
-            "loaded_namespaces": [],
-            "errors": []
-        }
-        
-        try:
-            # Load translation files
-            if translations_path.exists():
-                for language_dir in translations_path.iterdir():
-                    if language_dir.is_dir():
-                        language_code = language_dir.name
-                        
-                        # Validate language support
-                        try:
-                            language = LanguageSupport(language_code)
-                        except ValueError:
-                            initialization_result["errors"].append(
-                                f"Unsupported language: {language_code}"
-                            )
-                            continue
-                        
-                        # Load namespaces for this language
-                        if language_code not in self.translations:
-                            self.translations[language_code] = {}
-                        
-                        for json_file in language_dir.glob("*.json"):
-                            namespace = json_file.stem
-                            
-                            try:
-                                with open(json_file, 'r', encoding='utf-8') as f:
-                                    namespace_data = json.load(f)
-                                
-                                # Convert to TranslationEntry objects
-                                await self._load_namespace_data(
-                                    language_code, namespace, namespace_data
-                                )
-                                
-                                if namespace not in initialization_result["loaded_namespaces"]:
-                                    initialization_result["loaded_namespaces"].append(namespace)
-                                
-                            except Exception as e:
-                                initialization_result["errors"].append(
-                                    f"Error loading {json_file}: {str(e)}"
-                                )
-                        
-                        initialization_result["loaded_languages"].append(language_code)
-            
-            # Preload common translations if configured
-            if self.config.preload_common_translations:
-                await self._preload_common_translations()
-            
-            initialization_result["total_translations"] = sum(
-                len(ns) for lang in self.translations.values() for ns in lang.values()
-            )
-            
-        except Exception as e:
-            initialization_result["status"] = "error"
-            initialization_result["error"] = str(e)
-        
-        return initialization_result
-    
-    async def translate(self, 
-                       key: str, 
-                       namespace: str = "common",
-                       variables: Dict[str, Any] = None,
-                       language: Optional[LanguageSupport] = None,
-                       cultural_context: Optional[CulturalContext] = None) -> str:
-        """
-        Translate a key with full cultural and linguistic processing
-        
-        Args:
-            key: Translation key
-            namespace: Translation namespace
-            variables: Variables for interpolation
-            language: Target language (defaults to current)
-            cultural_context: Cultural context for translation
-            
-        Returns:
-            Translated and culturally-processed text
-        """
-        
-        self.translation_metrics["total_translations"] += 1
-        
-        # Use provided language or current language
-        target_language = language or self.current_language
-        context = cultural_context or self.current_context
-        
-        # Get base translation
-        translation_entry = await self._get_translation_entry(
-            key, namespace, target_language
-        )
-        
-        if not translation_entry:
-            # Fallback to default language
-            if target_language != self.config.fallback_language:
-                translation_entry = await self._get_translation_entry(
-                    key, namespace, self.config.fallback_language
-                )
-            
-            if not translation_entry:
-                return f"[{namespace}:{key}]"  # Return key if no translation found
-        
-        # Get the translation text
-        translation_text = translation_entry.content.get(target_language.value, key)
-        
-        # Apply variable interpolation
-        if variables:
-            translation_text = await self._interpolate_variables(
-                translation_text, variables, target_language
-            )
-        
-        # Apply professional terminology
-        if translation_entry.professional_domain:
-            translation_text = await self._apply_professional_terminology(
-                translation_text, 
-                translation_entry.professional_domain,
-                target_language
-            )
-        
-        # Apply cultural filtering
-        if self.config.enable_cultural_filtering:
-            translation_text = await self._apply_cultural_filtering(
-                translation_text, context, target_language
-            )
-        
-        # Process Arabic text if needed
-        if target_language.value.startswith('ar'):
-            translation_text = await self.arabic_processor.process_arabic_text(
-                translation_text, self.config.enable_arabic_shaping
-            )
-        
-        # Islamic compliance validation
-        if self.config.enable_islamic_compliance:
-            is_compliant, issues, score = await self.islamic_validator.validate_islamic_compliance(
-                translation_text, target_language
-            )
-            
-            if not is_compliant:
-                logging.warning(f"Islamic compliance issues in translation '{key}': {issues}")
-        
-        return translation_text
-    
-    async def _get_translation_entry(self, 
-                                   key: str, 
-                                   namespace: str, 
-                                   language: LanguageSupport) -> Optional[TranslationEntry]:
-        """Get translation entry with caching"""
-        
-        lang_code = language.value
-        cache_key = f"{lang_code}:{namespace}:{key}"
-        
-        # Check cache first
-        if self.config.cache_translations and cache_key in self.namespace_cache:
-            self.translation_metrics["cache_hits"] += 1
-            return self.namespace_cache[cache_key]
-        
-        self.translation_metrics["cache_misses"] += 1
-        
-        # Get from storage
-        if (lang_code in self.translations and 
-            namespace in self.translations[lang_code] and 
-            key in self.translations[lang_code][namespace]):
-            
-            entry = self.translations[lang_code][namespace][key]
-            
-            # Cache for future use
-            if self.config.cache_translations:
-                self.namespace_cache[cache_key] = entry
-            
-            return entry
-        
-        return None
-    
-    async def _load_namespace_data(self, 
-                                 language_code: str, 
-                                 namespace: str, 
-                                 data: Dict[str, Any]):
-        """Load namespace data into translation entries"""
-        
-        if namespace not in self.translations[language_code]:
-            self.translations[language_code][namespace] = {}
-        
-        # Recursively process nested translation keys
-        await self._process_translation_data(
-            language_code, namespace, "", data
-        )
-    
-    async def _process_translation_data(self, 
-                                      language_code: str, 
-                                      namespace: str, 
-                                      key_prefix: str, 
-                                      data: Any):
-        """Recursively process translation data"""
-        
-        if isinstance(data, dict):
-            for key, value in data.items():
-                full_key = f"{key_prefix}.{key}" if key_prefix else key
-                await self._process_translation_data(
-                    language_code, namespace, full_key, value
-                )
-        else:
-            # Create translation entry
-            translation_entry = TranslationEntry(
-                key=key_prefix,
-                content={language_code: str(data)},
-                namespace=namespace
-            )
-            
-            # Detect professional domain from namespace or key
-            if namespace in ["legal", "medical", "government", "education"]:
-                try:
-                    translation_entry.professional_domain = ProfessionalDomain(namespace)
-                except ValueError:
-                    pass
-            
-            # Store the entry
-            self.translations[language_code][namespace][key_prefix] = translation_entry
-    
-    async def _interpolate_variables(self, 
-                                   text: str, 
-                                   variables: Dict[str, Any], 
-                                   language: LanguageSupport) -> str:
-        """Interpolate variables in translation text"""
-        
-        # Support both {{variable}} and {variable} syntax
-        for variable_name, value in variables.items():
-            # Convert value to string and apply language-specific formatting
-            str_value = await self._format_variable_value(value, language)
-            
-            # Replace variable placeholders
-            text = text.replace(f"{{{{{variable_name}}}}}", str_value)
-            text = text.replace(f"{{{variable_name}}}", str_value)
-        
-        return text
-    
-    async def _format_variable_value(self, value: Any, language: LanguageSupport) -> str:
-        """Format variable value according to language conventions"""
-        
-        if isinstance(value, (int, float)):
-            # Apply Arabic number formatting if needed
-            str_value = str(value)
-            if language.value.startswith('ar'):
-                str_value = await self.arabic_processor.format_numbers(str_value)
-            return str_value
-        
-        elif isinstance(value, datetime):
-            # Format dates according to language conventions
-            if language.value.startswith('ar'):
-                # Arabic date formatting
-                return value.strftime("%d/%m/%Y")
-            else:
-                return value.strftime("%Y-%m-%d")
-        
-        return str(value)
-    
-    async def _apply_professional_terminology(self, 
-                                            text: str, 
-                                            domain: ProfessionalDomain, 
-                                            language: LanguageSupport) -> str:
-        """Apply professional terminology to translation"""
-        
-        self.translation_metrics["terminology_lookups"] += 1
-        
-        # This is a placeholder for more sophisticated terminology replacement
-        # In practice, this would involve NLP techniques to identify and replace terms
-        return text
-    
-    async def _apply_cultural_filtering(self, 
-                                      text: str, 
-                                      context: CulturalContext, 
-                                      language: LanguageSupport) -> str:
-        """Apply cultural filtering to translation"""
-        
-        self.translation_metrics["cultural_validations"] += 1
-        
-        # Apply regional variations
-        if language.value == "ar-IQ" and context.region:
-            # Regional Iraqi variations
-            regional_variations = {
-                "baghdad": {"مرحبا": "أهلا وسهلا"},
-                "basra": {"مرحبا": "هلا والله"},
-                "erbil": {"مرحبا": "بخير هاتن"}  # Kurdish influence
+    # Register translations
+    translations = {
+        'welcome_message': {
+            'arabic': 'أهلاً وسهلاً بكم في نظام المحكمة الإلكترونية',
+            'english': 'Welcome to the Electronic Court System',
+            'formality_variants': {
+                'formal': 'أهلاً وسهلاً بكم في نظام المحكمة الإلكترونية',
+                'casual': 'مرحبا بيكم في نظام المحكمة'
             }
-            
-            if context.region in regional_variations:
-                for original, replacement in regional_variations[context.region].items():
-                    text = text.replace(original, replacement)
-        
-        # Apply formality level
-        if context.formal_tone and language.value.startswith('ar'):
-            # Use formal Arabic variants
-            informal_to_formal = {
-                "شلون": "كيف",      # How (informal -> formal)
-                "وين": "أين",       # Where
-                "شوكت": "متى"       # When
-            }
-            
-            for informal, formal in informal_to_formal.items():
-                text = text.replace(informal, formal)
-        
-        return text
+        },
+        'case_number': 'رقم القضية: {case_id}',
+        'total_amount': 'المبلغ الإجمالي: {amount}'
+    }
     
-    async def _preload_common_translations(self):
-        """Preload commonly used translations"""
-        
-        common_keys = [
-            "common.welcome",
-            "common.errors.generic",
-            "common.buttons.save",
-            "common.buttons.cancel"
-        ]
-        
-        for key in common_keys:
-            namespace, _, translation_key = key.partition(".")
-            if "." in translation_key:
-                # Handle nested keys
-                continue
-            
-            for language in self.config.supported_languages:
-                await self._get_translation_entry(translation_key, namespace, language)
+    await i18n.register_translations(translations, context)
     
-    async def set_language(self, language: LanguageSupport) -> bool:
-        """Set the current language"""
-        
-        if language in self.config.supported_languages:
-            self.current_language = language
-            return True
-        return False
+    # Test translations
+    welcome = await i18n.translate('welcome_message', context)
+    print(f"Welcome message: {welcome}")
     
-    async def set_cultural_context(self, context: CulturalContext):
-        """Set the current cultural context"""
-        self.current_context = context
+    case_msg = await i18n.translate('case_number', context, {'case_id': '2025/123'})
+    print(f"Case message: {case_msg}")
     
-    async def get_available_languages(self) -> List[Dict[str, Any]]:
-        """Get list of available languages with metadata"""
-        
-        languages = []
-        for language in self.config.supported_languages:
-            lang_info = {
-                "code": language.value,
-                "name": self._get_language_name(language),
-                "rtl": language.value.startswith('ar'),
-                "has_translations": language.value in self.translations,
-                "translation_count": len(self.translations.get(language.value, {}))
-            }
-            languages.append(lang_info)
-        
-        return languages
+    amount_msg = await i18n.translate('total_amount', context, {'amount': 150000})
+    print(f"Amount message: {amount_msg}")
     
-    def _get_language_name(self, language: LanguageSupport) -> str:
-        """Get human-readable language name"""
-        
-        language_names = {
-            LanguageSupport.ARABIC: "العربية",
-            LanguageSupport.IRAQI_ARABIC: "العراقية",
-            LanguageSupport.ENGLISH: "English",
-            LanguageSupport.KURDISH: "کوردی",
-            LanguageSupport.TURKMEN: "Türkmençe",
-            LanguageSupport.SYRIAC: "ܣܘܪܝܝܐ"
-        }
-        
-        return language_names.get(language, language.value)
-    
-    async def validate_translation_quality(self, 
-                                         key: str, 
-                                         namespace: str = "common") -> Dict[str, Any]:
-        """Validate translation quality across all languages"""
-        
-        validation_result = {
-            "key": key,
-            "namespace": namespace,
-            "languages": {},
-            "overall_score": 0.0,
-            "issues": []
-        }
-        
-        total_score = 0.0
-        language_count = 0
-        
-        for language in self.config.supported_languages:
-            entry = await self._get_translation_entry(key, namespace, language)
-            
-            if entry:
-                lang_result = {
-                    "has_translation": True,
-                    "cultural_compliance": True,
-                    "islamic_compliance": True,
-                    "professional_terminology": True,
-                    "score": 1.0,
-                    "issues": []
-                }
-                
-                translation_text = entry.content.get(language.value, "")
-                
-                # Islamic compliance check
-                if self.config.enable_islamic_compliance:
-                    is_compliant, issues, score = await self.islamic_validator.validate_islamic_compliance(
-                        translation_text, language
-                    )
-                    lang_result["islamic_compliance"] = is_compliant
-                    lang_result["score"] *= score
-                    lang_result["issues"].extend(issues)
-                
-                # Professional terminology check
-                if entry.professional_domain:
-                    is_valid, issues = await self.terminology_manager.validate_terminology(
-                        translation_text, entry.professional_domain, language
-                    )
-                    lang_result["professional_terminology"] = is_valid
-                    if not is_valid:
-                        lang_result["score"] *= 0.8
-                    lang_result["issues"].extend(issues)
-                
-                total_score += lang_result["score"]
-                language_count += 1
-                
-            else:
-                lang_result = {
-                    "has_translation": False,
-                    "score": 0.0,
-                    "issues": ["Missing translation"]
-                }
-            
-            validation_result["languages"][language.value] = lang_result
-        
-        # Calculate overall score
-        if language_count > 0:
-            validation_result["overall_score"] = total_score / language_count
-        
-        return validation_result
-    
-    def get_translation_metrics(self) -> Dict[str, Any]:
-        """Get translation system performance metrics"""
-        
-        total_requests = self.translation_metrics["total_translations"]
-        
-        if total_requests == 0:
-            return self.translation_metrics
-        
-        return {
-            **self.translation_metrics,
-            "cache_hit_rate": self.translation_metrics["cache_hits"] / total_requests,
-            "average_lookups_per_translation": (
-                self.translation_metrics["terminology_lookups"] / total_requests
-            ),
-            "cultural_validation_rate": (
-                self.translation_metrics["cultural_validations"] / total_requests
-            ),
-            "islamic_validation_rate": (
-                self.translation_metrics["islamic_validations"] / total_requests
-            )
-        }
-    
-    async def export_translation_report(self, output_path: Path) -> Dict[str, Any]:
-        """Export comprehensive translation quality report"""
-        
-        report = {
-            "generated_at": datetime.now().isoformat(),
-            "system_config": {
-                "default_language": self.config.default_language.value,
-                "supported_languages": [lang.value for lang in self.config.supported_languages],
-                "cultural_filtering_enabled": self.config.enable_cultural_filtering,
-                "islamic_compliance_enabled": self.config.enable_islamic_compliance
-            },
-            "translation_metrics": self.get_translation_metrics(),
-            "language_coverage": {},
-            "namespace_analysis": {},
-            "quality_issues": []
-        }
-        
-        # Analyze language coverage
-        for language in self.config.supported_languages:
-            lang_code = language.value
-            if lang_code in self.translations:
-                total_keys = sum(len(ns) for ns in self.translations[lang_code].values())
-                report["language_coverage"][lang_code] = {
-                    "total_translations": total_keys,
-                    "namespaces": list(self.translations[lang_code].keys()),
-                    "completeness": 1.0  # Could be calculated against a reference language
-                }
-        
-        # Save report
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(report, f, indent=2, ensure_ascii=False)
-        
-        return report
+    # Test dialect detection
+    test_text = "شلونك اليوم؟ شكو ماكو؟"
+    detected_dialect = await i18n.detect_dialect(test_text)
+    print(f"Detected dialect: {detected_dialect.value}")
 
-
-# Example usage and testing
 if __name__ == "__main__":
-    async def test_iraqi_i18n_manager():
-        """Test the Iraqi i18n manager with various scenarios"""
-        
-        # Initialize with Iraqi configuration
-        config = IraqiI18nConfig(
-            default_language=LanguageSupport.IRAQI_ARABIC,
-            enable_cultural_filtering=True,
-            enable_islamic_compliance=True
-        )
-        
-        i18n_manager = IraqiI18nManager(config)
-        
-        # Create test translations directory structure
-        print("🧪 Testing Iraqi I18n Manager...")
-        
-        # Test language detection
-        arabic_processor = ArabicTextProcessor()
-        
-        test_texts = [
-            "مرحبا بك في النظام",  # Standard Arabic
-            "شلونك، وين رايح؟",      # Iraqi dialect
-            "Hello, how are you?",    # English
-            "چۆنی؟ چ دەکەیت؟"          # Kurdish
-        ]
-        
-        for text in test_texts:
-            detected_lang = await arabic_processor.detect_language(text)
-            print(f"  Text: '{text}' -> Detected: {detected_lang.value}")
-        
-        # Test Islamic compliance
-        islamic_validator = IslamicComplianceValidator()
-        
-        test_compliance_texts = [
-            ("Welcome to our halal service", LanguageSupport.ENGLISH),
-            ("مرحبا بكم في خدمتنا الحلال", LanguageSupport.ARABIC),
-            ("This service involves alcohol sales", LanguageSupport.ENGLISH),  # Should fail
-            ("بسم الله نبدأ", LanguageSupport.ARABIC)  # Should pass with high score
-        ]
-        
-        for text, lang in test_compliance_texts:
-            is_compliant, issues, score = await islamic_validator.validate_islamic_compliance(text, lang)
-            print(f"  Compliance - '{text}': {'✅' if is_compliant else '❌'} (Score: {score:.2f})")
-            if issues:
-                print(f"    Issues: {', '.join(issues)}")
-        
-        # Test professional terminology
-        terminology_manager = IraqiTerminologyManager()
-        
-        legal_term = await terminology_manager.get_term(
-            "contract", ProfessionalDomain.LEGAL, LanguageSupport.IRAQI_ARABIC
-        )
-        print(f"  Legal term 'contract' in Iraqi Arabic: '{legal_term}'")
-        
-        medical_term = await terminology_manager.get_term(
-            "doctor", ProfessionalDomain.MEDICAL, LanguageSupport.IRAQI_ARABIC
-        )
-        print(f"  Medical term 'doctor' in Iraqi Arabic: '{medical_term}'")
-        
-        # Test terminology validation
-        formal_text = "نحتاج إلى عقد قانوني للمعاملة"  # Formal legal text
-        is_valid, issues = await terminology_manager.validate_terminology(
-            formal_text, ProfessionalDomain.LEGAL, LanguageSupport.ARABIC
-        )
-        print(f"  Legal text validation: {'✅' if is_valid else '❌'}")
-        if issues:
-            print(f"    Issues: {', '.join(issues)}")
-        
-        print(f"\n📊 I18n Manager Test Results:")
-        print(f"  ✅ Arabic text processing: Functional")
-        print(f"  ✅ Language detection: Functional") 
-        print(f"  ✅ Islamic compliance validation: Functional")
-        print(f"  ✅ Professional terminology: Functional")
-        print(f"  ✅ Iraqi cultural context: Integrated")
-    
-    # Run the test
-    asyncio.run(test_iraqi_i18n_manager())
+    asyncio.run(main())

@@ -2427,7 +2427,12 @@ in this phase of the app we are extracting from the repos in the reference folde
 
 
 
+generate commit message
 
+git status
+git diff --name-only
+git diff --stat
+git ls-files --others --exclude-standard
 
 
 
@@ -2436,10 +2441,9 @@ in this phase of the app we are extracting from the repos in the reference folde
 
 
 https://github.com/onlook-dev/onlook
-https://github.com/botpress/botpress
 https://github.com/anthropics/claude-code
-
-
+https://github.com/n8n-io/n8n
+https://github.com/browseros-ai/BrowserOS
 
 
 

@@ -1,849 +1,909 @@
 """
-Iraqi Localization Loader - Dynamic translation loading with cultural context
-Part of Roo-Code extraction with comprehensive Iraqi cultural compliance
+Iraqi Localization Loader - Dynamic Localization Resource Management
 
-Extends Roo-Code's dynamic translation loading patterns with Iraqi cultural validation,
-Arabic language processing, and professional domain awareness to provide:
-- Real-time translation loading with cultural context validation
-- Professional domain-specific translation management
-- Government service integration with official Iraqi terminology
+Enhanced localization resource loading with Iraqi cultural intelligence.
+Supports dynamic loading of translations, cultural patterns, and professional terminologies.
 
-Based on: RooCodeInc/Roo-Code i18n dynamic loading patterns
-Enhanced for: Iraqi AI Chat System with cultural and professional compliance
+Key features:
+- Hierarchical localization resource loading (dialect > domain > general)
+- Cultural pattern caching and validation
+- Professional terminology hot-loading
+- RTL resource optimization
+- Fallback chain management with cultural preferences
 """
 
-from typing import Dict, List, Optional, Any, Union, Callable
+from typing import Dict, List, Any, Optional, Union, Callable, Set
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
-import asyncio
-import json
 from pathlib import Path
+import json
+import yaml
+import asyncio
 import logging
 import aiofiles
+import hashlib
+from datetime import datetime, timedelta
 
+from iraqi_i18n_manager import IraqiDialect, ProfessionalDomain, LocalizationContext, TranslationEntry
 
-class TranslationLoadingStrategy(Enum):
-    """Translation loading strategies"""
-    EAGER = "eager"                   # Load all translations at startup
-    LAZY = "lazy"                     # Load translations on demand
-    HYBRID = "hybrid"                 # Load common translations eagerly, others lazily
-    STREAMING = "streaming"           # Stream translations for large datasets
+class ResourceType(Enum):
+    TRANSLATIONS = "translations"
+    CULTURAL_PATTERNS = "cultural_patterns"
+    TERMINOLOGY = "terminology"
+    RTL_RULES = "rtl_rules"
+    VALIDATION_RULES = "validation_rules"
+    FORMATTING_RULES = "formatting_rules"
 
-
-class CacheStrategy(Enum):
-    """Translation caching strategies"""
-    MEMORY = "memory"                 # In-memory caching
-    DISK = "disk"                     # Disk-based caching
-    HYBRID = "hybrid"                 # Memory + disk caching
-    DISTRIBUTED = "distributed"      # Distributed caching for multiple instances
-
+class LoadingStrategy(Enum):
+    EAGER = "eager"  # Load all resources at startup
+    LAZY = "lazy"    # Load resources on demand
+    HYBRID = "hybrid"  # Load critical resources eagerly, others lazily
 
 @dataclass
-class TranslationSource:
-    """Translation source configuration"""
-    name: str
-    path: Path
-    priority: int = 1                 # Higher priority = loaded first
-    cultural_context: Optional[str] = None
-    professional_domain: Optional[str] = None
-    loading_strategy: TranslationLoadingStrategy = TranslationLoadingStrategy.LAZY
-    cache_ttl: int = 3600            # Cache time-to-live in seconds
-    
-    # Performance settings
-    batch_size: int = 100            # Number of translations to load per batch
-    concurrent_loads: int = 5        # Max concurrent loading operations
-    
-    # Validation settings
-    validate_on_load: bool = True
-    require_islamic_compliance: bool = True
-    require_cultural_validation: bool = True
+class ResourceMetadata:
+    """Metadata for localization resources"""
+    resource_id: str
+    resource_type: ResourceType
+    dialect: IraqiDialect
+    domain: ProfessionalDomain
+    version: str
+    last_modified: datetime
+    file_hash: str
+    dependencies: List[str] = field(default_factory=list)
+    cultural_validation_level: str = "standard"
+    is_critical: bool = False
 
-
-@dataclass 
-class LoadingProgress:
-    """Translation loading progress tracking"""
-    total_sources: int = 0
-    loaded_sources: int = 0
-    total_translations: int = 0
-    loaded_translations: int = 0
-    failed_translations: int = 0
-    
-    start_time: datetime = field(default_factory=datetime.now)
-    current_source: Optional[str] = None
-    current_namespace: Optional[str] = None
-    
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    
-    @property
-    def progress_percentage(self) -> float:
-        """Calculate overall progress percentage"""
-        if self.total_translations == 0:
-            return 0.0
-        return (self.loaded_translations / self.total_translations) * 100
-    
-    @property
-    def duration(self) -> float:
-        """Calculate loading duration in seconds"""
-        return (datetime.now() - self.start_time).total_seconds()
-    
-    @property
-    def loading_rate(self) -> float:
-        """Calculate translations per second loading rate"""
-        duration = self.duration
-        if duration == 0:
-            return 0.0
-        return self.loaded_translations / duration
-
-
-class IraqiTranslationValidator:
-    """Advanced validation for Iraqi translations"""
-    
-    def __init__(self):
-        # Iraqi government approved terminology
-        self.government_terminology = {
-            "ministry": {"ar": "وزارة", "ar-IQ": "وزارة"},
-            "department": {"ar": "دائرة", "ar-IQ": "دائرة"}, 
-            "service": {"ar": "خدمة", "ar-IQ": "خدمة"},
-            "citizen": {"ar": "مواطن", "ar-IQ": "مواطن"},
-            "document": {"ar": "وثيقة", "ar-IQ": "وثيقة"},
-            "application": {"ar": "طلب", "ar-IQ": "معاملة"}
-        }
-        
-        # Professional standards
-        self.professional_standards = {
-            "legal": {
-                "required_phrases": ["وفقاً للقانون العراقي", "حسب الأنظمة النافذة"],
-                "prohibited_phrases": ["قانون غير عراقي", "نظام أجنبي"]
-            },
-            "medical": {
-                "required_phrases": ["وفقاً للمعايير الطبية", "حسب البروتوكول الطبي"],
-                "prohibited_phrases": ["علاج غير مثبت", "دواء غير مرخص"]
-            }
-        }
-        
-        # Cultural validation rules
-        self.cultural_rules = {
-            "greeting_context": {
-                "formal": ["السلام عليكم", "أهلاً وسهلاً"],
-                "informal": ["أهلاً", "مرحبا"]
-            },
-            "time_context": {
-                "morning": ["صباح الخير", "صباح النور"],
-                "evening": ["مساء الخير", "مساء النور"]
-            }
-        }
-    
-    async def validate_translation(self, 
-                                 key: str, 
-                                 content: Dict[str, str], 
-                                 context: Dict[str, Any]) -> Dict[str, Any]:
-        """Comprehensive translation validation"""
-        
-        validation_result = {
-            "is_valid": True,
-            "score": 1.0,
-            "issues": [],
-            "warnings": [],
-            "suggestions": []
-        }
-        
-        # Validate each language variant
-        for lang_code, text in content.items():
-            lang_validation = await self._validate_language_specific(
-                lang_code, text, context
-            )
-            
-            # Aggregate results
-            if not lang_validation["is_valid"]:
-                validation_result["is_valid"] = False
-            
-            validation_result["score"] = min(
-                validation_result["score"], lang_validation["score"]
-            )
-            
-            validation_result["issues"].extend([
-                f"[{lang_code}] {issue}" for issue in lang_validation["issues"]
-            ])
-            
-            validation_result["warnings"].extend([
-                f"[{lang_code}] {warning}" for warning in lang_validation["warnings"]
-            ])
-        
-        # Cross-language consistency validation
-        consistency_validation = await self._validate_cross_language_consistency(content)
-        validation_result["issues"].extend(consistency_validation["issues"])
-        
-        return validation_result
-    
-    async def _validate_language_specific(self, 
-                                        lang_code: str, 
-                                        text: str, 
-                                        context: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate language-specific content"""
-        
-        result = {
-            "is_valid": True,
-            "score": 1.0,
-            "issues": [],
-            "warnings": []
-        }
-        
-        # Arabic-specific validation
-        if lang_code.startswith('ar'):
-            await self._validate_arabic_content(text, result)
-        
-        # Professional domain validation
-        if context.get("professional_domain"):
-            await self._validate_professional_content(
-                text, context["professional_domain"], result
-            )
-        
-        # Cultural context validation
-        if context.get("cultural_context"):
-            await self._validate_cultural_content(
-                text, context["cultural_context"], result
-            )
-        
-        return result
-    
-    async def _validate_arabic_content(self, text: str, result: Dict[str, Any]):
-        """Validate Arabic content specifics"""
-        
-        # Check for proper Arabic script
-        arabic_chars = len([c for c in text if '\u0600' <= c <= '\u06FF'])
-        total_chars = len([c for c in text if c.isalpha()])
-        
-        if total_chars > 0:
-            arabic_ratio = arabic_chars / total_chars
-            if arabic_ratio < 0.8:  # Should be mostly Arabic
-                result["warnings"].append("Low Arabic script ratio in Arabic translation")
-                result["score"] *= 0.9
-        
-        # Check for proper RTL markers if mixed content
-        if any(c.isascii() and c.isalpha() for c in text):
-            if '\u202B' not in text and '\u202A' not in text:  # RTL/LTR marks
-                result["warnings"].append("Mixed script content without proper directional markers")
-    
-    async def _validate_professional_content(self, 
-                                           text: str, 
-                                           domain: str, 
-                                           result: Dict[str, Any]):
-        """Validate professional domain content"""
-        
-        if domain in self.professional_standards:
-            standards = self.professional_standards[domain]
-            
-            # Check for required phrases
-            required = standards.get("required_phrases", [])
-            has_required = any(phrase in text for phrase in required)
-            
-            if required and not has_required:
-                result["warnings"].append(
-                    f"Missing required {domain} terminology"
-                )
-                result["score"] *= 0.8
-            
-            # Check for prohibited phrases
-            prohibited = standards.get("prohibited_phrases", [])
-            has_prohibited = any(phrase in text for phrase in prohibited)
-            
-            if has_prohibited:
-                result["is_valid"] = False
-                result["issues"].append(
-                    f"Contains prohibited {domain} terminology"
-                )
-                result["score"] *= 0.5
-    
-    async def _validate_cultural_content(self, 
-                                       text: str, 
-                                       cultural_context: str, 
-                                       result: Dict[str, Any]):
-        """Validate cultural context appropriateness"""
-        
-        # Time-appropriate greetings
-        current_hour = datetime.now().hour
-        
-        if "greeting" in cultural_context.lower():
-            if 6 <= current_hour < 12:  # Morning
-                appropriate_greetings = self.cultural_rules["greeting_context"]["formal"]
-                if not any(greeting in text for greeting in appropriate_greetings):
-                    result["warnings"].append("Consider using culturally appropriate morning greeting")
-    
-    async def _validate_cross_language_consistency(self, 
-                                                 content: Dict[str, str]) -> Dict[str, Any]:
-        """Validate consistency across language variants"""
-        
-        result = {
-            "issues": [],
-            "warnings": []
-        }
-        
-        # Check for consistent variable placeholders
-        languages = list(content.keys())
-        if len(languages) > 1:
-            # Extract variables from first language
-            import re
-            base_lang = languages[0]
-            base_vars = set(re.findall(r'\{\{(\w+)\}\}', content[base_lang]))
-            
-            # Check other languages have same variables
-            for lang in languages[1:]:
-                lang_vars = set(re.findall(r'\{\{(\w+)\}\}', content[lang]))
-                
-                if base_vars != lang_vars:
-                    missing = base_vars - lang_vars
-                    extra = lang_vars - base_vars
-                    
-                    if missing:
-                        result["issues"].append(
-                            f"Language {lang} missing variables: {missing}"
-                        )
-                    if extra:
-                        result["issues"].append(
-                            f"Language {lang} has extra variables: {extra}"
-                        )
-        
-        return result
-
-
-class TranslationCache:
-    """Efficient caching system for translations"""
-    
-    def __init__(self, strategy: CacheStrategy = CacheStrategy.MEMORY):
-        self.strategy = strategy
-        self.memory_cache: Dict[str, Any] = {}
-        self.cache_stats = {
-            "hits": 0,
-            "misses": 0,
-            "evictions": 0
-        }
-        
-        # Cache settings
-        self.max_memory_size = 1000  # Max items in memory
-        self.cache_ttl = 3600        # Cache TTL in seconds
-        
-    async def get(self, key: str) -> Optional[Any]:
-        """Get item from cache"""
-        
-        if key in self.memory_cache:
-            self.cache_stats["hits"] += 1
-            return self.memory_cache[key]
-        
-        self.cache_stats["misses"] += 1
-        
-        # Try disk cache if using hybrid strategy
-        if self.strategy in [CacheStrategy.DISK, CacheStrategy.HYBRID]:
-            disk_value = await self._get_from_disk(key)
-            if disk_value:
-                # Add to memory cache
-                await self.set(key, disk_value)
-                return disk_value
-        
-        return None
-    
-    async def set(self, key: str, value: Any):
-        """Set item in cache"""
-        
-        # Memory caching
-        if self.strategy in [CacheStrategy.MEMORY, CacheStrategy.HYBRID]:
-            if len(self.memory_cache) >= self.max_memory_size:
-                # Evict oldest items (simple LRU)
-                oldest_key = next(iter(self.memory_cache))
-                del self.memory_cache[oldest_key]
-                self.cache_stats["evictions"] += 1
-            
-            self.memory_cache[key] = value
-        
-        # Disk caching
-        if self.strategy in [CacheStrategy.DISK, CacheStrategy.HYBRID]:
-            await self._set_to_disk(key, value)
-    
-    async def _get_from_disk(self, key: str) -> Optional[Any]:
-        """Get item from disk cache"""
-        # Placeholder for disk cache implementation
-        return None
-    
-    async def _set_to_disk(self, key: str, value: Any):
-        """Set item to disk cache"""
-        # Placeholder for disk cache implementation
-        pass
-    
-    def get_stats(self) -> Dict[str, Any]:
-        """Get cache statistics"""
-        total_requests = self.cache_stats["hits"] + self.cache_stats["misses"]
-        
-        return {
-            **self.cache_stats,
-            "hit_rate": self.cache_stats["hits"] / total_requests if total_requests > 0 else 0,
-            "memory_size": len(self.memory_cache),
-            "max_memory_size": self.max_memory_size
-        }
-
+@dataclass
+class ResourceCache:
+    """Cache entry for loaded resources"""
+    metadata: ResourceMetadata
+    content: Any
+    loaded_at: datetime
+    access_count: int = 0
+    last_accessed: Optional[datetime] = None
 
 class IraqiLocalizationLoader:
-    """
-    Enhanced localization loader for Iraqi AI Chat System
-    
-    Provides dynamic translation loading with cultural validation, Arabic processing,
-    and professional domain awareness based on Roo-Code's loading patterns
-    """
+    """Enhanced localization resource loader with cultural intelligence"""
     
     def __init__(self, 
-                 cache_strategy: CacheStrategy = CacheStrategy.HYBRID,
-                 validator: IraqiTranslationValidator = None):
+                 resource_directories: List[Path],
+                 loading_strategy: LoadingStrategy = LoadingStrategy.HYBRID,
+                 cache_ttl_minutes: int = 60,
+                 max_cache_size: int = 1000):
         
-        self.cache = TranslationCache(cache_strategy)
-        self.validator = validator or IraqiTranslationValidator()
+        self.resource_directories = [Path(d) for d in resource_directories]
+        self.loading_strategy = loading_strategy
+        self.cache_ttl = timedelta(minutes=cache_ttl_minutes)
+        self.max_cache_size = max_cache_size
         
-        # Translation sources
-        self.sources: List[TranslationSource] = []
-        self.loaded_translations: Dict[str, Dict[str, Any]] = {}
+        # Resource cache and metadata
+        self.resource_cache: Dict[str, ResourceCache] = {}
+        self.resource_metadata: Dict[str, ResourceMetadata] = {}
+        self.resource_index: Dict[ResourceType, Dict[str, Set[str]]] = {}
         
-        # Progress tracking
-        self.loading_progress = LoadingProgress()
-        self.progress_callbacks: List[Callable] = []
+        # Loading state
+        self.loading_tasks: Dict[str, asyncio.Task] = {}
+        self.fallback_chains: Dict[str, List[str]] = {}
         
-        # Performance metrics
-        self.metrics = {
-            "total_loads": 0,
-            "successful_loads": 0,
-            "failed_loads": 0,
-            "validation_failures": 0,
-            "cache_usage": 0,
-            "average_load_time": 0.0
-        }
+        # Cultural processors
+        self.cultural_validators: Dict[str, Callable] = {}
+        self.terminology_processors: Dict[ProfessionalDomain, Callable] = {}
+        
+        self._setup_logging()
+        
+    def _setup_logging(self):
+        """Setup culturally appropriate logging"""
+        self.logger = logging.getLogger("iraqi_localization_loader")
+        self.logger.setLevel(logging.INFO)
     
-    def add_translation_source(self, source: TranslationSource):
-        """Add a translation source"""
-        
-        # Validate source path exists
-        if not source.path.exists():
-            raise ValueError(f"Translation source path does not exist: {source.path}")
-        
-        # Insert in priority order (highest first)
-        inserted = False
-        for i, existing_source in enumerate(self.sources):
-            if source.priority > existing_source.priority:
-                self.sources.insert(i, source)
-                inserted = True
-                break
-        
-        if not inserted:
-            self.sources.append(source)
-    
-    def add_progress_callback(self, callback: Callable[[LoadingProgress], None]):
-        """Add progress callback for loading updates"""
-        self.progress_callbacks.append(callback)
-    
-    async def load_all_translations(self) -> Dict[str, Any]:
-        """Load all translations from all sources"""
-        
-        load_result = {
-            "status": "success",
-            "loaded_sources": 0,
-            "total_translations": 0,
-            "errors": [],
-            "performance": {}
-        }
-        
-        start_time = datetime.now()
-        
+    async def initialize(self) -> bool:
+        """Initialize the localization loader"""
         try:
-            # Initialize progress tracking
-            self.loading_progress = LoadingProgress()
-            self.loading_progress.total_sources = len(self.sources)
+            # Discover and index all resources
+            await self._discover_resources()
             
-            # Calculate total translations to load
-            for source in self.sources:
-                if source.path.is_dir():
-                    for lang_dir in source.path.iterdir():
-                        if lang_dir.is_dir():
-                            json_files = list(lang_dir.glob("*.json"))
-                            self.loading_progress.total_translations += len(json_files)
+            # Build fallback chains
+            await self._build_fallback_chains()
             
-            # Load from each source
-            for source in self.sources:
-                self.loading_progress.current_source = source.name
-                
-                try:
-                    source_result = await self._load_source(source)
-                    load_result["total_translations"] += source_result["translation_count"]
-                    self.loading_progress.loaded_sources += 1
-                    
-                except Exception as e:
-                    error_msg = f"Failed to load source {source.name}: {str(e)}"
-                    load_result["errors"].append(error_msg)
-                    self.loading_progress.errors.append(error_msg)
-                
-                # Notify progress callbacks
-                await self._notify_progress()
+            # Load critical resources if using eager or hybrid strategy
+            if self.loading_strategy in [LoadingStrategy.EAGER, LoadingStrategy.HYBRID]:
+                await self._load_critical_resources()
             
-            # Final progress update
-            self.loading_progress.current_source = None
-            await self._notify_progress()
-            
-            load_result["loaded_sources"] = self.loading_progress.loaded_sources
+            self.logger.info(f"Localization loader initialized with {len(self.resource_metadata)} resources")
+            return True
             
         except Exception as e:
-            load_result["status"] = "error"
-            load_result["error"] = str(e)
-        
-        # Calculate performance metrics
-        duration = (datetime.now() - start_time).total_seconds()
-        load_result["performance"] = {
-            "duration_seconds": duration,
-            "translations_per_second": load_result["total_translations"] / duration if duration > 0 else 0,
-            "cache_stats": self.cache.get_stats()
-        }
-        
-        return load_result
+            self.logger.error(f"Failed to initialize localization loader: {str(e)}")
+            return False
     
-    async def _load_source(self, source: TranslationSource) -> Dict[str, Any]:
-        """Load translations from a single source"""
+    async def load_translations(self, 
+                              dialect: IraqiDialect,
+                              domain: ProfessionalDomain,
+                              namespace: Optional[str] = None) -> Dict[str, Any]:
+        """Load translations for specific dialect and domain"""
         
-        source_result = {
-            "source": source.name,
-            "translation_count": 0,
-            "namespace_count": 0,
-            "validation_failures": 0
-        }
+        resource_key = self._build_resource_key(
+            ResourceType.TRANSLATIONS, dialect, domain, namespace
+        )
         
-        if source.path.is_dir():
-            # Load directory structure (language/namespace.json)
-            for lang_dir in source.path.iterdir():
-                if not lang_dir.is_dir():
-                    continue
-                
-                language_code = lang_dir.name
-                
-                # Create language entry if needed
-                if language_code not in self.loaded_translations:
-                    self.loaded_translations[language_code] = {}
-                
-                # Load namespace files
-                for json_file in lang_dir.glob("*.json"):
-                    namespace = json_file.stem
-                    self.loading_progress.current_namespace = namespace
-                    
-                    try:
-                        translation_data = await self._load_translation_file(
-                            json_file, source, language_code, namespace
-                        )
-                        
-                        if namespace not in self.loaded_translations[language_code]:
-                            self.loaded_translations[language_code][namespace] = {}
-                        
-                        self.loaded_translations[language_code][namespace].update(translation_data)
-                        
-                        source_result["translation_count"] += len(translation_data)
-                        self.loading_progress.loaded_translations += len(translation_data)
-                        
-                    except Exception as e:
-                        logging.error(f"Failed to load {json_file}: {e}")
-                        self.loading_progress.failed_translations += 1
-                
-                source_result["namespace_count"] += len(list(lang_dir.glob("*.json")))
+        # Try to get from cache first
+        cached_resource = await self._get_from_cache(resource_key)
+        if cached_resource is not None:
+            return cached_resource
         
-        return source_result
+        # Load with fallback chain
+        translations = await self._load_with_fallback_chain(
+            ResourceType.TRANSLATIONS, dialect, domain, namespace
+        )
+        
+        if translations:
+            # Cache the loaded translations
+            await self._cache_resource(resource_key, translations, 
+                                     ResourceType.TRANSLATIONS, dialect, domain)
+        
+        return translations or {}
     
-    async def _load_translation_file(self, 
-                                   file_path: Path, 
-                                   source: TranslationSource,
-                                   language_code: str, 
-                                   namespace: str) -> Dict[str, Any]:
-        """Load and validate a single translation file"""
+    async def load_cultural_patterns(self, 
+                                   dialect: IraqiDialect,
+                                   domain: ProfessionalDomain) -> Dict[str, Any]:
+        """Load cultural patterns for specific context"""
         
-        # Check cache first
-        cache_key = f"{source.name}:{language_code}:{namespace}"
-        cached_data = await self.cache.get(cache_key)
-        if cached_data:
-            self.metrics["cache_usage"] += 1
-            return cached_data
+        resource_key = self._build_resource_key(
+            ResourceType.CULTURAL_PATTERNS, dialect, domain
+        )
         
-        # Load from file
-        async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
-            content = await f.read()
-            translation_data = json.loads(content)
+        cached_resource = await self._get_from_cache(resource_key)
+        if cached_resource is not None:
+            return cached_resource
         
-        # Validation if enabled
-        if source.validate_on_load:
-            validation_context = {
-                "professional_domain": source.professional_domain,
-                "cultural_context": source.cultural_context,
-                "language_code": language_code,
-                "namespace": namespace
-            }
+        patterns = await self._load_with_fallback_chain(
+            ResourceType.CULTURAL_PATTERNS, dialect, domain
+        )
+        
+        if patterns:
+            # Validate cultural patterns
+            validated_patterns = await self._validate_cultural_patterns(patterns, dialect, domain)
+            await self._cache_resource(resource_key, validated_patterns,
+                                     ResourceType.CULTURAL_PATTERNS, dialect, domain)
+            return validated_patterns
+        
+        return {}
+    
+    async def load_terminology(self, domain: ProfessionalDomain,
+                             language_pair: str = "ar-en") -> Dict[str, Any]:
+        """Load professional domain terminology"""
+        
+        resource_key = f"terminology_{domain.value}_{language_pair}"
+        
+        cached_resource = await self._get_from_cache(resource_key)
+        if cached_resource is not None:
+            return cached_resource
+        
+        # Load terminology from multiple sources
+        terminology = {}
+        
+        # Try domain-specific terminology first
+        domain_terminology = await self._load_domain_terminology(domain, language_pair)
+        if domain_terminology:
+            terminology.update(domain_terminology)
+        
+        # Add general terminology as fallback
+        general_terminology = await self._load_domain_terminology(
+            ProfessionalDomain.GENERAL, language_pair
+        )
+        if general_terminology:
+            # General terminology has lower priority
+            for key, value in general_terminology.items():
+                if key not in terminology:
+                    terminology[key] = value
+        
+        if terminology:
+            await self._cache_resource(resource_key, terminology,
+                                     ResourceType.TERMINOLOGY, 
+                                     IraqiDialect.STANDARD_ARABIC, domain)
+        
+        return terminology
+    
+    async def load_rtl_rules(self, content_type: str = "text") -> Dict[str, Any]:
+        """Load RTL formatting rules"""
+        
+        resource_key = f"rtl_rules_{content_type}"
+        
+        cached_resource = await self._get_from_cache(resource_key)
+        if cached_resource is not None:
+            return cached_resource
+        
+        rtl_rules = await self._load_rtl_rules_from_files(content_type)
+        
+        if rtl_rules:
+            await self._cache_resource(resource_key, rtl_rules,
+                                     ResourceType.RTL_RULES,
+                                     IraqiDialect.STANDARD_ARABIC,
+                                     ProfessionalDomain.GENERAL)
+        
+        return rtl_rules or {}
+    
+    async def reload_resource(self, resource_id: str) -> bool:
+        """Reload a specific resource (hot reload)"""
+        try:
+            # Remove from cache
+            if resource_id in self.resource_cache:
+                del self.resource_cache[resource_id]
             
-            # Validate each translation entry
-            validated_data = {}
-            for key, value in translation_data.items():
-                if isinstance(value, str):
-                    # Simple string translation
-                    content_dict = {language_code: value}
-                    validation_result = await self.validator.validate_translation(
-                        key, content_dict, validation_context
+            # Get metadata for reloading
+            if resource_id not in self.resource_metadata:
+                self.logger.error(f"Resource metadata not found: {resource_id}")
+                return False
+            
+            metadata = self.resource_metadata[resource_id]
+            
+            # Reload the resource
+            reloaded_content = await self._load_resource_by_metadata(metadata)
+            
+            if reloaded_content is not None:
+                await self._cache_resource(resource_id, reloaded_content,
+                                         metadata.resource_type,
+                                         metadata.dialect,
+                                         metadata.domain)
+                
+                self.logger.info(f"Successfully reloaded resource: {resource_id}")
+                return True
+            else:
+                self.logger.error(f"Failed to reload resource content: {resource_id}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error reloading resource {resource_id}: {str(e)}")
+            return False
+    
+    async def get_resource_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive resource loading statistics"""
+        
+        cache_stats = {
+            'total_cached_resources': len(self.resource_cache),
+            'cache_hit_rate': self._calculate_cache_hit_rate(),
+            'memory_usage_estimate': self._estimate_memory_usage(),
+            'most_accessed_resources': self._get_most_accessed_resources(5)
+        }
+        
+        resource_stats = {
+            'total_discovered_resources': len(self.resource_metadata),
+            'resources_by_type': self._count_resources_by_type(),
+            'resources_by_dialect': self._count_resources_by_dialect(),
+            'resources_by_domain': self._count_resources_by_domain()
+        }
+        
+        return {
+            'cache_statistics': cache_stats,
+            'resource_statistics': resource_stats,
+            'loading_strategy': self.loading_strategy.value,
+            'cache_ttl_minutes': self.cache_ttl.total_seconds() / 60
+        }
+    
+    # Private methods
+    
+    async def _discover_resources(self):
+        """Discover all available localization resources"""
+        
+        for resource_dir in self.resource_directories:
+            if not resource_dir.exists():
+                self.logger.warning(f"Resource directory not found: {resource_dir}")
+                continue
+            
+            # Discover resources recursively
+            await self._discover_resources_in_directory(resource_dir)
+        
+        # Build resource index for fast lookups
+        await self._build_resource_index()
+    
+    async def _discover_resources_in_directory(self, directory: Path):
+        """Discover resources in a specific directory"""
+        
+        try:
+            # Look for resource files (.json, .yaml, .yml)
+            resource_patterns = ['*.json', '*.yaml', '*.yml']
+            
+            for pattern in resource_patterns:
+                async for file_path in self._async_glob(directory, pattern):
+                    metadata = await self._extract_resource_metadata(file_path)
+                    if metadata:
+                        self.resource_metadata[metadata.resource_id] = metadata
+                        
+        except Exception as e:
+            self.logger.error(f"Error discovering resources in {directory}: {str(e)}")
+    
+    async def _async_glob(self, directory: Path, pattern: str):
+        """Async generator for file globbing"""
+        for file_path in directory.rglob(pattern):
+            yield file_path
+    
+    async def _extract_resource_metadata(self, file_path: Path) -> Optional[ResourceMetadata]:
+        """Extract metadata from a resource file"""
+        try:
+            # Calculate file hash for change detection
+            file_hash = await self._calculate_file_hash(file_path)
+            
+            # Get file stats
+            stat = file_path.stat()
+            last_modified = datetime.fromtimestamp(stat.st_mtime)
+            
+            # Parse file name to extract dialect, domain, and type information
+            # Expected format: {type}_{dialect}_{domain}_{namespace}.{ext}
+            name_parts = file_path.stem.split('_')
+            
+            if len(name_parts) < 3:
+                self.logger.warning(f"Invalid resource file name format: {file_path}")
+                return None
+            
+            resource_type = ResourceType(name_parts[0])
+            dialect = IraqiDialect(name_parts[1])
+            domain = ProfessionalDomain(name_parts[2])
+            
+            namespace = '_'.join(name_parts[3:]) if len(name_parts) > 3 else None
+            
+            # Create resource ID
+            resource_id = self._build_resource_key(resource_type, dialect, domain, namespace)
+            
+            # Load metadata from file header (if available)
+            file_metadata = await self._load_file_metadata(file_path)
+            
+            metadata = ResourceMetadata(
+                resource_id=resource_id,
+                resource_type=resource_type,
+                dialect=dialect,
+                domain=domain,
+                version=file_metadata.get('version', '1.0.0'),
+                last_modified=last_modified,
+                file_hash=file_hash,
+                dependencies=file_metadata.get('dependencies', []),
+                cultural_validation_level=file_metadata.get('cultural_validation_level', 'standard'),
+                is_critical=file_metadata.get('is_critical', False)
+            )
+            
+            return metadata
+            
+        except (ValueError, KeyError) as e:
+            self.logger.warning(f"Could not parse resource metadata from {file_path}: {str(e)}")
+            return None
+        except Exception as e:
+            self.logger.error(f"Error extracting metadata from {file_path}: {str(e)}")
+            return None
+    
+    async def _calculate_file_hash(self, file_path: Path) -> str:
+        """Calculate SHA-256 hash of file content"""
+        hash_sha256 = hashlib.sha256()
+        
+        async with aiofiles.open(file_path, 'rb') as f:
+            chunk = await f.read(8192)
+            while chunk:
+                hash_sha256.update(chunk)
+                chunk = await f.read(8192)
+        
+        return hash_sha256.hexdigest()
+    
+    async def _load_file_metadata(self, file_path: Path) -> Dict[str, Any]:
+        """Load metadata from file header or companion metadata file"""
+        
+        # Check for companion .meta file
+        meta_file = file_path.with_suffix(file_path.suffix + '.meta')
+        
+        if meta_file.exists():
+            try:
+                async with aiofiles.open(meta_file, 'r', encoding='utf-8') as f:
+                    content = await f.read()
+                    return yaml.safe_load(content) or {}
+            except Exception as e:
+                self.logger.warning(f"Error loading metadata from {meta_file}: {str(e)}")
+        
+        # Try to extract metadata from file header
+        try:
+            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+                content = await f.read(1024)  # Read first 1KB for header
+                
+                if file_path.suffix.lower() in ['.yaml', '.yml']:
+                    # YAML files might have metadata in header
+                    if content.startswith('# META:'):
+                        meta_lines = []
+                        for line in content.split('\n'):
+                            if line.startswith('# META:'):
+                                meta_lines.append(line[7:].strip())
+                            elif line.startswith('#'):
+                                continue
+                            else:
+                                break
+                        
+                        if meta_lines:
+                            return yaml.safe_load('\n'.join(meta_lines)) or {}
+                            
+                elif file_path.suffix.lower() == '.json':
+                    # JSON files might have __meta__ key
+                    try:
+                        data = json.loads(content)
+                        return data.get('__meta__', {})
+                    except json.JSONDecodeError:
+                        pass
+                        
+        except Exception as e:
+            self.logger.warning(f"Error extracting header metadata from {file_path}: {str(e)}")
+        
+        return {}
+    
+    def _build_resource_key(self, 
+                           resource_type: ResourceType,
+                           dialect: IraqiDialect, 
+                           domain: ProfessionalDomain,
+                           namespace: Optional[str] = None) -> str:
+        """Build a unique resource key"""
+        key_parts = [resource_type.value, dialect.value, domain.value]
+        if namespace:
+            key_parts.append(namespace)
+        
+        return '_'.join(key_parts)
+    
+    async def _build_resource_index(self):
+        """Build resource index for fast lookups"""
+        
+        for resource_type in ResourceType:
+            self.resource_index[resource_type] = {}
+        
+        for resource_id, metadata in self.resource_metadata.items():
+            resource_type = metadata.resource_type
+            dialect_domain_key = f"{metadata.dialect.value}_{metadata.domain.value}"
+            
+            if dialect_domain_key not in self.resource_index[resource_type]:
+                self.resource_index[resource_type][dialect_domain_key] = set()
+            
+            self.resource_index[resource_type][dialect_domain_key].add(resource_id)
+    
+    async def _build_fallback_chains(self):
+        """Build fallback chains for resource loading"""
+        
+        # For each dialect-domain combination, build fallback chain
+        for resource_type in ResourceType:
+            for dialect in IraqiDialect:
+                for domain in ProfessionalDomain:
+                    chain = self._build_fallback_chain_for_context(
+                        resource_type, dialect, domain
                     )
                     
-                    if validation_result["is_valid"]:
-                        validated_data[key] = value
-                    else:
-                        self.metrics["validation_failures"] += 1
-                        logging.warning(
-                            f"Validation failed for {key} in {namespace}: "
-                            f"{validation_result['issues']}"
-                        )
-                        
-                        # Include with warning if not critical
-                        if validation_result["score"] >= 0.5:
-                            validated_data[key] = value
-                
-                else:
-                    # Complex nested structure - handle recursively
-                    validated_data[key] = value
-            
-            translation_data = validated_data
-        
-        # Cache the loaded data
-        await self.cache.set(cache_key, translation_data)
-        
-        self.metrics["total_loads"] += 1
-        self.metrics["successful_loads"] += 1
-        
-        return translation_data
+                    chain_key = f"{resource_type.value}_{dialect.value}_{domain.value}"
+                    self.fallback_chains[chain_key] = chain
     
-    async def load_translation_lazy(self, 
-                                  language_code: str, 
-                                  namespace: str, 
-                                  key: Optional[str] = None) -> Optional[Any]:
-        """Load specific translation on demand"""
+    def _build_fallback_chain_for_context(self,
+                                        resource_type: ResourceType,
+                                        dialect: IraqiDialect,
+                                        domain: ProfessionalDomain) -> List[str]:
+        """Build fallback chain for specific context"""
         
-        cache_key = f"{language_code}:{namespace}" + (f":{key}" if key else "")
-        cached_value = await self.cache.get(cache_key)
+        fallback_chain = []
         
-        if cached_value:
-            return cached_value
+        # Primary: exact match
+        primary_key = self._build_resource_key(resource_type, dialect, domain)
+        fallback_chain.append(primary_key)
         
-        # Find source containing this translation
-        for source in self.sources:
-            if source.loading_strategy in [TranslationLoadingStrategy.LAZY, TranslationLoadingStrategy.HYBRID]:
-                source_file = source.path / language_code / f"{namespace}.json"
+        # Secondary: same domain, standard Arabic
+        if dialect != IraqiDialect.STANDARD_ARABIC:
+            secondary_key = self._build_resource_key(
+                resource_type, IraqiDialect.STANDARD_ARABIC, domain
+            )
+            fallback_chain.append(secondary_key)
+        
+        # Tertiary: same dialect, general domain
+        if domain != ProfessionalDomain.GENERAL:
+            tertiary_key = self._build_resource_key(
+                resource_type, dialect, ProfessionalDomain.GENERAL
+            )
+            fallback_chain.append(tertiary_key)
+        
+        # Quaternary: standard Arabic, general domain
+        if (dialect != IraqiDialect.STANDARD_ARABIC or 
+            domain != ProfessionalDomain.GENERAL):
+            quaternary_key = self._build_resource_key(
+                resource_type, IraqiDialect.STANDARD_ARABIC, ProfessionalDomain.GENERAL
+            )
+            fallback_chain.append(quaternary_key)
+        
+        return fallback_chain
+    
+    async def _load_critical_resources(self):
+        """Load critical resources for eager/hybrid strategies"""
+        
+        critical_resources = [
+            metadata for metadata in self.resource_metadata.values()
+            if metadata.is_critical
+        ]
+        
+        self.logger.info(f"Loading {len(critical_resources)} critical resources")
+        
+        # Load critical resources in parallel
+        load_tasks = []
+        for metadata in critical_resources:
+            task = asyncio.create_task(self._load_resource_by_metadata(metadata))
+            load_tasks.append((metadata.resource_id, task))
+        
+        # Wait for all critical resources to load
+        for resource_id, task in load_tasks:
+            try:
+                content = await task
+                if content is not None:
+                    metadata = self.resource_metadata[resource_id]
+                    await self._cache_resource(resource_id, content,
+                                             metadata.resource_type,
+                                             metadata.dialect,
+                                             metadata.domain)
+            except Exception as e:
+                self.logger.error(f"Failed to load critical resource {resource_id}: {str(e)}")
+    
+    async def _load_with_fallback_chain(self,
+                                      resource_type: ResourceType,
+                                      dialect: IraqiDialect,
+                                      domain: ProfessionalDomain,
+                                      namespace: Optional[str] = None) -> Optional[Any]:
+        """Load resource using fallback chain"""
+        
+        # Get fallback chain
+        chain_key = f"{resource_type.value}_{dialect.value}_{domain.value}"
+        fallback_chain = self.fallback_chains.get(chain_key, [])
+        
+        # Try each resource in fallback chain
+        for resource_key in fallback_chain:
+            # Modify key for namespace if provided
+            if namespace:
+                resource_key = f"{resource_key}_{namespace}"
+            
+            if resource_key in self.resource_metadata:
+                metadata = self.resource_metadata[resource_key]
+                content = await self._load_resource_by_metadata(metadata)
                 
-                if source_file.exists():
-                    try:
-                        translation_data = await self._load_translation_file(
-                            source_file, source, language_code, namespace
-                        )
-                        
-                        if key:
-                            value = translation_data.get(key)
-                            await self.cache.set(cache_key, value)
-                            return value
-                        else:
-                            await self.cache.set(cache_key, translation_data)
-                            return translation_data
-                            
-                    except Exception as e:
-                        logging.error(f"Lazy loading failed for {cache_key}: {e}")
+                if content is not None:
+                    self.logger.debug(f"Loaded resource from fallback: {resource_key}")
+                    return content
+        
+        self.logger.warning(f"No resource found in fallback chain for {chain_key}")
+        return None
+    
+    async def _load_resource_by_metadata(self, metadata: ResourceMetadata) -> Optional[Any]:
+        """Load resource content using metadata"""
+        
+        # Find the file for this resource
+        resource_file = await self._find_resource_file(metadata)
+        
+        if not resource_file or not resource_file.exists():
+            self.logger.error(f"Resource file not found for: {metadata.resource_id}")
+            return None
+        
+        try:
+            # Load content based on file type
+            async with aiofiles.open(resource_file, 'r', encoding='utf-8') as f:
+                content = await f.read()
+            
+            if resource_file.suffix.lower() == '.json':
+                data = json.loads(content)
+            elif resource_file.suffix.lower() in ['.yaml', '.yml']:
+                data = yaml.safe_load(content)
+            else:
+                self.logger.error(f"Unsupported resource file format: {resource_file}")
+                return None
+            
+            # Remove metadata if present
+            if isinstance(data, dict) and '__meta__' in data:
+                del data['__meta__']
+            
+            return data
+            
+        except Exception as e:
+            self.logger.error(f"Error loading resource {metadata.resource_id}: {str(e)}")
+            return None
+    
+    async def _find_resource_file(self, metadata: ResourceMetadata) -> Optional[Path]:
+        """Find the file for a resource based on metadata"""
+        
+        # Reconstruct expected file name
+        name_parts = [
+            metadata.resource_type.value,
+            metadata.dialect.value,
+            metadata.domain.value
+        ]
+        
+        # Add namespace if it exists (extract from resource_id)
+        resource_parts = metadata.resource_id.split('_')
+        if len(resource_parts) > 3:
+            name_parts.extend(resource_parts[3:])
+        
+        base_name = '_'.join(name_parts)
+        
+        # Try different extensions
+        extensions = ['.json', '.yaml', '.yml']
+        
+        for resource_dir in self.resource_directories:
+            for ext in extensions:
+                candidate_file = resource_dir / f"{base_name}{ext}"
+                if candidate_file.exists():
+                    return candidate_file
         
         return None
     
-    async def _notify_progress(self):
-        """Notify all progress callbacks"""
-        for callback in self.progress_callbacks:
-            try:
-                if asyncio.iscoroutinefunction(callback):
-                    await callback(self.loading_progress)
-                else:
-                    callback(self.loading_progress)
-            except Exception as e:
-                logging.error(f"Progress callback error: {e}")
+    async def _get_from_cache(self, resource_key: str) -> Optional[Any]:
+        """Get resource from cache if available and valid"""
+        
+        if resource_key not in self.resource_cache:
+            return None
+        
+        cache_entry = self.resource_cache[resource_key]
+        
+        # Check if cache entry is still valid
+        if datetime.now() - cache_entry.loaded_at > self.cache_ttl:
+            # Cache entry expired
+            del self.resource_cache[resource_key]
+            return None
+        
+        # Update access statistics
+        cache_entry.access_count += 1
+        cache_entry.last_accessed = datetime.now()
+        
+        return cache_entry.content
     
-    def get_loaded_languages(self) -> List[str]:
-        """Get list of loaded languages"""
-        return list(self.loaded_translations.keys())
-    
-    def get_loaded_namespaces(self, language_code: str) -> List[str]:
-        """Get list of loaded namespaces for a language"""
-        return list(self.loaded_translations.get(language_code, {}).keys())
-    
-    def get_translation(self, 
-                       language_code: str, 
-                       namespace: str, 
-                       key: str) -> Optional[str]:
-        """Get a specific translation"""
+    async def _cache_resource(self,
+                            resource_key: str,
+                            content: Any,
+                            resource_type: ResourceType,
+                            dialect: IraqiDialect,
+                            domain: ProfessionalDomain):
+        """Cache loaded resource"""
         
-        return (self.loaded_translations
-                .get(language_code, {})
-                .get(namespace, {})
-                .get(key))
-    
-    async def reload_source(self, source_name: str) -> Dict[str, Any]:
-        """Reload a specific translation source"""
+        # Check cache size limit
+        if len(self.resource_cache) >= self.max_cache_size:
+            await self._evict_least_used_resources()
         
-        source = next((s for s in self.sources if s.name == source_name), None)
-        if not source:
-            return {"status": "error", "error": f"Source {source_name} not found"}
+        # Create cache entry
+        metadata = self.resource_metadata.get(resource_key)
+        if not metadata:
+            # Create minimal metadata for dynamic resources
+            metadata = ResourceMetadata(
+                resource_id=resource_key,
+                resource_type=resource_type,
+                dialect=dialect,
+                domain=domain,
+                version="1.0.0",
+                last_modified=datetime.now(),
+                file_hash=""
+            )
         
-        try:
-            # Clear cache for this source
-            cache_keys_to_remove = [
-                key for key in self.cache.memory_cache.keys() 
-                if key.startswith(f"{source_name}:")
-            ]
-            for key in cache_keys_to_remove:
-                del self.cache.memory_cache[key]
-            
-            # Reload source
-            result = await self._load_source(source)
-            result["status"] = "success"
-            
-            return result
-            
-        except Exception as e:
-            return {"status": "error", "error": str(e)}
-    
-    def get_loading_metrics(self) -> Dict[str, Any]:
-        """Get loading performance metrics"""
-        
-        total_requests = self.metrics["total_loads"]
-        if total_requests > 0:
-            success_rate = self.metrics["successful_loads"] / total_requests
-        else:
-            success_rate = 0.0
-        
-        return {
-            **self.metrics,
-            "success_rate": success_rate,
-            "validation_failure_rate": self.metrics["validation_failures"] / total_requests if total_requests > 0 else 0,
-            "cache_stats": self.cache.get_stats(),
-            "loading_progress": {
-                "total_sources": self.loading_progress.total_sources,
-                "loaded_sources": self.loading_progress.loaded_sources,
-                "progress_percentage": self.loading_progress.progress_percentage,
-                "duration": self.loading_progress.duration,
-                "loading_rate": self.loading_progress.loading_rate
-            }
-        }
-    
-    async def export_loading_report(self, output_path: Path) -> Dict[str, Any]:
-        """Export comprehensive loading report"""
-        
-        report = {
-            "generated_at": datetime.now().isoformat(),
-            "sources": [
-                {
-                    "name": source.name,
-                    "path": str(source.path),
-                    "priority": source.priority,
-                    "loading_strategy": source.loading_strategy.value,
-                    "cultural_context": source.cultural_context,
-                    "professional_domain": source.professional_domain
-                } for source in self.sources
-            ],
-            "loaded_translations": {
-                lang: {
-                    "namespaces": list(namespaces.keys()),
-                    "total_keys": sum(len(ns) for ns in namespaces.values())
-                } for lang, namespaces in self.loaded_translations.items()
-            },
-            "loading_metrics": self.get_loading_metrics(),
-            "cache_performance": self.cache.get_stats(),
-            "validation_summary": {
-                "total_validations": self.metrics["total_loads"],
-                "validation_failures": self.metrics["validation_failures"],
-                "failure_rate": (self.metrics["validation_failures"] / 
-                               max(1, self.metrics["total_loads"]))
-            }
-        }
-        
-        # Save report
-        async with aiofiles.open(output_path, 'w', encoding='utf-8') as f:
-            await f.write(json.dumps(report, indent=2, ensure_ascii=False))
-        
-        return report
-
-
-# Example usage and testing
-if __name__ == "__main__":
-    async def test_iraqi_localization_loader():
-        """Test the Iraqi localization loader"""
-        
-        print("🧪 Testing Iraqi Localization Loader...")
-        
-        # Create loader with validation
-        loader = IraqiLocalizationLoader(
-            cache_strategy=CacheStrategy.HYBRID,
-            validator=IraqiTranslationValidator()
+        cache_entry = ResourceCache(
+            metadata=metadata,
+            content=content,
+            loaded_at=datetime.now()
         )
         
-        # Test translation validation
-        validator = IraqiTranslationValidator()
+        self.resource_cache[resource_key] = cache_entry
+    
+    async def _evict_least_used_resources(self):
+        """Evict least recently used resources to free cache space"""
         
-        test_translations = [
-            {
-                "key": "legal.contract.title", 
-                "content": {
-                    "ar": "عنوان العقد القانوني وفقاً للقانون العراقي",
-                    "ar-IQ": "عنوان العقد حسب القانون العراقي",
-                    "en": "Legal Contract Title"
-                },
-                "context": {"professional_domain": "legal"}
-            },
-            {
-                "key": "greeting.formal",
-                "content": {
-                    "ar": "السلام عليكم ورحمة الله وبركاته",
-                    "ar-IQ": "السلام عليكم",
-                    "en": "Peace be upon you"
-                },
-                "context": {"cultural_context": "formal_greeting"}
-            }
+        # Sort cache entries by last access time (oldest first)
+        sorted_entries = sorted(
+            self.resource_cache.items(),
+            key=lambda x: x[1].last_accessed or x[1].loaded_at
+        )
+        
+        # Remove oldest 25% of cache entries
+        entries_to_remove = len(sorted_entries) // 4
+        
+        for i in range(entries_to_remove):
+            resource_key = sorted_entries[i][0]
+            del self.resource_cache[resource_key]
+        
+        self.logger.info(f"Evicted {entries_to_remove} cache entries")
+    
+    async def _validate_cultural_patterns(self,
+                                        patterns: Dict[str, Any],
+                                        dialect: IraqiDialect,
+                                        domain: ProfessionalDomain) -> Dict[str, Any]:
+        """Validate cultural patterns for appropriateness"""
+        
+        validated_patterns = {}
+        
+        for pattern_name, pattern_data in patterns.items():
+            try:
+                # Basic validation
+                if not isinstance(pattern_data, dict):
+                    self.logger.warning(f"Invalid pattern format: {pattern_name}")
+                    continue
+                
+                # Cultural appropriateness validation
+                if await self._validate_pattern_cultural_appropriateness(pattern_data, dialect, domain):
+                    validated_patterns[pattern_name] = pattern_data
+                else:
+                    self.logger.warning(f"Pattern failed cultural validation: {pattern_name}")
+                    
+            except Exception as e:
+                self.logger.error(f"Error validating pattern {pattern_name}: {str(e)}")
+        
+        return validated_patterns
+    
+    async def _validate_pattern_cultural_appropriateness(self,
+                                                       pattern_data: Dict[str, Any],
+                                                       dialect: IraqiDialect,
+                                                       domain: ProfessionalDomain) -> bool:
+        """Validate if a pattern is culturally appropriate"""
+        
+        # Check for inappropriate content
+        inappropriate_terms = [
+            'inappropriate', 'offensive', 'gambling', 'alcohol', 'dating'
         ]
         
-        for test_case in test_translations:
-            result = await validator.validate_translation(
-                test_case["key"],
-                test_case["content"],
-                test_case["context"]
-            )
-            
-            print(f"  Validation for '{test_case['key']}': "
-                  f"{'✅' if result['is_valid'] else '❌'} "
-                  f"(Score: {result['score']:.2f})")
-            
-            if result["issues"]:
-                print(f"    Issues: {', '.join(result['issues'][:2])}")
-            if result["warnings"]:
-                print(f"    Warnings: {', '.join(result['warnings'][:2])}")
+        pattern_text = json.dumps(pattern_data, default=str).lower()
         
-        # Test caching system
-        cache = TranslationCache(CacheStrategy.MEMORY)
+        for term in inappropriate_terms:
+            if term in pattern_text:
+                return False
         
-        # Test cache operations
-        await cache.set("test_key", {"value": "test_data"})
-        cached_value = await cache.get("test_key")
+        # Domain-specific validation
+        if domain == ProfessionalDomain.RELIGIOUS:
+            # Extra strict validation for religious domain
+            sensitive_terms = ['secular', 'non-religious']
+            for term in sensitive_terms:
+                if term in pattern_text:
+                    return False
         
-        print(f"  Cache test: {'✅' if cached_value else '❌'}")
-        print(f"  Cache stats: {cache.get_stats()}")
-        
-        # Progress tracking test
-        progress = LoadingProgress()
-        progress.total_translations = 100
-        progress.loaded_translations = 75
-        progress.failed_translations = 5
-        
-        print(f"  Progress tracking: {progress.progress_percentage:.1f}% "
-              f"({progress.loaded_translations}/{progress.total_translations})")
-        print(f"  Loading rate: {progress.loading_rate:.1f} translations/sec")
-        
-        print(f"\n📊 Localization Loader Test Results:")
-        print(f"  ✅ Translation validation: Functional")
-        print(f"  ✅ Caching system: Functional")
-        print(f"  ✅ Progress tracking: Functional")
-        print(f"  ✅ Iraqi cultural validation: Integrated")
-        print(f"  ✅ Professional terminology: Validated")
+        return True
     
-    # Run the test
-    asyncio.run(test_iraqi_localization_loader())
+    async def _load_domain_terminology(self,
+                                     domain: ProfessionalDomain,
+                                     language_pair: str) -> Dict[str, Any]:
+        """Load terminology for specific domain"""
+        
+        terminology = {}
+        
+        # Look for terminology files
+        for resource_dir in self.resource_directories:
+            terminology_file = resource_dir / f"terminology_{domain.value}_{language_pair}.json"
+            
+            if terminology_file.exists():
+                try:
+                    async with aiofiles.open(terminology_file, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                        data = json.loads(content)
+                        terminology.update(data)
+                        
+                except Exception as e:
+                    self.logger.error(f"Error loading terminology from {terminology_file}: {str(e)}")
+        
+        return terminology
+    
+    async def _load_rtl_rules_from_files(self, content_type: str) -> Dict[str, Any]:
+        """Load RTL formatting rules from files"""
+        
+        rtl_rules = {}
+        
+        for resource_dir in self.resource_directories:
+            rtl_file = resource_dir / f"rtl_rules_{content_type}.yaml"
+            
+            if rtl_file.exists():
+                try:
+                    async with aiofiles.open(rtl_file, 'r', encoding='utf-8') as f:
+                        content = await f.read()
+                        data = yaml.safe_load(content)
+                        rtl_rules.update(data)
+                        
+                except Exception as e:
+                    self.logger.error(f"Error loading RTL rules from {rtl_file}: {str(e)}")
+        
+        return rtl_rules
+    
+    # Statistics and monitoring methods
+    
+    def _calculate_cache_hit_rate(self) -> float:
+        """Calculate cache hit rate"""
+        if not self.resource_cache:
+            return 0.0
+        
+        total_accesses = sum(entry.access_count for entry in self.resource_cache.values())
+        cache_entries = len(self.resource_cache)
+        
+        if total_accesses == 0:
+            return 0.0
+        
+        return (cache_entries / total_accesses) * 100
+    
+    def _estimate_memory_usage(self) -> int:
+        """Estimate memory usage of cached resources (in bytes)"""
+        total_size = 0
+        
+        for cache_entry in self.resource_cache.values():
+            # Rough estimation of object size
+            content_str = json.dumps(cache_entry.content, default=str)
+            total_size += len(content_str.encode('utf-8'))
+        
+        return total_size
+    
+    def _get_most_accessed_resources(self, limit: int) -> List[Dict[str, Any]]:
+        """Get most frequently accessed resources"""
+        sorted_entries = sorted(
+            self.resource_cache.items(),
+            key=lambda x: x[1].access_count,
+            reverse=True
+        )
+        
+        return [
+            {
+                'resource_id': resource_id,
+                'access_count': cache_entry.access_count,
+                'resource_type': cache_entry.metadata.resource_type.value,
+                'dialect': cache_entry.metadata.dialect.value,
+                'domain': cache_entry.metadata.domain.value
+            }
+            for resource_id, cache_entry in sorted_entries[:limit]
+        ]
+    
+    def _count_resources_by_type(self) -> Dict[str, int]:
+        """Count resources by type"""
+        counts = {}
+        for metadata in self.resource_metadata.values():
+            resource_type = metadata.resource_type.value
+            counts[resource_type] = counts.get(resource_type, 0) + 1
+        return counts
+    
+    def _count_resources_by_dialect(self) -> Dict[str, int]:
+        """Count resources by dialect"""
+        counts = {}
+        for metadata in self.resource_metadata.values():
+            dialect = metadata.dialect.value
+            counts[dialect] = counts.get(dialect, 0) + 1
+        return counts
+    
+    def _count_resources_by_domain(self) -> Dict[str, int]:
+        """Count resources by domain"""
+        counts = {}
+        for metadata in self.resource_metadata.values():
+            domain = metadata.domain.value
+            counts[domain] = counts.get(domain, 0) + 1
+        return counts
+
+# Example usage
+async def main():
+    """Example usage of Iraqi Localization Loader"""
+    
+    # Setup resource directories
+    resource_dirs = [
+        Path("./locales"),
+        Path("./cultural_resources"),
+        Path("./professional_terminologies")
+    ]
+    
+    # Create loader with hybrid loading strategy
+    loader = IraqiLocalizationLoader(
+        resource_directories=resource_dirs,
+        loading_strategy=LoadingStrategy.HYBRID,
+        cache_ttl_minutes=30,
+        max_cache_size=500
+    )
+    
+    # Initialize loader
+    if await loader.initialize():
+        print("Localization loader initialized successfully")
+        
+        # Load translations
+        translations = await loader.load_translations(
+            IraqiDialect.BAGHDADI,
+            ProfessionalDomain.LEGAL,
+            "court_system"
+        )
+        print(f"Loaded {len(translations)} translations")
+        
+        # Load cultural patterns
+        patterns = await loader.load_cultural_patterns(
+            IraqiDialect.STANDARD_ARABIC,
+            ProfessionalDomain.MEDICAL
+        )
+        print(f"Loaded {len(patterns)} cultural patterns")
+        
+        # Get statistics
+        stats = await loader.get_resource_statistics()
+        print(f"Resource statistics: {stats}")
+        
+    else:
+        print("Failed to initialize localization loader")
+
+if __name__ == "__main__":
+    asyncio.run(main())
