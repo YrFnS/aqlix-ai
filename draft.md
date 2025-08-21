@@ -2439,11 +2439,17 @@ git ls-files --others --exclude-standard
 
 
 
-
-https://github.com/onlook-dev/onlook
+check these repos and you should know two of them
 https://github.com/anthropics/claude-code
 https://github.com/n8n-io/n8n
+https://github.com/onlook-dev/onlook
 https://github.com/browseros-ai/BrowserOS
+
+do a quick check to know can we take something from them or update what we have from them with better version from them or they aren't useful for us check them and check the examples folder
+so i can add them for you in the reference folder to make deep research to know what we need from them
+
+i added the new repo in the reference folder
+i just added n8n and onlook
 
 
 
