@@ -1,0 +1,132 @@
+{
+  "name": "@aqlix-ai/arabic-rtl-integration",
+  "version": "1.0.0",
+  "description": "Arabic RTL Integration Layer for Iraqi AI System - Unified text processing and cultural validation across n8n workflows and Onlook visual editor",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bun build --target=node --outdir=dist src/index.ts",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "test:cultural": "bun test --grep=\"Cultural Compliance\"",
+    "test:arabic": "bun test --grep=\"Arabic RTL\"",
+    "test:integration": "bun test --grep=\"Integration\"",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write src/**/*.ts",
+    "clean": "rm -rf dist",
+    "docs": "typedoc src/index.ts",
+    "start": "node dist/index.js",
+    "start:dev": "bun src/index.ts"
+  },
+  "keywords": [
+    "arabic",
+    "rtl",
+    "iraq",
+    "islamic-compliance",
+    "cultural-validation",
+    "n8n-integration",
+    "onlook-integration",
+    "workflow-automation",
+    "visual-editor",
+    "dialect-recognition",
+    "government-systems",
+    "ministry-integration"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aqlix-ai/arabic-rtl-integration.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "ws": "^8.14.2",
+    "events": "^3.3.0",
+    "uuid": "^9.0.1",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/ws": "^8.5.8",
+    "@types/uuid": "^9.0.7",
+    "@types/lodash": "^4.14.202",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2",
+    "typedoc": "^0.25.4",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./workflow-ui": {
+      "types": "./dist/workflow-ui/index.d.ts",
+      "import": "./dist/workflow-ui/index.js"
+    },
+    "./real-time": {
+      "types": "./dist/real-time/index.d.ts",
+      "import": "./dist/real-time/index.js"
+    },
+    "./validation": {
+      "types": "./dist/validation/index.d.ts",
+      "import": "./dist/validation/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "config": {
+    "cultural_validation": {
+      "islamic_compliance_threshold": 95,
+      "arabic_rtl_accuracy_threshold": 99,
+      "dialect_recognition_threshold": 85,
+      "ministry_compliance_required": true
+    },
+    "performance": {
+      "max_sync_latency_ms": 50,
+      "cache_size": 1000,
+      "websocket_port": 8080,
+      "health_check_interval_ms": 30000
+    },
+    "features": {
+      "enable_real_time_sync": true,
+      "enable_cultural_validation": true,
+      "enable_dialect_recognition": true,
+      "enable_performance_optimization": true,
+      "enable_ministry_branding": true
+    }
+  },
+  "funding": {
+    "type": "government",
+    "url": "https://aqlix.ai/funding"
+  },
+  "bugs": {
+    "url": "https://github.com/aqlix-ai/arabic-rtl-integration/issues"
+  },
+  "homepage": "https://github.com/aqlix-ai/arabic-rtl-integration#readme"
+}

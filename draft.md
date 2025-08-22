@@ -2450,9 +2450,10 @@ so i can add them for you in the reference folder to make deep research to know 
 
 i added the new repo in the reference folder
 i just added n8n and onlook
-
-
-
+claude code is not the actual repo its just a docs for claude code
+make a deep research to know what we need from the repos in the reference folder
+and compare them with what we have to know what we need
+and then create md file for the plan to know what we need to extract from the repos in the reference folder
 
 
 
