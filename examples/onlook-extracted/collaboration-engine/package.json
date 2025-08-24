@@ -1,0 +1,164 @@
+{
+  "name": "@iraqi-ai/collaboration-engine",
+  "version": "1.0.0",
+  "description": "Iraqi AI System Real-Time Collaboration Engine with cultural intelligence and Islamic compliance",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "iraqi-ai",
+    "collaboration",
+    "real-time",
+    "arabic",
+    "islamic",
+    "cultural-intelligence",
+    "government",
+    "ministry"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/collaboration-engine.git"
+  },
+  "files": [
+    "dist",
+    "styles",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && npm run build:styles",
+    "build:styles": "postcss styles/collaboration.css -o dist/collaboration.css --map",
+    "dev": "concurrently \"tsc --watch\" \"npm run server:dev\"",
+    "server:dev": "nodemon --exec ts-node src/RealTimeCollaborationServer.ts",
+    "start": "node dist/RealTimeCollaborationServer.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cultural": "jest --testNamePattern='cultural'",
+    "test:arabic": "jest --testNamePattern='arabic'",
+    "test:security": "jest --testNamePattern='security'",
+    "test:collaboration": "jest --testNamePattern='collaboration|realtime|sync'",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "example:basic": "ts-node examples/basic-collaboration.ts",
+    "example:ministry": "ts-node examples/ministry-workflow.ts",
+    "example:arabic": "ts-node examples/arabic-annotation.ts",
+    "example:security": "ts-node examples/security-demo.ts",
+    "example:realtime": "ts-node examples/realtime-server.ts",
+    "example:visual": "ts-node examples/visual-collaboration.ts"
+  },
+  "dependencies": {
+    "events": "^3.3.0",
+    "ws": "^8.16.0",
+    "socket.io": "^4.7.4",
+    "socket.io-client": "^4.7.4",
+    "crypto": "^1.0.1",
+    "node-forge": "^1.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "uuid": "^9.0.1",
+    "moment": "^2.29.4",
+    "moment-hijri": "^2.1.2",
+    "lodash": "^4.17.21",
+    "async": "^3.2.5",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "@types/ws": "^8.5.10",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/uuid": "^9.0.7",
+    "@types/lodash": "^4.14.202",
+    "@types/async": "^3.2.24",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@types/jest": "^29.5.11",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.4"
+  },
+  "peerDependencies": {
+    "node": ">=18.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/src", "<rootDir>/tests"],
+    "testMatch": ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/**/index.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"]
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+      "eslint:recommended",
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-empty-interface": "off"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "funding": {
+    "type": "government",
+    "url": "https://iraqi-ai.gov.iq/funding"
+  },
+  "homepage": "https://github.com/iraqi-ai/collaboration-engine#readme",
+  "bugs": {
+    "url": "https://github.com/iraqi-ai/collaboration-engine/issues"
+  }
+}

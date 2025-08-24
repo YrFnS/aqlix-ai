@@ -1,0 +1,67 @@
+{
+  "name": "@aqlix/component-inspector",
+  "version": "1.0.0",
+  "description": "Advanced component analysis engine with Iraqi cultural integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "bun run build:tsc",
+    "build:tsc": "tsc --build",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:cultural": "bun test --grep 'Cultural'",
+    "test:accessibility": "bun test --grep 'Accessibility'",
+    "test:performance": "bun test --grep 'Performance'",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "component-analysis",
+    "cultural-validation",
+    "arabic-optimization",
+    "rtl-support",
+    "iraqi-government",
+    "islamic-compliance",
+    "accessibility",
+    "performance"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.24.0",
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0",
+    "@babel/generator": "^7.24.0",
+    "@babel/types": "^7.24.0",
+    "typescript": "^5.3.0",
+    "cheerio": "^1.0.0-rc.12",
+    "postcss": "^8.4.35",
+    "postcss-rtlcss": "^4.0.6",
+    "css-tree": "^2.3.1",
+    "axe-core": "^4.8.3",
+    "lighthouse": "^11.5.0",
+    "web-vitals": "^3.5.2"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__traverse": "^7.20.5",
+    "@types/babel__generator": "^7.6.8",
+    "@types/cheerio": "^0.22.35",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aqlix/component-inspector.git"
+  },
+  "author": "Aqlix AI - Iraqi Integration Team",
+  "license": "MIT"
+}

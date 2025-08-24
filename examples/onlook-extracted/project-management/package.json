@@ -1,0 +1,67 @@
+{
+  "name": "@onlook/iraqi-project-management",
+  "version": "1.0.0",
+  "description": "Advanced Project Management Engine with Iraqi Cultural Intelligence - Multi-Ministry Coordination System",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean"
+  },
+  "keywords": [
+    "project-management",
+    "iraq",
+    "arabic",
+    "rtl",
+    "government",
+    "ministry",
+    "islamic",
+    "cultural",
+    "collaboration",
+    "workflow",
+    "approval",
+    "audit",
+    "compliance"
+  ],
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "date-fns": "^3.6.0",
+    "lodash": "^4.17.21",
+    "rxjs": "^7.8.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.7",
+    "@types/lodash": "^4.14.202",
+    "@types/jest": "^29.5.8",
+    "@types/node": "^20.9.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.2.2",
+    "eslint": "^8.53.0",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/aqlix-ai.git"
+  },
+  "author": "Iraqi AI Team",
+  "license": "MIT"
+}
