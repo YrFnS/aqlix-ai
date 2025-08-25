@@ -2,7 +2,7 @@
 name: payment-security-guardian
 description: PROACTIVELY use this agent when implementing payment gateway integrations, validating financial transactions, securing sensitive data, implementing fraud detection, managing API credentials, or conducting security audits for payment systems. Auto-triggers on payment security implementations, financial transaction validation, fraud detection needs, or security audit requirements. Examples: <example>Context: The user is implementing ZainCash payment integration and needs security validation. user: "I need to integrate ZainCash payment gateway with proper security measures" assistant: "I'll use the payment-security-guardian agent to ensure secure payment integration with fraud detection and data protection" <commentary>Since the user needs payment security implementation, use the payment-security-guardian agent to handle secure gateway integration with comprehensive validation.</commentary></example> <example>Context: The user is reviewing payment transaction logs for security issues. user: "Can you analyze our payment transaction logs for any security vulnerabilities?" assistant: "Let me use the payment-security-guardian agent to conduct a comprehensive security analysis of the payment logs" <commentary>Since the user needs payment security analysis, use the payment-security-guardian agent to analyze transaction logs with threat detection.</commentary></example>
 proactive_triggers: ["payment security", "financial validation", "fraud detection", "security audit", "gateway integration", "transaction security"]
-tools: Write, Read, MultiEdit, Grep, Glob
+tools: Write, Read, MultiEdit, Playwright, Grep, Glob
 mcp_servers: ["sequential", "playwright", "supabase", "sentry"]
 ---
 

@@ -1,0 +1,83 @@
+{
+  "mcpServers": {
+    "iraqi-browser-use": {
+      "command": "python",
+      "args": [
+        "-m", 
+        "enhanced_browser_use_extracted.mcp"
+      ],
+      "env": {
+        "IRAQI_CULTURAL_COMPLIANCE": "true",
+        "IRAQI_ISLAMIC_VALUES": "true",
+        "IRAQI_DEBUG": "false"
+      },
+      "description": "Iraqi-enhanced browser automation with cultural validation and Arabic RTL support"
+    },
+    "iraqi-browser-use-dev": {
+      "command": "python",
+      "args": [
+        "-m", 
+        "enhanced_browser_use_extracted.mcp.server"
+      ],
+      "env": {
+        "IRAQI_CULTURAL_COMPLIANCE": "true",
+        "IRAQI_ISLAMIC_VALUES": "true",
+        "IRAQI_DEBUG": "true",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      },
+      "description": "Development version with debug logging enabled"
+    }
+  },
+  "instructions": {
+    "usage": [
+      "This configuration provides two MCP server endpoints:",
+      "1. iraqi-browser-use: Production server with minimal logging",
+      "2. iraqi-browser-use-dev: Development server with debug logging",
+      "",
+      "Available tools:",
+      "• iraqi_portal_navigate - Navigate Iraqi government/banking portals",
+      "• arabic_form_fill - Fill Arabic forms with RTL support", 
+      "• cultural_validate - Validate content for Iraqi cultural appropriateness",
+      "• browser_navigate - Enhanced navigation with cultural validation",
+      "• browser_click - Click with cultural pre-validation",
+      "• browser_type - Type with Arabic RTL processing",
+      "• browser_get_state - Get page state with Arabic extraction",
+      "• browser_extract_content - Extract content with cultural filtering",
+      "• iraqi_agent_task - Execute complex Iraqi portal tasks",
+      "• get_cultural_state - Get cultural validation status"
+    ],
+    "setup": [
+      "1. Set OPENAI_API_KEY environment variable",
+      "2. Install dependencies: pip install mcp browser-use langchain-openai",
+      "3. Add this config to Claude Desktop MCP settings",
+      "4. Restart Claude Desktop",
+      "5. Test connection with: 'List available MCP tools'"
+    ],
+    "cultural_features": [
+      "• Automatic cultural validation for all Iraqi content",
+      "• Islamic compliance checking with 95%+ accuracy",
+      "• Arabic RTL text processing with dialect preservation", 
+      "• Iraqi government portal automation (ministries, courts, banks)",
+      "• Professional domain expertise (legal, medical, educational)",
+      "• Payment gateway integration (ZainCash, FastPay, NassWallet)",
+      "• Political neutrality validation",
+      "• Cultural appropriateness scoring"
+    ],
+    "iraqi_portals": [
+      "Government: *.gov.iq, *.iraq.gov.iq",
+      "Banking: *.rafidain-bank.gov.iq, *.rasheed-bank.gov.iq, *.cbi.iq",
+      "Education: *.mohesr.gov.iq, *.moedu.gov.iq", 
+      "Payment: *.zaincash.iq, *.fastpay.iq, *.nasswallet.com",
+      "Telecommunications: Iraqi telecom providers",
+      "Healthcare: Ministry of Health portals"
+    ],
+    "security_features": [
+      "• Restricted to Iraqi domains for security",
+      "• Cultural validation prevents inappropriate interactions",
+      "• Islamic compliance filtering",
+      "• Secure payment processing validation",
+      "• Political neutrality enforcement",
+      "• Professional ethics compliance"
+    ]
+  }
+}

@@ -2455,23 +2455,38 @@ make a deep research to know what we need from the repos in the reference folder
 and compare them with what we have to know what we need
 and then create md file for the plan to know what we need to extract from the repos in the reference folder
 
+i found this repo
+https://github.com/browser-use/browser-use
+check it do i add it in the reference folder for you to make deep research to know what we need from it
 
-
-
+did you compare it with what we have in the examples folder? to know what to take or do we have something better in the examples folder?
 
 update sub-agents mcp
 
+i added the repo to the reference folder
+proceed to make deep research to know what we need from it
+and compare it with what we have in the examples folder
+then create md file to know what we need to extract from the repo
+
+
 new sub-agent doc
 
+first check the mcps you have and then check the sub agents we have do they know what mcp they need to use and tools they need to use
+also we need an agent for documentation right? we dont have one
+so i create one with agent wizard creator check it i added all mcps and tools in it just to see, check it and delete it then create new one for our app
+also update the claude.md file to know about the new sub-agent and update the other sub-agents each one need specific mcp and tools and some don't need any mcp or tools right?
 
 
+i found a lot of ways to use claude.md file
 
+check these ways them and give me your honest opinion without any bias or lies
 
+```md
 **Code Splitting**: When a file exceeds ~300 lines or becomes unwieldy, refactor it
 into smaller, more modular files. When a function exceeds ~30 lines or does more than
 one thing, split it into smaller, purpose-driven functions.|
 
-File and Function Limits
+**File and Function Limits**
 Never create a file longer than 500 lines of code. If approaching this limit, refactor by splitting into modules.
 Functions should be under 50 lines with a single, clear responsibility.
 Classes should be under 100 lines and represent a single concept or entity.
@@ -2479,19 +2494,19 @@ Organize code into clearly separated modules, grouped by feature or responsibili
 Line lenght should be max 100 characters ruff rule in pyproject.toml
 Use venv_linux (the virtual environment) whenever executing Python commands, including for unit tests.
 
-KISS (Keep It Simple, Stupid)
+**KISS (Keep It Simple, Stupid)**
 Simplicity should be a key goal in design. Choose straightforward solutions over complex ones whenever possible. Simple solutions are easier to understand, maintain, and debug.
 
-YAGNI (You Aren't Gonna Need It)
+**YAGNI (You Aren't Gonna Need It)**
 Avoid building functionality on speculation. Implement features only when they are needed, not when you anticipate they might be useful in the future.
 
 
-Design Principles
+**Design Principles**
 Dependency Inversion: High-level modules should not depend on low-level modules. Both should depend on abstractions.
 Open/Closed Principle: Software entities should be open for extension but closed for modification.
 Single Responsibility: Each function, class, and module should have one clear purpose.
 Fail Fast: Check for potential errors early and raise exceptions immediately when issues occur.
-
+```
 
 
 

@@ -133,6 +133,35 @@ bun run test:arabic    # Arabic RTL tests
 - Preserve Iraqi dialect while filtering malicious content
 - Parameterized statements only for database operations
 
+## Code Quality Standards
+
+### Code Organization
+- **Target**: 300 lines per file, 30 lines per function
+- **Enterprise Exception**: Up to 1000 lines for complex integrations (workflow engines, cultural processors)
+- **Function Exception**: Up to 80 lines for comprehensive cultural/Arabic processing functions
+- **Line Length**: 120 characters max, 140 for Arabic/cultural expressions
+- **Class Design**: Single responsibility over arbitrary size limits
+
+### Design Principles
+- **KISS (Keep It Simple)**: Prefer simple solutions, especially for cultural integrations
+- **YAGNI (You Aren't Gonna Need It)**: Implement Iraqi-specific features only when needed
+- **Single Responsibility**: Each agent/class serves one clear purpose
+- **Fail Fast**: Validate Arabic text, cultural compliance, and security early
+- **Dependency Inversion**: Cultural services depend on abstractions, not implementations
+- **Open/Closed Principle**: Software entities open for extension, closed for modification
+
+### Iraqi-Specific Standards
+- **Arabic Processing**: Descriptive function names (may exceed typical length for clarity)
+- **Cultural Validation**: Comprehensive validation functions (legitimately complex)
+- **Government Integration**: Extensive documentation required for ministry workflows
+- **Performance Targets**: <100ms Arabic processing, <200ms cultural validation
+- **Modular Architecture**: Split complex cultural features into focused, testable modules
+
+### Code Splitting Rules
+- **File Splitting**: When exceeding 300 lines or becoming unwieldy, refactor into smaller modules
+- **Function Splitting**: When exceeding 30 lines or handling multiple concerns, split into purpose-driven functions
+- **Cultural Exception**: Arabic RTL processors and Islamic compliance validators may require larger, cohesive implementations
+
 ## Agent Architecture & Selection
 
 ### Context-Managed Agents (13)
@@ -142,12 +171,13 @@ Use for decisions requiring historical context:
 - **Architecture**: iraqi-ai-agent-architect, iraqi-devops-engineer
 - **System Coordination**: iraqi-workflow-orchestrator, iraqi-context-manager, iraqi-prp-execution-orchestrator
 
-### Specialized Tool Agents (8)
+### Specialized Tool Agents (9)
 Use for immediate processing without context overhead:
 - **Language Processing**: arabic-rtl-processor, iraqi-arabic-tester
 - **Testing/Validation**: iraqi-payment-tester, iraqi-accessibility-specialist  
 - **Security Tools**: iraqi-security-specialist, payment-security-guardian
 - **Technical Tools**: iraqi-technical-debugger, external-service-coordinator
+- **Documentation**: app-documentation-tracker
 
 ## MCP Server Coordination
 
@@ -178,6 +208,7 @@ Use for immediate processing without context overhead:
 5. **Web Search Integration**: iraqi-cultural-validator → arabic-rtl-processor → external-service-coordinator
 6. **Professional Domain**: iraqi-professional-domain-expert → iraqi-business-analyst → iraqi-product-manager
 7. **Technical Implementation**: iraqi-ai-agent-architect → iraqi-technical-debugger → iraqi-devops-engineer
+8. **Documentation Updates**: app-documentation-tracker (after any code changes, feature additions, bug fixes)
 
 **System Orchestration**:
 - **iraqi-workflow-orchestrator**: Complex multi-agent task coordination

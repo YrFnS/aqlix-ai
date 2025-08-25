@@ -1,0 +1,158 @@
+# Enhanced Browser-Use System - Iraqi AI Integration
+# Hybrid extraction requirements combining browser-use capabilities with Iraqi customizations
+# Python >= 3.11 required (async support)
+
+# ==================== CORE BROWSER-USE DEPENDENCIES ====================
+# Direct extraction from browser-use pyproject.toml
+
+# Core async and I/O
+aiofiles>=24.1.0
+aiohttp==3.12.15
+anyio>=4.9.0
+httpx>=0.28.1
+python-dotenv>=1.0.1
+requests>=2.32.3
+typing-extensions>=4.12.2
+
+# Browser automation core (bubus + cdp-use are the critical dependencies)
+bubus>=1.5.4                    # Core browser automation framework
+cdp-use>=1.4.0                  # Chrome DevTools Protocol wrapper
+playwright>=1.40.0              # Fallback browser automation
+portalocker>=2.7.0,<3.0.0       # File locking for sessions
+psutil>=7.0.0                   # System process management
+screeninfo>=0.8.1               # Screen resolution detection (non-macOS)
+uuid7>=0.1.0                    # Modern UUID generation
+
+# Multi-LLM Provider System (10+ providers extracted)
+openai==1.99.2                  # OpenAI GPT models
+anthropic==0.58.2               # Claude models
+google-genai==1.29.0            # Google Gemini models
+groq>=0.30.0                    # Groq fast inference
+ollama>=0.5.1                   # Local LLM deployment
+google-api-core>=2.25.0         # Google API support
+google-api-python-client>=2.174.0  # Google services
+google-auth>=2.40.3             # Google authentication
+google-auth-oauthlib>=1.2.2     # OAuth2 flow
+authlib>=1.6.0                  # OAuth2 library
+
+# MCP (Model Context Protocol) Integration
+mcp>=1.10.1                     # Model Context Protocol server
+
+# Data Processing & Validation
+pydantic>=2.11.5                # Data validation (v2 required)
+markdownify==1.1.0              # HTML to Markdown conversion
+pypdf>=5.7.0                    # PDF processing
+markdown-pdf==1.5               # Markdown to PDF conversion
+
+# Production Monitoring & Telemetry
+posthog>=3.7.0                  # Product analytics and telemetry
+
+# macOS specific dependencies
+pyobjc>=11.0; platform_system == 'darwin'    # macOS system integration
+
+# ==================== IRAQI AI SYSTEM ENHANCEMENTS ====================
+# Preserving and extending existing Iraqi customizations
+
+# Arabic Text Processing & RTL Support (ENHANCED)
+arabic-reshaper>=3.0.0          # Arabic text shaping
+python-bidi>=0.4.2              # Bidirectional text support
+langdetect>=1.0.9               # Language detection
+polyglot>=16.7.4                # Multi-language NLP
+
+# Cultural & Regional Support (ENHANCED)
+pytz>=2023.3                    # Baghdad timezone support
+babel>=2.13.1                   # Locale and cultural formatting
+iso3166>=2.1.1                  # Iraqi country code support
+
+# Iraqi Government Integration (PRESERVED)
+beautifulsoup4>=4.12.2          # HTML parsing for government portals
+lxml>=4.9.3                     # XML/HTML processing
+html5lib>=1.1                   # HTML5 parsing
+
+# Enhanced Security (IRAQI COMPLIANCE)
+cryptography>=41.0.7            # Encryption for sensitive data
+bcrypt>=4.1.2                   # Password hashing
+
+# Performance Optimization
+uvloop>=0.19.0                  # Faster asyncio (Linux/Iraqi servers)
+orjson>=3.9.10                  # Fast JSON processing
+
+# Database & Caching (Iraqi System Integration)
+asyncpg>=0.29.0                 # PostgreSQL async driver
+redis>=5.0.1                    # Caching and session management
+
+# ==================== OPTIONAL DEPENDENCIES ====================
+
+# CLI Tools (extracted from browser-use[cli])
+rich>=14.0.0                    # Terminal formatting
+click>=8.1.8                    # Command-line interfaces
+textual>=3.2.0                  # Terminal UI
+
+# AWS Integration (browser-use[aws])
+boto3>=1.38.45                  # AWS services
+
+# Advanced Features (browser-use[examples])
+botocore>=1.37.23               # AWS core
+imgcat>=0.6.0                   # Image display in terminal
+langchain-openai>=0.3.26        # LangChain integration
+
+# Iraqi OCR Support (Government Documents)
+pytesseract>=0.3.10             # OCR for Arabic documents
+easyocr>=1.7.0                  # Easy OCR with Arabic support
+Pillow>=11.2.1                  # Image processing
+
+# Voice Processing (Accessibility)
+speech-recognition>=3.10.0      # Voice input
+pydub>=0.25.1                   # Audio processing
+
+# Data Formats
+python-json-logger>=2.0.7       # Structured logging
+pyyaml>=6.0.1                   # YAML configuration
+toml>=0.10.2                    # TOML configuration
+
+# ==================== DEVELOPMENT DEPENDENCIES ====================
+
+# Testing Framework
+pytest>=8.3.5                   # Testing framework
+pytest-asyncio>=1.0.0           # Async testing support
+pytest-httpserver>=1.0.8        # HTTP server for testing
+pytest-timeout>=2.4.0           # Test timeout management
+pytest-xdist>=3.7.0             # Parallel test execution
+
+# Code Quality & Linting
+ruff>=0.11.2                    # Fast Python linter/formatter
+pyright>=1.1.403                # Type checking
+codespell>=2.4.1                # Spell checking
+pre-commit>=4.2.0               # Git hooks
+
+# Development Tools
+build>=1.2.2                    # Build tools
+tokencost>=0.1.16               # Token cost calculation
+ipdb>=0.13.13                   # Interactive debugger
+
+# Monitoring & Observability
+structlog>=23.2.0               # Structured logging
+prometheus-client>=0.19.0       # Metrics collection
+
+# Web Framework (Development Server)
+fastapi>=0.115.8                # API framework
+uvicorn>=0.34.0                 # ASGI server
+inngest>=0.4.19                 # Background jobs
+
+# Evaluation & Analytics (browser-use[eval])
+lmnr[all]==0.7.6                # LLM monitoring and observability
+datamodel-code-generator>=0.26.0  # Code generation
+hyperbrowser==0.47.0            # Browser evaluation
+browserbase==1.4.0              # Browser cloud service
+
+# ==================== VERSION CONSTRAINTS ====================
+# Python version requirement from browser-use
+# requires-python = ">=3.11,<4.0"
+
+# ==================== COMPATIBILITY NOTES ====================
+# 1. bubus>=1.5.4 and cdp-use>=1.4.0 are the critical browser automation core
+# 2. pydantic>=2.11.5 required for v2 compatibility 
+# 3. Python >=3.11 required for async improvements and modern typing
+# 4. Arabic processing libraries preserved for Iraqi dialect support
+# 5. Security libraries enhanced for Iraqi government compliance
+# 6. All browser-use MCP tools preserved and extended with Iraqi context

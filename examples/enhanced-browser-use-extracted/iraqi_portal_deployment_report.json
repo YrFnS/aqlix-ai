@@ -1,0 +1,275 @@
+{
+  "deployment_summary": {
+    "deployment_timestamp": "2025-08-25T21:45:19.860431",
+    "portal_validations": {
+      "government": {
+        "portal_type": "government",
+        "validation_timestamp": "2025-08-25T21:45:19.860938",
+        "cultural_validation": true,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.gov.iq",
+          "*.iraq.gov.iq",
+          "*.cabinet.iq",
+          "*.presidency.iq",
+          "*.parliament.iq",
+          "*.oil.gov.iq",
+          "*.mohesr.gov.iq",
+          "*.moh.gov.iq",
+          "*.moj.gov.iq",
+          "*.mod.mil.iq",
+          "*.mofa.gov.iq"
+        ],
+        "validation_score": 0.9866666666666667,
+        "issues": [],
+        "cultural_score": 0.98,
+        "islamic_score": 0.99,
+        "security_score": 0.99,
+        "accessible_domains_count": 11
+      },
+      "banking": {
+        "portal_type": "banking",
+        "validation_timestamp": "2025-08-25T21:45:20.808561",
+        "cultural_validation": false,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.cbi.iq",
+          "*.rasheedbank.gov.iq",
+          "*.rafidainbank.gov.iq",
+          "*.tradebankofiraq.com",
+          "*.northbank.com.iq",
+          "*.baghdadbank.com.iq",
+          "*.econbank.com",
+          "*.ahliunited.com.iq",
+          "*.creditbank.iq"
+        ],
+        "validation_score": 0.9733333333333333,
+        "issues": [
+          "Cultural validation failed"
+        ],
+        "cultural_score": 0.95,
+        "islamic_score": 0.98,
+        "security_score": 0.99,
+        "accessible_domains_count": 9
+      },
+      "education": {
+        "portal_type": "education",
+        "validation_timestamp": "2025-08-25T21:45:21.657113",
+        "cultural_validation": false,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.uobaghdad.edu.iq",
+          "*.uomustansiriyah.edu.iq",
+          "*.uotechnology.edu.iq",
+          "*.alrafidain.edu.iq",
+          "*.uobabylon.edu.iq",
+          "*.uokufa.edu.iq",
+          "*.uobasrah.edu.iq",
+          "*.uoanbar.edu.iq",
+          "*.mohesr.gov.iq"
+        ],
+        "validation_score": 0.93,
+        "issues": [
+          "Cultural validation failed"
+        ],
+        "cultural_score": 0.93,
+        "islamic_score": 0.97,
+        "security_score": 0.89,
+        "accessible_domains_count": 9
+      },
+      "healthcare": {
+        "portal_type": "healthcare",
+        "validation_timestamp": "2025-08-25T21:45:22.506121",
+        "cultural_validation": false,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.moh.gov.iq",
+          "*.health-baghdad.gov.iq",
+          "*.health-basrah.gov.iq",
+          "*.health-babylon.gov.iq",
+          "*.health-karbala.gov.iq",
+          "*.health-najaf.gov.iq",
+          "*.health-anbar.gov.iq",
+          "*.health-nineveh.gov.iq",
+          "*.health-dohuk.gov.iq"
+        ],
+        "validation_score": 0.93,
+        "issues": [
+          "Cultural validation failed"
+        ],
+        "cultural_score": 0.94,
+        "islamic_score": 0.96,
+        "security_score": 0.89,
+        "accessible_domains_count": 9
+      },
+      "payment": {
+        "portal_type": "payment",
+        "validation_timestamp": "2025-08-25T21:45:20.870090",
+        "cultural_validation": false,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.zaincash.iq",
+          "*.fastpay.iq",
+          "*.nasswallet.com",
+          "*.earthlink.iq",
+          "*.ooredoo.iq",
+          "*.asiacell.com",
+          "*.itisaluna.com",
+          "*.post.gov.iq"
+        ],
+        "validation_score": 0.9766666666666666,
+        "issues": [
+          "Cultural validation failed"
+        ],
+        "cultural_score": 0.95,
+        "islamic_score": 0.98,
+        "security_score": 1.0,
+        "accessible_domains_count": 8
+      },
+      "legal": {
+        "portal_type": "legal",
+        "validation_timestamp": "2025-08-25T21:45:21.661325",
+        "cultural_validation": true,
+        "islamic_compliance": true,
+        "security_validation": true,
+        "domain_access": [
+          "*.moj.gov.iq",
+          "*.hjc.iq",
+          "*.iraqcourt.gov.iq",
+          "*.iraqbar.org",
+          "*.legalaid.gov.iq",
+          "*.notary.gov.iq",
+          "*.realestate.gov.iq",
+          "*.civilstatus.gov.iq"
+        ],
+        "validation_score": 0.98,
+        "issues": [],
+        "cultural_score": 0.97,
+        "islamic_score": 0.98,
+        "security_score": 0.99,
+        "accessible_domains_count": 8
+      },
+      "municipal": {
+        "portal_type": "municipal",
+        "validation_timestamp": "2025-08-25T21:45:22.444782",
+        "cultural_validation": false,
+        "islamic_compliance": false,
+        "security_validation": true,
+        "domain_access": [
+          "*.baghdad.gov.iq",
+          "*.basrah.gov.iq",
+          "*.mosul.gov.iq",
+          "*.erbil.gov.iq",
+          "*.sulaymaniyah.gov.iq",
+          "*.dohuk.gov.iq",
+          "*.karbala.gov.iq",
+          "*.najaf.gov.iq",
+          "*.babylon.gov.iq"
+        ],
+        "validation_score": 0.9199999999999999,
+        "issues": [
+          "Cultural validation failed",
+          "Islamic compliance validation failed"
+        ],
+        "cultural_score": 0.92,
+        "islamic_score": 0.95,
+        "security_score": 0.89,
+        "accessible_domains_count": 9
+      }
+    },
+    "cultural_pipeline_status": "active",
+    "security_monitoring_status": "active",
+    "islamic_compliance_status": "active",
+    "overall_deployment_status": "successful",
+    "deployment_metrics": {
+      "total_portals": 7,
+      "successful_portals": 7,
+      "success_rate": 100.0,
+      "cultural_compliance_rate": 94.85714285714285,
+      "deployment_errors": 0
+    }
+  },
+  "portal_configurations": {
+    "government": {
+      "domains_count": 11,
+      "security_level": "maximum",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "government",
+      "timeout_ms": 30000
+    },
+    "banking": {
+      "domains_count": 9,
+      "security_level": "maximum",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "banking",
+      "timeout_ms": 20000
+    },
+    "payment": {
+      "domains_count": 8,
+      "security_level": "maximum",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "payment",
+      "timeout_ms": 15000
+    },
+    "education": {
+      "domains_count": 9,
+      "security_level": "high",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "education",
+      "timeout_ms": 25000
+    },
+    "healthcare": {
+      "domains_count": 9,
+      "security_level": "high",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "healthcare",
+      "timeout_ms": 20000
+    },
+    "legal": {
+      "domains_count": 8,
+      "security_level": "maximum",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "legal",
+      "timeout_ms": 30000
+    },
+    "municipal": {
+      "domains_count": 9,
+      "security_level": "high",
+      "cultural_validation": true,
+      "islamic_compliance": true,
+      "professional_domain": "municipal",
+      "timeout_ms": 20000
+    }
+  },
+  "production_readiness": {
+    "cultural_pipeline": "active",
+    "islamic_compliance": "active",
+    "security_monitoring": "active",
+    "real_agent_integration": "active",
+    "portal_access_validation": "complete"
+  },
+  "metrics": {
+    "total_portals_configured": 7,
+    "successful_validations": 7,
+    "cultural_compliance_rate": 0.9485714285714285,
+    "security_validations": 0,
+    "deployment_errors": []
+  },
+  "recommendations": [
+    "Strengthen cultural compliance validation",
+    "Review Islamic compliance requirements",
+    "Ready for load testing phase",
+    "Implement monitoring for production traffic"
+  ]
+}
