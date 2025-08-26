@@ -124,7 +124,7 @@ bun run test:arabic    # Arabic RTL tests
 ### Cultural Requirements
 - RTL design: `font-arabic` class, right-align Arabic, left-align English
 - Islamic compliance: All features respect Islamic values
-- Professional domains: Iraqi legal/medical/educational support
+- Professional domains: Iraqi legal/medical/educational/organizational support
 - Payment gateways: ZainCash (1000 IQD), FastPay (500 IQD), NassWallet (1000 IQD)
 
 ### Security Rules
@@ -132,6 +132,32 @@ bun run test:arabic    # Arabic RTL tests
 - Validate all inputs for security and cultural appropriateness
 - Preserve Iraqi dialect while filtering malicious content
 - Parameterized statements only for database operations
+
+### Naming Convention Rules (MANDATORY for All Agents)
+**Examples vs Implementation Policy**: Examples folder contains reference patterns from extracted repos with original naming. Agents MUST apply professional terminology during actual implementation.
+
+**Automatic Conversions Required**:
+- `government` → `professional` (in function names, variables, classes)
+- `ministry` → `organization` (in function names, variables, classes)  
+- `MinistryAgent` → `OrganizationAgent` (in class names)
+- `government_team` → `professional_team` (in implementations)
+- `GovernmentService` → `ProfessionalService` (in service classes)
+
+**Preserve As-Is (Security/Technical Fields)**:
+- `government_classification` (security classification levels)
+- `gov_id` (government-issued identification numbers)
+- Technical field names in APIs/databases that reference actual government systems
+
+**Arabic Terminology Updates**:
+- `حكومة` → `مهني` (government → professional)
+- `وزارة` → `منظمة` (ministry → organization)
+- Maintain cultural appropriateness in all translations
+
+**Agent Responsibilities**:
+- Apply conversions automatically during code generation
+- Never modify examples folder - use as reference only
+- Validate terminology through `iraqi-cultural-validator` agent
+- Document any exceptions with clear reasoning
 
 ## Code Quality Standards
 
@@ -153,7 +179,7 @@ bun run test:arabic    # Arabic RTL tests
 ### Iraqi-Specific Standards
 - **Arabic Processing**: Descriptive function names (may exceed typical length for clarity)
 - **Cultural Validation**: Comprehensive validation functions (legitimately complex)
-- **Government Integration**: Extensive documentation required for ministry workflows
+- **Professional Integration**: Extensive documentation required for organizational workflows
 - **Performance Targets**: <100ms Arabic processing, <200ms cultural validation
 - **Modular Architecture**: Split complex cultural features into focused, testable modules
 

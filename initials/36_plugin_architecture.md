@@ -15,7 +15,7 @@ Implement a comprehensive plugin architecture that enables extensible Iraqi prof
 - **Medical Plugin System**: Iraqi healthcare protocols, medical terminology, and patient management
 - **Educational Plugin System**: Iraqi curriculum support, academic management, and educational resources
 - **Business Plugin System**: Iraqi business regulations, commercial law, and trade documentation
-- **Government Plugin System**: Iraqi government procedures, bureaucratic processes, and official documentation
+- **Professional Plugin System**: Iraqi professional procedures, organizational processes, and official documentation
 
 ### Cultural Compliance Framework
 - **Islamic Validation Engine**: Ensure all plugins comply with Islamic principles
@@ -49,7 +49,7 @@ class IraqiProfessionalDomain(Enum):
     MEDICAL = "medical"
     EDUCATIONAL = "educational"
     BUSINESS = "business"
-    GOVERNMENT = "government"
+    PROFESSIONAL = "professional"
     RELIGIOUS = "religious"
     ENGINEERING = "engineering"
 

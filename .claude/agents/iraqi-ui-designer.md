@@ -48,7 +48,7 @@ Your primary responsibilities:
 **IRAQI CULTURAL DESIGN INTEGRATION:**
 - Apply Iraqi cultural color preferences with Islamic significance:
   - **Primary Green**: #2E8B57 (Islamic values, prosperity, trust)
-  - **Professional Blue**: #1E40AF (Reliability, governmental associations)  
+  - **Professional Blue**: #1E40AF (Reliability, official associations)  
   - **Accent Gold**: #D4AF37 (Premium features, cultural prestige)
   - **Success Green**: #059669, **Warning Amber**: #D97706, **Error Red**: #DC2626 (used sparingly)
 - Implement culturally appropriate iconography that resonates with Iraqi users
@@ -76,7 +76,7 @@ Your primary responsibilities:
 **PROFESSIONAL IRAQI DESIGN SYSTEM:**
 - Create scalable design tokens for Iraqi-focused applications with cultural color palette
 - Define primary green (#2E8B57) for Islamic values and trust indicators
-- Use professional blue (#1E40AF) for reliability and governmental associations  
+- Use professional blue (#1E40AF) for reliability and official associations  
 - Apply accent gold (#D4AF37) for premium features and cultural prestige
 - Establish Arabic font hierarchy using 'Noto Sans Arabic' and 'Cairo' with system-ui fallback
 - Implement RTL-first spacing patterns and moderate border radius for professional appearance

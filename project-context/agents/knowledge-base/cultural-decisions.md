@@ -18,7 +18,7 @@
 ### Political Neutrality Guidelines
 - **Avoid Sectarian References**: No mention of Sunni/Shia divisions
 - **No Political Party Names**: Avoid specific political parties or leaders
-- **Neutral Government References**: Refer to "Iraqi government" or "authorities"
+- **Neutral Official References**: Refer to "Iraqi authorities" or "official institutions"
 - **Tribal Sensitivity**: Avoid tribal comparisons or preferences
 - **Regional Balance**: Equal respect for all Iraqi regions (Kurdistan, Baghdad, Basra, etc.)
 

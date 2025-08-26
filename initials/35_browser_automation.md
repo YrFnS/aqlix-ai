@@ -3,15 +3,15 @@
 **Status**: POST-MVP ENHANCEMENT  
 **Priority**: MEDIUM  
 **Command**: `/generate-prp`  
-**Based on**: Botpress browser integration pattern + Iraqi government website automation
+**Based on**: Botpress browser integration pattern + Iraqi professional website automation
 
 ## Overview
-Implement browser automation capabilities for Iraqi government websites, professional services, and Arabic form handling. This system enables automated form filling, document submission, and web-based service interactions while respecting Iraqi cultural and legal requirements.
+Implement browser automation capabilities for Iraqi professional websites, organizational services, and Arabic form handling. This system enables automated form filling, document submission, and web-based service interactions while respecting Iraqi cultural and legal requirements.
 
 ## Core Features
 
-### Iraqi Government Website Automation
-- **Ministry Websites**: Automated interaction with Iraqi government ministry websites
+### Iraqi Professional Website Automation
+- **Organization Websites**: Automated interaction with Iraqi professional organization websites
 - **Document Submission**: Automated submission of official documents and applications
 - **Status Checking**: Automated checking of application and document processing status
 - **Form Filling**: Intelligent form completion with Iraqi address and contact formats
@@ -43,7 +43,7 @@ from playwright.async_api import async_playwright, Page, Browser
 from dataclasses import dataclass
 
 class IraqiWebsiteType(Enum):
-    GOVERNMENT = "government"
+    PROFESSIONAL = "professional"
     LEGAL = "legal"  
     MEDICAL = "medical"
     EDUCATIONAL = "educational"
@@ -94,9 +94,9 @@ class IraqiBrowserAutomation:
         return await handler.execute_task(website_url, task_type, form_data, user_context)
 ```
 
-### Government Website Handler
+### Professional Website Handler
 ```python
-class IraqiGovernmentWebsiteHandler:
+class IraqiProfessionalWebsiteHandler:
     def __init__(self):
         self.supported_ministries = {
             "interior": "وزارة الداخلية",
@@ -105,7 +105,7 @@ class IraqiGovernmentWebsiteHandler:
             "justice": "وزارة العدل",
             "finance": "وزارة المالية"
         }
-        self.form_patterns = GovernmentFormPatterns()
+        self.form_patterns = ProfessionalFormPatterns()
         
     async def execute_task(
         self,
@@ -120,14 +120,14 @@ class IraqiGovernmentWebsiteHandler:
         })
         
         try:
-            # Navigate to government website
+            # Navigate to professional website
             await page.goto(url, wait_until='networkidle')
             
             # Handle SSL warnings and security checks
-            await self._handle_government_security_checks(page)
+            await self._handle_professional_security_checks(page)
             
             # Fill forms with Iraqi cultural context
-            await self._fill_government_form(page, form_data, task_type)
+            await self._fill_professional_form(page, form_data, task_type)
             
             # Submit and handle confirmation
             result = await self._submit_and_confirm(page, task_type)
@@ -188,8 +188,8 @@ class ArabicFormProcessor:
 class WebsiteSecurityValidator:
     def __init__(self):
         self.trusted_domains = {
-            # Iraqi government domains
-            "gov.iq": "government",
+            # Iraqi professional domains
+            "gov.iq": "professional",
             "edu.iq": "educational", 
             "mil.iq": "military",
             # Trusted Iraqi institutions
@@ -208,15 +208,15 @@ class WebsiteSecurityValidator:
         # Check for known phishing patterns
         phishing_check = await self._check_phishing_patterns(url)
         
-        # Validate Iraqi government website authenticity
-        gov_check = await self._validate_government_authenticity(url)
+        # Validate Iraqi professional website authenticity
+        prof_check = await self._validate_professional_authenticity(url)
         
         return SecurityValidationResult(
             is_safe=all([domain_check, ssl_check, not phishing_check, gov_check]),
             domain_trusted=domain_check,
             ssl_valid=ssl_check,
             phishing_detected=phishing_check,
-            government_authentic=gov_check
+            professional_authentic=prof_check
         )
 ```
 
@@ -240,7 +240,7 @@ class IraqiAddressHandler:
     def format_iraqi_address(
         self,
         address_data: Dict[str, Any],
-        format_type: str = "government"
+        format_type: str = "professional"
     ) -> Dict[str, str]:
         return {
             "arabic_formatted": self._format_arabic_address(address_data),
@@ -315,13 +315,13 @@ CREATE TABLE website_automation_templates (
 );
 ```
 
-### Government Service Tracking
+### Professional Service Tracking
 ```sql
--- Government Service Requests
-CREATE TABLE government_service_requests (
+-- Professional Service Requests
+CREATE TABLE professional_service_requests (
     id UUID PRIMARY KEY,
     user_id UUID NOT NULL REFERENCES users(id),
-    ministry TEXT NOT NULL,
+    organization TEXT NOT NULL,
     service_type TEXT NOT NULL,
     reference_number TEXT,
     status TEXT DEFAULT 'submitted',
@@ -339,12 +339,12 @@ CREATE TABLE government_service_requests (
 
 ### FastAPI Routes
 ```python
-@router.post("/automation/government")
-async def automate_government_service(
-    request: GovernmentServiceRequest,
+@router.post("/automation/professional")
+async def automate_professional_service(
+    request: ProfessionalServiceRequest,
     current_user: User = Depends(get_current_user)
 ) -> AutomationResult:
-    """Automate Iraqi government service interaction"""
+    """Automate Iraqi professional service interaction"""
     
 @router.post("/automation/form-fill")
 async def automate_form_filling(
@@ -372,22 +372,22 @@ async def get_automation_history(
 
 ### Iraqi Legal Compliance
 - **Data Protection**: Comply with Iraqi data protection regulations
-- **Government Authentication**: Proper authentication for government services
+- **Professional Authentication**: Proper authentication for professional services
 - **Digital Signature**: Support for Iraqi digital signature requirements
-- **Audit Logging**: Comprehensive logging for government service interactions
+- **Audit Logging**: Comprehensive logging for professional service interactions
 - **Privacy Protection**: Protect sensitive personal and professional information
 
 ### Ethical Automation
 - **User Consent**: Explicit user consent for all automation activities  
 - **Transparency**: Clear disclosure of automated actions
-- **Human Oversight**: Human review for critical government submissions
+- **Human Oversight**: Human review for critical professional submissions
 - **Error Handling**: Graceful handling of automation failures
 - **Rate Limiting**: Respect website rate limits and terms of service
 
 ## Testing Strategy
 
-### Government Website Testing
-- **Ministry Website Testing**: Test automation on all major Iraqi ministry websites
+### Professional Website Testing
+- **Organization Website Testing**: Test automation on all major Iraqi organization websites
 - **Form Validation Testing**: Validate Arabic form processing accuracy
 - **Security Testing**: Test security validation and fraud detection
 - **Cultural Compliance Testing**: Ensure cultural appropriateness of all interactions
@@ -403,7 +403,7 @@ async def get_automation_history(
 ## Success Metrics
 
 ### Functional Metrics
-- **Government Service Success**: 95%+ successful government service completions
+- **Professional Service Success**: 95%+ successful professional service completions
 - **Form Accuracy**: 99%+ accurate form field completion
 - **Cultural Compliance**: 95%+ culturally appropriate interactions
 - **Security Success**: 100% prevention of malicious website interactions
@@ -421,7 +421,7 @@ async def get_automation_history(
 ### Phase 1: Basic Automation (Post-MVP)
 - Core browser automation framework
 - Basic Arabic form processing
-- Simple government website integration
+- Simple professional website integration
 - Security validation system
 
 ### Phase 2: Advanced Features (Future)
@@ -436,4 +436,4 @@ async def get_automation_history(
 - Advanced reporting and analytics
 - Integration with Iraqi professional systems
 
-This browser automation system will provide Iraqi users with efficient, culturally appropriate, and secure automation of government and professional web services while maintaining the highest standards of security and cultural compliance.
+This browser automation system will provide Iraqi users with efficient, culturally appropriate, and secure automation of professional and organizational web services while maintaining the highest standards of security and cultural compliance.

@@ -15,7 +15,7 @@ Implement a comprehensive file generation pipeline that creates PDF, Word, and E
 - **Word Documents**: Professional templates with Iraqi formatting standards
 - **Excel Spreadsheets**: Arabic data handling with cultural number formats
 - **Mixed Content**: Bilingual Arabic-English document creation
-- **Cultural Templates**: Iraqi government forms, legal documents, medical reports
+- **Cultural Templates**: Iraqi professional forms, legal documents, medical reports
 
 ### Arabic Language Support
 - **RTL Layout**: Proper right-to-left text flow in generated documents
@@ -28,7 +28,7 @@ Implement a comprehensive file generation pipeline that creates PDF, Word, and E
 - **Legal Documents**: Iraqi legal document formats with cultural compliance
 - **Medical Reports**: Arabic medical terminology with professional formatting
 - **Educational Materials**: Iraqi educational system document standards
-- **Government Forms**: Official Iraqi government document formats
+- **Professional Forms**: Official Iraqi professional document formats
 - **Business Documents**: Iraqi business correspondence and report formats
 
 ## Technical Implementation
@@ -78,7 +78,7 @@ class IraqiFileGenerator:
 - **Date Localization**: Support for both Islamic and Gregorian calendars
 
 ### Template System
-- **Government Templates**: Iraqi official document formats
+- **Professional Templates**: Iraqi official document formats
 - **Professional Templates**: Domain-specific templates (legal, medical, educational)
 - **Cultural Validation**: Every template validated for Islamic compliance
 - **Customizable Headers**: Iraqi institution branding and cultural elements
@@ -115,7 +115,7 @@ CREATE TABLE document_templates (
     cultural_compliance_level TEXT CHECK (cultural_compliance_level IN ('basic', 'standard', 'strict')),
     arabic_support_level TEXT CHECK (arabic_support_level IN ('none', 'basic', 'full')),
     template_data JSONB NOT NULL,
-    is_government_approved BOOLEAN DEFAULT FALSE,
+    is_officially_approved BOOLEAN DEFAULT FALSE,
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -176,7 +176,7 @@ async def get_templates(
 ### Compliance Requirements
 - **Iraqi Data Protection**: Compliance with Iraqi data protection regulations
 - **Professional Confidentiality**: Protection of sensitive professional information
-- **Government Standards**: Adherence to Iraqi government document standards
+- **Professional Standards**: Adherence to Iraqi professional document standards
 - **Cultural Privacy**: Respect for Iraqi cultural privacy expectations
 
 ## Testing Strategy
@@ -220,7 +220,7 @@ async def get_templates(
 - File storage and retrieval
 
 ### Phase 2: Professional Templates (Post-MVP)
-- Iraqi government document templates
+- Iraqi professional document templates
 - Professional domain-specific formats
 - Enhanced cultural validation
 - Batch document generation
@@ -243,7 +243,7 @@ async def get_templates(
 ### Cultural Dependencies
 - **Iraqi Legal Standards**: Compliance with Iraqi legal document requirements
 - **Professional Bodies**: Alignment with Iraqi professional organization standards
-- **Government Regulations**: Adherence to Iraqi government document formats
+- **Professional Regulations**: Adherence to Iraqi professional document formats
 - **Religious Guidelines**: Compliance with Islamic document creation principles
 
 This file generation pipeline will provide Iraqi professionals with culturally appropriate, professionally formatted documents while maintaining the highest standards of Islamic compliance and Arabic language support.
