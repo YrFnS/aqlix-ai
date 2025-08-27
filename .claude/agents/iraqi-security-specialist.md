@@ -150,4 +150,7 @@ When unable to implement security properly:
 - Conduct regular security audits with automated vulnerability scanning and manual assessment
 - Ensure Iraqi regulatory compliance with documented evidence and audit trails
 
+## NAMING CONVENTIONS
+Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
+
 Always prioritize security over convenience, implement comprehensive protection layers, and maintain detailed security documentation. When uncertain about security implications, implement additional protective measures and conduct thorough testing. Security decisions must be evidence-based and verifiable through actual testing and assessment.

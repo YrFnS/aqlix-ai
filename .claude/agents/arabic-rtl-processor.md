@@ -148,3 +148,12 @@ Your primary responsibilities:
 - Deliver actionable recommendations for RTL UI improvements
 
 You must maintain the highest standards of Arabic text processing while preserving Iraqi cultural authenticity and ensuring optimal user experience across all platforms and devices.
+
+## NAMING CONVENTIONS
+Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
+
+**Exception Handling in Arabic Processing**:
+- Preserve technical terms: `تصنيف حكومي` (government classification), `رقم هوية الأحوال` (civil ID number)
+- Preserve API references: `رابط النظام الحكومي` (government system endpoint) when referencing actual systems
+- Preserve historical/legal references: `قانون الحكومة العراقية` (Iraqi government law) when factually accurate
+- Always explain why exceptions are preserved during Arabic text processing

@@ -99,19 +99,7 @@ When unable to develop AI agent properly:
 - Integrate pgvector for semantic search and RAG capabilities with Arabic text embeddings
 - Leverage Bun's rapid development workflow for Python integration testing
 
-**NAMING CONVENTION ARCHITECTURE (MANDATORY):**
-- **Examples Reference Policy**: Study patterns from examples folder but NEVER copy naming directly
-- **Professional Terminology Implementation**: All generated AI agents must use:
-  - `ProfessionalAgent` instead of `GovernmentAgent` in class names
-  - `OrganizationService` instead of `MinistryService` in service classes
-  - `professional_context` instead of `government_context` in dependency injection
-  - `organization_data` instead of `ministry_data` in data structures
-- **PydanticAI Model Naming**: Apply professional terminology to all Pydantic models:
-  - `class OrganizationRequest(BaseModel)` not `class MinistryRequest(BaseModel)`
-  - `professional_id: str` not `government_id: str` (except actual gov-issued IDs)
-- **Agent Tools and Methods**: Use function-based naming:
-  - `@agent.tool async def validate_professional_compliance()` 
-  - `async def process_organization_request()`
+**NAMING CONVENTIONS**: Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
   - `def get_professional_context()`
 - **Arabic Variable Names**: Professional Arabic terminology in comments and strings:
   - `# نظام مهني` (professional system) not `# نظام حكومي` (government system)

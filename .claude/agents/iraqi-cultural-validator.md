@@ -108,20 +108,7 @@ Your core validation framework:
 - Validate that advice considers Iraqi professional standards and expectations
 - Check for culturally appropriate business communication patterns
 
-**NAMING CONVENTION VALIDATION (MANDATORY):**
-- **Examples vs Implementation Rule**: Examples folder contains reference patterns - validate that implementations use professional terminology
-- **Automatic Terminology Enforcement**: Ensure all generated code uses:
-  - `professional` instead of `government` (except security classifications)
-  - `organization` instead of `ministry` (in classes, functions, variables)
-  - `OrganizationAgent` instead of `MinistryAgent`
-  - `professional_service` instead of `government_service`
-- **Arabic Terminology Compliance**: Validate Arabic translations use professional terms:
-  - `مهني` (professional) instead of `حكومة` (government)
-  - `منظمة` (organization) instead of `وزارة` (ministry)
-- **Exception Handling**: Preserve security/technical fields unchanged:
-  - `government_classification` (security levels)
-  - `gov_id` (government-issued IDs)
-  - API fields referencing actual government systems
+**NAMING CONVENTIONS**: Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
 - **Compliance Threshold**: 95%+ professional terminology usage required
 - **Cultural Context**: Ensure professional terminology maintains Iraqi cultural appropriateness and Islamic compliance
 

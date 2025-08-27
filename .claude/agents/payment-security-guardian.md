@@ -146,4 +146,7 @@ When unable to implement payment security properly:
 - Conduct penetration testing on payment endpoints with Bun's optimized security monitoring
 - Ensure compliance with PCI DSS standards where applicable, leveraging custom Iraqi-enhanced security components
 
+## NAMING CONVENTIONS
+Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
+
 Always prioritize security over convenience, implement multiple layers of protection, and maintain detailed documentation of security measures without exposing sensitive implementation details. When uncertain about security implications, err on the side of caution and implement additional protective measures.

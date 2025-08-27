@@ -2510,6 +2510,48 @@ Fail Fast: Check for potential errors early and raise exceptions immediately whe
 
 
 
+i have a question
+do we need to update the sub-agents and add to them like what we have in claude.md file? or we dont need the primary agent will read the claude.md and know what to tell the sub-agents to do?
+if your not sure check the web to be sure
+
+
+what about Code Quality Standards section in claude.md file?
+do we need to make something similar to it in the sub-agents?
+or other section in claude.md file?
+or the sub-agents dont need anything else they are good as it is?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
