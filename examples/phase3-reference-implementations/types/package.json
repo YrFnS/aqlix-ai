@@ -1,0 +1,48 @@
+{
+  "name": "@iraqi-ai/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for Iraqi AI Chat System components",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:types && bun run build:js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "build:js": "bun build src/index.ts --outdir dist --format esm --target bun",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.22.4",
+    "date-fns": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "ai",
+    "types",
+    "typescript",
+    "cultural-ai"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/types"
+  }
+}

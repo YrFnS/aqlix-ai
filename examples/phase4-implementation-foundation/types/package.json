@@ -1,0 +1,51 @@
+{
+  "name": "@aqlix-ai/types",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./cultural": {
+      "import": "./dist/cultural.js",
+      "types": "./dist/cultural.d.ts"
+    },
+    "./agents": {
+      "import": "./dist/agents.js",
+      "types": "./dist/agents.d.ts"
+    },
+    "./arabic": {
+      "import": "./dist/arabic.js",
+      "types": "./dist/arabic.d.ts"
+    },
+    "./payments": {
+      "import": "./dist/payments.js",
+      "types": "./dist/payments.d.ts"
+    },
+    "./professional": {
+      "import": "./dist/professional.js",
+      "types": "./dist/professional.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "bun run build:tsc",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "dev": "tsc --watch --project tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}

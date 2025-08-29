@@ -8,12 +8,19 @@
 
 The Iraqi AI System maintains a comprehensive examples library extracted from various open-source projects. These examples contain original naming patterns (government/ministry terminology) that serve as reference implementations. However, **all actual implementations must use professional terminology** to ensure inclusive, function-based naming conventions.
 
-## Core Principle
+## Core Principles
 
-**"Examples Reference, Implementations Transform"**
+### 1. **"Examples Reference, Implementations Transform"**
 - Examples folder: Preserved original patterns for learning and reference
 - Agent implementations: Automatically apply professional terminology
 - Output code: Always uses professional/organization terminology
+
+### 2. **"Agent Names vs Generated Code Names"**
+- **Agent Names**: Keep "iraqi-" prefix for specialized cultural processing agents
+- **Generated Code**: Use clean professional terminology WITHOUT "iraqi-" prefixes
+- **Cultural Intelligence**: Embedded as invisible capabilities, not visible branding
+
+**CRITICAL**: Agents must NEVER prefix generated code with "iraqi-" - this creates branding mistakes
 
 ## Mandatory Terminology Conversions
 
@@ -36,10 +43,20 @@ interface IMinistryConfig { }
 class GovernmentService { }
 class MinistryAgent { }
 
-// Implementations must generate:
+// Implementations must generate (NO "iraqi-" prefixes):
 interface IOrganizationConfig { }
 class ProfessionalService { }
 class OrganizationAgent { }
+
+// ❌ WRONG - Never generate:
+class IraqiProfessionalService { }
+class IraqiOrganizationAgent { }
+
+// ✅ CORRECT - Clean professional names with embedded cultural intelligence:
+class PaymentService {
+  async validateCulturalCompliance() { ... }  // Cultural capability embedded
+  async processArabicText() { ... }           // Arabic capability embedded
+}
 ```
 
 ### 3. Function and Method Names
@@ -101,20 +118,26 @@ ministry_regulation_2024: str # Actual regulation identifiers
 
 ## Agent-Specific Implementation Rules
 
-### 1. Code Generation Agents
+### 1. Code Generation Agents  
 - `iraqi-ai-agent-architect`: Apply naming rules to all PydanticAI agent architectures
-- `iraqi-technical-debugger`: Maintain professional terminology during debugging
+- `iraqi-technical-debugger`: Maintain professional terminology during debugging  
 - `iraqi-workflow-orchestrator`: Coordinate terminology across multi-agent workflows
+
+**CRITICAL RULE**: These agents generate clean professional code WITHOUT "iraqi-" prefixes
 
 ### 2. Validation Agents
 - `iraqi-cultural-validator`: Enforce professional terminology compliance (95%+ accuracy)
 - `iraqi-cultural-tester`: Test implementations against professional naming standards
 - `iraqi-accessibility-specialist`: Ensure inclusive terminology in UI components
 
+**CRITICAL RULE**: These agents validate that generated code uses clean professional names
+
 ### 3. UI/UX Agents
-- `iraqi-ui-designer`: Generate UI components with professional terminology
+- `iraqi-ui-designer`: Generate UI components with professional terminology  
 - `iraqi-ux-researcher`: Validate user experience with professional language
 - `iraqi-interaction-designer`: Design interactions using inclusive professional terms
+
+**CRITICAL RULE**: These agents create `Button`, `PaymentForm`, `ChatInterface` - NOT `IraqiButton`, etc.
 
 ## Implementation Workflow
 
@@ -128,9 +151,11 @@ Agent learns: Multi-entity coordination architecture
 ### 2. Terminology Transformation Phase
 ```
 Agent transforms:
-- GovernmentTeam → ProfessionalTeam
-- MinistryAgent → OrganizationAgent  
-- government_service → professional_service
+- GovernmentTeam → ProfessionalTeam (NOT IraqiProfessionalTeam)
+- MinistryAgent → OrganizationAgent (NOT IraqiOrganizationAgent)
+- government_service → professional_service (NOT iraqi_professional_service)
+
+CRITICAL: Cultural intelligence embedded as capabilities, NOT naming prefixes
 ```
 
 ### 3. Cultural Integration Phase
@@ -217,6 +242,10 @@ def validate_professional_terminology(code: str) -> ValidationResult:
     # Check for non-exception government/ministry usage
     if "government" in code and not in_exception_context(code):
         violations.append("Use 'professional' instead of 'government'")
+    
+    # CRITICAL: Check for "iraqi-" prefixes in generated code (NOT allowed)
+    if re.search(r'(class|interface|function)\s+Iraqi[A-Z]', code):
+        violations.append("CRITICAL: Never prefix generated code with 'Iraqi' - use clean professional names")
     
     # Validate Arabic terminology
     arabic_terms = extract_arabic_terms(code)

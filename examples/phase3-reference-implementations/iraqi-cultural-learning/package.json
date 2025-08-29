@@ -1,0 +1,65 @@
+{
+  "name": "@iraqi-ai/cultural-learning",
+  "version": "1.0.0",
+  "description": "Iraqi Advanced Cultural Learning Algorithms - ML-powered cultural adaptation and Islamic compliance optimization",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:types && bun run build:js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "build:js": "bun build src/index.ts --outdir dist --format esm --target bun",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:learning": "bun test --grep 'Learning'",
+    "test:adaptation": "bun test --grep 'Adaptation'",
+    "test:islamic": "bun test --grep 'Islamic'",
+    "test:performance": "bun test --grep 'Performance'",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/cultural-engine": "workspace:*",
+    "@iraqi-ai/arabic-nlp": "workspace:*",
+    "@iraqi-ai/professional-domains": "workspace:*",
+    "ml-matrix": "^6.10.4",
+    "ml-regression": "^2.0.1",
+    "natural": "^6.12.0",
+    "compromise": "^14.10.0",
+    "zod": "^3.22.4",
+    "date-fns": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/natural": "^5.1.5",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "cultural",
+    "learning",
+    "machine-learning",
+    "islamic-ai",
+    "cultural-adaptation",
+    "behavioral-learning",
+    "preference-optimization",
+    "cultural-intelligence"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/iraqi-cultural-learning"
+  }
+}

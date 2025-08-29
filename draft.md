@@ -2521,36 +2521,90 @@ or other section in claude.md file?
 or the sub-agents dont need anything else they are good as it is?
 
 
+check what i found
+
+https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/
+https://research.google/blog/securing-private-data-at-scale-with-differentially-private-partition-selection/
+https://github.com/a2aproject/A2A
+https://github.com/ag-ui-protocol/ag-ui
+https://github.com/CopilotKit/CopilotKit
 
 
+i added the three repos to the reference folder
+and this is the docs for them
+https://a2a-protocol.org/latest/
+https://docs.ag-ui.com/introduction
+https://docs.copilotkit.ai/
+
+and the ag-ui its value isnt in the ui but how the ai can interact with the frontend
+
+lets start with the first repo
+make a deep research to know what we need from it
+and compare it with what we have in the examples folder
+then create md file for the plan to know what we need to extract from the repo
 
 
+check the repos files not just the structure and readme file
 
 
+before we continue why did you created packages folder and package.json file?
+we are now in the extraction phase not in the development phase
+so do we move them into the examples folder? or remove them and start the extraction again?
 
 
+good lets continue with the extraction plan
 
 
+you made the same mistake again
+we are now in the extraction phase not in the development phase
+and you create files outside the examples folder
+
+we are in the extraction phase and we shouldn't create files outside the examples folder
+
+check the what we extracted
+to know check git to know what we did then compare it with the reference folder and plan to make sure
+
+so now we can remove every thing in the reference folder
+do one last check of the three repos to make sure we extracted everything we need from them
+but before removing it just to make sure 
+the ag-ui its value isnt in the ui but how the ai can interact with the frontend
+did we extract it?
+
+about a2a
+https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/
+what should we do?
+we did extract the repo
+https://github.com/a2aproject/A2A
+is it related to a2a?
 
 
+i foun this repo
+https://github.com/bytedance/UI-TARS-desktop
+
+i added it to the reference folder
+check it
+
+make a deep research to know what we need from it
+and compare it with what we have in the examples folder
+then create md file for the plan to know what we need to extract from the repo
+
+so its better than what we have right?
+lets start extraction
 
 
+check this
+https://research.google/blog/securing-private-data-at-scale-with-differentially-private-partition-selection/
+it google latest research
 
 
+the MAD2R is very good
+but how can we use it?
+what do we do?
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+i have a question about the naming conventions
+the sub-agents when they build the app theyll use the naming conventions
+but will they attach iraqi to everything?
+if yes it will be a big mistake
 
 
 

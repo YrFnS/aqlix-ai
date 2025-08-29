@@ -1,0 +1,62 @@
+{
+  "name": "@iraqi-ai/professional-domains",
+  "version": "1.0.0",
+  "description": "Iraqi Professional Domain Validation System - Specialized validation for Iraqi legal, medical, educational, and business contexts",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:types && bun run build:js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "build:js": "bun build src/index.ts --outdir dist --format esm --target bun",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:legal": "bun test --grep 'Legal'",
+    "test:medical": "bun test --grep 'Medical'",
+    "test:educational": "bun test --grep 'Educational'",
+    "test:business": "bun test --grep 'Business'",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/cultural-engine": "workspace:*",
+    "@iraqi-ai/arabic-nlp": "workspace:*",
+    "zod": "^3.22.4",
+    "date-fns": "^3.2.0",
+    "natural": "^6.12.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/natural": "^5.1.5",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "professional",
+    "domains",
+    "legal",
+    "medical",
+    "educational",
+    "business",
+    "validation",
+    "islamic-ethics",
+    "professional-standards"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/iraqi-professional-domains"
+  }
+}

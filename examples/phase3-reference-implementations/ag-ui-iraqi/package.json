@@ -1,0 +1,33 @@
+{
+  "name": "@iraqi-ai/ag-ui",
+  "version": "1.0.0",
+  "description": "Iraqi-enhanced AG-UI with cultural generative UI capabilities",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "bun test",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ag-ui/core": "^1.0.0",
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/arabic-nlp": "workspace:*",
+    "rxjs": "^7.8.0",
+    "fast-json-patch": "^3.1.0",
+    "untruncate-json": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "eslint": "^9.0.0",
+    "@types/node": "^22.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+}

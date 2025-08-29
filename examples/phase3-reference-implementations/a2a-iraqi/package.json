@@ -1,0 +1,35 @@
+{
+  "name": "@iraqi-ai/a2a",
+  "version": "1.0.0",
+  "description": "Iraqi-enhanced A2A agent coordination with cultural sovereignty",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "bun test",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "proto": "buf generate"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.0",
+    "@grpc/proto-loader": "^0.7.0",
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/copilotkit": "workspace:*",
+    "google-protobuf": "^3.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "eslint": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "@types/google-protobuf": "^3.15.0",
+    "buf": "^1.28.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  }
+}

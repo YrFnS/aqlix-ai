@@ -1,0 +1,59 @@
+{
+  "name": "@iraqi-ai/arabic-nlp",
+  "version": "1.0.0",
+  "description": "Iraqi Arabic NLP Pipeline - Specialized Arabic processing with Iraqi dialect recognition and cultural context understanding",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:types && bun run build:js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "build:js": "bun build src/index.ts --outdir dist --format esm --target bun",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:arabic": "bun test --grep 'Arabic'",
+    "test:dialect": "bun test --grep 'Dialect'",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/cultural-engine": "workspace:*",
+    "compromise": "^14.10.0",
+    "natural": "^6.12.0",
+    "franc": "^6.1.0",
+    "zod": "^3.22.4",
+    "date-fns": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/natural": "^5.1.5",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "arabic",
+    "nlp",
+    "dialect",
+    "rtl",
+    "cultural-context",
+    "semantic-analysis",
+    "language-processing"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/iraqi-arabic-nlp"
+  }
+}

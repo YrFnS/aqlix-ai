@@ -1,0 +1,44 @@
+{
+  "name": "@aqlix-ai/cultural-engine",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./validators": {
+      "import": "./dist/validators.js",
+      "types": "./dist/validators.d.ts"
+    },
+    "./islamic": {
+      "import": "./dist/islamic.js",
+      "types": "./dist/islamic.d.ts"
+    },
+    "./political": {
+      "import": "./dist/political.js",
+      "types": "./dist/political.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "bun run build:tsc",
+    "build:tsc": "tsc --project tsconfig.build.json",
+    "dev": "tsc --watch --project tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aqlix-ai/types": "workspace:*",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
