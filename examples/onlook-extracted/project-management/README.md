@@ -51,7 +51,7 @@ project-management/
 
 - **Runtime**: Bun (30x faster than npm) - ALWAYS use for commands
 - **Language**: TypeScript with strict mode enabled
-- **Framework**: React 19 with Next.js 15.1 for UI components
+- **Framework**: React 19 with Next.js 15 for UI components
 - **Database**: Supabase (PostgreSQL + pgvector + Real-time)
 - **State Management**: RxJS for reactive patterns
 - **Validation**: class-validator with custom Islamic validators

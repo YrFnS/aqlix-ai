@@ -236,7 +236,7 @@ Use for immediate processing without context overhead:
 
 **Tech Stack**:
 - **Runtime**: Bun (30x faster than npm) - ALWAYS use for commands
-- **Frontend**: Next.js 15.1 + React 19 in `apps/web/`
+- **Frontend**: Next.js 15 + React 19 in `apps/web/`
 - **Backend**: FastAPI + Supabase + PydanticAI in `apps/api/`
 - **Database**: Supabase (PostgreSQL + pgvector + Auth + Real-time)
 - **Monitoring**: Sentry for error tracking and performance

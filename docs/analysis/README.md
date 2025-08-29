@@ -49,7 +49,7 @@ These repositories serve as **templates and component libraries** for:
 
 - **These are reference materials only** - not part of our main application
 - **Adapt, don't copy directly** - customize for Iraqi requirements
-- **Maintain our chosen tech stack** - Next.js 15.1+, PydanticAI, PostgreSQL
+- **Maintain our chosen tech stack** - Next.js 15+, PydanticAI, PostgreSQL
 - **Follow our Context Engineering methodology** throughout extraction
 
 ## 🔗 Integration Points

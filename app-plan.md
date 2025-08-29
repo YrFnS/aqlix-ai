@@ -5,7 +5,7 @@
 ### 📊 **Research-Based Stack Decisions (July 19, 2025)**
 
 **Key Research Findings:**
-- **Next.js 15.1+**: 90% faster builds with Turbopack, streaming server components for AI chat
+- **Next.js 15+**: 90% faster builds with Turbopack, streaming server components for AI chat
 - **PydanticAI + LangGraph**: Superior performance (50× more concurrent agents vs LangChain alone)
 - **SSE over WebSockets**: Better for AI streaming, built-in Next.js 15 support, automatic reconnection
 - **Zustand + TanStack Query**: 90% of Redux power at fraction of complexity, perfect for chat apps
@@ -15,7 +15,7 @@
 
 #### Frontend Stack
 ```
-Web Application: Next.js 15.1+ + TypeScript + React 19
+Web Application: Next.js 15+ + TypeScript + React 19
 ├── Package Manager: Bun (30x faster installs, native TypeScript)
 ├── UI Framework: Tailwind CSS v4 + Custom Components (44 Iraqi-enhanced components)
 ├── ORM: Drizzle ORM (100x faster than Prisma, SQL-first)
@@ -117,7 +117,7 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 #### Week 1-2: Project Setup & Infrastructure
 **PRP: PROJECT-SETUP**
 - [ ] Initialize monorepo with Bun workspaces (30x faster than npm)
-- [ ] Set up Next.js 15.1 + React 19 + TypeScript + Tailwind v4
+- [ ] Set up Next.js 15 + React 19 + TypeScript + Tailwind v4
 - [ ] Configure FastAPI + SQLAlchemy 2.0 backend structure
 - [ ] Set up Drizzle ORM with PostgreSQL connection
 - [ ] Import and enhance 44 custom UI components for Iraqi context

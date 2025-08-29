@@ -29,14 +29,14 @@ Based on comprehensive planning documents analysis:
 - **MVP Phase (Months 1-4)**: PRPs define Context Engineering approach with individual feature development
 - **Post-MVP Phase (Months 4+)**: App-plan.md defines BMAD Method + Make-it-Heavy integration for complex features
 - **Complete Feature Set**: App-features.md provides full feature specification from MVP to Enterprise
-- **Tech Stack**: Next.js 15.1+, FastAPI, PydanticAI + LangGraph, PostgreSQL, Iraqi payment gateways
+- **Tech Stack**: Next.js 15+, FastAPI, PydanticAI + LangGraph, PostgreSQL, Iraqi payment gateways
 - **Cultural Context**: Iraqi dialect, Islamic values, professional domains (legal, medical, educational, engineering)
 
 ## 📊 **Tech Stack Compatibility Analysis**
 
 | Component | **Our Complete Stack** | **Open WebUI** | **Agent Zero** | **MVP Priority** | **Post-MVP Priority** |
 |-----------|------------------------|----------------|----------------|------------------|----------------------|
-| **Frontend** | Next.js 15.1+ + React 19 + Arabic RTL | SvelteKit + Svelte 4 | Vanilla HTML/JS | 🟡 **Pattern Conversion** | 🟢 **Mobile Ready** |
+| **Frontend** | Next.js 15+ + React 19 + Arabic RTL | SvelteKit + Svelte 4 | Vanilla HTML/JS | 🟡 **Pattern Conversion** | 🟢 **Mobile Ready** |
 | **Backend** | FastAPI + PydanticAI + LangGraph | ✅ FastAPI 0.115.7 | ✅ Flask 3.0.3 | 🟢 **95% Compatible** | 🟢 **Agent Orchestration** |
 | **Database** | PostgreSQL + Redis + Vector DB | ✅ PostgreSQL + Redis | File-based | 🟢 **Perfect Match** | 🟢 **Scale Ready** |
 | **AI Framework** | PydanticAI (MVP) + LangGraph (Multi-Agent) | Basic OpenAI API | LangChain + OpenAI | 🟡 **Adapt Core** | 🟢 **Multi-Agent Ready** |

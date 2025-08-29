@@ -2608,6 +2608,30 @@ if yes it will be a big mistake
 
 
 
+i have a question
+will the sub-agents use the examples folder do they know about it?
+or do we have it included in claude.md file and the primary agent will tell the sub-agents to use it?
+or do we have it included in the initials folder?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

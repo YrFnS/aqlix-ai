@@ -7,7 +7,7 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 ## Tech Stack Overview (Updated for July 2025)
 
 ### Frontend
-- **Framework**: Next.js 15.1+ (App Router)
+- **Framework**: Next.js 15+ (App Router)
 - **UI Library**: React 19 (stable)
 - **Styling**: Tailwind CSS v4 + Shadcn/ui
 - **State Management**: Zustand + React Query (TanStack Query)
