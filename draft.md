@@ -2425,20 +2425,6 @@ why did you create this file?
 in this phase of the app we are extracting from the repos in the reference folder and adding them to the examples folder
 
 
-
-
-generate commit message
-
-git status
-git diff --name-only
-git diff --stat
-git ls-files --others --exclude-standard
-
-
-
-
-
-
 check these repos and you should know two of them
 https://github.com/anthropics/claude-code
 https://github.com/n8n-io/n8n
@@ -2616,6 +2602,15 @@ or do we have it included in the initials folder?
 
 
 
+
+
+
+generate commit message
+
+git status
+git diff --name-only
+git diff --stat
+git ls-files --others --exclude-standard
 
 
 
