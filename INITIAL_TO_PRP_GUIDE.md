@@ -82,23 +82,23 @@ This guide shows which command to use for each initial file when creating and ex
 - **26_authentication_system.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Supabase Auth, JWT tokens, and session management*
 
-- **27_api_endpoints.md** → `/generate-prp` + `/execute-prp`
+- **27_api_endpoints.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: FastAPI REST endpoints, Pydantic validation, and response formatting*
 
-- **28_realtime_subscriptions.md** → `/generate-prp` + `/execute-prp`
+- **28_realtime_subscriptions.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Supabase real-time WebSocket subscriptions and live data updates*
 
 ### Production Layer (29-32)
-- **29_error_monitoring.md** → `/generate-prp` + `/execute-prp`
+- **29_error_monitoring.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Sentry error tracking, performance monitoring, and issue management*
 
-- **30_testing_framework.md** → `/generate-prp` + `/execute-prp`
+- **30_testing_framework.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Jest/Vitest unit tests, Playwright E2E tests, and cultural testing*
 
-- **31_deployment_pipeline.md** → `/generate-prp` + `/execute-prp`
+- **31_deployment_pipeline.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: GitHub Actions CI/CD, Docker deployment, and environment management*
 
-- **32_production_optimization.md** → `/generate-prp` + `/execute-prp`
+- **32_production_optimization.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Redis caching, CDN configuration, and performance optimization*
 
 ## 🤖 PydanticAI Features (Use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`)
