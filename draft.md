@@ -2614,6 +2614,61 @@ git ls-files --others --exclude-standard
 
 
 
+https://google.github.io/adk-docs/
+https://github.com/google/adk-python
+https://github.com/google/adk-java
+https://research.google/blog/mle-star-a-state-of-the-art-machine-learning-engineering-agents/
+https://github.com/ruvnet/claude-flow/wiki/MLE-STAR-Workflow
+https://github.com/google/mangle
+
+https://github.com/ruvnet/claude-flow
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
