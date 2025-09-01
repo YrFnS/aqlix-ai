@@ -2613,6 +2613,12 @@ git diff --stat
 git ls-files --others --exclude-standard
 
 
+is our tech stack good?
+not just for now but for the future? 
+and when we have 1000+ users or even more tens of thousands of users so we dont need to rewrite the app
+
+
+
 
 https://google.github.io/adk-docs/
 https://github.com/google/adk-python
