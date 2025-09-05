@@ -516,7 +516,6 @@ i have two questions
 2- in the initials we didn't use the examples folder to reference them use them for reference when creating the PRPs, i checked the INITIAL_PYDANTIC_AI.md it didn't add links to the examples folder, but it has examples files in the examples folder, why is that?
 
 
-https://github.com/disler/claude-code-hooks-mastery
 
 and i created the agents, and have the claude.md file
 check the official docs
@@ -539,8 +538,6 @@ https://docs.anthropic.com/en/docs/claude-code/settings#tools-available-to-claud
 
 https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/work-completion-summary.md
 https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/meta-agent.md
-
-https://github.com/ruvnet/claude-flow
 
 
 
@@ -737,6 +734,7 @@ before we continue i found these repos check them thoroughly to know can we take
 
 if you remember we extracted from these repos what is useful for us, and added it in the examples folder
 
+https://github.com/coleam00/context-engineering-intro
 https://github.com/langflow-ai/langflow
 https://github.com/MervinPraison/PraisonAI
 https://github.com/browser-use/browser-use
@@ -752,21 +750,24 @@ https://github.com/NirDiamant/GenAI_Agents
 https://github.com/assafelovic/gpt-researcher
 https://github.com/botpress/botpress
 https://github.com/danny-avila/LibreChat
-
+https://github.com/disler/claude-code-hooks-mastery
 https://github.com/e2b-dev/fragments
 https://github.com/browser-use/web-ui
 https://github.com/srcbookdev/srcbook
 https://github.com/cline/cline
-
+https://github.com/ruvnet/claude-flow
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/QwenLM/qwen-code
+https://github.com/musistudio/claude-code-router
+https://github.com/agent0ai/agent-zero
+https://github.com/open-webui/open-webui
+https://github.com/dyad-sh/dyad
 
 
 i found these repos too check them thoroughly to know can we take something from them? or update what we have from them with better version from them, or they aren't useful for us check them and check the examples folder
 check thoroughly, and you can also check the docs folder to know what we extracted from them
 
-https://github.com/langchain-ai/open-swe
-https://github.com/RooCodeInc/Roo-Code
-https://github.com/QwenLM/qwen-code
-https://github.com/musistudio/claude-code-router
 
 i have them here for you to check reference folder
 
@@ -2619,46 +2620,97 @@ and when we have 1000+ users or even more tens of thousands of users so we dont 
 
 
 
-
+check these make deep search
 https://google.github.io/adk-docs/
-https://github.com/google/adk-python
-https://github.com/google/adk-java
 https://research.google/blog/mle-star-a-state-of-the-art-machine-learning-engineering-agents/
 https://github.com/ruvnet/claude-flow/wiki/MLE-STAR-Workflow
+https://github.com/google/adk-python
+https://github.com/google/adk-java
 https://github.com/google/mangle
 
+https://github.com/microsoft/rStar
+https://github.com/HKUDS/DeepCode
+https://github.com/sapientinc/HRM
+
+
+i added the six repos with their structure file and didnt add claude-flow cus i remember we extracted it before and have it in the examples folder
+check to make sure do i add it or not?
+
+i added it lets start with the first repo deep research and then create md file for the plan to know what we need to extract from the repo
+
+compare it with what we have in the examples folder then create md file for the plan to know what we need to extract from the repo or we have something similar to it but the reference is better so we need to change it
+
+
+before we start the extraction i think we should complete all repos deep research and create extraction plan for each repo
+so lets continue with the next repo in the reference folder
+
+lets continue with the deep research with the next repo
+
+are done with the seven repos deep research phase now we start the extraction phase?
+
+lets start the extraction to add from the reference folder to the examples folder following the extraction plan lets start with the first step in the plan
+
+
+lets continue with the next step in the extraction plan
+
+
+https://github.com/simstudioai/sim
+https://github.com/bytebot-ai/bytebot
+
+
+
+
+https://github.com/coleam00/context-engineering-intro
+https://github.com/n8n-io/n8n
+https://github.com/langflow-ai/langflow
+https://github.com/cline/cline
 https://github.com/ruvnet/claude-flow
+https://github.com/musistudio/claude-code-router
+https://github.com/agent0ai/agent-zero
+https://github.com/open-webui/open-webui
+https://github.com/dyad-sh/dyad
+https://github.com/MervinPraison/PraisonAI
+https://github.com/Doriandarko/make-it-heavy
+https://github.com/google/mangle
+https://github.com/microsoft/rStar
+https://github.com/HKUDS/DeepCode
+https://github.com/sapientinc/HRM
+https://github.com/a2aproject/A2A
+https://github.com/ag-ui-protocol/ag-ui
+https://github.com/CopilotKit/CopilotKit
+https://github.com/block/goose
+https://github.com/kortix-ai/suna
+https://github.com/bytedance/deer-flow
+https://github.com/Fosowl/agenticSeek
+https://github.com/stackblitz-labs/bolt.diy
+https://github.com/microsoft/autogen
+https://github.com/Skyvern-AI/skyvern
+https://github.com/NirDiamant/GenAI_Agents
+https://github.com/assafelovic/gpt-researcher
+https://github.com/botpress/botpress
+https://github.com/danny-avila/LibreChat
+https://github.com/bytedance/trae-agent
+https://github.com/sst/opencode
+https://github.com/coleam00/Archon
+https://github.com/google-gemini/gemini-cli
+https://github.com/browser-use/web-ui
+https://github.com/langchain-ai/open-swe
+https://github.com/RooCodeInc/Roo-Code
+https://github.com/google/adk-python
+https://github.com/google/adk-java
+https://github.com/bytedance/UI-TARS-desktop
+https://github.com/onlook-dev/onlook
+https://github.com/QwenLM/qwen-code
+https://github.com/browser-use/browser-use
+https://github.com/srcbookdev/srcbook
+https://github.com/e2b-dev/fragments
+https://github.com/browseros-ai/BrowserOS
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+image generation
 
 
 
