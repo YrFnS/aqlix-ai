@@ -2654,9 +2654,6 @@ lets start the extraction to add from the reference folder to the examples folde
 lets continue with the next step in the extraction plan
 
 
-https://github.com/simstudioai/sim
-https://github.com/bytebot-ai/bytebot
-
 
 
 
@@ -2673,6 +2670,8 @@ https://github.com/MervinPraison/PraisonAI
 https://github.com/Doriandarko/make-it-heavy
 https://github.com/google/mangle
 https://github.com/microsoft/rStar
+https://github.com/simstudioai/sim
+https://github.com/bytebot-ai/bytebot
 https://github.com/HKUDS/DeepCode
 https://github.com/sapientinc/HRM
 https://github.com/a2aproject/A2A
@@ -2705,6 +2704,12 @@ https://github.com/browser-use/browser-use
 https://github.com/srcbookdev/srcbook
 https://github.com/e2b-dev/fragments
 https://github.com/browseros-ai/BrowserOS
+
+
+i added both repos to the reference folder with their structure file, do a deep research to know what we need from and then create md file for the plan to know what we need to extract from the repo and check in the examples folder to know if we have something similar to it or not and if we have compare them, to know do we have something better or the repo in the reference folder is better
+
+
+
 
 
 
