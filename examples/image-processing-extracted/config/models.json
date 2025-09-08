@@ -1,0 +1,272 @@
+{
+  "image_generation_models": {
+    "dall-e-3": {
+      "name": "DALL-E 3",
+      "provider": "openai",
+      "type": "generation",
+      "capabilities": ["text-to-image"],
+      "supported_sizes": ["1024x1024", "1792x1024", "1024x1792"],
+      "max_images_per_request": 1,
+      "quality_options": ["standard", "hd"],
+      "style_options": ["vivid", "natural"],
+      "cultural_optimization": true,
+      "arabic_support": true,
+      "professional_domains": ["legal", "medical", "educational", "business", "engineering", "general"],
+      "pricing": {
+        "standard": {
+          "1024x1024": 0.040,
+          "1792x1024": 0.080,
+          "1024x1792": 0.080
+        },
+        "hd": {
+          "1024x1024": 0.080,
+          "1792x1024": 0.120,
+          "1024x1792": 0.120
+        }
+      },
+      "limitations": {
+        "max_prompt_length": 4000,
+        "content_policy": "strict",
+        "rate_limits": {
+          "requests_per_minute": 5,
+          "requests_per_hour": 200
+        }
+      },
+      "iraqi_enhancements": {
+        "cultural_validation": true,
+        "islamic_compliance": true,
+        "arabic_prompt_optimization": true,
+        "professional_terminology": true,
+        "rtl_layout_awareness": true
+      }
+    },
+    
+    "dall-e-2": {
+      "name": "DALL-E 2",
+      "provider": "openai",
+      "type": "generation_editing_variations",
+      "capabilities": ["text-to-image", "image-editing", "image-variations"],
+      "supported_sizes": ["256x256", "512x512", "1024x1024"],
+      "max_images_per_request": 10,
+      "quality_options": ["standard"],
+      "style_options": [],
+      "cultural_optimization": true,
+      "arabic_support": true,
+      "professional_domains": ["legal", "medical", "educational", "business", "engineering", "general"],
+      "pricing": {
+        "standard": {
+          "256x256": 0.016,
+          "512x512": 0.018,
+          "1024x1024": 0.020
+        },
+        "editing": {
+          "256x256": 0.016,
+          "512x512": 0.018,
+          "1024x1024": 0.020
+        },
+        "variations": {
+          "256x256": 0.016,
+          "512x512": 0.018,
+          "1024x1024": 0.020
+        }
+      },
+      "limitations": {
+        "max_prompt_length": 1000,
+        "content_policy": "moderate",
+        "rate_limits": {
+          "requests_per_minute": 50,
+          "requests_per_hour": 1000
+        }
+      },
+      "iraqi_enhancements": {
+        "cultural_validation": true,
+        "islamic_compliance": true,
+        "arabic_prompt_optimization": true,
+        "professional_terminology": true,
+        "rtl_layout_awareness": true
+      }
+    }
+  },
+
+  "future_models": {
+    "stable-diffusion-xl": {
+      "name": "Stable Diffusion XL",
+      "provider": "stability",
+      "type": "generation",
+      "status": "planned",
+      "estimated_availability": "post-mvp",
+      "capabilities": ["text-to-image", "image-to-image"],
+      "iraqi_enhancements": {
+        "cultural_validation": true,
+        "arabic_support": "planned",
+        "local_deployment": true
+      }
+    },
+    
+    "iraqi-cultural-diffusion": {
+      "name": "Iraqi Cultural Diffusion Model",
+      "provider": "custom",
+      "type": "generation",
+      "status": "research",
+      "estimated_availability": "long-term",
+      "capabilities": ["culturally-aware-generation", "arabic-text-integration"],
+      "iraqi_enhancements": {
+        "cultural_validation": "built-in",
+        "iraqi_dialect_support": true,
+        "professional_domain_training": true,
+        "islamic_compliance": "native"
+      }
+    }
+  },
+
+  "model_selection_rules": {
+    "default_generation": "dall-e-3",
+    "default_editing": "dall-e-2",
+    "default_variations": "dall-e-2",
+    
+    "domain_preferences": {
+      "legal": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "hd",
+        "style": "natural"
+      },
+      "medical": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "hd",
+        "style": "natural"
+      },
+      "educational": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "standard",
+        "style": "vivid"
+      },
+      "business": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "hd",
+        "style": "natural"
+      },
+      "engineering": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "hd",
+        "style": "natural"
+      },
+      "general": {
+        "primary": "dall-e-3",
+        "fallback": "dall-e-2",
+        "quality": "standard",
+        "style": "vivid"
+      }
+    },
+
+    "cultural_preferences": {
+      "arabic_content": {
+        "rtl_optimization": true,
+        "cultural_validation_required": true,
+        "islamic_compliance_check": true,
+        "dialect_processing": true
+      },
+      "mixed_language": {
+        "segmentation_required": true,
+        "direction_handling": "mixed",
+        "cultural_validation_required": true
+      },
+      "professional_context": {
+        "terminology_validation": true,
+        "domain_compliance_check": true,
+        "formal_tone_preferred": true
+      }
+    },
+
+    "fallback_chain": {
+      "primary_failure": ["dall-e-2"],
+      "secondary_failure": ["manual_intervention"],
+      "validation_failure": ["prompt_optimization", "retry_with_enhanced_prompt"],
+      "rate_limit": ["queue_request", "upgrade_tier_suggestion"]
+    }
+  },
+
+  "quality_assurance": {
+    "cultural_validation": {
+      "minimum_score": 0.95,
+      "islamic_compliance_required": true,
+      "professional_appropriateness_required": true,
+      "automatic_rejection_threshold": 0.70
+    },
+    
+    "technical_validation": {
+      "image_format_requirements": ["png", "jpg", "webp"],
+      "minimum_resolution": "256x256",
+      "maximum_file_size": "10MB",
+      "color_space": "sRGB"
+    },
+    
+    "performance_targets": {
+      "generation_time": {
+        "target": "30s",
+        "maximum": "120s"
+      },
+      "validation_time": {
+        "cultural": "200ms",
+        "technical": "50ms"
+      },
+      "total_response_time": {
+        "target": "35s",
+        "maximum": "130s"
+      }
+    }
+  },
+
+  "integration_settings": {
+    "iraqi_ai_agents": {
+      "cultural_validator": {
+        "endpoint": "iraqi-cultural-validator",
+        "timeout": 5000,
+        "retry_attempts": 2,
+        "fallback_enabled": true
+      },
+      "arabic_processor": {
+        "endpoint": "arabic-rtl-processor", 
+        "timeout": 3000,
+        "retry_attempts": 2,
+        "fallback_enabled": true
+      },
+      "professional_domain_expert": {
+        "endpoint": "iraqi-professional-domain-expert",
+        "timeout": 4000,
+        "retry_attempts": 1,
+        "fallback_enabled": false
+      }
+    },
+    
+    "external_services": {
+      "openai": {
+        "base_url": "https://api.openai.com/v1",
+        "timeout": 120000,
+        "retry_attempts": 3,
+        "backoff_strategy": "exponential"
+      }
+    }
+  },
+
+  "monitoring": {
+    "metrics_collection": {
+      "generation_success_rate": true,
+      "cultural_validation_rate": true,
+      "average_response_time": true,
+      "error_rate_by_type": true,
+      "user_satisfaction_score": true
+    },
+    
+    "alerting": {
+      "high_error_rate_threshold": 0.05,
+      "slow_response_threshold": "60s",
+      "cultural_validation_failure_threshold": 0.10,
+      "api_quota_warning_threshold": 0.80
+    }
+  }
+}

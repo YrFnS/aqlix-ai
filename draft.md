@@ -2654,7 +2654,7 @@ lets start the extraction to add from the reference folder to the examples folde
 lets continue with the next step in the extraction plan
 
 
-
+these are the repos we checked and we extracted from some of them and some we didnt need them
 
 
 https://github.com/coleam00/context-engineering-intro
@@ -2704,18 +2704,105 @@ https://github.com/browser-use/browser-use
 https://github.com/srcbookdev/srcbook
 https://github.com/e2b-dev/fragments
 https://github.com/browseros-ai/BrowserOS
+https://github.com/comfyanonymous/ComfyUI
+
+i want you to check them and compare them with what we have in the examples folder
+to make sure we didnt skip any useful repo for our app
 
 
 i added both repos to the reference folder with their structure file, do a deep research to know what we need from and then create md file for the plan to know what we need to extract from the repo and check in the examples folder to know if we have something similar to it or not and if we have compare them, to know do we have something better or the repo in the reference folder is better
 
 
+check is our tech stack good?
+not just for now but for the future?
+is it scalable?
+for millions of users?
+or do we need to make changes to it?
+before we start the development phase so we dont make mistakes
+
+
+
+check the examples folder to know did we extract anything related to image generation?
+
+and check these repos do any of them have image generation or related to image generation so we can extract it
+
+
+we need not just image generation but also image editing, image to text, text to image, image to image, etc.
+so which repo do you want me to add to the reference folder?
+
+
+
+the app wont have gpu its on the cloud and we wont rent any gpu in the mvp we well post-mvp so what should we do? i think we leave ComfyUI post-mvp what is your opinion? the beatter truth dont follow what i told you blindly i want you to think for yourself and tell me your opinion, we are a team so we need to make decisions together not just follow my instructions blindly i trust you so i want to hear your opinion
+so our app can shine
+
+
+i added the repos with their structure file in the reference folder make a deep research to know what we need from them and then create plan to know what we need to extract from the repo and add it to the examples folder
+
+
+we done extraction from the repos in the reference folder so we can remove them and also IMAGE_PROCESSING_EXTRACTION_PLAN.md done so we need to move it to docs folder right
 
 
 
 
 
 
-image generation
+check the examples folder do we have anything related to user rate limit?
+
+also i found these repos
+
+https://github.com/mckaywrigley/chatbot-ui
+https://github.com/lobehub/lobe-chat
+https://github.com/Mintplex-Labs/anything-llm
+https://github.com/agnaistic/agnai
+https://github.com/vinhnx/vtchat
+
+check them do we need anything from them?
+not just for user rate limit
+
+i did some searching for repos has user rate limit, i found just these repos and just one of them mentions user rate limit and i think its just a startup
+
+
+
+
+
+
+
+microservice
+
+
+
+
+
+
+
+
+24
+32
+36
+37
+40
+42
+43
+44
+
+
+
+
+
+https://github.com/comfyanonymous/ComfyUI
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

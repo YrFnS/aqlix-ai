@@ -6,7 +6,7 @@
 **Based on**: Botpress plugin framework + Iraqi professional domain extensibility
 
 ## Overview
-Implement a comprehensive plugin architecture that enables extensible Iraqi professional domain functionality. This system allows for dynamic addition of specialized features for legal, medical, educational, and business domains while maintaining cultural compliance and Islamic principles.
+Implement a comprehensive plugin architecture that enables extensible Iraqi professional domain functionality with seamless integration to the 21 specialized Iraqi AI agents. This system allows for dynamic addition of specialized features for legal, medical, educational, and business domains while maintaining cultural compliance and Islamic principles through intelligent agent coordination.
 
 ## Core Features
 
@@ -25,17 +25,19 @@ Implement a comprehensive plugin architecture that enables extensible Iraqi prof
 - **Arabic Language Integration**: Native Arabic support for all plugin interfaces and content
 
 ### Extensible Plugin System
-- **Dynamic Plugin Loading**: Runtime plugin installation and activation
+- **Dynamic Plugin Loading**: Runtime plugin installation and activation with agent coordination
+- **Agent Integration Layer**: Direct integration with 21 specialized Iraqi AI agents for enhanced functionality
 - **Dependency Management**: Automatic handling of plugin dependencies and conflicts
 - **Version Control**: Plugin versioning with backward compatibility
-- **Security Sandboxing**: Secure plugin execution environment
-- **Performance Monitoring**: Real-time plugin performance tracking and optimization
+- **Security Sandboxing**: Secure plugin execution environment with agent validation
+- **Performance Monitoring**: Real-time plugin performance tracking and optimization with agent analytics
+- **Cultural Intelligence**: 95%+ cultural appropriateness through specialized agent validation
 
 ## Technical Implementation
 
 ### Core Architecture
 ```python
-# Plugin Architecture Framework
+# Plugin Architecture Framework with Agent Integration
 from typing import Dict, List, Any, Optional, Type
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -43,6 +45,12 @@ import asyncio
 from dataclasses import dataclass
 import importlib
 from pathlib import Path
+from iraqi_agents import (
+    IraqiCulturalValidator,
+    IraqiProfessionalDomainExpert,
+    IraqiSecuritySpecialist,
+    ArabicRtlProcessor
+)
 
 class IraqiProfessionalDomain(Enum):
     LEGAL = "legal"
@@ -68,13 +76,17 @@ class PluginMetadata:
     permissions: List[str]
 
 class IraqiBasePlugin(ABC):
-    """Base class for all Iraqi professional plugins"""
+    """Base class for all Iraqi professional plugins with agent integration"""
     
-    def __init__(self, cultural_validator: CulturalValidator):
-        self.cultural_validator = cultural_validator
+    def __init__(self, agent_coordinator: 'IraqiAgentCoordinator'):
+        self.agent_coordinator = agent_coordinator
+        self.cultural_validator = agent_coordinator.get_agent('iraqi-cultural-validator')
+        self.security_specialist = agent_coordinator.get_agent('iraqi-security-specialist')
+        self.professional_expert = agent_coordinator.get_agent('iraqi-professional-domain-expert')
         self.metadata = self.get_metadata()
         self.is_active = False
         self.performance_metrics = {}
+        self.agent_usage_stats = {}
         
     @abstractmethod
     def get_metadata(self) -> PluginMetadata:
@@ -105,15 +117,17 @@ class IraqiBasePlugin(ABC):
         pass
 ```
 
-### Plugin Manager
+### Plugin Manager with Multi-Agent Coordination
 ```python
 class IraqiPluginManager:
-    def __init__(self, cultural_validator: CulturalValidator):
+    def __init__(self, agent_coordinator: 'IraqiAgentCoordinator'):
         self.plugins: Dict[str, IraqiBasePlugin] = {}
         self.plugin_registry = PluginRegistry()
-        self.cultural_validator = cultural_validator
-        self.security_validator = PluginSecurityValidator()
+        self.agent_coordinator = agent_coordinator
+        self.cultural_validator = agent_coordinator.get_agent('iraqi-cultural-validator')
+        self.security_specialist = agent_coordinator.get_agent('iraqi-security-specialist')
         self.performance_monitor = PluginPerformanceMonitor()
+        self.multi_agent_orchestrator = agent_coordinator.get_orchestrator()
         
     async def load_plugin(
         self, 
@@ -121,17 +135,24 @@ class IraqiPluginManager:
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         try:
-            # Validate plugin security
-            security_check = await self.security_validator.validate_plugin(plugin_path)
+            # Multi-agent security validation
+            security_check = await self.security_specialist.validate_plugin_security(
+                plugin_path, 
+                iraqi_compliance_required=True
+            )
             if not security_check.is_safe:
                 raise PluginSecurityError(security_check.issues)
             
-            # Load and initialize plugin
+            # Load and initialize plugin with agent coordination
             plugin_class = await self._load_plugin_class(plugin_path)
-            plugin_instance = plugin_class(self.cultural_validator)
+            plugin_instance = plugin_class(self.agent_coordinator)
             
-            # Validate cultural compliance
-            compliance_check = await self._validate_plugin_compliance(plugin_instance)
+            # Multi-agent cultural compliance validation
+            compliance_check = await self.cultural_validator.validate_plugin_compliance(
+                plugin_instance,
+                include_islamic_validation=True,
+                professional_domain_validation=True
+            )
             if not compliance_check.is_compliant:
                 raise CulturalComplianceError(compliance_check.issues)
                 
@@ -193,16 +214,30 @@ class IraqiLegalPlugin(IraqiBasePlugin):
         research_query = parameters.get("query")
         legal_domain = parameters.get("domain")  # civil, criminal, commercial, etc.
         
-        # Validate cultural appropriateness of research query
-        cultural_validation = await self.validate_cultural_compliance(research_query)
+        # Multi-agent cultural and professional validation
+        cultural_validation = await self.cultural_validator.validate_content(
+            research_query,
+            domain='legal',
+            include_islamic_compliance=True
+        )
         if not cultural_validation["is_appropriate"]:
             return {"error": "Research query violates Islamic principles"}
             
+        # Professional domain expertise with agent coordination
+        professional_analysis = await self.professional_expert.analyze_legal_query(
+            research_query, 
+            legal_domain,
+            iraqi_context=True
+        )
+        
         # Perform research with Iraqi legal database
         results = await self._search_iraqi_legal_database(research_query, legal_domain)
         
-        # Include Islamic jurisprudence context where applicable
-        islamic_context = await self._get_islamic_jurisprudence_context(research_query)
+        # Include Islamic jurisprudence context with agent expertise
+        islamic_context = await self.professional_expert.get_islamic_legal_context(
+            research_query,
+            legal_domain
+        )
         
         return {
             "legal_provisions": results["provisions"],
@@ -469,12 +504,13 @@ async def get_plugin_metrics(
 
 ## Success Metrics
 
-### Cultural Metrics
-- **Islamic Compliance Rate**: 95%+ plugins meet Islamic standards
-- **Cultural Appropriateness**: 90%+ culturally sensitive plugin content
-- **Professional Standards**: 88%+ meet Iraqi professional requirements
-- **Arabic Support Quality**: 95%+ proper Arabic language handling
-- **Regional Adaptation**: 85%+ appropriate for all Iraqi regions
+### Cultural Metrics with Agent Validation
+- **Islamic Compliance Rate**: 95%+ plugins meet Islamic standards (validated by iraqi-cultural-validator)
+- **Cultural Appropriateness**: 90%+ culturally sensitive plugin content (multi-agent validation)
+- **Professional Standards**: 88%+ meet Iraqi professional requirements (iraqi-professional-domain-expert validation)
+- **Arabic Support Quality**: 95%+ proper Arabic language handling (arabic-rtl-processor integration)
+- **Regional Adaptation**: 85%+ appropriate for all Iraqi regions (cultural intelligence system)
+- **Agent Coordination Efficiency**: 35%+ performance improvement through intelligent agent integration
 
 ### Technical Metrics
 - **Plugin Installation Success**: 98%+ successful plugin installations

@@ -1,0 +1,530 @@
+{
+  "professional_domains": {
+    "legal": {
+      "domain_info": {
+        "name": "Iraqi Legal Professional Services",
+        "description": "Legal practice, court proceedings, legal education, and juridical contexts in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "highest"
+      },
+      
+      "terminology": {
+        "key_terms": {
+          "court": {
+            "arabic": "محكمة",
+            "english": "court",
+            "context": "judicial proceedings"
+          },
+          "law": {
+            "arabic": "قانون",
+            "english": "law",
+            "context": "legal framework"
+          },
+          "lawyer": {
+            "arabic": "محامي",
+            "english": "lawyer",
+            "context": "legal professional"
+          },
+          "contract": {
+            "arabic": "عقد",
+            "english": "contract",
+            "context": "legal agreement"
+          },
+          "judge": {
+            "arabic": "قاضي",
+            "english": "judge",
+            "context": "judicial authority"
+          }
+        },
+        
+        "specialized_vocabulary": [
+          "constitutional_law",
+          "civil_procedure",
+          "criminal_law",
+          "commercial_law",
+          "administrative_law",
+          "family_law",
+          "property_law",
+          "evidence_law"
+        ],
+        
+        "cultural_legal_concepts": [
+          "sharia_compliance",
+          "customary_law",
+          "tribal_mediation",
+          "family_honor",
+          "community_responsibility"
+        ]
+      },
+      
+      "content_guidelines": {
+        "appropriate_topics": [
+          "legal_procedures_explanation",
+          "rights_and_duties_education",
+          "court_system_overview",
+          "legal_document_preparation",
+          "dispute_resolution_methods",
+          "legal_research_techniques"
+        ],
+        
+        "restricted_topics": [
+          "specific_legal_advice",
+          "case_outcome_prediction",
+          "confidential_case_details",
+          "judicial_criticism",
+          "sectarian_legal_bias"
+        ],
+        
+        "representation_standards": {
+          "professional_attire": "formal_business_conservative",
+          "setting_requirements": "formal_office_courtroom",
+          "interaction_style": "respectful_hierarchical",
+          "documentation_style": "precise_formal"
+        }
+      },
+      
+      "cultural_considerations": {
+        "islamic_law_integration": true,
+        "tribal_customs_awareness": true,
+        "gender_role_sensitivity": true,
+        "family_law_cultural_aspects": true,
+        "commercial_practice_norms": true
+      }
+    },
+
+    "medical": {
+      "domain_info": {
+        "name": "Iraqi Medical Professional Services",
+        "description": "Healthcare practice, medical education, patient care, and clinical contexts in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "high"
+      },
+      
+      "terminology": {
+        "key_terms": {
+          "doctor": {
+            "arabic": "طبيب",
+            "english": "doctor",
+            "context": "medical professional"
+          },
+          "patient": {
+            "arabic": "مريض",
+            "english": "patient",
+            "context": "person receiving care"
+          },
+          "hospital": {
+            "arabic": "مستشفى",
+            "english": "hospital",
+            "context": "medical facility"
+          },
+          "medicine": {
+            "arabic": "دواء",
+            "english": "medicine",
+            "context": "pharmaceutical treatment"
+          },
+          "diagnosis": {
+            "arabic": "تشخيص",
+            "english": "diagnosis",
+            "context": "medical assessment"
+          }
+        },
+        
+        "specialized_vocabulary": [
+          "clinical_examination",
+          "medical_history",
+          "treatment_plan",
+          "preventive_care",
+          "emergency_medicine",
+          "surgical_procedures",
+          "pharmaceutical_care",
+          "medical_ethics"
+        ],
+        
+        "cultural_medical_concepts": [
+          "family_involvement_in_care",
+          "gender_sensitive_treatment",
+          "religious_considerations",
+          "traditional_medicine_integration",
+          "community_health_approaches"
+        ]
+      },
+      
+      "content_guidelines": {
+        "appropriate_topics": [
+          "general_health_education",
+          "preventive_care_information",
+          "medical_procedure_explanation",
+          "healthcare_system_navigation",
+          "medical_terminology_education",
+          "health_promotion_activities"
+        ],
+        
+        "restricted_topics": [
+          "specific_medical_diagnosis",
+          "personalized_treatment_advice",
+          "medication_dosage_recommendations",
+          "surgical_decision_making",
+          "mental_health_assessment"
+        ],
+        
+        "representation_standards": {
+          "professional_attire": "medical_scrubs_white_coat",
+          "setting_requirements": "clinical_hospital_office",
+          "interaction_style": "caring_professional_respectful",
+          "privacy_considerations": "patient_confidentiality_strict"
+        }
+      },
+      
+      "cultural_considerations": {
+        "gender_separated_care_options": true,
+        "family_decision_involvement": true,
+        "religious_dietary_restrictions": true,
+        "prayer_time_accommodations": true,
+        "modesty_in_treatment": true,
+        "end_of_life_cultural_practices": true
+      }
+    },
+
+    "educational": {
+      "domain_info": {
+        "name": "Iraqi Educational Professional Services",
+        "description": "Teaching, learning, academic research, and educational administration in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "moderate_to_high"
+      },
+      
+      "terminology": {
+        "key_terms": {
+          "teacher": {
+            "arabic": "معلم",
+            "english": "teacher",
+            "context": "educational professional"
+          },
+          "student": {
+            "arabic": "طالب",
+            "english": "student",
+            "context": "learner"
+          },
+          "school": {
+            "arabic": "مدرسة",
+            "english": "school",
+            "context": "educational institution"
+          },
+          "university": {
+            "arabic": "جامعة",
+            "english": "university",
+            "context": "higher education"
+          },
+          "curriculum": {
+            "arabic": "منهج",
+            "english": "curriculum",
+            "context": "educational program"
+          }
+        },
+        
+        "specialized_vocabulary": [
+          "pedagogical_methods",
+          "assessment_strategies",
+          "educational_technology",
+          "learning_objectives",
+          "academic_research",
+          "student_development",
+          "educational_policy",
+          "inclusive_education"
+        ],
+        
+        "cultural_educational_concepts": [
+          "respect_for_knowledge",
+          "teacher_student_relationship",
+          "collective_learning",
+          "practical_application",
+          "moral_education_integration"
+        ]
+      },
+      
+      "content_guidelines": {
+        "appropriate_topics": [
+          "learning_methodology_explanation",
+          "educational_resource_development",
+          "student_engagement_strategies",
+          "curriculum_design_principles",
+          "assessment_and_evaluation",
+          "educational_technology_integration"
+        ],
+        
+        "age_appropriate_considerations": {
+          "elementary": "simple_language_visual_aids",
+          "secondary": "structured_content_practical_examples",
+          "university": "academic_rigor_research_focus",
+          "adult_education": "practical_application_respect_experience"
+        },
+        
+        "representation_standards": {
+          "professional_attire": "business_casual_respectful",
+          "setting_requirements": "classroom_library_academic",
+          "interaction_style": "encouraging_respectful_patient",
+          "content_delivery": "clear_structured_engaging"
+        }
+      },
+      
+      "cultural_considerations": {
+        "gender_mixed_classes_sensitivity": true,
+        "religious_education_integration": true,
+        "local_history_cultural_pride": true,
+        "family_education_support": true,
+        "traditional_modern_knowledge_balance": true
+      }
+    },
+
+    "business": {
+      "domain_info": {
+        "name": "Iraqi Business Professional Services",
+        "description": "Commercial activities, entrepreneurship, corporate services, and business development in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "high"
+      },
+      
+      "terminology": {
+        "key_terms": {
+          "business": {
+            "arabic": "عمل تجاري",
+            "english": "business",
+            "context": "commercial activity"
+          },
+          "company": {
+            "arabic": "شركة",
+            "english": "company",
+            "context": "business organization"
+          },
+          "manager": {
+            "arabic": "مدير",
+            "english": "manager",
+            "context": "business leader"
+          },
+          "employee": {
+            "arabic": "موظف",
+            "english": "employee",
+            "context": "workforce member"
+          },
+          "profit": {
+            "arabic": "ربح",
+            "english": "profit",
+            "context": "business gain"
+          }
+        },
+        
+        "specialized_vocabulary": [
+          "strategic_planning",
+          "market_analysis",
+          "financial_management",
+          "human_resources",
+          "supply_chain",
+          "customer_service",
+          "quality_management",
+          "business_development"
+        ],
+        
+        "cultural_business_concepts": [
+          "relationship_based_commerce",
+          "trust_building_importance",
+          "family_business_traditions",
+          "community_economic_impact",
+          "ethical_business_practices"
+        ]
+      },
+      
+      "content_guidelines": {
+        "appropriate_topics": [
+          "business_strategy_development",
+          "market_entry_considerations",
+          "financial_planning_basics",
+          "leadership_and_management",
+          "customer_relationship_management",
+          "business_ethics_and_compliance"
+        ],
+        
+        "cultural_business_practices": {
+          "meeting_etiquette": "formal_respectful_patient",
+          "negotiation_style": "relationship_focused_gradual",
+          "decision_making": "consultative_hierarchical",
+          "networking": "trust_based_long_term"
+        },
+        
+        "representation_standards": {
+          "professional_attire": "formal_business_conservative",
+          "setting_requirements": "office_conference_room",
+          "interaction_style": "professional_respectful_collaborative",
+          "communication_style": "direct_but_respectful"
+        }
+      },
+      
+      "cultural_considerations": {
+        "islamic_banking_principles": true,
+        "family_business_dynamics": true,
+        "gender_workplace_considerations": true,
+        "prayer_time_business_accommodations": true,
+        "community_social_responsibility": true
+      }
+    },
+
+    "engineering": {
+      "domain_info": {
+        "name": "Iraqi Engineering Professional Services",
+        "description": "Technical design, construction, infrastructure development, and engineering consultancy in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "high"
+      },
+      
+      "terminology": {
+        "key_terms": {
+          "engineer": {
+            "arabic": "مهندس",
+            "english": "engineer",
+            "context": "technical professional"
+          },
+          "design": {
+            "arabic": "تصميم",
+            "english": "design",
+            "context": "technical planning"
+          },
+          "construction": {
+            "arabic": "بناء",
+            "english": "construction",
+            "context": "building process"
+          },
+          "project": {
+            "arabic": "مشروع",
+            "english": "project",
+            "context": "engineering undertaking"
+          },
+          "infrastructure": {
+            "arabic": "بنية تحتية",
+            "english": "infrastructure",
+            "context": "fundamental systems"
+          }
+        },
+        
+        "specialized_vocabulary": [
+          "structural_analysis",
+          "environmental_impact",
+          "quality_control",
+          "project_management",
+          "technical_specifications",
+          "safety_standards",
+          "sustainable_development",
+          "innovation_technology"
+        ],
+        
+        "cultural_engineering_concepts": [
+          "traditional_building_methods",
+          "climate_appropriate_design",
+          "community_needs_focus",
+          "resource_optimization",
+          "local_material_utilization"
+        ]
+      },
+      
+      "content_guidelines": {
+        "appropriate_topics": [
+          "engineering_design_principles",
+          "technical_problem_solving",
+          "safety_standards_compliance",
+          "sustainable_engineering_practices",
+          "project_planning_and_management",
+          "infrastructure_development"
+        ],
+        
+        "technical_considerations": {
+          "local_climate_factors": true,
+          "available_materials": true,
+          "seismic_considerations": true,
+          "water_resource_management": true,
+          "energy_efficiency": true
+        },
+        
+        "representation_standards": {
+          "professional_attire": "business_casual_safety_gear",
+          "setting_requirements": "office_construction_site_lab",
+          "interaction_style": "technical_precise_collaborative",
+          "documentation_style": "detailed_accurate_standardized"
+        }
+      },
+      
+      "cultural_considerations": {
+        "traditional_architecture_respect": true,
+        "environmental_stewardship": true,
+        "community_impact_assessment": true,
+        "local_workforce_development": true,
+        "heritage_site_preservation": true
+      }
+    },
+
+    "general": {
+      "domain_info": {
+        "name": "General Iraqi Professional Context",
+        "description": "Cross-domain professional interactions and general workplace contexts in Iraq",
+        "primary_language": "arabic",
+        "secondary_language": "english",
+        "formal_level": "moderate"
+      },
+      
+      "universal_principles": {
+        "respect_and_courtesy": true,
+        "professional_competence": true,
+        "ethical_behavior": true,
+        "cultural_sensitivity": true,
+        "collaborative_approach": true,
+        "continuous_learning": true
+      },
+      
+      "workplace_norms": {
+        "hierarchy_respect": true,
+        "team_collaboration": true,
+        "punctuality_importance": true,
+        "dress_code_adherence": true,
+        "communication_clarity": true,
+        "problem_solving_focus": true
+      },
+      
+      "cultural_workplace_values": {
+        "family_work_balance": true,
+        "religious_observance_accommodation": true,
+        "elder_respect": true,
+        "hospitality_traditions": true,
+        "community_orientation": true
+      }
+    }
+  },
+
+  "cross_domain_considerations": {
+    "interdisciplinary_collaboration": {
+      "legal_medical": "patient_rights_medical_malpractice",
+      "business_engineering": "infrastructure_commercial_development",
+      "education_technology": "educational_innovation",
+      "medical_education": "health_literacy_professional_training",
+      "legal_business": "commercial_law_compliance"
+    },
+    
+    "shared_professional_values": [
+      "integrity_and_honesty",
+      "service_to_community",
+      "continuous_improvement",
+      "knowledge_sharing",
+      "ethical_decision_making",
+      "respect_for_stakeholders"
+    ],
+    
+    "cultural_professional_integration": {
+      "islamic_work_ethics": true,
+      "community_service_orientation": true,
+      "family_support_systems": true,
+      "traditional_modern_balance": true,
+      "local_global_perspective": true
+    }
+  }
+}

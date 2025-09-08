@@ -1,21 +1,21 @@
 # Initial to PRP Command Guide - Iraqi AI Chat System
 
-This guide shows which command to use for each initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 42 focused initials organized in 7 dependency layers.
+This guide shows which command to use for each initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 44 focused initials organized in 7 dependency layers, including 3 critical new initials for multi-agent coordination and visual workflow orchestration.
 
 ## 📋 Architecture Overview
 
-**42 Initials in 7 Layers:**
+**44 Initials in 7 Layers:**
 - **Foundation Layer (01-04)**: Infrastructure setup
 - **UI Layer (05-10)**: User interface components  
 - **Arabic Layer (11-16)**: Language and RTL support
 - **Cultural Layer (17-22)**: Cultural compliance
 - **Integration Layer (23-28)**: System integration
 - **Production Layer (29-32)**: Production readiness
-- **Post-MVP Enhancement Layer (33-41)**: Advanced AI capabilities and SaaS features
+- **Post-MVP Enhancement Layer (33-44)**: Advanced AI capabilities, multi-agent coordination, and SaaS features
 
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 35 general infrastructure and UI features (27 MVP + 8 Post-MVP)**
+**Total: 37 general infrastructure and UI features (27 MVP + 10 Post-MVP)**
 
 ### Foundation Layer (01-04)
 - **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp` ✅
@@ -275,7 +275,9 @@ All generated PRPs will be saved in the `PRPs/` directory:
   - *Source: Botpress knowledge plugin framework*
   - *Purpose: Extensible plugin system for Iraqi professional domain integrations*
 
-- **37_reserved** → *Skipped for future use*
+- **37_workflow_orchestration.md** → `/generate-prp` + `/execute-prp` ✅
+  - *Source: sim-studio-extracted visual workflow components + Iraqi cultural workflow patterns*
+  - *Purpose: Visual drag-and-drop workflow builder with Iraqi cultural validation blocks, Arabic RTL support, and intelligent workflow orchestration*
 
 - **38_subscription_management_system.md** → `/generate-prp` + `/execute-prp` ✅
   - *Source: Kortix-SUNA billing system*
@@ -297,18 +299,26 @@ All generated PRPs will be saved in the `PRPs/` directory:
   - *Source: Railway platform-specific deployment patterns*
   - *Purpose: Railway monorepo deployment configuration with service orchestration and production optimization*
 
+- **43_multi_agent_coordination.md** → `/generate-prp` + `/execute-prp` ✅
+  - *Source: Advanced multi-agent orchestration patterns + Iraqi AI agent coordination*
+  - *Purpose: Intelligent coordination system for 21 specialized Iraqi AI agents with 35% performance improvement through context optimization*
+
+- **44_performance_monitoring.md** → `/generate-prp` + `/execute-prp` ✅
+  - *Source: Enterprise monitoring patterns + Iraqi cultural performance metrics*
+  - *Purpose: Enterprise-grade performance monitoring for millions of users with real-time agent analytics and cultural validation tracking*
+
 ## ✅ Updated Quick Reference Summary
 
-**All 42 Initial Files (33 MVP + 9 Post-MVP):**
-- **35 General features** → use `/generate-prp` + `/execute-prp`  
+**All 44 Initial Files (33 MVP + 11 Post-MVP):**
+- **37 General features** → use `/generate-prp` + `/execute-prp`  
 - **7 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
 
 ## 🚀 Key Improvements from Old Architecture
 
 **Eliminated Scope Creep:**
 - ❌ Old: 21 bloated initials with massive overlaps  
-- ✅ New: 32 focused MVP initials with single responsibility
-- ✅ Additional: 8 Post-MVP enhancement initials for complete SaaS platform
+- ✅ New: 33 focused MVP initials with single responsibility
+- ✅ Additional: 11 Post-MVP enhancement initials for complete SaaS platform with multi-agent coordination
 
 **Clean Dependency Layers:**
 - **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production** → **Post-MVP Enhancement**
