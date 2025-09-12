@@ -1,0 +1,11 @@
+{
+  "chat": {
+    "title": "الدردشة | Chat",
+    "send": "إرسال | Send",
+    "legal": "استشارة قانونية | Legal Consultation"
+  },
+  "professional": {
+    "medical": "طبي | Medical",
+    "legal": "قانوني | Legal"
+  }
+}

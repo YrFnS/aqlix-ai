@@ -2785,8 +2785,8 @@ lets continue with the next step in the plan
 why did you create apps and packages folders?
 we are in the extraction phase not in the development phase
 i deleted them
-what do we have next in the extraction plan?
-
+what do we have next in the extraction plan? is the extraction plan done? did we extract all we need from the repos in the reference folder and added them in the examples folder following the extraction plan?
+check the repos code in the reference folder and then check the examples folder to make sure we extracted everything we need from the repos in the reference folder following the plan
 
 
 

@@ -1,0 +1,10 @@
+/* RTL Layout for Iraqi UI */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Noto Sans Arabic', sans-serif;
+}
+
+[dir="rtl"] .form-input {
+  text-align: right;
+}
