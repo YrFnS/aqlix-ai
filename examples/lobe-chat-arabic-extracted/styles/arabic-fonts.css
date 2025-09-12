@@ -1,0 +1,438 @@
+/**
+ * Arabic Font Definitions for Iraqi AI Chat System
+ * 
+ * Features:
+ * - Iraqi-enhanced Arabic font stack with cultural preferences
+ * - Professional domain-specific font selections
+ * - Performance-optimized font loading strategies
+ * - Islamic typography principles
+ * - Mixed Arabic-English content support
+ */
+
+/* ============================================================================
+   ARABIC FONT FACE DEFINITIONS
+   ============================================================================ */
+
+/* Primary Arabic UI Font - Cairo (Modern, Clean) */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/Cairo-VariableFont.woff2') format('woff2-variations'),
+       url('/fonts/Cairo-Regular.woff2') format('woff2'),
+       url('/fonts/Cairo-Regular.woff') format('woff');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+}
+
+/* Traditional Arabic Font - Amiri (Legal/Formal) */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/Amiri-Regular.woff2') format('woff2'),
+       url('/fonts/Amiri-Regular.woff') format('woff');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "dlig" 1;
+}
+
+/* Clean Arabic Font - Noto Sans Arabic (Medical/Technical) */
+@font-face {
+  font-family: 'Noto Sans Arabic';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/NotoSansArabic-VariableFont.woff2') format('woff2-variations'),
+       url('/fonts/NotoSansArabic-Regular.woff2') format('woff2'),
+       url('/fonts/NotoSansArabic-Regular.woff') format('woff');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+}
+
+/* Iraqi Dialect Font - Harmattan (Chat/Informal) */
+@font-face {
+  font-family: 'Harmattan';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Harmattan-Regular.woff2') format('woff2'),
+       url('/fonts/Harmattan-Regular.woff') format('woff');
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+}
+
+/* ============================================================================
+   CSS CUSTOM PROPERTIES FOR ARABIC FONTS
+   ============================================================================ */
+
+:root {
+  /* Arabic Font Stacks */
+  --font-arabic-primary: 'Cairo', 'Dubai', 'Tahoma', 'DejaVu Sans', sans-serif;
+  --font-arabic-traditional: 'Amiri', 'Times New Roman', 'Geeza Pro', serif;
+  --font-arabic-clean: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
+  --font-arabic-informal: 'Harmattan', 'Tahoma', 'Arial Unicode MS', sans-serif;
+  
+  /* Professional Domain Fonts */
+  --font-legal: var(--font-arabic-traditional);
+  --font-medical: var(--font-arabic-clean);
+  --font-educational: var(--font-arabic-primary);
+  --font-business: var(--font-arabic-clean);
+  --font-engineering: 'Cascadia Code', 'Fira Code', var(--font-arabic-clean);
+  --font-general: var(--font-arabic-primary);
+  
+  /* Arabic Typography Settings */
+  --arabic-line-height: 1.7;
+  --arabic-letter-spacing: 0.02em;
+  --arabic-word-spacing: 0.1em;
+  
+  /* Iraqi Dialect-Specific Settings */
+  --iraqi-line-height: 1.7;
+  --iraqi-letter-spacing: 0.02em;
+  --iraqi-word-spacing: 0.1em;
+  
+  --baghdad-line-height: 1.65;
+  --baghdad-letter-spacing: 0.015em;
+  --baghdad-word-spacing: 0.08em;
+  
+  --basra-line-height: 1.75;
+  --basra-letter-spacing: 0.025em;
+  --basra-word-spacing: 0.12em;
+  
+  --mosul-line-height: 1.68;
+  --mosul-letter-spacing: 0.02em;
+  --mosul-word-spacing: 0.09em;
+  
+  /* Performance Optimization Settings */
+  --text-rendering-speed: optimizeSpeed;
+  --text-rendering-quality: optimizeLegibility;
+  --text-rendering-balanced: auto;
+}
+
+/* ============================================================================
+   BASE ARABIC TEXT STYLING
+   ============================================================================ */
+
+/* Global Arabic text optimization */
+[lang="ar"], 
+[dir="rtl"],
+.arabic-text {
+  font-family: var(--font-arabic-primary);
+  line-height: var(--arabic-line-height);
+  letter-spacing: var(--arabic-letter-spacing);
+  word-spacing: var(--arabic-word-spacing);
+  text-rendering: var(--text-rendering-balanced);
+  font-kerning: auto;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  direction: rtl;
+  text-align: right;
+}
+
+/* Mixed content handling */
+.mixed-content {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+/* ============================================================================
+   DIALECT-SPECIFIC STYLING
+   ============================================================================ */
+
+.dialect-iraqi {
+  font-family: var(--font-arabic-informal);
+  line-height: var(--iraqi-line-height);
+  letter-spacing: var(--iraqi-letter-spacing);
+  word-spacing: var(--iraqi-word-spacing);
+}
+
+.dialect-baghdad {
+  font-family: var(--font-arabic-informal);
+  line-height: var(--baghdad-line-height);
+  letter-spacing: var(--baghdad-letter-spacing);
+  word-spacing: var(--baghdad-word-spacing);
+}
+
+.dialect-basra {
+  font-family: var(--font-arabic-informal);
+  line-height: var(--basra-line-height);
+  letter-spacing: var(--basra-letter-spacing);
+  word-spacing: var(--basra-word-spacing);
+}
+
+.dialect-mosul {
+  font-family: var(--font-arabic-informal);
+  line-height: var(--mosul-line-height);
+  letter-spacing: var(--mosul-letter-spacing);
+  word-spacing: var(--mosul-word-spacing);
+}
+
+.dialect-standard {
+  font-family: var(--font-arabic-primary);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* ============================================================================
+   PROFESSIONAL DOMAIN STYLING
+   ============================================================================ */
+
+.domain-legal {
+  font-family: var(--font-legal) !important;
+  font-size: 1.1em;
+  font-weight: 500;
+  color: var(--legal-text-color, #2c3e50);
+  line-height: 1.8;
+}
+
+.domain-medical {
+  font-family: var(--font-medical) !important;
+  font-size: 1.05em;
+  font-weight: 400;
+  color: var(--medical-text-color, #27ae60);
+  letter-spacing: 0.01em;
+}
+
+.domain-educational {
+  font-family: var(--font-educational) !important;
+  font-size: 1.08em;
+  color: var(--educational-text-color, #3498db);
+  line-height: 1.75;
+}
+
+.domain-business {
+  font-family: var(--font-business) !important;
+  font-size: 1em;
+  font-weight: 450;
+  color: var(--business-text-color, #34495e);
+}
+
+.domain-engineering {
+  font-family: var(--font-engineering) !important;
+  font-size: 0.95em;
+  color: var(--engineering-text-color, #7f8c8d);
+  font-variant-numeric: tabular-nums;
+}
+
+.domain-general {
+  font-family: var(--font-general) !important;
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATION CLASSES
+   ============================================================================ */
+
+.optimization-speed {
+  text-rendering: var(--text-rendering-speed);
+  font-kerning: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "kern" 0, "liga" 0;
+}
+
+.optimization-quality {
+  text-rendering: var(--text-rendering-quality);
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures discretionary-ligatures;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "dlig" 1;
+}
+
+.optimization-balanced {
+  text-rendering: var(--text-rendering-balanced);
+  font-kerning: auto;
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+}
+
+/* ============================================================================
+   COMPONENT-SPECIFIC ARABIC STYLING
+   ============================================================================ */
+
+.arabic-text-renderer {
+  position: relative;
+}
+
+.arabic-chat-message {
+  font-family: var(--font-arabic-informal);
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.arabic-professional-text.professional-styling {
+  font-weight: 500;
+  line-height: 1.8;
+  letter-spacing: 0.005em;
+}
+
+.arabic-legal-text {
+  font-family: var(--font-legal);
+  font-weight: 500;
+  font-size: 1.1em;
+  line-height: 1.9;
+  color: var(--legal-text-color, #2c3e50);
+}
+
+.arabic-medical-text {
+  font-family: var(--font-medical);
+  font-size: 1.05em;
+  line-height: 1.7;
+  color: var(--medical-text-color, #27ae60);
+  letter-spacing: 0.01em;
+}
+
+.arabic-educational-text {
+  font-family: var(--font-educational);
+  font-size: 1.125em;
+  line-height: 1.8;
+  color: var(--educational-text-color, #3498db);
+}
+
+.arabic-technical-text.monospace-arabic {
+  font-family: 'Cascadia Code', 'Fira Code', var(--font-arabic-clean);
+  font-size: 0.9em;
+  font-variant-numeric: tabular-nums;
+  color: var(--engineering-text-color, #7f8c8d);
+}
+
+/* ============================================================================
+   STATE-BASED STYLING
+   ============================================================================ */
+
+.arabic-text-renderer.optimized {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.arabic-text-renderer:not(.optimized) {
+  opacity: 0.7;
+}
+
+.arabic-text-renderer.font-loaded {
+  font-display: block;
+}
+
+.arabic-text-renderer:not(.font-loaded) {
+  font-display: fallback;
+}
+
+/* ============================================================================
+   RESPONSIVE ARABIC TYPOGRAPHY
+   ============================================================================ */
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-size: 0.95em;
+    line-height: 1.65;
+    letter-spacing: 0.015em;
+  }
+  
+  .domain-legal {
+    font-size: 1.05em;
+  }
+  
+  .domain-educational {
+    font-size: 1.03em;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-size: 1em;
+    line-height: 1.7;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1025px) {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-size: 1.05em;
+    line-height: 1.75;
+  }
+  
+  .domain-legal {
+    font-size: 1.15em;
+  }
+  
+  .domain-educational {
+    font-size: 1.12em;
+  }
+}
+
+/* ============================================================================
+   HIGH DPI DISPLAY OPTIMIZATIONS
+   ============================================================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+/* ============================================================================
+   PRINT OPTIMIZATIONS FOR ARABIC TEXT
+   ============================================================================ */
+
+@media print {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-family: var(--font-arabic-traditional);
+    font-size: 12pt;
+    line-height: 1.8;
+    color: black !important;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+  }
+  
+  .domain-legal {
+    font-size: 13pt;
+    font-weight: 600;
+  }
+  
+  .domain-medical,
+  .domain-educational {
+    font-size: 12.5pt;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    font-weight: 500;
+    letter-spacing: 0.025em;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .arabic-text-renderer {
+    transition: none;
+  }
+}
+
+/* ============================================================================
+   DARK MODE ARABIC TEXT SUPPORT
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --legal-text-color: #bdc3c7;
+    --medical-text-color: #58d68d;
+    --educational-text-color: #5dade2;
+    --business-text-color: #a6acaf;
+    --engineering-text-color: #95a5a6;
+  }
+  
+  [lang="ar"], [dir="rtl"], .arabic-text {
+    color: #e8eaed;
+    -webkit-font-smoothing: antialiased;
+  }
+}

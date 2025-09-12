@@ -1,0 +1,227 @@
+/* Iraqi Government Color Scheme and RTL-First Styles */
+/* Based on verified UI/UX decisions from knowledge base, adapted for cultural compliance */
+
+:root {
+  /* Primary Colors - Iraqi Government Scheme */
+  --primary-blue: #1e40af; /* Professional reliability */
+  --primary-green: #059669; /* Success and Islamic values */
+  --error-red: #dc2626; /* Used sparingly for errors */
+  
+  /* Secondary Colors from Knowledge Base */
+  --trust-green: #2E8B57;
+  --accent-gold: #D4AF37;
+  --warning-amber: #D97706;
+  
+  /* Typography */
+  --font-arabic-primary: 'Noto Sans Arabic', 'Amiri', system-ui, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+  
+  /* Spacing and Layout - RTL Optimized */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --border-radius: 0.5rem; /* Moderate for professional appearance */
+  
+  /* Accessibility - High Contrast */
+  --contrast-text: #ffffff;
+  --contrast-bg: #000000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-arabic-primary);
+  background-color: #f8fafc; /* Neutral background */
+  color: #1e293b; /* Dark gray for readability */
+  line-height: 1.6;
+  direction: rtl;
+  text-align: right;
+  font-size: 1rem; /* 16px base */
+}
+
+/* RTL Container - From Knowledge Base */
+.iraqi-container {
+  direction: rtl;
+  text-align: right;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Header Styles */
+.app-header {
+  background-color: var(--primary-blue);
+  color: var(--contrast-text);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.arabic-display {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--spacing-sm);
+  text-align: right;
+}
+
+/* RTL Navigation - From Knowledge Base */
+.rtl-nav {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rtl-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-sm);
+}
+
+.rtl-nav a {
+  color: var(--contrast-text);
+  text-decoration: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease;
+}
+
+.rtl-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Typography Hierarchy - From Knowledge Base */
+.arabic-h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: var(--font-weight-medium);
+  margin: var(--spacing-lg) 0 var(--spacing-md);
+  text-align: right;
+}
+
+.arabic-body {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: var(--font-weight-regular);
+}
+
+/* Form and Select Elements - Islamic Compliant, No Figurative Icons */
+.iraqi-select {
+  direction: rtl;
+  text-align: right;
+  padding: var(--spacing-sm);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--border-radius);
+  background-color: #ffffff;
+  font-family: var(--font-arabic-primary);
+  font-size: 1rem;
+  min-width: 200px;
+  transition: border-color 0.2s ease;
+}
+
+.iraqi-select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+}
+
+/* Respectful Animations - Subtle and Professional */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.loading {
+  animation: gentle-pulse 2s infinite;
+  background-color: var(--primary-green);
+  opacity: 0.6;
+}
+
+/* Interactive Elements - No Figurative Icons, Abstract/Geometric */
+.interactive-element {
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.interactive-element:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-blue);
+}
+
+/* Cultural Validation Indicators */
+.validation-indicator {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-left: var(--spacing-xs); /* RTL: left for indicators */
+}
+
+.validation-pass { background-color: var(--primary-green); }
+.validation-warning { background-color: var(--warning-amber); }
+.validation-fail { background-color: var(--error-red); }
+
+/* WCAG AA Compliance - High Contrast for Arabic Text */
+.high-contrast {
+  color: var(--contrast-text);
+  background-color: var(--contrast-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Screen Reader Support */
+[lang="ar"] {
+  lang: ar;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Ministry Themes - Professional Organization Themes */
+.theme-legal { --primary-blue: #1e40af; } /* Default */
+.theme-medical { --primary-green: #059669; }
+.theme-educational { --accent-gold: #D4AF37; }
+.theme-engineering { --trust-green: #2E8B57; }
+
+/* Mobile-First Responsive - From Knowledge Base */
+@media (max-width: 640px) {
+  .iraqi-container {
+    padding: var(--spacing-sm);
+  }
+  
+  .arabic-display {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+}

@@ -2657,6 +2657,8 @@ lets continue with the next step in the extraction plan
 these are the repos we checked and we extracted from some of them and some we didnt need them
 
 
+
+
 https://github.com/coleam00/context-engineering-intro
 https://github.com/n8n-io/n8n
 https://github.com/langflow-ai/langflow
@@ -2705,6 +2707,14 @@ https://github.com/srcbookdev/srcbook
 https://github.com/e2b-dev/fragments
 https://github.com/browseros-ai/BrowserOS
 https://github.com/comfyanonymous/ComfyUI
+https://github.com/mckaywrigley/chatbot-ui
+https://github.com/lobehub/lobe-chat
+https://github.com/Mintplex-Labs/anything-llm
+https://github.com/agnaistic/agnai
+https://github.com/vinhnx/vtchat
+https://github.com/quests-org/quests
+
+
 
 i want you to check them and compare them with what we have in the examples folder
 to make sure we didnt skip any useful repo for our app
@@ -2759,7 +2769,23 @@ https://github.com/vinhnx/vtchat
 check them do we need anything from them?
 not just for user rate limit
 
-i did some searching for repos has user rate limit, i found just these repos and just one of them mentions user rate limit and i think its just a startup
+i did some searching for repos has user rate limit, i found just these repos and just one of them mentions user rate limit
+
+
+i added the five repos with their structure file in the reference folder make a deep research then create plan md file to know what we need from each repo
+
+
+lets start the extraction and add to examples folder following the plan 
+lets start with the first step in the plan
+
+lets continue with the next step in the plan
+
+
+
+why did you create apps and packages folders?
+we are in the extraction phase not in the development phase
+i deleted them
+what do we have next in the extraction plan?
 
 
 
@@ -2767,7 +2793,39 @@ i did some searching for repos has user rate limit, i found just these repos and
 
 
 
-microservice
+
+
+
+
+
+
+is our tech stack good?
+is everything compatible with each other?
+
+and is our app scalable tech stack good for millions of users?
+and well start in iraq but we will expand to other countries so we need to make sure our app is scalable
+cus we aim to be the best app in the world so our app needs to be scalable
+
+
+do we need cloudflare?
+
+
+well build our app
+do we build our app as microservice? our current choice is monolithic right?
+what is the best choice? what are the pros and cons of each choice?
+are they the same but different names?
+
+
+
+what else initial we need?
+for the img and how many initials we need and what other more we need?
+
+
+
+is our deployment platform choice good?
+
+also i found this platform
+https://fly.io/
 
 
 
@@ -2789,6 +2847,8 @@ microservice
 
 
 
+
+https://github.com/quests-org/quests
 https://github.com/comfyanonymous/ComfyUI
 
 
@@ -2802,7 +2862,12 @@ https://github.com/comfyanonymous/ComfyUI
 
 
 
+generate commit message
 
+git status
+git diff --name-only
+git diff --stat
+git ls-files --others --exclude-standard
 
 
 

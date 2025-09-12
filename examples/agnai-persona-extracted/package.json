@@ -1,0 +1,472 @@
+{
+  "name": "iraqi-ai-persona-management",
+  "version": "1.0.0",
+  "description": "Iraqi AI Chat System - Character/Persona Management with Cultural Compliance",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "author": {
+    "name": "Iraqi AI Development Team",
+    "email": "personas@iraqi-ai.gov.iq",
+    "url": "https://iraqi-ai.gov.iq"
+  },
+  "license": "Proprietary",
+  "private": true,
+  "keywords": [
+    "iraqi",
+    "ai",
+    "persona",
+    "character",
+    "cultural-compliance",
+    "arabic",
+    "rtl",
+    "islamic",
+    "professional",
+    "memory-system",
+    "react",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-government/iraqi-ai-persona-management.git"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && tsc --emitDeclarationOnly --declaration",
+    "start": "next start",
+    "lint": "eslint src/ --ext .ts,.tsx",
+    "lint:fix": "eslint src/ --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:cultural": "jest --testNamePattern='Cultural'",
+    "test:arabic": "jest --testNamePattern='Arabic|RTL'",
+    "test:memory": "jest --testNamePattern='Memory'",
+    "test:persona": "jest --testNamePattern='Persona'",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "clean": "rimraf dist/ .next/",
+    "analyze": "cross-env ANALYZE=true next build",
+    "export": "next export",
+    "validate-personas": "tsx scripts/validate-personas.ts",
+    "generate-templates": "tsx scripts/generate-professional-templates.ts",
+    "export-personas": "tsx scripts/export-personas.ts",
+    "import-personas": "tsx scripts/import-personas.ts"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "next": "^14.0.0",
+    "typescript": "^5.2.0",
+    
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/node": "^20.8.10",
+    
+    "lucide-react": "^0.294.0",
+    "react-icons": "^4.12.0",
+    "@heroicons/react": "^2.0.18",
+    
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    
+    "react-hook-form": "^7.47.0",
+    "zod": "^3.22.4",
+    "@hookform/resolvers": "^3.3.2",
+    
+    "date-fns": "^2.30.0",
+    "react-datepicker": "^4.21.0",
+    "react-day-picker": "^8.9.1",
+    
+    "react-select": "^5.8.0",
+    "react-table": "^7.8.0",
+    "@tanstack/react-table": "^8.10.7",
+    "@tanstack/react-virtual": "^3.0.0",
+    
+    "framer-motion": "^10.16.4",
+    "react-transition-group": "^4.4.5",
+    "@react-spring/web": "^9.7.3",
+    
+    "axios": "^1.6.0",
+    "swr": "^2.2.4",
+    "react-query": "^3.39.3",
+    "@tanstack/react-query": "^5.8.4",
+    
+    "react-helmet-async": "^1.3.0",
+    "react-hot-toast": "^2.4.1",
+    "sonner": "^1.2.0",
+    
+    "lodash": "^4.17.21",
+    "classnames": "^2.3.2",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0",
+    
+    "i18next": "^23.6.0",
+    "react-i18next": "^13.5.0",
+    "i18next-browser-languagedetector": "^7.2.0",
+    "i18next-http-backend": "^2.4.2",
+    
+    "uuid": "^9.0.1",
+    "nanoid": "^5.0.3",
+    "crypto-js": "^4.2.0",
+    
+    "fuse.js": "^7.0.0",
+    "match-sorter": "^6.3.1",
+    
+    "react-beautiful-dnd": "^13.1.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "remark-breaks": "^4.0.0",
+    
+    "react-syntax-highlighter": "^15.5.0",
+    
+    "recharts": "^2.8.0",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    
+    "jspdf": "^2.5.1",
+    "html2canvas": "^1.4.1",
+    "xlsx": "^0.18.5",
+    "papaparse": "^5.4.1",
+    
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "@radix-ui/react-select": "^2.0.0",
+    "@radix-ui/react-slider": "^1.1.2",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-accordion": "^1.1.2",
+    
+    "cmdk": "^0.2.0",
+    "react-hotkeys-hook": "^4.4.1",
+    
+    "react-intersection-observer": "^9.5.3",
+    "react-virtualized": "^9.22.5",
+    "react-window": "^1.8.8",
+    
+    "@floating-ui/react": "^0.26.4",
+    "@floating-ui/react-dom": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.201",
+    "@types/uuid": "^9.0.7",
+    "@types/crypto-js": "^4.2.1",
+    "@types/papaparse": "^5.3.14",
+    "@types/react-beautiful-dnd": "^13.1.6",
+    "@types/react-syntax-highlighter": "^15.5.10",
+    "@types/react-virtualized": "^9.21.25",
+    "@types/react-window": "^1.8.8",
+    
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "eslint": "^8.53.0",
+    "eslint-config-next": "^14.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-import": "^2.29.0",
+    
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/user-event": "^14.5.1",
+    "@testing-library/react-hooks": "^8.0.1",
+    
+    "@storybook/addon-essentials": "^7.5.3",
+    "@storybook/addon-interactions": "^7.5.3",
+    "@storybook/addon-links": "^7.5.3",
+    "@storybook/addon-a11y": "^7.5.3",
+    "@storybook/blocks": "^7.5.3",
+    "@storybook/nextjs": "^7.5.3",
+    "@storybook/react": "^7.5.3",
+    "@storybook/testing-library": "^0.2.2",
+    "storybook": "^7.5.3",
+    
+    "tsx": "^4.5.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    
+    "cross-env": "^7.0.3",
+    "rimraf": "^5.0.5",
+    
+    "@next/bundle-analyzer": "^14.0.0",
+    
+    "msw": "^2.0.8",
+    "whatwg-fetch": "^3.6.19",
+    
+    "husky": "^8.0.3",
+    "lint-staged": "^15.1.0",
+    
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0",
+    "bun": ">=1.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "jest": {
+    "testEnvironment": "jsdom",
+    "roots": ["<rootDir>/src"],
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/*.(test|spec).+(ts|tsx|js)"
+    ],
+    "transform": {
+      "^.+\\\\.(ts|tsx)$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/index.ts",
+      "!src/**/*.stories.tsx",
+      "!src/scripts/**/*"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.ts"],
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "testTimeout": 10000
+  },
+  "eslintConfig": {
+    "extends": [
+      "next/core-web-vitals",
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/aria-props": "error",
+      "jsx-a11y/aria-proptypes": "error",
+      "jsx-a11y/aria-unsupported-elements": "error",
+      "jsx-a11y/role-has-required-aria-props": "error",
+      "jsx-a11y/role-supports-aria-props": "error",
+      "import/order": ["error", {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "newlines-between": "always",
+        "alphabetize": { "order": "asc" }
+      }]
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true,
+      "jest": true
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "endOfLine": "lf",
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": false
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "npm run type-check && npm run test:cultural"
+    }
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"],
+    "rules": {
+      "type-enum": [
+        2,
+        "always",
+        [
+          "feat",
+          "fix", 
+          "docs",
+          "style",
+          "refactor",
+          "perf",
+          "test",
+          "chore",
+          "cultural",
+          "arabic",
+          "persona",
+          "memory"
+        ]
+      ]
+    }
+  },
+  "nextConfig": {
+    "experimental": {
+      "appDir": true
+    },
+    "i18n": {
+      "locales": ["en", "ar"],
+      "defaultLocale": "ar",
+      "localeDetection": true
+    },
+    "images": {
+      "domains": ["iraqi-ai.gov.iq", "cdn.iraqi-ai.gov.iq", "avatars.iraqi-ai.gov.iq"]
+    },
+    "webpack": {
+      "resolve": {
+        "alias": {
+          "@": "./src"
+        }
+      }
+    }
+  },
+  "tailwindConfig": {
+    "content": [
+      "./src/**/*.{js,ts,jsx,tsx,mdx}"
+    ],
+    "theme": {
+      "extend": {
+        "fontFamily": {
+          "sans": ["Inter", "system-ui", "sans-serif"],
+          "arabic": ["Noto Sans Arabic", "Arial", "sans-serif"],
+          "heading": ["Poppins", "system-ui", "sans-serif"]
+        },
+        "colors": {
+          "iraqi": {
+            "50": "#f0f9ff",
+            "100": "#e0f2fe", 
+            "200": "#bae6fd",
+            "300": "#7dd3fc",
+            "400": "#38bdf8",
+            "500": "#0ea5e9",
+            "600": "#0284c7",
+            "700": "#0369a1",
+            "800": "#075985",
+            "900": "#0c4a6e"
+          },
+          "cultural": {
+            "50": "#fef7ee",
+            "100": "#fdebd3",
+            "200": "#fbd2a5",
+            "300": "#f8b16d",
+            "400": "#f48c42",
+            "500": "#f1701a",
+            "600": "#e25510",
+            "700": "#bb3e10",
+            "800": "#963115",
+            "900": "#792b14"
+          },
+          "islamic": {
+            "50": "#f0fdf4",
+            "100": "#dcfce7",
+            "200": "#bbf7d0", 
+            "300": "#86efac",
+            "400": "#4ade80",
+            "500": "#22c55e",
+            "600": "#16a34a",
+            "700": "#15803d",
+            "800": "#166534",
+            "900": "#14532d"
+          },
+          "professional": {
+            "legal": "#4f46e5",
+            "medical": "#dc2626", 
+            "educational": "#059669",
+            "engineering": "#ea580c",
+            "business": "#7c3aed",
+            "government": "#1f2937",
+            "religious": "#065f46",
+            "cultural": "#be185d",
+            "technology": "#0284c7",
+            "general": "#64748b"
+          }
+        },
+        "spacing": {
+          "18": "4.5rem",
+          "88": "22rem"
+        },
+        "animation": {
+          "fade-in": "fadeIn 0.5s ease-in-out",
+          "slide-up": "slideUp 0.3s ease-out",
+          "pulse-soft": "pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
+        }
+      }
+    },
+    "plugins": [
+      "@tailwindcss/forms",
+      "@tailwindcss/typography",
+      "@tailwindcss/aspect-ratio"
+    ],
+    "safelist": [
+      "text-right",
+      "text-left", 
+      "rtl",
+      "ltr",
+      "font-arabic",
+      "bg-professional-legal",
+      "bg-professional-medical",
+      "bg-professional-educational",
+      "bg-professional-engineering",
+      "bg-professional-business",
+      "bg-professional-government",
+      "bg-professional-religious",
+      "bg-professional-cultural",
+      "bg-professional-technology",
+      "bg-professional-general"
+    ]
+  },
+  "storybook": {
+    "framework": "@storybook/nextjs",
+    "stories": ["../src/**/*.stories.@(js|jsx|ts|tsx|mdx)"],
+    "addons": [
+      "@storybook/addon-essentials",
+      "@storybook/addon-interactions",
+      "@storybook/addon-links",
+      "@storybook/addon-a11y"
+    ],
+    "features": {
+      "argTypeTargetsV7": true
+    }
+  },
+  "msw": {
+    "workerDirectory": "public"
+  }
+}

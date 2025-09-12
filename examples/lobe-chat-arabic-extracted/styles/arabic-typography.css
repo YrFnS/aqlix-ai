@@ -1,0 +1,421 @@
+/* Arabic Typography and Font System for Iraqi AI Chat */
+/* Comprehensive font handling with cultural adaptations */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
+/* CSS Custom Properties for Iraqi Typography System */
+:root {
+  /* Primary Arabic Fonts */
+  --font-arabic-primary: 'Noto Sans Arabic', 'Amiri', 'Tahoma', 'Arial Unicode MS', sans-serif;
+  --font-arabic-heading: 'Cairo', 'Amiri', 'Noto Sans Arabic', serif;
+  --font-arabic-body: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', sans-serif;
+  --font-arabic-mono: 'Courier New', 'IBM Plex Mono Arabic', monospace;
+  
+  /* Iraqi Dialect Font Preferences */
+  --font-baghdad: 'Noto Sans Arabic', 'Cairo', sans-serif;
+  --font-basra: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+  --font-mosul: 'Amiri', 'Noto Sans Arabic', serif;
+  --font-kurdish: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', sans-serif;
+  --font-standard: 'Amiri', 'Noto Sans Arabic', serif;
+  
+  /* Professional Domain Fonts */
+  --font-legal: 'Amiri', serif;
+  --font-medical: 'IBM Plex Sans Arabic', sans-serif;
+  --font-educational: 'Noto Sans Arabic', sans-serif;
+  --font-government: 'Cairo', sans-serif;
+  --font-technical: 'IBM Plex Sans Arabic', monospace;
+  
+  /* Font Sizes - Arabic Optimized */
+  --text-xs-arabic: 0.875rem;    /* 14px */
+  --text-sm-arabic: 1rem;        /* 16px */
+  --text-base-arabic: 1.125rem;  /* 18px */
+  --text-lg-arabic: 1.25rem;     /* 20px */
+  --text-xl-arabic: 1.5rem;      /* 24px */
+  --text-2xl-arabic: 1.75rem;    /* 28px */
+  --text-3xl-arabic: 2rem;       /* 32px */
+  --text-4xl-arabic: 2.5rem;     /* 40px */
+  --text-5xl-arabic: 3rem;       /* 48px */
+  
+  /* Line Heights - Arabic Optimized */
+  --leading-none-arabic: 1;
+  --leading-tight-arabic: 1.4;
+  --leading-snug-arabic: 1.5;
+  --leading-normal-arabic: 1.6;
+  --leading-relaxed-arabic: 1.7;
+  --leading-loose-arabic: 1.8;
+  
+  /* Letter Spacing - Arabic Considerations */
+  --tracking-tighter-arabic: -0.02em;
+  --tracking-tight-arabic: -0.01em;
+  --tracking-normal-arabic: 0em;
+  --tracking-wide-arabic: 0.01em;
+  --tracking-wider-arabic: 0.02em;
+  --tracking-widest-arabic: 0.04em;
+  
+  /* Cultural Color Scheme */
+  --color-islamic-green: #006633;
+  --color-iraqi-gold: #FFD700;
+  --color-professional-blue: #1E40AF;
+  --color-cultural-brown: #8B4513;
+  --color-text-primary-arabic: #1F2937;
+  --color-text-secondary-arabic: #4B5563;
+  --color-text-accent-arabic: var(--color-islamic-green);
+}
+
+/* Base Typography Classes */
+.font-arabic {
+  font-family: var(--font-arabic-primary);
+  direction: rtl;
+  text-align: right;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'kern' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-arabic-heading {
+  font-family: var(--font-arabic-heading);
+  font-weight: 600;
+  line-height: var(--leading-tight-arabic);
+  letter-spacing: var(--tracking-tight-arabic);
+}
+
+.font-arabic-body {
+  font-family: var(--font-arabic-body);
+  font-weight: 400;
+  line-height: var(--leading-normal-arabic);
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+.font-arabic-mono {
+  font-family: var(--font-arabic-mono);
+  font-feature-settings: 'liga' 0;
+}
+
+/* Iraqi Dialect-Specific Typography */
+.dialect-baghdad {
+  font-family: var(--font-baghdad);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+.dialect-basra {
+  font-family: var(--font-basra);
+  font-weight: 300;
+  letter-spacing: var(--tracking-wide-arabic);
+}
+
+.dialect-mosul {
+  font-family: var(--font-mosul);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight-arabic);
+}
+
+.dialect-kurdish {
+  font-family: var(--font-kurdish);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+.dialect-standard {
+  font-family: var(--font-standard);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+/* Professional Domain Typography */
+.professional-legal {
+  font-family: var(--font-legal);
+  font-weight: 500;
+  line-height: var(--leading-relaxed-arabic);
+  color: var(--color-text-primary-arabic);
+}
+
+.professional-medical {
+  font-family: var(--font-medical);
+  font-weight: 400;
+  line-height: var(--leading-normal-arabic);
+  color: var(--color-professional-blue);
+}
+
+.professional-educational {
+  font-family: var(--font-educational);
+  font-weight: 400;
+  line-height: var(--leading-relaxed-arabic);
+  color: var(--color-text-primary-arabic);
+}
+
+.professional-government {
+  font-family: var(--font-government);
+  font-weight: 500;
+  line-height: var(--leading-normal-arabic);
+  color: var(--color-text-primary-arabic);
+}
+
+.professional-technical {
+  font-family: var(--font-technical);
+  font-weight: 400;
+  line-height: var(--leading-snug-arabic);
+  color: var(--color-text-secondary-arabic);
+}
+
+/* Arabic Text Size Classes */
+.text-xs-arabic { font-size: var(--text-xs-arabic); }
+.text-sm-arabic { font-size: var(--text-sm-arabic); }
+.text-base-arabic { font-size: var(--text-base-arabic); }
+.text-lg-arabic { font-size: var(--text-lg-arabic); }
+.text-xl-arabic { font-size: var(--text-xl-arabic); }
+.text-2xl-arabic { font-size: var(--text-2xl-arabic); }
+.text-3xl-arabic { font-size: var(--text-3xl-arabic); }
+.text-4xl-arabic { font-size: var(--text-4xl-arabic); }
+.text-5xl-arabic { font-size: var(--text-5xl-arabic); }
+
+/* Arabic Line Height Classes */
+.leading-none-arabic { line-height: var(--leading-none-arabic); }
+.leading-tight-arabic { line-height: var(--leading-tight-arabic); }
+.leading-snug-arabic { line-height: var(--leading-snug-arabic); }
+.leading-normal-arabic { line-height: var(--leading-normal-arabic); }
+.leading-relaxed-arabic { line-height: var(--leading-relaxed-arabic); }
+.leading-loose-arabic { line-height: var(--leading-loose-arabic); }
+
+/* Arabic Letter Spacing Classes */
+.tracking-tighter-arabic { letter-spacing: var(--tracking-tighter-arabic); }
+.tracking-tight-arabic { letter-spacing: var(--tracking-tight-arabic); }
+.tracking-normal-arabic { letter-spacing: var(--tracking-normal-arabic); }
+.tracking-wide-arabic { letter-spacing: var(--tracking-wide-arabic); }
+.tracking-wider-arabic { letter-spacing: var(--tracking-wider-arabic); }
+.tracking-widest-arabic { letter-spacing: var(--tracking-widest-arabic); }
+
+/* RTL-Aware Text Alignment */
+.text-right-arabic {
+  text-align: right;
+  direction: rtl;
+}
+
+.text-left-arabic {
+  text-align: left;
+  direction: ltr;
+}
+
+.text-center-arabic {
+  text-align: center;
+}
+
+.text-justify-arabic {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* Islamic and Cultural Styling */
+.islamic-compliant {
+  color: var(--color-islamic-green);
+  font-weight: 500;
+}
+
+.cultural-emphasis {
+  color: var(--color-iraqi-gold);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.government-standards {
+  font-family: var(--font-government);
+  font-weight: 500;
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+/* Mixed Content Typography */
+.mixed-content {
+  line-height: var(--leading-normal-arabic);
+  direction: rtl;
+  text-align: right;
+}
+
+.mixed-content .segment {
+  display: inline;
+  vertical-align: baseline;
+}
+
+.mixed-content .segment-rtl {
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+.mixed-content .segment-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Responsive Arabic Typography */
+@media (max-width: 768px) {
+  :root {
+    --text-base-arabic: 1rem;     /* 16px on mobile */
+    --text-lg-arabic: 1.125rem;   /* 18px on mobile */
+    --text-xl-arabic: 1.25rem;    /* 20px on mobile */
+    --leading-normal-arabic: 1.5;
+    --leading-relaxed-arabic: 1.6;
+  }
+  
+  .font-arabic {
+    font-size: var(--text-base-arabic);
+    line-height: var(--leading-normal-arabic);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --text-base-arabic: 0.875rem;  /* 14px on small mobile */
+    --text-lg-arabic: 1rem;        /* 16px on small mobile */
+    --leading-normal-arabic: 1.4;
+  }
+}
+
+/* Print Styles for Arabic Content */
+@media print {
+  .font-arabic {
+    font-family: 'Times New Roman', serif;
+    color: #000;
+    background: #fff;
+  }
+  
+  .islamic-compliant,
+  .cultural-emphasis {
+    color: #000;
+    font-weight: bold;
+  }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .font-arabic {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .font-arabic {
+    color: #000;
+    background: #fff;
+  }
+  
+  .islamic-compliant {
+    color: #000;
+    background: #ffff00;
+  }
+}
+
+/* Dark Mode Arabic Typography */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary-arabic: #F9FAFB;
+    --color-text-secondary-arabic: #D1D5DB;
+    --color-text-accent-arabic: #34D399;
+  }
+  
+  .font-arabic {
+    color: var(--color-text-primary-arabic);
+  }
+  
+  .islamic-compliant {
+    color: var(--color-text-accent-arabic);
+  }
+  
+  .cultural-emphasis {
+    color: #FCD34D;
+  }
+}
+
+/* Font Loading and Performance */
+.font-arabic {
+  font-display: swap;
+}
+
+/* Ensure proper Arabic text rendering */
+.font-arabic,
+.font-arabic-heading,
+.font-arabic-body {
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Arabic Number Styling */
+.arabic-numerals {
+  font-variant-numeric: normal;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+.hindi-numerals {
+  font-variant-numeric: normal;
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+/* Bidi Control Characters */
+.bidi-override {
+  unicode-bidi: bidi-override;
+}
+
+.bidi-embed {
+  unicode-bidi: embed;
+}
+
+.bidi-isolate {
+  unicode-bidi: isolate;
+}
+
+/* Cultural Context Classes */
+.formal-arabic {
+  font-family: var(--font-standard);
+  font-weight: 500;
+  letter-spacing: var(--tracking-normal-arabic);
+}
+
+.casual-arabic {
+  font-family: var(--font-arabic-body);
+  font-weight: 400;
+  letter-spacing: var(--tracking-wide-arabic);
+}
+
+.religious-text {
+  font-family: var(--font-standard);
+  font-weight: 600;
+  color: var(--color-islamic-green);
+  line-height: var(--leading-relaxed-arabic);
+  text-decoration: none;
+}
+
+.religious-text:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--color-islamic-green);
+}
+
+/* Iraqi Governorate-Specific Styling */
+.governorate-baghdad { font-family: var(--font-baghdad); }
+.governorate-basra { font-family: var(--font-basra); }
+.governorate-mosul { font-family: var(--font-mosul); }
+.governorate-erbil { font-family: var(--font-kurdish); }
+.governorate-najaf { font-family: var(--font-standard); }
+.governorate-karbala { font-family: var(--font-standard); }
+.governorate-hillah { font-family: var(--font-standard); }
+.governorate-ramadi { font-family: var(--font-standard); }
+.governorate-kirkuk { font-family: var(--font-kurdish); }
+.governorate-dohuk { font-family: var(--font-kurdish); }
+.governorate-sulaymaniyah { font-family: var(--font-kurdish); }
+
+/* Performance Optimizations */
+.will-change-auto {
+  will-change: auto;
+}
+
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+.will-change-contents {
+  will-change: contents;
+}

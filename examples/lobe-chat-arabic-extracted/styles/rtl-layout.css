@@ -1,0 +1,703 @@
+/**
+ * Iraqi Enhanced RTL Layout Styles
+ * Extracted and enhanced from lobe-chat with Iraqi cultural context
+ * 
+ * Features:
+ * - Comprehensive RTL layout support
+ * - Arabic typography optimizations
+ * - Mixed Arabic-English content handling
+ * - Professional domain styling
+ * - Cultural design adaptations
+ */
+
+/* Root RTL Configuration */
+[dir="rtl"] {
+  --text-align-start: right;
+  --text-align-end: left;
+  --margin-start: margin-right;
+  --margin-end: margin-left;
+  --padding-start: padding-right;
+  --padding-end: padding-left;
+  --border-start: border-right;
+  --border-end: border-left;
+  --inset-start: right;
+  --inset-end: left;
+}
+
+[dir="ltr"] {
+  --text-align-start: left;
+  --text-align-end: right;
+  --margin-start: margin-left;
+  --margin-end: margin-right;
+  --padding-start: padding-left;
+  --padding-end: padding-right;
+  --border-start: border-left;
+  --border-end: border-right;
+  --inset-start: left;
+  --inset-end: right;
+}
+
+/* Arabic Font Configuration */
+.font-arabic {
+  font-family: 'Noto Sans Arabic', 'Amiri', 'Scheherazade', 'Arabic UI Text', 'SF Arabic', 'Segoe UI Arabic', 'Tahoma', Arial, sans-serif;
+  font-feature-settings: 'liga', 'calt', 'kern';
+  font-variant-ligatures: common-ligatures contextual;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-arabic-display {
+  font-family: 'Amiri', 'Scheherazade New', 'Arabic UI Display', 'Noto Sans Arabic', serif;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+.font-arabic-body {
+  font-family: 'Noto Sans Arabic', 'Arabic UI Text', 'SF Arabic', 'Segoe UI Arabic', sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+}
+
+.font-arabic-mono {
+  font-family: 'Noto Sans Arabic', 'Courier New Arabic', 'Arabic Typesetting', monospace;
+  font-weight: 400;
+  line-height: 1.5;
+  font-feature-settings: 'tnum';
+}
+
+/* Iraqi Dialect Specific Fonts */
+.font-baghdad-dialect {
+  font-family: 'Amiri', 'Arabic UI Text', 'Noto Sans Arabic', serif;
+  font-weight: 500;
+}
+
+.font-basra-dialect {
+  font-family: 'Scheherazade New', 'Amiri', 'Noto Sans Arabic', serif;
+  font-weight: 400;
+}
+
+.font-mosul-dialect {
+  font-family: 'Noto Sans Arabic', 'Arabic UI Text', 'Amiri', sans-serif;
+  font-weight: 450;
+}
+
+/* Text Direction and Alignment */
+.text-rtl {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: embed;
+}
+
+.text-ltr {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+}
+
+.text-mixed {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: plaintext;
+}
+
+.text-bidirectional {
+  unicode-bidi: bidi-override;
+}
+
+.text-auto-direction {
+  direction: auto;
+  text-align: start;
+  unicode-bidi: plaintext;
+}
+
+/* RTL Layout Components */
+.rtl-container {
+  direction: rtl;
+}
+
+.rtl-container * {
+  text-align: inherit;
+}
+
+.rtl-flex {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.rtl-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.rtl-grid {
+  display: grid;
+  direction: rtl;
+}
+
+/* Navigation and Menu RTL */
+.rtl-nav {
+  direction: rtl;
+}
+
+.rtl-nav .nav-item {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+.rtl-nav .nav-item:first-child {
+  margin-left: 0;
+}
+
+.rtl-nav .nav-link {
+  padding-right: 0.75rem;
+  padding-left: 1rem;
+  text-align: right;
+}
+
+.rtl-dropdown {
+  direction: rtl;
+}
+
+.rtl-dropdown .dropdown-menu {
+  right: 0;
+  left: auto;
+  text-align: right;
+}
+
+.rtl-dropdown .dropdown-item {
+  text-align: right;
+  padding-right: 1rem;
+  padding-left: 2rem;
+}
+
+/* Form Elements RTL */
+.rtl-form {
+  direction: rtl;
+}
+
+.rtl-form .form-group {
+  text-align: right;
+}
+
+.rtl-form .form-label {
+  text-align: right;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.rtl-form .form-control {
+  direction: rtl;
+  text-align: right;
+  padding-right: 0.75rem;
+  padding-left: 2.5rem; /* Space for icons */
+}
+
+.rtl-form .form-control::placeholder {
+  text-align: right;
+  direction: rtl;
+}
+
+.rtl-form .input-group {
+  direction: rtl;
+}
+
+.rtl-form .input-group .input-group-text {
+  order: 2;
+}
+
+.rtl-form .input-group .form-control {
+  order: 1;
+}
+
+/* Button RTL */
+.rtl-btn {
+  direction: rtl;
+  text-align: center;
+}
+
+.rtl-btn-group {
+  direction: rtl;
+}
+
+.rtl-btn-group .btn {
+  margin-right: 0;
+  margin-left: 0.25rem;
+}
+
+.rtl-btn-group .btn:first-child {
+  margin-left: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rtl-btn-group .btn:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Card and Panel RTL */
+.rtl-card {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-card .card-header {
+  text-align: right;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.rtl-card .card-body {
+  text-align: right;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+.rtl-card .card-footer {
+  text-align: right;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
+}
+
+/* List RTL */
+.rtl-list {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-list .list-item {
+  text-align: right;
+  padding-right: 1rem;
+  padding-left: 2rem; /* Space for bullets/icons */
+}
+
+.rtl-list .list-item::before {
+  right: 0;
+  left: auto;
+}
+
+.rtl-list ul {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+.rtl-list ol {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+/* Table RTL */
+.rtl-table {
+  direction: rtl;
+}
+
+.rtl-table th {
+  text-align: right;
+}
+
+.rtl-table td {
+  text-align: right;
+}
+
+.rtl-table .table-responsive {
+  direction: rtl;
+}
+
+/* Chat Interface RTL */
+.rtl-chat {
+  direction: rtl;
+}
+
+.rtl-chat .message-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.rtl-chat .message-bubble {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-chat .message-bubble.user {
+  align-self: flex-start;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 18px 18px 6px 18px;
+  margin-left: 20%;
+  margin-right: 0;
+}
+
+.rtl-chat .message-bubble.assistant {
+  align-self: flex-end;
+  background: #f8f9fa;
+  color: #212529;
+  border-radius: 18px 18px 18px 6px;
+  margin-right: 20%;
+  margin-left: 0;
+  border: 1px solid #e9ecef;
+}
+
+.rtl-chat .message-input {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-chat .message-actions {
+  direction: rtl;
+  justify-content: flex-start;
+}
+
+/* Arabic Typography Enhancements */
+.arabic-text {
+  line-height: 1.8;
+  word-spacing: 0.1em;
+  letter-spacing: 0;
+}
+
+.arabic-text h1,
+.arabic-text h2,
+.arabic-text h3,
+.arabic-text h4,
+.arabic-text h5,
+.arabic-text h6 {
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 0.75em;
+}
+
+.arabic-text p {
+  margin-bottom: 1.25em;
+  line-height: 1.8;
+}
+
+.arabic-text blockquote {
+  border-right: 4px solid #007bff;
+  border-left: none;
+  padding-right: 1rem;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 1.5rem;
+  font-style: italic;
+}
+
+.arabic-text code {
+  font-family: 'Courier New Arabic', 'Arabic Typesetting', monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+.arabic-text pre {
+  direction: ltr;
+  text-align: left;
+  overflow-x: auto;
+}
+
+/* Professional Domain Styling */
+.professional-legal {
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  font-weight: 500;
+  line-height: 1.8;
+  color: #1a365d;
+}
+
+.professional-medical {
+  font-family: 'Noto Sans Arabic', 'Arabic UI Text', sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+.professional-educational {
+  font-family: 'Noto Sans Arabic', 'Arabic UI Text', sans-serif;
+  font-weight: 450;
+  line-height: 1.75;
+  color: #2b6cb0;
+}
+
+.professional-business {
+  font-family: 'Arabic UI Text', 'Noto Sans Arabic', sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #2f855a;
+}
+
+.professional-engineering {
+  font-family: 'Noto Sans Arabic', 'Arabic UI Text', sans-serif;
+  font-weight: 400;
+  line-height: 1.65;
+  color: #744210;
+}
+
+/* Cultural Design Elements */
+.islamic-theme {
+  background: linear-gradient(135deg, #e2f8ff 0%, #f0f9ff 100%);
+  border: 1px solid #bee3f8;
+  border-radius: 8px;
+}
+
+.iraqi-theme {
+  background: linear-gradient(135deg, #fff5f5 0%, #fefefe 100%);
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+}
+
+.cultural-accent {
+  border-right: 4px solid #3182ce;
+  border-left: none;
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+/* Arabic Diacritics and Special Characters */
+.with-diacritics {
+  font-feature-settings: 'mark', 'mkmk';
+  line-height: 2;
+}
+
+.without-diacritics {
+  font-feature-settings: 'mark' 0, 'mkmk' 0;
+  line-height: 1.6;
+}
+
+/* Number and Date Formatting */
+.arabic-numbers {
+  font-feature-settings: 'lnum', 'tnum';
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+.hindi-numbers {
+  font-feature-settings: 'lnum', 'tnum';
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+.mixed-numbers {
+  unicode-bidi: plaintext;
+}
+
+/* Responsive RTL Adjustments */
+@media (max-width: 768px) {
+  .rtl-container {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+  
+  .rtl-chat .message-bubble.user {
+    margin-left: 10%;
+  }
+  
+  .rtl-chat .message-bubble.assistant {
+    margin-right: 10%;
+  }
+  
+  .arabic-text {
+    line-height: 1.9;
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .rtl-chat .message-bubble.user,
+  .rtl-chat .message-bubble.assistant {
+    margin-left: 5%;
+    margin-right: 5%;
+    max-width: 90%;
+  }
+  
+  .arabic-text {
+    line-height: 2;
+    font-size: 1.05em;
+  }
+}
+
+/* Print Styles for RTL */
+@media print {
+  .rtl-container {
+    direction: rtl;
+  }
+  
+  .arabic-text {
+    line-height: 1.8;
+    color: #000;
+  }
+  
+  .rtl-table {
+    page-break-inside: avoid;
+  }
+  
+  .rtl-card {
+    page-break-inside: avoid;
+    border: 1px solid #ccc;
+  }
+}
+
+/* High Contrast Mode for Accessibility */
+@media (prefers-contrast: high) {
+  .rtl-chat .message-bubble.user {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+  }
+  
+  .rtl-chat .message-bubble.assistant {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+  }
+  
+  .arabic-text {
+    color: #000;
+  }
+  
+  .professional-legal,
+  .professional-medical,
+  .professional-educational,
+  .professional-business,
+  .professional-engineering {
+    color: #000;
+  }
+}
+
+/* Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .rtl-chat .message-bubble {
+    transition: none;
+  }
+  
+  .rtl-dropdown .dropdown-menu {
+    transition: none;
+  }
+}
+
+/* Dark Mode RTL Support */
+@media (prefers-color-scheme: dark) {
+  .rtl-chat .message-bubble.user {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  }
+  
+  .rtl-chat .message-bubble.assistant {
+    background: #374151;
+    color: #f9fafb;
+    border: 1px solid #4b5563;
+  }
+  
+  .arabic-text {
+    color: #f9fafb;
+  }
+  
+  .professional-legal { color: #93c5fd; }
+  .professional-medical { color: #d1d5db; }
+  .professional-educational { color: #93c5fd; }
+  .professional-business { color: #86efac; }
+  .professional-engineering { color: #fde68a; }
+  
+  .islamic-theme {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+    border: 1px solid #3b82f6;
+  }
+  
+  .iraqi-theme {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+    border: 1px solid #dc2626;
+  }
+}
+
+/* Animation Classes for RTL */
+.slide-in-rtl {
+  animation: slideInRTL 0.3s ease-out;
+}
+
+.slide-out-rtl {
+  animation: slideOutRTL 0.3s ease-in;
+}
+
+@keyframes slideInRTL {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRTL {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Utilities */
+.rtl-hidden {
+  display: none;
+}
+
+.rtl-visible {
+  display: block;
+}
+
+.rtl-inline {
+  display: inline;
+}
+
+.rtl-inline-block {
+  display: inline-block;
+}
+
+.rtl-flex {
+  display: flex;
+}
+
+.rtl-inline-flex {
+  display: inline-flex;
+}
+
+.rtl-justify-start {
+  justify-content: flex-start;
+}
+
+.rtl-justify-end {
+  justify-content: flex-end;
+}
+
+.rtl-justify-center {
+  justify-content: center;
+}
+
+.rtl-justify-between {
+  justify-content: space-between;
+}
+
+.rtl-items-start {
+  align-items: flex-start;
+}
+
+.rtl-items-end {
+  align-items: flex-end;
+}
+
+.rtl-items-center {
+  align-items: center;
+}
+
+.rtl-self-start {
+  align-self: flex-start;
+}
+
+.rtl-self-end {
+  align-self: flex-end;
+}
+
+.rtl-self-center {
+  align-self: center;
+}

@@ -1,0 +1,556 @@
+/**
+ * Arabic RTL Persona Management Styles
+ * Enhanced for Iraqi AI Chat System
+ * 
+ * Features:
+ * - Complete RTL layout optimization for persona interfaces
+ * - Arabic typography and font support
+ * - Cultural color schemes and Islamic-compliant design
+ * - Professional domain visual indicators
+ * - Responsive design for all screen sizes
+ * - Accessibility compliance for Arabic screen readers
+ */
+
+/* ===== RTL FOUNDATION ===== */
+.persona-management-dashboard[dir="rtl"] {
+  text-align: right;
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Amiri', 'Scheherazade', Arial, sans-serif;
+}
+
+.persona-creation-wizard[dir="rtl"] {
+  text-align: right;
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Amiri', 'Scheherazade', Arial, sans-serif;
+}
+
+/* ===== ARABIC TYPOGRAPHY ===== */
+.font-arabic {
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Amiri', 'Scheherazade', Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+
+.font-arabic-heading {
+  font-family: 'Amiri', 'Scheherazade', 'IBM Plex Sans Arabic', serif;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.font-arabic-display {
+  font-family: 'Amiri', 'IBM Plex Sans Arabic', serif;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Arabic text input styling */
+input[dir="rtl"], textarea[dir="rtl"] {
+  text-align: right;
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', Arial, sans-serif;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+/* ===== PERSONA CARD RTL LAYOUT ===== */
+.persona-card[dir="rtl"] {
+  direction: rtl;
+}
+
+.persona-card[dir="rtl"] .card-header {
+  text-align: right;
+}
+
+.persona-card[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+.persona-card[dir="rtl"] .flex.justify-between {
+  flex-direction: row;
+}
+
+/* Persona domain icons RTL positioning */
+.persona-card[dir="rtl"] .persona-icon {
+  margin-left: 0;
+  margin-right: 12px;
+}
+
+/* Badge positioning in RTL */
+.persona-card[dir="rtl"] .badge-container {
+  direction: rtl;
+  justify-content: flex-end;
+}
+
+.persona-card[dir="rtl"] .badge-container .badge {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+/* ===== PROFESSIONAL DOMAIN COLORS ===== */
+.domain-legal {
+  --primary-color: #059669; /* Emerald 600 - Justice & Authority */
+  --bg-color: #ecfdf5; /* Emerald 50 */
+  --border-color: #10b981; /* Emerald 500 */
+}
+
+.domain-medical {
+  --primary-color: #dc2626; /* Red 600 - Healthcare Cross */
+  --bg-color: #fef2f2; /* Red 50 */
+  --border-color: #ef4444; /* Red 500 */
+}
+
+.domain-educational {
+  --primary-color: #7c3aed; /* Violet 600 - Knowledge & Wisdom */
+  --bg-color: #f5f3ff; /* Violet 50 */
+  --border-color: #8b5cf6; /* Violet 500 */
+}
+
+.domain-engineering {
+  --primary-color: #ea580c; /* Orange 600 - Construction & Building */
+  --bg-color: #fff7ed; /* Orange 50 */
+  --border-color: #f97316; /* Orange 500 */
+}
+
+.domain-business {
+  --primary-color: #0369a1; /* Sky 700 - Professional Blue */
+  --bg-color: #f0f9ff; /* Sky 50 */
+  --border-color: #0ea5e9; /* Sky 500 */
+}
+
+.domain-government {
+  --primary-color: #1f2937; /* Gray 800 - Official & Formal */
+  --bg-color: #f9fafb; /* Gray 50 */
+  --border-color: #6b7280; /* Gray 500 */
+}
+
+.domain-religious {
+  --primary-color: #065f46; /* Emerald 800 - Islamic Green */
+  --bg-color: #f0fdf4; /* Green 50 */
+  --border-color: #059669; /* Emerald 600 */
+}
+
+.domain-cultural {
+  --primary-color: #be185d; /* Pink 700 - Arts & Culture */
+  --bg-color: #fdf2f8; /* Pink 50 */
+  --border-color: #ec4899; /* Pink 500 */
+}
+
+.domain-general {
+  --primary-color: #4f46e5; /* Indigo 600 - General Purpose */
+  --bg-color: #eef2ff; /* Indigo 50 */
+  --border-color: #6366f1; /* Indigo 500 */
+}
+
+/* Apply domain colors to persona cards */
+.persona-card.domain-legal {
+  border-left: 4px solid var(--primary-color);
+  background: linear-gradient(to left, var(--bg-color) 0%, transparent 100%);
+}
+
+.persona-card[dir="rtl"].domain-legal {
+  border-left: none;
+  border-right: 4px solid var(--primary-color);
+  background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+}
+
+/* Repeat for all domain classes */
+.persona-card.domain-medical,
+.persona-card.domain-educational,
+.persona-card.domain-engineering,
+.persona-card.domain-business,
+.persona-card.domain-government,
+.persona-card.domain-religious,
+.persona-card.domain-cultural,
+.persona-card.domain-general {
+  border-left: 4px solid var(--primary-color);
+  background: linear-gradient(to left, var(--bg-color) 0%, transparent 100%);
+}
+
+.persona-card[dir="rtl"].domain-medical,
+.persona-card[dir="rtl"].domain-educational,
+.persona-card[dir="rtl"].domain-engineering,
+.persona-card[dir="rtl"].domain-business,
+.persona-card[dir="rtl"].domain-government,
+.persona-card[dir="rtl"].domain-religious,
+.persona-card[dir="rtl"].domain-cultural,
+.persona-card[dir="rtl"].domain-general {
+  border-left: none;
+  border-right: 4px solid var(--primary-color);
+  background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+}
+
+/* ===== ISLAMIC COMPLIANCE INDICATORS ===== */
+.compliance-strict {
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+  color: white;
+  position: relative;
+}
+
+.compliance-strict::after {
+  content: "✓";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.compliance-moderate {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+}
+
+.compliance-general {
+  background: linear-gradient(135deg, #22c55e 0%, #4ade80 100%);
+  color: white;
+}
+
+.compliance-flexible {
+  background: linear-gradient(135deg, #84cc16 0%, #a3e635 100%);
+  color: #1f2937;
+}
+
+/* ===== CULTURAL TRAIT INDICATORS ===== */
+.trait-high {
+  height: 8px;
+  background: linear-gradient(to right, #22c55e 0%, #16a34a 100%);
+  border-radius: 4px;
+}
+
+.trait-moderate {
+  height: 8px;
+  background: linear-gradient(to right, #f59e0b 0%, #d97706 100%);
+  border-radius: 4px;
+}
+
+.trait-low {
+  height: 8px;
+  background: linear-gradient(to right, #ef4444 0%, #dc2626 100%);
+  border-radius: 4px;
+}
+
+/* RTL adjustments for trait bars */
+[dir="rtl"] .trait-high,
+[dir="rtl"] .trait-moderate,
+[dir="rtl"] .trait-low {
+  background: linear-gradient(to left, #22c55e 0%, #16a34a 100%);
+}
+
+[dir="rtl"] .trait-moderate {
+  background: linear-gradient(to left, #f59e0b 0%, #d97706 100%);
+}
+
+[dir="rtl"] .trait-low {
+  background: linear-gradient(to left, #ef4444 0%, #dc2626 100%);
+}
+
+/* ===== PERSONA CREATION WIZARD RTL ===== */
+.persona-wizard-step[dir="rtl"] {
+  text-align: right;
+}
+
+.persona-wizard-step[dir="rtl"] .step-indicator {
+  flex-direction: row-reverse;
+}
+
+.persona-wizard-step[dir="rtl"] .step-number {
+  margin-left: 12px;
+  margin-right: 0;
+}
+
+/* Form field RTL adjustments */
+.persona-form[dir="rtl"] .form-row {
+  flex-direction: row-reverse;
+}
+
+.persona-form[dir="rtl"] .form-field {
+  text-align: right;
+}
+
+.persona-form[dir="rtl"] .form-label {
+  text-align: right;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Select dropdown RTL */
+.persona-form[dir="rtl"] .select-trigger {
+  text-align: right;
+}
+
+.persona-form[dir="rtl"] .select-content {
+  text-align: right;
+}
+
+/* ===== DASHBOARD METRICS RTL ===== */
+.dashboard-metric[dir="rtl"] {
+  text-align: right;
+}
+
+.dashboard-metric[dir="rtl"] .metric-icon {
+  margin-left: 16px;
+  margin-right: 0;
+}
+
+.dashboard-metric[dir="rtl"] .metric-value {
+  text-align: right;
+}
+
+.dashboard-metric[dir="rtl"] .metric-label {
+  text-align: right;
+}
+
+/* ===== PERFORMANCE INDICATORS ===== */
+.performance-excellent {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.performance-good {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.performance-average {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+}
+
+.performance-poor {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Mobile RTL adjustments */
+@media (max-width: 768px) {
+  .persona-management-dashboard[dir="rtl"] .mobile-nav {
+    flex-direction: row-reverse;
+  }
+  
+  .persona-management-dashboard[dir="rtl"] .mobile-search {
+    text-align: right;
+  }
+  
+  .persona-card[dir="rtl"] .mobile-actions {
+    justify-content: flex-start;
+  }
+  
+  .persona-creation-wizard[dir="rtl"] .mobile-steps {
+    flex-direction: row-reverse;
+  }
+}
+
+/* Tablet RTL adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .persona-grid[dir="rtl"] {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .persona-filters[dir="rtl"] {
+    justify-content: flex-end;
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .persona-card {
+    border: 2px solid #000;
+    background: #fff;
+  }
+  
+  .compliance-indicator,
+  .performance-indicator {
+    border: 1px solid #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .persona-card,
+  .trait-bar,
+  .performance-indicator {
+    transition: none;
+  }
+  
+  .loading-animation {
+    animation: none;
+  }
+}
+
+/* Focus indicators for keyboard navigation */
+.persona-card:focus,
+.persona-button:focus,
+.persona-input:focus {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+[dir="rtl"] .persona-card:focus,
+[dir="rtl"] .persona-button:focus,
+[dir="rtl"] .persona-input:focus {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .persona-management-dashboard {
+    background: white;
+    color: black;
+  }
+  
+  .persona-card {
+    break-inside: avoid;
+    margin-bottom: 20px;
+    border: 1px solid #000;
+  }
+  
+  .persona-actions,
+  .dashboard-controls {
+    display: none;
+  }
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  .persona-management-dashboard {
+    background: #0f172a;
+    color: #f8fafc;
+  }
+  
+  .persona-card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+  }
+  
+  .domain-legal { --bg-color: #064e3b; }
+  .domain-medical { --bg-color: #7f1d1d; }
+  .domain-educational { --bg-color: #581c87; }
+  .domain-engineering { --bg-color: #9a3412; }
+  .domain-business { --bg-color: #0c4a6e; }
+  .domain-government { --bg-color: #1f2937; }
+  .domain-religious { --bg-color: #064e3b; }
+  .domain-cultural { --bg-color: #831843; }
+  .domain-general { --bg-color: #3730a3; }
+}
+
+/* ===== LOADING STATES ===== */
+.persona-loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.skeleton-text {
+  height: 1rem;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ===== ANIMATION ENHANCEMENTS ===== */
+.persona-card {
+  transition: all 0.2s ease-in-out;
+}
+
+.persona-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.persona-card:hover .persona-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.persona-actions {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Success/Error state animations */
+.persona-success {
+  animation: successPulse 0.6s ease-in-out;
+}
+
+.persona-error {
+  animation: errorShake 0.6s ease-in-out;
+}
+
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); background-color: #dcfce7; }
+  100% { transform: scale(1); }
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); background-color: #fef2f2; }
+  75% { transform: translateX(5px); }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(1);
+}
+
+.text-arabic {
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.cultural-highlight {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 4px solid #16a34a;
+  padding: 12px 16px;
+  border-radius: 6px;
+}
+
+[dir="rtl"] .cultural-highlight {
+  border-left: none;
+  border-right: 4px solid #16a34a;
+}
+
+.islamic-compliant {
+  position: relative;
+}
+
+.islamic-compliant::before {
+  content: "☪";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
+  color: #059669;
+  opacity: 0.7;
+}
+
+[dir="rtl"] .islamic-compliant::before {
+  right: auto;
+  left: 4px;
+}

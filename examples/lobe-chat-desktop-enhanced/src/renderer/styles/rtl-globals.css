@@ -1,0 +1,419 @@
+/**
+ * Iraqi AI Chat Desktop - Global RTL & Arabic Typography System
+ * Comprehensive RTL support with Iraqi cultural design patterns
+ */
+
+/* Iraqi Cultural Color Palette */
+:root {
+  /* National Colors */
+  --iraqi-red: #ce1126;
+  --iraqi-white: #ffffff;
+  --iraqi-black: #000000;
+  --iraqi-green: #22b14c;
+  
+  /* Cultural Colors */
+  --mesopotamian-gold: #daa520;
+  --tigris-blue: #1e6091;
+  --date-palm-brown: #8b4513;
+  --desert-beige: #f5f5dc;
+  
+  /* UI Color System */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f2f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --accent-primary: var(--tigris-blue);
+  --accent-secondary: var(--mesopotamian-gold);
+  
+  /* Dark Mode */
+  --dark-bg-primary: #1a1d23;
+  --dark-bg-secondary: #2d3748;
+  --dark-bg-tertiary: #4a5568;
+  --dark-text-primary: #f7fafc;
+  --dark-text-secondary: #a0aec0;
+  
+  /* Semantic Colors */
+  --success: var(--iraqi-green);
+  --warning: var(--mesopotamian-gold);
+  --error: var(--iraqi-red);
+  --info: var(--tigris-blue);
+  
+  /* Spacing System */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Arabic Font Loading */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+
+/* Font Family Definitions */
+.font-arabic {
+  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Segoe UI Arabic', 'Tahoma', 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
+  font-feature-settings: 
+    "liga" 1,
+    "kern" 1,
+    "calt" 1,
+    "mark" 1,
+    "mkmk" 1,
+    "ccmp" 1;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-english {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-feature-settings: 
+    "liga" 1,
+    "kern" 1,
+    "calt" 1;
+  line-height: 1.5;
+}
+
+/* RTL Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-arabic);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* RTL-Aware Layout */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+[dir="rtl"] .layout-horizontal {
+  flex-direction: row-reverse;
+}
+
+/* RTL-Aware Margins and Paddings */
+.margin-start {
+  margin-inline-start: var(--spacing-md);
+}
+
+.margin-end {
+  margin-inline-end: var(--spacing-md);
+}
+
+.padding-start {
+  padding-inline-start: var(--spacing-md);
+}
+
+.padding-end {
+  padding-inline-end: var(--spacing-md);
+}
+
+/* RTL-Aware Borders */
+.border-start {
+  border-inline-start: 1px solid var(--text-secondary);
+}
+
+.border-end {
+  border-inline-end: 1px solid var(--text-secondary);
+}
+
+/* RTL-Aware Positioning */
+.float-start {
+  float: inline-start;
+}
+
+.float-end {
+  float: inline-end;
+}
+
+.text-start {
+  text-align: start;
+}
+
+.text-end {
+  text-align: end;
+}
+
+/* Mixed Content Support */
+.mixed-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.mixed-content .arabic {
+  direction: rtl;
+  text-align: right;
+}
+
+.mixed-content .english {
+  direction: ltr;
+  text-align: left;
+}
+
+/* Arabic Typography Scale */
+.text-arabic-xs {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.text-arabic-sm {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.text-arabic-base {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-arabic-lg {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.text-arabic-xl {
+  font-size: 1.25rem;
+  line-height: 1.7;
+}
+
+.text-arabic-2xl {
+  font-size: 1.5rem;
+  line-height: 1.8;
+}
+
+.text-arabic-3xl {
+  font-size: 1.875rem;
+  line-height: 1.8;
+}
+
+.text-arabic-4xl {
+  font-size: 2.25rem;
+  line-height: 1.9;
+}
+
+/* Cultural UI Patterns */
+.iraqi-card {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(30, 96, 145, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
+}
+
+.iraqi-card:hover {
+  border-color: rgba(30, 96, 145, 0.2);
+  box-shadow: var(--shadow-lg);
+}
+
+.iraqi-button {
+  background: linear-gradient(135deg, var(--tigris-blue), #2563eb);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.iraqi-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.iraqi-button:active {
+  transform: translateY(0);
+}
+
+/* Government Mode Styling */
+.government-mode {
+  --bg-primary: #f8f9fb;
+  --accent-primary: #1e40af;
+  border-top: 4px solid var(--iraqi-red);
+}
+
+.government-mode .header {
+  background: linear-gradient(90deg, var(--iraqi-red), var(--iraqi-black));
+  color: white;
+}
+
+/* Professional Domain Colors */
+.domain-legal {
+  --domain-color: #7c2d12;
+  --domain-bg: #fef7f0;
+}
+
+.domain-medical {
+  --domain-color: #15803d;
+  --domain-bg: #f0fdf4;
+}
+
+.domain-educational {
+  --domain-color: #1e40af;
+  --domain-bg: #eff6ff;
+}
+
+.domain-engineering {
+  --domain-color: #7c2d12;
+  --domain-bg: #fef7f0;
+}
+
+.domain-business {
+  --domain-color: #a16207;
+  --domain-bg: #fffbeb;
+}
+
+.domain-government {
+  --domain-color: #be123c;
+  --domain-bg: #fdf2f8;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: var(--dark-bg-primary);
+    --bg-secondary: var(--dark-bg-secondary);
+    --bg-tertiary: var(--dark-bg-tertiary);
+    --text-primary: var(--dark-text-primary);
+    --text-secondary: var(--dark-text-secondary);
+  }
+}
+
+[data-theme="dark"] {
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .iraqi-card {
+    border-width: 2px;
+  }
+  
+  .iraqi-button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Focus Management */
+.focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Loading States */
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+  
+  .iraqi-card {
+    border: 1px solid black;
+    box-shadow: none;
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .text-arabic-4xl {
+    font-size: 1.875rem;
+  }
+  
+  .text-arabic-3xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-arabic-2xl {
+    font-size: 1.25rem;
+  }
+}
+
+/* Cultural Animation Easing */
+:root {
+  --ease-mesopotamian: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-tigris: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-euphrates: cubic-bezier(0.23, 1, 0.320, 1);
+}

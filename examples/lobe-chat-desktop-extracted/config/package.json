@@ -1,0 +1,420 @@
+{
+  "name": "iraqi-ai-chat-desktop",
+  "version": "1.0.0",
+  "description": "Iraqi AI Chat System - Desktop Application for Government and Enterprise Users",
+  "main": "dist/main.js",
+  "homepage": "https://iraqi-ai.gov.iq",
+  "author": {
+    "name": "Iraqi AI Development Team",
+    "email": "support@iraqi-ai.gov.iq",
+    "url": "https://iraqi-ai.gov.iq"
+  },
+  "license": "Proprietary",
+  "private": true,
+  "keywords": [
+    "iraqi",
+    "ai",
+    "chat",
+    "desktop",
+    "government",
+    "enterprise",
+    "arabic",
+    "electron"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-government/iraqi-ai-chat-desktop.git"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:renderer\"",
+    "dev:main": "cross-env NODE_ENV=development electron-forge start",
+    "dev:renderer": "cross-env NODE_ENV=development webpack serve --config webpack.renderer.config.js",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "cross-env NODE_ENV=production webpack --config webpack.main.config.js",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.config.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint src/ --ext .js,.ts,.tsx",
+    "lint:fix": "eslint src/ --ext .js,.ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "clean": "rimraf dist/ out/",
+    "postinstall": "electron-builder install-app-deps",
+    "pack:win": "electron-builder --win --x64",
+    "pack:mac": "electron-builder --mac --x64 --arm64",
+    "pack:linux": "electron-builder --linux --x64",
+    "dist:win": "npm run build && electron-builder --win --x64 --publish=never",
+    "dist:mac": "npm run build && electron-builder --mac --x64 --arm64 --publish=never",
+    "dist:linux": "npm run build && electron-builder --linux --x64 --publish=never",
+    "dist:all": "npm run build && electron-builder --win --mac --linux --publish=never",
+    "release": "npm run build && electron-builder --publish=always",
+    "rebuild": "electron-rebuild",
+    "postpack": "echo 'Build completed successfully for Iraqi AI Chat System Desktop'"
+  },
+  "dependencies": {
+    "electron": "^28.0.0",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.0",
+    "electron-context-menu": "^3.6.0",
+    "crypto": "^1.0.1",
+    "fs-extra": "^11.1.0",
+    "path": "^0.12.7",
+    "node-fetch": "^3.3.0",
+    "ws": "^8.14.0",
+    "sqlite3": "^5.1.6",
+    "better-sqlite3": "^9.1.0",
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "express": "^4.18.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "winston": "^3.11.0",
+    "node-cron": "^3.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@electron-forge/plugin-webpack": "^7.2.0",
+    "@types/node": "^20.0.0",
+    "@types/electron": "^1.6.10",
+    "@types/ws": "^8.5.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@types/express": "^4.17.0",
+    "@types/cors": "^2.8.0",
+    "@types/compression": "^1.7.0",
+    "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
+    "electron-builder": "^24.6.0",
+    "electron-rebuild": "^3.2.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.0",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.0",
+    "webpack-dev-server": "^4.15.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "build": {
+    "appId": "iq.gov.iraqi-ai.chat-desktop",
+    "productName": "Iraqi AI Chat System",
+    "copyright": "Copyright © 2024 Iraqi Government - Ministry of Communications and Technology",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets/",
+        "filter": ["**/*"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "assets/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "publisherName": "Iraqi Government - Ministry of Communications and Technology",
+      "verifyUpdateCodeSignature": true,
+      "certificateFile": "build/cert.p12",
+      "certificatePassword": ""
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.png",
+      "category": "Office",
+      "desktop": {
+        "Name": "Iraqi AI Chat System",
+        "Comment": "AI-powered chat system for Iraqi government and enterprises",
+        "Keywords": "AI;Chat;Iraqi;Government;Enterprise;Arabic;"
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "assets/installer.ico",
+      "uninstallerIcon": "assets/uninstaller.ico",
+      "installerHeaderIcon": "assets/installer-header.ico",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Iraqi AI Chat System",
+      "include": "build/installer.nsh",
+      "artifactName": "Iraqi-AI-Chat-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false,
+      "displayLanguageSelector": true,
+      "installerLanguages": ["ar", "en", "ku"],
+      "language": "ar"
+    },
+    "dmg": {
+      "background": "assets/dmg-background.png",
+      "iconSize": 100,
+      "iconTextSize": 12,
+      "window": {
+        "width": 660,
+        "height": 400
+      },
+      "contents": [
+        {
+          "x": 180,
+          "y": 170
+        },
+        {
+          "x": 480,
+          "y": 170,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "Iraqi-AI-Chat-Portable-${version}.${ext}"
+    },
+    "appImage": {
+      "artifactName": "Iraqi-AI-Chat-${version}.${ext}"
+    },
+    "deb": {
+      "artifactName": "iraqi-ai-chat_${version}_${arch}.${ext}",
+      "packageCategory": "office",
+      "priority": "optional",
+      "depends": [
+        "gconf2",
+        "gconf-service",
+        "libnotify4",
+        "libappindicator1",
+        "libxtst6",
+        "libnss3",
+        "libxss1",
+        "libasound2"
+      ]
+    },
+    "rpm": {
+      "artifactName": "iraqi-ai-chat-${version}.${arch}.${ext}",
+      "packageCategory": "Office",
+      "depends": [
+        "libnotify",
+        "libappindicator",
+        "libXtst",
+        "nss",
+        "libXScrnSaver",
+        "alsa-lib"
+      ]
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.iraqi-ai.gov.iq",
+        "channel": "stable"
+      },
+      {
+        "provider": "github",
+        "owner": "iraqi-government",
+        "repo": "iraqi-ai-chat-desktop",
+        "private": true
+      }
+    ],
+    "afterSign": "build/notarize.js",
+    "beforeBuild": "build/before-build.js",
+    "afterAllArtifactBuild": "build/after-build.js"
+  },
+  "forge": {
+    "packagerConfig": {
+      "icon": "assets/icon",
+      "name": "Iraqi AI Chat System",
+      "executableName": "iraqi-ai-chat",
+      "appBundleId": "iq.gov.iraqi-ai.chat-desktop",
+      "appCopyright": "Copyright © 2024 Iraqi Government",
+      "appVersion": "1.0.0",
+      "buildVersion": "1.0.0",
+      "protocols": [
+        {
+          "name": "Iraqi AI Protocol",
+          "schemes": ["iraqi-ai"]
+        }
+      ],
+      "osxSign": {
+        "identity": "Developer ID Application: Iraqi Government (XXXXXXXXXX)",
+        "hardened-runtime": true,
+        "entitlements": "build/entitlements.mac.plist",
+        "entitlements-inherit": "build/entitlements.mac.plist",
+        "signature-flags": "library"
+      },
+      "osxNotarize": {
+        "appleId": "developer@iraqi-ai.gov.iq",
+        "appleIdPassword": "@keychain:AC_PASSWORD",
+        "ascProvider": "XXXXXXXXXX"
+      }
+    },
+    "makers": [
+      {
+        "name": "@electron-forge/maker-squirrel",
+        "config": {
+          "name": "iraqi_ai_chat",
+          "authors": "Iraqi Government - Ministry of Communications and Technology",
+          "exe": "iraqi-ai-chat.exe",
+          "setupExe": "Iraqi-AI-Chat-Setup.exe",
+          "setupIcon": "assets/installer.ico",
+          "loadingGif": "assets/loading.gif",
+          "certificateFile": "build/cert.p12",
+          "certificatePassword": ""
+        }
+      },
+      {
+        "name": "@electron-forge/maker-zip",
+        "platforms": ["darwin", "linux"]
+      },
+      {
+        "name": "@electron-forge/maker-deb",
+        "config": {
+          "options": {
+            "maintainer": "Iraqi Government <support@iraqi-ai.gov.iq>",
+            "homepage": "https://iraqi-ai.gov.iq",
+            "icon": "assets/icon.png",
+            "categories": ["Office", "Network"],
+            "priority": "optional",
+            "section": "misc"
+          }
+        }
+      },
+      {
+        "name": "@electron-forge/maker-rpm",
+        "config": {
+          "options": {
+            "license": "Proprietary",
+            "homepage": "https://iraqi-ai.gov.iq",
+            "categories": ["Office", "Network"],
+            "icon": "assets/icon.png"
+          }
+        }
+      }
+    ],
+    "plugins": [
+      {
+        "name": "@electron-forge/plugin-auto-unpack-natives"
+      },
+      {
+        "name": "@electron-forge/plugin-webpack",
+        "config": {
+          "mainConfig": "./webpack.main.config.js",
+          "renderer": {
+            "config": "./webpack.renderer.config.js",
+            "entryPoints": [
+              {
+                "html": "./src/renderer/index.html",
+                "js": "./src/renderer/index.tsx",
+                "name": "main_window",
+                "preload": {
+                  "js": "./src/preload.ts"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/src", "<rootDir>/test"],
+    "testMatch": ["**/__tests__/**/*.+(ts|tsx|js)", "**/*.(test|spec).+(ts|tsx|js)"],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/index.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"]
+  },
+  "eslintConfig": {
+    "extends": [
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "@typescript-eslint/explicit-function-return-type": "warn",
+      "@typescript-eslint/no-explicit-any": "warn"
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "endOfLine": "lf"
+  }
+}

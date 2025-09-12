@@ -1,0 +1,110 @@
+{
+  "name": "@iraqi-ai/lobe-chat-arabic-enhanced",
+  "version": "2.1.0",
+  "description": "Enhanced Arabic localization system with comprehensive Iraqi dialect support and cultural adaptation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "arabic",
+    "rtl",
+    "localization",
+    "iraqi",
+    "i18n",
+    "dialect",
+    "islamic",
+    "cultural",
+    "professional",
+    "accessibility"
+  ],
+  "author": "Iraqi AI Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/lobe-chat-arabic-enhanced.git"
+  },
+  "homepage": "https://iraqi-ai.github.io/lobe-chat-arabic-enhanced/",
+  "bugs": {
+    "url": "https://github.com/iraqi-ai/lobe-chat-arabic-enhanced/issues"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:cultural": "vitest run tests/cultural",
+    "test:arabic": "vitest run tests/arabic",
+    "test:rtl": "vitest run tests/rtl",
+    "test:a11y": "vitest run tests/accessibility",
+    "test:dialect": "vitest run tests/dialect",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "analyze-bundle": "npx bundlesize",
+    "docs": "typedoc",
+    "validate": "npm run lint && npm run typecheck && npm run test",
+    "prepack": "npm run build",
+    "semantic-release": "semantic-release"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^3.0.0",
+    "date-fns-jalali": "^3.0.0",
+    "framer-motion": "^10.16.4",
+    "lodash-es": "^4.17.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^6.6.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.0",
+    "@storybook/react": "^7.6.0",
+    "@storybook/react-vite": "^7.6.0",
+    "@types/lodash-es": "^4.17.12",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-react": "^4.2.0",
+    "@vitest/coverage-v8": "^1.0.4",
+    "bundlesize": "^0.18.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "happy-dom": "^12.10.3",
+    "storybook": "^7.6.0",
+    "tsup": "^8.0.1",
+    "typedoc": "^0.25.4",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "bundlesize": [
+    {
+      "path": "dist/*.js",
+      "maxSize": "500KB"
+    }
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "styles",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
+}
