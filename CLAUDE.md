@@ -250,25 +250,33 @@ Use for immediate processing without context overhead:
 
 ```
 /
-├── 📱 apps/
-│   ├── web/                    # Next.js 15 web application
-│   ├── api/                    # FastAPI backend
-│   ├── desktop/                # Electron app (Post-MVP: 53-56)
-│   └── voice/                  # Voice processing (Post-MVP: 49-52)
-├── 📦 packages/
+├── apps/
+│   ├── web/                    # Next.js 15+ web application
+│   ├── mobile/                 # React Native app (future)
+│   └── api/                    # Python FastAPI backend
+│       ├── agents/             # PydanticAI agent modules
+│       │   ├── agent.py        # Main agent definition
+│       │   ├── tools.py        # Agent tools and integrations
+│       │   ├── models.py       # Pydantic models and dependencies
+│       │   └── settings.py     # Environment configuration
+│       ├── routes/             # FastAPI route handlers
+│       └── services/           # Business logic services
+├── packages/                   # Shared between web & mobile
 │   ├── ui/                     # Shared UI components
 │   ├── types/                  # TypeScript types
-│   ├── features/               # Business logic (chat/, documents/, payments/)
-│   ├── supabase-client/        # Database client
-│   └── arabic-nlp/             # Arabic processing
-├── 🤖 .claude/
-│   ├── agents/                 # 21 specialized Iraqi AI agents
-│   └── context/                # Agent context management
-├── 📚 project-context/         # Knowledge base
-├── 🎯 initials/               # 56 system templates (1-47 MVP, 48-56 Post-MVP)
-├── 🛠️ examples/               # 79 Iraqi-enhanced examples
-├── 📋 PRPs/                   # Product Requirement Prompts
-└── CLAUDE.md                   # This rules file
+│   ├── features/              # Shared business logic (chat/, documents/, payments/)
+│   ├── api-client/            # API client logic
+│   └── arabic-nlp/            # Arabic processing logic
+├── examples/                   # Reference implementations
+│   ├── basic_chat_agent/       # Simple PydanticAI agent patterns
+│   ├── main_agent_reference/   # Production agent architecture
+│   ├── tool_enabled_agent/     # Agent with external tools
+│   ├── structured_output_agent/ # Professional report generation
+│   └── testing_examples/       # Agent testing patterns
+├── services/                   # Microservices
+├── data/                      # Knowledge base (iraqi-law/, education/, templates/)
+├── PRPs/                      # Product Requirement Prompts
+└── CLAUDE.md                  # This rules file
 ```
 
 **Key Directories**:
