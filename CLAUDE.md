@@ -100,12 +100,15 @@ Use evidence-based language:
 ### Bun Commands (REQUIRED)
 ```bash
 bun run dev        # Development mode
-bun run build      # Production build  
+bun run build      # Production build
 bun test           # Run tests
 bun run lint       # Code validation
 bun run typecheck  # TypeScript check
 bun run test:cultural  # Cultural validation tests
 bun run test:arabic    # Arabic RTL tests
+bun run test:image     # Image processing tests
+bun run test:voice     # Voice/audio tests
+bun run test:desktop   # Desktop application tests
 ```
 
 ## Code Standards
@@ -118,8 +121,8 @@ bun run test:arabic    # Arabic RTL tests
 ### Framework Patterns
 - Check package.json before using libraries
 - Follow existing project conventions
-- Group by features (chat/, documents/, payments/)
-- Use Iraqi-enhanced components from `examples/dyad-extracted/`
+- Group by features (chat/, documents/, payments/, images/, voice/, desktop/)
+- Use Iraqi-enhanced components from 79 example folders (prioritize `*-enhanced` variants)
 
 ### Cultural Requirements
 - RTL design: `font-arabic` class, right-align Arabic, left-align English
@@ -205,13 +208,15 @@ Use for immediate processing without context overhead:
 
 **Auto-Triggered Chains**:
 1. **Cultural Validation**: iraqi-cultural-validator → iraqi-cultural-tester → arabic-rtl-processor
-2. **UI Development**: iraqi-ux-researcher → iraqi-ui-designer → iraqi-interaction-designer → iraqi-accessibility-specialist  
+2. **UI Development**: iraqi-ux-researcher → iraqi-ui-designer → iraqi-interaction-designer → iraqi-accessibility-specialist
 3. **Payment Integration**: payment-security-guardian → iraqi-payment-tester → external-service-coordinator
 4. **Application Security**: iraqi-security-specialist → iraqi-technical-debugger → iraqi-devops-engineer
 5. **Web Search Integration**: iraqi-cultural-validator → arabic-rtl-processor → external-service-coordinator
 6. **Professional Domain**: iraqi-professional-domain-expert → iraqi-business-analyst → iraqi-product-manager
 7. **Technical Implementation**: iraqi-ai-agent-architect → iraqi-technical-debugger → iraqi-devops-engineer
-8. **Documentation Updates**: app-documentation-tracker (after any code changes, feature additions, bug fixes)
+8. **Image Processing**: iraqi-cultural-validator → arabic-rtl-processor → iraqi-accessibility-specialist
+9. **Voice/Audio System**: iraqi-cultural-validator → arabic-rtl-processor → iraqi-technical-debugger
+11. **Documentation Updates**: app-documentation-tracker (after any code changes, feature additions, bug fixes)
 
 **System Orchestration**:
 - **iraqi-workflow-orchestrator**: Complex multi-agent task coordination
@@ -241,8 +246,34 @@ Use for immediate processing without context overhead:
 - **Database**: Supabase (PostgreSQL + pgvector + Auth + Real-time)
 - **Monitoring**: Sentry for error tracking and performance
 
+## 🏗️ Monorepo Structure
+
+```
+/
+├── 📱 apps/
+│   ├── web/                    # Next.js 15 web application
+│   ├── api/                    # FastAPI backend
+│   ├── desktop/                # Electron app (Post-MVP: 53-56)
+│   └── voice/                  # Voice processing (Post-MVP: 49-52)
+├── 📦 packages/
+│   ├── ui/                     # Shared UI components
+│   ├── types/                  # TypeScript types
+│   ├── features/               # Business logic (chat/, documents/, payments/)
+│   ├── supabase-client/        # Database client
+│   └── arabic-nlp/             # Arabic processing
+├── 🤖 .claude/
+│   ├── agents/                 # 21 specialized Iraqi AI agents
+│   └── context/                # Agent context management
+├── 📚 project-context/         # Knowledge base
+├── 🎯 initials/               # 56 system templates (1-47 MVP, 48-56 Post-MVP)
+├── 🛠️ examples/               # 79 Iraqi-enhanced examples
+├── 📋 PRPs/                   # Product Requirement Prompts
+└── CLAUDE.md                   # This rules file
+```
+
 **Key Directories**:
 - **Agents**: `.claude/agents/` (21 specialized agents)
 - **Context**: `project-context/` (persistent knowledge base)
-- **Examples**: `examples/` (44 Iraqi-enhanced UI components)
+- **Examples**: `examples/` (79 Iraqi-enhanced components and integrations)
+- **Initials**: `initials/` (56 system templates: 1-47 MVP, 48-56 Post-MVP)
 - **Shared**: `packages/` (ui, types, features, supabase-client, arabic-nlp)
