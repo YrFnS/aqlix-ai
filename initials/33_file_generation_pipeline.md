@@ -1,21 +1,33 @@
-# Micro-Initial 33: File Generation Pipeline
+# Iraqi Document Generation System for AI Chat
 
-**Status**: POST-MVP ENHANCEMENT  
-**Priority**: HIGH  
-**Command**: `/generate-prp`  
-**Based on**: LibreChat File.js pattern + Iraqi cultural requirements
+## TECHNOLOGY/FRAMEWORK:
 
-## Overview
-Implement a comprehensive file generation pipeline that creates PDF, Word, and Excel documents from chat conversations, with full Arabic RTL support and Iraqi cultural compliance.
+**Comprehensive Iraqi document generation system** with Arabic RTL support, Iraqi professional templates, Islamic calendar integration, cultural compliance validation, and multi-format document creation optimized for Iraqi professional domains.
+
+**Specific technologies:** PDF generation libraries (jsPDF/PDFKit), Word document creation (docx), Excel generation (xlsx), Arabic font rendering, RTL text processing, Iraqi template system, and cultural validation integration.
+
+---
+
+## TEMPLATE PURPOSE:
+
+**Setting up complete Iraqi document generation pipeline** that creates culturally-compliant professional documents with Arabic RTL support, Iraqi formatting standards, and professional domain templates for legal, medical, and educational use cases.
+
+**Developers should be able to:** Generate Iraqi professional documents, apply Arabic RTL formatting, validate cultural compliance, use professional domain templates, integrate Islamic calendar dates, process mixed Arabic-English content, and export in multiple formats.
+
+---
+
+## CORE FEATURES:
+
+**Iraqi document generation infrastructure:**
 
 ## Core Features
 
-### Document Generation Capabilities
-- **PDF Generation**: Multi-language documents with RTL Arabic support
-- **Word Documents**: Professional templates with Iraqi formatting standards
-- **Excel Spreadsheets**: Arabic data handling with cultural number formats
-- **Mixed Content**: Bilingual Arabic-English document creation
-- **Cultural Templates**: Iraqi professional forms, legal documents, medical reports
+### Iraqi Document Generation Capabilities
+- **PDF Generation**: Multi-language documents with RTL Arabic support and Iraqi government formatting
+- **Word Documents**: Professional templates with Iraqi ministry and organization formatting standards
+- **Excel Spreadsheets**: Arabic data handling with cultural number formats and Iraqi business templates
+- **Mixed Content**: Bilingual Arabic-English document creation with proper text direction handling
+- **Cultural Templates**: Iraqi professional forms, legal documents, medical reports, and organizational templates
 
 ### Arabic Language Support
 - **RTL Layout**: Proper right-to-left text flow in generated documents
@@ -24,10 +36,12 @@ Implement a comprehensive file generation pipeline that creates PDF, Word, and E
 - **Number Systems**: Arabic numerals and text number conversion
 - **Cultural Headers**: Iraqi professional document headers and footers
 
-### Professional Domain Templates
-- **Legal Documents**: Iraqi legal document formats with cultural compliance
-- **Medical Reports**: Arabic medical terminology with professional formatting
-- **Educational Materials**: Iraqi educational system document standards
+### Iraqi Professional Domain Templates
+- **Legal Documents**: Iraqi legal document formats with Sharia law compliance and court system standards
+- **Medical Reports**: Arabic medical terminology with Iraqi healthcare system formatting and cultural sensitivity
+- **Educational Materials**: Iraqi educational system document standards with ministry-approved formats
+- **Business Templates**: Iraqi business document formats with Islamic finance compliance
+- **Organizational Documents**: Iraqi professional organization templates with cultural appropriateness
 - **Professional Forms**: Official Iraqi professional document formats
 - **Business Documents**: Iraqi business correspondence and report formats
 

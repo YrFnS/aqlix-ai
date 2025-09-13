@@ -1,21 +1,32 @@
 # Initial to PRP Command Guide - Iraqi AI Chat System
 
-This guide shows which command to use for each initial file when creating and executing PRPs. Our new architecture eliminates scope creep with 44 focused initials organized in 7 dependency layers, including 3 critical new initials for multi-agent coordination and visual workflow orchestration.
+This guide shows which command to use for each initial file when creating and executing PRPs. Our architecture includes 56 focused initials organized in strategic phases, with MVP scope covering initials 1-47 for faster time to market.
 
 ## 📋 Architecture Overview
 
-**44 Initials in 7 Layers:**
-- **Foundation Layer (01-04)**: Infrastructure setup
-- **UI Layer (05-10)**: User interface components  
-- **Arabic Layer (11-16)**: Language and RTL support
-- **Cultural Layer (17-22)**: Cultural compliance
-- **Integration Layer (23-28)**: System integration
-- **Production Layer (29-32)**: Production readiness
-- **Post-MVP Enhancement Layer (33-44)**: Advanced AI capabilities, multi-agent coordination, and SaaS features
+**56 Initials in Strategic Phases:**
+- **MVP Phase (01-47)**: Core system with complete web app, cultural compliance, and basic image processing
+- **Post-MVP Phase (48-56)**: Advanced image processing, voice/audio system, and desktop application
+
+## 🎯 MVP vs Post-MVP Strategy
+
+**MVP Scope (Initials 1-47)**: Complete web application ready for Iraqi market launch
+- Foundation, UI, Arabic, Cultural compliance systems
+- Payment integration (ZainCash, FastPay, NassWallet)
+- Core AI agents and cultural validation
+- Basic image processing with Arabic OCR
+- Production deployment and monitoring
+- **Target**: 3-4 months to market
+
+**Post-MVP Scope (Initials 48-56)**: Advanced features after market validation  
+- Advanced image editing and AI art generation (48)
+- Complete voice/audio system (49-52)
+- Desktop application with offline capabilities (53-56)
+- **Target**: 6-8 months additional development
 
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
-**Total: 37 general infrastructure and UI features (27 MVP + 10 Post-MVP)**
+**MVP Phase (40 general infrastructure and UI features)**
 
 ### Foundation Layer (01-04)
 - **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp` ✅
@@ -295,9 +306,9 @@ All generated PRPs will be saved in the `PRPs/` directory:
   - *Source: Kortix-Suna web_search_tool.py + Brave Search integration*
   - *Purpose: Real-time web search with user toggle controls, cultural filtering, and Iraqi context-aware search results*
 
-- **42_railway_deployment_configuration.md** → `/generate-prp` + `/execute-prp` ✅
-  - *Source: Railway platform-specific deployment patterns*
-  - *Purpose: Railway monorepo deployment configuration with service orchestration and production optimization*
+- **42_Fly.io_deployment_configuration.md** → `/generate-prp` + `/execute-prp` ✅
+  - *Source: Fly.io platform-specific deployment patterns*
+  - *Purpose: Fly.io monorepo deployment configuration with service orchestration and production optimization*
 
 - **43_multi_agent_coordination.md** → `/generate-prp` + `/execute-prp` ✅
   - *Source: Advanced multi-agent orchestration patterns + Iraqi AI agent coordination*
@@ -309,28 +320,46 @@ All generated PRPs will be saved in the `PRPs/` directory:
 
 ## ✅ Updated Quick Reference Summary
 
-**All 44 Initial Files (33 MVP + 11 Post-MVP):**
-- **37 General features** → use `/generate-prp` + `/execute-prp`  
+**All 56 Initial Files:**
+**MVP Phase (47 initials):**
+- **40 General features** → use `/generate-prp` + `/execute-prp`  
 - **7 PydanticAI features** → use `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
 
-## 🚀 Key Improvements from Old Architecture
+**Post-MVP Phase (9 initials):**
+- **9 Advanced features** → use `/generate-prp` + `/execute-prp`
 
-**Eliminated Scope Creep:**
-- ❌ Old: 21 bloated initials with massive overlaps  
-- ✅ New: 33 focused MVP initials with single responsibility
-- ✅ Additional: 11 Post-MVP enhancement initials for complete SaaS platform with multi-agent coordination
+## 🎯 MVP Priority Strategy
 
-**Clean Dependency Layers:**
-- **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production** → **Post-MVP Enhancement**
+**MVP Phase Benefits:**
+- **Faster Time to Market**: 3-4 months vs 6-8 months for full system
+- **Revenue Generation**: Payment integration with ZainCash, FastPay, NassWallet
+- **User Validation**: Test core value proposition with Iraqi users
+- **Market Fit Validation**: Prove demand before investing in advanced features
 
-**Single Responsibility Principle:**
-- Each initial has ONE focused purpose
-- No overlaps or cross-cutting concerns
-- Clear dependency flow and integration points
+**Post-MVP Value Addition:**
+- **Advanced Image Processing**: Complex editing and AI art generation
+- **Voice/Audio System**: Complete speech recognition and synthesis
+- **Desktop Application**: Offline capabilities and native OS integration
+- **Enterprise Features**: Advanced security and desktop deployment
 
-**Systematic Architecture:**
-- Progressive complexity from basic setup to production optimization
-- Cultural integration throughout all layers
-- Iraqi AI Chat System specific requirements in every component
+**Strategic Development Flow:**
+- **Phase 1 (MVP)**: Core web application with essential Iraqi features
+- **Phase 2 (Post-MVP)**: Advanced capabilities based on user feedback and market demand
 
-Ready for systematic PRP generation and implementation using the new micro-initial architecture!
+## 🚀 Key Architecture Benefits
+
+**Strategic Phasing:**
+- ✅ MVP-focused: 47 initials for complete web application
+- ✅ Post-MVP enhancement: 9 initials for advanced desktop/voice features
+- ✅ Clear separation: Core features vs nice-to-have enhancements
+
+**Clean Dependency Management:**
+- **Foundation** → **UI** → **Arabic** → **Cultural** → **Integration** → **Production** → **MVP Enhancement**
+- **Post-MVP**: Advanced Image, Voice/Audio, Desktop systems
+
+**Market-Driven Development:**
+- MVP provides immediate value to Iraqi users
+- Post-MVP features developed based on user feedback
+- Revenue-generating features prioritized in MVP phase
+
+Ready for systematic PRP generation with strategic MVP-first approach!

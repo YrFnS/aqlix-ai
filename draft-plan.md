@@ -36,7 +36,7 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 ### Infrastructure
 - **Cloud**: 
   - Vercel (Next.js hosting)
-  - Railway/Render (Python API)
+  - Fly.io/Render (Python API)
   - Supabase (Database & Auth)
 - **Container**: Docker
 - **CI/CD**: GitHub Actions

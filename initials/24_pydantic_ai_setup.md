@@ -1,24 +1,31 @@
-# PydanticAI Agent System with Iraqi Cultural Intelligence
+# PydanticAI Agent Foundation for Iraqi AI Chat System
 
 ## TECHNOLOGY/FRAMEWORK:
 
-**Comprehensive PydanticAI agent system** with 21 specialized Iraqi AI agents, cultural intelligence framework, Arabic language processing, and professional domain expertise for culturally-aware AI interactions.
+**Complete PydanticAI agent foundation system** with 21 specialized Iraqi AI agents, agent templates and base classes, cultural intelligence framework, Arabic language processing, and professional domain expertise for comprehensive Iraqi AI system architecture.
 
-**Specific technologies:** PydanticAI framework, specialized agent architecture, cultural validation system, Arabic RTL processing, Iraqi professional domain integration, and multi-agent coordination.
+**Specific technologies:** PydanticAI framework, agent base classes and templates, specialized agent architecture, cultural validation system, Arabic RTL processing, Iraqi professional domain integration, multi-agent coordination, and agent inheritance patterns.
 
 ---
 
 ## TEMPLATE PURPOSE:
 
-**Setting up complete Iraqi AI agent ecosystem** with 21 specialized agents providing cultural intelligence, professional domain expertise, Arabic language support, and Islamic compliance validation for comprehensive Iraqi AI system.
+**Setting up foundational PydanticAI agent architecture** with 21 specialized Iraqi agents, agent templates and base classes, providing cultural intelligence, professional domain expertise, Arabic language support, and Islamic compliance validation for scalable Iraqi AI system development.
 
-**Developers should be able to:** Deploy specialized Iraqi agents, coordinate multi-agent workflows, validate cultural compliance, process Arabic text, integrate professional domains, and manage agent performance.
+**Developers should be able to:** Create agent templates and base classes, deploy specialized Iraqi agents using inheritance patterns, coordinate multi-agent workflows, validate cultural compliance, process Arabic text, integrate professional domains, manage agent performance, and extend agent functionality through templates.
 
 ---
 
 ## CORE FEATURES:
 
-**Comprehensive Iraqi AI agent infrastructure:**
+**Foundational PydanticAI agent infrastructure:**
+
+### Agent Templates and Base Classes
+- **BaseIraqiAgent:** Abstract base class for all Iraqi AI agents with cultural context integration
+- **CulturalValidationMixin:** Reusable mixin for cultural compliance validation across agents
+- **ArabicProcessingMixin:** Shared Arabic RTL processing capabilities for language-aware agents
+- **ProfessionalDomainMixin:** Base functionality for Iraqi professional domain integration
+- **AgentCoordinationMixin:** Multi-agent workflow coordination and context sharing capabilities
 
 ### 21 Specialized Iraqi AI Agents
 **Cultural Intelligence Agents:**

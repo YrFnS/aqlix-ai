@@ -454,7 +454,7 @@ function useChatMessages(conversationId: string) {
 ```yaml
 Infrastructure:
   Web Hosting: Vercel (Next.js + Bun optimization)
-  API Hosting: Railway/Render (FastAPI + SQLAlchemy)
+  API Hosting: Fly.io/Render (FastAPI + SQLAlchemy)
   Database: Supabase (PostgreSQL + Drizzle integration)
   File Storage: Supabase Storage
   Cache: Upstash Redis
@@ -466,7 +466,7 @@ Performance Benefits:
   
 Cost Estimate:
   - Vercel: Free tier initially
-  - Railway: ~$5/month
+  - Fly.io: ~$5/month
   - Supabase: ~$25/month
   - Upstash: ~$10/month
   Total: ~$40/month + API costs

@@ -1535,19 +1535,19 @@ and what about cloudflare? or make it next step
 
 what deployment did you search?
 
-and there are many deployment options like railway, vercel, digitalocean, aws, google cloud, heroku, render, hostinger, namecheap, etc
+and there are many deployment options like Fly.io, vercel, digitalocean, aws, google cloud, heroku, render, hostinger, namecheap, etc
 
 make a deep web research and give a comparison between them
 and then give me your recommendation
 
-lets go with railway
+lets go with Fly.io
 do we need to create initial?
 
 
 i saw a video about Coolify + hostinger
 for deployment using Coolify on hostinger vps
 make a deep research about it
-and compare it with railway
+and compare it with Fly.io
 and give me your recommendation
 
 
@@ -2797,7 +2797,7 @@ check the repos code in the reference folder and then check the examples folder 
 
 
 
-
+i have many questions
 
 is our tech stack good?
 is everything compatible with each other?
@@ -2805,6 +2805,8 @@ is everything compatible with each other?
 and is our app scalable tech stack good for millions of users?
 and well start in iraq but we will expand to other countries so we need to make sure our app is scalable
 cus we aim to be the best app in the world so our app needs to be scalable
+first well start with the iraqi audience in the future we will expand to other countries not just the iraq but well start with the iraqi audience
+
 
 
 do we need cloudflare?
@@ -2814,14 +2816,32 @@ well build our app
 do we build our app as microservice? our current choice is monolithic right?
 what is the best choice? what are the pros and cons of each choice?
 are they the same but different names?
+as you know well add many features to our app not jsut ai chat
+
+
+Cloudflare has free tier we can use so we can start with it and then we can upgrade to paid tier when we need it
+but what do need to add in the app to use cloudflare do we need to code something? or just route the app through cloudflare?
+
+for the monolithic we start with it and then we can upgrade to microservice right
+but will we need to change anything later in the app or is it smoth change to make the app microservice
+
+and as for Database problem what should we do?
+
+as for redis we plan to use it in the from the start in the mvp check the initials
 
 
 
-what else initial we need?
-for the img and how many initials we need and what other more we need?
+what initial we need to updaet or add new ones?
+we need initial for the img and how many initials we need and what other more we need?
+
+
+create plan for the new initials and the initials we need to update make the plan in md file
+and each initial like the initials we have each should focus on one small feature if the feature is big we need to split it samll initial
 
 
 
+before we start with the initials
+i have one question
 is our deployment platform choice good?
 
 also i found this platform
@@ -2836,6 +2856,7 @@ https://fly.io/
 
 24
 32
+33
 36
 37
 40
