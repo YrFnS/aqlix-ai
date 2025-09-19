@@ -36,20 +36,20 @@ This guide shows which command to use for each initial file when creating and ex
 ## 🌐 General Features (Use `/generate-prp` + `/execute-prp`)
 
 ### Foundation Layer (01-04)
-- **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp`
+- **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Bun monorepo workspace configuration and setup*
 
-- **02_environment_variables.md** → `/generate-prp` + `/execute-prp`
+- **02_environment_variables.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: .env file management and environment configuration*
 
-- **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp`
+- **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: TypeScript configuration, tsconfig.json, and path mapping*
 
-- **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp`
+- **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Supabase client initialization and basic connection*
 
 ### UI Layer (05-10)
-- **05_nextjs_app_setup.md** → `/generate-prp` + `/execute-prp`
+- **05_nextjs_app_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - *Reason: Next.js 15 application setup with App Router and React 19*
 
 - **06_ui_component_system.md** → `/generate-prp` + `/execute-prp`

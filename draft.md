@@ -2879,7 +2879,12 @@ check them is it good or not? they are for the app MVP. What are your thoughts?
 is the initials good need changes update or delete some of them? are they overlapping with each other or not?
 p.s. we are starting with monolithic and then we will move to microservice later
 
-
+are we using more than one AI for the app
+and each AI has its own role like web search AI, chat AI, etc.
+and the user chat with the ai chat and the ai chat tell other AIs to do tasks like web search, create file, etc.
+and we start with monolithic and then we will move to microservice later
+and the app can be scaled and support millions of users in the future so we dont need to create it again thats why we need to make it scalable so we are starting with monolithic and then we will move to microservice later
+this is all covered in the initials folder?
 
 
 
