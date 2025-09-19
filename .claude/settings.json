@@ -6,11 +6,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/lint.sh"
+            "command": "bash .claude/hooks/lint.sh"
           },
           {
             "type": "command",
-            "command": "bash $CLAUDE_PROJECT_DIR/.claude/hooks/format.sh"
+            "command": "bash .claude/hooks/format.sh"
           }
         ]
       }

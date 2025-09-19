@@ -2849,20 +2849,38 @@ https://fly.io/
 
 
 
+ultrathink
+My app vision
+is to build an AI chat system. like manus.im, genspark.ai, etc..,
+I want the AI to speak and write mainly Arabic Iraqi accent in both speech and writing, and secondly, English. It depends on the user whether they use Arabic or English.
+I want it to be able to take PDF files, image files, text files, and Excel files, etc.
+and create PDF, Word, Excel, etc.
+and the AI agent keeps learning from the user, and when the user keeps using it and it'll get better and better. and learn to respond to that specific user. Like ChatGPT when the user keeps talking to it it'll create memory for that user
+and it should be able to read and understand the content of the files and answer the user based on the content of the files. or what the user asks it to do.
+and I want it to be able to have access to the web and search for information and can answer today's events, etc, real-time data
+I want the user to have the option to add their job, profession, etc., which is optional. This allows the agent to respond more effectively to the user based on their job, profession, etc.
+I want to train the agent with real Iraq data like a lawyer or teacher, etc.
+So if the user adds his job, and tells him to do something related to his job, the agent should be able to answer it based on the training data, like the teacher can ask the agent to create an exam for subject x, etc, endless possibilities.
+I want to train the agent with the user data, but don't save the user data; it's just for training the agent. All the data is just for training the agent, and only the user can see the data.
+i want to make the agent access different data sources and answer the user based on the data sources.
+i want to make the agent be able to access the different sites and do the tasks the user asks it to do. like file form online, etc.
+or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
+and a lot more other features
+and the app doesnt depend on one AI but multiple AI each with its own role like web search AI, chat AI, etc its better than leave all in one AI
+
+
+I'm using the new framework for coding with AI context engineering
+I'll use this repo as a reference to generate prps for the app split into small tasks, features and they shouldn't overlap with each other. They should be independent or complementary to each other
+https://github.com/coleam00/context-engineering-intro
+
+i made them here in the initials folder ill create the prps from the initials
+and we need to use more than one AI for the app its better than leave all in one AI right?
+check them is it good or not? they are for the app MVP. What are your thoughts?
+is the initials good need changes update or delete some of them? are they overlapping with each other or not?
+p.s. we are starting with monolithic and then we will move to microservice later
 
 
 
-
-
-24
-32
-33
-36
-37
-40
-42
-43
-44
 
 
 
