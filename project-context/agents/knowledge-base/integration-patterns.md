@@ -376,13 +376,6 @@ CONTEXT_MANAGEMENT_PATTERNS = {
 
 ## 🌐 MCP Server Integration Patterns
 
-### Sequential MCP Integration
-**Best Use Cases**:
-- Complex cultural analysis requiring multi-step reasoning
-- Iraqi business process modeling and validation
-- Root cause analysis for technical issues
-- Structured workflow execution planning
-
 **Proven Patterns**:
 ```yaml
 sequential_workflow:

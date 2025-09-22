@@ -188,13 +188,11 @@ Use for immediate processing without context overhead:
 ## MCP Server Coordination
 
 **Required MCP Servers**:
-- **Sequential**: Complex analysis, systematic workflows
 - **Context7**: Official documentation, patterns
 - **@21st-dev/magic**: UI component generation
 - **Playwright**: E2E testing, browser automation
 - **Supabase**: Database operations, real-time features
 - **Sentry**: Error tracking, performance monitoring
-- **Desktop Commander**: File operations, system tasks
 - **Serena**: Code search, semantic analysis and editing capabilities
 - **Puppeteer**: Advanced browser automation
 

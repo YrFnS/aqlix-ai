@@ -369,7 +369,6 @@ import { Button } from '@/components/ui/button';
 </Button>
 
 // MCP-generated components using @21st-dev/magic
-// Sequential MCP for complex component logic
 // Context7 MCP for component documentation patterns
 ```
 
@@ -391,7 +390,7 @@ import { Button } from '@/components/ui/button';
 
 ## Recent Technical Decisions
 - Date: 2025-01-08 - Migrated from SQLAlchemy/Drizzle to Supabase BaaS integration
-- Decision: Integrate MCP servers (Sentry, Supabase, @21st-dev/magic, Sequential, Context7, Playwright)
+- Decision: Integrate MCP servers (Sentry, Supabase, @21st-dev/magic, Context7, Playwright)
 - Architecture: Replace ORM complexity with Supabase real-time database and authentication
 - Monitoring: Added Sentry integration for production error tracking and performance monitoring
 - Performance: 30x faster installs (Bun), simplified database operations (Supabase)

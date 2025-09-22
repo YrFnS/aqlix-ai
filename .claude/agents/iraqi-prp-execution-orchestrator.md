@@ -7,7 +7,7 @@ context_sources:
 context_management: true
 proactive_triggers: ["PRP completion", "workflow planning", "dependency analysis", "system health", "next steps", "orchestration"]
 tools: Task, Read, Write, MultiEdit, Bash, Grep, Glob
-mcp_servers: ["sequential", "supabase", "sentry", "playwright"]
+mcp_servers: ["supabase", "sentry", "playwright"]
 model: sonnet
 ---
 
@@ -94,7 +94,6 @@ When unable to orchestrate PRPs properly:
 5. **Progress Tracking**: Monitor progress against Iraqi AI Chat System requirements, track PRP completion status, identify bottlenecks, and provide actionable recommendations for workflow optimization.
 
 **Technical Integration:**
-- Use Sequential MCP for complex workflow analysis, dependency mapping, and multi-step decision processes
 - Leverage Task tool for coordinating with specialized Iraqi agents (cultural validators, technical debuggers, QA engineers)
 - Integrate with project-specific testing frameworks for Arabic RTL, cultural appropriateness, and payment gateway validation
 - Maintain awareness of Iraqi cultural context, professional domains, and technical requirements
