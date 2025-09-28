@@ -15,7 +15,12 @@ from autogen_ext.code_executors._common import silence_pip
 from pydantic import BaseModel
 from typing_extensions import Self
 
-from ._jupyter_server import JupyterClient, JupyterConnectable, JupyterConnectionInfo, JupyterKernelClient
+from ._jupyter_server import (
+    JupyterClient,
+    JupyterConnectable,
+    JupyterConnectionInfo,
+    JupyterKernelClient,
+)
 
 
 @dataclass
@@ -37,7 +42,9 @@ class DockerJupyterCodeExecutorConfig(BaseModel):
         arbitrary_types_allowed = True
 
 
-class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecutorConfig]):
+class DockerJupyterCodeExecutor(
+    CodeExecutor, Component[DockerJupyterCodeExecutorConfig]
+):
     """(Experimental) A code executor class that executes code statefully using
     a Jupyter server supplied to this class.
 
@@ -152,7 +159,9 @@ class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecuto
     """
 
     component_config_schema = DockerJupyterCodeExecutorConfig
-    component_provider_override = "autogen_ext.code_executors.docker_jupyter.DockerJupyterCodeExecutor"
+    component_provider_override = (
+        "autogen_ext.code_executors.docker_jupyter.DockerJupyterCodeExecutor"
+    )
 
     def __init__(
         self,
@@ -169,7 +178,9 @@ class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecuto
         elif isinstance(jupyter_server, JupyterConnectionInfo):
             self._connection_info = jupyter_server
         else:
-            raise ValueError("jupyter_server must be a JupyterConnectable or JupyterConnectionInfo.")
+            raise ValueError(
+                "jupyter_server must be a JupyterConnectable or JupyterConnectionInfo."
+            )
 
         self._output_dir = output_dir or getattr(jupyter_server, "_bind_dir", None)
         if not self._output_dir:
@@ -190,7 +201,9 @@ class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecuto
             await self.start()
             assert self._kernel_id is not None
         if self._async_jupyter_kernel_client is None:
-            self._async_jupyter_kernel_client = await self._jupyter_client.get_kernel_client(self._kernel_id)
+            self._async_jupyter_kernel_client = (
+                await self._jupyter_client.get_kernel_client(self._kernel_id)
+            )
         return self._async_jupyter_kernel_client
 
     async def execute_code_blocks(
@@ -212,14 +225,18 @@ class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecuto
         # Wait for kernel to be ready using async client
         is_ready = await kernel_client.wait_for_ready(timeout_seconds=self._timeout)
         if not is_ready:
-            return DockerJupyterCodeResult(exit_code=1, output="ERROR: Kernel not ready", output_files=[])
+            return DockerJupyterCodeResult(
+                exit_code=1, output="ERROR: Kernel not ready", output_files=[]
+            )
 
         outputs: List[str] = []
         output_files: List[Path] = []
         for code_block in code_blocks:
             code = silence_pip(code_block.code, code_block.language)
             # Execute code using async client
-            exec_task = asyncio.create_task(kernel_client.execute(code, timeout_seconds=self._timeout))
+            exec_task = asyncio.create_task(
+                kernel_client.execute(code, timeout_seconds=self._timeout)
+            )
             cancellation_token.link_future(exec_task)
             result = await exec_task
             if result.is_ok:
@@ -238,10 +255,14 @@ class DockerJupyterCodeExecutor(CodeExecutor, Component[DockerJupyterCodeExecuto
             else:
                 existing_output = "\n".join([str(output) for output in outputs])
                 return DockerJupyterCodeResult(
-                    exit_code=1, output=existing_output + "\nERROR: " + result.output, output_files=output_files
+                    exit_code=1,
+                    output=existing_output + "\nERROR: " + result.output,
+                    output_files=output_files,
                 )
         return DockerJupyterCodeResult(
-            exit_code=0, output="\n".join([str(output) for output in outputs]), output_files=output_files
+            exit_code=0,
+            output="\n".join([str(output) for output in outputs]),
+            output_files=output_files,
         )
 
     async def restart(self) -> None:

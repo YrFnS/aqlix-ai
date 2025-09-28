@@ -51,7 +51,11 @@ if TYPE_CHECKING:
     )
 
 try:
-    from azure.search.documents.models import VectorizableTextQuery, VectorizedQuery, VectorQuery
+    from azure.search.documents.models import (
+        VectorizableTextQuery,
+        VectorizedQuery,
+        VectorQuery,
+    )
 
     has_azure_search = True
 except ImportError:
@@ -170,25 +174,37 @@ class EmbeddingProviderMixin:
                 ) from None
 
             if api_key:
-                azure_client = AsyncAzureOpenAI(api_key=api_key, api_version=api_version, azure_endpoint=endpoint)
+                azure_client = AsyncAzureOpenAI(
+                    api_key=api_key, api_version=api_version, azure_endpoint=endpoint
+                )
             else:
 
                 def get_token() -> str:
                     credential = DefaultAzureCredential()
-                    token = credential.get_token("https://cognitiveservices.azure.com/.default")
+                    token = credential.get_token(
+                        "https://cognitiveservices.azure.com/.default"
+                    )
                     if not token or not token.token:
-                        raise ValueError("Failed to acquire token using DefaultAzureCredential for Azure OpenAI.")
+                        raise ValueError(
+                            "Failed to acquire token using DefaultAzureCredential for Azure OpenAI."
+                        )
                     return token.token
 
                 azure_client = AsyncAzureOpenAI(
-                    azure_ad_token_provider=get_token, api_version=api_version, azure_endpoint=endpoint
+                    azure_ad_token_provider=get_token,
+                    api_version=api_version,
+                    azure_endpoint=endpoint,
                 )
 
             try:
-                response = await azure_client.embeddings.create(model=embedding_model, input=query)
+                response = await azure_client.embeddings.create(
+                    model=embedding_model, input=query
+                )
                 return response.data[0].embedding
             except Exception as e:
-                raise ValueError(f"Failed to generate embeddings with Azure OpenAI: {str(e)}") from e
+                raise ValueError(
+                    f"Failed to generate embeddings with Azure OpenAI: {str(e)}"
+                ) from e
 
         elif embedding_provider.lower() == "openai":
             try:
@@ -203,10 +219,14 @@ class EmbeddingProviderMixin:
             openai_client = AsyncOpenAI(api_key=api_key)
 
             try:
-                response = await openai_client.embeddings.create(model=embedding_model, input=query)
+                response = await openai_client.embeddings.create(
+                    model=embedding_model, input=query
+                )
                 return response.data[0].embedding
             except Exception as e:
-                raise ValueError(f"Failed to generate embeddings with OpenAI: {str(e)}") from e
+                raise ValueError(
+                    f"Failed to generate embeddings with OpenAI: {str(e)}"
+                ) from e
         else:
             raise ValueError(
                 f"Unsupported client-side embedding provider: {embedding_provider}. "
@@ -215,7 +235,10 @@ class EmbeddingProviderMixin:
 
 
 class BaseAzureAISearchTool(
-    BaseTool[SearchQuery, SearchResults], Component[AzureAISearchConfig], EmbeddingProvider, ABC
+    BaseTool[SearchQuery, SearchResults],
+    Component[AzureAISearchConfig],
+    EmbeddingProvider,
+    ABC,
 ):
     """Abstract base class for Azure AI Search tools.
 
@@ -333,7 +356,10 @@ class BaseAzureAISearchTool(
         self._client: Optional[SearchClient] = None
         self._cache: Dict[str, Dict[str, Any]] = {}
 
-        if self.search_config.api_version == "2023-11-01" and self.search_config.vector_fields:
+        if (
+            self.search_config.api_version == "2023-11-01"
+            and self.search_config.vector_fields
+        ):
             warning_message = (
                 f"When explicitly setting api_version='{self.search_config.api_version}' for vector search: "
                 f"If client-side embedding is NOT configured (e.g., `embedding_model` is not set), "
@@ -354,7 +380,8 @@ class BaseAzureAISearchTool(
                 self._client = None
 
     def _process_credential(
-        self, credential: Union[AzureKeyCredential, AsyncTokenCredential, Dict[str, str]]
+        self,
+        credential: Union[AzureKeyCredential, AsyncTokenCredential, Dict[str, str]],
     ) -> Union[AzureKeyCredential, AsyncTokenCredential]:
         """Process credential to ensure it's the correct type for async SearchClient.
 
@@ -373,12 +400,16 @@ class BaseAzureAISearchTool(
         if isinstance(credential, dict):
             if "api_key" in credential:
                 return AzureKeyCredential(credential["api_key"])
-            raise ValueError("If credential is a dict, it must contain an 'api_key' key")
+            raise ValueError(
+                "If credential is a dict, it must contain an 'api_key' key"
+            )
 
         if isinstance(credential, (AzureKeyCredential, AsyncTokenCredential)):
             return credential
 
-        raise TypeError("Credential must be AzureKeyCredential, AsyncTokenCredential, or a valid dict")
+        raise TypeError(
+            "Credential must be AzureKeyCredential, AsyncTokenCredential, or a valid dict"
+        )
 
     async def _get_client(self) -> SearchClient:
         """Get the search client for the configured index.
@@ -401,19 +432,29 @@ class BaseAzureAISearchTool(
             )
             return self._client
         except ResourceNotFoundError as e:
-            raise ValueError(f"Index '{self.search_config.index_name}' not found in Azure AI Search service.") from e
+            raise ValueError(
+                f"Index '{self.search_config.index_name}' not found in Azure AI Search service."
+            ) from e
         except HttpResponseError as e:
             if e.status_code == 401:
-                raise ValueError("Authentication failed. Please check your credentials.") from e
+                raise ValueError(
+                    "Authentication failed. Please check your credentials."
+                ) from e
             elif e.status_code == 403:
                 raise ValueError("Permission denied to access this index.") from e
             else:
-                raise ValueError(f"Error connecting to Azure AI Search: {str(e)}") from e
+                raise ValueError(
+                    f"Error connecting to Azure AI Search: {str(e)}"
+                ) from e
         except Exception as e:
-            raise ValueError(f"Unexpected error initializing search client: {str(e)}") from e
+            raise ValueError(
+                f"Unexpected error initializing search client: {str(e)}"
+            ) from e
 
     async def run(
-        self, args: Union[str, Dict[str, Any], SearchQuery], cancellation_token: Optional[CancellationToken] = None
+        self,
+        args: Union[str, Dict[str, Any], SearchQuery],
+        cancellation_token: Optional[CancellationToken] = None,
     ) -> SearchResults:
         """Execute a search against the Azure AI Search index.
 
@@ -438,7 +479,9 @@ class BaseAzureAISearchTool(
         elif isinstance(args, SearchQuery):
             search_query = args
         else:
-            raise ValueError("Invalid search query format. Expected string, dict with 'query', or SearchQuery")
+            raise ValueError(
+                "Invalid search query format. Expected string, dict with 'query', or SearchQuery"
+            )
 
         if cancellation_token is not None and cancellation_token.is_cancelled():
             raise asyncio.CancelledError("Operation cancelled")
@@ -460,10 +503,14 @@ class BaseAzureAISearchTool(
                 cache_entry = self._cache[cache_key]
                 cache_age = time.time() - cache_entry["timestamp"]
                 if cache_age < self.search_config.cache_ttl_seconds:
-                    logger.debug(f"Using cached results for query: {search_query.query}")
+                    logger.debug(
+                        f"Using cached results for query: {search_query.query}"
+                    )
                     return SearchResults(
                         results=[
-                            SearchResult(score=r.score, content=r.content, metadata=r.metadata)
+                            SearchResult(
+                                score=r.score, content=r.content, metadata=r.metadata
+                            )
                             for r in cache_entry["results"]
                         ]
                     )
@@ -478,8 +525,13 @@ class BaseAzureAISearchTool(
                 if self.search_config.search_fields:
                     search_kwargs["search_fields"] = self.search_config.search_fields  # type: ignore[assignment]
 
-                if self.search_config.query_type == "semantic" and self.search_config.semantic_config_name:
-                    search_kwargs["semantic_configuration_name"] = self.search_config.semantic_config_name
+                if (
+                    self.search_config.query_type == "semantic"
+                    and self.search_config.semantic_config_name
+                ):
+                    search_kwargs["semantic_configuration_name"] = (
+                        self.search_config.semantic_config_name
+                    )
 
             if self.search_config.select_fields:
                 search_kwargs["select"] = self.search_config.select_fields  # type: ignore[assignment]
@@ -488,21 +540,33 @@ class BaseAzureAISearchTool(
             if self.search_config.top is not None:
                 search_kwargs["top"] = self.search_config.top  # type: ignore[assignment]
 
-            if self.search_config.vector_fields and len(self.search_config.vector_fields) > 0:
+            if (
+                self.search_config.vector_fields
+                and len(self.search_config.vector_fields) > 0
+            ):
                 if not search_query.query:
-                    raise ValueError("Query text cannot be empty for vector search operations")
+                    raise ValueError(
+                        "Query text cannot be empty for vector search operations"
+                    )
 
                 use_client_side_embeddings = bool(
-                    self.search_config.embedding_model and self.search_config.embedding_provider
+                    self.search_config.embedding_model
+                    and self.search_config.embedding_provider
                 )
 
                 vector_queries: List[Union[VectorizedQuery, VectorizableTextQuery]] = []
                 if use_client_side_embeddings:
                     from azure.search.documents.models import VectorizedQuery
 
-                    embedding_vector: List[float] = await self._get_embedding(search_query.query)
+                    embedding_vector: List[float] = await self._get_embedding(
+                        search_query.query
+                    )
                     for field_spec in self.search_config.vector_fields:
-                        fields = field_spec if isinstance(field_spec, str) else ",".join(field_spec)
+                        fields = (
+                            field_spec
+                            if isinstance(field_spec, str)
+                            else ",".join(field_spec)
+                        )
                         vector_queries.append(
                             VectorizedQuery(
                                 vector=embedding_vector,
@@ -557,7 +621,9 @@ class BaseAzureAISearchTool(
                             content[str(key)] = value
 
                     score = float(metadata.get("@search.score", 0.0))
-                    results.append(SearchResult(score=score, content=content, metadata=metadata))
+                    results.append(
+                        SearchResult(score=score, content=content, metadata=metadata)
+                    )
                 except Exception as e:
                     logger.warning(f"Error processing search document: {e}")
                     continue
@@ -576,7 +642,9 @@ class BaseAzureAISearchTool(
                     error_msg = e.message
 
             if "not found" in error_msg.lower():
-                raise ValueError(f"Index '{self.search_config.index_name}' not found.") from e
+                raise ValueError(
+                    f"Index '{self.search_config.index_name}' not found."
+                ) from e
             elif "unauthorized" in error_msg.lower() or "401" in error_msg:
                 raise ValueError(f"Authentication failed: {error_msg}") from e
             else:
@@ -594,7 +662,9 @@ class BaseAzureAISearchTool(
             "description": self.description,
             "parameters": {
                 "type": "object",
-                "properties": {"query": {"type": "string", "description": "Search query text"}},
+                "properties": {
+                    "query": {"type": "string", "description": "Search query text"}
+                },
                 "required": ["query"],
                 "additionalProperties": False,
             },
@@ -608,22 +678,33 @@ class BaseAzureAISearchTool(
 
         result_strings: List[str] = []
         for i, result in enumerate(value.results, 1):
-            content_items = [f"{k}: {str(v) if v is not None else 'None'}" for k, v in result.content.items()]
+            content_items = [
+                f"{k}: {str(v) if v is not None else 'None'}"
+                for k, v in result.content.items()
+            ]
             content_str = ", ".join(content_items)
-            result_strings.append(f"Result {i} (Score: {result.score:.2f}): {content_str}")
+            result_strings.append(
+                f"Result {i} (Score: {result.score:.2f}): {content_str}"
+            )
 
         return "\n".join(result_strings)
 
     @classmethod
     def _validate_config(
-        cls, config_dict: Dict[str, Any], search_type: Literal["full_text", "vector", "hybrid"]
+        cls,
+        config_dict: Dict[str, Any],
+        search_type: Literal["full_text", "vector", "hybrid"],
     ) -> None:
         """Validate configuration for specific search types."""
         credential = config_dict.get("credential")
         if isinstance(credential, str):
-            raise TypeError("Credential must be AzureKeyCredential, AsyncTokenCredential, or a valid dict")
+            raise TypeError(
+                "Credential must be AzureKeyCredential, AsyncTokenCredential, or a valid dict"
+            )
         if isinstance(credential, dict) and "api_key" not in credential:
-            raise ValueError("If credential is a dict, it must contain an 'api_key' key")
+            raise ValueError(
+                "If credential is a dict, it must contain an 'api_key' key"
+            )
 
         try:
             _ = AzureAISearchConfig(**config_dict)
@@ -633,17 +714,23 @@ class BaseAzureAISearchTool(
         if search_type == "vector":
             vector_fields = config_dict.get("vector_fields")
             if not vector_fields or len(vector_fields) == 0:
-                raise ValueError("vector_fields must contain at least one field name for vector search")
+                raise ValueError(
+                    "vector_fields must contain at least one field name for vector search"
+                )
 
         elif search_type == "hybrid":
             vector_fields = config_dict.get("vector_fields")
             search_fields = config_dict.get("search_fields")
 
             if not vector_fields or len(vector_fields) == 0:
-                raise ValueError("vector_fields must contain at least one field name for hybrid search")
+                raise ValueError(
+                    "vector_fields must contain at least one field name for hybrid search"
+                )
 
             if not search_fields or len(search_fields) == 0:
-                raise ValueError("search_fields must contain at least one field name for hybrid search")
+                raise ValueError(
+                    "search_fields must contain at least one field name for hybrid search"
+                )
 
     @classmethod
     @abstractmethod
@@ -738,7 +825,9 @@ class AzureAISearchTool(EmbeddingProviderMixin, BaseAzureAISearchTool):
 
     @classmethod
     def _create_from_params(
-        cls, config_dict: Dict[str, Any], search_type: Literal["full_text", "vector", "hybrid"]
+        cls,
+        config_dict: Dict[str, Any],
+        search_type: Literal["full_text", "vector", "hybrid"],
     ) -> "AzureAISearchTool":
         """Private helper to create an instance from parameters after validation.
 
@@ -851,7 +940,9 @@ class AzureAISearchTool(EmbeddingProviderMixin, BaseAzureAISearchTool):
                 # assistant = Agent("assistant", tools=[semantic_tool])
         """
         if query_type == "semantic" and not semantic_config_name:
-            raise ValueError("semantic_config_name is required when query_type is 'semantic'")
+            raise ValueError(
+                "semantic_config_name is required when query_type is 'semantic'"
+            )
 
         config_dict = {
             "name": name,
@@ -976,7 +1067,9 @@ class AzureAISearchTool(EmbeddingProviderMixin, BaseAzureAISearchTool):
                 # assistant = Agent("assistant", tools=[azure_openai_tool])
         """
         if embedding_provider == "azure_openai" and not openai_endpoint:
-            raise ValueError("openai_endpoint is required when embedding_provider is 'azure_openai'")
+            raise ValueError(
+                "openai_endpoint is required when embedding_provider is 'azure_openai'"
+            )
 
         config_dict = {
             "name": name,
@@ -1106,10 +1199,14 @@ class AzureAISearchTool(EmbeddingProviderMixin, BaseAzureAISearchTool):
                 # assistant = Agent("assistant", tools=[semantic_tool])
         """
         if query_type == "semantic" and not semantic_config_name:
-            raise ValueError("semantic_config_name is required when query_type is 'semantic'")
+            raise ValueError(
+                "semantic_config_name is required when query_type is 'semantic'"
+            )
 
         if embedding_provider == "azure_openai" and not openai_endpoint:
-            raise ValueError("openai_endpoint is required when embedding_provider is 'azure_openai'")
+            raise ValueError(
+                "openai_endpoint is required when embedding_provider is 'azure_openai'"
+            )
 
         config_dict = {
             "name": name,

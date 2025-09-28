@@ -25,7 +25,9 @@ class MagenticOneCoderAgent(AssistantAgent):
     The prompts and description are sealed, to replicate the original MagenticOne configuration. See AssistantAgent if you wish to modify these values.
     """
 
-    component_provider_override = "autogen_ext.agents.magentic_one.MagenticOneCoderAgent"
+    component_provider_override = (
+        "autogen_ext.agents.magentic_one.MagenticOneCoderAgent"
+    )
 
     def __init__(
         self,

@@ -457,7 +457,7 @@ I'm here to help you create an agent that will genuinely transform how you work.
 
 def get_agent_builder_prompt():
     return AGENT_BUILDER_SYSTEM_PROMPT.format(
-        current_date=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d'),
-        current_time=datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S'),
-        current_year=datetime.datetime.now(datetime.timezone.utc).strftime('%Y')
+        current_date=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+        current_time=datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M:%S"),
+        current_year=datetime.datetime.now(datetime.timezone.utc).strftime("%Y"),
     )

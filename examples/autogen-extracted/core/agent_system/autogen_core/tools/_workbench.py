@@ -33,7 +33,9 @@ class ImageResultContent(BaseModel):
     """The image content of the result."""
 
 
-ResultContent = Annotated[TextResultContent | ImageResultContent, Field(discriminator="type")]
+ResultContent = Annotated[
+    TextResultContent | ImageResultContent, Field(discriminator="type")
+]
 
 
 class ToolResult(BaseModel):
@@ -181,7 +183,10 @@ class Workbench(ABC, ComponentBase[BaseModel]):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         """
         Exit the workbench context manager.

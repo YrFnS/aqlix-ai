@@ -6,7 +6,9 @@ from typing_extensions import Self
 
 
 class CodeExecutionInput(BaseModel):
-    code: str = Field(description="The contents of the Python code block that should be executed")
+    code: str = Field(
+        description="The contents of the Python code block that should be executed"
+    )
 
 
 class CodeExecutionResult(BaseModel):
@@ -26,7 +28,8 @@ class PythonCodeExecutionToolConfig(BaseModel):
 
 
 class PythonCodeExecutionTool(
-    BaseTool[CodeExecutionInput, CodeExecutionResult], Component[PythonCodeExecutionToolConfig]
+    BaseTool[CodeExecutionInput, CodeExecutionResult],
+    Component[PythonCodeExecutionToolConfig],
 ):
     """A tool that executes Python code in a code executor and returns output.
 
@@ -72,13 +75,22 @@ class PythonCodeExecutionTool(
     """
 
     component_config_schema = PythonCodeExecutionToolConfig
-    component_provider_override = "autogen_ext.tools.code_execution.PythonCodeExecutionTool"
+    component_provider_override = (
+        "autogen_ext.tools.code_execution.PythonCodeExecutionTool"
+    )
 
     def __init__(self, executor: CodeExecutor):
-        super().__init__(CodeExecutionInput, CodeExecutionResult, "CodeExecutor", "Execute Python code blocks.")
+        super().__init__(
+            CodeExecutionInput,
+            CodeExecutionResult,
+            "CodeExecutor",
+            "Execute Python code blocks.",
+        )
         self._executor = executor
 
-    async def run(self, args: CodeExecutionInput, cancellation_token: CancellationToken) -> CodeExecutionResult:
+    async def run(
+        self, args: CodeExecutionInput, cancellation_token: CancellationToken
+    ) -> CodeExecutionResult:
         code_blocks = [CodeBlock(code=args.code, language="python")]
         result = await self._executor.execute_code_blocks(
             code_blocks=code_blocks, cancellation_token=cancellation_token

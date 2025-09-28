@@ -36,7 +36,16 @@ Version: 1.0.0 - Revolutionary Iraqi Payment System
 Extraction Value: 8-12 weeks development time saved
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Query, Body, Header, Request
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    BackgroundTasks,
+    Query,
+    Body,
+    Header,
+    Request,
+)
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func, desc, asc
 from typing import List, Optional, Dict, Any, Union, Literal
@@ -66,7 +75,7 @@ from ..core.exceptions import (
     FraudDetectionError,
     ComplianceViolationError,
     InsufficientFundsError,
-    InvalidPaymentMethodError
+    InvalidPaymentMethodError,
 )
 
 # Payment Processing Models
@@ -78,7 +87,7 @@ from ..models.payment_models import (
     PaymentSession,
     FraudCheck,
     ComplianceReport,
-    PaymentAnalytics
+    PaymentAnalytics,
 )
 
 # Payment Gateway Services
@@ -100,7 +109,7 @@ from ..tasks.payment_tasks import (
     generate_payment_report,
     sync_gateway_rates,
     cleanup_expired_sessions,
-    update_fraud_models
+    update_fraud_models,
 )
 
 # Initialize logger
@@ -115,20 +124,24 @@ payment_router = APIRouter(
         401: {"description": "Authentication required"},
         403: {"description": "Insufficient permissions"},
         422: {"description": "Payment processing failed"},
-        500: {"description": "Payment system error"}
-    }
+        500: {"description": "Payment system error"},
+    },
 )
+
 
 # Payment Processing Enums
 class PaymentGateway(str, Enum):
     """Iraqi payment gateways"""
+
     ZAINCASH = "zaincash"
     FASTPAY = "fastpay"
     NASSWALLET = "nasswallet"
     AUTO = "auto"  # Intelligent routing
 
+
 class PaymentMethod(str, Enum):
     """Payment methods"""
+
     MOBILE_WALLET = "mobile_wallet"
     BANK_TRANSFER = "bank_transfer"
     CARD_PAYMENT = "card_payment"
@@ -137,15 +150,19 @@ class PaymentMethod(str, Enum):
     BANK_ACCOUNT = "bank_account"
     DIGITAL_WALLET = "digital_wallet"
 
+
 class Currency(str, Enum):
     """Supported currencies"""
+
     IQD = "IQD"  # Iraqi Dinar (primary)
     USD = "USD"  # US Dollar
     EUR = "EUR"  # Euro
     GBP = "GBP"  # British Pound
 
+
 class PaymentStatus(str, Enum):
     """Payment status values"""
+
     PENDING = "pending"
     PROCESSING = "processing"
     COMPLETED = "completed"
@@ -154,35 +171,45 @@ class PaymentStatus(str, Enum):
     REFUNDED = "refunded"
     DISPUTED = "disputed"
 
+
 class TransactionType(str, Enum):
     """Transaction types"""
+
     PAYMENT = "payment"
     REFUND = "refund"
     CHARGEBACK = "chargeback"
     FEE = "fee"
     ADJUSTMENT = "adjustment"
 
+
 class FraudRiskLevel(str, Enum):
     """Fraud risk assessment levels"""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
 
+
 class ComplianceStatus(str, Enum):
     """Compliance verification status"""
+
     COMPLIANT = "compliant"
     PENDING_REVIEW = "pending_review"
     NON_COMPLIANT = "non_compliant"
     REQUIRES_DOCUMENTATION = "requires_documentation"
 
+
 # Request/Response Models
 class PaymentRequest(BaseModel):
     """Request model for payment processing"""
+
     amount: Decimal = Field(..., description="Payment amount", gt=0)
     currency: Currency = Field(default=Currency.IQD, description="Payment currency")
-    description: str = Field(..., description="Payment description", min_length=3, max_length=500)
-    
+    description: str = Field(
+        ..., description="Payment description", min_length=3, max_length=500
+    )
+
     # Gateway Configuration
     preferred_gateway: PaymentGateway = Field(
         default=PaymentGateway.AUTO, description="Preferred payment gateway"
@@ -190,23 +217,25 @@ class PaymentRequest(BaseModel):
     payment_method: PaymentMethod = Field(
         default=PaymentMethod.MOBILE_WALLET, description="Payment method"
     )
-    
+
     # Customer Information
     customer_info: Dict[str, str] = Field(..., description="Customer information")
-    billing_address: Optional[Dict[str, str]] = Field(None, description="Billing address")
-    
+    billing_address: Optional[Dict[str, str]] = Field(
+        None, description="Billing address"
+    )
+
     # Payment Options
     callback_url: Optional[str] = Field(None, description="Payment callback URL")
     return_url: Optional[str] = Field(None, description="Payment return URL")
     webhook_url: Optional[str] = Field(None, description="Webhook notification URL")
-    
+
     # Security and Compliance
     enable_fraud_check: bool = Field(default=True, description="Enable fraud detection")
     require_3d_secure: bool = Field(default=False, description="Require 3D Secure")
     compliance_level: Literal["standard", "enhanced", "strict"] = Field(
         default="standard", description="Compliance verification level"
     )
-    
+
     # Additional Options
     expires_in_minutes: int = Field(
         default=30, description="Payment session expiry", ge=5, le=1440
@@ -214,92 +243,128 @@ class PaymentRequest(BaseModel):
     reference_id: Optional[str] = Field(None, description="Merchant reference ID")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Additional metadata")
 
-    @validator('amount')
+    @validator("amount")
     def validate_amount(cls, v):
         # Iraqi payment limits: 250 IQD - 50,000,000 IQD
-        if v < Decimal('250'):
+        if v < Decimal("250"):
             raise ValueError("Minimum payment amount is 250 IQD")
-        if v > Decimal('50000000'):
+        if v > Decimal("50000000"):
             raise ValueError("Maximum payment amount is 50,000,000 IQD")
-        return v.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
-    
-    @validator('customer_info')
+        return v.quantize(Decimal("0.001"), rounding=ROUND_HALF_UP)
+
+    @validator("customer_info")
     def validate_customer_info(cls, v):
-        required_fields = ['name', 'phone', 'email']
+        required_fields = ["name", "phone", "email"]
         for field in required_fields:
             if field not in v or not v[field]:
                 raise ValueError(f"Customer {field} is required")
-        
+
         # Validate Iraqi phone number format
-        phone = v['phone']
-        if not phone.startswith(('+964', '964', '07')):
+        phone = v["phone"]
+        if not phone.startswith(("+964", "964", "07")):
             raise ValueError("Invalid Iraqi phone number format")
-        
+
         return v
+
 
 class GatewaySpecificData(BaseModel):
     """Gateway-specific payment data"""
-    zaincash_data: Optional[Dict[str, Any]] = Field(None, description="ZainCash specific data")
-    fastpay_data: Optional[Dict[str, Any]] = Field(None, description="FastPay specific data")
-    nasswallet_data: Optional[Dict[str, Any]] = Field(None, description="NassWallet specific data")
+
+    zaincash_data: Optional[Dict[str, Any]] = Field(
+        None, description="ZainCash specific data"
+    )
+    fastpay_data: Optional[Dict[str, Any]] = Field(
+        None, description="FastPay specific data"
+    )
+    nasswallet_data: Optional[Dict[str, Any]] = Field(
+        None, description="NassWallet specific data"
+    )
+
 
 class PaymentResponse(BaseModel):
     """Response model for payment processing"""
+
     payment_id: str = Field(..., description="Unique payment ID")
     session_id: str = Field(..., description="Payment session ID")
-    
+
     # Payment Details
     amount: Decimal = Field(..., description="Payment amount")
     currency: Currency = Field(..., description="Payment currency")
     gateway: PaymentGateway = Field(..., description="Selected payment gateway")
     payment_method: PaymentMethod = Field(..., description="Payment method used")
-    
+
     # Processing Information
     status: PaymentStatus = Field(..., description="Current payment status")
-    gateway_reference: Optional[str] = Field(None, description="Gateway transaction reference")
-    
+    gateway_reference: Optional[str] = Field(
+        None, description="Gateway transaction reference"
+    )
+
     # URLs and Actions
     payment_url: Optional[str] = Field(None, description="Payment redirect URL")
     qr_code: Optional[str] = Field(None, description="QR code for mobile payments")
     ussd_code: Optional[str] = Field(None, description="USSD code for basic phones")
-    
+
     # Security and Verification
     fraud_risk_level: FraudRiskLevel = Field(..., description="Fraud risk assessment")
-    compliance_status: ComplianceStatus = Field(..., description="Compliance verification")
-    requires_verification: bool = Field(..., description="Additional verification required")
-    
+    compliance_status: ComplianceStatus = Field(
+        ..., description="Compliance verification"
+    )
+    requires_verification: bool = Field(
+        ..., description="Additional verification required"
+    )
+
     # Processing Details
     processing_fee: Decimal = Field(..., description="Processing fee amount")
-    exchange_rate: Optional[Decimal] = Field(None, description="Exchange rate if currency conversion")
-    estimated_settlement: Optional[datetime] = Field(None, description="Estimated settlement time")
-    
+    exchange_rate: Optional[Decimal] = Field(
+        None, description="Exchange rate if currency conversion"
+    )
+    estimated_settlement: Optional[datetime] = Field(
+        None, description="Estimated settlement time"
+    )
+
     # Session Information
     expires_at: datetime = Field(..., description="Payment session expiration")
     created_at: datetime = Field(..., description="Payment creation timestamp")
-    
+
     # Additional Information
-    gateway_specific: Optional[GatewaySpecificData] = Field(None, description="Gateway-specific data")
+    gateway_specific: Optional[GatewaySpecificData] = Field(
+        None, description="Gateway-specific data"
+    )
     next_action: Optional[str] = Field(None, description="Required next action")
-    instructions: List[str] = Field(default_factory=list, description="Payment instructions")
+    instructions: List[str] = Field(
+        default_factory=list, description="Payment instructions"
+    )
+
 
 class PaymentVerificationRequest(BaseModel):
     """Request model for payment verification"""
+
     payment_id: str = Field(..., description="Payment ID to verify")
-    verification_code: Optional[str] = Field(None, description="Verification code if required")
-    gateway_callback_data: Optional[Dict[str, Any]] = Field(None, description="Gateway callback data")
+    verification_code: Optional[str] = Field(
+        None, description="Verification code if required"
+    )
+    gateway_callback_data: Optional[Dict[str, Any]] = Field(
+        None, description="Gateway callback data"
+    )
+
 
 class PaymentVerificationResponse(BaseModel):
     """Response model for payment verification"""
+
     payment_id: str = Field(..., description="Payment ID")
     verification_status: PaymentStatus = Field(..., description="Verification result")
     transaction_id: Optional[str] = Field(None, description="Final transaction ID")
     gateway_response: Dict[str, Any] = Field(..., description="Gateway response data")
     settled_amount: Optional[Decimal] = Field(None, description="Actual settled amount")
-    settlement_date: Optional[datetime] = Field(None, description="Settlement timestamp")
+    settlement_date: Optional[datetime] = Field(
+        None, description="Settlement timestamp"
+    )
     fees: Dict[str, Decimal] = Field(..., description="Fee breakdown")
+
 
 class RefundRequest(BaseModel):
     """Request model for payment refunds"""
+
     payment_id: str = Field(..., description="Original payment ID")
     refund_amount: Optional[Decimal] = Field(None, description="Partial refund amount")
     reason: str = Field(..., description="Refund reason", min_length=10, max_length=500)
@@ -308,40 +373,63 @@ class RefundRequest(BaseModel):
     )
     notify_customer: bool = Field(default=True, description="Send refund notification")
 
+
 class RefundResponse(BaseModel):
     """Response model for refund processing"""
+
     refund_id: str = Field(..., description="Unique refund ID")
     payment_id: str = Field(..., description="Original payment ID")
     refund_amount: Decimal = Field(..., description="Refund amount")
     refund_status: PaymentStatus = Field(..., description="Refund status")
-    gateway_refund_id: Optional[str] = Field(None, description="Gateway refund reference")
-    estimated_completion: Optional[datetime] = Field(None, description="Estimated refund completion")
+    gateway_refund_id: Optional[str] = Field(
+        None, description="Gateway refund reference"
+    )
+    estimated_completion: Optional[datetime] = Field(
+        None, description="Estimated refund completion"
+    )
     refund_fees: Decimal = Field(..., description="Refund processing fees")
     processed_at: datetime = Field(..., description="Refund processing timestamp")
 
+
 class PaymentAnalyticsResponse(BaseModel):
     """Response model for payment analytics"""
+
     period: str = Field(..., description="Analytics period")
     total_payments: int = Field(..., description="Total number of payments")
     total_volume: Decimal = Field(..., description="Total payment volume")
-    
+
     # Success Metrics
     success_rate: float = Field(..., ge=0.0, le=1.0, description="Payment success rate")
-    average_transaction_value: Decimal = Field(..., description="Average transaction value")
-    
+    average_transaction_value: Decimal = Field(
+        ..., description="Average transaction value"
+    )
+
     # Gateway Performance
-    gateway_performance: Dict[str, Dict[str, Any]] = Field(..., description="Gateway performance metrics")
-    payment_method_distribution: Dict[str, int] = Field(..., description="Payment method usage")
-    currency_distribution: Dict[str, Decimal] = Field(..., description="Currency volume distribution")
-    
+    gateway_performance: Dict[str, Dict[str, Any]] = Field(
+        ..., description="Gateway performance metrics"
+    )
+    payment_method_distribution: Dict[str, int] = Field(
+        ..., description="Payment method usage"
+    )
+    currency_distribution: Dict[str, Decimal] = Field(
+        ..., description="Currency volume distribution"
+    )
+
     # Fraud and Compliance
-    fraud_prevention_saves: Decimal = Field(..., description="Amount saved by fraud prevention")
-    compliance_rate: float = Field(..., ge=0.0, le=1.0, description="Compliance success rate")
-    
+    fraud_prevention_saves: Decimal = Field(
+        ..., description="Amount saved by fraud prevention"
+    )
+    compliance_rate: float = Field(
+        ..., ge=0.0, le=1.0, description="Compliance success rate"
+    )
+
     # Trends and Insights
     trends: Dict[str, float] = Field(..., description="Performance trends")
     peak_hours: List[int] = Field(..., description="Peak transaction hours")
-    geographical_distribution: Dict[str, int] = Field(..., description="Payments by Iraqi governorate")
+    geographical_distribution: Dict[str, int] = Field(
+        ..., description="Payments by Iraqi governorate"
+    )
+
 
 # Initialize Services
 zaincash_service = ZainCashService()
@@ -359,10 +447,11 @@ tokenization_service = PaymentTokenizationService()
 GATEWAY_SERVICES = {
     PaymentGateway.ZAINCASH: zaincash_service,
     PaymentGateway.FASTPAY: fastpay_service,
-    PaymentGateway.NASSWALLET: nasswallet_service
+    PaymentGateway.NASSWALLET: nasswallet_service,
 }
 
 # Payment Processing Endpoints
+
 
 @payment_router.post("/create", response_model=PaymentResponse)
 async def create_payment(
@@ -372,11 +461,11 @@ async def create_payment(
     request_obj: Request = None,
     background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> PaymentResponse:
     """
     Create Iraqi payment with intelligent gateway routing and fraud protection
-    
+
     Advanced payment processing featuring:
     - Intelligent gateway selection with ZainCash, FastPay, NassWallet support
     - Real-time fraud detection with Iraqi payment pattern analysis
@@ -390,19 +479,23 @@ async def create_payment(
     payment_id = str(uuid.uuid4())
     session_id = str(uuid.uuid4())
     start_time = datetime.now(timezone.utc)
-    
+
     try:
         logger.info(f"Creating payment {payment_id} for user {current_user.id}")
-        
+
         # Extract client information for fraud detection
-        client_ip = x_forwarded_for.split(',')[0].strip() if x_forwarded_for else request_obj.client.host
+        client_ip = (
+            x_forwarded_for.split(",")[0].strip()
+            if x_forwarded_for
+            else request_obj.client.host
+        )
         client_data = {
-            'ip_address': client_ip,
-            'user_agent': user_agent,
-            'user_id': current_user.id,
-            'timestamp': start_time
+            "ip_address": client_ip,
+            "user_agent": user_agent,
+            "user_id": current_user.id,
+            "timestamp": start_time,
         }
-        
+
         # Fraud detection and risk assessment
         if request.enable_fraud_check:
             fraud_result = await fraud_service.assess_payment_risk(
@@ -410,68 +503,69 @@ async def create_payment(
                 currency=request.currency,
                 customer_info=request.customer_info,
                 client_data=client_data,
-                payment_method=request.payment_method
+                payment_method=request.payment_method,
             )
-            
+
             # Block high-risk transactions
             if fraud_result.risk_level == FraudRiskLevel.CRITICAL:
                 raise HTTPException(
-                    status_code=422,
-                    detail="Transaction blocked due to high fraud risk"
+                    status_code=422, detail="Transaction blocked due to high fraud risk"
                 )
         else:
-            fraud_result = type('FraudResult', (), {
-                'risk_level': FraudRiskLevel.LOW,
-                'risk_score': 0.1,
-                'risk_factors': []
-            })()
-        
+            fraud_result = type(
+                "FraudResult",
+                (),
+                {
+                    "risk_level": FraudRiskLevel.LOW,
+                    "risk_score": 0.1,
+                    "risk_factors": [],
+                },
+            )()
+
         # Compliance verification
         compliance_result = await compliance_service.verify_payment_compliance(
             amount=request.amount,
             currency=request.currency,
             customer_info=request.customer_info,
             payment_method=request.payment_method,
-            compliance_level=request.compliance_level
+            compliance_level=request.compliance_level,
         )
-        
+
         # Currency conversion if needed
         final_amount = request.amount
         exchange_rate = None
         if request.currency != Currency.IQD:
             conversion_result = await currency_service.convert_to_iqd(
-                amount=request.amount,
-                from_currency=request.currency
+                amount=request.amount, from_currency=request.currency
             )
             final_amount = conversion_result.iqd_amount
             exchange_rate = conversion_result.exchange_rate
-        
+
         # Gateway selection using intelligent routing
         if request.preferred_gateway == PaymentGateway.AUTO:
             selected_gateway = await routing_service.select_optimal_gateway(
                 amount=final_amount,
                 payment_method=request.payment_method,
                 customer_location=client_ip,
-                fraud_risk=fraud_result.risk_level
+                fraud_risk=fraud_result.risk_level,
             )
         else:
             selected_gateway = request.preferred_gateway
-        
+
         # Get gateway service
         gateway_service = GATEWAY_SERVICES.get(selected_gateway)
         if not gateway_service:
             raise HTTPException(
-                status_code=400,
-                detail=f"Gateway {selected_gateway} not available"
+                status_code=400, detail=f"Gateway {selected_gateway} not available"
             )
-        
+
         # Calculate processing fees
         fee_calculation = await gateway_service.calculate_fees(
             amount=final_amount,
             payment_method=request.payment_method,
-            currency=Currency.IQD
+            currency=Currency.IQD,
         )
-        
+
         # Create payment session
         gateway_session = await gateway_service.create_payment_session(
             amount=final_amount,
@@ -482,9 +576,9 @@ async def create_payment(
             callback_url=request.callback_url,
             return_url=request.return_url,
             expires_in=request.expires_in_minutes,
-            reference_id=request.reference_id or payment_id
+            reference_id=request.reference_id or payment_id,
         )
-        
+
         # Store payment record
         payment_record = Payment(
             id=payment_id,
@@ -508,11 +602,11 @@ async def create_payment(
             expires_at=start_time + timedelta(minutes=request.expires_in_minutes),
             created_at=start_time,
             reference_id=request.reference_id,
-            metadata=json.dumps(request.metadata) if request.metadata else None
+            metadata=json.dumps(request.metadata) if request.metadata else None,
         )
         db.add(payment_record)
         db.commit()
-        
+
         # Store fraud check result
         if request.enable_fraud_check:
             fraud_record = FraudCheck(
@@ -523,11 +617,11 @@ async def create_payment(
                 risk_factors=json.dumps(fraud_result.risk_factors),
                 client_ip=client_ip,
                 user_agent=user_agent,
-                checked_at=start_time
+                checked_at=start_time,
             )
             db.add(fraud_record)
             db.commit()
-        
+
         # Prepare gateway-specific data
         gateway_specific_data = None
         if selected_gateway == PaymentGateway.ZAINCASH:
@@ -542,13 +636,13 @@ async def create_payment(
             gateway_specific_data = GatewaySpecificData(
                 nasswallet_data=gateway_session.gateway_data
             )
-        
+
         # Generate payment instructions
         instructions = await gateway_service.get_payment_instructions(
             payment_method=request.payment_method,
-            language='ar'  # Arabic instructions for Iraqi users
+            language="ar",  # Arabic instructions for Iraqi users
         )
-        
+
         # Prepare response
         response = PaymentResponse(
             payment_id=payment_id,
@@ -572,47 +666,49 @@ async def create_payment(
             created_at=start_time,
             gateway_specific=gateway_specific_data,
             next_action=gateway_session.next_action,
-            instructions=instructions
+            instructions=instructions,
         )
-        
+
         # Schedule background tasks
         background_tasks.add_task(
             process_payment_background,
             payment_id,
             selected_gateway.value,
-            current_user.id
+            current_user.id,
         )
-        
+
         # Set up webhook if provided
         if request.webhook_url:
             await webhook_service.register_webhook(
                 payment_id=payment_id,
                 webhook_url=request.webhook_url,
-                events=['payment.completed', 'payment.failed']
+                events=["payment.completed", "payment.failed"],
             )
-        
-        logger.info(f"Payment {payment_id} created successfully with gateway {selected_gateway}")
+
+        logger.info(
+            f"Payment {payment_id} created successfully with gateway {selected_gateway}"
+        )
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Payment creation error {payment_id}: {str(e)}")
         db.rollback()
         raise HTTPException(
-            status_code=500,
-            detail=f"Payment creation failed: {str(e)}"
+            status_code=500, detail=f"Payment creation failed: {str(e)}"
         )
+
 
 @payment_router.post("/verify", response_model=PaymentVerificationResponse)
 async def verify_payment(
     request: PaymentVerificationRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> PaymentVerificationResponse:
     """
     Verify Iraqi payment status with comprehensive validation
-    
+
     Payment verification featuring:
     - Real-time gateway status checking
     - Transaction confirmation and settlement verification
@@ -622,44 +718,45 @@ async def verify_payment(
     - Automatic payment completion processing
     """
     try:
-        logger.info(f"Verifying payment {request.payment_id} for user {current_user.id}")
-        
+        logger.info(
+            f"Verifying payment {request.payment_id} for user {current_user.id}"
+        )
+
         # Find payment record
-        payment = db.query(Payment).filter(
-            Payment.id == request.payment_id,
-            Payment.user_id == current_user.id
-        ).first()
-        
+        payment = (
+            db.query(Payment)
+            .filter(
+                Payment.id == request.payment_id, Payment.user_id == current_user.id
+            )
+            .first()
+        )
+
         if not payment:
             raise HTTPException(
-                status_code=404,
-                detail="Payment not found or access denied"
+                status_code=404, detail="Payment not found or access denied"
             )
-        
+
         # Check payment expiration
         if payment.expires_at < datetime.now(timezone.utc):
             payment.status = PaymentStatus.CANCELLED.value
             db.commit()
-            raise HTTPException(
-                status_code=410,
-                detail="Payment session expired"
-            )
-        
+            raise HTTPException(status_code=410, detail="Payment session expired")
+
         # Get gateway service
         gateway_service = GATEWAY_SERVICES.get(PaymentGateway(payment.gateway))
         if not gateway_service:
             raise HTTPException(
                 status_code=400,
-                detail=f"Gateway {payment.gateway} not available for verification"
+                detail=f"Gateway {payment.gateway} not available for verification",
             )
-        
+
         # Verify payment with gateway
         gateway_verification = await gateway_service.verify_payment(
             gateway_reference=payment.gateway_reference,
             verification_code=request.verification_code,
-            callback_data=request.gateway_callback_data
+            callback_data=request.gateway_callback_data,
         )
-        
+
         # Update payment status
         original_status = payment.status
         payment.status = gateway_verification.status.value
@@ -668,16 +765,16 @@ async def verify_payment(
         payment.settlement_date = gateway_verification.settlement_date
         payment.gateway_response = json.dumps(gateway_verification.raw_response)
         payment.verified_at = datetime.now(timezone.utc)
-        
+
         # Calculate final fees
         fee_breakdown = {
-            'gateway_fee': gateway_verification.gateway_fee,
-            'processing_fee': payment.processing_fee,
-            'total_fee': gateway_verification.gateway_fee + payment.processing_fee
+            "gateway_fee": gateway_verification.gateway_fee,
+            "processing_fee": payment.processing_fee,
+            "total_fee": gateway_verification.gateway_fee + payment.processing_fee,
         }
-        
+
         db.commit()
-        
+
         # Create transaction record for successful payments
         if gateway_verification.status == PaymentStatus.COMPLETED:
             transaction = Transaction(
@@ -691,19 +788,19 @@ async def verify_payment(
                 gateway_transaction_id=gateway_verification.transaction_id,
                 status=PaymentStatus.COMPLETED.value,
                 fees=json.dumps(fee_breakdown),
-                processed_at=datetime.now(timezone.utc)
+                processed_at=datetime.now(timezone.utc),
             )
             db.add(transaction)
             db.commit()
-        
+
         # Send webhook notification if status changed
         if original_status != payment.status:
             await webhook_service.send_payment_webhook(
                 payment_id=payment.id,
                 event=f"payment.{payment.status}",
-                data=gateway_verification.raw_response
+                data=gateway_verification.raw_response,
             )
-        
+
         # Prepare response
         response = PaymentVerificationResponse(
             payment_id=payment.id,
@@ -712,30 +809,30 @@ async def verify_payment(
             gateway_response=gateway_verification.raw_response,
             settled_amount=gateway_verification.settled_amount,
             settlement_date=gateway_verification.settlement_date,
-            fees=fee_breakdown
+            fees=fee_breakdown,
         )
-        
+
         logger.info(f"Payment {request.payment_id} verified: {payment.status}")
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Payment verification error {request.payment_id}: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail=f"Payment verification failed: {str(e)}"
+            status_code=500, detail=f"Payment verification failed: {str(e)}"
         )
+
 
 @payment_router.post("/refund", response_model=RefundResponse)
 async def process_refund(
     request: RefundRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> RefundResponse:
     """
     Process payment refunds with Iraqi gateway compliance
-    
+
     Refund processing featuring:
     - Full and partial refund support
     - Iraqi gateway-specific refund procedures
@@ -745,65 +842,75 @@ async def process_refund(
     - Fee calculation and merchant impact analysis
     """
     refund_id = str(uuid.uuid4())
-    
+
     try:
         logger.info(f"Processing refund {refund_id} for payment {request.payment_id}")
-        
+
         # Find original payment
-        payment = db.query(Payment).filter(
-            Payment.id == request.payment_id,
-            Payment.user_id == current_user.id,
-            Payment.status == PaymentStatus.COMPLETED.value
-        ).first()
-        
+        payment = (
+            db.query(Payment)
+            .filter(
+                Payment.id == request.payment_id,
+                Payment.user_id == current_user.id,
+                Payment.status == PaymentStatus.COMPLETED.value,
+            )
+            .first()
+        )
+
         if not payment:
             raise HTTPException(
                 status_code=404,
-                detail="Original payment not found or not eligible for refund"
+                detail="Original payment not found or not eligible for refund",
             )
-        
+
         # Validate refund amount
-        refund_amount = request.refund_amount or payment.settled_amount or payment.final_amount
+        refund_amount = (
+            request.refund_amount or payment.settled_amount or payment.final_amount
+        )
         if refund_amount > (payment.settled_amount or payment.final_amount):
             raise HTTPException(
                 status_code=422,
-                detail="Refund amount cannot exceed original payment amount"
+                detail="Refund amount cannot exceed original payment amount",
             )
-        
+
         # Check existing refunds
         existing_refunds = db.query(func.sum(Refund.refund_amount)).filter(
             Refund.payment_id == request.payment_id,
-            Refund.status.in_([PaymentStatus.COMPLETED.value, PaymentStatus.PROCESSING.value])
-        ).scalar() or Decimal('0')
-        
-        if existing_refunds + refund_amount > (payment.settled_amount or payment.final_amount):
+            Refund.status.in_(
+                [PaymentStatus.COMPLETED.value, PaymentStatus.PROCESSING.value]
+            ),
+        ).scalar() or Decimal("0")
+
+        if existing_refunds + refund_amount > (
+            payment.settled_amount or payment.final_amount
+        ):
             raise HTTPException(
                 status_code=422,
-                detail="Total refund amount would exceed original payment"
+                detail="Total refund amount would exceed original payment",
             )
-        
+
         # Get gateway service
         gateway_service = GATEWAY_SERVICES.get(PaymentGateway(payment.gateway))
         if not gateway_service:
             raise HTTPException(
                 status_code=400,
-                detail=f"Refunds not supported for gateway {payment.gateway}"
+                detail=f"Refunds not supported for gateway {payment.gateway}",
             )
-        
+
         # Process refund with gateway
         gateway_refund = await gateway_service.process_refund(
             original_transaction_id=payment.transaction_id,
             refund_amount=refund_amount,
             refund_reason=request.reason,
-            refund_method=request.refund_method
+            refund_method=request.refund_method,
         )
-        
+
         # Calculate refund fees
         refund_fees = await gateway_service.calculate_refund_fees(
             refund_amount=refund_amount,
-            original_payment_method=PaymentMethod(payment.payment_method)
+            original_payment_method=PaymentMethod(payment.payment_method),
         )
-        
+
         # Store refund record
         refund_record = Refund(
             id=refund_id,
@@ -816,11 +923,11 @@ async def process_refund(
             gateway_refund_id=gateway_refund.gateway_refund_id,
             estimated_completion=gateway_refund.estimated_completion,
             refund_fees=refund_fees.total_fee,
-            processed_at=datetime.now(timezone.utc)
+            processed_at=datetime.now(timezone.utc),
         )
         db.add(refund_record)
         db.commit()
-        
+
         # Create refund transaction record
         refund_transaction = Transaction(
             id=str(uuid.uuid4()),
@@ -832,28 +939,28 @@ async def process_refund(
             gateway=payment.gateway,
             gateway_transaction_id=gateway_refund.gateway_refund_id,
             status=gateway_refund.status.value,
-            fees=json.dumps({'refund_fee': refund_fees.total_fee}),
-            processed_at=datetime.now(timezone.utc)
+            fees=json.dumps({"refund_fee": refund_fees.total_fee}),
+            processed_at=datetime.now(timezone.utc),
         )
         db.add(refund_transaction)
         db.commit()
-        
+
         # Send customer notification if requested
         if request.notify_customer:
             # Implementation would send SMS/email notification
             pass
-        
+
         # Send webhook notification
         await webhook_service.send_payment_webhook(
             payment_id=payment.id,
             event="payment.refunded",
             data={
-                'refund_id': refund_id,
-                'refund_amount': str(refund_amount),
-                'refund_status': gateway_refund.status.value
-            }
+                "refund_id": refund_id,
+                "refund_amount": str(refund_amount),
+                "refund_status": gateway_refund.status.value,
+            },
         )
-        
+
         response = RefundResponse(
             refund_id=refund_id,
             payment_id=payment.id,
@@ -862,21 +969,21 @@ async def process_refund(
             gateway_refund_id=gateway_refund.gateway_refund_id,
             estimated_completion=gateway_refund.estimated_completion,
             refund_fees=refund_fees.total_fee,
-            processed_at=datetime.now(timezone.utc)
+            processed_at=datetime.now(timezone.utc),
         )
-        
+
         logger.info(f"Refund {refund_id} processed successfully")
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Refund processing error {refund_id}: {str(e)}")
         db.rollback()
         raise HTTPException(
-            status_code=500,
-            detail=f"Refund processing failed: {str(e)}"
+            status_code=500, detail=f"Refund processing failed: {str(e)}"
         )
+
 
 @payment_router.get("/analytics", response_model=PaymentAnalyticsResponse)
 async def get_payment_analytics(
@@ -885,11 +992,11 @@ async def get_payment_analytics(
     ),
     gateway: Optional[PaymentGateway] = Query(None, description="Filter by gateway"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> PaymentAnalyticsResponse:
     """
     Comprehensive Iraqi payment analytics and performance metrics
-    
+
     Analytics featuring:
     - Payment volume and success rate analysis
     - Gateway performance comparison
@@ -900,16 +1007,16 @@ async def get_payment_analytics(
     """
     try:
         logger.info(f"Retrieving payment analytics for user {current_user.id}")
-        
+
         # Generate comprehensive analytics
         analytics = await analytics_service.generate_payment_analytics(
             user_id=current_user.id,
             period=period,
             gateway_filter=gateway,
             include_fraud_metrics=True,
-            include_geographical_data=True
+            include_geographical_data=True,
         )
-        
+
         response = PaymentAnalyticsResponse(
             period=period,
             total_payments=analytics.total_payments,
@@ -923,51 +1030,47 @@ async def get_payment_analytics(
             compliance_rate=analytics.compliance_rate,
             trends=analytics.trends,
             peak_hours=analytics.peak_hours,
-            geographical_distribution=analytics.geographical_distribution
+            geographical_distribution=analytics.geographical_distribution,
         )
-        
+
         logger.info(f"Payment analytics generated for period: {period}")
         return response
-        
+
     except Exception as e:
         logger.error(f"Error generating payment analytics: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to generate payment analytics: {str(e)}"
+            status_code=500, detail=f"Failed to generate payment analytics: {str(e)}"
         )
+
 
 @payment_router.get("/{payment_id}")
 async def get_payment_details(
     payment_id: str,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
     """
     Retrieve detailed payment information
     """
     try:
         # Find payment record
-        payment = db.query(Payment).filter(
-            Payment.id == payment_id,
-            Payment.user_id == current_user.id
-        ).first()
-        
+        payment = (
+            db.query(Payment)
+            .filter(Payment.id == payment_id, Payment.user_id == current_user.id)
+            .first()
+        )
+
         if not payment:
-            raise HTTPException(
-                status_code=404,
-                detail="Payment not found"
-            )
-        
+            raise HTTPException(status_code=404, detail="Payment not found")
+
         # Get related transactions
-        transactions = db.query(Transaction).filter(
-            Transaction.payment_id == payment_id
-        ).all()
-        
+        transactions = (
+            db.query(Transaction).filter(Transaction.payment_id == payment_id).all()
+        )
+
         # Get refunds if any
-        refunds = db.query(Refund).filter(
-            Refund.payment_id == payment_id
-        ).all()
-        
+        refunds = db.query(Refund).filter(Refund.payment_id == payment_id).all()
+
         # Prepare response
         response = {
             "payment_id": payment.id,
@@ -985,17 +1088,24 @@ async def get_payment_details(
             "processing_fee": payment.processing_fee,
             "exchange_rate": payment.exchange_rate,
             "created_at": payment.created_at.isoformat(),
-            "expires_at": payment.expires_at.isoformat() if payment.expires_at else None,
-            "verified_at": payment.verified_at.isoformat() if payment.verified_at else None,
-            "settlement_date": payment.settlement_date.isoformat() if payment.settlement_date else None,
+            "expires_at": payment.expires_at.isoformat()
+            if payment.expires_at
+            else None,
+            "verified_at": payment.verified_at.isoformat()
+            if payment.verified_at
+            else None,
+            "settlement_date": payment.settlement_date.isoformat()
+            if payment.settlement_date
+            else None,
             "transactions": [
                 {
                     "id": t.id,
                     "type": t.transaction_type,
                     "amount": t.amount,
                     "status": t.status,
-                    "processed_at": t.processed_at.isoformat()
-                } for t in transactions
+                    "processed_at": t.processed_at.isoformat(),
+                }
+                for t in transactions
             ],
             "refunds": [
                 {
@@ -1003,29 +1113,28 @@ async def get_payment_details(
                     "amount": r.refund_amount,
                     "reason": r.reason,
                     "status": r.status,
-                    "processed_at": r.processed_at.isoformat()
-                } for r in refunds
-            ]
+                    "processed_at": r.processed_at.isoformat(),
+                }
+                for r in refunds
+            ],
         }
-        
+
         logger.info(f"Retrieved payment details for {payment_id}")
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error retrieving payment {payment_id}: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail="Failed to retrieve payment details"
+            status_code=500, detail="Failed to retrieve payment details"
         )
+
 
 # Webhook handling endpoint
 @payment_router.post("/webhook/{gateway}")
 async def handle_payment_webhook(
-    gateway: PaymentGateway,
-    request: Request,
-    db: Session = Depends(get_db)
+    gateway: PaymentGateway, request: Request, db: Session = Depends(get_db)
 ):
     """
     Handle payment webhooks from Iraqi gateways
@@ -1034,36 +1143,33 @@ async def handle_payment_webhook(
         # Get raw body for signature verification
         body = await request.body()
         headers = dict(request.headers)
-        
+
         # Get gateway service
         gateway_service = GATEWAY_SERVICES.get(gateway)
         if not gateway_service:
             raise HTTPException(
-                status_code=400,
-                detail=f"Webhook handler for {gateway} not available"
+                status_code=400, detail=f"Webhook handler for {gateway} not available"
             )
-        
+
         # Verify webhook signature
         is_valid = await gateway_service.verify_webhook_signature(
-            body=body,
-            headers=headers
+            body=body, headers=headers
         )
-        
+
         if not is_valid:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid webhook signature"
-            )
-        
+            raise HTTPException(status_code=401, detail="Invalid webhook signature")
+
         # Process webhook
         webhook_data = await gateway_service.process_webhook(body=body)
-        
+
         # Update payment status if needed
         if webhook_data.payment_reference:
-            payment = db.query(Payment).filter(
-                Payment.gateway_reference == webhook_data.payment_reference
-            ).first()
-            
+            payment = (
+                db.query(Payment)
+                .filter(Payment.gateway_reference == webhook_data.payment_reference)
+                .first()
+            )
+
             if payment and payment.status != webhook_data.status.value:
                 payment.status = webhook_data.status.value
                 if webhook_data.transaction_id:
@@ -1071,50 +1177,48 @@ async def handle_payment_webhook(
                 if webhook_data.settled_amount:
                     payment.settled_amount = webhook_data.settled_amount
                     payment.settlement_date = datetime.now(timezone.utc)
-                
+
                 db.commit()
-                
+
                 # Forward webhook to merchant if configured
                 await webhook_service.forward_webhook(
-                    payment_id=payment.id,
-                    webhook_data=webhook_data.raw_data
+                    payment_id=payment.id, webhook_data=webhook_data.raw_data
                 )
-        
+
         return {"status": "processed", "message": "Webhook processed successfully"}
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Webhook processing error for {gateway}: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Webhook processing failed"
-        )
+        raise HTTPException(status_code=500, detail="Webhook processing failed")
+
 
 # Administrative endpoints
-@payment_router.post("/admin/sync-rates", dependencies=[Depends(require_permissions(["admin"]))])
+@payment_router.post(
+    "/admin/sync-rates", dependencies=[Depends(require_permissions(["admin"]))]
+)
 async def sync_exchange_rates(
-    background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user)
+    background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)
 ) -> Dict[str, str]:
     """
     Sync Iraqi currency exchange rates (Admin only)
     """
     try:
         background_tasks.add_task(sync_gateway_rates)
-        
+
         logger.info(f"Exchange rates sync initiated by admin {current_user.id}")
         return {
             "status": "initiated",
-            "message": "Exchange rates synchronization started in background"
+            "message": "Exchange rates synchronization started in background",
         }
-        
+
     except Exception as e:
         logger.error(f"Error initiating rates sync: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail="Failed to initiate exchange rates synchronization"
+            status_code=500, detail="Failed to initiate exchange rates synchronization"
         )
+
 
 # Health check endpoint
 @payment_router.get("/health")
@@ -1127,7 +1231,7 @@ async def payment_system_health() -> Dict[str, Any]:
         gateway_health = {}
         for gateway, service in GATEWAY_SERVICES.items():
             gateway_health[f"{gateway.value}_service"] = await service.health_check()
-        
+
         # Check additional services
         services_status = {
             **gateway_health,
@@ -1137,25 +1241,26 @@ async def payment_system_health() -> Dict[str, Any]:
             "currency_service": await currency_service.health_check(),
             "analytics_service": await analytics_service.health_check(),
             "webhook_service": await webhook_service.health_check(),
-            "tokenization_service": await tokenization_service.health_check()
+            "tokenization_service": await tokenization_service.health_check(),
         }
-        
+
         overall_health = all(services_status.values())
-        
+
         return {
             "status": "healthy" if overall_health else "degraded",
             "services": services_status,
             "timestamp": datetime.now().isoformat(),
-            "version": "1.0.0"
+            "version": "1.0.0",
         }
-        
+
     except Exception as e:
         logger.error(f"Payment system health check failed: {str(e)}")
         return {
             "status": "unhealthy",
             "error": str(e),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
+
 
 # Router configuration and metadata
 payment_router.tags = ["Payment Processing", "Iraqi Payment Gateways"]

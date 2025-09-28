@@ -126,7 +126,9 @@ class PageLogger:
         self.finalized = True
 
     @staticmethod
-    def _decorate_text(text: str, color: str, weight: str = "bold", demarcate: bool = False) -> str:
+    def _decorate_text(
+        text: str, color: str, weight: str = "bold", demarcate: bool = False
+    ) -> str:
         """
         Returns a string of text with HTML styling for weight and color.
         """
@@ -155,7 +157,9 @@ class PageLogger:
             shutil.rmtree(self.log_dir)
         os.makedirs(self.log_dir)
 
-    def _add_page(self, summary: str, show_in_call_tree: bool = True, finished: bool = True) -> "Page":
+    def _add_page(
+        self, summary: str, show_in_call_tree: bool = True, finished: bool = True
+    ) -> "Page":
         """
         Adds a new page to the log.
         """
@@ -256,7 +260,9 @@ class PageLogger:
                     image_path = os.path.join(self.log_dir, image_filename)
                     item.image.save(image_path)
                     # Add a link to the image.
-                    content_list.append(self._link_to_image(image_filename, "message_image"))
+                    content_list.append(
+                        self._link_to_image(image_filename, "message_image")
+                    )
                 elif isinstance(item, Dict):
                     # Add a dictionary to the log.
                     json_str = json.dumps(item, indent=4)
@@ -272,7 +278,9 @@ class PageLogger:
             output += f"\n{item}\n"
         return output
 
-    def log_message_content(self, message_content: MessageContent, summary: str) -> None:
+    def log_message_content(
+        self, message_content: MessageContent, summary: str
+    ) -> None:
         """
         Adds a page containing the message's content, including any images.
         """
@@ -299,7 +307,11 @@ class PageLogger:
         page.flush()
 
     def _log_model_messages(
-        self, summary: str, input_messages: List[LLMMessage], response_str: str, usage: RequestUsage | None
+        self,
+        summary: str,
+        input_messages: List[LLMMessage],
+        response_str: str,
+        usage: RequestUsage | None,
     ) -> Optional["Page"]:
         """
         Adds a page containing the messages to a model (including any input images) and its response.
@@ -313,7 +325,9 @@ class PageLogger:
         for m in input_messages:
             page.add_lines("\n" + self._message_source(m))
             page.add_lines(self._format_message_content(message_content=m.content))
-        page.add_lines("\n" + self._decorate_text("ASSISTANT RESPONSE", "green", demarcate=True))
+        page.add_lines(
+            "\n" + self._decorate_text("ASSISTANT RESPONSE", "green", demarcate=True)
+        )
         page.add_lines("\n" + response_str + "\n")
         page.flush()
         return page
@@ -331,7 +345,9 @@ class PageLogger:
         if not isinstance(response_str, str):
             response_str = "??"
 
-        page = self._log_model_messages(summary, input_messages, response_str, response.usage)
+        page = self._log_model_messages(
+            summary, input_messages, response_str, response.usage
+        )
         return page
 
     def log_model_task(
@@ -422,7 +438,9 @@ class PageLogger:
                     caller_name = class_name + "." + frame.f_code.co_name
 
                 # Create a new page for this function.
-                page = self._add_page(summary=caller_name, show_in_call_tree=True, finished=False)
+                page = self._add_page(
+                    summary=caller_name, show_in_call_tree=True, finished=False
+                )
                 self.page_stack.push(page)
                 self.page_stack.write_stack_to_page(page)
 

@@ -175,7 +175,9 @@ class TextCanvasMemory(Memory):
         super().__init__()
         self.canvas = canvas if canvas is not None else TextCanvas()
 
-    async def update_context(self, model_context: ChatCompletionContext) -> UpdateContextResult:
+    async def update_context(
+        self, model_context: ChatCompletionContext
+    ) -> UpdateContextResult:
         """
         Inject the entire canvas summary (or a selected subset) as reference data.
         Here, we just put it into a system message, but you could customize.
@@ -186,13 +188,20 @@ class TextCanvasMemory(Memory):
             await model_context.add_message(msg)
 
             # Return it for debugging/logging
-            memory_content = MemoryContent(content=snapshot, mime_type=MemoryMimeType.TEXT)
-            return UpdateContextResult(memories=MemoryQueryResult(results=[memory_content]))
+            memory_content = MemoryContent(
+                content=snapshot, mime_type=MemoryMimeType.TEXT
+            )
+            return UpdateContextResult(
+                memories=MemoryQueryResult(results=[memory_content])
+            )
 
         return UpdateContextResult(memories=MemoryQueryResult(results=[]))
 
     async def query(
-        self, query: str | MemoryContent, cancellation_token: Optional[CancellationToken] = None, **kwargs: Any
+        self,
+        query: str | MemoryContent,
+        cancellation_token: Optional[CancellationToken] = None,
+        **kwargs: Any,
     ) -> MemoryQueryResult:
         """
         Potentially search for matching filenames or file content.
@@ -200,7 +209,11 @@ class TextCanvasMemory(Memory):
         """
         return MemoryQueryResult(results=[])
 
-    async def add(self, content: MemoryContent, cancellation_token: Optional[CancellationToken] = None) -> None:
+    async def add(
+        self,
+        content: MemoryContent,
+        cancellation_token: Optional[CancellationToken] = None,
+    ) -> None:
         """
         Example usage: Possibly interpret content as a patch or direct file update.
         Could also be done by a specialized "CanvasTool" instead.

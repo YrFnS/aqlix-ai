@@ -20,7 +20,11 @@ def extract_audio(video_path: str, audio_output_path: str) -> str:
     :param audio_output_path: Path to save the extracted audio file.
     :return: Confirmation message with the path to the saved audio file.
     """
-    (ffmpeg.input(video_path).output(audio_output_path, format="mp3").run(quiet=True, overwrite_output=True))  # type: ignore
+    (
+        ffmpeg.input(video_path)
+        .output(audio_output_path, format="mp3")
+        .run(quiet=True, overwrite_output=True)
+    )  # type: ignore
     return f"Audio extracted and saved to {audio_output_path}."
 
 
@@ -32,7 +36,9 @@ def transcribe_audio_with_timestamps(audio_path: str) -> str:
     :return: Transcription with timestamps.
     """
     model = whisper.load_model("base")  # type: ignore
-    result: Dict[str, Any] = model.transcribe(audio_path, task="transcribe", language="en", verbose=False)  # type: ignore
+    result: Dict[str, Any] = model.transcribe(
+        audio_path, task="transcribe", language="en", verbose=False
+    )  # type: ignore
 
     segments: List[Dict[str, Any]] = result["segments"]
     transcription_with_timestamps = ""
@@ -86,7 +92,9 @@ def save_screenshot(video_path: str, timestamp: float, output_path: str) -> None
     cap.release()
 
 
-async def transcribe_video_screenshot(video_path: str, timestamp: float, model_client: ChatCompletionClient) -> str:
+async def transcribe_video_screenshot(
+    video_path: str, timestamp: float, model_client: ChatCompletionClient
+) -> str:
     """
     Transcribes the content of a video screenshot captured at the specified timestamp using OpenAI API.
 
@@ -120,7 +128,9 @@ async def transcribe_video_screenshot(video_path: str, timestamp: float, model_c
     return str(result.content)
 
 
-def get_screenshot_at(video_path: str, timestamps: List[float]) -> List[Tuple[float, np.ndarray[Any, Any]]]:
+def get_screenshot_at(
+    video_path: str, timestamps: List[float]
+) -> List[Tuple[float, np.ndarray[Any, Any]]]:
     """
     Captures screenshots at the specified timestamps and returns them as Python objects.
 
@@ -150,7 +160,9 @@ def get_screenshot_at(video_path: str, timestamps: List[float]) -> List[Tuple[fl
             else:
                 raise IOError(f"Failed to capture frame at {timestamp:.2f}s")
         else:
-            raise ValueError(f"Timestamp {timestamp:.2f}s is out of range [0s, {duration:.2f}s]")
+            raise ValueError(
+                f"Timestamp {timestamp:.2f}s is out of range [0s, {duration:.2f}s]"
+            )
 
     cap.release()
     return screenshots

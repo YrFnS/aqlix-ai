@@ -10,7 +10,9 @@ UserContent = Union[str, List[Union[str, Image]]]
 AssistantContent = Union[str, List[FunctionCall]]
 FunctionExecutionContent = List[FunctionExecutionResult]
 SystemContent = str
-MessageContent = UserContent | AssistantContent | SystemContent | FunctionExecutionContent
+MessageContent = (
+    UserContent | AssistantContent | SystemContent | FunctionExecutionContent
+)
 
 
 def message_content_to_str(message_content: MessageContent | None) -> str:
@@ -61,7 +63,9 @@ def single_image_from_user_content(user_content: UserContent) -> Union[Image, No
     elif isinstance(user_content, List):
         for item in user_content:
             if isinstance(item, Image):
-                assert image_to_return is None, "Only one image is currently allowed in the user content."
+                assert image_to_return is None, (
+                    "Only one image is currently allowed in the user content."
+                )
                 image_to_return = item
     else:
         raise AssertionError("Unexpected response type.")
@@ -76,7 +80,9 @@ def hash_directory(directory: str, hash_algo: str = "sha256") -> Tuple[str, int,
     num_files = 0
     num_subdirs = 0
 
-    for root, dirs, files in sorted(os.walk(directory)):  # Ensure order for consistent hashing
+    for root, dirs, files in sorted(
+        os.walk(directory)
+    ):  # Ensure order for consistent hashing
         num_files += len(files)
         num_subdirs += len(dirs)
         for dir_name in sorted(dirs):

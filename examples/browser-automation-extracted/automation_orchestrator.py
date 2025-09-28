@@ -53,9 +53,16 @@ import sys
 
 # Core imports
 from browser_automation_engine import (
-    IraqiBrowserAutomationEngine, AutomationConfig, AutomationTask, 
-    AutomationResult, AutomationType, IraqiMinistry, ServiceCategory,
-    AutomationStatus, BrowserEngine, CulturalValidation
+    IraqiBrowserAutomationEngine,
+    AutomationConfig,
+    AutomationTask,
+    AutomationResult,
+    AutomationType,
+    IraqiMinistry,
+    ServiceCategory,
+    AutomationStatus,
+    BrowserEngine,
+    CulturalValidation,
 )
 
 # Async and concurrency
@@ -81,51 +88,67 @@ from pydantic import BaseModel, Field, validator
 import httpx
 
 # Initialize logging
-logger = logging.getLogger('iraqi_automation_orchestrator')
+logger = logging.getLogger("iraqi_automation_orchestrator")
 logger.setLevel(logging.INFO)
 
 # Initialize Celery for background processing
-celery_app = Celery('iraqi_automation', broker='redis://localhost:6379/5')
+celery_app = Celery("iraqi_automation", broker="redis://localhost:6379/5")
 
 # Database base
 Base = declarative_base()
 
 # Prometheus metrics
-automation_requests_total = Counter('automation_requests_total', 'Total automation requests', ['ministry', 'service', 'status'])
-automation_duration_seconds = Histogram('automation_duration_seconds', 'Automation duration', ['ministry', 'service'])
-active_automations = Gauge('active_automations', 'Currently active automations')
-success_rate_gauge = Gauge('automation_success_rate', 'Automation success rate', ['ministry', 'service'])
+automation_requests_total = Counter(
+    "automation_requests_total",
+    "Total automation requests",
+    ["ministry", "service", "status"],
+)
+automation_duration_seconds = Histogram(
+    "automation_duration_seconds", "Automation duration", ["ministry", "service"]
+)
+active_automations = Gauge("active_automations", "Currently active automations")
+success_rate_gauge = Gauge(
+    "automation_success_rate", "Automation success rate", ["ministry", "service"]
+)
 
 # =================================
 # ORCHESTRATION ENUMS AND MODELS
 # =================================
 
+
 class OrchestrationMode(str, Enum):
     """Orchestration execution modes"""
+
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
     HYBRID = "hybrid"
     PRIORITY_BASED = "priority_based"
     LOAD_BALANCED = "load_balanced"
 
+
 class TaskPriority(str, Enum):
     """Task priority levels"""
+
     CRITICAL = "critical"
     HIGH = "high"
     NORMAL = "normal"
     LOW = "low"
     BACKGROUND = "background"
 
+
 class ResourceStatus(str, Enum):
     """Resource availability status"""
+
     AVAILABLE = "available"
     BUSY = "busy"
     OVERLOADED = "overloaded"
     MAINTENANCE = "maintenance"
     ERROR = "error"
 
+
 class OrchestrationStatus(str, Enum):
     """Overall orchestration status"""
+
     IDLE = "idle"
     RUNNING = "running"
     PAUSED = "paused"
@@ -133,9 +156,11 @@ class OrchestrationStatus(str, Enum):
     ERROR = "error"
     MAINTENANCE = "maintenance"
 
+
 @dataclass
 class OrchestrationConfig:
     """Configuration for automation orchestration"""
+
     max_concurrent_automations: int = 10
     max_retries: int = 3
     retry_delay: float = 5.0
@@ -150,15 +175,19 @@ class OrchestrationConfig:
     circuit_breaker_enabled: bool = True
     auto_scaling_enabled: bool = True
     data_retention_hours: int = 72
-    backup_engines: List[BrowserEngine] = field(default_factory=lambda: [
-        BrowserEngine.PLAYWRIGHT_CHROMIUM,
-        BrowserEngine.PLAYWRIGHT_FIREFOX,
-        BrowserEngine.SELENIUM_CHROME
-    ])
+    backup_engines: List[BrowserEngine] = field(
+        default_factory=lambda: [
+            BrowserEngine.PLAYWRIGHT_CHROMIUM,
+            BrowserEngine.PLAYWRIGHT_FIREFOX,
+            BrowserEngine.SELENIUM_CHROME,
+        ]
+    )
+
 
 @dataclass
 class TaskBatch:
     """Batch of automation tasks for coordinated execution"""
+
     batch_id: str
     tasks: List[AutomationTask]
     priority: TaskPriority
@@ -170,9 +199,11 @@ class TaskBatch:
     metadata: Dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=datetime.utcnow)
 
+
 @dataclass
 class OrchestrationResult:
     """Results of orchestrated automation execution"""
+
     batch_id: str
     total_tasks: int
     completed_tasks: int
@@ -188,14 +219,17 @@ class OrchestrationResult:
     warnings: List[str] = field(default_factory=list)
     recommendations: List[str] = field(default_factory=list)
 
+
 # =================================
 # DATABASE MODELS
 # =================================
 
+
 class OrchestrationSession(Base):
     """Database model for orchestration sessions"""
+
     __tablename__ = "orchestration_sessions"
-    
+
     id = Column(String, primary_key=True)
     batch_id = Column(String, nullable=False, index=True)
     status = Column(String, nullable=False)
@@ -215,10 +249,12 @@ class OrchestrationSession(Base):
     metadata = Column(JSON, default=dict)
     expires_at = Column(DateTime, nullable=False)
 
+
 class ResourcePool(Base):
     """Database model for automation resource pool"""
+
     __tablename__ = "resource_pool"
-    
+
     id = Column(String, primary_key=True)
     engine_type = Column(String, nullable=False)
     status = Column(String, nullable=False)
@@ -231,17 +267,19 @@ class ResourcePool(Base):
     updated_at = Column(DateTime, nullable=False)
     metadata = Column(JSON, default=dict)
 
+
 # =================================
 # MAIN ORCHESTRATOR CLASS
 # =================================
 
+
 class IraqiAutomationOrchestrator:
     """
     Revolutionary Iraqi Government Automation Orchestrator
-    
+
     Comprehensive orchestration system featuring:
     - Multi-portal parallel processing with intelligent coordination
-    - Advanced failure recovery and automatic retry mechanisms  
+    - Advanced failure recovery and automatic retry mechanisms
     - Cultural context orchestration across all Iraqi ministries
     - Real-time progress monitoring and WebSocket status updates
     - Intelligent workload distribution and resource optimization
@@ -249,12 +287,12 @@ class IraqiAutomationOrchestrator:
     - Comprehensive analytics and performance monitoring
     - Auto-scaling based on workload patterns and success rates
     """
-    
+
     def __init__(self, config: OrchestrationConfig):
         self.config = config
         self.session_id = str(uuid.uuid4())
         self.status = OrchestrationStatus.IDLE
-        
+
         # Resource management
         self.resource_pool: Dict[str, IraqiBrowserAutomationEngine] = {}
         self.active_tasks: Dict[str, AutomationTask] = {}
@@ -264,32 +302,34 @@ class IraqiAutomationOrchestrator:
             TaskPriority.HIGH: asyncio.Queue(),
             TaskPriority.NORMAL: asyncio.Queue(),
             TaskPriority.LOW: asyncio.Queue(),
-            TaskPriority.BACKGROUND: asyncio.Queue()
+            TaskPriority.BACKGROUND: asyncio.Queue(),
         }
-        
+
         # Statistics and monitoring
         self.stats = {
-            'total_tasks_processed': 0,
-            'successful_tasks': 0,
-            'failed_tasks': 0,
-            'average_duration': 0.0,
-            'uptime_start': datetime.utcnow()
+            "total_tasks_processed": 0,
+            "successful_tasks": 0,
+            "failed_tasks": 0,
+            "average_duration": 0.0,
+            "uptime_start": datetime.utcnow(),
         }
-        
+
         # Circuit breaker for failure management
         self.circuit_breakers = {}
-        
+
         # WebSocket connections for real-time updates
         self.websocket_connections: Set[websockets.WebSocketServerProtocol] = set()
-        
+
         # Threading for concurrent operations
-        self.executor = ThreadPoolExecutor(max_workers=self.config.max_concurrent_automations)
-        
+        self.executor = ThreadPoolExecutor(
+            max_workers=self.config.max_concurrent_automations
+        )
+
         # Redis for distributed coordination
         self.redis_client = None
-        
+
         # Logger
-        self.logger = logging.getLogger(f'orchestrator_{self.session_id[:8]}')
+        self.logger = logging.getLogger(f"orchestrator_{self.session_id[:8]}")
 
     async def __aenter__(self):
         """Async context manager entry"""
@@ -304,26 +344,28 @@ class IraqiAutomationOrchestrator:
         """Initialize orchestration system"""
         try:
             self.logger.info("Initializing Iraqi Automation Orchestrator...")
-            
+
             # Initialize Redis connection
-            self.redis_client = await aioredis.create_redis_pool('redis://localhost:6379/5')
-            
+            self.redis_client = await aioredis.create_redis_pool(
+                "redis://localhost:6379/5"
+            )
+
             # Initialize resource pool
             await self._initialize_resource_pool()
-            
+
             # Start monitoring services
             if self.config.enable_metrics:
                 self._start_metrics_server()
-            
+
             if self.config.enable_websocket_updates:
                 await self._start_websocket_server()
-            
+
             # Start background workers
             await self._start_background_workers()
-            
+
             self.status = OrchestrationStatus.RUNNING
             self.logger.info("Iraqi Automation Orchestrator initialized successfully")
-            
+
         except Exception as e:
             self.logger.error(f"Failed to initialize orchestrator: {str(e)}")
             raise
@@ -331,7 +373,7 @@ class IraqiAutomationOrchestrator:
     async def execute_task_batch(self, batch: TaskBatch) -> OrchestrationResult:
         """
         Execute batch of automation tasks with intelligent orchestration
-        
+
         Advanced batch execution featuring:
         - Intelligent task prioritization and resource allocation
         - Parallel processing with cultural context coordination
@@ -343,8 +385,10 @@ class IraqiAutomationOrchestrator:
         - Detailed analytics and performance metrics
         """
         start_time = time.time()
-        self.logger.info(f"Starting execution of batch {batch.batch_id} with {len(batch.tasks)} tasks")
-        
+        self.logger.info(
+            f"Starting execution of batch {batch.batch_id} with {len(batch.tasks)} tasks"
+        )
+
         # Initialize result
         result = OrchestrationResult(
             batch_id=batch.batch_id,
@@ -357,30 +401,30 @@ class IraqiAutomationOrchestrator:
             overall_success_rate=0.0,
             cultural_compliance_rate=0.0,
             average_task_duration=0.0,
-            resource_utilization={}
+            resource_utilization={},
         )
-        
+
         try:
             # Store session information
             await self._store_orchestration_session(batch)
-            
+
             # Validate batch
             validation_result = await self._validate_batch(batch)
-            if not validation_result['valid']:
-                result.errors.extend(validation_result['errors'])
+            if not validation_result["valid"]:
+                result.errors.extend(validation_result["errors"])
                 return result
-            
+
             # Cultural validation if required
             if batch.cultural_validation:
                 cultural_result = await self._validate_batch_cultural_compliance(batch)
-                if not cultural_result['compliant']:
-                    result.errors.extend(cultural_result['violations'])
-                    result.warnings.extend(cultural_result['warnings'])
-            
+                if not cultural_result["compliant"]:
+                    result.errors.extend(cultural_result["violations"])
+                    result.warnings.extend(cultural_result["warnings"])
+
             # Determine execution strategy
             execution_strategy = await self._determine_execution_strategy(batch)
             self.logger.info(f"Using execution strategy: {execution_strategy}")
-            
+
             # Execute based on strategy
             if execution_strategy == "sequential":
                 individual_results = await self._execute_sequential(batch)
@@ -392,79 +436,101 @@ class IraqiAutomationOrchestrator:
                 individual_results = await self._execute_priority_based(batch)
             else:
                 individual_results = await self._execute_load_balanced(batch)
-            
+
             # Process results
             result.individual_results = individual_results
             result.completed_tasks = len(individual_results)
             result.successful_tasks = sum(1 for r in individual_results if r.success)
             result.failed_tasks = result.completed_tasks - result.successful_tasks
-            
+
             # Calculate metrics
             if result.completed_tasks > 0:
-                result.overall_success_rate = result.successful_tasks / result.completed_tasks
-                result.average_task_duration = sum(r.completion_time for r in individual_results) / result.completed_tasks
-                result.cultural_compliance_rate = sum(1 for r in individual_results if r.cultural_compliance) / result.completed_tasks
-            
+                result.overall_success_rate = (
+                    result.successful_tasks / result.completed_tasks
+                )
+                result.average_task_duration = (
+                    sum(r.completion_time for r in individual_results)
+                    / result.completed_tasks
+                )
+                result.cultural_compliance_rate = (
+                    sum(1 for r in individual_results if r.cultural_compliance)
+                    / result.completed_tasks
+                )
+
             # Resource utilization
             result.resource_utilization = await self._calculate_resource_utilization()
-            
+
             # Generate recommendations
-            result.recommendations = await self._generate_optimization_recommendations(result)
-            
+            result.recommendations = await self._generate_optimization_recommendations(
+                result
+            )
+
             # Update statistics
             await self._update_statistics(result)
-            
+
             # Send WebSocket updates
             if self.config.enable_websocket_updates:
                 await self._broadcast_completion_update(batch.batch_id, result)
-            
+
             result.execution_time = time.time() - start_time
-            self.logger.info(f"Batch {batch.batch_id} completed in {result.execution_time:.2f}s with {result.overall_success_rate:.1%} success rate")
-            
+            self.logger.info(
+                f"Batch {batch.batch_id} completed in {result.execution_time:.2f}s with {result.overall_success_rate:.1%} success rate"
+            )
+
         except Exception as e:
             result.errors.append(f"Orchestration failed: {str(e)}")
             result.execution_time = time.time() - start_time
             self.logger.error(f"Batch {batch.batch_id} failed: {str(e)}")
-            
+
         finally:
             # Update metrics
             if self.config.enable_metrics:
-                automation_duration_seconds.labels(ministry='batch', service='orchestration').observe(result.execution_time)
-                success_rate_gauge.labels(ministry='batch', service='orchestration').set(result.overall_success_rate)
-            
+                automation_duration_seconds.labels(
+                    ministry="batch", service="orchestration"
+                ).observe(result.execution_time)
+                success_rate_gauge.labels(
+                    ministry="batch", service="orchestration"
+                ).set(result.overall_success_rate)
+
             # Store final results
             await self._store_orchestration_result(batch, result)
-        
+
         return result
 
     async def _execute_parallel(self, batch: TaskBatch) -> List[AutomationResult]:
         """Execute tasks in parallel with resource management"""
         try:
-            max_parallel = min(batch.max_parallel, self.config.max_concurrent_automations, len(batch.tasks))
+            max_parallel = min(
+                batch.max_parallel,
+                self.config.max_concurrent_automations,
+                len(batch.tasks),
+            )
             semaphore = asyncio.Semaphore(max_parallel)
-            
+
             async def execute_single_task(task: AutomationTask) -> AutomationResult:
                 async with semaphore:
                     return await self._execute_single_task(task)
-            
+
             # Create tasks for parallel execution
             task_coroutines = [execute_single_task(task) for task in batch.tasks]
-            
+
             # Execute with progress monitoring
             results = []
             completed = 0
-            
+
             for coro in asyncio.as_completed(task_coroutines):
                 try:
                     result = await coro
                     results.append(result)
                     completed += 1
-                    
+
                     # Send progress update
                     if self.config.enable_websocket_updates:
                         progress = completed / len(batch.tasks)
-                        await self._broadcast_progress_update(batch.batch_id, progress, result)
-                        
+                        await self._broadcast_progress_update(
+                            batch.batch_id, progress, result
+                        )
+
                 except Exception as e:
                     self.logger.error(f"Task execution failed: {str(e)}")
                     # Create failed result
@@ -473,12 +539,12 @@ class IraqiAutomationOrchestrator:
                         status=AutomationStatus.FAILED,
                         success=False,
                         completion_time=0.0,
-                        errors=[str(e)]
+                        errors=[str(e)],
                     )
                     results.append(failed_result)
-            
+
             return results
-            
+
         except Exception as e:
             self.logger.error(f"Parallel execution failed: {str(e)}")
             return []
@@ -494,34 +560,40 @@ class IraqiAutomationOrchestrator:
                     status=AutomationStatus.FAILED,
                     success=False,
                     completion_time=0.0,
-                    errors=["No available automation engine"]
+                    errors=["No available automation engine"],
                 )
-            
+
             # Track active task
             self.active_tasks[task.task_id] = task
             active_automations.inc()
-            
+
             try:
                 # Execute task
                 result = await engine.execute_automation_task(task)
-                
+
                 # Update metrics
-                ministry = task.ministry.value if task.ministry else 'unknown'
-                service = task.service_category.value if task.service_category else 'unknown'
-                status = 'success' if result.success else 'failure'
-                
-                automation_requests_total.labels(ministry=ministry, service=service, status=status).inc()
-                automation_duration_seconds.labels(ministry=ministry, service=service).observe(result.completion_time)
-                
+                ministry = task.ministry.value if task.ministry else "unknown"
+                service = (
+                    task.service_category.value if task.service_category else "unknown"
+                )
+                status = "success" if result.success else "failure"
+
+                automation_requests_total.labels(
+                    ministry=ministry, service=service, status=status
+                ).inc()
+                automation_duration_seconds.labels(
+                    ministry=ministry, service=service
+                ).observe(result.completion_time)
+
                 return result
-                
+
             finally:
                 # Clean up
                 if task.task_id in self.active_tasks:
                     del self.active_tasks[task.task_id]
                 active_automations.dec()
                 await self._return_engine_to_pool(engine)
-                
+
         except Exception as e:
             self.logger.error(f"Single task execution failed: {str(e)}")
             return AutomationResult(
@@ -529,10 +601,12 @@ class IraqiAutomationOrchestrator:
                 status=AutomationStatus.FAILED,
                 success=False,
                 completion_time=0.0,
-                errors=[str(e)]
+                errors=[str(e)],
             )
 
-    async def _get_available_engine(self, task: AutomationTask) -> Optional[IraqiBrowserAutomationEngine]:
+    async def _get_available_engine(
+        self, task: AutomationTask
+    ) -> Optional[IraqiBrowserAutomationEngine]:
         """Get available automation engine from resource pool"""
         try:
             # Check for ministry-specific engines
@@ -541,79 +615,85 @@ class IraqiAutomationOrchestrator:
                 engine = self.resource_pool[ministry_key]
                 if await self._is_engine_available(engine):
                     return engine
-            
+
             # Get any available engine
             for engine_id, engine in self.resource_pool.items():
                 if await self._is_engine_available(engine):
                     return engine
-            
+
             # Create new engine if pool not full
             if len(self.resource_pool) < self.config.max_concurrent_automations:
                 return await self._create_new_engine(task)
-            
+
             # Wait for engine to become available
             for _ in range(30):  # Wait up to 30 seconds
                 await asyncio.sleep(1)
                 for engine_id, engine in self.resource_pool.items():
                     if await self._is_engine_available(engine):
                         return engine
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Failed to get available engine: {str(e)}")
             return None
 
-    async def _create_new_engine(self, task: AutomationTask) -> IraqiBrowserAutomationEngine:
+    async def _create_new_engine(
+        self, task: AutomationTask
+    ) -> IraqiBrowserAutomationEngine:
         """Create new automation engine"""
         try:
             # Determine best browser engine for this task
             browser_engine = await self._select_optimal_browser_engine(task)
-            
+
             config = AutomationConfig(
                 browser_engine=browser_engine,
                 headless=True,
                 arabic_support=True,
-                cultural_validation=CulturalValidation.STRICT if task.cultural_requirements else CulturalValidation.BASIC,
+                cultural_validation=CulturalValidation.STRICT
+                if task.cultural_requirements
+                else CulturalValidation.BASIC,
                 timeout=30000,
-                max_retries=self.config.max_retries
+                max_retries=self.config.max_retries,
             )
-            
+
             engine = IraqiBrowserAutomationEngine(config)
             await engine.initialize_browser()
-            
+
             # Add to pool
             engine_id = f"engine_{uuid.uuid4().hex[:8]}"
             self.resource_pool[engine_id] = engine
-            
+
             return engine
-            
+
         except Exception as e:
             self.logger.error(f"Failed to create new engine: {str(e)}")
             raise
 
-    async def _broadcast_progress_update(self, batch_id: str, progress: float, latest_result: AutomationResult):
+    async def _broadcast_progress_update(
+        self, batch_id: str, progress: float, latest_result: AutomationResult
+    ):
         """Broadcast progress update via WebSocket"""
         try:
             if not self.websocket_connections:
                 return
-            
+
             update_message = {
-                'type': 'progress_update',
-                'batch_id': batch_id,
-                'progress': progress,
-                'completed_tasks': int(progress * 100),  # Simplified
-                'latest_result': {
-                    'task_id': latest_result.task_id,
-                    'status': latest_result.status.value,
-                    'success': latest_result.success,
-                    'completion_time': latest_result.completion_time
+                "type": "progress_update",
+                "batch_id": batch_id,
+                "progress": progress,
+                "completed_tasks": int(progress * 100),  # Simplified
+                "latest_result": {
+                    "task_id": latest_result.task_id,
+                    "status": latest_result.status.value,
+                    "success": latest_result.success,
+                    "completion_time": latest_result.completion_time,
                 },
-                'timestamp': datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
             }
-            
+
             message = json.dumps(update_message)
-            
+
             # Send to all connected clients
             disconnected = set()
             for websocket in self.websocket_connections:
@@ -624,90 +704,100 @@ class IraqiAutomationOrchestrator:
                 except Exception as e:
                     self.logger.warning(f"Failed to send WebSocket update: {str(e)}")
                     disconnected.add(websocket)
-            
+
             # Clean up disconnected clients
             self.websocket_connections -= disconnected
-            
+
         except Exception as e:
             self.logger.error(f"Failed to broadcast progress update: {str(e)}")
 
     async def get_orchestration_status(self) -> Dict[str, Any]:
         """Get current orchestration status and statistics"""
         try:
-            uptime = datetime.utcnow() - self.stats['uptime_start']
-            
+            uptime = datetime.utcnow() - self.stats["uptime_start"]
+
             return {
-                'session_id': self.session_id,
-                'status': self.status.value,
-                'uptime_seconds': uptime.total_seconds(),
-                'active_tasks': len(self.active_tasks),
-                'resource_pool_size': len(self.resource_pool),
-                'available_engines': sum(1 for engine in self.resource_pool.values() 
-                                       if await self._is_engine_available(engine)),
-                'statistics': {
-                    'total_tasks_processed': self.stats['total_tasks_processed'],
-                    'successful_tasks': self.stats['successful_tasks'],
-                    'failed_tasks': self.stats['failed_tasks'],
-                    'success_rate': (self.stats['successful_tasks'] / max(self.stats['total_tasks_processed'], 1)),
-                    'average_duration': self.stats['average_duration']
+                "session_id": self.session_id,
+                "status": self.status.value,
+                "uptime_seconds": uptime.total_seconds(),
+                "active_tasks": len(self.active_tasks),
+                "resource_pool_size": len(self.resource_pool),
+                "available_engines": sum(
+                    1
+                    for engine in self.resource_pool.values()
+                    if await self._is_engine_available(engine)
+                ),
+                "statistics": {
+                    "total_tasks_processed": self.stats["total_tasks_processed"],
+                    "successful_tasks": self.stats["successful_tasks"],
+                    "failed_tasks": self.stats["failed_tasks"],
+                    "success_rate": (
+                        self.stats["successful_tasks"]
+                        / max(self.stats["total_tasks_processed"], 1)
+                    ),
+                    "average_duration": self.stats["average_duration"],
                 },
-                'configuration': {
-                    'max_concurrent_automations': self.config.max_concurrent_automations,
-                    'orchestration_mode': self.config.orchestration_mode.value,
-                    'cultural_validation_required': self.config.cultural_validation_required,
-                    'auto_scaling_enabled': self.config.auto_scaling_enabled
+                "configuration": {
+                    "max_concurrent_automations": self.config.max_concurrent_automations,
+                    "orchestration_mode": self.config.orchestration_mode.value,
+                    "cultural_validation_required": self.config.cultural_validation_required,
+                    "auto_scaling_enabled": self.config.auto_scaling_enabled,
                 },
-                'last_updated': datetime.utcnow().isoformat()
+                "last_updated": datetime.utcnow().isoformat(),
             }
-            
+
         except Exception as e:
             self.logger.error(f"Failed to get orchestration status: {str(e)}")
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     async def shutdown(self):
         """Gracefully shutdown orchestration system"""
         try:
             self.logger.info("Shutting down Iraqi Automation Orchestrator...")
             self.status = OrchestrationStatus.STOPPING
-            
+
             # Wait for active tasks to complete
             if self.active_tasks:
-                self.logger.info(f"Waiting for {len(self.active_tasks)} active tasks to complete...")
-                
+                self.logger.info(
+                    f"Waiting for {len(self.active_tasks)} active tasks to complete..."
+                )
+
                 # Wait up to 5 minutes for tasks to complete
                 for _ in range(300):
                     if not self.active_tasks:
                         break
                     await asyncio.sleep(1)
-                
+
                 if self.active_tasks:
-                    self.logger.warning(f"{len(self.active_tasks)} tasks still active, forcing shutdown")
-            
+                    self.logger.warning(
+                        f"{len(self.active_tasks)} tasks still active, forcing shutdown"
+                    )
+
             # Cleanup resources
             for engine in self.resource_pool.values():
                 try:
                     await engine.cleanup()
                 except Exception as e:
                     self.logger.error(f"Engine cleanup failed: {str(e)}")
-            
+
             # Close WebSocket connections
             for websocket in self.websocket_connections.copy():
                 try:
                     await websocket.close()
                 except:
                     pass
-            
+
             # Close Redis connection
             if self.redis_client:
                 self.redis_client.close()
                 await self.redis_client.wait_closed()
-            
+
             # Shutdown thread pool
             self.executor.shutdown(wait=True)
-            
+
             self.status = OrchestrationStatus.IDLE
             self.logger.info("Iraqi Automation Orchestrator shutdown complete")
-            
+
         except Exception as e:
             self.logger.error(f"Shutdown failed: {str(e)}")
 
@@ -721,30 +811,36 @@ class IraqiAutomationOrchestrator:
                 IraqiMinistry.EDUCATION,
                 IraqiMinistry.HEALTH,
                 IraqiMinistry.JUSTICE,
-                IraqiMinistry.FINANCE
+                IraqiMinistry.FINANCE,
             ]
-            
-            initial_engines = min(len(priority_ministries), self.config.max_concurrent_automations // 2)
-            
+
+            initial_engines = min(
+                len(priority_ministries), self.config.max_concurrent_automations // 2
+            )
+
             for i in range(initial_engines):
                 ministry = priority_ministries[i % len(priority_ministries)]
-                browser_engine = self.config.backup_engines[i % len(self.config.backup_engines)]
-                
+                browser_engine = self.config.backup_engines[
+                    i % len(self.config.backup_engines)
+                ]
+
                 config = AutomationConfig(
                     browser_engine=browser_engine,
                     headless=True,
                     arabic_support=True,
-                    cultural_validation=CulturalValidation.STRICT
+                    cultural_validation=CulturalValidation.STRICT,
                 )
-                
+
                 engine = IraqiBrowserAutomationEngine(config)
                 await engine.initialize_browser()
-                
+
                 engine_id = f"engine_{ministry.value}_{i}"
                 self.resource_pool[engine_id] = engine
-            
-            self.logger.info(f"Initialized resource pool with {len(self.resource_pool)} engines")
-            
+
+            self.logger.info(
+                f"Initialized resource pool with {len(self.resource_pool)} engines"
+            )
+
         except Exception as e:
             self.logger.error(f"Failed to initialize resource pool: {str(e)}")
             raise
@@ -761,20 +857,20 @@ class IraqiAutomationOrchestrator:
         """Check if automation engine is available"""
         try:
             # Check if engine has active task
-            if hasattr(engine, 'current_task') and engine.current_task:
+            if hasattr(engine, "current_task") and engine.current_task:
                 return False
-            
+
             # Check if browser is still functional
-            if hasattr(engine, 'page') and engine.page:
+            if hasattr(engine, "page") and engine.page:
                 try:
                     # Simple health check
-                    await engine.page.evaluate('() => true')
+                    await engine.page.evaluate("() => true")
                     return True
                 except:
                     return False
-            
+
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Engine availability check failed: {str(e)}")
             return False
@@ -782,9 +878,11 @@ class IraqiAutomationOrchestrator:
     # Additional implementation methods would continue here...
     # The orchestrator now provides comprehensive coordination capabilities
 
+
 # =================================
 # BACKGROUND TASKS AND WORKERS
 # =================================
+
 
 @celery_app.task
 def cleanup_expired_sessions():
@@ -797,6 +895,7 @@ def cleanup_expired_sessions():
         logger.error(f"Session cleanup failed: {str(e)}")
         return {"status": "failed", "error": str(e)}
 
+
 @celery_app.task
 def optimize_resource_allocation():
     """Background task to optimize resource allocation"""
@@ -808,5 +907,11 @@ def optimize_resource_allocation():
         logger.error(f"Resource optimization failed: {str(e)}")
         return {"status": "failed", "error": str(e)}
 
+
 # Export main class
-__all__ = ['IraqiAutomationOrchestrator', 'OrchestrationConfig', 'TaskBatch', 'OrchestrationResult']
+__all__ = [
+    "IraqiAutomationOrchestrator",
+    "OrchestrationConfig",
+    "TaskBatch",
+    "OrchestrationResult",
+]

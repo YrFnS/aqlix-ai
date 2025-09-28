@@ -5,7 +5,12 @@ from autogen_core.model_context import (
     ChatCompletionContext,
     UnboundedChatCompletionContext,
 )
-from autogen_core.models import ChatCompletionClient, LLMMessage, SystemMessage, UserMessage
+from autogen_core.models import (
+    ChatCompletionClient,
+    LLMMessage,
+    SystemMessage,
+    UserMessage,
+)
 from pydantic import BaseModel
 from typing_extensions import Self
 
@@ -114,13 +119,13 @@ class SocietyOfMindAgent(BaseChatAgent, Component[SocietyOfMindAgentConfig]):
     messages when generating a response using the model. It assumes the role of
     'system'."""
 
-    DEFAULT_RESPONSE_PROMPT = (
-        "Output a standalone response to the original request, without mentioning any of the intermediate discussion."
-    )
+    DEFAULT_RESPONSE_PROMPT = "Output a standalone response to the original request, without mentioning any of the intermediate discussion."
     """str: The default response prompt to use when generating a response using
     the inner team's messages. It assumes the role of 'system'."""
 
-    DEFAULT_DESCRIPTION = "An agent that uses an inner team of agents to generate responses."
+    DEFAULT_DESCRIPTION = (
+        "An agent that uses an inner team of agents to generate responses."
+    )
     """str: The default description for a SocietyOfMindAgent."""
 
     def __init__(
@@ -156,7 +161,9 @@ class SocietyOfMindAgent(BaseChatAgent, Component[SocietyOfMindAgentConfig]):
         """
         return self._model_context
 
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         # Call the stream method and collect the messages.
         response: Response | None = None
         async for msg in self.on_messages_stream(messages, cancellation_token):
@@ -219,7 +226,9 @@ class SocietyOfMindAgent(BaseChatAgent, Component[SocietyOfMindAgentConfig]):
                 llm_messages.append(SystemMessage(content=self._instruction))
             else:
                 # The model client does not support multiple system messages, so we
-                llm_messages.append(UserMessage(content=self._instruction, source="user"))
+                llm_messages.append(
+                    UserMessage(content=self._instruction, source="user")
+                )
 
             # Generate a response using the model client.
             for message in inner_messages:
@@ -231,11 +240,19 @@ class SocietyOfMindAgent(BaseChatAgent, Component[SocietyOfMindAgentConfig]):
                 llm_messages.append(SystemMessage(content=self._response_prompt))
             else:
                 # The model client does not support multiple system messages, so we
-                llm_messages.append(UserMessage(content=self._response_prompt, source="user"))
-            completion = await self._model_client.create(messages=llm_messages, cancellation_token=cancellation_token)
+                llm_messages.append(
+                    UserMessage(content=self._response_prompt, source="user")
+                )
+            completion = await self._model_client.create(
+                messages=llm_messages, cancellation_token=cancellation_token
+            )
             assert isinstance(completion.content, str)
             yield Response(
-                chat_message=TextMessage(source=self.name, content=completion.content, models_usage=completion.usage),
+                chat_message=TextMessage(
+                    source=self.name,
+                    content=completion.content,
+                    models_usage=completion.usage,
+                ),
                 inner_messages=[],
                 # Response's inner_messages should be empty. Cause that mean is response to outer world.
             )
@@ -298,5 +315,7 @@ class SocietyOfMindAgent(BaseChatAgent, Component[SocietyOfMindAgentConfig]):
             description=config.description or cls.DEFAULT_DESCRIPTION,
             instruction=config.instruction or cls.DEFAULT_INSTRUCTION,
             response_prompt=config.response_prompt or cls.DEFAULT_RESPONSE_PROMPT,
-            model_context=ChatCompletionContext.load_component(config.model_context) if config.model_context else None,
+            model_context=ChatCompletionContext.load_component(config.model_context)
+            if config.model_context
+            else None,
         )

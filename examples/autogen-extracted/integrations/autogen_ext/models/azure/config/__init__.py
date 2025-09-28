@@ -36,7 +36,9 @@ class AzureAICreateArguments(TypedDict, total=False):
     response_format: Optional[Literal["text", "json_object"]]
     stop: Optional[List[str]]
     tools: Optional[List[ChatCompletionsToolDefinition]]
-    tool_choice: Optional[Union[str, ChatCompletionsToolChoicePreset, ChatCompletionsNamedToolChoice]]
+    tool_choice: Optional[
+        Union[str, ChatCompletionsToolChoicePreset, ChatCompletionsNamedToolChoice]
+    ]
     seed: Optional[int]
     model: Optional[str]
     model_extras: Optional[Dict[str, Any]]

@@ -13,10 +13,11 @@ from .version_service import (
     AgentNotFoundError,
     UnauthorizedError,
     InvalidVersionError,
-    VersionConflictError
+    VersionConflictError,
 )
 
 router = APIRouter()
+
 
 class CreateVersionRequest(BaseModel):
     system_prompt: str
@@ -60,7 +61,7 @@ class VersionComparisonResponse(BaseModel):
 async def get_versions(
     agent_id: str,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         versions = await version_service.get_all_versions(agent_id, user_id)
@@ -79,7 +80,7 @@ async def create_version(
     agent_id: str,
     request: CreateVersionRequest,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         version = await version_service.create_version(
@@ -90,9 +91,9 @@ async def create_version(
             custom_mcps=request.custom_mcps,
             agentpress_tools=request.agentpress_tools,
             version_name=request.version_name,
-            change_description=request.description
+            change_description=request.description,
         )
-        
+
         return VersionResponse(**version.to_dict())
     except UnauthorizedError as e:
         raise HTTPException(status_code=403, detail=str(e))
@@ -102,7 +103,9 @@ async def create_version(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Failed to create version: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to create version: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to create version: {str(e)}"
+        )
 
 
 @router.get("/agents/{agent_id}/versions/{version_id}", response_model=VersionResponse)
@@ -110,7 +113,7 @@ async def get_version(
     agent_id: str,
     version_id: str,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         version = await version_service.get_version(agent_id, version_id, user_id)
@@ -129,7 +132,7 @@ async def activate_version(
     agent_id: str,
     version_id: str,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         await version_service.activate_version(agent_id, version_id, user_id)
@@ -145,23 +148,26 @@ async def activate_version(
         raise HTTPException(status_code=500, detail="Failed to activate version")
 
 
-@router.get("/agents/{agent_id}/versions/{version1_id}/compare/{version2_id}", response_model=VersionComparisonResponse)
+@router.get(
+    "/agents/{agent_id}/versions/{version1_id}/compare/{version2_id}",
+    response_model=VersionComparisonResponse,
+)
 async def compare_versions(
     agent_id: str,
     version1_id: str,
     version2_id: str,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         comparison = await version_service.compare_versions(
             agent_id, version1_id, version2_id, user_id
         )
-        
+
         return VersionComparisonResponse(
-            version1=VersionResponse(**comparison['version1']),
-            version2=VersionResponse(**comparison['version2']),
-            differences=comparison['differences']
+            version1=VersionResponse(**comparison["version1"]),
+            version2=VersionResponse(**comparison["version2"]),
+            differences=comparison["differences"],
         )
     except UnauthorizedError as e:
         raise HTTPException(status_code=403, detail=str(e))
@@ -172,18 +178,20 @@ async def compare_versions(
         raise HTTPException(status_code=500, detail="Failed to compare versions")
 
 
-@router.post("/agents/{agent_id}/versions/{version_id}/rollback", response_model=VersionResponse)
+@router.post(
+    "/agents/{agent_id}/versions/{version_id}/rollback", response_model=VersionResponse
+)
 async def rollback_to_version(
     agent_id: str,
     version_id: str,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         new_version = await version_service.rollback_to_version(
             agent_id, version_id, user_id
         )
-        
+
         return VersionResponse(**new_version.to_dict())
     except UnauthorizedError as e:
         raise HTTPException(status_code=403, detail=str(e))
@@ -194,13 +202,15 @@ async def rollback_to_version(
         raise HTTPException(status_code=500, detail="Failed to rollback version")
 
 
-@router.put("/agents/{agent_id}/versions/{version_id}/details", response_model=VersionResponse)
+@router.put(
+    "/agents/{agent_id}/versions/{version_id}/details", response_model=VersionResponse
+)
 async def update_version_details(
     agent_id: str,
     version_id: str,
     request: UpdateVersionDetailsRequest,
     user_id: str = Depends(get_current_user_id_from_jwt),
-    version_service: VersionService = Depends(get_version_service)
+    version_service: VersionService = Depends(get_version_service),
 ):
     try:
         updated_version = await version_service.update_version_details(
@@ -208,9 +218,9 @@ async def update_version_details(
             version_id=version_id,
             user_id=user_id,
             version_name=request.version_name,
-            change_description=request.change_description
+            change_description=request.change_description,
         )
-        
+
         return VersionResponse(**updated_version.to_dict())
     except UnauthorizedError as e:
         raise HTTPException(status_code=403, detail=str(e))
@@ -223,4 +233,4 @@ async def update_version_details(
 
 def initialize(db_connection=None):
     logger.info("Versioning API initialized")
-    return router 
+    return router

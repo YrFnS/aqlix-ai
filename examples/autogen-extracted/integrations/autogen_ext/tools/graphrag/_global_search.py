@@ -15,7 +15,9 @@ from graphrag.query.indexer_adapters import (
     read_indexer_entities,
     read_indexer_reports,
 )
-from graphrag.query.structured_search.global_search.community_context import GlobalCommunityContext
+from graphrag.query.structured_search.global_search.community_context import (
+    GlobalCommunityContext,
+)
 from graphrag.query.structured_search.global_search.search import GlobalSearch
 
 from ._config import GlobalContextConfig as ContextConfig
@@ -120,16 +122,24 @@ class GlobalSearchTool(BaseTool[GlobalSearchToolArgs, GlobalSearchToolReturn]):
         self._model = model
 
         # Load parquet files
-        community_df: pd.DataFrame = pd.read_parquet(f"{data_config.input_dir}/{data_config.community_table}.parquet")  # type: ignore
-        entity_df: pd.DataFrame = pd.read_parquet(f"{data_config.input_dir}/{data_config.entity_table}.parquet")  # type: ignore
+        community_df: pd.DataFrame = pd.read_parquet(
+            f"{data_config.input_dir}/{data_config.community_table}.parquet"
+        )  # type: ignore
+        entity_df: pd.DataFrame = pd.read_parquet(
+            f"{data_config.input_dir}/{data_config.entity_table}.parquet"
+        )  # type: ignore
         report_df: pd.DataFrame = pd.read_parquet(  # type: ignore
             f"{data_config.input_dir}/{data_config.community_report_table}.parquet"
         )
 
         # Fix: Use correct argument order and types for GraphRAG API
         communities = read_indexer_communities(community_df, report_df)
-        reports = read_indexer_reports(report_df, community_df, data_config.community_level)
-        entities = read_indexer_entities(entity_df, community_df, data_config.community_level)
+        reports = read_indexer_reports(
+            report_df, community_df, data_config.community_level
+        )
+        entities = read_indexer_entities(
+            entity_df, community_df, data_config.community_level
+        )
 
         context_builder = GlobalCommunityContext(
             community_reports=reports,
@@ -176,13 +186,19 @@ class GlobalSearchTool(BaseTool[GlobalSearchToolArgs, GlobalSearchToolReturn]):
             response_type=mapreduce_config.response_type,
         )
 
-    async def run(self, args: GlobalSearchToolArgs, cancellation_token: CancellationToken) -> GlobalSearchToolReturn:
+    async def run(
+        self, args: GlobalSearchToolArgs, cancellation_token: CancellationToken
+    ) -> GlobalSearchToolReturn:
         search_result = await self._search_engine.search(args.query)
-        assert isinstance(search_result.response, str), "Expected response to be a string"
+        assert isinstance(search_result.response, str), (
+            "Expected response to be a string"
+        )
         return GlobalSearchToolReturn(answer=search_result.response)
 
     @classmethod
-    def from_settings(cls, root_dir: str | Path, config_filepath: str | Path | None = None) -> "GlobalSearchTool":
+    def from_settings(
+        cls, root_dir: str | Path, config_filepath: str | Path | None = None
+    ) -> "GlobalSearchTool":
         """Create a GlobalSearchTool instance from GraphRAG settings file.
 
         Args:

@@ -5,7 +5,13 @@ from typing import Any, List, Sequence
 from autogen_core import CancellationToken, DefaultTopicId, MessageContext, event, rpc
 
 from ...base import TerminationCondition
-from ...messages import BaseAgentEvent, BaseChatMessage, MessageFactory, SelectSpeakerEvent, StopMessage
+from ...messages import (
+    BaseAgentEvent,
+    BaseChatMessage,
+    MessageFactory,
+    SelectSpeakerEvent,
+    StopMessage,
+)
 from ._events import (
     GroupChatAgentResponse,
     GroupChatError,
@@ -42,7 +48,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         participant_topic_types: List[str],
         participant_names: List[str],
         participant_descriptions: List[str],
-        output_message_queue: asyncio.Queue[BaseAgentEvent | BaseChatMessage | GroupChatTermination],
+        output_message_queue: asyncio.Queue[
+            BaseAgentEvent | BaseChatMessage | GroupChatTermination
+        ],
         termination_condition: TerminationCondition | None,
         max_turns: int | None,
         message_factory: MessageFactory,
@@ -61,17 +69,24 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         if max_turns is not None and max_turns <= 0:
             raise ValueError("The maximum number of turns must be greater than 0.")
         if len(participant_topic_types) != len(participant_descriptions):
-            raise ValueError("The number of participant topic types, agent types, and descriptions must be the same.")
+            raise ValueError(
+                "The number of participant topic types, agent types, and descriptions must be the same."
+            )
         if len(set(participant_topic_types)) != len(participant_topic_types):
             raise ValueError("The participant topic types must be unique.")
         if group_topic_type in participant_topic_types:
-            raise ValueError("The group topic type must not be in the participant topic types.")
+            raise ValueError(
+                "The group topic type must not be in the participant topic types."
+            )
         self._name = name
         self._group_topic_type = group_topic_type
         self._output_topic_type = output_topic_type
         self._participant_names = participant_names
         self._participant_name_to_topic_type = {
-            name: topic_type for name, topic_type in zip(participant_names, participant_topic_types, strict=True)
+            name: topic_type
+            for name, topic_type in zip(
+                participant_names, participant_topic_types, strict=True
+            )
         }
         self._participant_descriptions = participant_descriptions
         self._message_thread: List[BaseAgentEvent | BaseChatMessage] = []
@@ -88,7 +103,10 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         """Handle the start of a group chat by selecting a speaker to start the conversation."""
 
         # Check if the conversation has already terminated.
-        if self._termination_condition is not None and self._termination_condition.terminated:
+        if (
+            self._termination_condition is not None
+            and self._termination_condition.terminated
+        ):
             early_stop_message = StopMessage(
                 content="The group chat has already terminated.",
                 source=self._name,
@@ -133,7 +151,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
 
     @event
     async def handle_agent_response(
-        self, message: GroupChatAgentResponse | GroupChatTeamResponse, ctx: MessageContext
+        self,
+        message: GroupChatAgentResponse | GroupChatTeamResponse,
+        ctx: MessageContext,
     ) -> None:
         try:
             # Construct the detla from the agent response.
@@ -156,7 +176,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
                 return
 
             # Check if the conversation should be terminated.
-            if await self._apply_termination_condition(delta, increment_turn_count=True):
+            if await self._apply_termination_condition(
+                delta, increment_turn_count=True
+            ):
                 # Stop the group chat.
                 return
 
@@ -169,8 +191,12 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
             # Raise the exception to the runtime.
             raise
 
-    async def _transition_to_next_speakers(self, cancellation_token: CancellationToken) -> None:
-        speaker_names_future = asyncio.ensure_future(self.select_speaker(self._message_thread))
+    async def _transition_to_next_speakers(
+        self, cancellation_token: CancellationToken
+    ) -> None:
+        speaker_names_future = asyncio.ensure_future(
+            self.select_speaker(self._message_thread)
+        )
         # Link the select speaker future to the cancellation token.
         cancellation_token.link_future(speaker_names_future)
         speaker_names = await speaker_names_future
@@ -179,7 +205,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
             speaker_names = [speaker_names]
         for speaker_name in speaker_names:
             if speaker_name not in self._participant_name_to_topic_type:
-                raise RuntimeError(f"Speaker {speaker_name} not found in participant names.")
+                raise RuntimeError(
+                    f"Speaker {speaker_name} not found in participant names."
+                )
         await self._log_speaker_selection(speaker_names)
 
         # Send request to publish message to the next speakers
@@ -193,7 +221,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
             self._active_speakers.append(speaker_name)
 
     async def _apply_termination_condition(
-        self, delta: Sequence[BaseAgentEvent | BaseChatMessage], increment_turn_count: bool = False
+        self,
+        delta: Sequence[BaseAgentEvent | BaseChatMessage],
+        increment_turn_count: bool = False,
     ) -> bool:
         """Apply the termination condition to the delta and return True if the conversation should be terminated.
         It also resets the termination condition and turn count, and signals termination to the caller of the team."""
@@ -247,9 +277,14 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         # Put the termination event in the output message queue.
         await self._output_message_queue.put(termination_event)
 
-    async def _signal_termination_with_error(self, error: SerializableException) -> None:
+    async def _signal_termination_with_error(
+        self, error: SerializableException
+    ) -> None:
         termination_event = GroupChatTermination(
-            message=StopMessage(content="An error occurred in the group chat.", source=self._name), error=error
+            message=StopMessage(
+                content="An error occurred in the group chat.", source=self._name
+            ),
+            error=error,
         )
         # Log the termination event.
         await self.publish_message(
@@ -260,12 +295,16 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         await self._output_message_queue.put(termination_event)
 
     @event
-    async def handle_group_chat_message(self, message: GroupChatMessage, ctx: MessageContext) -> None:
+    async def handle_group_chat_message(
+        self, message: GroupChatMessage, ctx: MessageContext
+    ) -> None:
         """Handle a group chat message by appending the content to its output message queue."""
         await self._output_message_queue.put(message.message)
 
     @event
-    async def handle_group_chat_error(self, message: GroupChatError, ctx: MessageContext) -> None:
+    async def handle_group_chat_error(
+        self, message: GroupChatError, ctx: MessageContext
+    ) -> None:
         """Handle a group chat error by logging the error and signaling termination."""
         await self._signal_termination_with_error(message.error)
 
@@ -281,12 +320,16 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         pass
 
     @rpc
-    async def handle_resume(self, message: GroupChatResume, ctx: MessageContext) -> None:
+    async def handle_resume(
+        self, message: GroupChatResume, ctx: MessageContext
+    ) -> None:
         """Resume the group chat manager. This is a no-op in the base class."""
         pass
 
     @abstractmethod
-    async def validate_group_state(self, messages: List[BaseChatMessage] | None) -> None:
+    async def validate_group_state(
+        self, messages: List[BaseChatMessage] | None
+    ) -> None:
         """Validate the state of the group chat given the start messages.
         This is executed when the group chat manager receives a GroupChatStart event.
 
@@ -295,7 +338,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         """
         ...
 
-    async def update_message_thread(self, messages: Sequence[BaseAgentEvent | BaseChatMessage]) -> None:
+    async def update_message_thread(
+        self, messages: Sequence[BaseAgentEvent | BaseChatMessage]
+    ) -> None:
         """Update the message thread with the new messages.
         This is called when the group chat receives a GroupChatStart or GroupChatAgentResponse event,
         before calling the select_speakers method.
@@ -303,7 +348,9 @@ class BaseGroupChatManager(SequentialRoutedAgent, ABC):
         self._message_thread.extend(messages)
 
     @abstractmethod
-    async def select_speaker(self, thread: Sequence[BaseAgentEvent | BaseChatMessage]) -> List[str] | str:
+    async def select_speaker(
+        self, thread: Sequence[BaseAgentEvent | BaseChatMessage]
+    ) -> List[str] | str:
         """Select speakers from the participants and return the topic types of the selected speaker.
         This is called when the group chat manager have received all responses from the participants
         for a turn and is ready to select the next speakers for the next turn.

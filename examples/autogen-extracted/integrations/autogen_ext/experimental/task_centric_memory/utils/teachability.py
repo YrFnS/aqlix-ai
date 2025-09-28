@@ -1,7 +1,13 @@
 from typing import TYPE_CHECKING, Any
 
 from autogen_core import CancellationToken, Image
-from autogen_core.memory import Memory, MemoryContent, MemoryMimeType, MemoryQueryResult, UpdateContextResult
+from autogen_core.memory import (
+    Memory,
+    MemoryContent,
+    MemoryMimeType,
+    MemoryQueryResult,
+    UpdateContextResult,
+)
 from autogen_core.model_context import ChatCompletionContext
 from autogen_core.models import UserMessage
 
@@ -21,7 +27,9 @@ class Teachability(Memory):
         4. Use the AssistantAgent as usual, such as for chatting with the user.
     """
 
-    def __init__(self, memory_controller: "MemoryController", name: str | None = None) -> None:
+    def __init__(
+        self, memory_controller: "MemoryController", name: str | None = None
+    ) -> None:
         """Initialize Teachability."""
         self._memory_controller = memory_controller
         self._logger = memory_controller.logger
@@ -68,14 +76,25 @@ class Teachability(Memory):
             self._logger.leave_function()
             return UpdateContextResult(memories=MemoryQueryResult(results=[]))
         last_message = messages[-1]
-        last_user_text = last_message.content if isinstance(last_message.content, str) else str(last_message)
+        last_user_text = (
+            last_message.content
+            if isinstance(last_message.content, str)
+            else str(last_message)
+        )
 
         # Add any relevant memories to the chat history
         query_results = await self.query(last_user_text)
         if query_results.results:
-            memory_strings = [f"{i}. {str(memory.content)}" for i, memory in enumerate(query_results.results, 1)]
-            memory_context = "\nPotentially relevant memories:\n" + "\n".join(memory_strings)
-            await model_context.add_message(UserMessage(content=memory_context, source="user"))
+            memory_strings = [
+                f"{i}. {str(memory.content)}"
+                for i, memory in enumerate(query_results.results, 1)
+            ]
+            memory_context = "\nPotentially relevant memories:\n" + "\n".join(
+                memory_strings
+            )
+            await model_context.add_message(
+                UserMessage(content=memory_context, source="user")
+            )
 
         # Add any user advice to memory
         await self._memory_controller.consider_memo_storage(last_user_text)
@@ -83,7 +102,11 @@ class Teachability(Memory):
         self._logger.leave_function()
         return UpdateContextResult(memories=query_results)
 
-    async def add(self, content: MemoryContent, cancellation_token: CancellationToken | None = None) -> None:
+    async def add(
+        self,
+        content: MemoryContent,
+        cancellation_token: CancellationToken | None = None,
+    ) -> None:
         """
         Tries to extract any advice from the passed content and add it to memory.
         """
@@ -110,7 +133,9 @@ class Teachability(Memory):
 
         task = self._extract_text(query)
         memory_results: list[MemoryContent] = []
-        filtered_memos = await self._memory_controller.retrieve_relevant_memos(task=task)
+        filtered_memos = await self._memory_controller.retrieve_relevant_memos(
+            task=task
+        )
         filtered_insights = [memo.insight for memo in filtered_memos]
         for insight in filtered_insights:
             self._logger.info(f"Insight: {insight}")

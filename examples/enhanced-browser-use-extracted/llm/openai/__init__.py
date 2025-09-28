@@ -2,4 +2,4 @@
 
 from .chat import ChatOpenAI
 
-__all__ = ['ChatOpenAI']
+__all__ = ["ChatOpenAI"]

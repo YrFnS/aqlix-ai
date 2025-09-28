@@ -87,17 +87,25 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
     def produced_message_types(self) -> Sequence[type[BaseChatMessage]]:
         return (TextMessage,)
 
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         for chat_message in messages:
             self._chat_history.append(chat_message.to_model_message())
         try:
-            _, content = await self._generate_reply(cancellation_token=cancellation_token)
-            self._chat_history.append(AssistantMessage(content=content, source=self.name))
+            _, content = await self._generate_reply(
+                cancellation_token=cancellation_token
+            )
+            self._chat_history.append(
+                AssistantMessage(content=content, source=self.name)
+            )
             return Response(chat_message=TextMessage(content=content, source=self.name))
 
         except BaseException:
             content = f"File surfing error:\n\n{traceback.format_exc()}"
-            self._chat_history.append(AssistantMessage(content=content, source=self.name))
+            self._chat_history.append(
+                AssistantMessage(content=content, source=self.name)
+            )
             return Response(chat_message=TextMessage(content=content, source=self.name))
 
     async def on_reset(self, cancellation_token: CancellationToken) -> None:
@@ -114,16 +122,22 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
 
         current_page = self._browser.viewport_current_page
         total_pages = len(self._browser.viewport_pages)
-        header += f"Viewport position: Showing page {current_page+1} of {total_pages}.\n"
+        header += (
+            f"Viewport position: Showing page {current_page + 1} of {total_pages}.\n"
+        )
 
         return (header, self._browser.viewport)
 
-    async def _generate_reply(self, cancellation_token: CancellationToken) -> Tuple[bool, str]:
+    async def _generate_reply(
+        self, cancellation_token: CancellationToken
+    ) -> Tuple[bool, str]:
         history = self._chat_history[0:-1]
         last_message = self._chat_history[-1]
         assert isinstance(last_message, UserMessage)
 
-        task_content = last_message.content  # the last message from the sender is the task
+        task_content = (
+            last_message.content
+        )  # the last message from the sender is the task
 
         assert self._browser is not None
 
@@ -138,7 +152,9 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
         )
 
         create_result = await self._model_client.create(
-            messages=self._get_compatible_context(history + [context_message, task_message]),
+            messages=self._get_compatible_context(
+                history + [context_message, task_message]
+            ),
             tools=[
                 TOOL_OPEN_PATH,
                 TOOL_PAGE_DOWN,
@@ -155,7 +171,9 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
             # Answer directly.
             return False, response
 
-        elif isinstance(response, list) and all(isinstance(item, FunctionCall) for item in response):
+        elif isinstance(response, list) and all(
+            isinstance(item, FunctionCall) for item in response
+        ):
             function_calls = response
             for function_call in function_calls:
                 tool_name = function_call.name
@@ -163,7 +181,9 @@ class FileSurfer(BaseChatAgent, Component[FileSurferConfig]):
                 try:
                     arguments = json.loads(function_call.arguments)
                 except json.JSONDecodeError as e:
-                    error_str = f"File surfer encountered an error decoding JSON arguments: {e}"
+                    error_str = (
+                        f"File surfer encountered an error decoding JSON arguments: {e}"
+                    )
                     return False, error_str
 
                 if tool_name == "open_path":

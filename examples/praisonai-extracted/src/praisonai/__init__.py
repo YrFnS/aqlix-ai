@@ -3,7 +3,7 @@ PraisonAI Multi-Agent Framework - Iraqi AI Chat System Integration
 =================================================================
 
 A production-ready Multi AI Agents framework adapted for Iraqi professional domains,
-designed to create specialized AI Agents for Iraqi legal, medical, educational, 
+designed to create specialized AI Agents for Iraqi legal, medical, educational,
 government, business, and engineering contexts.
 
 Key Features:
@@ -33,6 +33,7 @@ __all__ = ["PraisonAI", "__version__"]
 try:
     import praisonaiagents
     from praisonaiagents import Agent, Task, Crew
+
     __all__.extend(["Agent", "Task", "Crew", "praisonaiagents"])
 except ImportError:
     # Graceful degradation if praisonaiagents is not available
@@ -46,16 +47,19 @@ try:
         IraqiEducationalAgent,
         IraqiGovernmentAgent,
         IraqiBusinessAgent,
-        IraqiEngineeringAgent
+        IraqiEngineeringAgent,
     )
-    __all__.extend([
-        "IraqiLegalAgent",
-        "IraqiMedicalAgent", 
-        "IraqiEducationalAgent",
-        "IraqiGovernmentAgent",
-        "IraqiBusinessAgent",
-        "IraqiEngineeringAgent"
-    ])
+
+    __all__.extend(
+        [
+            "IraqiLegalAgent",
+            "IraqiMedicalAgent",
+            "IraqiEducationalAgent",
+            "IraqiGovernmentAgent",
+            "IraqiBusinessAgent",
+            "IraqiEngineeringAgent",
+        ]
+    )
 except ImportError:
     # Iraqi agents will be available after full integration
     pass

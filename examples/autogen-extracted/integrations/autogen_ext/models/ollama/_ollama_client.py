@@ -53,7 +53,10 @@ from pydantic.json_schema import JsonSchemaValue
 from typing_extensions import Self, Unpack
 
 from . import _model_info
-from .config import BaseOllamaClientConfiguration, BaseOllamaClientConfigurationConfigModel
+from .config import (
+    BaseOllamaClientConfiguration,
+    BaseOllamaClientConfigurationConfigModel,
+)
 
 logger = logging.getLogger(EVENT_LOGGER_NAME)
 trace_logger = logging.getLogger(TRACE_LOGGER_NAME)
@@ -97,11 +100,20 @@ LLM_CONTROL_PARAMS = {
     "typical_p",
 }
 
-ollama_chat_request_fields: dict[str, Any] = [m for m in inspect.getmembers(ChatRequest) if m[0] == "model_fields"][0][
-    1
-]
+ollama_chat_request_fields: dict[str, Any] = [
+    m for m in inspect.getmembers(ChatRequest) if m[0] == "model_fields"
+][0][1]
 OLLAMA_VALID_CREATE_KWARGS_KEYS = set(ollama_chat_request_fields.keys()) | set(
-    ("model", "messages", "tools", "stream", "format", "options", "keep_alive", "response_format")
+    (
+        "model",
+        "messages",
+        "tools",
+        "stream",
+        "format",
+        "options",
+        "keep_alive",
+        "response_format",
+    )
 )
 # NOTE: "response_format" is a special case that we handle for backwards compatibility.
 # It is going to be deprecated in the future.
@@ -177,12 +189,20 @@ def user_message_to_ollama(message: UserMessage) -> Sequence[Message]:
             elif isinstance(part, Image):
                 # TODO: should images go into their own message? Should each image get its own message?
                 if not ollama_messages:
-                    ollama_messages.append(Message(role="user", images=[OllamaImage(value=part.to_base64())]))
+                    ollama_messages.append(
+                        Message(
+                            role="user", images=[OllamaImage(value=part.to_base64())]
+                        )
+                    )
                 else:
                     if ollama_messages[-1].images is None:
-                        ollama_messages[-1].images = [OllamaImage(value=part.to_base64())]
+                        ollama_messages[-1].images = [
+                            OllamaImage(value=part.to_base64())
+                        ]
                     else:
-                        ollama_messages[-1].images.append(OllamaImage(value=part.to_base64()))  # type: ignore
+                        ollama_messages[-1].images.append(
+                            OllamaImage(value=part.to_base64())
+                        )  # type: ignore
             else:
                 raise ValueError(f"Unknown content type: {part}")
         return ollama_messages
@@ -311,7 +331,9 @@ def convert_tools(
             assert isinstance(tool, dict)
             tool_schema = tool
         parameters = tool_schema["parameters"] if "parameters" in tool_schema else None
-        ollama_properties: Mapping[str, OllamaTool.Function.Parameters.Property] | None = None
+        ollama_properties: (
+            Mapping[str, OllamaTool.Function.Parameters.Property] | None
+        ) = None
         if parameters is not None:
             ollama_properties = {}
             for prop_name, prop_schema in parameters["properties"].items():
@@ -319,20 +341,28 @@ def convert_tools(
                 prop_type = prop_schema.get("type")
                 if prop_type is None and "anyOf" in prop_schema:
                     prop_type = next(
-                        (opt.get("type") for opt in prop_schema["anyOf"] if opt.get("type") != "null"),
+                        (
+                            opt.get("type")
+                            for opt in prop_schema["anyOf"]
+                            if opt.get("type") != "null"
+                        ),
                         None,  # Default to None if no non-null type found in anyOf
                     )
                 prop_type = prop_type or "string"
 
                 ollama_properties[prop_name] = OllamaTool.Function.Parameters.Property(
                     type=prop_type,
-                    description=prop_schema["description"] if "description" in prop_schema else None,
+                    description=prop_schema["description"]
+                    if "description" in prop_schema
+                    else None,
                 )
         result.append(
             OllamaTool(
                 function=OllamaTool.Function(
                     name=tool_schema["name"],
-                    description=tool_schema["description"] if "description" in tool_schema else "",
+                    description=tool_schema["description"]
+                    if "description" in tool_schema
+                    else "",
                     parameters=OllamaTool.Function.Parameters(
                         required=parameters["required"]
                         if parameters is not None and "required" in parameters
@@ -364,7 +394,9 @@ def assert_valid_name(name: str) -> str:
     For munging LLM responses use _normalize_name to ensure LLM specified names don't break the API.
     """
     if not re.match(r"^[a-zA-Z0-9_-]+$", name):
-        raise ValueError(f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed.")
+        raise ValueError(
+            f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed."
+        )
     if len(name) > 64:
         raise ValueError(f"Invalid name: {name}. Name must be less than 64 characters.")
     return name
@@ -388,7 +420,12 @@ def normalize_stop_reason(stop_reason: str | None) -> FinishReasons:
 
 
 # TODO: probably needs work
-def count_tokens_ollama(messages: Sequence[LLMMessage], model: str, *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+def count_tokens_ollama(
+    messages: Sequence[LLMMessage],
+    model: str,
+    *,
+    tools: Sequence[Tool | ToolSchema] = [],
+) -> int:
     try:
         encoding = tiktoken.encoding_for_model(model)
     except KeyError:
@@ -470,11 +507,17 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
             try:
                 self._model_info = _model_info.get_info(create_args["model"])
             except KeyError as err:
-                raise ValueError("model_info is required when model name is not a valid OpenAI model") from err
+                raise ValueError(
+                    "model_info is required when model name is not a valid OpenAI model"
+                ) from err
         elif model_capabilities is not None and model_info is not None:
             raise ValueError("model_capabilities and model_info are mutually exclusive")
         elif model_capabilities is not None and model_info is None:
-            warnings.warn("model_capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "model_capabilities is deprecated, use model_info instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
             info = cast(ModelInfo, model_capabilities)
             info["family"] = ModelFamily.UNKNOWN
             self._model_info = info
@@ -537,7 +580,9 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
                 # Remove response_format from create_args to prevent passing it twice.
                 del create_args["response_format"]
             else:
-                raise ValueError(f"response_format must be a Pydantic model class, not {type(value)}")
+                raise ValueError(
+                    f"response_format must be a Pydantic model class, not {type(value)}"
+                )
 
         if json_output is not None:
             if self.model_info["json_output"] is False and json_output is True:
@@ -557,12 +602,16 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
                 # Beta client mode with Pydantic model class.
                 response_format_value = json_output.model_json_schema()
             else:
-                raise ValueError(f"json_output must be a boolean or a Pydantic model class, got {type(json_output)}")
+                raise ValueError(
+                    f"json_output must be a boolean or a Pydantic model class, got {type(json_output)}"
+                )
 
         if "format" in create_args:
             # Handle the case where format is set from create_args.
             if json_output is not None:
-                raise ValueError("json_output and format cannot be set at the same time. Use json_output instead.")
+                raise ValueError(
+                    "json_output and format cannot be set at the same time. Use json_output instead."
+                )
             assert response_format_value is None
             response_format_value = create_args["format"]
             # Remove format from create_args to prevent passing it twice.
@@ -573,17 +622,25 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
         if self.model_info["vision"] is False:
             for message in messages:
                 if isinstance(message, UserMessage):
-                    if isinstance(message.content, list) and any(isinstance(x, Image) for x in message.content):
-                        raise ValueError("Model does not support vision and image was provided")
+                    if isinstance(message.content, list) and any(
+                        isinstance(x, Image) for x in message.content
+                    ):
+                        raise ValueError(
+                            "Model does not support vision and image was provided"
+                        )
 
         if self.model_info["json_output"] is False and json_output is True:
             raise ValueError("Model does not support JSON output.")
 
         ollama_messages_nested = [to_ollama_type(m) for m in messages]
-        ollama_messages = [item for sublist in ollama_messages_nested for item in sublist]
+        ollama_messages = [
+            item for sublist in ollama_messages_nested for item in sublist
+        ]
 
         if self.model_info["function_calling"] is False and len(tools) > 0:
-            raise ValueError("Model does not support function calling and tools were provided")
+            raise ValueError(
+                "Model does not support function calling and tools were provided"
+            )
 
         converted_tools: List[OllamaTool] = []
 
@@ -598,7 +655,9 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
             # Required tool choice, pass tools to the API.
             converted_tools = convert_tools(tools)
             if len(converted_tools) == 0:
-                raise ValueError("tool_choice 'required' specified but no tools provided")
+                raise ValueError(
+                    "tool_choice 'required' specified but no tools provided"
+                )
         else:
             converted_tools = convert_tools(tools)
 
@@ -647,8 +706,12 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
 
         usage = RequestUsage(
             # TODO backup token counting
-            prompt_tokens=result.prompt_eval_count if result.prompt_eval_count is not None else 0,
-            completion_tokens=(result.eval_count if result.eval_count is not None else 0),
+            prompt_tokens=result.prompt_eval_count
+            if result.prompt_eval_count is not None
+            else 0,
+            completion_tokens=(
+                result.eval_count if result.eval_count is not None else 0
+            ),
         )
 
         logger.info(
@@ -775,7 +838,11 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
                         )
                     )
                 # set the stop_reason for the usage chunk to the prior stop_reason
-                stop_reason = chunk.done_reason if chunk.done and stop_reason is None else stop_reason
+                stop_reason = (
+                    chunk.done_reason
+                    if chunk.done and stop_reason is None
+                    else stop_reason
+                )
                 # First try get content
                 if chunk.message.content is not None:
                     content_chunks.append(chunk.message.content)
@@ -873,16 +940,24 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
     def total_usage(self) -> RequestUsage:
         return self._total_usage
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         return count_tokens_ollama(messages, self._create_args["model"], tools=tools)
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         token_limit = _model_info.get_token_limit(self._create_args["model"])
         return token_limit - self.count_tokens(messages, tools=tools)
 
     @property
     def capabilities(self) -> ModelCapabilities:  # type: ignore
-        warnings.warn("capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "capabilities is deprecated, use model_info instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._model_info
 
     @property
@@ -891,7 +966,9 @@ class BaseOllamaChatCompletionClient(ChatCompletionClient):
 
 
 # TODO: see if response_format can just be a json blob instead of a BaseModel
-class OllamaChatCompletionClient(BaseOllamaChatCompletionClient, Component[BaseOllamaClientConfigurationConfigModel]):
+class OllamaChatCompletionClient(
+    BaseOllamaChatCompletionClient, Component[BaseOllamaClientConfigurationConfigModel]
+):
     """Chat completion client for Ollama hosted models.
 
     Ollama must be installed and the appropriate model pulled.
@@ -990,7 +1067,10 @@ class OllamaChatCompletionClient(BaseOllamaChatCompletionClient, Component[BaseO
         create_args = _create_args_from_config(copied_args)
         self._raw_config: Dict[str, Any] = copied_args
         super().__init__(
-            client=client, create_args=create_args, model_capabilities=model_capabilities, model_info=model_info
+            client=client,
+            create_args=create_args,
+            model_capabilities=model_capabilities,
+            model_info=model_info,
         )
 
     def __getstate__(self) -> Dict[str, Any]:

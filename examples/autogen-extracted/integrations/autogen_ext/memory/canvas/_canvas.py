@@ -29,7 +29,9 @@ class BaseCanvas(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def add_or_update_file(self, filename: str, new_content: Union[str, bytes, Any]) -> None:
+    def add_or_update_file(
+        self, filename: str, new_content: Union[str, bytes, Any]
+    ) -> None:
         """
         Creates or updates the file content with a new revision.
         """

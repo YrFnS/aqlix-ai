@@ -21,26 +21,31 @@ from utils.logger import logger
 from utils.config import config
 
 # litellm.set_verbose=True
-litellm.modify_params=True
+litellm.modify_params = True
 
 # Constants
 MAX_RETRIES = 2
 RATE_LIMIT_DELAY = 30
 RETRY_DELAY = 0.1
 
+
 class LLMError(Exception):
     """Base exception for LLM-related errors."""
+
     pass
+
 
 class LLMRetryError(LLMError):
     """Exception raised when retries are exhausted."""
+
     pass
+
 
 def setup_api_keys() -> None:
     """Set up API keys from environment variables."""
-    providers = ['OPENAI', 'ANTHROPIC', 'GROQ', 'OPENROUTER', 'XAI', 'MORPH', 'GEMINI']
+    providers = ["OPENAI", "ANTHROPIC", "GROQ", "OPENROUTER", "XAI", "MORPH", "GEMINI"]
     for provider in providers:
-        key = getattr(config, f'{provider}_API_KEY')
+        key = getattr(config, f"{provider}_API_KEY")
         if key:
             logger.debug(f"API key set for provider: {provider}")
         else:
@@ -48,7 +53,7 @@ def setup_api_keys() -> None:
 
     # Set up OpenRouter API base if not already set
     if config.OPENROUTER_API_KEY and config.OPENROUTER_API_BASE:
-        os.environ['OPENROUTER_API_BASE'] = config.OPENROUTER_API_BASE
+        os.environ["OPENROUTER_API_BASE"] = config.OPENROUTER_API_BASE
         logger.debug(f"Set OPENROUTER_API_BASE to {config.OPENROUTER_API_BASE}")
 
     # Set up AWS Bedrock credentials
@@ -59,18 +64,21 @@ def setup_api_keys() -> None:
     if aws_access_key and aws_secret_key and aws_region:
         logger.debug(f"AWS credentials set for Bedrock in region: {aws_region}")
         # Configure LiteLLM to use AWS credentials
-        os.environ['AWS_ACCESS_KEY_ID'] = aws_access_key
-        os.environ['AWS_SECRET_ACCESS_KEY'] = aws_secret_key
-        os.environ['AWS_REGION_NAME'] = aws_region
+        os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key
+        os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_key
+        os.environ["AWS_REGION_NAME"] = aws_region
     else:
-        logger.warning(f"Missing AWS credentials for Bedrock integration - access_key: {bool(aws_access_key)}, secret_key: {bool(aws_secret_key)}, region: {aws_region}")
+        logger.warning(
+            f"Missing AWS credentials for Bedrock integration - access_key: {bool(aws_access_key)}, secret_key: {bool(aws_secret_key)}, region: {aws_region}"
+        )
+
 
 def get_openrouter_fallback(model_name: str) -> Optional[str]:
     """Get OpenRouter fallback model for a given model name."""
     # Skip if already using OpenRouter
     if model_name.startswith("openrouter/"):
         return None
-    
+
     # Map models to their OpenRouter equivalents
     fallback_mapping = {
         "anthropic/claude-3-7-sonnet-latest": "openrouter/anthropic/claude-3.7-sonnet",
@@ -78,30 +86,36 @@ def get_openrouter_fallback(model_name: str) -> Optional[str]:
         "xai/grok-4": "openrouter/x-ai/grok-4",
         "gemini/gemini-2.5-pro": "openrouter/google/gemini-2.5-pro",
     }
-    
+
     # Check for exact match first
     if model_name in fallback_mapping:
         return fallback_mapping[model_name]
-    
+
     # Check for partial matches (e.g., bedrock models)
     for key, value in fallback_mapping.items():
         if key in model_name:
             return value
-    
+
     # Default fallbacks by provider
     if "claude" in model_name.lower() or "anthropic" in model_name.lower():
         return "openrouter/anthropic/claude-sonnet-4"
     elif "xai" in model_name.lower() or "grok" in model_name.lower():
         return "openrouter/x-ai/grok-4"
-    
+
     return None
+
 
 async def handle_error(error: Exception, attempt: int, max_attempts: int) -> None:
     """Handle API errors with appropriate delays and logging."""
-    delay = RATE_LIMIT_DELAY if isinstance(error, litellm.exceptions.RateLimitError) else RETRY_DELAY
+    delay = (
+        RATE_LIMIT_DELAY
+        if isinstance(error, litellm.exceptions.RateLimitError)
+        else RETRY_DELAY
+    )
     logger.warning(f"Error on attempt {attempt + 1}/{max_attempts}: {str(error)}")
     logger.debug(f"Waiting {delay} seconds before retry...")
     await asyncio.sleep(delay)
+
 
 def prepare_params(
     messages: List[Dict[str, Any]],
@@ -117,7 +131,7 @@ def prepare_params(
     top_p: Optional[float] = None,
     model_id: Optional[str] = None,
     enable_thinking: Optional[bool] = False,
-    reasoning_effort: Optional[str] = 'low'
+    reasoning_effort: Optional[str] = "low",
 ) -> Dict[str, Any]:
     """Prepare parameters for the API call."""
     params = {
@@ -144,15 +158,12 @@ def prepare_params(
             logger.debug(f"Skipping max_tokens for Claude 3.7 model: {model_name}")
             # Do not add any max_tokens parameter for Claude 3.7
         else:
-            param_name = "max_completion_tokens" if 'o1' in model_name else "max_tokens"
+            param_name = "max_completion_tokens" if "o1" in model_name else "max_tokens"
             params[param_name] = max_tokens
 
     # Add tools if provided
     if tools:
-        params.update({
-            "tools": tools,
-            "tool_choice": tool_choice
-        })
+        params.update({"tools": tools, "tool_choice": tool_choice})
         logger.debug(f"Added {len(tools)} tools to API parameters")
 
     # # Add Claude-specific headers
@@ -185,26 +196,39 @@ def prepare_params(
         logger.debug(f"Preparing AWS Bedrock parameters for model: {model_name}")
 
         if not model_id and "anthropic.claude-3-7-sonnet" in model_name:
-            params["model_id"] = "arn:aws:bedrock:us-west-2:935064898258:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-            logger.debug(f"Auto-set model_id for Claude 3.7 Sonnet: {params['model_id']}")
+            params["model_id"] = (
+                "arn:aws:bedrock:us-west-2:935064898258:inference-profile/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+            )
+            logger.debug(
+                f"Auto-set model_id for Claude 3.7 Sonnet: {params['model_id']}"
+            )
 
     fallback_model = get_openrouter_fallback(model_name)
     if fallback_model:
-        params["fallbacks"] = [{
-            "model": fallback_model,
-            "messages": messages,
-        }]
-        logger.debug(f"Added OpenRouter fallback for model: {model_name} to {fallback_model}")
+        params["fallbacks"] = [
+            {
+                "model": fallback_model,
+                "messages": messages,
+            }
+        ]
+        logger.debug(
+            f"Added OpenRouter fallback for model: {model_name} to {fallback_model}"
+        )
 
     # Apply Anthropic prompt caching (minimal implementation)
     # Check model name *after* potential modifications (like adding bedrock/ prefix)
-    effective_model_name = params.get("model", model_name) # Use model from params if set, else original
-    if "claude" in effective_model_name.lower() or "anthropic" in effective_model_name.lower():
-        messages = params["messages"] # Direct reference, modification affects params
+    effective_model_name = params.get(
+        "model", model_name
+    )  # Use model from params if set, else original
+    if (
+        "claude" in effective_model_name.lower()
+        or "anthropic" in effective_model_name.lower()
+    ):
+        messages = params["messages"]  # Direct reference, modification affects params
 
         # Ensure messages is a list
         if not isinstance(messages, list):
-            return params # Return early if messages format is unexpected
+            return params  # Return early if messages format is unexpected
 
         # Apply cache control to the first 4 text blocks across all messages
         cache_control_count = 0
@@ -213,27 +237,40 @@ def prepare_params(
         for message in messages:
             if cache_control_count >= max_cache_control_blocks:
                 break
-                
+
             content = message.get("content")
-            
+
             if isinstance(content, str):
                 message["content"] = [
-                    {"type": "text", "text": content, "cache_control": {"type": "ephemeral"}}
+                    {
+                        "type": "text",
+                        "text": content,
+                        "cache_control": {"type": "ephemeral"},
+                    }
                 ]
                 cache_control_count += 1
             elif isinstance(content, list):
                 for item in content:
                     if cache_control_count >= max_cache_control_blocks:
                         break
-                    if isinstance(item, dict) and item.get("type") == "text" and "cache_control" not in item:
+                    if (
+                        isinstance(item, dict)
+                        and item.get("type") == "text"
+                        and "cache_control" not in item
+                    ):
                         item["cache_control"] = {"type": "ephemeral"}
                         cache_control_count += 1
 
     # Add reasoning_effort for Anthropic models if enabled
     use_thinking = enable_thinking if enable_thinking is not None else False
-    is_anthropic = "anthropic" in effective_model_name.lower() or "claude" in effective_model_name.lower()
+    is_anthropic = (
+        "anthropic" in effective_model_name.lower()
+        or "claude" in effective_model_name.lower()
+    )
     is_xai = "xai" in effective_model_name.lower() or model_name.startswith("xai/")
-    is_kimi_k2 = "kimi-k2" in effective_model_name.lower() or model_name.startswith("moonshotai/kimi-k2")
+    is_kimi_k2 = "kimi-k2" in effective_model_name.lower() or model_name.startswith(
+        "moonshotai/kimi-k2"
+    )
 
     if is_kimi_k2:
         params["provider"] = {
@@ -241,14 +278,18 @@ def prepare_params(
         }
 
     if is_anthropic and use_thinking:
-        effort_level = reasoning_effort if reasoning_effort else 'low'
+        effort_level = reasoning_effort if reasoning_effort else "low"
         params["reasoning_effort"] = effort_level
-        params["temperature"] = 1.0 # Required by Anthropic when reasoning_effort is used
-        logger.info(f"Anthropic thinking enabled with reasoning_effort='{effort_level}'")
+        params["temperature"] = (
+            1.0  # Required by Anthropic when reasoning_effort is used
+        )
+        logger.info(
+            f"Anthropic thinking enabled with reasoning_effort='{effort_level}'"
+        )
 
     # Add reasoning_effort for xAI models if enabled
     if is_xai and use_thinking:
-        effort_level = reasoning_effort if reasoning_effort else 'low'
+        effort_level = reasoning_effort if reasoning_effort else "low"
         params["reasoning_effort"] = effort_level
         logger.info(f"xAI thinking enabled with reasoning_effort='{effort_level}'")
 
@@ -258,6 +299,7 @@ def prepare_params(
         # xAI models support standard parameters, no special handling needed beyond reasoning_effort
 
     return params
+
 
 async def make_llm_api_call(
     messages: List[Dict[str, Any]],
@@ -273,7 +315,7 @@ async def make_llm_api_call(
     top_p: Optional[float] = None,
     model_id: Optional[str] = None,
     enable_thinking: Optional[bool] = False,
-    reasoning_effort: Optional[str] = 'low'
+    reasoning_effort: Optional[str] = "low",
 ) -> Union[Dict[str, Any], AsyncGenerator, ModelResponse]:
     """
     Make an API call to a language model using LiteLLM.
@@ -302,7 +344,9 @@ async def make_llm_api_call(
         LLMError: For other API-related errors
     """
     # debug <timestamp>.json messages
-    logger.info(f"Making LLM API call to model: {model_name} (Thinking: {enable_thinking}, Effort: {reasoning_effort})")
+    logger.info(
+        f"Making LLM API call to model: {model_name} (Thinking: {enable_thinking}, Effort: {reasoning_effort})"
+    )
     logger.info(f"📡 API Call: Using model {model_name}")
     params = prepare_params(
         messages=messages,
@@ -318,7 +362,7 @@ async def make_llm_api_call(
         top_p=top_p,
         model_id=model_id,
         enable_thinking=enable_thinking,
-        reasoning_effort=reasoning_effort
+        reasoning_effort=reasoning_effort,
     )
     last_error = None
     for attempt in range(MAX_RETRIES):
@@ -331,7 +375,11 @@ async def make_llm_api_call(
             # logger.debug(f"Response: {response}")
             return response
 
-        except (litellm.exceptions.RateLimitError, OpenAIError, json.JSONDecodeError) as e:
+        except (
+            litellm.exceptions.RateLimitError,
+            OpenAIError,
+            json.JSONDecodeError,
+        ) as e:
             last_error = e
             await handle_error(e, attempt, MAX_RETRIES)
 
@@ -344,6 +392,7 @@ async def make_llm_api_call(
         error_msg += f". Last error: {str(last_error)}"
     logger.error(error_msg, exc_info=True)
     raise LLMRetryError(error_msg)
+
 
 # Initialize API keys on module import
 setup_api_keys()

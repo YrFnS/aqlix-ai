@@ -110,10 +110,19 @@ class TeamTool(TaskRunnerTool, Component[TeamToolConfig]):
     component_provider_override = "autogen_agentchat.tools.TeamTool"
 
     def __init__(
-        self, team: BaseGroupChat, name: str, description: str, return_value_as_last_message: bool = False
+        self,
+        team: BaseGroupChat,
+        name: str,
+        description: str,
+        return_value_as_last_message: bool = False,
     ) -> None:
         self._team = team
-        super().__init__(team, name, description, return_value_as_last_message=return_value_as_last_message)
+        super().__init__(
+            team,
+            name,
+            description,
+            return_value_as_last_message=return_value_as_last_message,
+        )
 
     def _to_config(self) -> TeamToolConfig:
         return TeamToolConfig(

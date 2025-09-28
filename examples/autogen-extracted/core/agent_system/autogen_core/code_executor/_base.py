@@ -96,7 +96,10 @@ class CodeExecutor(ABC, ComponentBase[BaseModel]):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> Optional[bool]:
         await self.stop()
         return None

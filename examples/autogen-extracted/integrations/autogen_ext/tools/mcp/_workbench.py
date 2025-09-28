@@ -3,7 +3,13 @@ import builtins
 import warnings
 from typing import Any, Dict, List, Literal, Mapping, Optional
 
-from autogen_core import CancellationToken, Component, ComponentModel, Image, trace_tool_span
+from autogen_core import (
+    CancellationToken,
+    Component,
+    ComponentModel,
+    Image,
+    trace_tool_span,
+)
 from autogen_core.models import ChatCompletionClient
 from autogen_core.tools import (
     ImageResultContent,
@@ -31,7 +37,12 @@ from mcp.types import (
 )
 
 from ._actor import McpSessionActor
-from ._config import McpServerParams, SseServerParams, StdioServerParams, StreamableHttpServerParams
+from ._config import (
+    McpServerParams,
+    SseServerParams,
+    StdioServerParams,
+    StreamableHttpServerParams,
+)
 
 
 class McpWorkbenchConfig(BaseModel):
@@ -271,12 +282,14 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
             # Why? Because when deserializing the workbench, the actor might not be initialized yet.
             # raise RuntimeError("Actor is not initialized. Call start() first.")
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
         result_future = await self._actor.call("list_tools", None)
         list_tool_result = await result_future
-        assert isinstance(
-            list_tool_result, ListToolsResult
-        ), f"list_tools must return a CallToolResult, instead of : {str(type(list_tool_result))}"
+        assert isinstance(list_tool_result, ListToolsResult), (
+            f"list_tools must return a CallToolResult, instead of : {str(type(list_tool_result))}"
+        )
         schema: List[ToolSchema] = []
         for tool in list_tool_result.tools:
             original_name = tool.name
@@ -295,7 +308,9 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
                 type="object",
                 properties=tool.inputSchema.get("properties", {}),
                 required=tool.inputSchema.get("required", []),
-                additionalProperties=tool.inputSchema.get("additionalProperties", False),
+                additionalProperties=tool.inputSchema.get(
+                    "additionalProperties", False
+                ),
             )
             tool_schema = ToolSchema(
                 name=name,
@@ -317,7 +332,9 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
             # Why? Because when deserializing the workbench, the actor might not be initialized yet.
             # raise RuntimeError("Actor is not initialized. Call start() first.")
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
         if not cancellation_token:
             cancellation_token = CancellationToken()
         if not arguments:
@@ -331,30 +348,40 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
             tool_call_id=call_id,
         ):
             try:
-                result_future = await self._actor.call("call_tool", {"name": original_name, "kargs": arguments})
+                result_future = await self._actor.call(
+                    "call_tool", {"name": original_name, "kargs": arguments}
+                )
                 cancellation_token.link_future(result_future)
                 result = await result_future
-                assert isinstance(
-                    result, CallToolResult
-                ), f"call_tool must return a CallToolResult, instead of : {str(type(result))}"
+                assert isinstance(result, CallToolResult), (
+                    f"call_tool must return a CallToolResult, instead of : {str(type(result))}"
+                )
                 result_parts: List[TextResultContent | ImageResultContent] = []
                 is_error = result.isError
                 for content in result.content:
                     if isinstance(content, TextContent):
                         result_parts.append(TextResultContent(content=content.text))
                     elif isinstance(content, ImageContent):
-                        result_parts.append(ImageResultContent(content=Image.from_base64(content.data)))
+                        result_parts.append(
+                            ImageResultContent(content=Image.from_base64(content.data))
+                        )
                     elif isinstance(content, EmbeddedResource):
                         # TODO: how to handle embedded resources?
                         # For now we just use text representation.
-                        result_parts.append(TextResultContent(content=content.model_dump_json()))
+                        result_parts.append(
+                            TextResultContent(content=content.model_dump_json())
+                        )
                     else:
-                        raise ValueError(f"Unknown content type from server: {type(content)}")
+                        raise ValueError(
+                            f"Unknown content type from server: {type(content)}"
+                        )
             except Exception as e:
                 error_message = self._format_errors(e)
                 is_error = True
                 result_parts = [TextResultContent(content=error_message)]
-        return ToolResult(name=name, result=result_parts, is_error=is_error)  # Return the requested name
+        return ToolResult(
+            name=name, result=result_parts, is_error=is_error
+        )  # Return the requested name
 
     @property
     def initialize_result(self) -> Any:
@@ -368,13 +395,15 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         if not self._actor:
             await self.start()
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
 
         result_future = await self._actor.call("list_prompts", None)
         list_prompts_result = await result_future
-        assert isinstance(
-            list_prompts_result, ListPromptsResult
-        ), f"list_prompts must return a ListPromptsResult, instead of: {str(type(list_prompts_result))}"
+        assert isinstance(list_prompts_result, ListPromptsResult), (
+            f"list_prompts must return a ListPromptsResult, instead of: {str(type(list_prompts_result))}"
+        )
 
         return list_prompts_result
 
@@ -383,13 +412,15 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         if not self._actor:
             await self.start()
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
 
         result_future = await self._actor.call("list_resources", None)
         list_resources_result = await result_future
-        assert isinstance(
-            list_resources_result, ListResourcesResult
-        ), f"list_resources must return a ListResourcesResult, instead of: {str(type(list_resources_result))}"
+        assert isinstance(list_resources_result, ListResourcesResult), (
+            f"list_resources must return a ListResourcesResult, instead of: {str(type(list_resources_result))}"
+        )
 
         return list_resources_result
 
@@ -398,13 +429,15 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         if not self._actor:
             await self.start()
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
 
         result_future = await self._actor.call("list_resource_templates", None)
         list_templates_result = await result_future
-        assert isinstance(
-            list_templates_result, ListResourceTemplatesResult
-        ), f"list_resource_templates must return a ListResourceTemplatesResult, instead of: {str(type(list_templates_result))}"
+        assert isinstance(list_templates_result, ListResourceTemplatesResult), (
+            f"list_resource_templates must return a ListResourceTemplatesResult, instead of: {str(type(list_templates_result))}"
+        )
 
         return list_templates_result
 
@@ -413,28 +446,38 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         if not self._actor:
             await self.start()
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
 
-        result_future = await self._actor.call("read_resource", {"name": None, "kargs": {"uri": uri}})
+        result_future = await self._actor.call(
+            "read_resource", {"name": None, "kargs": {"uri": uri}}
+        )
         read_resource_result = await result_future
-        assert isinstance(
-            read_resource_result, ReadResourceResult
-        ), f"read_resource must return a ReadResourceResult, instead of: {str(type(read_resource_result))}"
+        assert isinstance(read_resource_result, ReadResourceResult), (
+            f"read_resource must return a ReadResourceResult, instead of: {str(type(read_resource_result))}"
+        )
 
         return read_resource_result
 
-    async def get_prompt(self, name: str, arguments: Optional[Dict[str, str]] = None) -> GetPromptResult:
+    async def get_prompt(
+        self, name: str, arguments: Optional[Dict[str, str]] = None
+    ) -> GetPromptResult:
         """Get a prompt from the MCP server."""
         if not self._actor:
             await self.start()
         if self._actor is None:
-            raise RuntimeError("Actor is not initialized. Please check the server connection.")
+            raise RuntimeError(
+                "Actor is not initialized. Please check the server connection."
+            )
 
-        result_future = await self._actor.call("get_prompt", {"name": name, "kargs": {"arguments": arguments}})
+        result_future = await self._actor.call(
+            "get_prompt", {"name": name, "kargs": {"arguments": arguments}}
+        )
         get_prompt_result = await result_future
-        assert isinstance(
-            get_prompt_result, GetPromptResult
-        ), f"get_prompt must return a GetPromptResult, instead of: {str(type(get_prompt_result))}"
+        assert isinstance(get_prompt_result, GetPromptResult), (
+            f"get_prompt must return a GetPromptResult, instead of: {str(type(get_prompt_result))}"
+        )
 
         return get_prompt_result
 
@@ -442,7 +485,9 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         """Recursively format errors into a string."""
 
         error_message = ""
-        if hasattr(builtins, "ExceptionGroup") and isinstance(error, builtins.ExceptionGroup):
+        if hasattr(builtins, "ExceptionGroup") and isinstance(
+            error, builtins.ExceptionGroup
+        ):
             # ExceptionGroup is available in Python 3.11+.
             # TODO: how to make this compatible with Python 3.10?
             for sub_exception in error.exceptions:  # type: ignore
@@ -460,12 +505,19 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
             )
             return  # Already initialized, no need to start again
 
-        if isinstance(self._server_params, (StdioServerParams, SseServerParams, StreamableHttpServerParams)):
-            self._actor = McpSessionActor(self._server_params, model_client=self._model_client)
+        if isinstance(
+            self._server_params,
+            (StdioServerParams, SseServerParams, StreamableHttpServerParams),
+        ):
+            self._actor = McpSessionActor(
+                self._server_params, model_client=self._model_client
+            )
             await self._actor.initialize()
             self._actor_loop = asyncio.get_event_loop()
         else:
-            raise ValueError(f"Unsupported server params type: {type(self._server_params)}")
+            raise ValueError(
+                f"Unsupported server params type: {type(self._server_params)}"
+            )
 
     async def stop(self) -> None:
         if self._actor:
@@ -489,7 +541,9 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         if self._model_client is not None:
             model_client_config = self._model_client.dump_component()
         return McpWorkbenchConfig(
-            server_params=self._server_params, tool_overrides=self._tool_overrides, model_client=model_client_config
+            server_params=self._server_params,
+            tool_overrides=self._tool_overrides,
+            model_client=model_client_config,
         )
 
     @classmethod
@@ -497,7 +551,11 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
         model_client = None
         if config.model_client is not None:
             model_client = ChatCompletionClient.load_component(config.model_client)
-        return cls(server_params=config.server_params, tool_overrides=config.tool_overrides, model_client=model_client)
+        return cls(
+            server_params=config.server_params,
+            tool_overrides=config.tool_overrides,
+            model_client=model_client,
+        )
 
     def __del__(self) -> None:
         # Ensure the actor is stopped when the workbench is deleted
@@ -507,7 +565,9 @@ class McpWorkbench(Workbench, Component[McpWorkbenchConfig]):
 
         if actor and actor_loop:
             if actor_loop.is_running() and not actor_loop.is_closed():
-                actor_loop.call_soon_threadsafe(lambda: asyncio.create_task(self.stop()))
+                actor_loop.call_soon_threadsafe(
+                    lambda: asyncio.create_task(self.stop())
+                )
             else:
                 msg = "Cannot safely stop actor at [McpWorkbench.__del__]: loop is closed or not running"
                 warnings.warn(msg, RuntimeWarning, stacklevel=2)

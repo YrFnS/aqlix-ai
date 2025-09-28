@@ -10,7 +10,8 @@ def parse_r1_content(content: str) -> Tuple[str | None, str]:
 
     if think_start == -1 or think_end == -1:
         warnings.warn(
-            "Could not find <think>..</think> field in model response content. " "No thought was extracted.",
+            "Could not find <think>..</think> field in model response content. "
+            "No thought was extracted.",
             UserWarning,
             stacklevel=2,
         )
@@ -18,7 +19,8 @@ def parse_r1_content(content: str) -> Tuple[str | None, str]:
 
     if think_end < think_start:
         warnings.warn(
-            "Found </think> before <think> in model response content. " "No thought was extracted.",
+            "Found </think> before <think> in model response content. "
+            "No thought was extracted.",
             UserWarning,
             stacklevel=2,
         )

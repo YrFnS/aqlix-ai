@@ -10,7 +10,8 @@ TOP_NO_LABEL_ZONE = 20  # Don't print any labels close the top of the page
 
 
 def add_set_of_mark(
-    screenshot: bytes | Image.Image | io.BufferedIOBase, ROIs: Dict[str, InteractiveRegion]
+    screenshot: bytes | Image.Image | io.BufferedIOBase,
+    ROIs: Dict[str, InteractiveRegion],
 ) -> Tuple[Image.Image, List[str], List[str], List[str]]:
     if isinstance(screenshot, Image.Image):
         return _add_set_of_mark(screenshot, ROIs)
@@ -45,7 +46,10 @@ def _add_set_of_mark(
             if rect["width"] * rect["height"] == 0:
                 continue
 
-            mid = ((rect["right"] + rect["left"]) / 2.0, (rect["top"] + rect["bottom"]) / 2.0)
+            mid = (
+                (rect["right"] + rect["left"]) / 2.0,
+                (rect["top"] + rect["bottom"]) / 2.0,
+            )
 
             if 0 <= mid[0] and mid[0] < base.size[0]:
                 if mid[1] < 0:
@@ -62,7 +66,10 @@ def _add_set_of_mark(
 
 
 def _draw_roi(
-    draw: ImageDraw.ImageDraw, idx: int, font: ImageFont.FreeTypeFont | ImageFont.ImageFont, rect: DOMRectangle
+    draw: ImageDraw.ImageDraw,
+    idx: int,
+    font: ImageFont.FreeTypeFont | ImageFont.ImageFont,
+    rect: DOMRectangle,
 ) -> None:
     color = _color(idx)
     luminance = color[0] * 0.3 + color[1] * 0.59 + color[2] * 0.11
@@ -80,12 +87,21 @@ def _draw_roi(
     draw.rectangle(roi, outline=color, fill=(color[0], color[1], color[2], 48), width=2)
 
     # TODO: Having trouble with these types being partially Unknown.
-    bbox = draw.textbbox(label_location, str(idx), font=font, anchor=label_anchor, align="center")  # type: ignore
+    bbox = draw.textbbox(
+        label_location, str(idx), font=font, anchor=label_anchor, align="center"
+    )  # type: ignore
     bbox = (bbox[0] - 3, bbox[1] - 3, bbox[2] + 3, bbox[3] + 3)
     draw.rectangle(bbox, fill=color)
 
     # TODO: Having trouble with these types being partially Unknown.
-    draw.text(label_location, str(idx), fill=text_color, font=font, anchor=label_anchor, align="center")  # type: ignore
+    draw.text(
+        label_location,
+        str(idx),
+        fill=text_color,
+        font=font,
+        anchor=label_anchor,
+        align="center",
+    )  # type: ignore
 
 
 def _color(identifier: int) -> Tuple[int, int, int, int]:

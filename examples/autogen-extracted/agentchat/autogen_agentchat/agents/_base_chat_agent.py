@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Any, AsyncGenerator, List, Mapping, Sequence
 
-from autogen_core import CancellationToken, ComponentBase, trace_create_agent_span, trace_invoke_agent_span
+from autogen_core import (
+    CancellationToken,
+    ComponentBase,
+    trace_create_agent_span,
+    trace_invoke_agent_span,
+)
 from pydantic import BaseModel
 
 from ..base import ChatAgent, Response, TaskResult
@@ -70,7 +75,9 @@ class BaseChatAgent(ChatAgent, ABC, ComponentBase[BaseModel]):
         ...
 
     @abstractmethod
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         """Handles incoming messages and returns a response.
 
         .. note::
@@ -145,7 +152,9 @@ class BaseChatAgent(ChatAgent, ABC, ComponentBase[BaseModel]):
                         if output_task_messages:
                             output_messages.append(msg)
                     else:
-                        raise ValueError(f"Invalid message type in sequence: {type(msg)}")
+                        raise ValueError(
+                            f"Invalid message type in sequence: {type(msg)}"
+                        )
             response = await self.on_messages(input_messages, cancellation_token)
             if response.inner_messages is not None:
                 output_messages += response.inner_messages
@@ -198,8 +207,12 @@ class BaseChatAgent(ChatAgent, ABC, ComponentBase[BaseModel]):
                             output_messages.append(msg)
                             yield msg
                     else:
-                        raise ValueError(f"Invalid message type in sequence: {type(msg)}")
-            async for message in self.on_messages_stream(input_messages, cancellation_token):
+                        raise ValueError(
+                            f"Invalid message type in sequence: {type(msg)}"
+                        )
+            async for message in self.on_messages_stream(
+                input_messages, cancellation_token
+            ):
                 if isinstance(message, Response):
                     yield message.chat_message
                     output_messages.append(message.chat_message)

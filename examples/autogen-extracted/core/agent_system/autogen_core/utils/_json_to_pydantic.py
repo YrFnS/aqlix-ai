@@ -1,6 +1,17 @@
 import datetime
 from ipaddress import IPv4Address, IPv6Address
-from typing import Annotated, Any, Dict, ForwardRef, List, Literal, Optional, Type, Union, cast
+from typing import (
+    Annotated,
+    Any,
+    Dict,
+    ForwardRef,
+    List,
+    Literal,
+    Optional,
+    Type,
+    Union,
+    cast,
+)
 
 from pydantic import (
     UUID1,
@@ -136,10 +147,15 @@ class _JSONSchemaToPydantic:
 
             for model_name, model_schema in root_schema["$defs"].items():
                 if self._model_cache[model_name] is None:
-                    self._model_cache[model_name] = self.json_schema_to_pydantic(model_schema, model_name, root_schema)
+                    self._model_cache[model_name] = self.json_schema_to_pydantic(
+                        model_schema, model_name, root_schema
+                    )
 
     def json_schema_to_pydantic(
-        self, schema: Dict[str, Any], model_name: str = "GeneratedModel", root_schema: Optional[Dict[str, Any]] = None
+        self,
+        schema: Dict[str, Any],
+        model_name: str = "GeneratedModel",
+        root_schema: Optional[Dict[str, Any]] = None,
     ) -> Type[BaseModel]:
         if root_schema is None:
             root_schema = schema
@@ -150,7 +166,11 @@ class _JSONSchemaToPydantic:
             schema = {**resolved, **{k: v for k, v in schema.items() if k != "$ref"}}
 
         if "allOf" in schema:
-            merged: Dict[str, Any] = {"type": "object", "properties": {}, "required": []}
+            merged: Dict[str, Any] = {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            }
             for s in schema["allOf"]:
                 part = self._resolve_ref(s["$ref"], root_schema) if "$ref" in s else s
                 merged["properties"].update(part.get("properties", {}))
@@ -173,11 +193,19 @@ class _JSONSchemaToPydantic:
             else:
                 json_type = s.get("type")
                 if json_type not in TYPE_MAPPING:
-                    raise UnsupportedKeywordError(f"Unsupported or missing type `{json_type}` in union")
+                    raise UnsupportedKeywordError(
+                        f"Unsupported or missing type `{json_type}` in union"
+                    )
                 types.append(TYPE_MAPPING[json_type])
         return types
 
-    def _extract_field_type(self, key: str, value: Dict[str, Any], model_name: str, root_schema: Dict[str, Any]) -> Any:
+    def _extract_field_type(
+        self,
+        key: str,
+        value: Dict[str, Any],
+        model_name: str,
+        root_schema: Dict[str, Any],
+    ) -> Any:
         json_type = value.get("type")
         if json_type not in TYPE_MAPPING:
             raise UnsupportedKeywordError(
@@ -240,12 +268,16 @@ class _JSONSchemaToPydantic:
                 else:
                     item_type = TYPE_MAPPING[item_type_name]
 
-            base_type = conlist(item_type, **constraints) if constraints else List[item_type]  # type: ignore[valid-type]
+            base_type = (
+                conlist(item_type, **constraints) if constraints else List[item_type]
+            )  # type: ignore[valid-type]
 
         if "format" in value:
             format_type = FORMAT_MAPPING.get(value["format"])
             if format_type is None:
-                raise FormatNotSupportedError(f"Unknown format `{value['format']}` for `{key}` in `{model_name}`")
+                raise FormatNotSupportedError(
+                    f"Unknown format `{value['format']}` for `{key}` in `{model_name}`"
+                )
             if not isinstance(format_type, type):
                 return format_type
             if not issubclass(format_type, str):
@@ -258,7 +290,11 @@ class _JSONSchemaToPydantic:
         self, schema: Dict[str, Any], model_name: str, root_schema: Dict[str, Any]
     ) -> Type[BaseModel]:
         if "allOf" in schema:
-            merged: Dict[str, Any] = {"type": "object", "properties": {}, "required": []}
+            merged: Dict[str, Any] = {
+                "type": "object",
+                "properties": {},
+                "required": [],
+            }
             for s in schema["allOf"]:
                 part = self._resolve_ref(s["$ref"], root_schema) if "$ref" in s else s
                 merged["properties"].update(part.get("properties", {}))
@@ -284,27 +320,39 @@ class _JSONSchemaToPydantic:
                 field_type = Union[tuple(sub_models)]
                 if "discriminator" in value:
                     discriminator = value["discriminator"]["propertyName"]
-                    field_type = Annotated[field_type, Field(discriminator=discriminator)]
+                    field_type = Annotated[
+                        field_type, Field(discriminator=discriminator)
+                    ]
             elif "enum" in value:
                 field_type = Literal[tuple(value["enum"])]
             elif "allOf" in value:
                 merged = {"type": "object", "properties": {}, "required": []}
                 for s in value["allOf"]:
-                    part = self._resolve_ref(s["$ref"], root_schema) if "$ref" in s else s
+                    part = (
+                        self._resolve_ref(s["$ref"], root_schema) if "$ref" in s else s
+                    )
                     merged["properties"].update(part.get("properties", {}))
                     merged["required"].extend(part.get("required", []))
                 for k, v in value.items():
                     if k not in {"allOf", "properties", "required"}:
                         merged[k] = v
                 merged["required"] = list(set(merged["required"]))
-                field_type = self._json_schema_to_model(merged, f"{model_name}_{key}", root_schema)
+                field_type = self._json_schema_to_model(
+                    merged, f"{model_name}_{key}", root_schema
+                )
             elif value.get("type") == "object" and "properties" in value:
-                field_type = self._json_schema_to_model(value, f"{model_name}_{key}", root_schema)
+                field_type = self._json_schema_to_model(
+                    value, f"{model_name}_{key}", root_schema
+                )
             else:
-                field_type = self._extract_field_type(key, value, model_name, root_schema)
+                field_type = self._extract_field_type(
+                    key, value, model_name, root_schema
+                )
 
             if field_type is None:
-                raise UnsupportedKeywordError(f"Unsupported or missing type for field `{key}` in `{model_name}`")
+                raise UnsupportedKeywordError(
+                    f"Unsupported or missing type for field `{key}` in `{model_name}`"
+                )
 
             default_value = value.get("default")
             is_required = key in required_fields
@@ -329,12 +377,16 @@ class _JSONSchemaToPydantic:
                 ),
             )
 
-        model: Type[BaseModel] = create_model(model_name, **cast(dict[str, Any], fields))
+        model: Type[BaseModel] = create_model(
+            model_name, **cast(dict[str, Any], fields)
+        )
         model.model_rebuild()
         return model
 
 
-def schema_to_pydantic_model(schema: Dict[str, Any], model_name: str = "GeneratedModel") -> Type[BaseModel]:
+def schema_to_pydantic_model(
+    schema: Dict[str, Any], model_name: str = "GeneratedModel"
+) -> Type[BaseModel]:
     """
     Convert a JSON Schema dictionary to a fully-typed Pydantic model.
 

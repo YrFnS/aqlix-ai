@@ -138,7 +138,12 @@ class VideoSurfer(AssistantAgent):
         name: str,
         model_client: ChatCompletionClient,
         *,
-        tools: List[BaseTool[BaseModel, BaseModel] | Callable[..., Any] | Callable[..., Awaitable[Any]]] | None = None,
+        tools: List[
+            BaseTool[BaseModel, BaseModel]
+            | Callable[..., Any]
+            | Callable[..., Awaitable[Any]]
+        ]
+        | None = None,
         description: Optional[str] = None,
         system_message: Optional[str] = None,
     ):
@@ -158,7 +163,9 @@ class VideoSurfer(AssistantAgent):
             system_message=system_message or self.DEFAULT_SYSTEM_MESSAGE,
         )
 
-    async def vs_transribe_video_screenshot(self, video_path: str, timestamp: float) -> str:
+    async def vs_transribe_video_screenshot(
+        self, video_path: str, timestamp: float
+    ) -> str:
         """
         Transcribes the video screenshot at a specific timestamp.
 
@@ -169,4 +176,6 @@ class VideoSurfer(AssistantAgent):
         Returns:
             str: Transcription of the video screenshot.
         """
-        return await transcribe_video_screenshot(video_path, timestamp, self._model_client)
+        return await transcribe_video_screenshot(
+            video_path, timestamp, self._model_client
+        )

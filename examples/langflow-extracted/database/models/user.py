@@ -2,6 +2,7 @@
 User model extracted from Langflow for Iraqi AI Chat System
 Original: src/backend/base/langflow/services/database/models/user/model.py
 """
+
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any
 from uuid import UUID, uuid4
@@ -12,10 +13,12 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from langflow.schema.serialize import UUIDstr
 
+
 class UserOptin(BaseModel):
     github_starred: bool = Field(default=False)
     dialog_dismissed: bool = Field(default=False)
     discord_clicked: bool = Field(default=False)
+
 
 class User(SQLModel, table=True):
     id: UUIDstr = Field(default_factory=uuid4, primary_key=True, unique=True)

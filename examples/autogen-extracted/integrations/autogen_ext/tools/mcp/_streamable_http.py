@@ -94,7 +94,10 @@ class StreamableHttpMcpToolAdapter(
     component_provider_override = "autogen_ext.tools.mcp.StreamableHttpMcpToolAdapter"
 
     def __init__(
-        self, server_params: StreamableHttpServerParams, tool: Tool, session: ClientSession | None = None
+        self,
+        server_params: StreamableHttpServerParams,
+        tool: Tool,
+        session: ClientSession | None = None,
     ) -> None:
         super().__init__(server_params=server_params, tool=tool, session=session)
 
@@ -105,7 +108,9 @@ class StreamableHttpMcpToolAdapter(
         Returns:
             StreamableHttpMcpToolAdapterConfig: The configuration of the adapter.
         """
-        return StreamableHttpMcpToolAdapterConfig(server_params=self._server_params, tool=self._tool)
+        return StreamableHttpMcpToolAdapterConfig(
+            server_params=self._server_params, tool=self._tool
+        )
 
     @classmethod
     def _from_config(cls, config: StreamableHttpMcpToolAdapterConfig) -> Self:

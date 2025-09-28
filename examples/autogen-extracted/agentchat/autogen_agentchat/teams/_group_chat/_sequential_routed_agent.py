@@ -53,13 +53,18 @@ class SequentialRoutedAgent(RoutedAgent):
             before any later messages that are also one of these types.
     """
 
-    def __init__(self, description: str, sequential_message_types: Sequence[type[Any]]) -> None:
+    def __init__(
+        self, description: str, sequential_message_types: Sequence[type[Any]]
+    ) -> None:
         super().__init__(description=description)
         self._fifo_lock = FIFOLock()
         self._sequential_message_types = sequential_message_types
 
     async def on_message_impl(self, message: Any, ctx: MessageContext) -> Any | None:
-        if any(isinstance(message, sequential_type) for sequential_type in self._sequential_message_types):
+        if any(
+            isinstance(message, sequential_type)
+            for sequential_type in self._sequential_message_types
+        ):
             # Acquire the FIFO lock to ensure that this message is processed
             # in the order it was received.
             await self._fifo_lock.acquire()

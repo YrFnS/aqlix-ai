@@ -1,14 +1,19 @@
 from pydantic import BaseModel, Field
 from typing import Dict, Any
 
+
 class CulturalHook(BaseModel):
     content: str = Field(..., description="Content to validate")
-    compliance_threshold: float = Field(0.95, description="Minimum cultural compliance score")
+    compliance_threshold: float = Field(
+        0.95, description="Minimum cultural compliance score"
+    )
+
 
 class WorkflowNode(BaseModel):
     id: str
     type: str  # e.g., 'culturalValidator', 'arabicProcessor'
     config: Dict[str, Any] = {}
+
 
 class IraqiWorkflow(BaseModel):
     id: str

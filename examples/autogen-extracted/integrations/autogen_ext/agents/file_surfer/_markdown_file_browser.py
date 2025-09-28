@@ -39,7 +39,9 @@ class MarkdownFileBrowser:
         self._base_path = None if base_path is None else os.path.realpath(base_path)
         self._page_content: str = ""
         self._find_on_page_query: Union[str, None] = None
-        self._find_on_page_last_result: Union[int, None] = None  # Location of the last result
+        self._find_on_page_last_result: Union[int, None] = (
+            None  # Location of the last result
+        )
 
         # Set the working directory
         if cwd is None:
@@ -53,7 +55,9 @@ class MarkdownFileBrowser:
                 raise ValueError("No valid working directory (cwd) provided.")
         elif not self._validate_path(cwd):
             # A cwd was provided, but it is not valid
-            raise ValueError(f"Working directory (cwd) '{cwd}' is not valid. It must be within the base path.")
+            raise ValueError(
+                f"Working directory (cwd) '{cwd}' is not valid. It must be within the base path."
+            )
 
         # Populate the history with the current working directory
         self.set_path(os.path.realpath(cwd))
@@ -136,7 +140,9 @@ class MarkdownFileBrowser:
 
     def page_down(self) -> None:
         """Move the viewport down one page, if possible."""
-        self.viewport_current_page = min(self.viewport_current_page + 1, len(self.viewport_pages) - 1)
+        self.viewport_current_page = min(
+            self.viewport_current_page + 1, len(self.viewport_pages) - 1
+        )
 
     def page_up(self) -> None:
         """Move the viewport up one page, if possible."""
@@ -147,7 +153,10 @@ class MarkdownFileBrowser:
 
         # Did we get here via a previous find_on_page search with the same query?
         # If so, map to find_next
-        if query == self._find_on_page_query and self.viewport_current_page == self._find_on_page_last_result:
+        if (
+            query == self._find_on_page_query
+            and self.viewport_current_page == self._find_on_page_last_result
+        ):
             return self.find_next()
 
         # Ok it's a new search start from the current viewport
@@ -175,7 +184,9 @@ class MarkdownFileBrowser:
             if starting_viewport >= len(self.viewport_pages):
                 starting_viewport = 0
 
-        viewport_match = self._find_next_viewport(self._find_on_page_query, starting_viewport)
+        viewport_match = self._find_next_viewport(
+            self._find_on_page_query, starting_viewport
+        )
         if viewport_match is None:
             self._find_on_page_last_result = None
             return None
@@ -184,7 +195,9 @@ class MarkdownFileBrowser:
             self._find_on_page_last_result = viewport_match
             return self.viewport
 
-    def _find_next_viewport(self, query: Optional[str], starting_viewport: int) -> Union[int, None]:
+    def _find_next_viewport(
+        self, query: Optional[str], starting_viewport: int
+    ) -> Union[int, None]:
         """Search for matches between the starting viewport looping when reaching the end."""
 
         if query is None:
@@ -193,7 +206,9 @@ class MarkdownFileBrowser:
         # Normalize the query, and convert to a regular expression
         nquery = re.sub(r"\*", "__STAR__", query)
         nquery = " " + (" ".join(re.split(r"\W+", nquery))).strip() + " "
-        nquery = nquery.replace(" __STAR__ ", "__STAR__ ")  # Merge isolated stars with prior word
+        nquery = nquery.replace(
+            " __STAR__ ", "__STAR__ "
+        )  # Merge isolated stars with prior word
         nquery = nquery.replace("__STAR__", ".*").lower()
 
         if nquery.strip() == "":
@@ -232,7 +247,9 @@ class MarkdownFileBrowser:
         while start_idx < len(self._page_content):
             end_idx = min(start_idx + self.viewport_size, len(self._page_content))  # type: ignore[operator]
             # Adjust to end on a space
-            while end_idx < len(self._page_content) and self._page_content[end_idx - 1] not in [" ", "\t", "\r", "\n"]:
+            while end_idx < len(self._page_content) and self._page_content[
+                end_idx - 1
+            ] not in [" ", "\t", "\r", "\n"]:
                 end_idx += 1
             self.viewport_pages.append((start_idx, end_idx))
             start_idx = end_idx
@@ -256,7 +273,8 @@ class MarkdownFileBrowser:
             try:
                 if os.path.isdir(path):  # TODO: Fix markdown_converter types
                     res = self._markdown_converter.convert_stream(  # type: ignore
-                        io.BytesIO(self._fetch_local_dir(path).encode("utf-8")), file_extension=".txt"
+                        io.BytesIO(self._fetch_local_dir(path).encode("utf-8")),
+                        file_extension=".txt",
                     )
                     assert self._validate_path(path)
                     self.page_title = res.title
@@ -268,10 +286,14 @@ class MarkdownFileBrowser:
                     self._set_page_content(res.text_content)
             except UnsupportedFormatException:
                 self.page_title = "UnsupportedFormatException"
-                self._set_page_content(f"# UnsupportedFormatException\n\nCannot preview '{path}' as Markdown.")
+                self._set_page_content(
+                    f"# UnsupportedFormatException\n\nCannot preview '{path}' as Markdown."
+                )
             except FileConversionException:
                 self.page_title = "FileConversionException."
-                self._set_page_content(f"# FileConversionException\n\nError converting '{path}' to Markdown.")
+                self._set_page_content(
+                    f"# FileConversionException\n\nError converting '{path}' to Markdown."
+                )
             except FileNotFoundError:
                 self.page_title = "FileNotFoundError"
                 self._set_page_content(f"# FileNotFoundError\n\nFile not found: {path}")
@@ -299,7 +321,9 @@ class MarkdownFileBrowser:
 
             mtime = ""
             try:
-                mtime = datetime.datetime.fromtimestamp(os.path.getmtime(full_path)).strftime("%Y-%m-%d %H:%M")
+                mtime = datetime.datetime.fromtimestamp(
+                    os.path.getmtime(full_path)
+                ).strftime("%Y-%m-%d %H:%M")
             except Exception as e:
                 # Handles PermissionError, etc.
                 mtime = f"N/A: {type(e).__name__}"

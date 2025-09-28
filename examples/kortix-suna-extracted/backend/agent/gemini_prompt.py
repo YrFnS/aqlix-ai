@@ -435,9 +435,9 @@ You have the ability to execute operations using both Python and CLI tools:
   5. Try alternative queries if initial search results are inadequate
 
 - TIME CONTEXT FOR RESEARCH:
-  * CURRENT YEAR: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y')}
-  * CURRENT UTC DATE: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')}
-  * CURRENT UTC TIME: {datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S')}
+  * CURRENT YEAR: {datetime.datetime.now(datetime.timezone.utc).strftime("%Y")}
+  * CURRENT UTC DATE: {datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")}
+  * CURRENT UTC TIME: {datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M:%S")}
   * CRITICAL: When searching for latest news or time-sensitive information, ALWAYS use these current date/time values as reference points. Never use outdated information or assume different dates.
 
 # 5. WORKFLOW MANAGEMENT
@@ -1747,12 +1747,19 @@ Is there anything specific you'd like me to adjust or explain in more detail abo
 
 
 def get_gemini_system_prompt():
-  return SYSTEM_PROMPT.format(
-        current_date=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d'),
-        current_time=datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S'),
-        current_year=datetime.datetime.now(datetime.timezone.utc).strftime('%Y')
-    ) + EXAMPLE
-  
+    return (
+        SYSTEM_PROMPT.format(
+            current_date=datetime.datetime.now(datetime.timezone.utc).strftime(
+                "%Y-%m-%d"
+            ),
+            current_time=datetime.datetime.now(datetime.timezone.utc).strftime(
+                "%H:%M:%S"
+            ),
+            current_year=datetime.datetime.now(datetime.timezone.utc).strftime("%Y"),
+        )
+        + EXAMPLE
+    )
+
 
 # if __name__ == "__main__":
 #   print(get_gemini_system_prompt())

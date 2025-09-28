@@ -49,7 +49,9 @@ class ChatAgent(ABC, TaskRunner, ComponentBase[BaseModel]):
         ...
 
     @abstractmethod
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         """Handles incoming messages and returns a response."""
         ...
 

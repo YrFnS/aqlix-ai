@@ -31,7 +31,9 @@ class TypePrefixSubscription(Subscription):
         agent_type (str): Agent type to handle this subscription
     """
 
-    def __init__(self, topic_type_prefix: str, agent_type: str | AgentType, id: str | None = None):
+    def __init__(
+        self, topic_type_prefix: str, agent_type: str | AgentType, id: str | None = None
+    ):
         self._topic_type_prefix = topic_type_prefix
         if isinstance(agent_type, AgentType):
             self._agent_type = agent_type.type
@@ -65,5 +67,6 @@ class TypePrefixSubscription(Subscription):
             return False
 
         return self.id == other.id or (
-            self.agent_type == other.agent_type and self.topic_type_prefix == other.topic_type_prefix
+            self.agent_type == other.agent_type
+            and self.topic_type_prefix == other.topic_type_prefix
         )

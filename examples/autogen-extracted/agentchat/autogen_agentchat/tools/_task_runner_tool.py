@@ -17,7 +17,10 @@ class TaskRunnerToolArgs(BaseModel):
     task: Annotated[str, "The task to be executed."]
 
 
-class TaskRunnerTool(BaseStreamTool[TaskRunnerToolArgs, BaseAgentEvent | BaseChatMessage, TaskResult], ABC):
+class TaskRunnerTool(
+    BaseStreamTool[TaskRunnerToolArgs, BaseAgentEvent | BaseChatMessage, TaskResult],
+    ABC,
+):
     """An base class for tool that can be used to run a task using a team or an agent."""
 
     component_type = "tool"
@@ -38,16 +41,22 @@ class TaskRunnerTool(BaseStreamTool[TaskRunnerToolArgs, BaseAgentEvent | BaseCha
             description=description,
         )
 
-    async def run(self, args: TaskRunnerToolArgs, cancellation_token: CancellationToken) -> TaskResult:
+    async def run(
+        self, args: TaskRunnerToolArgs, cancellation_token: CancellationToken
+    ) -> TaskResult:
         """Run the task and return the result."""
-        return await self._task_runner.run(task=args.task, cancellation_token=cancellation_token)
+        return await self._task_runner.run(
+            task=args.task, cancellation_token=cancellation_token
+        )
 
     async def run_stream(
         self, args: TaskRunnerToolArgs, cancellation_token: CancellationToken
     ) -> AsyncGenerator[BaseAgentEvent | BaseChatMessage | TaskResult, None]:
         """Run the task and yield events or messages as they are produced, the final :class:`TaskResult`
         will be yielded at the end."""
-        async for event in self._task_runner.run_stream(task=args.task, cancellation_token=cancellation_token):
+        async for event in self._task_runner.run_stream(
+            task=args.task, cancellation_token=cancellation_token
+        ):
             yield event
 
     def return_value_as_string(self, value: TaskResult) -> str:

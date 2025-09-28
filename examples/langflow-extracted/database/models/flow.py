@@ -2,6 +2,7 @@
 Flow model extracted from Langflow for Iraqi AI Chat System
 Original: src/backend/base/langflow/services/database/models/flow/model.py
 """
+
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 from uuid import UUID, uuid4
@@ -9,8 +10,10 @@ from sqlmodel import Field, SQLModel, JSON, Column, Relationship
 from pydantic import field_validator
 from langflow.schema.serialize import UUIDstr
 
+
 class FlowBase(SQLModel):
     """Base flow model with core attributes"""
+
     name: str = Field(index=True)
     description: str | None = Field(default=None)
     data: Dict[str, Any] = Field(sa_column=Column(JSON), default_factory=dict)
@@ -29,7 +32,9 @@ class FlowBase(SQLModel):
     def validate_endpoint_name(cls, v):
         """Validate endpoint name format"""
         if v is not None and not v.replace("-", "").replace("_", "").isalnum():
-            raise ValueError("Endpoint name must be alphanumeric with hyphens/underscores only")
+            raise ValueError(
+                "Endpoint name must be alphanumeric with hyphens/underscores only"
+            )
         return v
 
     @field_validator("tags", mode="before")
@@ -40,30 +45,38 @@ class FlowBase(SQLModel):
             return [v]
         return v or []
 
+
 class Flow(FlowBase, table=True):
     """Full database model for AI workflows"""
+
     __tablename__ = "flow"
-    
+
     id: UUIDstr = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID = Field(foreign_key="user.id")
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    
+
     # Relationships
     user: "User" = Relationship(back_populates="flows")
     folder: Optional["Folder"] = Relationship(back_populates="flows")
 
+
 class FlowCreate(FlowBase):
     """Model for creating new flows"""
+
     pass
+
 
 class FlowRead(FlowBase):
     """Read-only flow model"""
+
     id: UUIDstr
     user_id: UUID
     created_at: datetime
 
+
 class FlowHeader(SQLModel):
     """Lightweight flow metadata"""
+
     id: UUIDstr
     name: str
     description: str | None
@@ -73,8 +86,10 @@ class FlowHeader(SQLModel):
     endpoint_name: str | None
     tags: List[str]
 
+
 class FlowUpdate(SQLModel):
     """Model for updating existing flows"""
+
     name: str | None = None
     description: str | None = None
     data: Dict[str, Any] | None = None
@@ -83,6 +98,7 @@ class FlowUpdate(SQLModel):
     tags: List[str] | None = None
     icon: str | None = None
     icon_bg_color: str | None = None
+
 
 # Iraqi AI Chat System enhancements needed:
 # - Add workflow_type: str (chat, document_processing, voice, payment)

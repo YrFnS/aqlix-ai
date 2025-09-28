@@ -37,7 +37,10 @@ AGENT_COLORS = {
 }
 DEFAULT_AGENT_COLOR = "white"
 
-AGENT_ALIGNMENTS: dict[str, AlignMethod] = {"user": "right", "MagenticOneOrchestrator": "center"}
+AGENT_ALIGNMENTS: dict[str, AlignMethod] = {
+    "user": "right",
+    "MagenticOneOrchestrator": "center",
+}
 DEFAULT_AGENT_ALIGNMENT: AlignMethod = "left"
 
 
@@ -56,7 +59,9 @@ def aprint(output: str, end: str = "\n") -> Awaitable[None]:
     return asyncio.to_thread(print, output, end=end)
 
 
-def _extract_message_content(message: BaseAgentEvent | BaseChatMessage) -> Tuple[List[str], List[Image]]:
+def _extract_message_content(
+    message: BaseAgentEvent | BaseChatMessage,
+) -> Tuple[List[str], List[Image]]:
     if isinstance(message, MultiModalMessage):
         text_parts = [item for item in message.content if isinstance(item, str)]
         image_parts = [item for item in message.content if isinstance(item, Image)]
@@ -126,7 +131,9 @@ async def RichConsole(
         last_processed: A :class:`~autogen_agentchat.base.TaskResult` if the stream is from :meth:`~autogen_agentchat.base.TaskRunner.run_stream`
             or a :class:`~autogen_agentchat.base.Response` if the stream is from :meth:`~autogen_agentchat.base.ChatAgent.on_messages_stream`.
     """
-    render_image_iterm = _is_running_in_iterm() and _is_output_a_tty() and not no_inline_images
+    render_image_iterm = (
+        _is_running_in_iterm() and _is_output_a_tty() and not no_inline_images
+    )
     start_time = time.time()
     total_usage = RequestUsage(prompt_tokens=0, completion_tokens=0)
     rich_console = Console()
@@ -158,8 +165,12 @@ async def RichConsole(
                     text_parts.append(
                         f"[Prompt tokens: {message.chat_message.models_usage.prompt_tokens}, Completion tokens: {message.chat_message.models_usage.completion_tokens}]"
                     )
-                total_usage.completion_tokens += message.chat_message.models_usage.completion_tokens
-                total_usage.prompt_tokens += message.chat_message.models_usage.prompt_tokens
+                total_usage.completion_tokens += (
+                    message.chat_message.models_usage.completion_tokens
+                )
+                total_usage.prompt_tokens += (
+                    message.chat_message.models_usage.prompt_tokens
+                )
 
             await _aprint_message_content(
                 rich_console,
@@ -171,7 +182,11 @@ async def RichConsole(
 
             # Print summary.
             if output_stats:
-                num_inner_messages = len(message.inner_messages) if message.inner_messages is not None else 0
+                num_inner_messages = (
+                    len(message.inner_messages)
+                    if message.inner_messages is not None
+                    else 0
+                )
                 output = (
                     f"Number of inner messages: {num_inner_messages}\n"
                     f"Total prompt tokens: {total_usage.prompt_tokens}\n"

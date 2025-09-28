@@ -1,6 +1,12 @@
 from typing import Any, List, Mapping
 
-from autogen_core import DefaultTopicId, MessageContext, event, rpc, trace_invoke_agent_span
+from autogen_core import (
+    DefaultTopicId,
+    MessageContext,
+    event,
+    rpc,
+    trace_invoke_agent_span,
+)
 
 from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage, MessageFactory
 
@@ -35,7 +41,11 @@ class ChatAgentContainer(SequentialRoutedAgent):
     """
 
     def __init__(
-        self, parent_topic_type: str, output_topic_type: str, agent: ChatAgent | Team, message_factory: MessageFactory
+        self,
+        parent_topic_type: str,
+        output_topic_type: str,
+        agent: ChatAgent | Team,
+        message_factory: MessageFactory,
     ) -> None:
         super().__init__(
             description=agent.description,
@@ -61,12 +71,16 @@ class ChatAgentContainer(SequentialRoutedAgent):
                 self._buffer_message(msg)
 
     @event
-    async def handle_agent_response(self, message: GroupChatAgentResponse, ctx: MessageContext) -> None:
+    async def handle_agent_response(
+        self, message: GroupChatAgentResponse, ctx: MessageContext
+    ) -> None:
         """Handle an agent response event by appending the content to the buffer."""
         self._buffer_message(message.response.chat_message)
 
     @event
-    async def handle_team_response(self, message: GroupChatTeamResponse, ctx: MessageContext) -> None:
+    async def handle_team_response(
+        self, message: GroupChatTeamResponse, ctx: MessageContext
+    ) -> None:
         """Handle a team response event by appending the content to the buffer."""
         for msg in message.result.messages:
             if isinstance(msg, BaseChatMessage):
@@ -83,7 +97,9 @@ class ChatAgentContainer(SequentialRoutedAgent):
             await self._agent.on_reset(ctx.cancellation_token)
 
     @event
-    async def handle_request(self, message: GroupChatRequestPublish, ctx: MessageContext) -> None:
+    async def handle_request(
+        self, message: GroupChatRequestPublish, ctx: MessageContext
+    ) -> None:
         """Handle a content request event by passing the messages in the buffer
         to the delegate agent and publish the response."""
         if isinstance(self._agent, Team):
@@ -130,7 +146,9 @@ class ChatAgentContainer(SequentialRoutedAgent):
                 try:
                     # Pass the messages in the buffer to the delegate agent.
                     response: Response | None = None
-                    async for msg in self._agent.on_messages_stream(self._message_buffer, ctx.cancellation_token):
+                    async for msg in self._agent.on_messages_stream(
+                        self._message_buffer, ctx.cancellation_token
+                    ):
                         if isinstance(msg, Response):
                             await self._log_message(msg.chat_message)
                             response = msg
@@ -143,7 +161,9 @@ class ChatAgentContainer(SequentialRoutedAgent):
                     # Publish the response to the group chat.
                     self._message_buffer.clear()
                     await self.publish_message(
-                        GroupChatAgentResponse(response=response, name=self._agent.name),
+                        GroupChatAgentResponse(
+                            response=response, name=self._agent.name
+                        ),
                         topic_id=DefaultTopicId(type=self._parent_topic_type),
                         cancellation_token=ctx.cancellation_token,
                     )
@@ -183,7 +203,9 @@ class ChatAgentContainer(SequentialRoutedAgent):
             await self._agent.on_pause(ctx.cancellation_token)
 
     @rpc
-    async def handle_resume(self, message: GroupChatResume, ctx: MessageContext) -> None:
+    async def handle_resume(
+        self, message: GroupChatResume, ctx: MessageContext
+    ) -> None:
         """Handle a resume event by resuming the agent."""
         if isinstance(self._agent, Team):
             # If the agent is a team, resume the team.
@@ -197,7 +219,8 @@ class ChatAgentContainer(SequentialRoutedAgent):
     async def save_state(self) -> Mapping[str, Any]:
         agent_state = await self._agent.save_state()
         state = ChatAgentContainerState(
-            agent_state=agent_state, message_buffer=[message.dump() for message in self._message_buffer]
+            agent_state=agent_state,
+            message_buffer=[message.dump() for message in self._message_buffer],
         )
         return state.model_dump()
 
@@ -209,5 +232,7 @@ class ChatAgentContainer(SequentialRoutedAgent):
             if isinstance(message, BaseChatMessage):
                 self._message_buffer.append(message)
             else:
-                raise ValueError(f"Invalid message type in message buffer: {type(message)}")
+                raise ValueError(
+                    f"Invalid message type in message buffer: {type(message)}"
+                )
         await self._agent.load_state(container_state.agent_state)

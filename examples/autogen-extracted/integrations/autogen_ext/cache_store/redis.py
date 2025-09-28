@@ -62,7 +62,9 @@ class RedisStore(CacheStore[T], Component[RedisStoreConfig]):
             username=str(username) if username is not None else None,
             password=str(password) if password is not None else None,
             ssl=bool(connection_kwargs.get("ssl", False)),
-            socket_timeout=float(socket_timeout) if socket_timeout is not None else None,
+            socket_timeout=float(socket_timeout)
+            if socket_timeout is not None
+            else None,
         )
 
     @classmethod

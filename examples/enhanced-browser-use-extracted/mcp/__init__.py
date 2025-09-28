@@ -14,7 +14,7 @@ Components:
 
 Usage:
     python -m enhanced_browser_use_extracted.mcp.server
-    
+
     Or with Claude Desktop MCP integration:
     {
         "iraqi-browser-use": {
@@ -27,4 +27,4 @@ Usage:
 from .server import IraqiEnhancedMcpServer
 from .iraqi_bridge import IraqiAgentBridge, iraqi_bridge
 
-__all__ = ['IraqiEnhancedMcpServer', 'IraqiAgentBridge', 'iraqi_bridge']
+__all__ = ["IraqiEnhancedMcpServer", "IraqiAgentBridge", "iraqi_bridge"]

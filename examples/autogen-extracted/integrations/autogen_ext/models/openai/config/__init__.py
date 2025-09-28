@@ -119,7 +119,9 @@ class OpenAIClientConfigurationConfigModel(BaseOpenAIClientConfigurationConfigMo
     base_url: str | None = None
 
 
-class AzureOpenAIClientConfigurationConfigModel(BaseOpenAIClientConfigurationConfigModel):
+class AzureOpenAIClientConfigurationConfigModel(
+    BaseOpenAIClientConfigurationConfigModel
+):
     # Azure specific
     azure_endpoint: str
     azure_deployment: str | None = None

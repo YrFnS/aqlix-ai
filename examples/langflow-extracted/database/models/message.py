@@ -2,6 +2,7 @@
 Message model extracted from Langflow for Iraqi AI Chat System
 Original: src/backend/base/langflow/services/database/models/message/model.py
 """
+
 import json
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Annotated
@@ -16,8 +17,10 @@ from langflow.schema.content_block import ContentBlock
 from langflow.schema.properties import Properties
 from langflow.schema.validators import str_to_timestamp_validator
 
+
 class MessageBase(SQLModel):
     """Base message model with core attributes"""
+
     timestamp: Annotated[datetime, str_to_timestamp_validator]
     sender: str
     sender_name: str
@@ -64,36 +67,47 @@ class MessageBase(SQLModel):
             edit=message.edit,
             properties=message.properties,
             category=message.category,
-            content_blocks=message.content_blocks
+            content_blocks=message.content_blocks,
         )
+
 
 class MessageTable(MessageBase, table=True):
     """Database table model for messages"""
+
     __tablename__ = "message"
-    
+
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     flow_id: UUID | None = Field(default=None, foreign_key="flow.id")
     files: list[str] = Field(sa_column=Column(JSON, default=list))
     properties: dict | Properties = Field(sa_column=Column(JSON, default=dict))
     category: str = Field(default="message")
-    content_blocks: list[dict | ContentBlock] = Field(sa_column=Column(JSON, default=list))
+    content_blocks: list[dict | ContentBlock] = Field(
+        sa_column=Column(JSON, default=list)
+    )
+
 
 class MessageRead(MessageBase):
     """Read-only message model with ID"""
+
     id: UUID
     flow_id: UUID | None
 
+
 class MessageCreate(MessageBase):
     """Model for creating new messages"""
+
     pass
+
 
 class MessageUpdate(SQLModel):
     """Model for updating existing messages - allows partial updates"""
+
     text: str | None = None
     files: list[str] | None = None
     properties: Properties | None = None
     category: str | None = None
     content_blocks: list[ContentBlock] | None = None
+
 
 # Iraqi AI Chat System enhancements needed:
 # - Add language_detected: str (arabic/english)

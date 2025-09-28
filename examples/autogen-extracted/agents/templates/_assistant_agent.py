@@ -35,7 +35,13 @@ from autogen_core.models import (
     LLMMessage,
     SystemMessage,
 )
-from autogen_core.tools import BaseTool, FunctionTool, StaticStreamWorkbench, ToolResult, Workbench
+from autogen_core.tools import (
+    BaseTool,
+    FunctionTool,
+    StaticStreamWorkbench,
+    ToolResult,
+    Workbench,
+)
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
@@ -726,7 +732,10 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         name: str,
         model_client: ChatCompletionClient,
         *,
-        tools: List[BaseTool[Any, Any] | Callable[..., Any] | Callable[..., Awaitable[Any]]] | None = None,
+        tools: List[
+            BaseTool[Any, Any] | Callable[..., Any] | Callable[..., Awaitable[Any]]
+        ]
+        | None = None,
         workbench: Workbench | Sequence[Workbench] | None = None,
         handoffs: List[HandoffBase | str] | None = None,
         model_context: ChatCompletionContext | None = None,
@@ -738,7 +747,10 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         reflect_on_tool_use: bool | None = None,
         max_tool_iterations: int = 1,
         tool_call_summary_format: str = "{result}",
-        tool_call_summary_formatter: Callable[[FunctionCall, FunctionExecutionResult], str] | None = None,
+        tool_call_summary_formatter: Callable[
+            [FunctionCall, FunctionExecutionResult], str
+        ]
+        | None = None,
         output_content_type: type[BaseModel] | None = None,
         output_content_type_format: str | None = None,
         memory: Sequence[Memory] | None = None,
@@ -753,7 +765,8 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         self._structured_message_factory: StructuredMessageFactory | None = None
         if output_content_type is not None:
             self._structured_message_factory = StructuredMessageFactory(
-                input_model=output_content_type, format_string=output_content_type_format
+                input_model=output_content_type,
+                format_string=output_content_type_format,
             )
 
         self._memory = None
@@ -761,7 +774,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
             if isinstance(memory, list):
                 self._memory = memory
             else:
-                raise TypeError(f"Expected Memory, List[Memory], or None, got {type(memory)}")
+                raise TypeError(
+                    f"Expected Memory, List[Memory], or None, got {type(memory)}"
+                )
 
         self._system_messages: List[SystemMessage] = []
         if system_message is None:
@@ -793,7 +808,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         self._handoffs: Dict[str, HandoffBase] = {}
         if handoffs is not None:
             if model_client.model_info["function_calling"] is False:
-                raise ValueError("The model does not support function calling, which is needed for handoffs.")
+                raise ValueError(
+                    "The model does not support function calling, which is needed for handoffs."
+                )
             for handoff in handoffs:
                 if isinstance(handoff, str):
                     handoff = HandoffBase(target=handoff)
@@ -865,7 +882,11 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         Returns:
             Sequence of message types this agent can generate
         """
-        types: List[type[BaseChatMessage]] = [TextMessage, ToolCallSummaryMessage, HandoffMessage]
+        types: List[type[BaseChatMessage]] = [
+            TextMessage,
+            ToolCallSummaryMessage,
+            HandoffMessage,
+        ]
         if self._structured_message_factory is not None:
             types.append(StructuredMessage)
         return types
@@ -972,7 +993,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
 
         # --- NEW: If the model produced a hidden "thought," yield it as an event ---
         if model_result.thought:
-            thought_event = ThoughtEvent(content=model_result.thought, source=agent_name)
+            thought_event = ThoughtEvent(
+                content=model_result.thought, source=agent_name
+            )
             yield thought_event
             inner_messages.append(thought_event)
 
@@ -1042,7 +1065,10 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         if memory:
             for mem in memory:
                 update_context_result = await mem.update_context(model_context)
-                if update_context_result and len(update_context_result.memories.results) > 0:
+                if (
+                    update_context_result
+                    and len(update_context_result.memories.results) > 0
+                ):
                     memory_query_event_msg = MemoryQueryEvent(
                         content=update_context_result.memories.results,
                         source=agent_name,
@@ -1081,9 +1107,13 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
             Generator yielding model results or streaming chunks
         """
         all_messages = await model_context.get_messages()
-        llm_messages = cls._get_compatible_context(model_client=model_client, messages=system_messages + all_messages)
+        llm_messages = cls._get_compatible_context(
+            model_client=model_client, messages=system_messages + all_messages
+        )
 
-        tools = [tool for wb in workbench for tool in await wb.list_tools()] + handoff_tools
+        tools = [
+            tool for wb in workbench for tool in await wb.list_tools()
+        ] + handoff_tools
 
         if model_client_stream:
             model_result: Optional[CreateResult] = None
@@ -1097,7 +1127,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                 if isinstance(chunk, CreateResult):
                     model_result = chunk
                 elif isinstance(chunk, str):
-                    yield ModelClientStreamingChunkEvent(content=chunk, source=agent_name, full_message_id=message_id)
+                    yield ModelClientStreamingChunkEvent(
+                        content=chunk, source=agent_name, full_message_id=message_id
+                    )
                 else:
                     raise RuntimeError(f"Invalid chunk type: {type(chunk)}")
             if model_result is None:
@@ -1128,7 +1160,10 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         model_client_stream: bool,
         reflect_on_tool_use: bool,
         tool_call_summary_format: str,
-        tool_call_summary_formatter: Callable[[FunctionCall, FunctionExecutionResult], str] | None,
+        tool_call_summary_formatter: Callable[
+            [FunctionCall, FunctionExecutionResult], str
+        ]
+        | None,
         max_tool_iterations: int,
         output_content_type: type[BaseModel] | None,
         message_id: str,
@@ -1142,14 +1177,18 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         # Tool call loop implementation with streaming support
         current_model_result = model_result
         # This variable is needed for the final summary/reflection step
-        executed_calls_and_results: List[Tuple[FunctionCall, FunctionExecutionResult]] = []
+        executed_calls_and_results: List[
+            Tuple[FunctionCall, FunctionExecutionResult]
+        ] = []
 
         for loop_iteration in range(max_tool_iterations):
             # If direct text response (string), we're done
             if isinstance(current_model_result.content, str):
                 # Use the passed message ID for the final message
                 if output_content_type:
-                    content = output_content_type.model_validate_json(current_model_result.content)
+                    content = output_content_type.model_validate_json(
+                        current_model_result.content
+                    )
                     yield Response(
                         chat_message=StructuredMessage[output_content_type](  # type: ignore[valid-type]
                             content=content,
@@ -1212,14 +1251,18 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                 stream_queue.put_nowait(None)
                 return results
 
-            task = asyncio.create_task(_execute_tool_calls(current_model_result.content, stream))
+            task = asyncio.create_task(
+                _execute_tool_calls(current_model_result.content, stream)
+            )
 
             while True:
                 event = await stream.get()
                 if event is None:
                     # End of streaming, break the loop.
                     break
-                if isinstance(event, BaseAgentEvent) or isinstance(event, BaseChatMessage):
+                if isinstance(event, BaseAgentEvent) or isinstance(
+                    event, BaseChatMessage
+                ):
                     yield event
                     inner_messages.append(event)
                 else:
@@ -1235,7 +1278,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                 source=agent_name,
             )
             event_logger.debug(tool_call_result_msg)
-            await model_context.add_message(FunctionExecutionResultMessage(content=exec_results))
+            await model_context.add_message(
+                FunctionExecutionResultMessage(content=exec_results)
+            )
             inner_messages.append(tool_call_result_msg)
             yield tool_call_result_msg
 
@@ -1276,12 +1321,16 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                     # Streaming chunk event
                     yield llm_output
 
-            assert next_model_result is not None, "No model result was produced in tool call loop."
+            assert next_model_result is not None, (
+                "No model result was produced in tool call loop."
+            )
             current_model_result = next_model_result
 
             # Yield thought event if present
             if current_model_result.thought:
-                thought_event = ThoughtEvent(content=current_model_result.thought, source=agent_name)
+                thought_event = ThoughtEvent(
+                    content=current_model_result.thought, source=agent_name
+                )
                 yield thought_event
                 inner_messages.append(thought_event)
 
@@ -1341,7 +1390,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
             Optional response containing handoff message if handoff detected
         """
         handoff_reqs = [
-            call for call in model_result.content if isinstance(call, FunctionCall) and call.name in handoffs
+            call
+            for call in model_result.content
+            if isinstance(call, FunctionCall) and call.name in handoffs
         ]
         if len(handoff_reqs) > 0:
             # We have at least one handoff function call
@@ -1379,7 +1430,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                         thought=getattr(model_result, "thought", None),
                     )
                 )
-                handoff_context.append(FunctionExecutionResultMessage(content=tool_call_results))
+                handoff_context.append(
+                    FunctionExecutionResultMessage(content=tool_call_results)
+                )
             elif model_result.thought:
                 # If no tool calls, but a thought exists, include it in the context
                 handoff_context.append(
@@ -1420,7 +1473,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         and yield the final text response (or streaming chunks).
         """
         all_messages = system_messages + await model_context.get_messages()
-        llm_messages = cls._get_compatible_context(model_client=model_client, messages=all_messages)
+        llm_messages = cls._get_compatible_context(
+            model_client=model_client, messages=all_messages
+        )
 
         reflection_result: Optional[CreateResult] = None
 
@@ -1438,7 +1493,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                     reflection_result = chunk
                 elif isinstance(chunk, str):
                     yield ModelClientStreamingChunkEvent(
-                        content=chunk, source=agent_name, full_message_id=reflection_message_id
+                        content=chunk,
+                        source=agent_name,
+                        full_message_id=reflection_message_id,
                     )
                 else:
                     raise RuntimeError(f"Invalid chunk type: {type(chunk)}")
@@ -1455,7 +1512,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
 
         # --- NEW: If the reflection produced a thought, yield it ---
         if reflection_result.thought:
-            thought_event = ThoughtEvent(content=reflection_result.thought, source=agent_name)
+            thought_event = ThoughtEvent(
+                content=reflection_result.thought, source=agent_name
+            )
             yield thought_event
             inner_messages.append(thought_event)
 
@@ -1496,16 +1555,25 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         inner_messages: List[BaseAgentEvent | BaseChatMessage],
         handoffs: Dict[str, HandoffBase],
         tool_call_summary_format: str,
-        tool_call_summary_formatter: Callable[[FunctionCall, FunctionExecutionResult], str] | None,
+        tool_call_summary_formatter: Callable[
+            [FunctionCall, FunctionExecutionResult], str
+        ]
+        | None,
         agent_name: str,
     ) -> Response:
         """
         If reflect_on_tool_use=False, create a summary message of all tool calls.
         """
         # Filter out calls which were actually handoffs
-        normal_tool_calls = [(call, result) for call, result in executed_calls_and_results if call.name not in handoffs]
+        normal_tool_calls = [
+            (call, result)
+            for call, result in executed_calls_and_results
+            if call.name not in handoffs
+        ]
 
-        def default_tool_call_summary_formatter(call: FunctionCall, result: FunctionExecutionResult) -> str:
+        def default_tool_call_summary_formatter(
+            call: FunctionCall, result: FunctionExecutionResult
+        ) -> str:
             return tool_call_summary_format.format(
                 tool_name=call.name,
                 arguments=call.arguments,
@@ -1513,9 +1581,13 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                 is_error=result.is_error,
             )
 
-        summary_formatter = tool_call_summary_formatter or default_tool_call_summary_formatter
+        summary_formatter = (
+            tool_call_summary_formatter or default_tool_call_summary_formatter
+        )
 
-        tool_call_summaries = [summary_formatter(call, result) for call, result in normal_tool_calls]
+        tool_call_summaries = [
+            summary_formatter(call, result) for call, result in normal_tool_calls
+        ]
 
         tool_call_summary = "\n".join(tool_call_summaries)
         return Response(
@@ -1557,7 +1629,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         for handoff_tool in handoff_tools:
             if tool_call.name == handoff_tool.name:
                 # Run handoff tool call.
-                result = await handoff_tool.run_json(arguments, cancellation_token, call_id=tool_call.id)
+                result = await handoff_tool.run_json(
+                    arguments, cancellation_token, call_id=tool_call.id
+                )
                 result_as_str = handoff_tool.return_value_as_string(result)
                 return (
                     tool_call,
@@ -1583,7 +1657,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                     ):
                         if isinstance(event, ToolResult):
                             tool_result = event
-                        elif isinstance(event, BaseAgentEvent) or isinstance(event, BaseChatMessage):
+                        elif isinstance(event, BaseAgentEvent) or isinstance(
+                            event, BaseChatMessage
+                        ):
                             await stream.put(event)
                         else:
                             warnings.warn(
@@ -1591,7 +1667,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
                                 UserWarning,
                                 stacklevel=2,
                             )
-                    assert isinstance(tool_result, ToolResult), "Tool result should not be None in streaming mode."
+                    assert isinstance(tool_result, ToolResult), (
+                        "Tool result should not be None in streaming mode."
+                    )
                 else:
                     tool_result = await wb.call_tool(
                         name=tool_call.name,
@@ -1635,7 +1713,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         await self._model_context.load_state(assistant_agent_state.llm_context)
 
     @staticmethod
-    def _get_compatible_context(model_client: ChatCompletionClient, messages: List[LLMMessage]) -> Sequence[LLMMessage]:
+    def _get_compatible_context(
+        model_client: ChatCompletionClient, messages: List[LLMMessage]
+    ) -> Sequence[LLMMessage]:
         """Ensure that the messages are compatible with the underlying client, by removing images if needed."""
         if model_client.model_info["vision"]:
             return messages
@@ -1649,13 +1729,18 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
             name=self.name,
             model_client=self._model_client.dump_component(),
             tools=None,  # versionchanged:: v0.5.5  Now tools are not serialized, Cause they are part of the workbench.
-            workbench=[wb.dump_component() for wb in self._workbench] if self._workbench else None,
+            workbench=[wb.dump_component() for wb in self._workbench]
+            if self._workbench
+            else None,
             handoffs=list(self._handoffs.values()) if self._handoffs else None,
             model_context=self._model_context.dump_component(),
-            memory=[memory.dump_component() for memory in self._memory] if self._memory else None,
+            memory=[memory.dump_component() for memory in self._memory]
+            if self._memory
+            else None,
             description=self.description,
             system_message=self._system_messages[0].content
-            if self._system_messages and isinstance(self._system_messages[0].content, str)
+            if self._system_messages
+            and isinstance(self._system_messages[0].content, str)
             else None,
             model_client_stream=self._model_client_stream,
             reflect_on_tool_use=self._reflect_on_tool_use,
@@ -1671,7 +1756,9 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
     def _from_config(cls, config: AssistantAgentConfig) -> Self:
         """Create an assistant agent from a declarative config."""
         if config.structured_message_factory:
-            structured_message_factory = StructuredMessageFactory.load_component(config.structured_message_factory)
+            structured_message_factory = StructuredMessageFactory.load_component(
+                config.structured_message_factory
+            )
             format_string = structured_message_factory.format_string
             output_content_type = structured_message_factory.ContentModel
 
@@ -1682,11 +1769,19 @@ class AssistantAgent(BaseChatAgent, Component[AssistantAgentConfig]):
         return cls(
             name=config.name,
             model_client=ChatCompletionClient.load_component(config.model_client),
-            workbench=[Workbench.load_component(wb) for wb in config.workbench] if config.workbench else None,
+            workbench=[Workbench.load_component(wb) for wb in config.workbench]
+            if config.workbench
+            else None,
             handoffs=config.handoffs,
-            model_context=ChatCompletionContext.load_component(config.model_context) if config.model_context else None,
-            tools=[BaseTool.load_component(tool) for tool in config.tools] if config.tools else None,
-            memory=[Memory.load_component(memory) for memory in config.memory] if config.memory else None,
+            model_context=ChatCompletionContext.load_component(config.model_context)
+            if config.model_context
+            else None,
+            tools=[BaseTool.load_component(tool) for tool in config.tools]
+            if config.tools
+            else None,
+            memory=[Memory.load_component(memory) for memory in config.memory]
+            if config.memory
+            else None,
             description=config.description,
             system_message=config.system_message,
             model_client_stream=config.model_client_stream,

@@ -10,11 +10,11 @@ from .capabilities import BrowserCapabilities, IraqiCapabilities
 
 __all__ = [
     "Browser",
-    "BrowserConfig", 
+    "BrowserConfig",
     "IraqiBrowser",
     "IraqiPortalConfig",
     "SessionManager",
     "IraqiSessionManager",
     "BrowserCapabilities",
-    "IraqiCapabilities"
+    "IraqiCapabilities",
 ]

@@ -30,55 +30,48 @@ from .base_search_strategy import (
     IraqiSearchContext,
     ARABIC_SIMILARITY_THRESHOLD,
     ENGLISH_SIMILARITY_THRESHOLD,
-    CULTURAL_COMPLIANCE_THRESHOLD
+    CULTURAL_COMPLIANCE_THRESHOLD,
 )
 
 from .cultural_validator import (
     IraqiCulturalValidator,
     CulturalValidationResult,
     CulturalSensitivityLevel,
-    ProfessionalDomain
+    ProfessionalDomain,
 )
 
 from .arabic_processor import (
     ArabicTextProcessor,
     ArabicProcessingResult,
     ArabicScript,
-    IraqiDialectType
+    IraqiDialectType,
 )
 
-from .keyword_extractor import (
-    IraqiKeywordExtractor,
-    IraqiKeywordExtractionResult
-)
+from .keyword_extractor import IraqiKeywordExtractor, IraqiKeywordExtractionResult
 
-from .hybrid_search_strategy import (
-    IraqiHybridSearchStrategy,
-    IraqiHybridSearchConfig
-)
+from .hybrid_search_strategy import IraqiHybridSearchStrategy, IraqiHybridSearchConfig
 
 from .reranking_strategy import (
     IraqiRerankingStrategy,
     IraqiRerankingConfig,
-    IraqiRerankingResult
+    IraqiRerankingResult,
 )
 
 from .agentic_rag_strategy import (
     IraqiAgenticRAGStrategy,
     IraqiAgenticConfig,
     IraqiCodeAnalysisResult,
-    IraqiCodeType
+    IraqiCodeType,
 )
 
-from .rag_service import (
-    IraqiRAGService,
-    IraqiRAGConfig
-)
+from .rag_service import IraqiRAGService, IraqiRAGConfig
 
 # Version information
 __version__ = "1.0.0"
 __author__ = "Iraqi AI Development Team"
-__description__ = "Iraqi-enhanced RAG system with cultural intelligence and Arabic processing"
+__description__ = (
+    "Iraqi-enhanced RAG system with cultural intelligence and Arabic processing"
+)
 
 # Default configuration for easy setup
 DEFAULT_IRAQI_RAG_CONFIG = IraqiRAGConfig(
@@ -91,53 +84,55 @@ DEFAULT_IRAQI_RAG_CONFIG = IraqiRAGConfig(
     default_islamic_compliance=True,
     default_professional_domain="general",
     default_language="mixed",
-    default_dialect="iraqi"
+    default_dialect="iraqi",
 )
+
 
 # Convenience factory functions
 def create_iraqi_rag_service(
     supabase_client=None,
     config=None,
     cultural_sensitivity=0.95,
-    enable_arabic_processing=True
+    enable_arabic_processing=True,
 ):
     """
     Create a fully configured Iraqi RAG service with sensible defaults.
-    
+
     Args:
         supabase_client: Supabase client instance
         config: Optional IraqiRAGConfig instance
         cultural_sensitivity: Cultural compliance threshold (0.0-1.0)
         enable_arabic_processing: Whether to enable Arabic processing
-        
+
     Returns:
         Configured IraqiRAGService instance
     """
     if config is None:
         config = IraqiRAGConfig(
             default_cultural_sensitivity=cultural_sensitivity,
-            enable_arabic_processing=enable_arabic_processing
+            enable_arabic_processing=enable_arabic_processing,
         )
-    
+
     return IraqiRAGService(supabase_client=supabase_client, config=config)
+
 
 def create_iraqi_search_context(
     professional_domain="general",
     cultural_sensitivity=0.95,
     islamic_compliance=True,
     language="mixed",
-    dialect="iraqi"
+    dialect="iraqi",
 ):
     """
     Create an Iraqi search context with specified parameters.
-    
+
     Args:
         professional_domain: Professional domain (legal, medical, educational, government, business, technical, general)
         cultural_sensitivity: Required cultural compliance score (0.0-1.0)
         islamic_compliance: Whether Islamic compliance is required
         language: Language context (arabic, english, mixed)
         dialect: Arabic dialect (iraqi, standard, mixed)
-        
+
     Returns:
         Configured IraqiSearchContext instance
     """
@@ -147,26 +142,24 @@ def create_iraqi_search_context(
         professional_domain=professional_domain,
         cultural_sensitivity=cultural_sensitivity,
         islamic_compliance=islamic_compliance,
-        region="iraq"
+        region="iraq",
     )
+
 
 # Export all public components
 __all__ = [
     # Main service
     "IraqiRAGService",
     "IraqiRAGConfig",
-    
     # Search strategies
     "IraqiBaseSearchStrategy",
-    "IraqiHybridSearchStrategy", 
+    "IraqiHybridSearchStrategy",
     "IraqiRerankingStrategy",
     "IraqiAgenticRAGStrategy",
-    
     # Core components
     "IraqiCulturalValidator",
     "ArabicTextProcessor",
     "IraqiKeywordExtractor",
-    
     # Data structures
     "IraqiSearchContext",
     "CulturalValidationResult",
@@ -174,33 +167,27 @@ __all__ = [
     "IraqiKeywordExtractionResult",
     "IraqiRerankingResult",
     "IraqiCodeAnalysisResult",
-    
     # Configuration classes
     "IraqiHybridSearchConfig",
-    "IraqiRerankingConfig", 
+    "IraqiRerankingConfig",
     "IraqiAgenticConfig",
-    
     # Enums
     "ArabicScript",
     "IraqiDialectType",
     "CulturalSensitivityLevel",
     "ProfessionalDomain",
     "IraqiCodeType",
-    
     # Constants
     "ARABIC_SIMILARITY_THRESHOLD",
-    "ENGLISH_SIMILARITY_THRESHOLD", 
+    "ENGLISH_SIMILARITY_THRESHOLD",
     "CULTURAL_COMPLIANCE_THRESHOLD",
-    
     # Factory functions
     "create_iraqi_rag_service",
     "create_iraqi_search_context",
-    
     # Default configuration
     "DEFAULT_IRAQI_RAG_CONFIG",
-    
     # Package metadata
     "__version__",
     "__author__",
-    "__description__"
+    "__description__",
 ]

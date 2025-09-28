@@ -10,16 +10,16 @@ from .navigation_agent import NavigationAgent, NavigationStrategy
 from .content_analysis_agent import ContentAnalysisAgent, AnalysisTask
 
 __all__ = [
-    'BrowserAgent',
-    'AgentConfig',
-    'AgentTask',
-    'IraqiPortalAgent',
-    'PortalType',
-    'ServiceType',
-    'FormAutomationAgent',
-    'FormTask',
-    'NavigationAgent',
-    'NavigationStrategy',
-    'ContentAnalysisAgent',
-    'AnalysisTask'
+    "BrowserAgent",
+    "AgentConfig",
+    "AgentTask",
+    "IraqiPortalAgent",
+    "PortalType",
+    "ServiceType",
+    "FormAutomationAgent",
+    "FormTask",
+    "NavigationAgent",
+    "NavigationStrategy",
+    "ContentAnalysisAgent",
+    "AnalysisTask",
 ]

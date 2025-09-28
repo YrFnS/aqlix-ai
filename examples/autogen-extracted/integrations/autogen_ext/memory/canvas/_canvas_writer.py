@@ -28,7 +28,9 @@ class UpdateFileTool(BaseTool[UpdateFileArgs, UpdateFileResult]):
         )
         self._canvas = canvas
 
-    async def run(self, args: UpdateFileArgs, cancellation_token: CancellationToken) -> UpdateFileResult:
+    async def run(
+        self, args: UpdateFileArgs, cancellation_token: CancellationToken
+    ) -> UpdateFileResult:
         self._canvas.add_or_update_file(args.filename, args.new_content)
         return UpdateFileResult(status="OK")
 
@@ -59,6 +61,8 @@ class ApplyPatchTool(BaseTool[ApplyPatchArgs, ApplyPatchResult]):
         )
         self._canvas = canvas
 
-    async def run(self, args: ApplyPatchArgs, cancellation_token: CancellationToken) -> ApplyPatchResult:
+    async def run(
+        self, args: ApplyPatchArgs, cancellation_token: CancellationToken
+    ) -> ApplyPatchResult:
         self._canvas.apply_patch(args.filename, args.patch_text)
         return ApplyPatchResult(status="PATCH APPLIED")

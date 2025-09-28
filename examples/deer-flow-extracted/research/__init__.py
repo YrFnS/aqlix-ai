@@ -17,5 +17,5 @@ __all__ = [
     "IraqiLiteratureAnalyzer",
     "IraqiCitationManager",
     "IraqiCollaborationManager",
-    "IraqiResearchValidator"
+    "IraqiResearchValidator",
 ]

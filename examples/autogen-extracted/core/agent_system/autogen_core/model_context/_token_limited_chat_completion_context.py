@@ -16,7 +16,9 @@ class TokenLimitedChatCompletionContextConfig(BaseModel):
     initial_messages: List[LLMMessage] | None = None
 
 
-class TokenLimitedChatCompletionContext(ChatCompletionContext, Component[TokenLimitedChatCompletionContextConfig]):
+class TokenLimitedChatCompletionContext(
+    ChatCompletionContext, Component[TokenLimitedChatCompletionContextConfig]
+):
     """(Experimental) A token based chat completion context maintains a view of the context up to a token limit.
 
     .. note::
@@ -37,7 +39,9 @@ class TokenLimitedChatCompletionContext(ChatCompletionContext, Component[TokenLi
     """
 
     component_config_schema = TokenLimitedChatCompletionContextConfig
-    component_provider_override = "autogen_core.model_context.TokenLimitedChatCompletionContext"
+    component_provider_override = (
+        "autogen_core.model_context.TokenLimitedChatCompletionContext"
+    )
 
     def __init__(
         self,
@@ -59,17 +63,25 @@ class TokenLimitedChatCompletionContext(ChatCompletionContext, Component[TokenLi
         provided, then return as many messages as the remaining token allowed by the model client."""
         messages = list(self._messages)
         if self._token_limit is None:
-            remaining_tokens = self._model_client.remaining_tokens(messages, tools=self._tool_schema)
+            remaining_tokens = self._model_client.remaining_tokens(
+                messages, tools=self._tool_schema
+            )
             while remaining_tokens < 0 and len(messages) > 0:
                 middle_index = len(messages) // 2
                 messages.pop(middle_index)
-                remaining_tokens = self._model_client.remaining_tokens(messages, tools=self._tool_schema)
+                remaining_tokens = self._model_client.remaining_tokens(
+                    messages, tools=self._tool_schema
+                )
         else:
-            token_count = self._model_client.count_tokens(messages, tools=self._tool_schema)
+            token_count = self._model_client.count_tokens(
+                messages, tools=self._tool_schema
+            )
             while token_count > self._token_limit and len(messages) > 0:
                 middle_index = len(messages) // 2
                 messages.pop(middle_index)
-                token_count = self._model_client.count_tokens(messages, tools=self._tool_schema)
+                token_count = self._model_client.count_tokens(
+                    messages, tools=self._tool_schema
+                )
         if messages and isinstance(messages[0], FunctionExecutionResultMessage):
             # Handle the first message is a function call result message.
             # Remove the first message from the list.

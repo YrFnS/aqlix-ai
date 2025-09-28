@@ -11,10 +11,11 @@ import uuid
 from datetime import datetime
 import threading
 
+
 class DBConnection:
     """Thread-safe singleton database connection manager using Supabase."""
-    
-    _instance: Optional['DBConnection'] = None
+
+    _instance: Optional["DBConnection"] = None
     _lock = threading.Lock()
 
     def __new__(cls):
@@ -35,28 +36,36 @@ class DBConnection:
         """Initialize the database connection."""
         if self._initialized:
             return
-                
+
         try:
             supabase_url = config.SUPABASE_URL
             # Use service role key preferentially for backend operations
             supabase_key = config.SUPABASE_SERVICE_ROLE_KEY or config.SUPABASE_ANON_KEY
-            
+
             if not supabase_url or not supabase_key:
-                logger.error("Missing required environment variables for Supabase connection")
-                raise RuntimeError("SUPABASE_URL and a key (SERVICE_ROLE_KEY or ANON_KEY) environment variables must be set.")
+                logger.error(
+                    "Missing required environment variables for Supabase connection"
+                )
+                raise RuntimeError(
+                    "SUPABASE_URL and a key (SERVICE_ROLE_KEY or ANON_KEY) environment variables must be set."
+                )
 
             logger.debug("Initializing Supabase connection")
-            
+
             # Create Supabase client with timeout configuration
             self._client = await create_async_client(
-                supabase_url, 
+                supabase_url,
                 supabase_key,
             )
-            
+
             self._initialized = True
-            key_type = "SERVICE_ROLE_KEY" if config.SUPABASE_SERVICE_ROLE_KEY else "ANON_KEY"
-            logger.debug(f"Database connection initialized with Supabase using {key_type}")
-            
+            key_type = (
+                "SERVICE_ROLE_KEY" if config.SUPABASE_SERVICE_ROLE_KEY else "ANON_KEY"
+            )
+            logger.debug(
+                f"Database connection initialized with Supabase using {key_type}"
+            )
+
         except Exception as e:
             logger.error(f"Database initialization error: {e}")
             raise RuntimeError(f"Failed to initialize database connection: {str(e)}")
@@ -68,9 +77,9 @@ class DBConnection:
             logger.info("Disconnecting from Supabase database")
             try:
                 # Close Supabase client
-                if hasattr(cls._instance._client, 'close'):
+                if hasattr(cls._instance._client, "close"):
                     await cls._instance._client.close()
-                    
+
             except Exception as e:
                 logger.warning(f"Error during disconnect: {e}")
             finally:

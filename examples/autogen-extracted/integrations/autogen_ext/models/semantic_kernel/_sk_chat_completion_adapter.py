@@ -17,9 +17,15 @@ from autogen_core.models import (
 )
 from autogen_core.tools import BaseTool, Tool, ToolSchema
 from pydantic import BaseModel
-from semantic_kernel.connectors.ai.chat_completion_client_base import ChatCompletionClientBase
-from semantic_kernel.connectors.ai.function_choice_behavior import FunctionChoiceBehavior
-from semantic_kernel.connectors.ai.prompt_execution_settings import PromptExecutionSettings
+from semantic_kernel.connectors.ai.chat_completion_client_base import (
+    ChatCompletionClientBase,
+)
+from semantic_kernel.connectors.ai.function_choice_behavior import (
+    FunctionChoiceBehavior,
+)
+from semantic_kernel.connectors.ai.prompt_execution_settings import (
+    PromptExecutionSettings,
+)
 from semantic_kernel.contents import (
     ChatHistory,
     ChatMessageContent,
@@ -31,7 +37,10 @@ from semantic_kernel.functions.kernel_plugin import KernelPlugin
 from semantic_kernel.kernel import Kernel
 from typing_extensions import AsyncGenerator
 
-from autogen_ext.tools.semantic_kernel import KernelFunctionFromTool, KernelFunctionFromToolSchema
+from autogen_ext.tools.semantic_kernel import (
+    KernelFunctionFromTool,
+    KernelFunctionFromToolSchema,
+)
 
 from .._utils.parse_r1_content import parse_r1_content
 
@@ -285,7 +294,11 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         self._prompt_settings = prompt_settings
         self._sk_client = sk_client
         self._model_info = model_info or ModelInfo(
-            vision=False, function_calling=False, json_output=False, family=ModelFamily.UNKNOWN, structured_output=False
+            vision=False,
+            function_calling=False,
+            json_output=False,
+            family=ModelFamily.UNKNOWN,
+            structured_output=False,
         )
         validate_model_info(self._model_info)
         self._total_prompt_tokens = 0
@@ -309,7 +322,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
 
             elif msg.type == "AssistantMessage":
                 # Check if it's a function-call style message
-                if isinstance(msg.content, list) and all(isinstance(fc, FunctionCall) for fc in msg.content):
+                if isinstance(msg.content, list) and all(
+                    isinstance(fc, FunctionCall) for fc in msg.content
+                ):
                     # If there's a 'thought' field, you can add that as plain assistant text
                     if msg.thought:
                         chat_history.add_assistant_message(msg.thought)
@@ -353,12 +368,16 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         return chat_history
 
     def _build_execution_settings(
-        self, default_prompt_settings: Optional[PromptExecutionSettings], tools: Sequence[Tool | ToolSchema]
+        self,
+        default_prompt_settings: Optional[PromptExecutionSettings],
+        tools: Sequence[Tool | ToolSchema],
     ) -> PromptExecutionSettings:
         """Build PromptExecutionSettings from extra_create_args"""
 
         if default_prompt_settings is not None:
-            prompt_args: dict[str, Any] = default_prompt_settings.prepare_settings_dict()  # type: ignore
+            prompt_args: dict[str, Any] = (
+                default_prompt_settings.prepare_settings_dict()
+            )  # type: ignore
         else:
             prompt_args = {}
 
@@ -378,13 +397,18 @@ class SKChatCompletionAdapter(ChatCompletionClient):
 
         return settings
 
-    def _sync_tools_with_kernel(self, kernel: Kernel, tools: Sequence[Tool | ToolSchema]) -> None:
+    def _sync_tools_with_kernel(
+        self, kernel: Kernel, tools: Sequence[Tool | ToolSchema]
+    ) -> None:
         """Sync tools with kernel by updating the plugin"""
         # Get current tool names in plugin
         current_tool_names = set(self._tools_plugin.functions.keys())
 
         # Get new tool names
-        new_tool_names = {tool.schema["name"] if isinstance(tool, Tool) else tool["name"] for tool in tools}
+        new_tool_names = {
+            tool.schema["name"] if isinstance(tool, Tool) else tool["name"]
+            for tool in tools
+        }
 
         # Remove tools that are no longer needed
         for tool_name in current_tool_names - new_tool_names:
@@ -423,19 +447,30 @@ class SKChatCompletionAdapter(ChatCompletionClient):
                 else:
                     arguments = item.arguments or "{}"
 
-                function_calls.append(FunctionCall(id=item.id, name=full_name, arguments=arguments))
+                function_calls.append(
+                    FunctionCall(id=item.id, name=full_name, arguments=arguments)
+                )
         return function_calls
 
     def _get_kernel(self, extra_create_args: Mapping[str, Any]) -> Kernel:
         kernel = extra_create_args.get("kernel", self._kernel)
         if not kernel:
-            raise ValueError("kernel must be provided either in constructor or extra_create_args")
+            raise ValueError(
+                "kernel must be provided either in constructor or extra_create_args"
+            )
         if not isinstance(kernel, Kernel):
-            raise ValueError("kernel must be an instance of semantic_kernel.kernel.Kernel")
+            raise ValueError(
+                "kernel must be an instance of semantic_kernel.kernel.Kernel"
+            )
         return kernel
 
-    def _get_prompt_settings(self, extra_create_args: Mapping[str, Any]) -> Optional[PromptExecutionSettings]:
-        return extra_create_args.get("prompt_execution_settings", None) or self._prompt_settings
+    def _get_prompt_settings(
+        self, extra_create_args: Mapping[str, Any]
+    ) -> Optional[PromptExecutionSettings]:
+        return (
+            extra_create_args.get("prompt_execution_settings", None)
+            or self._prompt_settings
+        )
 
     async def create(
         self,
@@ -472,7 +507,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
             CreateResult: The result of the chat completion.
         """
         if isinstance(json_output, type) and issubclass(json_output, BaseModel):
-            raise ValueError("structured output is not currently supported in SKChatCompletionAdapter")
+            raise ValueError(
+                "structured output is not currently supported in SKChatCompletionAdapter"
+            )
 
         # Handle tool_choice parameter
         if tool_choice != "auto":
@@ -490,7 +527,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         # Sync tools with kernel
         self._sync_tools_with_kernel(kernel, tools)
 
-        result = await self._sk_client.get_chat_message_contents(chat_history, settings=settings, kernel=kernel)
+        result = await self._sk_client.get_chat_message_contents(
+            chat_history, settings=settings, kernel=kernel
+        )
         # Track token usage from result metadata
         prompt_tokens = 0
         completion_tokens = 0
@@ -529,24 +568,35 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         return CreateResult(
             content=content,
             finish_reason=finish_reason,
-            usage=RequestUsage(prompt_tokens=prompt_tokens, completion_tokens=completion_tokens),
+            usage=RequestUsage(
+                prompt_tokens=prompt_tokens, completion_tokens=completion_tokens
+            ),
             cached=False,
             thought=thought,
         )
 
     @staticmethod
-    def _merge_function_call_content(existing_call: FunctionCallContent, new_chunk: FunctionCallContent) -> None:
+    def _merge_function_call_content(
+        existing_call: FunctionCallContent, new_chunk: FunctionCallContent
+    ) -> None:
         """Helper to merge partial argument chunks from new_chunk into existing_call."""
-        if isinstance(existing_call.arguments, str) and isinstance(new_chunk.arguments, str):
+        if isinstance(existing_call.arguments, str) and isinstance(
+            new_chunk.arguments, str
+        ):
             existing_call.arguments += new_chunk.arguments
-        elif isinstance(existing_call.arguments, dict) and isinstance(new_chunk.arguments, dict):
+        elif isinstance(existing_call.arguments, dict) and isinstance(
+            new_chunk.arguments, dict
+        ):
             existing_call.arguments.update(new_chunk.arguments)
         elif not existing_call.arguments or existing_call.arguments in ("{}", ""):
             # If existing had no arguments yet, just take the new one
             existing_call.arguments = new_chunk.arguments
         else:
             # If there's a mismatch (str vs dict), handle as needed
-            warnings.warn("Mismatch in argument types during merge. Existing arguments retained.", stacklevel=2)
+            warnings.warn(
+                "Mismatch in argument types during merge. Existing arguments retained.",
+                stacklevel=2,
+            )
 
         # Optionally update name/function_name if newly provided
         if new_chunk.name:
@@ -592,7 +642,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         """
 
         if isinstance(json_output, type) and issubclass(json_output, BaseModel):
-            raise ValueError("structured output is not currently supported in SKChatCompletionAdapter")
+            raise ValueError(
+                "structured output is not currently supported in SKChatCompletionAdapter"
+            )
 
         # Handle tool_choice parameter
         if tool_choice != "auto":
@@ -621,7 +673,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
 
         first_chunk = True
 
-        async for streaming_messages in self._sk_client.get_streaming_chat_message_contents(
+        async for (
+            streaming_messages
+        ) in self._sk_client.get_streaming_chat_message_contents(
             chat_history, settings=settings, kernel=kernel
         ):
             if first_chunk:
@@ -649,7 +703,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
                                 function_calls_in_progress[last_function_call_id] = item
                             else:
                                 # Merge partial arguments into existing call
-                                existing_call = function_calls_in_progress[last_function_call_id]
+                                existing_call = function_calls_in_progress[
+                                    last_function_call_id
+                                ]
                                 self._merge_function_call_content(existing_call, item)
                         else:
                             # item.id is None, so we assume it belongs to the last known ID
@@ -657,11 +713,14 @@ class SKChatCompletionAdapter(ChatCompletionClient):
                                 # No call in progress means we can't merge
                                 # You could either skip or raise an error here
                                 warnings.warn(
-                                    "Received function call chunk with no ID and no call in progress.", stacklevel=2
+                                    "Received function call chunk with no ID and no call in progress.",
+                                    stacklevel=2,
                                 )
                                 continue
 
-                            existing_call = function_calls_in_progress[last_function_call_id]
+                            existing_call = function_calls_in_progress[
+                                last_function_call_id
+                            ]
                             # Merge partial chunk
                             self._merge_function_call_content(existing_call, item)
 
@@ -693,7 +752,10 @@ class SKChatCompletionAdapter(ChatCompletionClient):
                     yield CreateResult(
                         content=calls_to_yield,
                         finish_reason="function_calls",
-                        usage=RequestUsage(prompt_tokens=prompt_tokens, completion_tokens=completion_tokens),
+                        usage=RequestUsage(
+                            prompt_tokens=prompt_tokens,
+                            completion_tokens=completion_tokens,
+                        ),
                         cached=False,
                     )
                     return
@@ -708,13 +770,18 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         self._total_completion_tokens += completion_tokens
 
         thought = None
-        if isinstance(accumulated_text, str) and self._model_info["family"] == ModelFamily.R1:
+        if (
+            isinstance(accumulated_text, str)
+            and self._model_info["family"] == ModelFamily.R1
+        ):
             thought, accumulated_text = parse_r1_content(accumulated_text)
 
         result = CreateResult(
             content=accumulated_text,
             finish_reason="stop",
-            usage=RequestUsage(prompt_tokens=prompt_tokens, completion_tokens=completion_tokens),
+            usage=RequestUsage(
+                prompt_tokens=prompt_tokens, completion_tokens=completion_tokens
+            ),
             cached=False,
             thought=thought,
         )
@@ -734,12 +801,20 @@ class SKChatCompletionAdapter(ChatCompletionClient):
         pass  # No explicit close method in SK client?
 
     def actual_usage(self) -> RequestUsage:
-        return RequestUsage(prompt_tokens=self._total_prompt_tokens, completion_tokens=self._total_completion_tokens)
+        return RequestUsage(
+            prompt_tokens=self._total_prompt_tokens,
+            completion_tokens=self._total_completion_tokens,
+        )
 
     def total_usage(self) -> RequestUsage:
-        return RequestUsage(prompt_tokens=self._total_prompt_tokens, completion_tokens=self._total_completion_tokens)
+        return RequestUsage(
+            prompt_tokens=self._total_prompt_tokens,
+            completion_tokens=self._total_completion_tokens,
+        )
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         chat_history = self._convert_to_chat_history(messages)
         total_tokens = 0
         for message in chat_history.messages:
@@ -748,7 +823,9 @@ class SKChatCompletionAdapter(ChatCompletionClient):
                 total_tokens += getattr(usage, "total_tokens", 0)
         return total_tokens
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         # Get total token count
         used_tokens = self.count_tokens(messages)
         # Assume max tokens from SK client if available, otherwise use default

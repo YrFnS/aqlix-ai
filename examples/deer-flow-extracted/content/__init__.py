@@ -15,6 +15,6 @@ __all__ = [
     "IraqiPodcastGenerator",
     "IraqiPresentationCreator",
     "IraqiDocumentGenerator",
-    "IraqiMultimediaProcessor", 
-    "IraqiContentValidator"
+    "IraqiMultimediaProcessor",
+    "IraqiContentValidator",
 ]

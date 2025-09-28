@@ -2,12 +2,25 @@ from __future__ import annotations
 
 import importlib
 import warnings
-from typing import Any, ClassVar, Dict, Generic, Literal, Type, TypeGuard, cast, overload
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    Literal,
+    Type,
+    TypeGuard,
+    cast,
+    overload,
+)
 
 from pydantic import BaseModel
 from typing_extensions import Self, TypeVar
 
-ComponentType = Literal["model", "agent", "tool", "termination", "token_provider", "workbench"] | str
+ComponentType = (
+    Literal["model", "agent", "tool", "termination", "token_provider", "workbench"]
+    | str
+)
 ConfigT = TypeVar("ConfigT", bound=BaseModel)
 FromConfigT = TypeVar("FromConfigT", bound=BaseModel, contravariant=True)
 ToConfigT = TypeVar("ToConfigT", bound=BaseModel, covariant=True)
@@ -82,7 +95,9 @@ class ComponentFromConfig(Generic[FromConfigT]):
 
         :meta public:
         """
-        raise NotImplementedError("This component does not support loading from past versions")
+        raise NotImplementedError(
+            "This component does not support loading from past versions"
+        )
 
 
 class ComponentToConfig(Generic[ToConfigT]):
@@ -166,15 +181,21 @@ ExpectedType = TypeVar("ExpectedType")
 class ComponentLoader:
     @overload
     @classmethod
-    def load_component(cls, model: ComponentModel | Dict[str, Any], expected: None = None) -> Self: ...
+    def load_component(
+        cls, model: ComponentModel | Dict[str, Any], expected: None = None
+    ) -> Self: ...
 
     @overload
     @classmethod
-    def load_component(cls, model: ComponentModel | Dict[str, Any], expected: Type[ExpectedType]) -> ExpectedType: ...
+    def load_component(
+        cls, model: ComponentModel | Dict[str, Any], expected: Type[ExpectedType]
+    ) -> ExpectedType: ...
 
     @classmethod
     def load_component(
-        cls, model: ComponentModel | Dict[str, Any], expected: Type[ExpectedType] | None = None
+        cls,
+        model: ComponentModel | Dict[str, Any],
+        expected: Type[ExpectedType] | None = None,
     ) -> Self | ExpectedType:
         """Load a component from a model. Intended to be used with the return type of :py:meth:`autogen_core.ComponentConfig.dump_component`.
 
@@ -236,10 +257,14 @@ class ComponentLoader:
         if not hasattr(component_class, "component_type"):
             raise AttributeError("component_type not defined")
 
-        loaded_config_version = loaded_model.component_version or component_class.component_version
+        loaded_config_version = (
+            loaded_model.component_version or component_class.component_version
+        )
         if loaded_config_version < component_class.component_version:
             try:
-                instance = component_class._from_config_past_version(loaded_model.config, loaded_config_version)  # type: ignore
+                instance = component_class._from_config_past_version(
+                    loaded_model.config, loaded_config_version
+                )  # type: ignore
             except NotImplementedError as e:
                 raise NotImplementedError(
                     f"Tried to load component {component_class} which is on version {component_class.component_version} with a config on version {loaded_config_version} but _from_config_past_version is not implemented"

@@ -11,7 +11,14 @@ from pydantic import BaseModel
 from pydantic.networks import AnyUrl
 
 from mcp import ClientSession, Tool
-from mcp.types import AudioContent, ContentBlock, EmbeddedResource, ImageContent, ResourceLink, TextContent
+from mcp.types import (
+    AudioContent,
+    ContentBlock,
+    EmbeddedResource,
+    ImageContent,
+    ResourceLink,
+    TextContent,
+)
 
 from ._config import McpServerParams
 from ._session import create_mcp_server_session
@@ -30,7 +37,12 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
 
     component_type = "tool"
 
-    def __init__(self, server_params: TServerParams, tool: Tool, session: ClientSession | None = None) -> None:
+    def __init__(
+        self,
+        server_params: TServerParams,
+        tool: Tool,
+        session: ClientSession | None = None,
+    ) -> None:
         self._tool = tool
         self._server_params = server_params
         self._session = session
@@ -69,13 +81,19 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
         if self._session is not None:
             # If a session is provided, use it directly.
             session = self._session
-            return await self._run(args=kwargs, cancellation_token=cancellation_token, session=session)
+            return await self._run(
+                args=kwargs, cancellation_token=cancellation_token, session=session
+            )
 
         async with create_mcp_server_session(self._server_params) as session:
             await session.initialize()
-            return await self._run(args=kwargs, cancellation_token=cancellation_token, session=session)
+            return await self._run(
+                args=kwargs, cancellation_token=cancellation_token, session=session
+            )
 
-    def _normalize_payload_to_content_list(self, payload: Sequence[ContentBlock]) -> list[ContentBlock]:
+    def _normalize_payload_to_content_list(
+        self, payload: Sequence[ContentBlock]
+    ) -> list[ContentBlock]:
         """
         Normalizes a raw tool output payload into a list of content items.
         - If payload is already a sequence of ContentBlock items, it's converted to a list and returned.
@@ -84,18 +102,35 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
         - Otherwise, the payload is stringified and wrapped in [TextContent(text=str(payload))].
         """
         if isinstance(payload, Sequence) and all(
-            isinstance(item, (TextContent, ImageContent, EmbeddedResource, AudioContent, ResourceLink))
+            isinstance(
+                item,
+                (
+                    TextContent,
+                    ImageContent,
+                    EmbeddedResource,
+                    AudioContent,
+                    ResourceLink,
+                ),
+            )
             for item in payload
         ):
             return list(payload)
-        elif isinstance(payload, (TextContent, ImageContent, EmbeddedResource, AudioContent, ResourceLink)):
+        elif isinstance(
+            payload,
+            (TextContent, ImageContent, EmbeddedResource, AudioContent, ResourceLink),
+        ):
             return [payload]
         elif isinstance(payload, str):
             return [TextContent(text=payload, type="text")]
         else:
             return [TextContent(text=str(payload), type="text")]
 
-    async def _run(self, args: Dict[str, Any], cancellation_token: CancellationToken, session: ClientSession) -> Any:
+    async def _run(
+        self,
+        args: Dict[str, Any],
+        cancellation_token: CancellationToken,
+        session: ClientSession,
+    ) -> Any:
         exceptions_to_catch: tuple[Type[BaseException], ...]
         if hasattr(builtins, "ExceptionGroup"):
             exceptions_to_catch = (asyncio.CancelledError, builtins.ExceptionGroup)
@@ -106,14 +141,20 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
             if cancellation_token.is_cancelled():
                 raise asyncio.CancelledError("Operation cancelled")
 
-            result_future = asyncio.ensure_future(session.call_tool(name=self._tool.name, arguments=args))
+            result_future = asyncio.ensure_future(
+                session.call_tool(name=self._tool.name, arguments=args)
+            )
             cancellation_token.link_future(result_future)
             result = await result_future
 
-            normalized_content_list = self._normalize_payload_to_content_list(result.content)
+            normalized_content_list = self._normalize_payload_to_content_list(
+                result.content
+            )
 
             if result.isError:
-                serialized_error_message = self.return_value_as_string(normalized_content_list)
+                serialized_error_message = self.return_value_as_string(
+                    normalized_content_list
+                )
                 raise Exception(serialized_error_message)
             return normalized_content_list
 
@@ -122,7 +163,9 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
             raise
 
     @classmethod
-    async def from_server_params(cls, server_params: TServerParams, tool_name: str) -> "McpToolAdapter[TServerParams]":
+    async def from_server_params(
+        cls, server_params: TServerParams, tool_name: str
+    ) -> "McpToolAdapter[TServerParams]":
         """
         Create an instance of McpToolAdapter from server parameters and tool name.
 
@@ -140,7 +183,9 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
             await session.initialize()
 
             tools_response = await session.list_tools()
-            matching_tool = next((t for t in tools_response.tools if t.name == tool_name), None)
+            matching_tool = next(
+                (t for t in tools_response.tools if t.name == tool_name), None
+            )
 
             if matching_tool is None:
                 raise ValueError(
@@ -170,11 +215,17 @@ class McpToolAdapter(BaseTool[BaseModel, Any], ABC, Generic[TServerParams]):
                         resource[key] = str(val)
                     else:
                         resource[key] = val
-                dumped_annotations = item.annotations.model_dump() if item.annotations else None
+                dumped_annotations = (
+                    item.annotations.model_dump() if item.annotations else None
+                )
                 # Remove 'meta' from annotations if it exists and is None
                 if dumped_annotations and dumped_annotations.get("meta") is None:
                     dumped_annotations.pop("meta", None)
-                return {"type": type, "resource": resource, "annotations": dumped_annotations}
+                return {
+                    "type": type,
+                    "resource": resource,
+                    "annotations": dumped_annotations,
+                }
             elif isinstance(item, ResourceLink):
                 dumped = item.model_dump()
                 # Remove the 'meta' field if it exists and is None (for backward compatibility)

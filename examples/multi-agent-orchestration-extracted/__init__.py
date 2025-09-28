@@ -19,7 +19,7 @@ Components:
 
 Usage:
     from multi_agent_orchestration_extracted import IraqiMultiAgentOrchestrator
-    
+
     orchestrator = IraqiMultiAgentOrchestrator()
     await orchestrator.execute_workflow(workflow_config)
 
@@ -34,7 +34,7 @@ from .orchestration_engine import (
     OrchestrationStrategy,
     AgentRole,
     CulturalContext,
-    WorkflowResult
+    WorkflowResult,
 )
 
 from .code_memory_manager import (
@@ -43,7 +43,7 @@ from .code_memory_manager import (
     CodeSummaryType,
     CulturalPreservationLevel,
     IraqiCulturalContext,
-    ArabicProcessingResult
+    ArabicProcessingResult,
 )
 
 from .arabic_document_segmentation import (
@@ -53,7 +53,7 @@ from .arabic_document_segmentation import (
     DocumentLanguage,
     IraqiDialectConfidence,
     DocumentType,
-    SegmentationType
+    SegmentationType,
 )
 
 from .workflow_progress_tracker import (
@@ -62,7 +62,7 @@ from .workflow_progress_tracker import (
     ProgressNotification,
     WorkflowStatus,
     PhaseStatus,
-    CulturalValidationStatus
+    CulturalValidationStatus,
 )
 
 __version__ = "1.0.0"
@@ -71,36 +71,33 @@ __author__ = "Claude Code with Iraqi AI Cultural Enhancement"
 __all__ = [
     # Core Orchestration
     "IraqiMultiAgentOrchestrator",
-    "WorkflowPhase", 
+    "WorkflowPhase",
     "OrchestrationStrategy",
     "AgentRole",
     "CulturalContext",
     "WorkflowResult",
-    
     # Memory Management
     "IraqiCodeMemoryManager",
     "CodeSummary",
-    "CodeSummaryType", 
+    "CodeSummaryType",
     "CulturalPreservationLevel",
     "IraqiCulturalContext",
     "ArabicProcessingResult",
-    
     # Document Processing
     "ArabicDocumentSegmentationAgent",
     "DocumentSegment",
     "SegmentationResult",
     "DocumentLanguage",
-    "IraqiDialectConfidence", 
+    "IraqiDialectConfidence",
     "DocumentType",
     "SegmentationType",
-    
     # Progress Tracking
     "IraqiWorkflowProgressTracker",
     "WorkflowProgressState",
     "ProgressNotification",
     "WorkflowStatus",
     "PhaseStatus",
-    "CulturalValidationStatus"
+    "CulturalValidationStatus",
 ]
 
 # Package metadata
@@ -110,28 +107,33 @@ PACKAGE_INFO = {
     "description": "Revolutionary Iraqi AI Multi-Agent Orchestration Engine",
     "features": [
         "8-phase workflow coordination with cultural intelligence",
-        "Arabic RTL processing and Iraqi dialect recognition", 
+        "Arabic RTL processing and Iraqi dialect recognition",
         "Islamic compliance monitoring and validation",
         "Real-time progress tracking with WebSocket support",
         "Memory optimization with cultural context preservation",
         "Multi-agent coordination with specialized roles",
         "Document segmentation with cultural awareness",
-        "Performance analytics with Iraqi professional standards"
+        "Performance analytics with Iraqi professional standards",
     ],
     "cultural_compliance": {
         "islamic_compliance_score": 100,
         "cultural_appropriateness_score": 95,
         "iraqi_dialect_support": True,
         "arabic_rtl_processing": True,
-        "professional_domain_support": ["legal", "medical", "educational", "government"]
+        "professional_domain_support": [
+            "legal",
+            "medical",
+            "educational",
+            "government",
+        ],
     },
     "performance_metrics": {
         "token_optimization": "40-60% reduction",
-        "cultural_retention": "95%+ preservation", 
+        "cultural_retention": "95%+ preservation",
         "processing_speed": "<200ms cultural validation",
         "workflow_coordination": "<100ms orchestration overhead",
-        "real_time_monitoring": "WebSocket with <50ms latency"
-    }
+        "real_time_monitoring": "WebSocket with <50ms latency",
+    },
 }
 
 

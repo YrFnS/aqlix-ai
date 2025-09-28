@@ -11,7 +11,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from time import sleep
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Protocol, Type, Union, cast, runtime_checkable
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+    Protocol,
+    Type,
+    Union,
+    cast,
+    runtime_checkable,
+)
 
 import aiohttp
 import docker
@@ -80,11 +90,15 @@ class JupyterClient:
         return f"ws://{self._connection_info.host}{port}"
 
     async def list_kernel_specs(self) -> Dict[str, Dict[str, str]]:
-        response = self._session.get(f"{self._get_api_base_url()}/api/kernelspecs", headers=self._get_headers())
+        response = self._session.get(
+            f"{self._get_api_base_url()}/api/kernelspecs", headers=self._get_headers()
+        )
         return cast(Dict[str, Dict[str, str]], response.json())
 
     async def list_kernels(self) -> List[Dict[str, str]]:
-        response = self._session.get(f"{self._get_api_base_url()}/api/kernels", headers=self._get_headers())
+        response = self._session.get(
+            f"{self._get_api_base_url()}/api/kernels", headers=self._get_headers()
+        )
         return cast(List[Dict[str, str]], response.json())
 
     async def start_kernel(self, kernel_spec_name: str) -> str:
@@ -108,14 +122,16 @@ class JupyterClient:
     async def delete_kernel(self, kernel_id: str) -> None:
         session = await self._ensure_async_session()
         async with session.delete(
-            f"{self._get_api_base_url()}/api/kernels/{kernel_id}", headers=self._get_headers()
+            f"{self._get_api_base_url()}/api/kernels/{kernel_id}",
+            headers=self._get_headers(),
         ) as response:
             response.raise_for_status()
 
     async def restart_kernel(self, kernel_id: str) -> None:
         session = await self._ensure_async_session()
         async with session.post(
-            f"{self._get_api_base_url()}/api/kernels/{kernel_id}/restart", headers=self._get_headers()
+            f"{self._get_api_base_url()}/api/kernels/{kernel_id}/restart",
+            headers=self._get_headers(),
         ) as response:
             response.raise_for_status()
 
@@ -157,14 +173,19 @@ class JupyterKernelClient:
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         await self.stop()
 
     async def stop(self) -> None:
         await self._websocket.close()
 
-    async def _send_message(self, *, content: Dict[str, Any], channel: str, message_type: str) -> str:
+    async def _send_message(
+        self, *, content: Dict[str, Any], channel: str, message_type: str
+    ) -> str:
         timestamp = datetime.datetime.now().isoformat()
         message_id = uuid.uuid4().hex
         message = {
@@ -185,10 +206,14 @@ class JupyterKernelClient:
         await self._websocket.send(json.dumps(message))
         return message_id
 
-    async def _receive_message(self, timeout_seconds: Optional[float]) -> Optional[Dict[str, Any]]:
+    async def _receive_message(
+        self, timeout_seconds: Optional[float]
+    ) -> Optional[Dict[str, Any]]:
         try:
             if timeout_seconds is not None:
-                data = await asyncio.wait_for(self._websocket.recv(), timeout=timeout_seconds)
+                data = await asyncio.wait_for(
+                    self._websocket.recv(), timeout=timeout_seconds
+                )
             else:
                 data = await self._websocket.recv()
             if isinstance(data, bytes):
@@ -198,7 +223,9 @@ class JupyterKernelClient:
             return None
 
     async def wait_for_ready(self, timeout_seconds: Optional[float] = None) -> bool:
-        message_id = await self._send_message(content={}, channel="shell", message_type="kernel_info_request")
+        message_id = await self._send_message(
+            content={}, channel="shell", message_type="kernel_info_request"
+        )
         while True:
             message = await self._receive_message(timeout_seconds)
             # This means we timed out with no new messages.
@@ -210,7 +237,9 @@ class JupyterKernelClient:
             ):
                 return True
 
-    async def execute(self, code: str, timeout_seconds: Optional[float] = None) -> ExecutionResult:
+    async def execute(
+        self, code: str, timeout_seconds: Optional[float] = None
+    ) -> ExecutionResult:
         message_id = await self._send_message(
             content={
                 "code": code,
@@ -230,7 +259,9 @@ class JupyterKernelClient:
             message = await self._receive_message(timeout_seconds)
             if message is None:
                 return ExecutionResult(
-                    is_ok=False, output="ERROR: Timeout waiting for output from code block.", data_items=[]
+                    is_ok=False,
+                    output="ERROR: Timeout waiting for output from code block.",
+                    data_items=[],
                 )
 
             # Ignore messages that are not for this execution.
@@ -259,7 +290,9 @@ class JupyterKernelClient:
             if msg_type == "status" and content["execution_state"] == "idle":
                 break
         return ExecutionResult(
-            is_ok=True, output="\n".join([str(output) for output in text_output]), data_items=data_output
+            is_ok=True,
+            output="\n".join([str(output) for output in text_output]),
+            data_items=data_output,
         )
 
 
@@ -316,7 +349,9 @@ class DockerJupyterServer(JupyterConnectable):
             bind_dir: Local directory to bind to container's work_dir.
         """
         # Generate container name if not provided
-        container_name = container_name or f"autogen-jupyterkernelgateway-{uuid.uuid4()}"
+        container_name = (
+            container_name or f"autogen-jupyterkernelgateway-{uuid.uuid4()}"
+        )
 
         # Initialize Docker client
         client = docker.from_env()
@@ -350,14 +385,22 @@ class DockerJupyterServer(JupyterConnectable):
         if token is None:
             token = DockerJupyterServer.GenerateToken()
         # Set up authentication token
-        self._token = secrets.token_hex(32) if isinstance(token, DockerJupyterServer.GenerateToken) else token
+        self._token = (
+            secrets.token_hex(32)
+            if isinstance(token, DockerJupyterServer.GenerateToken)
+            else token
+        )
 
         # Prepare environment variables
         env = {"TOKEN": self._token}
         env.update(docker_env)
 
         # Define volume configuration if bind directory is specified
-        volumes = {str(self._bind_dir): {"bind": str(work_dir), "mode": "rw"}} if self._bind_dir else None
+        volumes = (
+            {str(self._bind_dir): {"bind": str(work_dir), "mode": "rw"}}
+            if self._bind_dir
+            else None
+        )
 
         # Start the container
         container = client.containers.run(
@@ -402,9 +445,13 @@ class DockerJupyterServer(JupyterConnectable):
 
     @property
     def connection_info(self) -> JupyterConnectionInfo:
-        return JupyterConnectionInfo(host="127.0.0.1", use_https=False, port=self._port, token=self._token)
+        return JupyterConnectionInfo(
+            host="127.0.0.1", use_https=False, port=self._port, token=self._token
+        )
 
-    def _wait_for_ready(self, container: Any, timeout: int = 60, stop_time: float = 0.1) -> None:
+    def _wait_for_ready(
+        self, container: Any, timeout: int = 60, stop_time: float = 0.1
+    ) -> None:
         elapsed_time = 0.0
         while container.status != "running" and elapsed_time < timeout:
             sleep(stop_time)
@@ -425,6 +472,9 @@ class DockerJupyterServer(JupyterConnectable):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         await self.stop()

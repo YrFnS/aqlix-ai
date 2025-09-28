@@ -3,7 +3,17 @@ import os
 import sys
 import time
 from inspect import iscoroutinefunction
-from typing import AsyncGenerator, Awaitable, Callable, Dict, List, Optional, TypeVar, Union, cast
+from typing import (
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from autogen_core import CancellationToken
 from autogen_core.models import RequestUsage
@@ -40,7 +50,9 @@ class UserInputManager:
         self.callback = callback
 
     def get_wrapped_callback(self) -> AsyncInputFunc:
-        async def user_input_func_wrapper(prompt: str, cancellation_token: Optional[CancellationToken]) -> str:
+        async def user_input_func_wrapper(
+            prompt: str, cancellation_token: Optional[CancellationToken]
+        ) -> str:
             # Lookup the event for the prompt, if it exists wait for it.
             # If it doesn't exist, create it and store it.
             # Get request ID:
@@ -106,7 +118,9 @@ async def Console(
         last_processed: A :class:`~autogen_agentchat.base.TaskResult` if the stream is from :meth:`~autogen_agentchat.base.TaskRunner.run_stream`
             or a :class:`~autogen_agentchat.base.Response` if the stream is from :meth:`~autogen_agentchat.base.ChatAgent.on_messages_stream`.
     """
-    render_image_iterm = _is_running_in_iterm() and _is_output_a_tty() and not no_inline_images
+    render_image_iterm = (
+        _is_running_in_iterm() and _is_output_a_tty() and not no_inline_images
+    )
     start_time = time.time()
     total_usage = RequestUsage(prompt_tokens=0, completion_tokens=0)
 
@@ -143,8 +157,12 @@ async def Console(
             if message.chat_message.models_usage:
                 if output_stats:
                     output += f"[Prompt tokens: {message.chat_message.models_usage.prompt_tokens}, Completion tokens: {message.chat_message.models_usage.completion_tokens}]\n"
-                total_usage.completion_tokens += message.chat_message.models_usage.completion_tokens
-                total_usage.prompt_tokens += message.chat_message.models_usage.prompt_tokens
+                total_usage.completion_tokens += (
+                    message.chat_message.models_usage.completion_tokens
+                )
+                total_usage.prompt_tokens += (
+                    message.chat_message.models_usage.prompt_tokens
+                )
             await aprint(output, end="", flush=True)
 
             # Print summary.
@@ -174,7 +192,9 @@ async def Console(
             if not streaming_chunks:
                 # Print message sender.
                 await aprint(
-                    f"{'-' * 10} {message.__class__.__name__} ({message.source}) {'-' * 10}", end="\n", flush=True
+                    f"{'-' * 10} {message.__class__.__name__} ({message.source}) {'-' * 10}",
+                    end="\n",
+                    flush=True,
                 )
             if isinstance(message, ModelClientStreamingChunkEvent):
                 await aprint(message.to_text(), end="", flush=True)
@@ -185,7 +205,9 @@ async def Console(
                     # Chunked messages are already printed, so we just print a newline.
                     await aprint("", end="\n", flush=True)
                 elif isinstance(message, MultiModalMessage):
-                    await aprint(message.to_text(iterm=render_image_iterm), end="\n", flush=True)
+                    await aprint(
+                        message.to_text(iterm=render_image_iterm), end="\n", flush=True
+                    )
                 else:
                     await aprint(message.to_text(), end="\n", flush=True)
                 if message.models_usage:
@@ -195,7 +217,9 @@ async def Console(
                             end="\n",
                             flush=True,
                         )
-                    total_usage.completion_tokens += message.models_usage.completion_tokens
+                    total_usage.completion_tokens += (
+                        message.models_usage.completion_tokens
+                    )
                     total_usage.prompt_tokens += message.models_usage.prompt_tokens
 
     if last_processed is None:

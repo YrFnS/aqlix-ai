@@ -25,7 +25,9 @@ class StringSimilarityMap:
         - logger: An optional logger. If None, no logging will be performed.
     """
 
-    def __init__(self, reset: bool, path_to_db_dir: str, logger: PageLogger | None = None) -> None:
+    def __init__(
+        self, reset: bool, path_to_db_dir: str, logger: PageLogger | None = None
+    ) -> None:
         if logger is None:
             logger = PageLogger()  # Nothing will be logged by this object.
         self.logger = logger
@@ -33,22 +35,33 @@ class StringSimilarityMap:
 
         # Load or create the vector DB on disk.
         chromadb_settings = Settings(
-            anonymized_telemetry=False, allow_reset=True, is_persistent=True, persist_directory=path_to_db_dir
+            anonymized_telemetry=False,
+            allow_reset=True,
+            is_persistent=True,
+            persist_directory=path_to_db_dir,
         )
         self.db_client = chromadb.Client(chromadb_settings)
-        self.vec_db = self.db_client.create_collection("string-pairs", get_or_create=True)  # The collection is the DB.
+        self.vec_db = self.db_client.create_collection(
+            "string-pairs", get_or_create=True
+        )  # The collection is the DB.
 
         # Load or create the associated string-pair dict on disk.
         self.path_to_dict = os.path.join(path_to_db_dir, "uid_text_dict.pkl")
         self.uid_text_dict: Dict[str, Tuple[str, str]] = {}
         self.last_string_pair_id = 0
         if (not reset) and os.path.exists(self.path_to_dict):
-            self.logger.debug("\nLOADING STRING SIMILARITY MAP FROM DISK  at {}".format(self.path_to_dict))
+            self.logger.debug(
+                "\nLOADING STRING SIMILARITY MAP FROM DISK  at {}".format(
+                    self.path_to_dict
+                )
+            )
             with open(self.path_to_dict, "rb") as f:
                 self.uid_text_dict = pickle.load(f)
                 self.last_string_pair_id = len(self.uid_text_dict)
                 if len(self.uid_text_dict) > 0:
-                    self.logger.debug("\n{} STRING PAIRS LOADED".format(len(self.uid_text_dict)))
+                    self.logger.debug(
+                        "\n{} STRING PAIRS LOADED".format(len(self.uid_text_dict))
+                    )
                     self._log_string_pairs()
 
         # Clear the DB if requested.
@@ -62,13 +75,19 @@ class StringSimilarityMap:
         self.logger.debug("LIST OF STRING PAIRS")
         for uid, text in self.uid_text_dict.items():
             input_text, output_text = text
-            self.logger.debug("  ID: {}\n    INPUT TEXT: {}\n    OUTPUT TEXT: {}".format(uid, input_text, output_text))
+            self.logger.debug(
+                "  ID: {}\n    INPUT TEXT: {}\n    OUTPUT TEXT: {}".format(
+                    uid, input_text, output_text
+                )
+            )
 
     def save_string_pairs(self) -> None:
         """
         Saves the string-pair dict (self.uid_text_dict) to disk.
         """
-        self.logger.debug("\nSAVING STRING SIMILARITY MAP TO DISK  at {}".format(self.path_to_dict))
+        self.logger.debug(
+            "\nSAVING STRING SIMILARITY MAP TO DISK  at {}".format(self.path_to_dict)
+        )
         with open(self.path_to_dict, "wb") as file:
             pickle.dump(self.uid_text_dict, file)
 
@@ -106,7 +125,9 @@ class StringSimilarityMap:
         if n_results > len(self.uid_text_dict):
             n_results = len(self.uid_text_dict)
         if n_results > 0:
-            results: QueryResult = self.vec_db.query(query_texts=[query_text], n_results=n_results)
+            results: QueryResult = self.vec_db.query(
+                query_texts=[query_text], n_results=n_results
+            )
             num_results = len(results["ids"][0])
             for i in range(num_results):
                 uid = results["ids"][0][i]
@@ -120,5 +141,7 @@ class StringSimilarityMap:
                             input_text, output_text, distance
                         )
                     )
-                    string_pairs_with_distances.append((input_text, output_text, distance))
+                    string_pairs_with_distances.append(
+                        (input_text, output_text, distance)
+                    )
         return string_pairs_with_distances

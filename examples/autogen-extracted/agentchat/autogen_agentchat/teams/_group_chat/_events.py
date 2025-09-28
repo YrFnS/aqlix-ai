@@ -25,13 +25,17 @@ class SerializableException(BaseModel):
         return cls(
             error_type=type(exc).__name__,
             error_message=str(exc),
-            traceback="\n".join(traceback.format_exception(type(exc), exc, exc.__traceback__)),
+            traceback="\n".join(
+                traceback.format_exception(type(exc), exc, exc.__traceback__)
+            ),
         )
 
     def __str__(self) -> str:
         """Return a string representation of the error, including the traceback if available."""
         if self.traceback:
-            return f"{self.error_type}: {self.error_message}\nTraceback:\n{self.traceback}"
+            return (
+                f"{self.error_type}: {self.error_message}\nTraceback:\n{self.traceback}"
+            )
         return f"{self.error_type}: {self.error_message}"
 
 

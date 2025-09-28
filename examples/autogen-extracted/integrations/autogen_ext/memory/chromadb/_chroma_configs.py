@@ -39,7 +39,9 @@ class SentenceTransformerEmbeddingFunctionConfig(BaseModel):
     """
 
     function_type: Literal["sentence_transformer"] = "sentence_transformer"
-    model_name: str = Field(default="all-MiniLM-L6-v2", description="SentenceTransformer model name to use")
+    model_name: str = Field(
+        default="all-MiniLM-L6-v2", description="SentenceTransformer model name to use"
+    )
 
 
 class OpenAIEmbeddingFunctionConfig(BaseModel):
@@ -64,7 +66,9 @@ class OpenAIEmbeddingFunctionConfig(BaseModel):
 
     function_type: Literal["openai"] = "openai"
     api_key: str = Field(default="", description="OpenAI API key")
-    model_name: str = Field(default="text-embedding-ada-002", description="OpenAI embedding model name")
+    model_name: str = Field(
+        default="text-embedding-ada-002", description="OpenAI embedding model name"
+    )
 
 
 class CustomEmbeddingFunctionConfig(BaseModel):
@@ -84,8 +88,12 @@ class CustomEmbeddingFunctionConfig(BaseModel):
     """
 
     function_type: Literal["custom"] = "custom"
-    function: Callable[..., Any] = Field(description="Function that returns an embedding function")
-    params: Dict[str, Any] = Field(default_factory=dict, description="Parameters to pass to the function")
+    function: Callable[..., Any] = Field(
+        description="Function that returns an embedding function"
+    )
+    params: Dict[str, Any] = Field(
+        default_factory=dict, description="Parameters to pass to the function"
+    )
 
 
 # Tagged union type for embedding function configurations
@@ -108,15 +116,24 @@ class ChromaDBVectorMemoryConfig(BaseModel):
     """
 
     client_type: Literal["persistent", "http"]
-    collection_name: str = Field(default="memory_store", description="Name of the ChromaDB collection")
-    distance_metric: str = Field(default="cosine", description="Distance metric for similarity search")
+    collection_name: str = Field(
+        default="memory_store", description="Name of the ChromaDB collection"
+    )
+    distance_metric: str = Field(
+        default="cosine", description="Distance metric for similarity search"
+    )
     k: int = Field(default=3, description="Number of results to return in queries")
-    score_threshold: float | None = Field(default=None, description="Minimum similarity score threshold")
-    allow_reset: bool = Field(default=False, description="Whether to allow resetting the ChromaDB client")
+    score_threshold: float | None = Field(
+        default=None, description="Minimum similarity score threshold"
+    )
+    allow_reset: bool = Field(
+        default=False, description="Whether to allow resetting the ChromaDB client"
+    )
     tenant: str = Field(default="default_tenant", description="Tenant to use")
     database: str = Field(default="default_database", description="Database to use")
     embedding_function_config: EmbeddingFunctionConfig = Field(
-        default_factory=DefaultEmbeddingFunctionConfig, description="Configuration for the embedding function"
+        default_factory=DefaultEmbeddingFunctionConfig,
+        description="Configuration for the embedding function",
     )
 
 
@@ -124,7 +141,9 @@ class PersistentChromaDBVectorMemoryConfig(ChromaDBVectorMemoryConfig):
     """Configuration for persistent ChromaDB memory."""
 
     client_type: Literal["persistent", "http"] = "persistent"
-    persistence_path: str = Field(default="./chroma_db", description="Path for persistent storage")
+    persistence_path: str = Field(
+        default="./chroma_db", description="Path for persistent storage"
+    )
 
 
 class HttpChromaDBVectorMemoryConfig(ChromaDBVectorMemoryConfig):
@@ -134,4 +153,6 @@ class HttpChromaDBVectorMemoryConfig(ChromaDBVectorMemoryConfig):
     host: str = Field(default="localhost", description="Host of the remote server")
     port: int = Field(default=8000, description="Port of the remote server")
     ssl: bool = Field(default=False, description="Whether to use HTTPS")
-    headers: Dict[str, str] | None = Field(default=None, description="Headers to send to the server")
+    headers: Dict[str, str] | None = Field(
+        default=None, description="Headers to send to the server"
+    )

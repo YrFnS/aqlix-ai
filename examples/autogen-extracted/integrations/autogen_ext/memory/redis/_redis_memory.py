@@ -2,7 +2,13 @@ import logging
 from typing import Any, Literal
 
 from autogen_core import CancellationToken, Component
-from autogen_core.memory import Memory, MemoryContent, MemoryMimeType, MemoryQueryResult, UpdateContextResult
+from autogen_core.memory import (
+    Memory,
+    MemoryContent,
+    MemoryMimeType,
+    MemoryQueryResult,
+    UpdateContextResult,
+)
 from autogen_core.model_context import ChatCompletionContext
 from autogen_core.models import SystemMessage
 from pydantic import BaseModel, Field
@@ -14,7 +20,9 @@ try:
     from redisvl.extensions.message_history import SemanticMessageHistory
     from redisvl.utils.utils import deserialize, serialize
 except ImportError as e:
-    raise ImportError("To use Redis Memory RedisVL must be installed. Run `pip install autogen-ext[redisvl]`") from e
+    raise ImportError(
+        "To use Redis Memory RedisVL must be installed. Run `pip install autogen-ext[redisvl]`"
+    ) from e
 
 
 class RedisMemoryConfig(BaseModel):
@@ -26,16 +34,25 @@ class RedisMemoryConfig(BaseModel):
     similarity search parameters, and embedding model.
     """
 
-    redis_url: str = Field(default="redis://localhost:6379", description="url of the Redis instance")
-    index_name: str = Field(default="chat_history", description="Name of the Redis collection")
+    redis_url: str = Field(
+        default="redis://localhost:6379", description="url of the Redis instance"
+    )
+    index_name: str = Field(
+        default="chat_history", description="Name of the Redis collection"
+    )
     prefix: str = Field(default="memory", description="prefix of the Redis collection")
     distance_metric: Literal["cosine", "ip", "l2"] = "cosine"
     algorithm: Literal["flat", "hnsw"] = "flat"
     top_k: int = Field(default=10, description="Number of results to return in queries")
-    datatype: Literal["uint8", "int8", "float16", "float32", "float64", "bfloat16"] = "float32"
-    distance_threshold: float = Field(default=0.7, description="Minimum similarity score threshold")
+    datatype: Literal["uint8", "int8", "float16", "float32", "float64", "bfloat16"] = (
+        "float32"
+    )
+    distance_threshold: float = Field(
+        default=0.7, description="Minimum similarity score threshold"
+    )
     model_name: str | None = Field(
-        default="sentence-transformers/all-mpnet-base-v2", description="Embedding model name"
+        default="sentence-transformers/all-mpnet-base-v2",
+        description="Embedding model name",
     )
 
 
@@ -175,7 +192,9 @@ class RedisMemory(Memory, Component[RedisMemoryConfig]):
         self.config = config or RedisMemoryConfig()
         client = Redis.from_url(url=self.config.redis_url)  # type: ignore[reportUknownMemberType]
 
-        self.message_history = SemanticMessageHistory(name=self.config.index_name, redis_client=client)
+        self.message_history = SemanticMessageHistory(
+            name=self.config.index_name, redis_client=client
+        )
 
     async def update_context(
         self,
@@ -205,13 +224,19 @@ class RedisMemory(Memory, Component[RedisMemoryConfig]):
 
         query_results = await self.query(last_message)
 
-        stringified_messages = "\n\n".join([str(m.content) for m in query_results.results])
+        stringified_messages = "\n\n".join(
+            [str(m.content) for m in query_results.results]
+        )
 
         await model_context.add_message(SystemMessage(content=stringified_messages))
 
         return UpdateContextResult(memories=query_results)
 
-    async def add(self, content: MemoryContent, cancellation_token: CancellationToken | None = None) -> None:
+    async def add(
+        self,
+        content: MemoryContent,
+        cancellation_token: CancellationToken | None = None,
+    ) -> None:
         """Add a memory content object to Redis.
 
         .. note::
@@ -230,7 +255,11 @@ class RedisMemory(Memory, Component[RedisMemoryConfig]):
             )
 
         self.message_history.add_message(
-            {"role": "user", "content": content.content, "tool_call_id": serialize(content.metadata)}  # type: ignore[reportArgumentType]
+            {
+                "role": "user",
+                "content": content.content,
+                "tool_call_id": serialize(content.metadata),
+            }  # type: ignore[reportArgumentType]
         )
 
     async def query(
@@ -270,7 +299,9 @@ class RedisMemory(Memory, Component[RedisMemoryConfig]):
             prompt = query
 
         top_k = kwargs.pop("top_k", self.config.top_k)
-        distance_threshold = kwargs.pop("distance_threshold", self.config.distance_threshold)
+        distance_threshold = kwargs.pop(
+            "distance_threshold", self.config.distance_threshold
+        )
 
         results = self.message_history.get_relevant(
             prompt=prompt,  # type: ignore[reportArgumentType]

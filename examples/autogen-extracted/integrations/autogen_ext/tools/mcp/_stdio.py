@@ -48,7 +48,12 @@ class StdioMcpToolAdapter(
     component_config_schema = StdioMcpToolAdapterConfig
     component_provider_override = "autogen_ext.tools.mcp.StdioMcpToolAdapter"
 
-    def __init__(self, server_params: StdioServerParams, tool: Tool, session: ClientSession | None = None) -> None:
+    def __init__(
+        self,
+        server_params: StdioServerParams,
+        tool: Tool,
+        session: ClientSession | None = None,
+    ) -> None:
         super().__init__(server_params=server_params, tool=tool, session=session)
 
     def _to_config(self) -> StdioMcpToolAdapterConfig:
@@ -58,7 +63,9 @@ class StdioMcpToolAdapter(
         Returns:
             StdioMcpToolAdapterConfig: The configuration of the adapter.
         """
-        return StdioMcpToolAdapterConfig(server_params=self._server_params, tool=self._tool)
+        return StdioMcpToolAdapterConfig(
+            server_params=self._server_params, tool=self._tool
+        )
 
     @classmethod
     def _from_config(cls, config: StdioMcpToolAdapterConfig) -> Self:

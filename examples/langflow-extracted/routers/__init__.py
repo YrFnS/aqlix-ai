@@ -62,11 +62,10 @@ from .security_router import SecurityRouter
 __all__ = [
     # Core API Routers
     "FlowRouter",
-    "ChatRouter", 
+    "ChatRouter",
     "UserRouter",
     "FileRouter",
     "AuthRouter",
-    
     # Iraqi Enhanced Routers
     "CulturalValidationRouter",
     "ProfessionalDomainRouter",
@@ -75,13 +74,15 @@ __all__ = [
     "PaymentRouter",
     "DocumentGenerationRouter",
     "GovernmentIntegrationRouter",
-    "SecurityRouter"
+    "SecurityRouter",
 ]
 
 # API Configuration
 API_VERSION = "1.0.0"
 API_TITLE = "Iraqi AI Chat System API"
-API_DESCRIPTION = "Revolutionary API System for Iraqi AI Chat with Cultural Intelligence"
+API_DESCRIPTION = (
+    "Revolutionary API System for Iraqi AI Chat with Cultural Intelligence"
+)
 API_PREFIX = "/api/v1"
 
 # Iraqi Cultural Configuration
@@ -105,27 +106,26 @@ FEATURES = {
     "audit_logging": True,
     "real_time_validation": True,
     "auto_session_expiry": True,
-    "privacy_first_design": True
+    "privacy_first_design": True,
 }
 
 # Router Registration Order (for FastAPI application setup)
 ROUTER_REGISTRATION_ORDER = [
     # Core routers first
     "AuthRouter",
-    "SecurityRouter", 
+    "SecurityRouter",
     "UserRouter",
     "FlowRouter",
     "ChatRouter",
     "FileRouter",
-    
     # Iraqi enhanced routers
     "CulturalValidationRouter",
     "ArabicProcessingRouter",
-    "VoiceProcessingRouter", 
+    "VoiceProcessingRouter",
     "ProfessionalDomainRouter",
     "DocumentGenerationRouter",
     "PaymentRouter",
-    "GovernmentIntegrationRouter"
+    "GovernmentIntegrationRouter",
 ]
 
 # API Dependencies and Middleware Configuration
@@ -137,19 +137,19 @@ MIDDLEWARE_CONFIG = {
     "session_management_middleware": True,
     "audit_logging_middleware": True,
     "security_headers_middleware": True,
-    "islamic_compliance_middleware": True
+    "islamic_compliance_middleware": True,
 }
 
 # Rate Limiting Configuration
 RATE_LIMITS = {
     "default": "100/minute",
-    "cultural_validation": "50/minute", 
+    "cultural_validation": "50/minute",
     "arabic_processing": "200/minute",
     "voice_processing": "30/minute",
     "payment_processing": "10/minute",
     "government_integration": "20/minute",
     "file_upload": "20/minute",
-    "document_generation": "15/minute"
+    "document_generation": "15/minute",
 }
 
 # API Documentation Configuration
@@ -160,5 +160,5 @@ DOCUMENTATION_CONFIG = {
     "arabic_api_documentation": True,
     "professional_domain_documentation": True,
     "islamic_compliance_documentation": True,
-    "government_integration_documentation": True
+    "government_integration_documentation": True,
 }

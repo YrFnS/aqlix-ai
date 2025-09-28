@@ -38,12 +38,18 @@ async def tool_agent_caller_loop(
     generated_messages: List[LLMMessage] = []
 
     # Get a response from the model.
-    response = await model_client.create(input_messages, tools=tool_schema, cancellation_token=cancellation_token)
+    response = await model_client.create(
+        input_messages, tools=tool_schema, cancellation_token=cancellation_token
+    )
     # Add the response to the generated messages.
-    generated_messages.append(AssistantMessage(content=response.content, source=caller_source))
+    generated_messages.append(
+        AssistantMessage(content=response.content, source=caller_source)
+    )
 
     # Keep iterating until the model stops generating tool calls.
-    while isinstance(response.content, list) and all(isinstance(item, FunctionCall) for item in response.content):
+    while isinstance(response.content, list) and all(
+        isinstance(item, FunctionCall) for item in response.content
+    ):
         # Execute functions called by the model by sending messages to tool agent.
         results: List[FunctionExecutionResult | BaseException] = await asyncio.gather(
             *[
@@ -64,17 +70,26 @@ async def tool_agent_caller_loop(
             elif isinstance(result, ToolException):
                 function_results.append(
                     FunctionExecutionResult(
-                        content=f"Error: {result}", call_id=result.call_id, is_error=True, name=result.name
+                        content=f"Error: {result}",
+                        call_id=result.call_id,
+                        is_error=True,
+                        name=result.name,
                     )
                 )
             elif isinstance(result, BaseException):
                 raise result  # Unexpected exception.
-        generated_messages.append(FunctionExecutionResultMessage(content=function_results))
+        generated_messages.append(
+            FunctionExecutionResultMessage(content=function_results)
+        )
         # Query the model again with the new response.
         response = await model_client.create(
-            input_messages + generated_messages, tools=tool_schema, cancellation_token=cancellation_token
+            input_messages + generated_messages,
+            tools=tool_schema,
+            cancellation_token=cancellation_token,
         )
-        generated_messages.append(AssistantMessage(content=response.content, source=caller_source))
+        generated_messages.append(
+            AssistantMessage(content=response.content, source=caller_source)
+        )
 
     # Return the generated messages.
     return generated_messages

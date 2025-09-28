@@ -4,9 +4,10 @@
 import PyPDF2
 from .base_converter import BaseConverter
 
+
 class ArabicPDFConverter(BaseConverter):
     def extract_text(self, pdf_path: str) -> str:
-        with open(pdf_path, 'rb') as file:
+        with open(pdf_path, "rb") as file:
             reader = PyPDF2.PdfReader(file)
             text = ""
             for page in reader.pages:

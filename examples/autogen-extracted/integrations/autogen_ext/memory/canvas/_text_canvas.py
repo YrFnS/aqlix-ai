@@ -56,7 +56,9 @@ class TextCanvas(BaseCanvas):
 
     def _ensure_file(self, filename: str) -> None:
         if filename not in self._files:
-            raise ValueError(f"File '{filename}' does not exist on the canvas; create it first.")
+            raise ValueError(
+                f"File '{filename}' does not exist on the canvas; create it first."
+            )
 
     # ----------------------------------------------------------------------------------
     # Revision inspection helpers
@@ -105,7 +107,9 @@ class TextCanvas(BaseCanvas):
         revs = self._files.get(filename, [])
         return revs[-1].content if revs else ""
 
-    def add_or_update_file(self, filename: str, new_content: Union[str, bytes, Any]) -> None:
+    def add_or_update_file(
+        self, filename: str, new_content: Union[str, bytes, Any]
+    ) -> None:
         """Create *filename* or append a new revision containing *new_content*."""
         if isinstance(new_content, bytes):
             new_content = new_content.decode("utf-8")
@@ -125,7 +129,9 @@ class TextCanvas(BaseCanvas):
         # Fetch the contents for the requested revisions.
         from_content = self.get_revision_content(filename, from_revision)
         to_content = self.get_revision_content(filename, to_revision)
-        if from_content == "" and to_content == "":  # one (or both) revision ids not found
+        if (
+            from_content == "" and to_content == ""
+        ):  # one (or both) revision ids not found
             return ""
         diff = difflib.unified_diff(
             from_content.splitlines(keepends=True),

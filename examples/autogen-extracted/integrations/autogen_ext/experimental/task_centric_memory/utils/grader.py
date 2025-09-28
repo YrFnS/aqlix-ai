@@ -28,7 +28,9 @@ class Grader:
         logger: An optional logger. If None, no logging will be performed.
     """
 
-    def __init__(self, client: ChatCompletionClient, logger: PageLogger | None = None) -> None:
+    def __init__(
+        self, client: ChatCompletionClient, logger: PageLogger | None = None
+    ) -> None:
         if logger is None:
             logger = PageLogger()  # Nothing will be logged by this object.
         self.logger = logger
@@ -55,7 +57,9 @@ class Grader:
         for trial in range(num_trials):
             self.logger.info("\n-----  TRIAL {}  -----\n".format(trial + 1))
             self.logger.info("Try to solve the task.\n")
-            response = await apprentice.assign_task(task_description, use_memory=use_memory)
+            response = await apprentice.assign_task(
+                task_description, use_memory=use_memory
+            )
             response_is_correct, extracted_answer = await self.is_response_correct(
                 task_description, response, expected_answer
             )
@@ -66,7 +70,9 @@ class Grader:
             else:
                 self.logger.info("Answer is INCORRECT.\n")
 
-        self.logger.info("\nSuccess rate:  {}%\n".format(round((num_successes / num_trials) * 100)))
+        self.logger.info(
+            "\nSuccess rate:  {}%\n".format(round((num_successes / num_trials) * 100))
+        )
         self.logger.leave_function()
         return num_successes, num_trials
 
@@ -102,7 +108,9 @@ class Grader:
         assert isinstance(response_message, AssistantMessage)
 
         # Log the model call
-        self.logger.log_model_call(summary=summary, input_messages=input_messages, response=response)
+        self.logger.log_model_call(
+            summary=summary, input_messages=input_messages, response=response
+        )
 
         # Manage the chat history
         if keep_these_messages:

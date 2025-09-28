@@ -20,21 +20,21 @@ Iraqi AI Integration Value:
 - World-class efficiency for AI reasoning systems with cultural respect
 
 Strategic Value:
-- 92% alignment with advanced reasoning requirements  
+- 92% alignment with advanced reasoning requirements
 - Revolutionary reasoning enhancement for Iraqi AI Chat System
 - Quantum leap in AI reasoning capabilities while maintaining Islamic principles
 - World-leading AI system combining cutting-edge reasoning with deep cultural respect
 
 Usage:
     from examples.sapient_hrm_extracted import IraqiHierarchicalReasoningAgent
-    
+
     # Create culturally-aware HRM agent
     hrm_agent = IraqiHierarchicalReasoningAgent(
         cultural_context="iraqi",
         islamic_principles=True,
         arabic_processing=True
     )
-    
+
     # Execute hierarchical reasoning with cultural compliance
     result = await hrm_agent.hierarchical_reason(cultural_input)
 """
@@ -49,7 +49,7 @@ from .core import (
     ReasoningModule,
     AbstractPlanningModule,
     DetailedComputationModule,
-    SharedCulturalState
+    SharedCulturalState,
 )
 
 # Adaptive Computational Time system
@@ -59,7 +59,7 @@ from .act import (
     QOptimizer,
     ReasoningDepthController,
     ThinkingSystem,
-    ACTConfig
+    ACTConfig,
 )
 
 # Iraqi-specific reasoning patterns
@@ -71,7 +71,7 @@ from .reasoning_patterns import (
     ReasoningContext,
     ReasoningResult,
     ReasoningType,
-    CulturalComplexity
+    CulturalComplexity,
 )
 
 # Integration with existing agents
@@ -83,7 +83,7 @@ from .integration import (
     IntegrationType,
     CulturalValidatorConnector,
     ArabicProcessorConnector,
-    SecurityGuardianConnector
+    SecurityGuardianConnector,
 )
 
 # Performance optimization
@@ -96,18 +96,17 @@ from .optimization import (
     ParallelProcessingOptimizer,
     ArabicProcessingOptimizer,
     MemoryOptimizer,
-    PerformanceMonitor
+    PerformanceMonitor,
 )
 
 __all__ = [
     # Core HRM components
     "IraqiHierarchicalReasoningAgent",
-    "HierarchicalReasoningConfig", 
+    "HierarchicalReasoningConfig",
     "ReasoningModule",
     "AbstractPlanningModule",
     "DetailedComputationModule",
     "SharedCulturalState",
-    
     # Adaptive Computational Time system
     "CulturalACT",
     "CulturalComplexityDetector",
@@ -115,17 +114,15 @@ __all__ = [
     "ReasoningDepthController",
     "ThinkingSystem",
     "ACTConfig",
-    
     # Iraqi reasoning patterns
     "IraqiReasoningPatterns",
     "IslamicPrincipleReasoner",
-    "IraqiCulturalReasoner", 
+    "IraqiCulturalReasoner",
     "ProfessionalDomainReasoner",
     "ReasoningContext",
     "ReasoningResult",
     "ReasoningType",
     "CulturalComplexity",
-    
     # Integration components
     "HRMAgentIntegrationOrchestrator",
     "IntegrationContext",
@@ -135,7 +132,6 @@ __all__ = [
     "CulturalValidatorConnector",
     "ArabicProcessorConnector",
     "SecurityGuardianConnector",
-    
     # Performance optimization
     "HRMPerformanceOptimizer",
     "OptimizationConfig",
@@ -145,5 +141,5 @@ __all__ = [
     "ParallelProcessingOptimizer",
     "ArabicProcessingOptimizer",
     "MemoryOptimizer",
-    "PerformanceMonitor"
+    "PerformanceMonitor",
 ]

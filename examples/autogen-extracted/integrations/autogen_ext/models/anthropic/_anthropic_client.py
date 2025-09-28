@@ -104,14 +104,20 @@ def _anthropic_client_from_config(config: Mapping[str, Any]) -> AsyncAnthropic:
 
 
 def _create_args_from_config(config: Mapping[str, Any]) -> Dict[str, Any]:
-    create_args = {k: v for k, v in config.items() if k in anthropic_message_params or k == "model"}
+    create_args = {
+        k: v for k, v in config.items() if k in anthropic_message_params or k == "model"
+    }
     create_args_keys = set(create_args.keys())
 
     if not required_create_args.issubset(create_args_keys):
-        raise ValueError(f"Required create args are missing: {required_create_args - create_args_keys}")
+        raise ValueError(
+            f"Required create args are missing: {required_create_args - create_args_keys}"
+        )
 
     if disallowed_create_args.intersection(create_args_keys):
-        raise ValueError(f"Disallowed create args are present: {disallowed_create_args.intersection(create_args_keys)}")
+        raise ValueError(
+            f"Disallowed create args are present: {disallowed_create_args.intersection(create_args_keys)}"
+        )
 
     return create_args
 
@@ -127,7 +133,9 @@ def type_to_role(message: LLMMessage) -> str:
         return "tool"
 
 
-def get_mime_type_from_image(image: Image) -> Literal["image/jpeg", "image/png", "image/gif", "image/webp"]:
+def get_mime_type_from_image(
+    image: Image,
+) -> Literal["image/jpeg", "image/png", "image/gif", "image/webp"]:
     """Get a valid Anthropic media type from an Image object."""
     # Get base64 data first
     base64_data = image.to_base64()
@@ -149,7 +157,9 @@ def get_mime_type_from_image(image: Image) -> Literal["image/jpeg", "image/png",
         return "image/jpeg"
 
 
-def convert_tool_choice_anthropic(tool_choice: Tool | Literal["auto", "required", "none"]) -> Any:
+def convert_tool_choice_anthropic(
+    tool_choice: Tool | Literal["auto", "required", "none"],
+) -> Any:
     """Convert tool_choice parameter to Anthropic API format.
 
     Args:
@@ -171,7 +181,9 @@ def convert_tool_choice_anthropic(tool_choice: Tool | Literal["auto", "required"
     if isinstance(tool_choice, Tool):
         return {"type": "tool", "name": tool_choice.schema["name"]}
     else:
-        raise ValueError(f"tool_choice must be a Tool object, 'auto', 'required', or 'none', got {type(tool_choice)}")
+        raise ValueError(
+            f"tool_choice must be a Tool object, 'auto', 'required', or 'none', got {type(tool_choice)}"
+        )
 
 
 @overload
@@ -187,7 +199,9 @@ def __empty_content_to_whitespace(
 ) -> Union[str, Iterable[Any]]:
     if isinstance(content, str) and not content.strip():
         return " "
-    elif isinstance(content, list) and not any(isinstance(x, str) and not x.strip() for x in content):
+    elif isinstance(content, list) and not any(
+        isinstance(x, str) and not x.strip() for x in content
+    ):
         for idx, message in enumerate(content):
             if isinstance(message, str) and not message.strip():
                 content[idx] = " "
@@ -208,7 +222,11 @@ def user_message_to_anthropic(message: UserMessage) -> MessageParam:
 
         for part in message.content:
             if isinstance(part, str):
-                blocks.append(TextBlockParam(type="text", text=__empty_content_to_whitespace(part)))
+                blocks.append(
+                    TextBlockParam(
+                        type="text", text=__empty_content_to_whitespace(part)
+                    )
+                )
             elif isinstance(part, Image):
                 blocks.append(
                     ImageBlockParam(
@@ -248,7 +266,9 @@ def assistant_message_to_anthropic(message: AssistantMessage) -> MessageParam:
                 try:
                     json_objs = extract_json_from_str(args)
                     if len(json_objs) != 1:
-                        raise ValueError(f"Expected a single JSON object, but found {len(json_objs)}")
+                        raise ValueError(
+                            f"Expected a single JSON object, but found {len(json_objs)}"
+                        )
                     args_dict = json_objs[0]
                 except json.JSONDecodeError:
                     args_dict = {"text": args}
@@ -283,7 +303,9 @@ def assistant_message_to_anthropic(message: AssistantMessage) -> MessageParam:
         }
 
 
-def tool_message_to_anthropic(message: FunctionExecutionResultMessage) -> List[MessageParam]:
+def tool_message_to_anthropic(
+    message: FunctionExecutionResultMessage,
+) -> List[MessageParam]:
     # Create a single user message containing all tool results
     content_blocks: List[ToolResultBlockParam] = []
 
@@ -304,7 +326,9 @@ def tool_message_to_anthropic(message: FunctionExecutionResultMessage) -> List[M
     ]
 
 
-def to_anthropic_type(message: LLMMessage) -> Union[str, List[MessageParam], MessageParam]:
+def to_anthropic_type(
+    message: LLMMessage,
+) -> Union[str, List[MessageParam], MessageParam]:
     if isinstance(message, SystemMessage):
         return system_message_to_anthropic(message)
     elif isinstance(message, UserMessage):
@@ -409,7 +433,9 @@ def assert_valid_name(name: str) -> str:
     Ensure that configured names are valid, raises ValueError if not.
     """
     if not re.match(r"^[a-zA-Z0-9_-]+$", name):
-        raise ValueError(f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed.")
+        raise ValueError(
+            f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed."
+        )
     if len(name) > 64:
         raise ValueError(f"Invalid name: {name}. Name must be less than 64 characters.")
     return name
@@ -454,7 +480,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             try:
                 self._model_info = _model_info.get_info(create_args["model"])
             except KeyError as err:
-                raise ValueError("model_info is required when model name is not recognized") from err
+                raise ValueError(
+                    "model_info is required when model name is not recognized"
+                ) from err
         else:
             self._model_info = model_info
 
@@ -484,7 +512,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         else:
             return {"role": "unknown", "content": str(message)}
 
-    def _merge_system_messages(self, messages: Sequence[LLMMessage]) -> Sequence[LLMMessage]:
+    def _merge_system_messages(
+        self, messages: Sequence[LLMMessage]
+    ) -> Sequence[LLMMessage]:
         """
         Merge continuous system messages into a single message.
         """
@@ -500,7 +530,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 elif _last_system_message_idx + 1 != idx:
                     # That case, system message is not continuous
                     # Merge system messages only contiues system messages
-                    raise ValueError("Multiple and Not continuous system messages are not supported")
+                    raise ValueError(
+                        "Multiple and Not continuous system messages are not supported"
+                    )
                 system_message_content += message.content + "\n"
                 _last_system_message_idx = idx
             else:
@@ -513,7 +545,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
 
         return messages
 
-    def _rstrip_last_assistant_message(self, messages: Sequence[LLMMessage]) -> Sequence[LLMMessage]:
+    def _rstrip_last_assistant_message(
+        self, messages: Sequence[LLMMessage]
+    ) -> Sequence[LLMMessage]:
         """
         Remove the last assistant message if it is empty.
         """
@@ -542,8 +576,12 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         if self.model_info["vision"] is False:
             for message in messages:
                 if isinstance(message, UserMessage):
-                    if isinstance(message.content, list) and any(isinstance(x, Image) for x in message.content):
-                        raise ValueError("Model does not support vision and image was provided")
+                    if isinstance(message.content, list) and any(
+                        isinstance(x, Image) for x in message.content
+                    ):
+                        raise ValueError(
+                            "Model does not support vision and image was provided"
+                        )
 
         # Handle JSON output format
         if json_output is not None:
@@ -553,7 +591,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             if json_output is True:
                 create_args["response_format"] = {"type": "json_object"}
             elif isinstance(json_output, type):
-                raise ValueError("Structured output is currently not supported for Anthropic models")
+                raise ValueError(
+                    "Structured output is currently not supported for Anthropic models"
+                )
 
         # Process system message separately
         system_message = None
@@ -575,7 +615,10 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                     anthropic_messages.extend(anthropic_message)
                 elif isinstance(anthropic_message, str):
                     msg = MessageParam(
-                        role="user" if isinstance(message, UserMessage) else "assistant", content=anthropic_message
+                        role="user"
+                        if isinstance(message, UserMessage)
+                        else "assistant",
+                        content=anthropic_message,
                     )
                     anthropic_messages.append(msg)
                 else:
@@ -597,7 +640,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         if system_message is not None:
             request_args["system"] = system_message
 
-        has_tool_results = any(isinstance(msg, FunctionExecutionResultMessage) for msg in messages)
+        has_tool_results = any(
+            isinstance(msg, FunctionExecutionResultMessage) for msg in messages
+        )
 
         # Store and add tools if present
         if len(tools) > 0:
@@ -629,7 +674,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             # tool_choice is a single Tool object
             tool_name = tool_choice.schema["name"]
             if tool_name not in tool_names_available:
-                raise ValueError(f"tool_choice references '{tool_name}' but it's not in the available tools")
+                raise ValueError(
+                    f"tool_choice references '{tool_name}' but it's not in the available tools"
+                )
 
         # Convert to Anthropic format and add to request_args only if tools are provided
         # According to Anthropic API, tool_choice may only be specified while providing tools
@@ -644,7 +691,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 request_args[param] = create_args[param]
 
         # Execute the request
-        future: asyncio.Task[Message] = asyncio.ensure_future(self._client.messages.create(**request_args))  # type: ignore
+        future: asyncio.Task[Message] = asyncio.ensure_future(
+            self._client.messages.create(**request_args)
+        )  # type: ignore
 
         if cancellation_token is not None:
             cancellation_token.link_future(future)  # type: ignore
@@ -656,7 +705,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             prompt_tokens=result.usage.input_tokens,
             completion_tokens=result.usage.output_tokens,
         )
-        serializable_messages: List[Dict[str, Any]] = [self._serialize_message(msg) for msg in anthropic_messages]
+        serializable_messages: List[Dict[str, Any]] = [
+            self._serialize_message(msg) for msg in anthropic_messages
+        ]
 
         logger.info(
             LLMCallEvent(
@@ -672,14 +723,20 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         thought = None
 
         # Check if the response includes tool uses
-        tool_uses = [block for block in result.content if getattr(block, "type", None) == "tool_use"]
+        tool_uses = [
+            block
+            for block in result.content
+            if getattr(block, "type", None) == "tool_use"
+        ]
 
         if tool_uses:
             # Handle tool use response
             content = []
 
             # Check for text content that should be treated as thought
-            text_blocks: List[TextBlock] = [block for block in result.content if isinstance(block, TextBlock)]
+            text_blocks: List[TextBlock] = [
+                block for block in result.content if isinstance(block, TextBlock)
+            ]
             if text_blocks:
                 thought = "".join([block.text for block in text_blocks])
 
@@ -701,7 +758,12 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                     )
         else:
             # Handle text response
-            content = "".join([block.text if isinstance(block, TextBlock) else "" for block in result.content])
+            content = "".join(
+                [
+                    block.text if isinstance(block, TextBlock) else ""
+                    for block in result.content
+                ]
+            )
 
         # Create the final result
         response = CreateResult(
@@ -740,8 +802,12 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         if self.model_info["vision"] is False:
             for message in messages:
                 if isinstance(message, UserMessage):
-                    if isinstance(message.content, list) and any(isinstance(x, Image) for x in message.content):
-                        raise ValueError("Model does not support vision and image was provided")
+                    if isinstance(message.content, list) and any(
+                        isinstance(x, Image) for x in message.content
+                    ):
+                        raise ValueError(
+                            "Model does not support vision and image was provided"
+                        )
 
         # Handle JSON output format
         if json_output is not None:
@@ -752,7 +818,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 create_args["response_format"] = {"type": "json_object"}
 
             if isinstance(json_output, type):
-                raise ValueError("Structured output is currently not supported for Anthropic models")
+                raise ValueError(
+                    "Structured output is currently not supported for Anthropic models"
+                )
 
         # Process system message separately
         system_message = None
@@ -774,7 +842,10 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                     anthropic_messages.extend(anthropic_message)
                 elif isinstance(anthropic_message, str):
                     msg = MessageParam(
-                        role="user" if isinstance(message, UserMessage) else "assistant", content=anthropic_message
+                        role="user"
+                        if isinstance(message, UserMessage)
+                        else "assistant",
+                        content=anthropic_message,
                     )
                     anthropic_messages.append(msg)
                 else:
@@ -798,7 +869,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             request_args["system"] = system_message
 
         # Check if any message is a tool result
-        has_tool_results = any(isinstance(msg, FunctionExecutionResultMessage) for msg in messages)
+        has_tool_results = any(
+            isinstance(msg, FunctionExecutionResultMessage) for msg in messages
+        )
 
         # Add tools if present
         if len(tools) > 0:
@@ -829,7 +902,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             # tool_choice is a single Tool object
             tool_name = tool_choice.schema["name"]
             if tool_name not in tool_names_available:
-                raise ValueError(f"tool_choice references '{tool_name}' but it's not in the available tools")
+                raise ValueError(
+                    f"tool_choice references '{tool_name}' but it's not in the available tools"
+                )
 
         # Convert to Anthropic format and add to request_args only if tools are provided
         # According to Anthropic API, tool_choice may only be specified while providing tools
@@ -844,14 +919,21 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 request_args[param] = create_args[param]
 
         # Stream the response
-        stream_future: asyncio.Task[AsyncStream[RawMessageStreamEvent]] = asyncio.ensure_future(
-            cast(Coroutine[Any, Any, AsyncStream[RawMessageStreamEvent]], self._client.messages.create(**request_args))
+        stream_future: asyncio.Task[AsyncStream[RawMessageStreamEvent]] = (
+            asyncio.ensure_future(
+                cast(
+                    Coroutine[Any, Any, AsyncStream[RawMessageStreamEvent]],
+                    self._client.messages.create(**request_args),
+                )
+            )
         )
 
         if cancellation_token is not None:
             cancellation_token.link_future(stream_future)  # type: ignore
 
-        stream: AsyncStream[RawMessageStreamEvent] = cast(AsyncStream[RawMessageStreamEvent], await stream_future)  # type: ignore
+        stream: AsyncStream[RawMessageStreamEvent] = cast(
+            AsyncStream[RawMessageStreamEvent], await stream_future
+        )  # type: ignore
 
         text_content: List[str] = []
         tool_calls: Dict[str, Dict[str, Any]] = {}  # Track tool calls by ID
@@ -861,7 +943,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
         stop_reason: Optional[str] = None
 
         first_chunk = True
-        serialized_messages: List[Dict[str, Any]] = [self._serialize_message(msg) for msg in anthropic_messages]
+        serialized_messages: List[Dict[str, Any]] = [
+            self._serialize_message(msg) for msg in anthropic_messages
+        ]
 
         # Process the stream
         async for chunk in stream:
@@ -893,8 +977,13 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                         yield delta_text
 
                 # Handle tool input deltas - they come as InputJSONDelta
-                elif hasattr(chunk.delta, "type") and chunk.delta.type == "input_json_delta":
-                    if current_tool_id is not None and hasattr(chunk.delta, "partial_json"):
+                elif (
+                    hasattr(chunk.delta, "type")
+                    and chunk.delta.type == "input_json_delta"
+                ):
+                    if current_tool_id is not None and hasattr(
+                        chunk.delta, "partial_json"
+                    ):
                         # Accumulate partial JSON for the current tool
                         tool_calls[current_tool_id]["input"] += chunk.delta.partial_json
 
@@ -940,9 +1029,13 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 input_str = tool_data["input"]
                 try:
                     # If it's valid JSON, parse it; otherwise use as-is
-                    if input_str.strip().startswith("{") and input_str.strip().endswith("}"):
+                    if input_str.strip().startswith("{") and input_str.strip().endswith(
+                        "}"
+                    ):
                         parsed_input = json.loads(input_str)
-                        input_str = json.dumps(parsed_input)  # Re-serialize to ensure valid JSON
+                        input_str = json.dumps(
+                            parsed_input
+                        )  # Re-serialize to ensure valid JSON
                 except json.JSONDecodeError:
                     # Keep as string if not valid JSON
                     pass
@@ -985,7 +1078,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
     async def close(self) -> None:
         await self._client.close()
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         """
         Estimate the number of tokens used by messages and tools.
 
@@ -1008,7 +1103,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                 break
 
         if system_content:
-            num_tokens += len(encoding.encode(system_content)) + 15  # Approximate system message overhead
+            num_tokens += (
+                len(encoding.encode(system_content)) + 15
+            )  # Approximate system message overhead
 
         # Message tokens
         for message in messages:
@@ -1019,7 +1116,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
             num_tokens += 10  # Approximate message role & formatting overhead
 
             # Content tokens
-            if isinstance(message, UserMessage) or isinstance(message, AssistantMessage):
+            if isinstance(message, UserMessage) or isinstance(
+                message, AssistantMessage
+            ):
                 if isinstance(message.content, str):
                     num_tokens += len(encoding.encode(message.content))
                 elif isinstance(message.content, list):
@@ -1063,7 +1162,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
                             num_tokens += len(encoding.encode(prop_schema["type"]))
 
                         if "description" in prop_schema:
-                            num_tokens += len(encoding.encode(prop_schema["description"]))
+                            num_tokens += len(
+                                encoding.encode(prop_schema["description"])
+                            )
 
                         # Special handling for enums
                         if "enum" in prop_schema:
@@ -1078,7 +1179,9 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
 
         return num_tokens
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         """Calculate the remaining tokens based on the model's token limit."""
         token_limit = _model_info.get_token_limit(self._create_args["model"])
         return token_limit - self.count_tokens(messages, tools=tools)
@@ -1091,7 +1194,11 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
 
     @property
     def capabilities(self) -> ModelCapabilities:  # type: ignore
-        warnings.warn("capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "capabilities is deprecated, use model_info instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._model_info
 
     @property
@@ -1100,7 +1207,8 @@ class BaseAnthropicChatCompletionClient(ChatCompletionClient):
 
 
 class AnthropicChatCompletionClient(
-    BaseAnthropicChatCompletionClient, Component[AnthropicClientConfigurationConfigModel]
+    BaseAnthropicChatCompletionClient,
+    Component[AnthropicClientConfigurationConfigModel],
 ):
     """
     Chat completion client for Anthropic's Claude models.
@@ -1159,7 +1267,9 @@ class AnthropicChatCompletionClient(
 
     component_type = "model"
     component_config_schema = AnthropicClientConfigurationConfigModel
-    component_provider_override = "autogen_ext.models.anthropic.AnthropicChatCompletionClient"
+    component_provider_override = (
+        "autogen_ext.models.anthropic.AnthropicChatCompletionClient"
+    )
 
     def __init__(self, **kwargs: Unpack[AnthropicClientConfiguration]):
         if "model" not in kwargs:
@@ -1207,7 +1317,8 @@ class AnthropicChatCompletionClient(
 
 
 class AnthropicBedrockChatCompletionClient(
-    BaseAnthropicChatCompletionClient, Component[AnthropicBedrockClientConfigurationConfigModel]
+    BaseAnthropicChatCompletionClient,
+    Component[AnthropicBedrockClientConfigurationConfigModel],
 ):
     """
     Chat completion client for Anthropic's Claude models on AWS Bedrock.
@@ -1263,11 +1374,15 @@ class AnthropicBedrockChatCompletionClient(
 
     component_type = "model"
     component_config_schema = AnthropicBedrockClientConfigurationConfigModel
-    component_provider_override = "autogen_ext.models.anthropic.AnthropicBedrockChatCompletionClient"
+    component_provider_override = (
+        "autogen_ext.models.anthropic.AnthropicBedrockChatCompletionClient"
+    )
 
     def __init__(self, **kwargs: Unpack[AnthropicBedrockClientConfiguration]):
         if "model" not in kwargs:
-            raise ValueError("model is required for  AnthropicBedrockChatCompletionClient")
+            raise ValueError(
+                "model is required for  AnthropicBedrockChatCompletionClient"
+            )
 
         self._raw_config: Dict[str, Any] = dict(kwargs).copy()
         copied_args = dict(kwargs).copy()
@@ -1282,14 +1397,19 @@ class AnthropicBedrockChatCompletionClient(
             bedrock_info = kwargs["bedrock_info"]
 
         if bedrock_info is None:
-            raise ValueError("bedrock_info is required for AnthropicBedrockChatCompletionClient")
+            raise ValueError(
+                "bedrock_info is required for AnthropicBedrockChatCompletionClient"
+            )
 
         # Handle bedrock_info
         aws_region = bedrock_info["aws_region"]
         aws_access_key: Optional[str] = None
         aws_secret_key: Optional[str] = None
         aws_session_token: Optional[str] = None
-        if all(key in bedrock_info for key in ("aws_access_key", "aws_secret_key", "aws_session_token")):
+        if all(
+            key in bedrock_info
+            for key in ("aws_access_key", "aws_secret_key", "aws_session_token")
+        ):
             aws_access_key = bedrock_info["aws_access_key"]
             aws_secret_key = bedrock_info["aws_secret_key"]
             aws_session_token = bedrock_info["aws_session_token"]
@@ -1322,7 +1442,9 @@ class AnthropicBedrockChatCompletionClient(
         return AnthropicBedrockClientConfigurationConfigModel(**copied_config)
 
     @classmethod
-    def _from_config(cls, config: AnthropicBedrockClientConfigurationConfigModel) -> Self:
+    def _from_config(
+        cls, config: AnthropicBedrockClientConfigurationConfigModel
+    ) -> Self:
         copied_config = config.model_copy().model_dump(exclude_none=True)
 
         # Handle api_key as SecretStr
@@ -1332,9 +1454,15 @@ class AnthropicBedrockChatCompletionClient(
         # Handle bedrock_info as SecretStr
         if "bedrock_info" in copied_config and isinstance(config.bedrock_info, dict):
             copied_config["bedrock_info"] = {
-                "aws_access_key": config.bedrock_info["aws_access_key"].get_secret_value(),
-                "aws_secret_key": config.bedrock_info["aws_secret_key"].get_secret_value(),
-                "aws_session_token": config.bedrock_info["aws_session_token"].get_secret_value(),
+                "aws_access_key": config.bedrock_info[
+                    "aws_access_key"
+                ].get_secret_value(),
+                "aws_secret_key": config.bedrock_info[
+                    "aws_secret_key"
+                ].get_secret_value(),
+                "aws_session_token": config.bedrock_info[
+                    "aws_session_token"
+                ].get_secret_value(),
                 "aws_region": config.bedrock_info["aws_region"],
             }
 

@@ -25,20 +25,20 @@ def check_python_version():
 def setup_virtual_environment():
     """Create and activate virtual environment"""
     venv_path = Path("venv")
-    
+
     if not venv_path.exists():
         print("📦 Creating virtual environment...")
         subprocess.run([sys.executable, "-m", "venv", "venv"], check=True)
         print("✅ Virtual environment created")
     else:
         print("✅ Virtual environment exists")
-    
+
     # Provide activation instructions
     if platform.system() == "Windows":
         activate_cmd = "venv\\Scripts\\activate"
     else:
         activate_cmd = "source venv/bin/activate"
-    
+
     print(f"💡 Activate with: {activate_cmd}")
     return venv_path
 
@@ -49,18 +49,18 @@ def install_dependencies(venv_path: Path):
         pip_path = venv_path / "Scripts" / "pip"
     else:
         pip_path = venv_path / "bin" / "pip"
-    
+
     print("📦 Installing core dependencies...")
     subprocess.run([str(pip_path), "install", "-r", "requirements.txt"], check=True)
     print("✅ Dependencies installed")
-    
+
     # Install playwright browsers
     print("🌐 Installing Playwright browsers...")
     if platform.system() == "Windows":
         playwright_path = venv_path / "Scripts" / "playwright"
     else:
         playwright_path = venv_path / "bin" / "playwright"
-    
+
     subprocess.run([str(playwright_path), "install"], check=True)
     print("✅ Playwright browsers installed")
 
@@ -68,7 +68,7 @@ def install_dependencies(venv_path: Path):
 def setup_environment_file():
     """Create .env file template for development"""
     env_file = Path(".env")
-    
+
     if not env_file.exists():
         print("⚙️ Creating environment configuration...")
         env_content = """# Enhanced Browser-Use Environment Configuration
@@ -189,7 +189,7 @@ def setup_project_structure():
     """Create the enhanced project directory structure"""
     directories = [
         "agent",
-        "agent/iraqi_integration", 
+        "agent/iraqi_integration",
         "mcp",
         "llm",
         "llm/providers",
@@ -199,7 +199,7 @@ def setup_project_structure():
         "browser/watchdogs",
         "cultural",
         "cultural/agents",
-        "cultural/processing", 
+        "cultural/processing",
         "cultural/workflows",
         "tests",
         "tests/cultural",
@@ -207,18 +207,18 @@ def setup_project_structure():
         "tests/payment",
         "docs",
         "examples",
-        "config"
+        "config",
     ]
-    
+
     print("📁 Setting up project structure...")
     for directory in directories:
         Path(directory).mkdir(parents=True, exist_ok=True)
-    
+
     # Create __init__.py files for Python packages
     init_files = [
         "agent/__init__.py",
         "agent/iraqi_integration/__init__.py",
-        "mcp/__init__.py", 
+        "mcp/__init__.py",
         "llm/__init__.py",
         "llm/providers/__init__.py",
         "dom/__init__.py",
@@ -228,12 +228,12 @@ def setup_project_structure():
         "cultural/__init__.py",
         "cultural/agents/__init__.py",
         "cultural/processing/__init__.py",
-        "cultural/workflows/__init__.py"
+        "cultural/workflows/__init__.py",
     ]
-    
+
     for init_file in init_files:
         Path(init_file).touch()
-    
+
     print("✅ Project structure created")
 
 
@@ -268,7 +268,7 @@ echo "  python examples/simple_automation.py - Test automation"
         dev_path = Path("dev.sh")
         dev_path.write_text(dev_script)
         dev_path.chmod(0o755)
-    
+
     print("✅ Development scripts created")
 
 
@@ -276,25 +276,25 @@ def main():
     """Main setup process"""
     print("🚀 Enhanced Browser-Use Extraction - Development Setup")
     print("=" * 60)
-    
+
     # Verify Python version
     check_python_version()
-    
+
     # Setup virtual environment
     venv_path = setup_virtual_environment()
-    
+
     # Install dependencies
     install_dependencies(venv_path)
-    
+
     # Setup environment configuration
     setup_environment_file()
-    
+
     # Create project structure
     setup_project_structure()
-    
+
     # Create development scripts
     create_development_scripts()
-    
+
     print("\n" + "=" * 60)
     print("✅ Setup Complete!")
     print("\n📋 Next Steps:")
@@ -303,14 +303,14 @@ def main():
         print("   venv\\Scripts\\activate")
     else:
         print("   source venv/bin/activate")
-    
+
     print("2. Configure .env file with your API keys")
     print("3. Run development script:")
     if platform.system() == "Windows":
         print("   dev.bat")
     else:
         print("   ./dev.sh")
-    
+
     print("4. Begin Phase 1 extraction implementation")
     print("\n🎯 Phase 1 Status: Week 1-2 - Repository Setup ✅ COMPLETE")
 

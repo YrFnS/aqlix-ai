@@ -78,7 +78,9 @@ class BaseAnthropicClientConfigurationConfigModel(CreateArgumentsConfigModel):
     default_headers: Dict[str, str] | None = None
 
 
-class AnthropicClientConfigurationConfigModel(BaseAnthropicClientConfigurationConfigModel):
+class AnthropicClientConfigurationConfigModel(
+    BaseAnthropicClientConfigurationConfigModel
+):
     tools: List[Dict[str, Any]] | None = None
     tool_choice: Union[Literal["auto", "any", "none"], Dict[str, Any]] | None = None
 
@@ -93,5 +95,7 @@ class BedrockInfoConfigModel(TypedDict):
     aws_secret_key: Required[SecretStr]
 
 
-class AnthropicBedrockClientConfigurationConfigModel(AnthropicClientConfigurationConfigModel):
+class AnthropicBedrockClientConfigurationConfigModel(
+    AnthropicClientConfigurationConfigModel
+):
     bedrock_info: BedrockInfoConfigModel | None = None

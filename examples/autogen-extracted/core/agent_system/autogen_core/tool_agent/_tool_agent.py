@@ -60,7 +60,9 @@ class ToolAgent(RoutedAgent):
         return self._tools
 
     @message_handler
-    async def handle_function_call(self, message: FunctionCall, ctx: MessageContext) -> FunctionExecutionResult:
+    async def handle_function_call(
+        self, message: FunctionCall, ctx: MessageContext
+    ) -> FunctionExecutionResult:
         """Handles a `FunctionCall` message by executing the requested tool with the provided arguments.
 
         Args:
@@ -78,19 +80,29 @@ class ToolAgent(RoutedAgent):
         tool = next((tool for tool in self._tools if tool.name == message.name), None)
         if tool is None:
             raise ToolNotFoundException(
-                call_id=message.id, content=f"Error: Tool not found: {message.name}", name=message.name
+                call_id=message.id,
+                content=f"Error: Tool not found: {message.name}",
+                name=message.name,
             )
         else:
             try:
                 arguments = json.loads(message.arguments)
                 result = await tool.run_json(
-                    args=arguments, cancellation_token=ctx.cancellation_token, call_id=message.id
+                    args=arguments,
+                    cancellation_token=ctx.cancellation_token,
+                    call_id=message.id,
                 )
                 result_as_str = tool.return_value_as_string(result)
             except json.JSONDecodeError as e:
                 raise InvalidToolArgumentsException(
-                    call_id=message.id, content=f"Error: Invalid arguments: {message.arguments}", name=message.name
+                    call_id=message.id,
+                    content=f"Error: Invalid arguments: {message.arguments}",
+                    name=message.name,
                 ) from e
             except Exception as e:
-                raise ToolExecutionException(call_id=message.id, content=f"Error: {e}", name=message.name) from e
-        return FunctionExecutionResult(content=result_as_str, call_id=message.id, is_error=False, name=message.name)
+                raise ToolExecutionException(
+                    call_id=message.id, content=f"Error: {e}", name=message.name
+                ) from e
+        return FunctionExecutionResult(
+            content=result_as_str, call_id=message.id, is_error=False, name=message.name
+        )

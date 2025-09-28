@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Any, Awaitable, Callable, Mapping, Protocol, Type, TypeVar, overload, runtime_checkable
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Mapping,
+    Protocol,
+    Type,
+    TypeVar,
+    overload,
+    runtime_checkable,
+)
 
 from ._agent import Agent
 from ._agent_id import AgentId
@@ -185,7 +195,9 @@ class AgentRuntime(Protocol):
         ...
 
     # TODO: uncomment out the following type ignore when this is fixed in mypy: https://github.com/python/mypy/issues/3737
-    async def try_get_underlying_agent_instance(self, id: AgentId, type: Type[T] = Agent) -> T:  # type: ignore[assignment]
+    async def try_get_underlying_agent_instance(
+        self, id: AgentId, type: Type[T] = Agent
+    ) -> T:  # type: ignore[assignment]
         """Try to get the underlying agent instance by name and namespace. This is generally discouraged (hence the long name), but can be useful in some cases.
 
         If the underlying agent is not accessible, this will raise an exception.
@@ -208,10 +220,17 @@ class AgentRuntime(Protocol):
     async def get(self, id: AgentId, /, *, lazy: bool = ...) -> AgentId: ...
 
     @overload
-    async def get(self, type: AgentType | str, /, key: str = ..., *, lazy: bool = ...) -> AgentId: ...
+    async def get(
+        self, type: AgentType | str, /, key: str = ..., *, lazy: bool = ...
+    ) -> AgentId: ...
 
     async def get(
-        self, id_or_type: AgentId | AgentType | str, /, key: str = "default", *, lazy: bool = True
+        self,
+        id_or_type: AgentId | AgentType | str,
+        /,
+        key: str = "default",
+        *,
+        lazy: bool = True,
     ) -> AgentId: ...
 
     async def save_state(self) -> Mapping[str, Any]:
@@ -284,7 +303,9 @@ class AgentRuntime(Protocol):
         """
         ...
 
-    def add_message_serializer(self, serializer: MessageSerializer[Any] | Sequence[MessageSerializer[Any]]) -> None:
+    def add_message_serializer(
+        self, serializer: MessageSerializer[Any] | Sequence[MessageSerializer[Any]]
+    ) -> None:
         """Add a new message serialization serializer to the runtime
 
         Note: This will deduplicate serializers based on the type_name and data_content_type properties

@@ -405,7 +405,9 @@ class AzureAIAgent(BaseChatAgent):
         """
         return self._api_tools
 
-    def _add_tools(self, tools: Optional[ListToolType], converted_tools: List[ToolDefinition]) -> None:
+    def _add_tools(
+        self, tools: Optional[ListToolType], converted_tools: List[ToolDefinition]
+    ) -> None:
         """
         Convert various tool formats to Azure AI Agent tool definitions.
 
@@ -439,7 +441,9 @@ class AzureAIAgent(BaseChatAgent):
                 converted_tools.append(tool)
             elif isinstance(tool, Tool):
                 self._original_tools.append(tool)
-                converted_tools.append(self._convert_tool_to_function_tool_definition(tool))
+                converted_tools.append(
+                    self._convert_tool_to_function_tool_definition(tool)
+                )
             elif callable(tool):
                 if hasattr(tool, "__doc__") and tool.__doc__ is not None:
                     description = tool.__doc__
@@ -447,11 +451,15 @@ class AzureAIAgent(BaseChatAgent):
                     description = ""
                 function_tool = FunctionTool(tool, description=description)
                 self._original_tools.append(function_tool)
-                converted_tools.append(self._convert_tool_to_function_tool_definition(function_tool))
+                converted_tools.append(
+                    self._convert_tool_to_function_tool_definition(function_tool)
+                )
             else:
                 raise ValueError(f"Unsupported tool type: {type(tool)}")
 
-    def _convert_tool_to_function_tool_definition(self, tool: Tool) -> FunctionToolDefinition:
+    def _convert_tool_to_function_tool_definition(
+        self, tool: Tool
+    ) -> FunctionToolDefinition:
         """
         Convert an autogen Tool to an Azure AI Agent function tool definition.
 
@@ -473,13 +481,17 @@ class AzureAIAgent(BaseChatAgent):
             if "required" in schema["parameters"]:
                 parameters["required"] = schema["parameters"]["required"]
 
-        func_definition = FunctionDefinition(name=tool.name, description=tool.description, parameters=parameters)
+        func_definition = FunctionDefinition(
+            name=tool.name, description=tool.description, parameters=parameters
+        )
 
         return FunctionToolDefinition(
             function=func_definition,
         )
 
-    async def _ensure_initialized(self, create_new_thread: bool = False, create_new_agent: bool = False) -> None:
+    async def _ensure_initialized(
+        self, create_new_thread: bool = False, create_new_agent: bool = False
+    ) -> None:
         """
         Ensure agent and thread are properly initialized before operations.
 
@@ -496,7 +508,9 @@ class AzureAIAgent(BaseChatAgent):
         """
         if self._agent is None or create_new_agent:
             if self._agent_id and create_new_agent is False:
-                self._agent = await self._project_client.agents.get_agent(agent_id=self._agent_id)
+                self._agent = await self._project_client.agents.get_agent(
+                    agent_id=self._agent_id
+                )
             else:
                 self._agent = await self._project_client.agents.create_agent(
                     name=self.name,
@@ -505,15 +519,21 @@ class AzureAIAgent(BaseChatAgent):
                     instructions=self._instructions,
                     tools=self._api_tools,
                     metadata=self._metadata,
-                    response_format=self._response_format if self._response_format else None,  # type: ignore
+                    response_format=self._response_format
+                    if self._response_format
+                    else None,  # type: ignore
                     temperature=self._temperature,
-                    tool_resources=self._tool_resources if self._tool_resources else None,  # type: ignore
+                    tool_resources=self._tool_resources
+                    if self._tool_resources
+                    else None,  # type: ignore
                     top_p=self._top_p,
                 )
 
         if self._thread is None or create_new_thread:
             if self._init_thread_id and create_new_thread is False:
-                self._thread = await self._project_client.agents.threads.get(thread_id=self._init_thread_id)
+                self._thread = await self._project_client.agents.threads.get(
+                    thread_id=self._init_thread_id
+                )
                 # Retrieve initial state only once
                 if not self._initial_state_retrieved:
                     await self._retrieve_initial_state()
@@ -539,7 +559,9 @@ class AzureAIAgent(BaseChatAgent):
             initial_message_ids.add(msg.id)
         self._initial_message_ids = initial_message_ids
 
-    async def _execute_tool_call(self, tool_call: FunctionCall, cancellation_token: CancellationToken) -> str:
+    async def _execute_tool_call(
+        self, tool_call: FunctionCall, cancellation_token: CancellationToken
+    ) -> str:
         """
         Execute a tool call requested by the Azure AI agent.
 
@@ -559,7 +581,9 @@ class AzureAIAgent(BaseChatAgent):
         if tool is None:
             raise ValueError(f"The tool '{tool_call.name}' is not available.")
         arguments = json.loads(tool_call.arguments)
-        result = await tool.run_json(arguments, cancellation_token, call_id=tool_call.id)
+        result = await tool.run_json(
+            arguments, cancellation_token, call_id=tool_call.id
+        )
         return tool.return_value_as_string(result)
 
     async def _upload_files(
@@ -602,7 +626,9 @@ class AzureAIAgent(BaseChatAgent):
             file: FileInfo = await cancellation_token.link_future(
                 asyncio.ensure_future(
                     self._project_client.agents.files.upload_and_poll(
-                        file_path=file_path, purpose=purpose, polling_interval=polling_interval
+                        file_path=file_path,
+                        purpose=purpose,
+                        polling_interval=polling_interval,
                     )
                 )
             )
@@ -642,7 +668,9 @@ class AzureAIAgent(BaseChatAgent):
             AssertionError: If the stream doesn't return a final result
         """
         async for message in self.on_messages_stream(
-            messages=messages, cancellation_token=cancellation_token, message_limit=message_limit
+            messages=messages,
+            cancellation_token=cancellation_token,
+            message_limit=message_limit,
         ):
             if isinstance(message, Response):
                 return message
@@ -719,9 +747,14 @@ class AzureAIAgent(BaseChatAgent):
                 raise ValueError(f"Run failed: {run.last_error}")
 
             # If the run requires action (function calls), execute tools and continue
-            if run.status == RunStatus.REQUIRES_ACTION and run.required_action is not None:
+            if (
+                run.status == RunStatus.REQUIRES_ACTION
+                and run.required_action is not None
+            ):
                 tool_calls: List[FunctionCall] = []
-                submit_tool_outputs = getattr(run.required_action, "submit_tool_outputs", None)
+                submit_tool_outputs = getattr(
+                    run.required_action, "submit_tool_outputs", None
+                )
                 if submit_tool_outputs and hasattr(submit_tool_outputs, "tool_calls"):
                     for required_tool_call in submit_tool_outputs.tool_calls:
                         if required_tool_call.type == "function":
@@ -734,7 +767,9 @@ class AzureAIAgent(BaseChatAgent):
                             )
 
                 # Add tool call message to inner messages
-                tool_call_msg = ToolCallRequestEvent(source=self.name, content=tool_calls)
+                tool_call_msg = ToolCallRequestEvent(
+                    source=self.name, content=tool_calls
+                )
                 inner_messages.append(tool_call_msg)
                 trace_logger.debug(tool_call_msg)
                 yield tool_call_msg
@@ -746,19 +781,26 @@ class AzureAIAgent(BaseChatAgent):
 
                 for tool_call in tool_calls:
                     try:
-                        result = await self._execute_tool_call(tool_call, cancellation_token)
+                        result = await self._execute_tool_call(
+                            tool_call, cancellation_token
+                        )
                         is_error = False
                     except Exception as e:
                         result = f"Error: {e}"
                         is_error = True
                     tool_outputs.append(
                         FunctionExecutionResult(
-                            content=result, call_id=tool_call.id, is_error=is_error, name=tool_call.name
+                            content=result,
+                            call_id=tool_call.id,
+                            is_error=is_error,
+                            name=tool_call.name,
                         )
                     )
 
                 # Add tool result message to inner messages
-                tool_result_msg = ToolCallExecutionEvent(source=self.name, content=tool_outputs)
+                tool_result_msg = ToolCallExecutionEvent(
+                    source=self.name, content=tool_outputs
+                )
                 inner_messages.append(tool_result_msg)
                 trace_logger.debug(tool_result_msg)
                 yield tool_result_msg
@@ -769,7 +811,10 @@ class AzureAIAgent(BaseChatAgent):
                         self._project_client.agents.runs.submit_tool_outputs(
                             thread_id=self.thread_id,
                             run_id=run.id,
-                            tool_outputs=[ToolOutput(tool_call_id=t.call_id, output=t.content) for t in tool_outputs],
+                            tool_outputs=[
+                                ToolOutput(tool_call_id=t.call_id, output=t.content)
+                                for t in tool_outputs
+                            ],
                         )
                     )
                 )
@@ -804,7 +849,9 @@ class AzureAIAgent(BaseChatAgent):
             (m for m in agent_messages if getattr(m, "role", None) == "agent"), None
         )
         if not last_message:
-            trace_logger.debug("No message with AGENT role found, falling back to first message")
+            trace_logger.debug(
+                "No message with AGENT role found, falling back to first message"
+            )
             last_message = agent_messages[0]  # Fallback to first message
         if not getattr(last_message, "content", None):
             raise ValueError("No content in the last message")
@@ -829,40 +876,62 @@ class AzureAIAgent(BaseChatAgent):
                 if hasattr(annotation, "url_citation"):  # type: ignore
                     trace_logger.debug(f"Citation found: {annotation.url_citation.url}")
                     citations.append(
-                        {"url": annotation.url_citation.url, "title": annotation.url_citation.title, "text": None}  # type: ignore
+                        {
+                            "url": annotation.url_citation.url,
+                            "title": annotation.url_citation.title,
+                            "text": None,
+                        }  # type: ignore
                     )
         # For backwards compatibility
-        elif hasattr(last_message, "url_citation_annotations") and last_message.url_citation_annotations:
+        elif (
+            hasattr(last_message, "url_citation_annotations")
+            and last_message.url_citation_annotations
+        ):
             url_annotations = cast(List[Any], last_message.url_citation_annotations)
 
             trace_logger.debug(f"Found {len(url_annotations)} URL citations")
 
             for annotation in url_annotations:
                 citations.append(
-                    {"url": annotation.url_citation.url, "title": annotation.url_citation.title, "text": None}  # type: ignore
+                    {
+                        "url": annotation.url_citation.url,
+                        "title": annotation.url_citation.title,
+                        "text": None,
+                    }  # type: ignore
                 )
 
-        elif hasattr(last_message, "file_citation_annotations") and last_message.file_citation_annotations:
+        elif (
+            hasattr(last_message, "file_citation_annotations")
+            and last_message.file_citation_annotations
+        ):
             file_annotations = cast(List[Any], last_message.file_citation_annotations)
 
             trace_logger.debug(f"Found {len(file_annotations)} URL citations")
 
             for annotation in file_annotations:
                 citations.append(
-                    {"file_id": annotation.file_citation.file_id, "title": None, "text": annotation.file_citation.quote}  # type: ignore
+                    {
+                        "file_id": annotation.file_citation.file_id,
+                        "title": None,
+                        "text": annotation.file_citation.quote,
+                    }  # type: ignore
                 )
 
         trace_logger.debug(f"Total citations extracted: {len(citations)}")
 
         # Create the response message with citations as JSON string
         chat_message = TextMessage(
-            source=self.name, content=message_text, metadata={"citations": json.dumps(citations)} if citations else {}
+            source=self.name,
+            content=message_text,
+            metadata={"citations": json.dumps(citations)} if citations else {},
         )
 
         # Return the assistant's response as a Response with inner messages
         yield Response(chat_message=chat_message, inner_messages=inner_messages)
 
-    async def handle_text_message(self, content: str, cancellation_token: Optional[CancellationToken] = None) -> None:
+    async def handle_text_message(
+        self, content: str, cancellation_token: Optional[CancellationToken] = None
+    ) -> None:
         """
         Handle a text message by adding it to the conversation thread.
 
@@ -973,11 +1042,15 @@ class AzureAIAgent(BaseChatAgent):
 
         # Update thread with the new files
         thread: AgentThread = await cancellation_token.link_future(
-            asyncio.ensure_future(self._project_client.agents.threads.get(thread_id=self.thread_id))
+            asyncio.ensure_future(
+                self._project_client.agents.threads.get(thread_id=self.thread_id)
+            )
         )
 
         tool_resources: ToolResources = thread.tool_resources or ToolResources()
-        code_interpreter_resource = tool_resources.code_interpreter or CodeInterpreterToolResource()
+        code_interpreter_resource = (
+            tool_resources.code_interpreter or CodeInterpreterToolResource()
+        )
         existing_file_ids: List[str] = code_interpreter_resource.file_ids or []
         existing_file_ids.extend(file_ids)
 
@@ -986,7 +1059,9 @@ class AzureAIAgent(BaseChatAgent):
                 self._project_client.agents.threads.update(
                     thread_id=self.thread_id,
                     tool_resources=ToolResources(
-                        code_interpreter=CodeInterpreterToolResource(file_ids=existing_file_ids)
+                        code_interpreter=CodeInterpreterToolResource(
+                            file_ids=existing_file_ids
+                        )
                     ),
                 )
             )
@@ -1025,7 +1100,9 @@ class AzureAIAgent(BaseChatAgent):
         await self._ensure_initialized()
 
         # Check if file_search is enabled in tools
-        if not any(isinstance(tool, FileSearchToolDefinition) for tool in self._api_tools):
+        if not any(
+            isinstance(tool, FileSearchToolDefinition) for tool in self._api_tools
+        ):
             raise ValueError(
                 "File search is not enabled for this assistant. Add a file_search tool when creating the assistant."
             )
@@ -1054,14 +1131,18 @@ class AzureAIAgent(BaseChatAgent):
                         agent_id=self._get_agent_id,
                         tools=self._api_tools,
                         tool_resources=ToolResources(
-                            file_search=FileSearchToolResource(vector_store_ids=[self._vector_store_id])
+                            file_search=FileSearchToolResource(
+                                vector_store_ids=[self._vector_store_id]
+                            )
                         ),
                     )
                 )
             )
 
         file_ids = await self._upload_files(
-            file_paths=file_paths, cancellation_token=cancellation_token, purpose=FilePurpose.AGENTS
+            file_paths=file_paths,
+            cancellation_token=cancellation_token,
+            purpose=FilePurpose.AGENTS,
         )
 
         # Create file batch with the file IDs

@@ -58,9 +58,15 @@ class Apprentice:
         self.disable_prefix_caching = False
         memory_controller_config = None
         if config is not None:
-            self.name_of_agent_or_team = config.get("name_of_agent_or_team", self.name_of_agent_or_team)
-            self.disable_prefix_caching = config.get("disable_prefix_caching", self.disable_prefix_caching)
-            memory_controller_config = config.get("MemoryController", memory_controller_config)
+            self.name_of_agent_or_team = config.get(
+                "name_of_agent_or_team", self.name_of_agent_or_team
+            )
+            self.disable_prefix_caching = config.get(
+                "disable_prefix_caching", self.disable_prefix_caching
+            )
+            memory_controller_config = config.get(
+                "MemoryController", memory_controller_config
+            )
 
         self.client = client
         if self.disable_prefix_caching:
@@ -108,14 +114,18 @@ class Apprentice:
 
         self.logger.leave_function()
 
-    async def assign_task(self, task: str, use_memory: bool = True, should_await: bool = True) -> str:
+    async def assign_task(
+        self, task: str, use_memory: bool = True, should_await: bool = True
+    ) -> str:
         """
         Assigns a task to the agent, along with any relevant insights/memories.
         """
         self.logger.enter_function()
 
         # Pass the task through to the memory controller.
-        response = await self.memory_controller.assign_task(task, use_memory, should_await)
+        response = await self.memory_controller.assign_task(
+            task, use_memory, should_await
+        )
 
         self.logger.leave_function()
         return response
@@ -189,14 +199,18 @@ In responding to every user message, you follow the same multi-step process give
         )
 
         # Get the agent's response to the task.
-        task_result: TaskResult = await assistant_agent.run(task=TextMessage(content=task, source="User"))
+        task_result: TaskResult = await assistant_agent.run(
+            task=TextMessage(content=task, source="User")
+        )
         messages: Sequence[BaseAgentEvent | BaseChatMessage] = task_result.messages
         message: BaseAgentEvent | BaseChatMessage = messages[-1]
         response_str = message.to_text()
 
         # Log the model call
         self.logger.log_model_task(
-            summary="Ask the model to complete the task", input_messages=input_messages, task_result=task_result
+            summary="Ask the model to complete the task",
+            input_messages=input_messages,
+            task_result=task_result,
         )
         self.logger.info("\n-----  RESPONSE  -----\n\n{}\n".format(response_str))
 

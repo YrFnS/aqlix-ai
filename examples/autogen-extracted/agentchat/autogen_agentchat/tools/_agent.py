@@ -76,10 +76,15 @@ class AgentTool(TaskRunnerTool, Component[AgentToolConfig]):
     component_config_schema = AgentToolConfig
     component_provider_override = "autogen_agentchat.tools.AgentTool"
 
-    def __init__(self, agent: BaseChatAgent, return_value_as_last_message: bool = False) -> None:
+    def __init__(
+        self, agent: BaseChatAgent, return_value_as_last_message: bool = False
+    ) -> None:
         self._agent = agent
         super().__init__(
-            agent, agent.name, agent.description, return_value_as_last_message=return_value_as_last_message
+            agent,
+            agent.name,
+            agent.description,
+            return_value_as_last_message=return_value_as_last_message,
         )
 
     def _to_config(self) -> AgentToolConfig:
@@ -90,4 +95,7 @@ class AgentTool(TaskRunnerTool, Component[AgentToolConfig]):
 
     @classmethod
     def _from_config(cls, config: AgentToolConfig) -> Self:
-        return cls(BaseChatAgent.load_component(config.agent), config.return_value_as_last_message)
+        return cls(
+            BaseChatAgent.load_component(config.agent),
+            config.return_value_as_last_message,
+        )

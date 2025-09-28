@@ -111,7 +111,11 @@ class Memory(ABC, ComponentBase[BaseModel]):
         ...
 
     @abstractmethod
-    async def add(self, content: MemoryContent, cancellation_token: CancellationToken | None = None) -> None:
+    async def add(
+        self,
+        content: MemoryContent,
+        cancellation_token: CancellationToken | None = None,
+    ) -> None:
         """
         Add a new content to memory.
 

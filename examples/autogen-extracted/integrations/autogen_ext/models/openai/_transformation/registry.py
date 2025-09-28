@@ -14,7 +14,8 @@ MESSAGE_TRANSFORMERS: Dict[str, Dict[str, TransformerMap]] = defaultdict(dict)
 
 
 def build_transformer_func(
-    funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]], message_param_func: Callable[..., Any]
+    funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]],
+    message_param_func: Callable[..., Any],
 ) -> TransformerFunc:
     """
     Combines multiple transformer functions into a single transformer.
@@ -69,7 +70,9 @@ def build_conditional_transformer_func(
     return transformer
 
 
-def register_transformer(api: str, model_family: str, transformer_map: TransformerMap) -> None:
+def register_transformer(
+    api: str, model_family: str, transformer_map: TransformerMap
+) -> None:
     """
     Registers a transformer map for a given model family.
 
@@ -117,7 +120,10 @@ def get_transformer(api: str, model: str, model_family: str) -> TransformerMap:
     Keeping this as a function (instead of direct dict access) improves long-term flexibility.
     """
 
-    if model_family not in set(get_args(ModelFamily.ANY)) or model_family == ModelFamily.UNKNOWN:
+    if (
+        model_family not in set(get_args(ModelFamily.ANY))
+        or model_family == ModelFamily.UNKNOWN
+    ):
         # fallback to finding the best matching model family
         model_family = _find_model_family(api, model)
 

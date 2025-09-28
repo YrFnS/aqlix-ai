@@ -21,11 +21,11 @@ from .api import IraqiWorkflowAPI
 from .services import IraqiAuthService, IraqiAuditService
 
 __all__ = [
-    'IraqiWorkflowEngine',
-    'IraqiTaskManager', 
-    'IraqiWorkflowAPI',
-    'IraqiAuthService',
-    'IraqiAuditService'
+    "IraqiWorkflowEngine",
+    "IraqiTaskManager",
+    "IraqiWorkflowAPI",
+    "IraqiAuthService",
+    "IraqiAuditService",
 ]
 
 __version__ = "1.0.0-iraqi"

@@ -16,7 +16,9 @@ from graphrag.query.indexer_adapters import (
     read_indexer_relationships,
     read_indexer_text_units,
 )
-from graphrag.query.structured_search.local_search.mixed_context import LocalSearchMixedContext
+from graphrag.query.structured_search.local_search.mixed_context import (
+    LocalSearchMixedContext,
+)
 from graphrag.query.structured_search.local_search.search import LocalSearch
 from graphrag.vector_stores.lancedb import LanceDBVectorStore
 
@@ -131,15 +133,23 @@ class LocalSearchTool(BaseTool[LocalSearchToolArgs, LocalSearchToolReturn]):
         self._embedder = embedder
 
         # Load parquet files
-        entity_df: pd.DataFrame = pd.read_parquet(f"{data_config.input_dir}/{data_config.entity_table}.parquet")  # type: ignore
+        entity_df: pd.DataFrame = pd.read_parquet(
+            f"{data_config.input_dir}/{data_config.entity_table}.parquet"
+        )  # type: ignore
         relationship_df: pd.DataFrame = pd.read_parquet(  # type: ignore
             f"{data_config.input_dir}/{data_config.relationship_table}.parquet"
         )
-        text_unit_df: pd.DataFrame = pd.read_parquet(f"{data_config.input_dir}/{data_config.text_unit_table}.parquet")  # type: ignore
-        community_df: pd.DataFrame = pd.read_parquet(f"{data_config.input_dir}/{data_config.community_table}.parquet")  # type: ignore
+        text_unit_df: pd.DataFrame = pd.read_parquet(
+            f"{data_config.input_dir}/{data_config.text_unit_table}.parquet"
+        )  # type: ignore
+        community_df: pd.DataFrame = pd.read_parquet(
+            f"{data_config.input_dir}/{data_config.community_table}.parquet"
+        )  # type: ignore
 
         # Read data using indexer adapters
-        entities = read_indexer_entities(entity_df, community_df, data_config.community_level)
+        entities = read_indexer_entities(
+            entity_df, community_df, data_config.community_level
+        )
         relationships = read_indexer_relationships(relationship_df)
         text_units = read_indexer_text_units(text_unit_df)
         # Set up vector store for entity embeddings
@@ -182,13 +192,19 @@ class LocalSearchTool(BaseTool[LocalSearchToolArgs, LocalSearchToolReturn]):
             model_params=llm_params,
         )
 
-    async def run(self, args: LocalSearchToolArgs, cancellation_token: CancellationToken) -> LocalSearchToolReturn:
+    async def run(
+        self, args: LocalSearchToolArgs, cancellation_token: CancellationToken
+    ) -> LocalSearchToolReturn:
         search_result = await self._search_engine.search(args.query)  # type: ignore[reportUnknownMemberType]
-        assert isinstance(search_result.response, str), "Expected response to be a string"
+        assert isinstance(search_result.response, str), (
+            "Expected response to be a string"
+        )
         return LocalSearchToolReturn(answer=search_result.response)
 
     @classmethod
-    def from_settings(cls, root_dir: Path, config_filepath: Path | None = None) -> "LocalSearchTool":
+    def from_settings(
+        cls, root_dir: Path, config_filepath: Path | None = None
+    ) -> "LocalSearchTool":
         """Create a LocalSearchTool instance from GraphRAG settings file.
 
         Args:

@@ -2,13 +2,13 @@
 R* (R-Star) Reasoning System - Iraqi Enhanced
 ============================================
 
-Extracted and enhanced R*-based reasoning patterns specifically adapted for 
+Extracted and enhanced R*-based reasoning patterns specifically adapted for
 Iraqi cultural contexts and Islamic compliance. This system provides systematic
 tree-based problem solving with cultural branch evaluation and Islamic guidance.
 
 Revolutionary Features:
 - Tree-based systematic reasoning with cultural awareness
-- Islamic principle-guided search algorithms  
+- Islamic principle-guided search algorithms
 - Iraqi cultural branch evaluation and pruning
 - Multi-step problem decomposition with cultural validation
 - Systematic solution exploration with ethical constraints
@@ -35,14 +35,14 @@ Architecture:
 
 Usage:
     from examples.rstar_extracted import IraqiRStarReasoner
-    
+
     # Create culturally-aware R* reasoner
     rstar_reasoner = IraqiRStarReasoner(
         cultural_context="iraqi",
         islamic_principles=True,
         systematic_reasoning=True
     )
-    
+
     # Execute systematic reasoning with cultural compliance
     result = await rstar_reasoner.systematic_reason(cultural_problem)
 """
@@ -57,7 +57,7 @@ from .core import (
     ReasoningTree,
     ReasoningNode,
     CulturalBranch,
-    SystematicProblemSolver
+    SystematicProblemSolver,
 )
 
 # Tree-based reasoning with cultural evaluation
@@ -66,7 +66,7 @@ from .tree_reasoning import (
     IslamicPrincipleGuidedSearch,
     IraqiContextTreeBuilder,
     TreePruningAlgorithm,
-    CulturalPathFinder
+    CulturalPathFinder,
 )
 
 # Systematic search algorithms
@@ -75,7 +75,7 @@ from .search_algorithms import (
     CulturallyGuidedBFS,
     IslamicPrincipleDFS,
     ProfessionalDomainSearch,
-    AdaptiveSearchStrategy
+    AdaptiveSearchStrategy,
 )
 
 # Problem decomposition with cultural awareness
@@ -84,7 +84,7 @@ from .problem_decomposition import (
     CulturalSubProblemGenerator,
     IslamicComplexityAnalyzer,
     HierarchicalDecomposer,
-    ProfessionalContextDecomposer
+    ProfessionalContextDecomposer,
 )
 
 # Integration with existing systems
@@ -92,7 +92,7 @@ from .integration import (
     RStarHRMIntegration,
     RStarGoogleADKIntegration,
     UnifiedReasoningOrchestrator,
-    CrossSystemCoordinator
+    CrossSystemCoordinator,
 )
 
 # Performance optimization for tree-based reasoning
@@ -101,7 +101,7 @@ from .optimization import (
     TreePruningOptimizer,
     CulturalCacheManager,
     SearchSpaceOptimizer,
-    MemoryEfficientTreeStorage
+    MemoryEfficientTreeStorage,
 )
 
 __all__ = [
@@ -109,41 +109,36 @@ __all__ = [
     "IraqiRStarReasoner",
     "RStarConfig",
     "ReasoningTree",
-    "ReasoningNode", 
+    "ReasoningNode",
     "CulturalBranch",
     "SystematicProblemSolver",
-    
     # Tree-based reasoning
     "CulturalBranchEvaluator",
     "IslamicPrincipleGuidedSearch",
     "IraqiContextTreeBuilder",
     "TreePruningAlgorithm",
     "CulturalPathFinder",
-    
     # Search algorithms
     "SystematicSearchAlgorithm",
     "CulturallyGuidedBFS",
-    "IslamicPrincipleDFS", 
+    "IslamicPrincipleDFS",
     "ProfessionalDomainSearch",
     "AdaptiveSearchStrategy",
-    
     # Problem decomposition
     "IraqiProblemDecomposer",
     "CulturalSubProblemGenerator",
     "IslamicComplexityAnalyzer",
     "HierarchicalDecomposer",
     "ProfessionalContextDecomposer",
-    
     # Integration components
     "RStarHRMIntegration",
-    "RStarGoogleADKIntegration", 
+    "RStarGoogleADKIntegration",
     "UnifiedReasoningOrchestrator",
     "CrossSystemCoordinator",
-    
     # Performance optimization
     "RStarPerformanceOptimizer",
     "TreePruningOptimizer",
     "CulturalCacheManager",
     "SearchSpaceOptimizer",
-    "MemoryEfficientTreeStorage"
+    "MemoryEfficientTreeStorage",
 ]

@@ -24,7 +24,7 @@ built on proven Archon architectural patterns.
 
 🎓 Agent Specializations:
 - RAG Agent: Cultural intelligence-enhanced document search and retrieval
-- Cultural Validator: Iraqi cultural compliance and Islamic values validation  
+- Cultural Validator: Iraqi cultural compliance and Islamic values validation
 - Arabic Processor: RTL text processing and Iraqi dialect recognition
 - Legal Advisor: Iraqi law context with Islamic jurisprudence integration
 - Medical Assistant: Islamic medical ethics and patient dignity focus
@@ -36,7 +36,7 @@ built on proven Archon architectural patterns.
 
 📋 Architecture Components:
 - IraqiBaseAgent: Enhanced foundation with cultural intelligence
-- IraqiAgentFactory: Centralized creation and lifecycle management  
+- IraqiAgentFactory: Centralized creation and lifecycle management
 - IraqiCulturalIntelligence: Comprehensive cultural analysis engine
 - IraqiRateLimitHandler: Cultural context-aware rate limiting
 - Professional domain specialization with Iraqi context
@@ -49,14 +49,10 @@ from .iraqi_base_agent import (
     IraqiAgentOutput,
     IraqiCulturalContext,
     IraqiCulturalIntelligence,
-    IraqiRateLimitHandler
+    IraqiRateLimitHandler,
 )
 
-from .iraqi_rag_agent import (
-    IraqiRagAgent,
-    IraqiRagDependencies,
-    IraqiRagQueryResult
-)
+from .iraqi_rag_agent import IraqiRagAgent, IraqiRagDependencies, IraqiRagQueryResult
 
 from .iraqi_agent_factory import (
     IraqiAgentFactory,
@@ -67,7 +63,7 @@ from .iraqi_agent_factory import (
     iraqi_agent_factory,
     create_iraqi_rag_agent,
     get_iraqi_agent,
-    execute_iraqi_agent
+    execute_iraqi_agent,
 )
 
 # Version and metadata
@@ -82,87 +78,91 @@ QUALITY_STANDARDS = {
     "arabic_processing_accuracy": 0.99,
     "dialect_recognition_accuracy": 0.85,
     "max_response_time_ms": 300,
-    "agent_initialization_time_ms": 100
+    "agent_initialization_time_ms": 100,
 }
 
-# Professional domain configurations  
+# Professional domain configurations
 PROFESSIONAL_DOMAINS = {
     "legal": {
         "cultural_sensitivity": 0.98,
         "islamic_jurisprudence_required": True,
         "iraqi_law_context": True,
-        "professional_terminology": "legal_arabic"
+        "professional_terminology": "legal_arabic",
     },
     "medical": {
         "cultural_sensitivity": 0.99,
         "islamic_medical_ethics": True,
         "patient_dignity": True,
-        "professional_terminology": "medical_arabic"
+        "professional_terminology": "medical_arabic",
     },
     "educational": {
         "cultural_sensitivity": 0.96,
         "islamic_education_principles": True,
         "iraqi_curriculum_alignment": True,
-        "professional_terminology": "educational_arabic"
+        "professional_terminology": "educational_arabic",
     },
     "government": {
         "cultural_sensitivity": 0.94,
         "public_service_focus": True,
         "transparency_required": True,
-        "professional_terminology": "government_arabic"
-    }
+        "professional_terminology": "government_arabic",
+    },
 }
 
 # Export all main components
 __all__ = [
     # Base agent system
     "IraqiBaseAgent",
-    "IraqiAgentDependencies", 
+    "IraqiAgentDependencies",
     "IraqiAgentOutput",
     "IraqiCulturalContext",
     "IraqiCulturalIntelligence",
     "IraqiRateLimitHandler",
-    
     # RAG agent specialization
     "IraqiRagAgent",
     "IraqiRagDependencies",
     "IraqiRagQueryResult",
-    
     # Agent factory and management
     "IraqiAgentFactory",
     "IraqiAgentConfiguration",
     "IraqiAgentInstance",
-    "IraqiAgentType", 
+    "IraqiAgentType",
     "IraqiProfessionalDomain",
     "iraqi_agent_factory",
-    
     # Convenience functions
     "create_iraqi_rag_agent",
-    "get_iraqi_agent", 
+    "get_iraqi_agent",
     "execute_iraqi_agent",
-    
     # Constants and metadata
     "QUALITY_STANDARDS",
     "PROFESSIONAL_DOMAINS",
     "__version__",
     "__author__",
-    "__description__"
+    "__description__",
 ]
 
 # Initialization logging
 import logging
+
 logger = logging.getLogger(__name__)
 logger.info(f"✓ Iraqi AI Agent System v{__version__} initialized")
-logger.info(f"✓ Cultural compliance threshold: {QUALITY_STANDARDS['cultural_compliance_threshold']:.1%}")
-logger.info(f"✓ Islamic compliance threshold: {QUALITY_STANDARDS['islamic_compliance_threshold']:.1%}")
-logger.info(f"✓ Arabic processing accuracy target: {QUALITY_STANDARDS['arabic_processing_accuracy']:.1%}")
+logger.info(
+    f"✓ Cultural compliance threshold: {QUALITY_STANDARDS['cultural_compliance_threshold']:.1%}"
+)
+logger.info(
+    f"✓ Islamic compliance threshold: {QUALITY_STANDARDS['islamic_compliance_threshold']:.1%}"
+)
+logger.info(
+    f"✓ Arabic processing accuracy target: {QUALITY_STANDARDS['arabic_processing_accuracy']:.1%}"
+)
 logger.info(f"✓ Professional domains supported: {len(PROFESSIONAL_DOMAINS)}")
+
 
 # System health check
 def get_system_health() -> dict:
     """
     Get system health status for Iraqi AI Agent System.
-    
+
     Returns:
         Dictionary with system health metrics
     """
@@ -173,5 +173,5 @@ def get_system_health() -> dict:
         "professional_domains_count": len(PROFESSIONAL_DOMAINS),
         "quality_standards": QUALITY_STANDARDS,
         "factory_active": iraqi_agent_factory is not None,
-        "system_status": "healthy"
+        "system_status": "healthy",
     }

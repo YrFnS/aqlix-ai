@@ -3,14 +3,31 @@ import uuid
 from contextlib import contextmanager
 from contextvars import ContextVar
 from inspect import iscoroutinefunction
-from typing import Any, AsyncGenerator, Awaitable, Callable, ClassVar, Generator, Optional, Sequence, Union, cast
+from typing import (
+    Any,
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    ClassVar,
+    Generator,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
 
 from autogen_core import CancellationToken, Component
 from pydantic import BaseModel
 from typing_extensions import Self
 
 from ..base import Response
-from ..messages import BaseAgentEvent, BaseChatMessage, HandoffMessage, TextMessage, UserInputRequestedEvent
+from ..messages import (
+    BaseAgentEvent,
+    BaseChatMessage,
+    HandoffMessage,
+    TextMessage,
+    UserInputRequestedEvent,
+)
 from ._base_chat_agent import BaseChatAgent
 
 SyncInputFunc = Callable[[str], str]
@@ -19,7 +36,9 @@ InputFuncType = Union[SyncInputFunc, AsyncInputFunc]
 
 
 # TODO: check if using to_thread fixes this in jupyter
-async def cancellable_input(prompt: str, cancellation_token: Optional[CancellationToken]) -> str:
+async def cancellable_input(
+    prompt: str, cancellation_token: Optional[CancellationToken]
+) -> str:
     task: asyncio.Task[str] = asyncio.create_task(asyncio.to_thread(input, prompt))
     if cancellation_token is not None:
         cancellation_token.link_future(task)
@@ -136,17 +155,23 @@ class UserProxyAgent(BaseChatAgent, Component[UserProxyAgentConfig]):
                 "InputRequestContext cannot be instantiated. It is a static class that provides context management for user input requests."
             )
 
-        _INPUT_REQUEST_CONTEXT_VAR: ClassVar[ContextVar[str]] = ContextVar("_INPUT_REQUEST_CONTEXT_VAR")
+        _INPUT_REQUEST_CONTEXT_VAR: ClassVar[ContextVar[str]] = ContextVar(
+            "_INPUT_REQUEST_CONTEXT_VAR"
+        )
 
         @classmethod
         @contextmanager
         def populate_context(cls, ctx: str) -> Generator[None, Any, None]:
             """:meta private:"""
-            token = UserProxyAgent.InputRequestContext._INPUT_REQUEST_CONTEXT_VAR.set(ctx)
+            token = UserProxyAgent.InputRequestContext._INPUT_REQUEST_CONTEXT_VAR.set(
+                ctx
+            )
             try:
                 yield
             finally:
-                UserProxyAgent.InputRequestContext._INPUT_REQUEST_CONTEXT_VAR.reset(token)
+                UserProxyAgent.InputRequestContext._INPUT_REQUEST_CONTEXT_VAR.reset(
+                    token
+                )
 
         @classmethod
         def request_id(cls) -> str:
@@ -174,16 +199,22 @@ class UserProxyAgent(BaseChatAgent, Component[UserProxyAgentConfig]):
         """Message types this agent can produce."""
         return (TextMessage, HandoffMessage)
 
-    def _get_latest_handoff(self, messages: Sequence[BaseChatMessage]) -> Optional[HandoffMessage]:
+    def _get_latest_handoff(
+        self, messages: Sequence[BaseChatMessage]
+    ) -> Optional[HandoffMessage]:
         """Find the HandoffMessage in the message sequence that addresses this agent."""
         if len(messages) > 0 and isinstance(messages[-1], HandoffMessage):
             if messages[-1].target == self.name:
                 return messages[-1]
             else:
-                raise RuntimeError(f"Handoff message target does not match agent name: {messages[-1].source}")
+                raise RuntimeError(
+                    f"Handoff message target does not match agent name: {messages[-1].source}"
+                )
         return None
 
-    async def _get_input(self, prompt: str, cancellation_token: Optional[CancellationToken]) -> str:
+    async def _get_input(
+        self, prompt: str, cancellation_token: Optional[CancellationToken]
+    ) -> str:
         """Handle input based on function signature."""
         try:
             if self._is_async:
@@ -201,7 +232,9 @@ class UserProxyAgent(BaseChatAgent, Component[UserProxyAgentConfig]):
         except Exception as e:
             raise RuntimeError(f"Failed to get user input: {str(e)}") from e
 
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         async for message in self.on_messages_stream(messages, cancellation_token):
             if isinstance(message, Response):
                 return message
@@ -215,34 +248,48 @@ class UserProxyAgent(BaseChatAgent, Component[UserProxyAgentConfig]):
             # Check for handoff first
             handoff = self._get_latest_handoff(messages)
             prompt = (
-                f"Handoff received from {handoff.source}. Enter your response: " if handoff else "Enter your response: "
+                f"Handoff received from {handoff.source}. Enter your response: "
+                if handoff
+                else "Enter your response: "
             )
 
             request_id = str(uuid.uuid4())
 
-            input_requested_event = UserInputRequestedEvent(request_id=request_id, source=self.name)
+            input_requested_event = UserInputRequestedEvent(
+                request_id=request_id, source=self.name
+            )
             yield input_requested_event
             with UserProxyAgent.InputRequestContext.populate_context(request_id):
                 user_input = await self._get_input(prompt, cancellation_token)
 
             # Return appropriate message type based on handoff presence
             if handoff:
-                yield Response(chat_message=HandoffMessage(content=user_input, target=handoff.source, source=self.name))
+                yield Response(
+                    chat_message=HandoffMessage(
+                        content=user_input, target=handoff.source, source=self.name
+                    )
+                )
             else:
-                yield Response(chat_message=TextMessage(content=user_input, source=self.name))
+                yield Response(
+                    chat_message=TextMessage(content=user_input, source=self.name)
+                )
 
         except asyncio.CancelledError:
             raise
         except Exception as e:
             raise RuntimeError(f"Failed to get user input: {str(e)}") from e
 
-    async def on_reset(self, cancellation_token: Optional[CancellationToken] = None) -> None:
+    async def on_reset(
+        self, cancellation_token: Optional[CancellationToken] = None
+    ) -> None:
         """Reset agent state."""
         pass
 
     def _to_config(self) -> UserProxyAgentConfig:
         # TODO: Add ability to serialie input_func
-        return UserProxyAgentConfig(name=self.name, description=self.description, input_func=None)
+        return UserProxyAgentConfig(
+            name=self.name, description=self.description, input_func=None
+        )
 
     @classmethod
     def _from_config(cls, config: UserProxyAgentConfig) -> Self:

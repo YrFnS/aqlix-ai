@@ -17,5 +17,5 @@ __all__ = [
     "IraqiAuthService",
     "IraqiContentService",
     "IraqiResearchService",
-    "IraqiMonitoringService"
+    "IraqiMonitoringService",
 ]

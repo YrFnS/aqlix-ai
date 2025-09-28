@@ -452,14 +452,18 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         self._model_client_stream = model_client_stream
         self._max_retries_on_error = max_retries_on_error
         self._approval_func = approval_func
-        self._approval_func_is_async = approval_func is not None and iscoroutinefunction(approval_func)
+        self._approval_func_is_async = (
+            approval_func is not None and iscoroutinefunction(approval_func)
+        )
 
         if supported_languages is not None:
             self._supported_languages = supported_languages
         else:
             self._supported_languages = CodeExecutorAgent.DEFAULT_SUPPORTED_LANGUAGES
 
-        self._supported_languages_regex = "|".join(re.escape(lang) for lang in self._supported_languages)
+        self._supported_languages_regex = "|".join(
+            re.escape(lang) for lang in self._supported_languages
+        )
 
         self._model_client = None
         if model_client is not None:
@@ -478,9 +482,13 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
 
         if self._max_retries_on_error > 0:
             if not self._model_client or not self._model_client.model_info:
-                raise ValueError("model_client.model_info must be provided when max_retries_on_error > 0")
+                raise ValueError(
+                    "model_client.model_info must be provided when max_retries_on_error > 0"
+                )
             if not self._model_client.model_info["structured_output"]:
-                raise ValueError("Specified model_client doesn't support structured output mode.")
+                raise ValueError(
+                    "Specified model_client doesn't support structured output mode."
+                )
 
     @property
     def produced_message_types(self) -> Sequence[type[BaseChatMessage]]:
@@ -494,7 +502,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         """
         return self._model_context
 
-    async def on_messages(self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken) -> Response:
+    async def on_messages(
+        self, messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+    ) -> Response:
         async for message in self.on_messages_stream(messages, cancellation_token):
             if isinstance(message, Response):
                 return message
@@ -518,7 +528,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         execution_result: CodeResult | None = None
         if model_client is None:  # default behaviour for backward compatibility
             # execute generated code if present
-            code_blocks: List[CodeBlock] = await self.extract_code_blocks_from_messages(messages)
+            code_blocks: List[CodeBlock] = await self.extract_code_blocks_from_messages(
+                messages
+            )
             if not code_blocks:
                 yield Response(
                     chat_message=TextMessage(
@@ -527,13 +539,21 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
                     )
                 )
                 return
-            execution_result = await self.execute_code_block(code_blocks, cancellation_token)
-            yield Response(chat_message=TextMessage(content=execution_result.output, source=self.name))
+            execution_result = await self.execute_code_block(
+                code_blocks, cancellation_token
+            )
+            yield Response(
+                chat_message=TextMessage(
+                    content=execution_result.output, source=self.name
+                )
+            )
             return
 
         inner_messages: List[BaseAgentEvent | BaseChatMessage] = []
 
-        for nth_try in range(max_retries_on_error + 1):  # Do one default generation, execution and inference loop
+        for nth_try in range(
+            max_retries_on_error + 1
+        ):  # Do one default generation, execution and inference loop
             # Step 1: Add new user/handoff messages to the model context
             await self._add_messages_to_context(
                 model_context=model_context,
@@ -560,7 +580,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
 
             # Step 3: [NEW] If the model produced a hidden "thought," yield it as an event
             if model_result.thought:
-                thought_event = ThoughtEvent(content=model_result.thought, source=agent_name)
+                thought_event = ThoughtEvent(
+                    content=model_result.thought, source=agent_name
+                )
                 yield thought_event
                 inner_messages.append(thought_event)
 
@@ -574,7 +596,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
             )
 
             # Step 5: Extract the code blocks from inferred text
-            assert isinstance(model_result.content, str), "Expected inferred model_result.content to be of type str."
+            assert isinstance(model_result.content, str), (
+                "Expected inferred model_result.content to be of type str."
+            )
             code_blocks = self._extract_markdown_code_blocks(str(model_result.content))
 
             # Step 6: Exit the loop if no code blocks found
@@ -598,7 +622,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
             yield inferred_text_message
 
             # Step 8: Execute the extracted code blocks
-            execution_result = await self.execute_code_block(inferred_text_message.code_blocks, cancellation_token)
+            execution_result = await self.execute_code_block(
+                inferred_text_message.code_blocks, cancellation_token
+            )
 
             # Step 9: Update model context with the code execution result
             await model_context.add_message(
@@ -609,7 +635,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
             )
 
             # Step 10: Yield a CodeExecutionEvent
-            yield CodeExecutionEvent(retry_attempt=nth_try, result=execution_result, source=self.name)
+            yield CodeExecutionEvent(
+                retry_attempt=nth_try, result=execution_result, source=self.name
+            )
 
             # If execution was successful or last retry, then exit
             if execution_result.exit_code == 0 or nth_try == max_retries_on_error:
@@ -633,12 +661,16 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
                 )
             ]
 
-            response = await model_client.create(messages=chat_context, json_output=RetryDecision)
+            response = await model_client.create(
+                messages=chat_context, json_output=RetryDecision
+            )
 
-            assert isinstance(
-                response.content, str
-            ), "Expected structured response for retry decision to be of type str."
-            should_retry_generation = RetryDecision.model_validate_json(str(response.content))
+            assert isinstance(response.content, str), (
+                "Expected structured response for retry decision to be of type str."
+            )
+            should_retry_generation = RetryDecision.model_validate_json(
+                str(response.content)
+            )
 
             # Exit if no-retry is needed
             if not should_retry_generation.retry:
@@ -652,7 +684,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
             )
 
         # Always reflect on the execution result
-        async for reflection_response in CodeExecutorAgent._reflect_on_code_block_results_flow(
+        async for (
+            reflection_response
+        ) in CodeExecutorAgent._reflect_on_code_block_results_flow(
             system_messages=system_messages,
             model_client=model_client,
             model_client_stream=model_client_stream,
@@ -662,7 +696,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         ):
             yield reflection_response  # Last reflection_response is of type Response so it will finish the routine
 
-    async def extract_code_blocks_from_messages(self, messages: Sequence[BaseChatMessage]) -> List[CodeBlock]:
+    async def extract_code_blocks_from_messages(
+        self, messages: Sequence[BaseChatMessage]
+    ) -> List[CodeBlock]:
         # Extract code blocks from the messages.
         code_blocks: List[CodeBlock] = []
         for msg in messages:
@@ -678,13 +714,17 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         # Check for approval before executing code blocks
         if self._approval_func is not None:
             # Combine all code blocks into a single string for approval
-            combined_code = "\n\n".join([f"```{block.language}\n{block.code}\n```" for block in code_blocks])
+            combined_code = "\n\n".join(
+                [f"```{block.language}\n{block.code}\n```" for block in code_blocks]
+            )
 
             # Get the current context from model_context
             context_messages = await self._model_context.get_messages()
 
             # Create approval request
-            approval_request = ApprovalRequest(code=combined_code, context=context_messages)
+            approval_request = ApprovalRequest(
+                code=combined_code, context=context_messages
+            )
 
             # Get approval (handle both sync and async functions)
             if self._approval_func_is_async:
@@ -699,11 +739,14 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
             # If not approved, return error result
             if not approval_response.approved:
                 return CodeResult(
-                    exit_code=1, output=f"Code execution was not approved. Reason: {approval_response.reason}"
+                    exit_code=1,
+                    output=f"Code execution was not approved. Reason: {approval_response.reason}",
                 )
 
         # Execute the code blocks.
-        result = await self._code_executor.execute_code_blocks(code_blocks, cancellation_token=cancellation_token)
+        result = await self._code_executor.execute_code_blocks(
+            code_blocks, cancellation_token=cancellation_token
+        )
 
         if result.output.strip() == "":
             # No output
@@ -719,7 +762,10 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         pass
 
     def _extract_markdown_code_blocks(self, markdown_text: str) -> List[CodeBlock]:
-        pattern = re.compile(rf"```(?:\s*({self._supported_languages_regex}))\n([\s\S]*?)```", re.IGNORECASE)
+        pattern = re.compile(
+            rf"```(?:\s*({self._supported_languages_regex}))\n([\s\S]*?)```",
+            re.IGNORECASE,
+        )
         matches = pattern.findall(markdown_text)
         code_blocks: List[CodeBlock] = []
         for match in matches:
@@ -736,13 +782,18 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
 
         return CodeExecutorAgentConfig(
             name=self.name,
-            model_client=(self._model_client.dump_component() if self._model_client is not None else None),
+            model_client=(
+                self._model_client.dump_component()
+                if self._model_client is not None
+                else None
+            ),
             code_executor=self._code_executor.dump_component(),
             description=self.description,
             sources=list(self._sources) if self._sources is not None else None,
             system_message=(
                 self._system_messages[0].content
-                if self._system_messages and isinstance(self._system_messages[0].content, str)
+                if self._system_messages
+                and isinstance(self._system_messages[0].content, str)
                 else None
             ),
             model_client_stream=self._model_client_stream,
@@ -755,20 +806,26 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         return cls(
             name=config.name,
             model_client=(
-                ChatCompletionClient.load_component(config.model_client) if config.model_client is not None else None
+                ChatCompletionClient.load_component(config.model_client)
+                if config.model_client is not None
+                else None
             ),
             code_executor=CodeExecutor.load_component(config.code_executor),
             description=config.description,
             sources=config.sources,
             system_message=config.system_message,
             model_client_stream=config.model_client_stream,
-            model_context=ChatCompletionContext.load_component(config.model_context) if config.model_context else None,
+            model_context=ChatCompletionContext.load_component(config.model_context)
+            if config.model_context
+            else None,
             supported_languages=config.supported_languages,
             approval_func=None,  # approval_func cannot be serialized, so it's always None when loading from config
         )
 
     @staticmethod
-    def _get_compatible_context(model_client: ChatCompletionClient, messages: List[LLMMessage]) -> Sequence[LLMMessage]:
+    def _get_compatible_context(
+        model_client: ChatCompletionClient, messages: List[LLMMessage]
+    ) -> Sequence[LLMMessage]:
         """Ensure that the messages are compatible with the underlying client, by removing images if needed."""
         if model_client.model_info["vision"]:
             return messages
@@ -789,7 +846,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         Perform a model inference and yield either streaming chunk events or the final CreateResult.
         """
         all_messages = await model_context.get_messages()
-        llm_messages = cls._get_compatible_context(model_client=model_client, messages=system_messages + all_messages)
+        llm_messages = cls._get_compatible_context(
+            model_client=model_client, messages=system_messages + all_messages
+        )
 
         if model_client_stream:
             model_result: Optional[CreateResult] = None
@@ -799,14 +858,18 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
                 if isinstance(chunk, CreateResult):
                     model_result = chunk
                 elif isinstance(chunk, str):
-                    yield ModelClientStreamingChunkEvent(content=chunk, source=agent_name)
+                    yield ModelClientStreamingChunkEvent(
+                        content=chunk, source=agent_name
+                    )
                 else:
                     raise RuntimeError(f"Invalid chunk type: {type(chunk)}")
             if model_result is None:
                 raise RuntimeError("No final model result in streaming mode.")
             yield model_result
         else:
-            model_result = await model_client.create(llm_messages, tools=[], cancellation_token=cancellation_token)
+            model_result = await model_client.create(
+                llm_messages, tools=[], cancellation_token=cancellation_token
+            )
             yield model_result
 
     @staticmethod
@@ -838,7 +901,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
         and yield the final text response (or streaming chunks).
         """
         all_messages = system_messages + await model_context.get_messages()
-        llm_messages = cls._get_compatible_context(model_client=model_client, messages=all_messages)
+        llm_messages = cls._get_compatible_context(
+            model_client=model_client, messages=all_messages
+        )
 
         reflection_result: Optional[CreateResult] = None
 
@@ -847,7 +912,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
                 if isinstance(chunk, CreateResult):
                     reflection_result = chunk
                 elif isinstance(chunk, str):
-                    yield ModelClientStreamingChunkEvent(content=chunk, source=agent_name)
+                    yield ModelClientStreamingChunkEvent(
+                        content=chunk, source=agent_name
+                    )
                 else:
                     raise RuntimeError(f"Invalid chunk type: {type(chunk)}")
         else:
@@ -858,7 +925,9 @@ class CodeExecutorAgent(BaseChatAgent, Component[CodeExecutorAgentConfig]):
 
         # --- NEW: If the reflection produced a thought, yield it ---
         if reflection_result.thought:
-            thought_event = ThoughtEvent(content=reflection_result.thought, source=agent_name)
+            thought_event = ThoughtEvent(
+                content=reflection_result.thought, source=agent_name
+            )
             yield thought_event
             inner_messages.append(thought_event)
 

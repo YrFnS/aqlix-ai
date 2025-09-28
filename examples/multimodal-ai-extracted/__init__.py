@@ -26,7 +26,7 @@ Strategic Value:
 
 Usage:
     from examples.multimodal_ai_extracted import IraqiMultiModalAI
-    
+
     # Create culturally-aware multi-modal AI
     multimodal_ai = IraqiMultiModalAI(
         cultural_context="iraqi",
@@ -34,7 +34,7 @@ Usage:
         arabic_processing=True,
         professional_domains=["legal", "medical", "educational"]
     )
-    
+
     # Execute multi-modal reasoning with cultural compliance
     result = await multimodal_ai.process_multimodal_input({
         'text': 'Arabic legal document analysis request',
@@ -57,17 +57,17 @@ from .core import (
     CrossModalReasoner,
     ModalityProcessor,
     CulturalContextManager,
-    MultiModalState
+    MultiModalState,
 )
 
-# Modal processing components  
+# Modal processing components
 from .modality_processors import (
     ArabicTextProcessor,
     CulturalImageProcessor,
     IslamicAudioProcessor,
     CulturalVideoProcessor,
     AraMixedMediaProcessor,
-    ProfessionalDocumentProcessor
+    ProfessionalDocumentProcessor,
 )
 
 # Cross-modal reasoning
@@ -77,7 +77,7 @@ from .cross_modal_reasoning import (
     CulturalContextBridge,
     SemanticAlignmentEngine,
     MultiModalCulturalValidator,
-    CrossModalConsistencyChecker
+    CrossModalConsistencyChecker,
 )
 
 # Multi-modal interfaces
@@ -87,7 +87,7 @@ from .interfaces import (
     CulturalMediaInterface,
     ProfessionalMultiModalInterface,
     AccessibleMultiModalInterface,
-    MobileMultiModalInterface
+    MobileMultiModalInterface,
 )
 
 # Integration with existing systems
@@ -97,7 +97,7 @@ from .integration import (
     HRMMultiModalConnector,
     ADKMultiModalAdapter,
     CrossSystemModalitySync,
-    MultiModalOrchestrator
+    MultiModalOrchestrator,
 )
 
 # Performance optimization
@@ -107,34 +107,31 @@ from .optimization import (
     CrossModalCacheManager,
     ParallelModalityProcessor,
     MemoryEfficientMultiModal,
-    RealTimeMultiModalMonitor
+    RealTimeMultiModalMonitor,
 )
 
 __all__ = [
     # Core multi-modal components
     "IraqiMultiModalAI",
-    "MultiModalConfiguration", 
+    "MultiModalConfiguration",
     "CrossModalReasoner",
     "ModalityProcessor",
     "CulturalContextManager",
     "MultiModalState",
-    
     # Modality processors
     "ArabicTextProcessor",
-    "CulturalImageProcessor", 
+    "CulturalImageProcessor",
     "IslamicAudioProcessor",
     "CulturalVideoProcessor",
     "AraMixedMediaProcessor",
     "ProfessionalDocumentProcessor",
-    
     # Cross-modal reasoning
     "CrossModalReasoningEngine",
     "ModalityFusionProcessor",
     "CulturalContextBridge",
-    "SemanticAlignmentEngine", 
+    "SemanticAlignmentEngine",
     "MultiModalCulturalValidator",
     "CrossModalConsistencyChecker",
-    
     # Multi-modal interfaces
     "UnifiedMultiModalInterface",
     "ArabicMultiModalUI",
@@ -142,20 +139,18 @@ __all__ = [
     "ProfessionalMultiModalInterface",
     "AccessibleMultiModalInterface",
     "MobileMultiModalInterface",
-    
     # System integration
     "MultiModalSystemIntegrator",
     "RStarMultiModalBridge",
-    "HRMMultiModalConnector", 
+    "HRMMultiModalConnector",
     "ADKMultiModalAdapter",
     "CrossSystemModalitySync",
     "MultiModalOrchestrator",
-    
     # Performance optimization
     "MultiModalPerformanceOptimizer",
     "ModalityProcessingOptimizer",
     "CrossModalCacheManager",
     "ParallelModalityProcessor",
     "MemoryEfficientMultiModal",
-    "RealTimeMultiModalMonitor"
+    "RealTimeMultiModalMonitor",
 ]

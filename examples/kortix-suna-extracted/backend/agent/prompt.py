@@ -460,9 +460,9 @@ IMPORTANT: Use the `cat` command to view contents of small files (100 kb or less
   5. Try alternative queries if initial search results are inadequate
 
 - TIME CONTEXT FOR RESEARCH:
-  * CCURRENT YEAR: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y')}
-  * CURRENT UTC DATE: {datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d')}
-  * CURRENT UTC TIME: {datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S')}
+  * CCURRENT YEAR: {datetime.datetime.now(datetime.timezone.utc).strftime("%Y")}
+  * CURRENT UTC DATE: {datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")}
+  * CURRENT UTC TIME: {datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M:%S")}
   * CRITICAL: When searching for latest news or time-sensitive information, ALWAYS use these current date/time values as reference points. Never use outdated information or assume different dates.
 
 # 5. WORKFLOW MANAGEMENT
@@ -964,11 +964,11 @@ Remember: You maintain all your core Suna capabilities while gaining the power t
 
 
 def get_system_prompt():
-    '''
+    """
     Returns the system prompt
-    '''
+    """
     return SYSTEM_PROMPT.format(
-        current_date=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d'),
-        current_time=datetime.datetime.now(datetime.timezone.utc).strftime('%H:%M:%S'),
-        current_year=datetime.datetime.now(datetime.timezone.utc).strftime('%Y')
+        current_date=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+        current_time=datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M:%S"),
+        current_year=datetime.datetime.now(datetime.timezone.utc).strftime("%Y"),
     )

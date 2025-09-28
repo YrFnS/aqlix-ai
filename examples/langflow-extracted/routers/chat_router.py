@@ -24,7 +24,17 @@ Created: 2025-01-03
 Version: 1.0.0 - Revolutionary Chat Router for Iraqi AI Systems
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, UploadFile, File, Form
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    status,
+    WebSocket,
+    WebSocketDisconnect,
+    UploadFile,
+    File,
+    Form,
+)
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Dict, Any, AsyncGenerator, Union
@@ -48,183 +58,244 @@ chat_router = APIRouter(
     responses={
         400: {"description": "Invalid request"},
         403: {"description": "Access forbidden"},
-        429: {"description": "Rate limit exceeded"}
-    }
+        429: {"description": "Rate limit exceeded"},
+    },
 )
+
 
 # WebSocket connection manager for real-time messaging
 class ConnectionManager:
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
         self.user_conversations: Dict[str, List[str]] = {}
-    
+
     async def connect(self, websocket: WebSocket, user_id: str, conversation_id: str):
         await websocket.accept()
         connection_id = f"{user_id}:{conversation_id}"
         self.active_connections[connection_id] = websocket
-        
+
         if user_id not in self.user_conversations:
             self.user_conversations[user_id] = []
         if conversation_id not in self.user_conversations[user_id]:
             self.user_conversations[user_id].append(conversation_id)
-    
+
     def disconnect(self, user_id: str, conversation_id: str):
         connection_id = f"{user_id}:{conversation_id}"
         if connection_id in self.active_connections:
             del self.active_connections[connection_id]
-    
-    async def send_personal_message(self, message: dict, user_id: str, conversation_id: str):
+
+    async def send_personal_message(
+        self, message: dict, user_id: str, conversation_id: str
+    ):
         connection_id = f"{user_id}:{conversation_id}"
         if connection_id in self.active_connections:
             await self.active_connections[connection_id].send_text(json.dumps(message))
 
+
 manager = ConnectionManager()
+
 
 # Pydantic models for request/response
 class ConversationCreateRequest(BaseModel):
     """Create new conversation request"""
-    title: str = Field(..., min_length=1, max_length=200, description="Conversation title")
-    
+
+    title: str = Field(
+        ..., min_length=1, max_length=200, description="Conversation title"
+    )
+
     # Iraqi cultural and professional context
-    professional_domain: Optional[str] = Field(None, description="Professional domain context")
+    professional_domain: Optional[str] = Field(
+        None, description="Professional domain context"
+    )
     regional_context: Optional[str] = Field(None, description="Regional context")
-    dialect_preference: Optional[str] = Field(None, description="Iraqi dialect preference")
-    
+    dialect_preference: Optional[str] = Field(
+        None, description="Iraqi dialect preference"
+    )
+
     # Language and cultural settings
     primary_language: str = Field("ar", description="Primary language (ar, en, ar-en)")
-    cultural_validation_required: bool = Field(True, description="Require cultural validation")
-    islamic_compliance_level: str = Field("standard", description="Islamic compliance level")
-    
+    cultural_validation_required: bool = Field(
+        True, description="Require cultural validation"
+    )
+    islamic_compliance_level: str = Field(
+        "standard", description="Islamic compliance level"
+    )
+
     # Conversation settings
     voice_enabled: bool = Field(True, description="Enable voice messages")
     multimedia_enabled: bool = Field(True, description="Enable multimedia messages")
     auto_archive_enabled: bool = Field(True, description="Auto-archive after session")
-    
+
     # Professional context
-    legal_compliance_required: bool = Field(False, description="Legal compliance required")
-    medical_privacy_required: bool = Field(False, description="Medical privacy required")
+    legal_compliance_required: bool = Field(
+        False, description="Legal compliance required"
+    )
+    medical_privacy_required: bool = Field(
+        False, description="Medical privacy required"
+    )
     educational_context_active: bool = Field(False, description="Educational context")
+
 
 class ConversationResponse(BaseModel):
     """Conversation response model"""
+
     conversation_id: str = Field(..., description="Conversation unique identifier")
     title: str = Field(..., description="Conversation title")
-    
+
     # Cultural context
     professional_domain: Optional[str] = Field(None, description="Professional domain")
     regional_context: Optional[str] = Field(None, description="Regional context")
     primary_language: str = Field(..., description="Primary language")
-    cultural_validation_status: str = Field(..., description="Cultural validation status")
-    islamic_compliance_score: Optional[float] = Field(None, description="Islamic compliance score")
-    
+    cultural_validation_status: str = Field(
+        ..., description="Cultural validation status"
+    )
+    islamic_compliance_score: Optional[float] = Field(
+        None, description="Islamic compliance score"
+    )
+
     # Status and metrics
     status: str = Field(..., description="Conversation status")
     message_count: int = Field(..., description="Total message count")
     voice_message_count: int = Field(..., description="Voice message count")
-    
+
     # Timestamps
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
-    last_message_at: Optional[datetime] = Field(None, description="Last message timestamp")
+    last_message_at: Optional[datetime] = Field(
+        None, description="Last message timestamp"
+    )
     session_expires_at: datetime = Field(..., description="Session expiration")
+
 
 class MessageSendRequest(BaseModel):
     """Send message request"""
+
     conversation_id: str = Field(..., description="Target conversation ID")
     content: str = Field(..., min_length=1, description="Message content")
-    
+
     # Message type and format
     message_type: str = Field("text", description="Message type")
     content_arabic: Optional[str] = Field(None, description="Arabic content with RTL")
     content_english: Optional[str] = Field(None, description="English content")
-    
+
     # Language and processing options
     detected_language: Optional[str] = Field(None, description="Detected language")
     force_rtl_processing: bool = Field(False, description="Force RTL processing")
-    skip_cultural_validation: bool = Field(False, description="Skip cultural validation")
-    
+    skip_cultural_validation: bool = Field(
+        False, description="Skip cultural validation"
+    )
+
     # Professional context
-    professional_context: Optional[str] = Field(None, description="Professional context")
-    requires_privacy_protection: bool = Field(False, description="Requires privacy protection")
-    
+    professional_context: Optional[str] = Field(
+        None, description="Professional context"
+    )
+    requires_privacy_protection: bool = Field(
+        False, description="Requires privacy protection"
+    )
+
     # AI processing options
     request_ai_response: bool = Field(True, description="Request AI response")
     ai_response_style: str = Field("conversational", description="AI response style")
-    cultural_adaptation_level: str = Field("standard", description="Cultural adaptation level")
+    cultural_adaptation_level: str = Field(
+        "standard", description="Cultural adaptation level"
+    )
+
 
 class MessageResponse(BaseModel):
     """Message response model"""
+
     message_id: str = Field(..., description="Message unique identifier")
     conversation_id: str = Field(..., description="Conversation ID")
     content: str = Field(..., description="Message content")
-    
+
     # Language and formatting
     detected_language: Optional[str] = Field(None, description="Detected language")
     content_arabic: Optional[str] = Field(None, description="Arabic content")
     content_english: Optional[str] = Field(None, description="English content")
     rtl_formatted: bool = Field(False, description="RTL formatting applied")
-    
+
     # Cultural validation
-    cultural_validation_status: str = Field(..., description="Cultural validation status")
-    islamic_compliance_score: Optional[float] = Field(None, description="Islamic compliance score")
-    cultural_appropriateness_score: Optional[float] = Field(None, description="Cultural appropriateness")
-    
+    cultural_validation_status: str = Field(
+        ..., description="Cultural validation status"
+    )
+    islamic_compliance_score: Optional[float] = Field(
+        None, description="Islamic compliance score"
+    )
+    cultural_appropriateness_score: Optional[float] = Field(
+        None, description="Cultural appropriateness"
+    )
+
     # Message metadata
     message_type: str = Field(..., description="Message type")
     is_user_message: bool = Field(..., description="User or AI message")
     processing_status: str = Field(..., description="Processing status")
     response_time_ms: Optional[int] = Field(None, description="AI response time")
-    
+
     # Timestamps
     created_at: datetime = Field(..., description="Creation timestamp")
     processed_at: Optional[datetime] = Field(None, description="Processing timestamp")
 
+
 class VoiceMessageRequest(BaseModel):
     """Voice message request"""
+
     conversation_id: str = Field(..., description="Target conversation ID")
-    
+
     # Voice processing options
     target_accent: Optional[str] = Field(None, description="Target Iraqi accent")
     enable_transcription: bool = Field(True, description="Enable speech-to-text")
     enable_enhancement: bool = Field(True, description="Enable audio enhancement")
-    
+
     # Cultural validation
-    cultural_validation_required: bool = Field(True, description="Require cultural validation")
-    professional_context: Optional[str] = Field(None, description="Professional context")
+    cultural_validation_required: bool = Field(
+        True, description="Require cultural validation"
+    )
+    professional_context: Optional[str] = Field(
+        None, description="Professional context"
+    )
+
 
 class VoiceMessageResponse(BaseModel):
     """Voice message response"""
+
     voice_message_id: str = Field(..., description="Voice message ID")
     conversation_id: str = Field(..., description="Conversation ID")
-    
+
     # Audio information
     file_name: str = Field(..., description="Audio file name")
     duration_seconds: float = Field(..., description="Audio duration")
     audio_quality: str = Field(..., description="Audio quality level")
-    
+
     # Processing results
     transcription_text: Optional[str] = Field(None, description="Transcribed text")
     detected_accent: Optional[str] = Field(None, description="Detected Iraqi accent")
-    accent_confidence: Optional[float] = Field(None, description="Accent detection confidence")
-    
+    accent_confidence: Optional[float] = Field(
+        None, description="Accent detection confidence"
+    )
+
     # Cultural validation
-    cultural_validation_status: str = Field(..., description="Cultural validation status")
-    islamic_compliance_score: Optional[float] = Field(None, description="Islamic compliance")
-    
+    cultural_validation_status: str = Field(
+        ..., description="Cultural validation status"
+    )
+    islamic_compliance_score: Optional[float] = Field(
+        None, description="Islamic compliance"
+    )
+
     # Processing status
     status: str = Field(..., description="Processing status")
     processing_time_ms: Optional[int] = Field(None, description="Processing time")
+
 
 # Chat conversation endpoints
 @chat_router.post("/conversations", response_model=ConversationResponse)
 async def create_conversation(
     request: ConversationCreateRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> ConversationResponse:
     """
     Create new conversation with Iraqi cultural context
-    
+
     Advanced conversation creation with:
     - Iraqi professional domain integration
     - Cultural validation setup
@@ -234,23 +305,28 @@ async def create_conversation(
     """
     try:
         # Rate limiting
-        await check_rate_limit(f"conversation_create_{current_user.id}", limit=10, window=3600)
-        
+        await check_rate_limit(
+            f"conversation_create_{current_user.id}", limit=10, window=3600
+        )
+
         # Validate professional domain access if specified
         if request.professional_domain:
-            if not await user_has_professional_access(current_user, request.professional_domain):
+            if not await user_has_professional_access(
+                current_user, request.professional_domain
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"No access to {request.professional_domain} domain"
+                    detail=f"No access to {request.professional_domain} domain",
                 )
-        
+
         # Create conversation
         conversation = ChatConversation(
             user_id=current_user.id,
             title=request.title,
             professional_domain=request.professional_domain,
             regional_context=request.regional_context or current_user.regional_context,
-            dialect_preference=request.dialect_preference or current_user.dialect_preference,
+            dialect_preference=request.dialect_preference
+            or current_user.dialect_preference,
             primary_language=request.primary_language,
             cultural_validation_status="pending",
             islamic_compliance_level=request.islamic_compliance_level,
@@ -261,13 +337,14 @@ async def create_conversation(
             medical_privacy_required=request.medical_privacy_required,
             educational_context_active=request.educational_context_active,
             privacy_mode=current_user.privacy_mode,
-            session_expires_at=datetime.utcnow() + timedelta(hours=1),  # Privacy-first 1-hour expiration
-            status="active"
+            session_expires_at=datetime.utcnow()
+            + timedelta(hours=1),  # Privacy-first 1-hour expiration
+            status="active",
         )
-        
+
         db.add(conversation)
         db.flush()
-        
+
         # Create cultural context if needed
         if request.cultural_validation_required:
             cultural_context = CulturalContext(
@@ -277,19 +354,21 @@ async def create_conversation(
                 dialect_preference=conversation.dialect_preference,
                 professional_domain=request.professional_domain,
                 islamic_compliance_level=request.islamic_compliance_level,
-                cultural_adaptation_enabled=True
+                cultural_adaptation_enabled=True,
             )
-            
+
             db.add(cultural_context)
             db.flush()
-            
+
             conversation.cultural_context_id = cultural_context.id
-        
+
         db.commit()
-        
+
         # Log conversation creation
-        await log_activity("conversation_created", f"title: {request.title}", current_user.id)
-        
+        await log_activity(
+            "conversation_created", f"title: {request.title}", current_user.id
+        )
+
         return ConversationResponse(
             conversation_id=str(conversation.id),
             title=conversation.title,
@@ -304,16 +383,17 @@ async def create_conversation(
             created_at=conversation.created_at,
             updated_at=conversation.updated_at,
             last_message_at=conversation.last_message_at,
-            session_expires_at=conversation.session_expires_at
+            session_expires_at=conversation.session_expires_at,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Conversation creation service error"
+            detail="Conversation creation service error",
         )
+
 
 @chat_router.get("/conversations", response_model=List[ConversationResponse])
 async def list_conversations(
@@ -322,20 +402,29 @@ async def list_conversations(
     status_filter: Optional[str] = None,
     professional_domain: Optional[str] = None,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> List[ConversationResponse]:
     """List user conversations with filters"""
     try:
-        query = db.query(ChatConversation).filter(ChatConversation.user_id == current_user.id)
-        
+        query = db.query(ChatConversation).filter(
+            ChatConversation.user_id == current_user.id
+        )
+
         if status_filter:
             query = query.filter(ChatConversation.status == status_filter)
-        
+
         if professional_domain:
-            query = query.filter(ChatConversation.professional_domain == professional_domain)
-        
-        conversations = query.order_by(desc(ChatConversation.updated_at)).offset(skip).limit(limit).all()
-        
+            query = query.filter(
+                ChatConversation.professional_domain == professional_domain
+            )
+
+        conversations = (
+            query.order_by(desc(ChatConversation.updated_at))
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+
         return [
             ConversationResponse(
                 conversation_id=str(conv.id),
@@ -351,26 +440,27 @@ async def list_conversations(
                 created_at=conv.created_at,
                 updated_at=conv.updated_at,
                 last_message_at=conv.last_message_at,
-                session_expires_at=conv.session_expires_at
+                session_expires_at=conv.session_expires_at,
             )
             for conv in conversations
         ]
-        
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Conversation listing service error"
+            detail="Conversation listing service error",
         )
+
 
 @chat_router.post("/messages", response_model=MessageResponse)
 async def send_message(
     request: MessageSendRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> MessageResponse:
     """
     Send message with Arabic RTL processing and cultural validation
-    
+
     Advanced message processing with:
     - Arabic RTL text processing and mixed language support
     - Real-time cultural validation and Islamic compliance
@@ -380,39 +470,48 @@ async def send_message(
     """
     try:
         # Rate limiting
-        await check_rate_limit(f"message_send_{current_user.id}", limit=60, window=60)  # 1 per second
-        
+        await check_rate_limit(
+            f"message_send_{current_user.id}", limit=60, window=60
+        )  # 1 per second
+
         # Verify conversation access
-        conversation = db.query(ChatConversation).filter(
-            and_(
-                ChatConversation.id == request.conversation_id,
-                ChatConversation.user_id == current_user.id,
-                ChatConversation.status == "active"
+        conversation = (
+            db.query(ChatConversation)
+            .filter(
+                and_(
+                    ChatConversation.id == request.conversation_id,
+                    ChatConversation.user_id == current_user.id,
+                    ChatConversation.status == "active",
+                )
             )
-        ).first()
-        
+            .first()
+        )
+
         if not conversation:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Conversation not found or access denied"
+                detail="Conversation not found or access denied",
             )
-        
+
         # Check session expiration
-        if conversation.session_expires_at and datetime.utcnow() > conversation.session_expires_at:
+        if (
+            conversation.session_expires_at
+            and datetime.utcnow() > conversation.session_expires_at
+        ):
             raise HTTPException(
                 status_code=status.HTTP_410_GONE,
-                detail="Conversation session has expired"
+                detail="Conversation session has expired",
             )
-        
+
         # Process Arabic text and detect language
         arabic_service = ArabicProcessingService()
         processing_result = await arabic_service.process_text(
             text=request.content,
             force_rtl=request.force_rtl_processing,
             target_dialect=conversation.dialect_preference,
-            mixed_language_support=True
+            mixed_language_support=True,
         )
-        
+
         # Create message
         message = ChatMessage(
             conversation_id=conversation.id,
@@ -425,13 +524,14 @@ async def send_message(
             mixed_language_detected=processing_result.get("mixed_language", False),
             message_type=request.message_type,
             is_user_message=True,
-            professional_domain=request.professional_context or conversation.professional_domain,
-            processing_status="processing"
+            professional_domain=request.professional_context
+            or conversation.professional_domain,
+            processing_status="processing",
         )
-        
+
         db.add(message)
         db.flush()
-        
+
         # Cultural validation (if not skipped)
         if not request.skip_cultural_validation:
             cultural_service = CulturalValidationService()
@@ -440,55 +540,72 @@ async def send_message(
                 arabic_content=processing_result.get("arabic_content"),
                 user_context=await get_user_cultural_context(current_user),
                 professional_domain=conversation.professional_domain,
-                islamic_compliance_level=conversation.islamic_compliance_level
+                islamic_compliance_level=conversation.islamic_compliance_level,
             )
-            
+
             # Update message with validation results
-            message.cultural_validation_status = validation_result.get("status", "approved")
-            message.cultural_appropriateness_score = validation_result.get("cultural_score")
+            message.cultural_validation_status = validation_result.get(
+                "status", "approved"
+            )
+            message.cultural_appropriateness_score = validation_result.get(
+                "cultural_score"
+            )
             message.islamic_compliance_score = validation_result.get("islamic_score")
-            message.sectarian_sensitivity_check = validation_result.get("sectarian_neutral", True)
-            message.political_neutrality_validated = validation_result.get("politically_neutral", True)
-            
+            message.sectarian_sensitivity_check = validation_result.get(
+                "sectarian_neutral", True
+            )
+            message.political_neutrality_validated = validation_result.get(
+                "politically_neutral", True
+            )
+
             # Create validation record
             validation_record = MessageValidation(
                 message_id=message.id,
                 conversation_id=conversation.id,
                 validation_type="cultural",
                 content_type="text",
-                cultural_appropriateness_score=validation_result.get("cultural_score", 1.0),
+                cultural_appropriateness_score=validation_result.get(
+                    "cultural_score", 1.0
+                ),
                 islamic_compliance_score=validation_result.get("islamic_score", 1.0),
-                sectarian_neutrality_score=validation_result.get("sectarian_score", 1.0),
-                political_neutrality_score=validation_result.get("political_score", 1.0),
+                sectarian_neutrality_score=validation_result.get(
+                    "sectarian_score", 1.0
+                ),
+                political_neutrality_score=validation_result.get(
+                    "political_score", 1.0
+                ),
                 validation_status=validation_result.get("status", "approved"),
-                requires_human_review=validation_result.get("requires_review", False)
+                requires_human_review=validation_result.get("requires_review", False),
             )
-            
+
             db.add(validation_record)
-        
+
         # Update message status
         message.processing_status = "processed"
         message.processed_at = datetime.utcnow()
-        
+
         # Update conversation
         conversation.message_count += 1
         conversation.last_message_at = datetime.utcnow()
         conversation.updated_at = datetime.utcnow()
-        
+
         db.commit()
-        
+
         # Generate AI response if requested
         ai_response_message = None
-        if request.request_ai_response and message.cultural_validation_status == "approved":
+        if (
+            request.request_ai_response
+            and message.cultural_validation_status == "approved"
+        ):
             ai_response_message = await generate_ai_response(
                 user_message=message,
                 conversation=conversation,
                 user=current_user,
                 response_style=request.ai_response_style,
                 cultural_adaptation_level=request.cultural_adaptation_level,
-                db=db
+                db=db,
             )
-        
+
         # Send real-time update
         message_data = {
             "type": "new_message",
@@ -498,23 +615,27 @@ async def send_message(
                 "detected_language": message.detected_language,
                 "is_user_message": True,
                 "cultural_validation_status": message.cultural_validation_status,
-                "created_at": message.created_at.isoformat()
-            }
+                "created_at": message.created_at.isoformat(),
+            },
         }
-        
+
         if ai_response_message:
             message_data["ai_response"] = {
                 "message_id": str(ai_response_message.id),
                 "content": ai_response_message.get_display_content(),
                 "response_time_ms": ai_response_message.response_time_ms,
-                "created_at": ai_response_message.created_at.isoformat()
+                "created_at": ai_response_message.created_at.isoformat(),
             }
-        
-        await manager.send_personal_message(message_data, str(current_user.id), str(conversation.id))
-        
+
+        await manager.send_personal_message(
+            message_data, str(current_user.id), str(conversation.id)
+        )
+
         # Log message activity
-        await log_activity("message_sent", f"conversation: {conversation.id}", current_user.id)
-        
+        await log_activity(
+            "message_sent", f"conversation: {conversation.id}", current_user.id
+        )
+
         return MessageResponse(
             message_id=str(message.id),
             conversation_id=str(conversation.id),
@@ -531,16 +652,17 @@ async def send_message(
             processing_status=message.processing_status,
             response_time_ms=message.response_time_ms,
             created_at=message.created_at,
-            processed_at=message.processed_at
+            processed_at=message.processed_at,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Message sending service error"
+            detail="Message sending service error",
         )
+
 
 @chat_router.post("/voice", response_model=VoiceMessageResponse)
 async def upload_voice_message(
@@ -552,11 +674,11 @@ async def upload_voice_message(
     cultural_validation_required: bool = Form(True),
     professional_context: Optional[str] = Form(None),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> VoiceMessageResponse:
     """
     Upload and process voice message with Iraqi accent optimization
-    
+
     Advanced voice processing with:
     - Iraqi accent recognition and optimization
     - Speech-to-text with Arabic dialect support
@@ -566,41 +688,47 @@ async def upload_voice_message(
     """
     try:
         # Rate limiting for voice uploads
-        await check_rate_limit(f"voice_upload_{current_user.id}", limit=30, window=3600)  # 30 per hour
-        
+        await check_rate_limit(
+            f"voice_upload_{current_user.id}", limit=30, window=3600
+        )  # 30 per hour
+
         # Validate file
-        if not audio_file.content_type.startswith('audio/'):
+        if not audio_file.content_type.startswith("audio/"):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="File must be an audio file"
+                detail="File must be an audio file",
             )
-        
+
         # Check file size (max 10MB)
         file_size = 0
         audio_content = await audio_file.read()
         file_size = len(audio_content)
-        
+
         if file_size > 10 * 1024 * 1024:  # 10MB
             raise HTTPException(
                 status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-                detail="Audio file too large (max 10MB)"
+                detail="Audio file too large (max 10MB)",
             )
-        
+
         # Verify conversation access
-        conversation = db.query(ChatConversation).filter(
-            and_(
-                ChatConversation.id == conversation_id,
-                ChatConversation.user_id == current_user.id,
-                ChatConversation.voice_enabled == True
+        conversation = (
+            db.query(ChatConversation)
+            .filter(
+                and_(
+                    ChatConversation.id == conversation_id,
+                    ChatConversation.user_id == current_user.id,
+                    ChatConversation.voice_enabled == True,
+                )
             )
-        ).first()
-        
+            .first()
+        )
+
         if not conversation:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Conversation not found or voice not enabled"
+                detail="Conversation not found or voice not enabled",
             )
-        
+
         # Create voice message record
         voice_message = VoiceMessage(
             conversation_id=conversation.id,
@@ -608,23 +736,26 @@ async def upload_voice_message(
             file_name=audio_file.filename,
             file_size_bytes=file_size,
             mime_type=audio_file.content_type,
-            professional_domain=professional_context or conversation.professional_domain,
+            professional_domain=professional_context
+            or conversation.professional_domain,
             status="processing",
-            cultural_validation_status="pending" if cultural_validation_required else "skipped"
+            cultural_validation_status="pending"
+            if cultural_validation_required
+            else "skipped",
         )
-        
+
         db.add(voice_message)
         db.flush()
-        
+
         # Save audio file securely
         file_path = await save_voice_file(
             audio_content=audio_content,
             voice_message_id=str(voice_message.id),
-            user_id=str(current_user.id)
+            user_id=str(current_user.id),
         )
-        
+
         voice_message.file_path = file_path
-        
+
         # Process voice message asynchronously
         voice_service = VoiceProcessingService()
         processing_result = await voice_service.process_voice_message(
@@ -633,21 +764,25 @@ async def upload_voice_message(
             target_accent=target_accent,
             enable_transcription=enable_transcription,
             enable_enhancement=enable_enhancement,
-            user_context=await get_user_cultural_context(current_user)
+            user_context=await get_user_cultural_context(current_user),
         )
-        
+
         # Update voice message with processing results
         voice_message.duration_seconds = processing_result.get("duration_seconds", 0)
         voice_message.audio_quality = processing_result.get("audio_quality", "standard")
         voice_message.detected_accent = processing_result.get("detected_accent")
         voice_message.accent_confidence = processing_result.get("accent_confidence")
         voice_message.transcription_text = processing_result.get("transcription_text")
-        voice_message.transcription_arabic = processing_result.get("transcription_arabic")
-        voice_message.transcription_confidence = processing_result.get("transcription_confidence")
+        voice_message.transcription_arabic = processing_result.get(
+            "transcription_arabic"
+        )
+        voice_message.transcription_confidence = processing_result.get(
+            "transcription_confidence"
+        )
         voice_message.language_detected = processing_result.get("language_detected")
         voice_message.processing_time_ms = processing_result.get("processing_time_ms")
         voice_message.status = "ready"
-        
+
         # Cultural validation if required
         if cultural_validation_required and voice_message.transcription_text:
             cultural_service = CulturalValidationService()
@@ -655,15 +790,25 @@ async def upload_voice_message(
                 transcription_text=voice_message.transcription_text,
                 audio_analysis=processing_result.get("audio_analysis", {}),
                 user_context=await get_user_cultural_context(current_user),
-                professional_domain=conversation.professional_domain
+                professional_domain=conversation.professional_domain,
             )
-            
-            voice_message.cultural_validation_status = validation_result.get("status", "approved")
-            voice_message.cultural_appropriateness_score = validation_result.get("cultural_score")
-            voice_message.islamic_compliance_score = validation_result.get("islamic_score")
-            voice_message.inappropriate_content_detected = validation_result.get("inappropriate", False)
-            voice_message.requires_human_review = validation_result.get("requires_review", False)
-        
+
+            voice_message.cultural_validation_status = validation_result.get(
+                "status", "approved"
+            )
+            voice_message.cultural_appropriateness_score = validation_result.get(
+                "cultural_score"
+            )
+            voice_message.islamic_compliance_score = validation_result.get(
+                "islamic_score"
+            )
+            voice_message.inappropriate_content_detected = validation_result.get(
+                "inappropriate", False
+            )
+            voice_message.requires_human_review = validation_result.get(
+                "requires_review", False
+            )
+
         # Create text message if transcription available
         text_message = None
         if voice_message.transcription_text:
@@ -679,21 +824,21 @@ async def upload_voice_message(
                 cultural_validation_status=voice_message.cultural_validation_status,
                 cultural_appropriateness_score=voice_message.cultural_appropriateness_score,
                 islamic_compliance_score=voice_message.islamic_compliance_score,
-                processing_status="processed"
+                processing_status="processed",
             )
-            
+
             db.add(text_message)
             voice_message.text_message_id = text_message.id
-        
+
         # Update conversation
         conversation.voice_message_count += 1
         if text_message:
             conversation.message_count += 1
         conversation.last_message_at = datetime.utcnow()
         conversation.updated_at = datetime.utcnow()
-        
+
         db.commit()
-        
+
         # Send real-time update
         voice_data = {
             "type": "voice_message",
@@ -703,15 +848,21 @@ async def upload_voice_message(
                 "detected_accent": voice_message.detected_accent,
                 "transcription_text": voice_message.transcription_text,
                 "cultural_validation_status": voice_message.cultural_validation_status,
-                "created_at": voice_message.created_at.isoformat()
-            }
+                "created_at": voice_message.created_at.isoformat(),
+            },
         }
-        
-        await manager.send_personal_message(voice_data, str(current_user.id), str(conversation.id))
-        
+
+        await manager.send_personal_message(
+            voice_data, str(current_user.id), str(conversation.id)
+        )
+
         # Log voice message activity
-        await log_activity("voice_message_uploaded", f"conversation: {conversation.id}", current_user.id)
-        
+        await log_activity(
+            "voice_message_uploaded",
+            f"conversation: {conversation.id}",
+            current_user.id,
+        )
+
         return VoiceMessageResponse(
             voice_message_id=str(voice_message.id),
             conversation_id=str(conversation.id),
@@ -724,27 +875,28 @@ async def upload_voice_message(
             cultural_validation_status=voice_message.cultural_validation_status,
             islamic_compliance_score=voice_message.islamic_compliance_score,
             status=voice_message.status,
-            processing_time_ms=voice_message.processing_time_ms
+            processing_time_ms=voice_message.processing_time_ms,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Voice message processing service error"
+            detail="Voice message processing service error",
         )
+
 
 @chat_router.websocket("/ws/{conversation_id}")
 async def websocket_endpoint(
     websocket: WebSocket,
     conversation_id: str,
     token: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     WebSocket endpoint for real-time messaging
-    
+
     Features:
     - Real-time message delivery
     - Cultural validation status updates
@@ -758,33 +910,40 @@ async def websocket_endpoint(
         if not user:
             await websocket.close(code=4001, reason="Invalid token")
             return
-        
+
         # Verify conversation access
-        conversation = db.query(ChatConversation).filter(
-            and_(
-                ChatConversation.id == conversation_id,
-                ChatConversation.user_id == user.id
+        conversation = (
+            db.query(ChatConversation)
+            .filter(
+                and_(
+                    ChatConversation.id == conversation_id,
+                    ChatConversation.user_id == user.id,
+                )
             )
-        ).first()
-        
+            .first()
+        )
+
         if not conversation:
             await websocket.close(code=4004, reason="Conversation not found")
             return
-        
+
         # Check session expiration
-        if conversation.session_expires_at and datetime.utcnow() > conversation.session_expires_at:
+        if (
+            conversation.session_expires_at
+            and datetime.utcnow() > conversation.session_expires_at
+        ):
             await websocket.close(code=4010, reason="Session expired")
             return
-        
+
         # Connect to WebSocket
         await manager.connect(websocket, str(user.id), conversation_id)
-        
+
         try:
             while True:
                 # Receive message from client
                 data = await websocket.receive_text()
                 message_data = json.loads(data)
-                
+
                 # Handle different message types
                 if message_data.get("type") == "ping":
                     await websocket.send_text(json.dumps({"type": "pong"}))
@@ -793,15 +952,18 @@ async def websocket_endpoint(
                     await manager.send_personal_message(
                         {"type": "user_typing", "user_id": str(user.id)},
                         str(user.id),
-                        conversation_id
+                        conversation_id,
                     )
-                
+
         except WebSocketDisconnect:
             manager.disconnect(str(user.id), conversation_id)
-            await log_activity("websocket_disconnected", f"conversation: {conversation_id}", user.id)
-    
+            await log_activity(
+                "websocket_disconnected", f"conversation: {conversation_id}", user.id
+            )
+
     except Exception as e:
         await websocket.close(code=4500, reason="Internal server error")
+
 
 # Helper functions (would be in separate modules in real implementation)
 async def check_rate_limit(key: str, limit: int, window: int):
@@ -809,10 +971,12 @@ async def check_rate_limit(key: str, limit: int, window: int):
     # Implementation would use Redis for rate limiting
     pass
 
+
 async def user_has_professional_access(user: "User", domain: str) -> bool:
     """Check if user has professional domain access"""
     # Implementation would check user professional credentials
     return user.professional_domain == domain or user.is_admin
+
 
 async def get_user_cultural_context(user: "User") -> Dict[str, Any]:
     """Get user cultural context for validation"""
@@ -820,23 +984,24 @@ async def get_user_cultural_context(user: "User") -> Dict[str, Any]:
         "regional_context": user.regional_context,
         "professional_domain": user.professional_domain,
         "islamic_compliance_level": user.islamic_compliance_level,
-        "dialect_preference": user.dialect_preference
+        "dialect_preference": user.dialect_preference,
     }
+
 
 async def generate_ai_response(
     user_message: "ChatMessage",
-    conversation: "ChatConversation", 
+    conversation: "ChatConversation",
     user: "User",
     response_style: str,
     cultural_adaptation_level: str,
-    db: Session
+    db: Session,
 ) -> "ChatMessage":
     """Generate AI response with cultural adaptation"""
     # Implementation would use AI service with cultural context
     # This is a placeholder for the actual AI response generation
-    
+
     response_content = "AI response would be generated here with cultural adaptation"
-    
+
     ai_message = ChatMessage(
         conversation_id=conversation.id,
         user_id=user.id,  # System user or AI user
@@ -846,23 +1011,28 @@ async def generate_ai_response(
         is_ai_generated=True,
         cultural_validation_status="approved",
         processing_status="processed",
-        response_time_ms=150
+        response_time_ms=150,
     )
-    
+
     db.add(ai_message)
     db.flush()
-    
+
     return ai_message
 
-async def save_voice_file(audio_content: bytes, voice_message_id: str, user_id: str) -> str:
+
+async def save_voice_file(
+    audio_content: bytes, voice_message_id: str, user_id: str
+) -> str:
     """Save voice file securely"""
     # Implementation would save to secure storage with encryption
     return f"/secure/voice/{user_id}/{voice_message_id}.wav"
+
 
 async def log_activity(activity_type: str, details: str, user_id: str):
     """Log user activity"""
     # Implementation would log to database/monitoring system
     pass
+
 
 # Export router
 ChatRouter = chat_router

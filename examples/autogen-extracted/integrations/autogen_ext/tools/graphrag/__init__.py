@@ -6,7 +6,11 @@ from ._config import (
     MapReduceConfig,
     SearchConfig,
 )
-from ._global_search import GlobalSearchTool, GlobalSearchToolArgs, GlobalSearchToolReturn
+from ._global_search import (
+    GlobalSearchTool,
+    GlobalSearchToolArgs,
+    GlobalSearchToolReturn,
+)
 from ._local_search import LocalSearchTool, LocalSearchToolArgs, LocalSearchToolReturn
 
 __all__ = [

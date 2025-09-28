@@ -27,14 +27,18 @@ def initialize():
     redis_host = os.getenv("REDIS_HOST", "redis")
     redis_port = int(os.getenv("REDIS_PORT", 6379))
     redis_password = os.getenv("REDIS_PASSWORD", "")
-    
-    # Connection pool configuration - optimized for production
-    max_connections = 128            # Reasonable limit for production
-    socket_timeout = 15.0            # 15 seconds socket timeout
-    connect_timeout = 10.0           # 10 seconds connection timeout
-    retry_on_timeout = not (os.getenv("REDIS_RETRY_ON_TIMEOUT", "True").lower() != "true")
 
-    logger.info(f"Initializing Redis connection pool to {redis_host}:{redis_port} with max {max_connections} connections")
+    # Connection pool configuration - optimized for production
+    max_connections = 128  # Reasonable limit for production
+    socket_timeout = 15.0  # 15 seconds socket timeout
+    connect_timeout = 10.0  # 10 seconds connection timeout
+    retry_on_timeout = not (
+        os.getenv("REDIS_RETRY_ON_TIMEOUT", "True").lower() != "true"
+    )
+
+    logger.info(
+        f"Initializing Redis connection pool to {redis_host}:{redis_port} with max {max_connections} connections"
+    )
 
     # Create connection pool with production-optimized settings
     pool = redis.ConnectionPool(
@@ -97,7 +101,7 @@ async def close():
             logger.warning(f"Error closing Redis client: {e}")
         finally:
             client = None
-    
+
     if pool:
         logger.info("Closing Redis connection pool")
         try:
@@ -108,7 +112,7 @@ async def close():
             logger.warning(f"Error closing Redis pool: {e}")
         finally:
             pool = None
-    
+
     _initialized = False
     logger.info("Redis connection and pool closed")
 

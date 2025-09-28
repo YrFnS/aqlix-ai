@@ -207,11 +207,15 @@ def _set_name(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, Any]:
         return EMPTY
 
 
-def _set_content_direct(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, LLMMessageContent]:
+def _set_content_direct(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, LLMMessageContent]:
     return {"content": message.content}
 
 
-def _set_prepend_text_content(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, str]:
+def _set_prepend_text_content(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, str]:
     assert isinstance(message, (UserMessage, AssistantMessage))
     assert isinstance(message.content, str)
     prepend = context.get("prepend_name", False)
@@ -234,7 +238,9 @@ def _set_multimodal_content(
         elif isinstance(part, Image):
             # TODO: support url based images
             # TODO: support specifying details
-            parts.append(cast(ChatCompletionContentPartImageParam, part.to_openai_format()))
+            parts.append(
+                cast(ChatCompletionContentPartImageParam, part.to_openai_format())
+            )
         else:
             raise ValueError(f"Unknown content part: {part}")
 
@@ -251,120 +257,132 @@ def _set_tool_calls(
     }
 
 
-def _set_thought_as_content(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, str | None]:
+def _set_thought_as_content(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, str | None]:
     assert isinstance(message, AssistantMessage)
     return {"content": message.thought}
 
 
-def _set_thought_as_content_gemini(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, str | None]:
+def _set_thought_as_content_gemini(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, str | None]:
     assert isinstance(message, AssistantMessage)
     return {"content": message.thought or " "}
 
 
-def _set_empty_to_whitespace(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, LLMMessageContent]:
+def _set_empty_to_whitespace(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, LLMMessageContent]:
     return {"content": message.content or " "}
 
 
-def _set_pass_message_when_whitespace(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, bool]:
-    if isinstance(message.content, str) and (message.content.isspace() or not message.content):
+def _set_pass_message_when_whitespace(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, bool]:
+    if isinstance(message.content, str) and (
+        message.content.isspace() or not message.content
+    ):
         return {"pass_message": True}
     return {}
 
 
-def _set_null_content_for_tool_calls(message: LLMMessage, context: Dict[str, Any]) -> Dict[str, None]:
+def _set_null_content_for_tool_calls(
+    message: LLMMessage, context: Dict[str, Any]
+) -> Dict[str, None]:
     """Set content to null for tool calls without thought. Required by OpenAI API."""
     assert isinstance(message, AssistantMessage)
     return {"content": None}
 
 
 # === Base Transformers list ===
-base_system_message_transformers: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = [
+base_system_message_transformers: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = [
     _set_content_direct,
     _set_role("system"),
 ]
 
-base_user_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = [
+base_user_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = [
     _assert_valid_name,
     _set_role("user"),
 ]
 
-base_assistant_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = [
+base_assistant_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = [
     _assert_valid_name,
     _set_role("assistant"),
 ]
 
 
 # === Transformers list ===
-system_message_transformers: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_system_message_transformers
-)
+system_message_transformers: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_system_message_transformers
 
-single_user_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_user_transformer_funcs
-    + [
-        _set_name,
-        _set_prepend_text_content,
-    ]
-)
+single_user_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_user_transformer_funcs + [
+    _set_name,
+    _set_prepend_text_content,
+]
 
-multimodal_user_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_user_transformer_funcs
-    + [
-        _set_name,
-        _set_multimodal_content,
-    ]
-)
+multimodal_user_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_user_transformer_funcs + [
+    _set_name,
+    _set_multimodal_content,
+]
 
-single_assistant_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_assistant_transformer_funcs
-    + [
-        _set_content_direct,
-    ]
-)
+single_assistant_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_assistant_transformer_funcs + [
+    _set_content_direct,
+]
 
-tools_assistant_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_assistant_transformer_funcs
-    + [
-        _set_tool_calls,
-        _set_null_content_for_tool_calls,
-    ]
-)
+tools_assistant_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_assistant_transformer_funcs + [
+    _set_tool_calls,
+    _set_null_content_for_tool_calls,
+]
 
-thought_assistant_transformer_funcs: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_assistant_transformer_funcs
-    + [
-        _set_tool_calls,
-        _set_thought_as_content,
-    ]
-)
+thought_assistant_transformer_funcs: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_assistant_transformer_funcs + [
+    _set_tool_calls,
+    _set_thought_as_content,
+]
 
-thought_assistant_transformer_funcs_gemini: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_assistant_transformer_funcs
-    + [
-        _set_tool_calls,
-        _set_thought_as_content_gemini,
-    ]
-)
+thought_assistant_transformer_funcs_gemini: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_assistant_transformer_funcs + [
+    _set_tool_calls,
+    _set_thought_as_content_gemini,
+]
 
 
 # === Specific message param functions ===
-single_user_transformer_funcs_mistral: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_user_transformer_funcs
-    + [
-        _set_prepend_text_content,
-    ]
-)
+single_user_transformer_funcs_mistral: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_user_transformer_funcs + [
+    _set_prepend_text_content,
+]
 
-multimodal_user_transformer_funcs_mistral: List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]] = (
-    base_user_transformer_funcs
-    + [
-        _set_multimodal_content,
-    ]
-)
+multimodal_user_transformer_funcs_mistral: List[
+    Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]
+] = base_user_transformer_funcs + [
+    _set_multimodal_content,
+]
 
 
 # === Transformer maps ===
-user_transformer_funcs: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+user_transformer_funcs: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_user_transformer_funcs,
     "multimodal": multimodal_user_transformer_funcs,
 }
@@ -381,7 +399,9 @@ def user_condition(message: LLMMessage, context: Dict[str, Any]) -> str:
         return "multimodal"
 
 
-assistant_transformer_funcs: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+assistant_transformer_funcs: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_assistant_transformer_funcs,
     "tools": tools_assistant_transformer_funcs,
     "thought": thought_assistant_transformer_funcs,
@@ -406,42 +426,58 @@ def assistant_condition(message: LLMMessage, context: Dict[str, Any]) -> str:
         return "text"
 
 
-user_transformer_funcs_gemini: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+user_transformer_funcs_gemini: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_user_transformer_funcs + [_set_empty_to_whitespace],
     "multimodal": multimodal_user_transformer_funcs,
 }
 
 
-assistant_transformer_funcs_gemini: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+assistant_transformer_funcs_gemini: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_assistant_transformer_funcs + [_set_empty_to_whitespace],
     "tools": tools_assistant_transformer_funcs,  # that case, message.content is a list of FunctionCall
     "thought": thought_assistant_transformer_funcs_gemini,  # that case, message.content is a list of FunctionCall
 }
 
 
-user_transformer_funcs_claude: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+user_transformer_funcs_claude: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_user_transformer_funcs + [_set_pass_message_when_whitespace],
-    "multimodal": multimodal_user_transformer_funcs + [_set_pass_message_when_whitespace],
+    "multimodal": multimodal_user_transformer_funcs
+    + [_set_pass_message_when_whitespace],
 }
 
 
-assistant_transformer_funcs_claude: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+assistant_transformer_funcs_claude: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_assistant_transformer_funcs + [_set_pass_message_when_whitespace],
     "tools": tools_assistant_transformer_funcs,  # that case, message.content is a list of FunctionCall
     "thought": thought_assistant_transformer_funcs_gemini,  # that case, message.content is a list of FunctionCall
 }
 
 
-user_transformer_funcs_mistral: Dict[str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]] = {
+user_transformer_funcs_mistral: Dict[
+    str, List[Callable[[LLMMessage, Dict[str, Any]], Dict[str, Any]]]
+] = {
     "text": single_user_transformer_funcs_mistral,
     "multimodal": multimodal_user_transformer_funcs_mistral,
 }
 
 
-def function_execution_result_message(message: LLMMessage, context: Dict[str, Any]) -> TrasformerReturnType:
+def function_execution_result_message(
+    message: LLMMessage, context: Dict[str, Any]
+) -> TrasformerReturnType:
     assert isinstance(message, FunctionExecutionResultMessage)
     return [
-        ChatCompletionToolMessageParam(content=x.content, role="tool", tool_call_id=x.call_id) for x in message.content
+        ChatCompletionToolMessageParam(
+            content=x.content, role="tool", tool_call_id=x.call_id
+        )
+        for x in message.content
     ]
 
 
@@ -531,12 +567,20 @@ __gemini_models = [model for model in total_models if ModelFamily.is_gemini(mode
 __llama_models = [model for model in total_models if ModelFamily.is_llama(model)]
 
 __unknown_models = list(
-    set(total_models) - set(__openai_models) - set(__claude_models) - set(__gemini_models) - set(__llama_models)
+    set(total_models)
+    - set(__openai_models)
+    - set(__claude_models)
+    - set(__gemini_models)
+    - set(__llama_models)
 )
 __mistral_models = [model for model in total_models if ModelFamily.is_mistral(model)]
 
 __unknown_models = list(
-    set(total_models) - set(__openai_models) - set(__claude_models) - set(__gemini_models) - set(__mistral_models)
+    set(total_models)
+    - set(__openai_models)
+    - set(__claude_models)
+    - set(__gemini_models)
+    - set(__mistral_models)
 )
 
 for model in __openai_models:

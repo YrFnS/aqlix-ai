@@ -4,7 +4,11 @@ from autogen_core import CancellationToken
 from autogen_core.tools import BaseTool, ToolSchema
 from pydantic import BaseModel
 
-from semantic_kernel.functions import KernelFunctionFromMethod, KernelFunctionFromPrompt, kernel_function
+from semantic_kernel.functions import (
+    KernelFunctionFromMethod,
+    KernelFunctionFromPrompt,
+    kernel_function,
+)
 from semantic_kernel.functions.kernel_parameter_metadata import KernelParameterMetadata
 from semantic_kernel.prompt_template.input_variable import InputVariable
 from semantic_kernel.prompt_template.prompt_template_config import PromptTemplateConfig
@@ -32,8 +36,12 @@ class KernelFunctionFromTool(KernelFunctionFromMethod):
         field_types = args_type.model_fields
 
         for prop_name, prop_info in properties.items():
-            assert prop_name in field_types, f"Property {prop_name} not found in Tool {tool.name}"
-            assert isinstance(prop_info, dict), f"Property {prop_name} is not a dict in Tool {tool.name}"
+            assert prop_name in field_types, (
+                f"Property {prop_name} not found in Tool {tool.name}"
+            )
+            assert isinstance(prop_info, dict), (
+                f"Property {prop_name} is not a dict in Tool {tool.name}"
+            )
 
             # Get the actual type from the pydantic model field
             field_type = field_types[prop_name]
@@ -80,7 +88,9 @@ class KernelFunctionFromToolSchema(KernelFunctionFromPrompt):
             description=tool_schema.get("description", ""),
             input_variables=[
                 InputVariable(
-                    name=prop_name, description=prop_info.get("description", ""), is_required=prop_name in required
+                    name=prop_name,
+                    description=prop_info.get("description", ""),
+                    is_required=prop_name in required,
                 )
                 for prop_name, prop_info in properties.items()
             ],

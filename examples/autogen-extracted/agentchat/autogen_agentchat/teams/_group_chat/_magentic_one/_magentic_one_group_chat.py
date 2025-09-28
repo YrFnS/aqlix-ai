@@ -118,7 +118,8 @@ class MagenticOneGroupChat(BaseGroupChat, Component[MagenticOneGroupChatConfig])
         runtime: AgentRuntime | None = None,
         max_stalls: int = 3,
         final_answer_prompt: str = ORCHESTRATOR_FINAL_ANSWER_PROMPT,
-        custom_message_types: List[type[BaseAgentEvent | BaseChatMessage]] | None = None,
+        custom_message_types: List[type[BaseAgentEvent | BaseChatMessage]]
+        | None = None,
         emit_team_events: bool = False,
     ):
         for participant in participants:
@@ -139,7 +140,9 @@ class MagenticOneGroupChat(BaseGroupChat, Component[MagenticOneGroupChatConfig])
 
         # Validate the participants.
         if len(participants) == 0:
-            raise ValueError("At least one participant is required for MagenticOneGroupChat.")
+            raise ValueError(
+                "At least one participant is required for MagenticOneGroupChat."
+            )
         self._model_client = model_client
         self._max_stalls = max_stalls
         self._final_answer_prompt = final_answer_prompt
@@ -152,7 +155,9 @@ class MagenticOneGroupChat(BaseGroupChat, Component[MagenticOneGroupChatConfig])
         participant_topic_types: List[str],
         participant_names: List[str],
         participant_descriptions: List[str],
-        output_message_queue: asyncio.Queue[BaseAgentEvent | BaseChatMessage | GroupChatTermination],
+        output_message_queue: asyncio.Queue[
+            BaseAgentEvent | BaseChatMessage | GroupChatTermination
+        ],
         termination_condition: TerminationCondition | None,
         max_turns: int | None,
         message_factory: MessageFactory,
@@ -175,8 +180,14 @@ class MagenticOneGroupChat(BaseGroupChat, Component[MagenticOneGroupChatConfig])
         )
 
     def _to_config(self) -> MagenticOneGroupChatConfig:
-        participants = [participant.dump_component() for participant in self._participants]
-        termination_condition = self._termination_condition.dump_component() if self._termination_condition else None
+        participants = [
+            participant.dump_component() for participant in self._participants
+        ]
+        termination_condition = (
+            self._termination_condition.dump_component()
+            if self._termination_condition
+            else None
+        )
         return MagenticOneGroupChatConfig(
             name=self.name,
             description=self.description,
@@ -191,10 +202,14 @@ class MagenticOneGroupChat(BaseGroupChat, Component[MagenticOneGroupChatConfig])
 
     @classmethod
     def _from_config(cls, config: MagenticOneGroupChatConfig) -> Self:
-        participants = [ChatAgent.load_component(participant) for participant in config.participants]
+        participants = [
+            ChatAgent.load_component(participant) for participant in config.participants
+        ]
         model_client = ChatCompletionClient.load_component(config.model_client)
         termination_condition = (
-            TerminationCondition.load_component(config.termination_condition) if config.termination_condition else None
+            TerminationCondition.load_component(config.termination_condition)
+            if config.termination_condition
+            else None
         )
         return cls(
             participants=participants,

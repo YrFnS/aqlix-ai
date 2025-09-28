@@ -40,6 +40,7 @@ from accessibility_checker import WCAGComplianceValidator, ArabicScreenReaderOpt
 
 class UITheme(Enum):
     """Iraqi government UI themes with cultural appropriateness"""
+
     GOVERNMENT_FORMAL = "government_formal"
     MINISTRY_PROFESSIONAL = "ministry_professional"
     PUBLIC_SERVICE = "public_service"
@@ -49,6 +50,7 @@ class UITheme(Enum):
 
 class ComponentSize(Enum):
     """Component size variants for responsive design"""
+
     SMALL = "small"
     MEDIUM = "medium"
     LARGE = "large"
@@ -57,6 +59,7 @@ class ComponentSize(Enum):
 
 class ComponentState(Enum):
     """Interactive component states with Arabic context"""
+
     DEFAULT = "default"
     HOVER = "hover"
     ACTIVE = "active"
@@ -69,14 +72,16 @@ class ComponentState(Enum):
 
 class AccessibilityLevel(Enum):
     """Accessibility compliance levels"""
-    BASIC = "basic"          # WCAG 2.1 A
-    STANDARD = "standard"    # WCAG 2.1 AA
-    ENHANCED = "enhanced"    # WCAG 2.1 AAA
-    GOVERNMENT = "government" # Iraqi Government Standards
+
+    BASIC = "basic"  # WCAG 2.1 A
+    STANDARD = "standard"  # WCAG 2.1 AA
+    ENHANCED = "enhanced"  # WCAG 2.1 AAA
+    GOVERNMENT = "government"  # Iraqi Government Standards
 
 
 class LanguageDirection(Enum):
     """Text direction support for multilingual interfaces"""
+
     RTL = "rtl"  # Arabic, Kurdish Sorani
     LTR = "ltr"  # English, Kurdish Kurmanji
     AUTO = "auto"  # Automatic detection
@@ -85,28 +90,29 @@ class LanguageDirection(Enum):
 @dataclass
 class ColorPalette:
     """Iraqi government color palette with cultural significance"""
+
     # Primary government colors
-    primary: str = "#1a4b3a"      # Iraqi flag green
-    secondary: str = "#c41e3a"    # Iraqi flag red
-    accent: str = "#000000"       # Iraqi flag black
-    
+    primary: str = "#1a4b3a"  # Iraqi flag green
+    secondary: str = "#c41e3a"  # Iraqi flag red
+    accent: str = "#000000"  # Iraqi flag black
+
     # Islamic-appropriate colors
     islamic_gold: str = "#d4af37"  # Traditional Islamic gold
-    masjid_blue: str = "#4a69bd"   # Mosque architecture blue
+    masjid_blue: str = "#4a69bd"  # Mosque architecture blue
     calligraphy_brown: str = "#8b4513"  # Traditional calligraphy ink
-    
+
     # Professional government colors
     gov_dark_blue: str = "#1e3a5f"
     gov_light_blue: str = "#4a90c2"
     official_gray: str = "#6c757d"
     document_beige: str = "#f8f6f0"
-    
+
     # Status and feedback colors
-    success: str = "#28a745"      # Halal green
-    warning: str = "#ffc107"      # Attention amber
-    error: str = "#dc3545"        # Error red (muted for cultural sensitivity)
-    info: str = "#17a2b8"         # Information blue
-    
+    success: str = "#28a745"  # Halal green
+    warning: str = "#ffc107"  # Attention amber
+    error: str = "#dc3545"  # Error red (muted for cultural sensitivity)
+    info: str = "#17a2b8"  # Information blue
+
     # Neutral colors for backgrounds and text
     white: str = "#ffffff"
     light_gray: str = "#f8f9fa"
@@ -118,16 +124,17 @@ class ColorPalette:
 @dataclass
 class Typography:
     """Arabic-first typography system with cultural optimization"""
+
     # Arabic fonts (primary)
     arabic_primary: str = "Amiri, 'Times New Roman', serif"
     arabic_secondary: str = "Noto Sans Arabic, Arial, sans-serif"
     arabic_monospace: str = "Courier New, monospace"
-    
+
     # English fonts (secondary)
     english_primary: str = "Georgia, 'Times New Roman', serif"
     english_secondary: str = "Inter, 'Segoe UI', sans-serif"
     english_monospace: str = "Consolas, Monaco, monospace"
-    
+
     # Font sizes (optimized for Arabic readability)
     text_xs: str = "12px"
     text_sm: str = "14px"
@@ -137,12 +144,12 @@ class Typography:
     text_2xl: str = "24px"
     text_3xl: str = "30px"
     text_4xl: str = "36px"
-    
+
     # Line heights (adjusted for Arabic typography)
     line_height_tight: str = "1.25"
     line_height_normal: str = "1.6"
     line_height_relaxed: str = "1.75"
-    
+
     # Letter spacing (Arabic-optimized)
     letter_spacing_tight: str = "-0.025em"
     letter_spacing_normal: str = "0em"
@@ -152,15 +159,16 @@ class Typography:
 @dataclass
 class Spacing:
     """Consistent spacing system for Iraqi government interfaces"""
+
     # Base spacing unit (rem-based for accessibility)
-    xs: str = "0.25rem"   # 4px
-    sm: str = "0.5rem"    # 8px
-    md: str = "1rem"      # 16px
-    lg: str = "1.5rem"    # 24px
-    xl: str = "2rem"      # 32px
-    xxl: str = "3rem"     # 48px
-    xxxl: str = "4rem"    # 64px
-    
+    xs: str = "0.25rem"  # 4px
+    sm: str = "0.5rem"  # 8px
+    md: str = "1rem"  # 16px
+    lg: str = "1.5rem"  # 24px
+    xl: str = "2rem"  # 32px
+    xxl: str = "3rem"  # 48px
+    xxxl: str = "4rem"  # 64px
+
     # Component-specific spacing
     button_padding_x: str = "1.5rem"
     button_padding_y: str = "0.75rem"
@@ -172,114 +180,124 @@ class Spacing:
 
 class BaseComponent(ABC):
     """Abstract base class for all Iraqi government UI components"""
-    
+
     def __init__(
         self,
         component_id: str,
         theme: UITheme = UITheme.GOVERNMENT_FORMAL,
         accessibility_level: AccessibilityLevel = AccessibilityLevel.GOVERNMENT,
         language_direction: LanguageDirection = LanguageDirection.RTL,
-        cultural_validation: bool = True
+        cultural_validation: bool = True,
     ):
         self.component_id = component_id
         self.theme = theme
         self.accessibility_level = accessibility_level
         self.language_direction = language_direction
         self.cultural_validation = cultural_validation
-        
+
         # Initialize validators
-        self.cultural_validator = IraqiCulturalValidator() if cultural_validation else None
-        self.islamic_checker = IslamicComplianceChecker() if cultural_validation else None
+        self.cultural_validator = (
+            IraqiCulturalValidator() if cultural_validation else None
+        )
+        self.islamic_checker = (
+            IslamicComplianceChecker() if cultural_validation else None
+        )
         self.accessibility_validator = WCAGComplianceValidator()
         self.rtl_processor = RTLTextAnalyzer()
-        
+
         # Design system
         self.colors = ColorPalette()
         self.typography = Typography()
         self.spacing = Spacing()
-        
+
         # Component state
         self.state = ComponentState.DEFAULT
         self.is_mounted = False
         self.validation_results = {}
-        
+
         # Event handlers
         self.event_handlers: Dict[str, List[Callable]] = {}
-        
+
         # Setup logging
-        self.logger = logging.getLogger(f'IraqiGovUI-{self.__class__.__name__}')
-    
+        self.logger = logging.getLogger(f"IraqiGovUI-{self.__class__.__name__}")
+
     @abstractmethod
     async def render(self) -> str:
         """Render component as HTML with cultural and accessibility compliance"""
         pass
-    
+
     @abstractmethod
     async def get_styles(self) -> str:
         """Generate CSS styles with RTL support and cultural appropriateness"""
         pass
-    
+
     async def validate_cultural_compliance(self, content: str) -> Dict[str, Any]:
         """Validate component content for Iraqi cultural appropriateness"""
         if not self.cultural_validation:
             return {"compliant": True, "score": 1.0}
-        
+
         try:
             cultural_result = await self.cultural_validator.validate_content(
                 content,
                 context_type="ui_component",
-                component_type=self.__class__.__name__
+                component_type=self.__class__.__name__,
             )
-            
+
             islamic_result = await self.islamic_checker.check_compliance(
-                content,
-                check_level='comprehensive'
+                content, check_level="comprehensive"
             )
-            
+
             return {
-                "compliant": cultural_result.get('compliant', True) and islamic_result.get('compliant', True),
-                "cultural_score": cultural_result.get('compliance_score', 1.0),
-                "islamic_score": islamic_result.get('compliance_score', 1.0),
-                "issues": cultural_result.get('issues', []) + islamic_result.get('issues', []),
-                "recommendations": cultural_result.get('recommendations', [])
+                "compliant": cultural_result.get("compliant", True)
+                and islamic_result.get("compliant", True),
+                "cultural_score": cultural_result.get("compliance_score", 1.0),
+                "islamic_score": islamic_result.get("compliance_score", 1.0),
+                "issues": cultural_result.get("issues", [])
+                + islamic_result.get("issues", []),
+                "recommendations": cultural_result.get("recommendations", []),
             }
-            
+
         except Exception as e:
             self.logger.error(f"Cultural validation error: {e}")
             return {"compliant": False, "error": str(e)}
-    
+
     async def validate_accessibility(self, html_content: str) -> Dict[str, Any]:
         """Validate component for WCAG compliance and Arabic screen reader support"""
         try:
             wcag_result = await self.accessibility_validator.validate_html(
-                html_content,
-                level=self.accessibility_level.value
+                html_content, level=self.accessibility_level.value
             )
-            
-            arabic_result = await ArabicScreenReaderOptimizer().validate_arabic_accessibility(
-                html_content,
-                language_direction=self.language_direction.value
+
+            arabic_result = (
+                await ArabicScreenReaderOptimizer().validate_arabic_accessibility(
+                    html_content, language_direction=self.language_direction.value
+                )
             )
-            
+
             return {
-                "wcag_compliant": wcag_result.get('compliant', False),
-                "arabic_accessible": arabic_result.get('accessible', False),
-                "wcag_score": wcag_result.get('score', 0.0),
-                "arabic_score": arabic_result.get('score', 0.0),
-                "issues": wcag_result.get('issues', []) + arabic_result.get('issues', []),
-                "recommendations": wcag_result.get('recommendations', [])
+                "wcag_compliant": wcag_result.get("compliant", False),
+                "arabic_accessible": arabic_result.get("accessible", False),
+                "wcag_score": wcag_result.get("score", 0.0),
+                "arabic_score": arabic_result.get("score", 0.0),
+                "issues": wcag_result.get("issues", [])
+                + arabic_result.get("issues", []),
+                "recommendations": wcag_result.get("recommendations", []),
             }
-            
+
         except Exception as e:
             self.logger.error(f"Accessibility validation error: {e}")
-            return {"wcag_compliant": False, "arabic_accessible": False, "error": str(e)}
-    
+            return {
+                "wcag_compliant": False,
+                "arabic_accessible": False,
+                "error": str(e),
+            }
+
     def add_event_handler(self, event_type: str, handler: Callable):
         """Add event handler with cultural context awareness"""
         if event_type not in self.event_handlers:
             self.event_handlers[event_type] = []
         self.event_handlers[event_type].append(handler)
-    
+
     def get_rtl_classes(self) -> str:
         """Get RTL CSS classes based on language direction"""
         if self.language_direction == LanguageDirection.RTL:
@@ -288,7 +306,7 @@ class BaseComponent(ABC):
             return "dir-ltr text-left"
         else:
             return "dir-auto"
-    
+
     def get_theme_classes(self) -> str:
         """Get theme-specific CSS classes"""
         theme_map = {
@@ -296,26 +314,26 @@ class BaseComponent(ABC):
             UITheme.MINISTRY_PROFESSIONAL: "theme-ministry-pro",
             UITheme.PUBLIC_SERVICE: "theme-public-service",
             UITheme.ISLAMIC_HERITAGE: "theme-islamic-heritage",
-            UITheme.MODERN_IRAQI: "theme-modern-iraqi"
+            UITheme.MODERN_IRAQI: "theme-modern-iraqi",
         }
         return theme_map.get(self.theme, "theme-gov-formal")
-    
+
     def get_accessibility_attributes(self) -> str:
         """Get accessibility attributes for WCAG and Arabic screen reader compliance"""
         attrs = []
-        
+
         # ARIA attributes
         attrs.append(f'role="region"')
         attrs.append(f'aria-label="{self.component_id}"')
-        
+
         # Language direction
         if self.language_direction != LanguageDirection.AUTO:
             attrs.append(f'dir="{self.language_direction.value}"')
-        
+
         # Cultural context
         attrs.append(f'data-cultural-context="iraqi-government"')
         attrs.append(f'data-theme="{self.theme.value}"')
-        
+
         return " ".join(attrs)
 
 
@@ -323,7 +341,7 @@ class IraqiButton(BaseComponent):
     """
     Iraqi government button component with cultural intelligence and accessibility
     """
-    
+
     def __init__(
         self,
         text: str,
@@ -332,7 +350,7 @@ class IraqiButton(BaseComponent):
         size: ComponentSize = ComponentSize.MEDIUM,
         variant: str = "primary",
         disabled: bool = False,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(component_id=button_id, **kwargs)
         self.text = text
@@ -342,77 +360,85 @@ class IraqiButton(BaseComponent):
         self.disabled = disabled
         self.icon = None
         self.loading = False
-    
+
     async def render(self) -> str:
         """Render Iraqi government button with cultural compliance"""
         # Validate text content
         validation = await self.validate_cultural_compliance(self.text)
         if not validation.get("compliant", True):
-            self.logger.warning(f"Button text cultural validation failed: {validation.get('issues', [])}")
-        
+            self.logger.warning(
+                f"Button text cultural validation failed: {validation.get('issues', [])}"
+            )
+
         # Determine button classes
         classes = [
             "iraqi-button",
             f"button-{self.variant}",
             f"button-{self.size.value}",
             self.get_rtl_classes(),
-            self.get_theme_classes()
+            self.get_theme_classes(),
         ]
-        
+
         if self.disabled:
             classes.append("button-disabled")
         if self.loading:
             classes.append("button-loading")
         if self.state != ComponentState.DEFAULT:
             classes.append(f"button-{self.state.value}")
-        
+
         # Accessibility attributes
         accessibility_attrs = self.get_accessibility_attributes()
-        
+
         # Loading spinner for Arabic interfaces
         loading_html = ""
         if self.loading:
-            loading_html = '''
+            loading_html = """
             <span class="button-spinner" aria-hidden="true">
                 <svg class="animate-spin" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25"/>
                     <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75"/>
                 </svg>
             </span>
-            '''
-        
+            """
+
         # Icon rendering
         icon_html = ""
         if self.icon:
-            icon_position = "button-icon-start" if self.language_direction == LanguageDirection.LTR else "button-icon-end"
+            icon_position = (
+                "button-icon-start"
+                if self.language_direction == LanguageDirection.LTR
+                else "button-icon-end"
+            )
             icon_html = f'<i class="button-icon {icon_position} {self.icon}" aria-hidden="true"></i>'
-        
+
         html = f'''
         <button
             id="{self.component_id}"
             type="{self.button_type}"
-            class="{' '.join(classes)}"
+            class="{" ".join(classes)}"
             {accessibility_attrs}
             {"disabled" if self.disabled else ""}
             aria-busy="{str(self.loading).lower()}"
-            data-validation-score="{validation.get('cultural_score', 1.0)}"
+            data-validation-score="{validation.get("cultural_score", 1.0)}"
         >
             {loading_html}
             {icon_html}
             <span class="button-text">{self.text}</span>
         </button>
         '''
-        
+
         # Validate final HTML for accessibility
         accessibility_validation = await self.validate_accessibility(html)
         if not accessibility_validation.get("wcag_compliant", False):
-            self.logger.warning(f"Button accessibility validation issues: {accessibility_validation.get('issues', [])}")
-        
+            self.logger.warning(
+                f"Button accessibility validation issues: {accessibility_validation.get('issues', [])}"
+            )
+
         return html.strip()
-    
+
     async def get_styles(self) -> str:
         """Generate CSS styles for Iraqi government button"""
-        return f'''
+        return f"""
         .iraqi-button {{
             /* Base button styles with Arabic typography */
             font-family: {self.typography.arabic_secondary};
@@ -584,14 +610,14 @@ class IraqiButton(BaseComponent):
             font-family: {self.typography.english_secondary};
             letter-spacing: {self.typography.letter_spacing_tight};
         }}
-        '''
+        """
 
 
 class IraqiCard(BaseComponent):
     """
     Iraqi government card component with Islamic design principles
     """
-    
+
     def __init__(
         self,
         title: str,
@@ -600,7 +626,7 @@ class IraqiCard(BaseComponent):
         header_actions: Optional[List[Dict[str, Any]]] = None,
         footer_content: Optional[str] = None,
         elevated: bool = True,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(component_id=card_id, **kwargs)
         self.title = title
@@ -608,54 +634,52 @@ class IraqiCard(BaseComponent):
         self.header_actions = header_actions or []
         self.footer_content = footer_content
         self.elevated = elevated
-    
+
     async def render(self) -> str:
         """Render Iraqi government card with cultural compliance"""
         # Validate content
         title_validation = await self.validate_cultural_compliance(self.title)
         content_validation = await self.validate_cultural_compliance(self.content)
-        
+
         # Card classes
-        classes = [
-            "iraqi-card",
-            self.get_rtl_classes(),
-            self.get_theme_classes()
-        ]
-        
+        classes = ["iraqi-card", self.get_rtl_classes(), self.get_theme_classes()]
+
         if self.elevated:
             classes.append("card-elevated")
-        
+
         # Header actions
         actions_html = ""
         if self.header_actions:
             actions = []
             for action in self.header_actions:
                 action_html = f'''
-                <button class="card-action" onclick="{action.get('onclick', '')}" 
-                        aria-label="{action.get('label', '')}">
-                    <i class="{action.get('icon', '')}" aria-hidden="true"></i>
+                <button class="card-action" onclick="{action.get("onclick", "")}" 
+                        aria-label="{action.get("label", "")}">
+                    <i class="{action.get("icon", "")}" aria-hidden="true"></i>
                 </button>
                 '''
                 actions.append(action_html)
             actions_html = f'<div class="card-actions">{"".join(actions)}</div>'
-        
+
         # Footer
         footer_html = ""
         if self.footer_content:
-            footer_validation = await self.validate_cultural_compliance(self.footer_content)
+            footer_validation = await self.validate_cultural_compliance(
+                self.footer_content
+            )
             footer_html = f'''
-            <div class="card-footer" data-validation-score="{footer_validation.get('cultural_score', 1.0)}">
+            <div class="card-footer" data-validation-score="{footer_validation.get("cultural_score", 1.0)}">
                 {self.footer_content}
             </div>
             '''
-        
+
         html = f'''
         <div
             id="{self.component_id}"
-            class="{' '.join(classes)}"
+            class="{" ".join(classes)}"
             {self.get_accessibility_attributes()}
-            data-title-validation="{title_validation.get('cultural_score', 1.0)}"
-            data-content-validation="{content_validation.get('cultural_score', 1.0)}"
+            data-title-validation="{title_validation.get("cultural_score", 1.0)}"
+            data-content-validation="{content_validation.get("cultural_score", 1.0)}"
         >
             <div class="card-header">
                 <h3 class="card-title">{self.title}</h3>
@@ -667,12 +691,12 @@ class IraqiCard(BaseComponent):
             {footer_html}
         </div>
         '''
-        
+
         return html.strip()
-    
+
     async def get_styles(self) -> str:
         """Generate CSS styles for Iraqi government card"""
-        return f'''
+        return f"""
         .iraqi-card {{
             /* Base card structure */
             background: {self.colors.white};
@@ -796,14 +820,14 @@ class IraqiCard(BaseComponent):
                 font-size: {self.typography.text_lg};
             }}
         }}
-        '''
+        """
 
 
 class IraqiFormInput(BaseComponent):
     """
     Iraqi government form input component with Arabic validation
     """
-    
+
     def __init__(
         self,
         label: str,
@@ -814,7 +838,7 @@ class IraqiFormInput(BaseComponent):
         disabled: bool = False,
         validation_rules: Optional[Dict[str, Any]] = None,
         help_text: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(component_id=input_id, **kwargs)
         self.label = label
@@ -827,48 +851,50 @@ class IraqiFormInput(BaseComponent):
         self.value = ""
         self.error_message = ""
         self.is_valid = True
-    
+
     async def render(self) -> str:
         """Render Iraqi government form input with cultural validation"""
         # Validate label and placeholder
         label_validation = await self.validate_cultural_compliance(self.label)
-        placeholder_validation = await self.validate_cultural_compliance(self.placeholder)
-        
+        placeholder_validation = await self.validate_cultural_compliance(
+            self.placeholder
+        )
+
         # Input classes
         input_classes = [
             "iraqi-input",
             self.get_rtl_classes().replace("text-", ""),
-            self.get_theme_classes()
+            self.get_theme_classes(),
         ]
-        
+
         if self.error_message:
             input_classes.append("input-error")
         if self.disabled:
             input_classes.append("input-disabled")
-        
+
         # Container classes
         container_classes = [
             "input-container",
             self.get_rtl_classes(),
-            self.get_theme_classes()
+            self.get_theme_classes(),
         ]
-        
+
         # Required indicator
         required_html = ""
         if self.required:
             required_html = '<span class="input-required" aria-hidden="true">*</span>'
-        
+
         # Help text
         help_html = ""
         if self.help_text:
             help_validation = await self.validate_cultural_compliance(self.help_text)
             help_html = f'''
             <div class="input-help" id="{self.component_id}-help" 
-                 data-validation-score="{help_validation.get('cultural_score', 1.0)}">
+                 data-validation-score="{help_validation.get("cultural_score", 1.0)}">
                 {self.help_text}
             </div>
             '''
-        
+
         # Error message
         error_html = ""
         if self.error_message:
@@ -878,7 +904,7 @@ class IraqiFormInput(BaseComponent):
                 {self.error_message}
             </div>
             '''
-        
+
         # ARIA attributes
         aria_attrs = []
         if self.help_text:
@@ -887,76 +913,79 @@ class IraqiFormInput(BaseComponent):
             aria_attrs.append(f'aria-describedby="{self.component_id}-error"')
         if not self.is_valid:
             aria_attrs.append('aria-invalid="true"')
-        
+
         html = f'''
-        <div class="{' '.join(container_classes)}" {self.get_accessibility_attributes()}>
+        <div class="{" ".join(container_classes)}" {self.get_accessibility_attributes()}>
             <label for="{self.component_id}" class="input-label"
-                   data-validation-score="{label_validation.get('cultural_score', 1.0)}">
+                   data-validation-score="{label_validation.get("cultural_score", 1.0)}">
                 {self.label}
                 {required_html}
             </label>
             <input
                 id="{self.component_id}"
                 type="{self.input_type}"
-                class="{' '.join(input_classes)}"
+                class="{" ".join(input_classes)}"
                 placeholder="{self.placeholder}"
                 value="{self.value}"
                 {"required" if self.required else ""}
                 {"disabled" if self.disabled else ""}
-                {' '.join(aria_attrs)}
-                data-placeholder-validation="{placeholder_validation.get('cultural_score', 1.0)}"
+                {" ".join(aria_attrs)}
+                data-placeholder-validation="{placeholder_validation.get("cultural_score", 1.0)}"
                 autocomplete="off"
             />
             {help_html}
             {error_html}
         </div>
         '''
-        
+
         return html.strip()
-    
+
     async def validate_input(self, value: str) -> Dict[str, Any]:
         """Validate input value against cultural and business rules"""
-        validation_result = {
-            "is_valid": True,
-            "errors": [],
-            "cultural_score": 1.0
-        }
-        
+        validation_result = {"is_valid": True, "errors": [], "cultural_score": 1.0}
+
         # Cultural validation
         if self.cultural_validation:
             cultural_result = await self.validate_cultural_compliance(value)
-            validation_result["cultural_score"] = cultural_result.get("cultural_score", 1.0)
-            
+            validation_result["cultural_score"] = cultural_result.get(
+                "cultural_score", 1.0
+            )
+
             if not cultural_result.get("compliant", True):
                 validation_result["is_valid"] = False
                 validation_result["errors"].extend(cultural_result.get("issues", []))
-        
+
         # Business rule validation
         if self.validation_rules:
             if "min_length" in self.validation_rules:
                 min_len = self.validation_rules["min_length"]
                 if len(value) < min_len:
                     validation_result["is_valid"] = False
-                    validation_result["errors"].append(f"يجب أن يكون النص {min_len} أحرف على الأقل")
-            
+                    validation_result["errors"].append(
+                        f"يجب أن يكون النص {min_len} أحرف على الأقل"
+                    )
+
             if "max_length" in self.validation_rules:
                 max_len = self.validation_rules["max_length"]
                 if len(value) > max_len:
                     validation_result["is_valid"] = False
-                    validation_result["errors"].append(f"يجب أن يكون النص {max_len} أحرف كحد أقصى")
-            
+                    validation_result["errors"].append(
+                        f"يجب أن يكون النص {max_len} أحرف كحد أقصى"
+                    )
+
             if "pattern" in self.validation_rules:
                 import re
+
                 pattern = self.validation_rules["pattern"]
                 if not re.match(pattern, value):
                     validation_result["is_valid"] = False
                     validation_result["errors"].append("تنسيق غير صحيح")
-        
+
         return validation_result
-    
+
     async def get_styles(self) -> str:
         """Generate CSS styles for Iraqi government form input"""
-        return f'''
+        return f"""
         .input-container {{
             display: flex;
             flex-direction: column;
@@ -1097,14 +1126,14 @@ class IraqiFormInput(BaseComponent):
                 min-height: 48px;
             }}
         }}
-        '''
+        """
 
 
 class IraqiNavigationBar(BaseComponent):
     """
     Iraqi government navigation bar with ministry branding and cultural compliance
     """
-    
+
     def __init__(
         self,
         nav_id: str,
@@ -1113,7 +1142,7 @@ class IraqiNavigationBar(BaseComponent):
         navigation_items: Optional[List[Dict[str, Any]]] = None,
         user_menu_items: Optional[List[Dict[str, Any]]] = None,
         show_prayer_times: bool = True,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(component_id=nav_id, **kwargs)
         self.ministry_name = ministry_name
@@ -1122,12 +1151,14 @@ class IraqiNavigationBar(BaseComponent):
         self.user_menu_items = user_menu_items or []
         self.show_prayer_times = show_prayer_times
         self.current_time = datetime.now()
-    
+
     async def render(self) -> str:
         """Render Iraqi government navigation bar"""
         # Validate ministry name
-        ministry_validation = await self.validate_cultural_compliance(self.ministry_name)
-        
+        ministry_validation = await self.validate_cultural_compliance(
+            self.ministry_name
+        )
+
         # Logo section
         logo_html = ""
         if self.logo_url:
@@ -1135,74 +1166,78 @@ class IraqiNavigationBar(BaseComponent):
             <img src="{self.logo_url}" alt="شعار {self.ministry_name}" 
                  class="nav-logo" loading="lazy" />
             '''
-        
+
         # Ministry name
         ministry_html = f'''
-        <div class="nav-ministry" data-validation-score="{ministry_validation.get('cultural_score', 1.0)}">
+        <div class="nav-ministry" data-validation-score="{ministry_validation.get("cultural_score", 1.0)}">
             <h1 class="ministry-name">{self.ministry_name}</h1>
             <span class="ministry-subtitle">جمهورية العراق</span>
         </div>
         '''
-        
+
         # Navigation items
         nav_items_html = ""
         if self.navigation_items:
             items = []
             for item in self.navigation_items:
-                item_validation = await self.validate_cultural_compliance(item.get('label', ''))
-                active_class = "nav-item-active" if item.get('active', False) else ""
-                
+                item_validation = await self.validate_cultural_compliance(
+                    item.get("label", "")
+                )
+                active_class = "nav-item-active" if item.get("active", False) else ""
+
                 item_html = f'''
                 <li class="nav-item {active_class}">
-                    <a href="{item.get('href', '#')}" class="nav-link"
-                       data-validation-score="{item_validation.get('cultural_score', 1.0)}"
-                       {"aria-current='page'" if item.get('active', False) else ""}>
-                        {f"<i class='{item.get('icon', '')}' aria-hidden='true'></i>" if item.get('icon') else ""}
-                        <span>{item.get('label', '')}</span>
+                    <a href="{item.get("href", "#")}" class="nav-link"
+                       data-validation-score="{item_validation.get("cultural_score", 1.0)}"
+                       {"aria-current='page'" if item.get("active", False) else ""}>
+                        {f"<i class='{item.get('icon', '')}' aria-hidden='true'></i>" if item.get("icon") else ""}
+                        <span>{item.get("label", "")}</span>
                     </a>
                 </li>
                 '''
                 items.append(item_html)
-            
-            nav_items_html = f'''
+
+            nav_items_html = f"""
             <nav class="nav-items" role="navigation" aria-label="القائمة الرئيسية">
                 <ul class="nav-list">
                     {"".join(items)}
                 </ul>
             </nav>
-            '''
-        
+            """
+
         # Prayer times (if enabled)
         prayer_times_html = ""
         if self.show_prayer_times:
             try:
                 # This would integrate with a prayer times service
-                prayer_times_html = f'''
+                prayer_times_html = f"""
                 <div class="prayer-times" role="complementary" aria-label="أوقات الصلاة">
                     <i class="prayer-icon" aria-hidden="true">🕌</i>
                     <span class="next-prayer">المغرب: 6:45 PM</span>
                 </div>
-                '''
+                """
             except Exception as e:
                 self.logger.warning(f"Prayer times integration error: {e}")
-        
+
         # User menu
         user_menu_html = ""
         if self.user_menu_items:
             menu_items = []
             for item in self.user_menu_items:
-                item_validation = await self.validate_cultural_compliance(item.get('label', ''))
+                item_validation = await self.validate_cultural_compliance(
+                    item.get("label", "")
+                )
                 menu_items.append(f'''
                 <li class="user-menu-item">
-                    <a href="{item.get('href', '#')}" class="user-menu-link"
-                       data-validation-score="{item_validation.get('cultural_score', 1.0)}">
-                        {f"<i class='{item.get('icon', '')}' aria-hidden='true'></i>" if item.get('icon') else ""}
-                        {item.get('label', '')}
+                    <a href="{item.get("href", "#")}" class="user-menu-link"
+                       data-validation-score="{item_validation.get("cultural_score", 1.0)}">
+                        {f"<i class='{item.get('icon', '')}' aria-hidden='true'></i>" if item.get("icon") else ""}
+                        {item.get("label", "")}
                     </a>
                 </li>
                 ''')
-            
-            user_menu_html = f'''
+
+            user_menu_html = f"""
             <div class="user-menu" role="menu" aria-label="قائمة المستخدم">
                 <button class="user-menu-trigger" aria-haspopup="true" aria-expanded="false">
                     <i class="user-icon" aria-hidden="true">👤</i>
@@ -1212,8 +1247,8 @@ class IraqiNavigationBar(BaseComponent):
                     {"".join(menu_items)}
                 </ul>
             </div>
-            '''
-        
+            """
+
         html = f'''
         <header
             id="{self.component_id}"
@@ -1238,12 +1273,12 @@ class IraqiNavigationBar(BaseComponent):
             </div>
         </header>
         '''
-        
+
         return html.strip()
-    
+
     async def get_styles(self) -> str:
         """Generate CSS styles for Iraqi government navigation bar"""
-        return f'''
+        return f"""
         .iraqi-navbar {{
             /* Base navbar structure */
             width: 100%;
@@ -1518,7 +1553,7 @@ class IraqiNavigationBar(BaseComponent):
                 border-color: {self.colors.islamic_gold};
             }}
         }}
-        '''
+        """
 
 
 # Component Factory and Registry
@@ -1526,74 +1561,82 @@ class IraqiComponentFactory:
     """
     Factory for creating Iraqi government UI components with cultural intelligence
     """
-    
+
     def __init__(self, default_theme: UITheme = UITheme.GOVERNMENT_FORMAL):
         self.default_theme = default_theme
         self.components_registry = {
-            'button': IraqiButton,
-            'card': IraqiCard,
-            'input': IraqiFormInput,
-            'navbar': IraqiNavigationBar,
+            "button": IraqiButton,
+            "card": IraqiCard,
+            "input": IraqiFormInput,
+            "navbar": IraqiNavigationBar,
         }
         self.cultural_validator = IraqiCulturalValidator()
-        self.logger = logging.getLogger('IraqiComponentFactory')
-    
+        self.logger = logging.getLogger("IraqiComponentFactory")
+
     async def create_component(
-        self,
-        component_type: str,
-        component_config: Dict[str, Any]
+        self, component_type: str, component_config: Dict[str, Any]
     ) -> Optional[BaseComponent]:
         """Create component with cultural validation and compliance checking"""
         if component_type not in self.components_registry:
             self.logger.error(f"Unknown component type: {component_type}")
             return None
-        
+
         try:
             # Add default theme if not specified
-            if 'theme' not in component_config:
-                component_config['theme'] = self.default_theme
-            
+            if "theme" not in component_config:
+                component_config["theme"] = self.default_theme
+
             # Create component
             component_class = self.components_registry[component_type]
             component = component_class(**component_config)
-            
+
             # Validate component configuration
             validation_result = await self._validate_component_config(component_config)
-            if not validation_result['is_valid']:
-                self.logger.warning(f"Component validation issues: {validation_result['issues']}")
-            
-            self.logger.info(f"Created {component_type} component: {component.component_id}")
+            if not validation_result["is_valid"]:
+                self.logger.warning(
+                    f"Component validation issues: {validation_result['issues']}"
+                )
+
+            self.logger.info(
+                f"Created {component_type} component: {component.component_id}"
+            )
             return component
-            
+
         except Exception as e:
             self.logger.error(f"Error creating {component_type} component: {e}")
             return None
-    
-    async def _validate_component_config(self, config: Dict[str, Any]) -> Dict[str, Any]:
+
+    async def _validate_component_config(
+        self, config: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate component configuration for cultural compliance"""
-        validation_result = {
-            'is_valid': True,
-            'issues': [],
-            'cultural_score': 1.0
-        }
-        
+        validation_result = {"is_valid": True, "issues": [], "cultural_score": 1.0}
+
         # Check text content for cultural appropriateness
-        text_fields = ['text', 'label', 'title', 'content', 'placeholder', 'ministry_name']
+        text_fields = [
+            "text",
+            "label",
+            "title",
+            "content",
+            "placeholder",
+            "ministry_name",
+        ]
         for field in text_fields:
             if field in config and config[field]:
                 cultural_check = await self.cultural_validator.validate_content(
-                    config[field],
-                    context_type='ui_component_config'
+                    config[field], context_type="ui_component_config"
                 )
-                
-                if not cultural_check.get('compliant', True):
-                    validation_result['is_valid'] = False
-                    validation_result['issues'].extend(cultural_check.get('issues', []))
-                
+
+                if not cultural_check.get("compliant", True):
+                    validation_result["is_valid"] = False
+                    validation_result["issues"].extend(cultural_check.get("issues", []))
+
                 # Update overall cultural score (minimum score wins)
-                field_score = cultural_check.get('compliance_score', 1.0)
-                validation_result['cultural_score'] = min(validation_result['cultural_score'], field_score)
-        
+                field_score = cultural_check.get("compliance_score", 1.0)
+                validation_result["cultural_score"] = min(
+                    validation_result["cultural_score"], field_score
+                )
+
         return validation_result
 
 
@@ -1602,87 +1645,91 @@ async def main():
     """Example usage of Iraqi Government UI Components"""
     # Initialize component factory
     factory = IraqiComponentFactory(UITheme.GOVERNMENT_FORMAL)
-    
+
     # Create a button component
     button_config = {
-        'text': 'تقديم الطلب',
-        'button_id': 'submit-application-btn',
-        'variant': 'primary',
-        'size': ComponentSize.LARGE,
-        'accessibility_level': AccessibilityLevel.GOVERNMENT
+        "text": "تقديم الطلب",
+        "button_id": "submit-application-btn",
+        "variant": "primary",
+        "size": ComponentSize.LARGE,
+        "accessibility_level": AccessibilityLevel.GOVERNMENT,
     }
-    
-    button = await factory.create_component('button', button_config)
+
+    button = await factory.create_component("button", button_config)
     if button:
         print("=== Iraqi Government Button ===")
         print(await button.render())
         print("\n=== Button CSS ===")
         print(await button.get_styles())
         print("\n")
-    
+
     # Create a form input component
     input_config = {
-        'label': 'الاسم الكامل',
-        'input_id': 'full-name-input',
-        'placeholder': 'أدخل اسمك الكامل باللغة العربية',
-        'required': True,
-        'validation_rules': {
-            'min_length': 3,
-            'max_length': 100,
-            'pattern': r'^[\u0600-\u06FF\s]+$'  # Arabic characters only
+        "label": "الاسم الكامل",
+        "input_id": "full-name-input",
+        "placeholder": "أدخل اسمك الكامل باللغة العربية",
+        "required": True,
+        "validation_rules": {
+            "min_length": 3,
+            "max_length": 100,
+            "pattern": r"^[\u0600-\u06FF\s]+$",  # Arabic characters only
         },
-        'help_text': 'يرجى إدخال الاسم كما هو مكتوب في الهوية العراقية'
+        "help_text": "يرجى إدخال الاسم كما هو مكتوب في الهوية العراقية",
     }
-    
-    input_component = await factory.create_component('input', input_config)
+
+    input_component = await factory.create_component("input", input_config)
     if input_component:
         print("=== Iraqi Government Form Input ===")
         print(await input_component.render())
         print("\n=== Input CSS ===")
         print(await input_component.get_styles())
         print("\n")
-    
+
     # Create a navigation bar
     navbar_config = {
-        'nav_id': 'ministry-navbar',
-        'ministry_name': 'وزارة التربية والتعليم العالي',
-        'logo_url': '/assets/ministry-logo.svg',
-        'navigation_items': [
-            {'label': 'الرئيسية', 'href': '/', 'active': True, 'icon': 'home-icon'},
-            {'label': 'الخدمات', 'href': '/services', 'icon': 'services-icon'},
-            {'label': 'المعاملات', 'href': '/transactions', 'icon': 'transactions-icon'},
-            {'label': 'التواصل', 'href': '/contact', 'icon': 'contact-icon'}
+        "nav_id": "ministry-navbar",
+        "ministry_name": "وزارة التربية والتعليم العالي",
+        "logo_url": "/assets/ministry-logo.svg",
+        "navigation_items": [
+            {"label": "الرئيسية", "href": "/", "active": True, "icon": "home-icon"},
+            {"label": "الخدمات", "href": "/services", "icon": "services-icon"},
+            {
+                "label": "المعاملات",
+                "href": "/transactions",
+                "icon": "transactions-icon",
+            },
+            {"label": "التواصل", "href": "/contact", "icon": "contact-icon"},
         ],
-        'user_menu_items': [
-            {'label': 'الملف الشخصي', 'href': '/profile', 'icon': 'profile-icon'},
-            {'label': 'الإعدادات', 'href': '/settings', 'icon': 'settings-icon'},
-            {'label': 'تسجيل الخروج', 'href': '/logout', 'icon': 'logout-icon'}
+        "user_menu_items": [
+            {"label": "الملف الشخصي", "href": "/profile", "icon": "profile-icon"},
+            {"label": "الإعدادات", "href": "/settings", "icon": "settings-icon"},
+            {"label": "تسجيل الخروج", "href": "/logout", "icon": "logout-icon"},
         ],
-        'show_prayer_times': True
+        "show_prayer_times": True,
     }
-    
-    navbar = await factory.create_component('navbar', navbar_config)
+
+    navbar = await factory.create_component("navbar", navbar_config)
     if navbar:
         print("=== Iraqi Government Navigation Bar ===")
         print(await navbar.render())
         print("\n=== Navbar CSS ===")
         print(await navbar.get_styles())
         print("\n")
-    
+
     # Create a card component
     card_config = {
-        'title': 'طلب شهادة تخرج',
-        'content': 'يمكنك تقديم طلب للحصول على شهادة التخرج من خلال النظام الإلكتروني. يرجى التأكد من إدخال جميع البيانات المطلوبة بدقة.',
-        'card_id': 'graduation-certificate-card',
-        'header_actions': [
-            {'icon': 'edit-icon', 'label': 'تحرير', 'onclick': 'editCard()'},
-            {'icon': 'share-icon', 'label': 'مشاركة', 'onclick': 'shareCard()'}
+        "title": "طلب شهادة تخرج",
+        "content": "يمكنك تقديم طلب للحصول على شهادة التخرج من خلال النظام الإلكتروني. يرجى التأكد من إدخال جميع البيانات المطلوبة بدقة.",
+        "card_id": "graduation-certificate-card",
+        "header_actions": [
+            {"icon": "edit-icon", "label": "تحرير", "onclick": "editCard()"},
+            {"icon": "share-icon", "label": "مشاركة", "onclick": "shareCard()"},
         ],
-        'footer_content': 'آخر تحديث: 20 أغسطس 2025',
-        'elevated': True
+        "footer_content": "آخر تحديث: 20 أغسطس 2025",
+        "elevated": True,
     }
-    
-    card = await factory.create_component('card', card_config)
+
+    card = await factory.create_component("card", card_config)
     if card:
         print("=== Iraqi Government Card ===")
         print(await card.render())

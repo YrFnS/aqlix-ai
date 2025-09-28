@@ -38,5 +38,6 @@ class StreamableHttpServerParams(BaseModel):
 
 
 McpServerParams = Annotated[
-    StdioServerParams | SseServerParams | StreamableHttpServerParams, Field(discriminator="type")
+    StdioServerParams | SseServerParams | StreamableHttpServerParams,
+    Field(discriminator="type"),
 ]

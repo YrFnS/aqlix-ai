@@ -3,7 +3,13 @@ import uuid
 from typing import Any, List
 
 from autogen_core import CancellationToken, Component, Image
-from autogen_core.memory import Memory, MemoryContent, MemoryMimeType, MemoryQueryResult, UpdateContextResult
+from autogen_core.memory import (
+    Memory,
+    MemoryContent,
+    MemoryMimeType,
+    MemoryQueryResult,
+    UpdateContextResult,
+)
 from autogen_core.model_context import ChatCompletionContext
 from autogen_core.models import SystemMessage
 from chromadb import HttpClient, PersistentClient
@@ -210,7 +216,9 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
 
         elif isinstance(config, SentenceTransformerEmbeddingFunctionConfig):
             try:
-                return embedding_functions.SentenceTransformerEmbeddingFunction(model_name=config.model_name)
+                return embedding_functions.SentenceTransformerEmbeddingFunction(
+                    model_name=config.model_name
+                )
             except Exception as e:
                 raise ImportError(
                     f"Failed to create SentenceTransformer embedding function with model '{config.model_name}'. "
@@ -219,7 +227,9 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
 
         elif isinstance(config, OpenAIEmbeddingFunctionConfig):
             try:
-                return embedding_functions.OpenAIEmbeddingFunction(api_key=config.api_key, model_name=config.model_name)
+                return embedding_functions.OpenAIEmbeddingFunction(
+                    api_key=config.api_key, model_name=config.model_name
+                )
             except Exception as e:
                 raise ImportError(
                     f"Failed to create OpenAI embedding function with model '{config.model_name}'. "
@@ -230,10 +240,14 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
             try:
                 return config.function(**config.params)
             except Exception as e:
-                raise ValueError(f"Failed to create custom embedding function. Error: {e}") from e
+                raise ValueError(
+                    f"Failed to create custom embedding function. Error: {e}"
+                ) from e
 
         else:
-            raise ValueError(f"Unsupported embedding function config type: {type(config)}")
+            raise ValueError(
+                f"Unsupported embedding function config type: {type(config)}"
+            )
 
     def _ensure_initialized(self) -> None:
         """Ensure ChromaDB client and collection are initialized."""
@@ -317,14 +331,21 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
 
         # Extract query from last message
         last_message = messages[-1]
-        query_text = last_message.content if isinstance(last_message.content, str) else str(last_message)
+        query_text = (
+            last_message.content
+            if isinstance(last_message.content, str)
+            else str(last_message)
+        )
 
         # Query memory and get results
         query_results = await self.query(query_text)
 
         if query_results.results:
             # Format results for context
-            memory_strings = [f"{i}. {str(memory.content)}" for i, memory in enumerate(query_results.results, 1)]
+            memory_strings = [
+                f"{i}. {str(memory.content)}"
+                for i, memory in enumerate(query_results.results, 1)
+            ]
             memory_context = "\nRelevant memory content:\n" + "\n".join(memory_strings)
 
             # Add to context
@@ -332,7 +353,11 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
 
         return UpdateContextResult(memories=query_results)
 
-    async def add(self, content: MemoryContent, cancellation_token: CancellationToken | None = None) -> None:
+    async def add(
+        self,
+        content: MemoryContent,
+        cancellation_token: CancellationToken | None = None,
+    ) -> None:
         self._ensure_initialized()
         if self._collection is None:
             raise RuntimeError("Failed to initialize ChromaDB")
@@ -346,7 +371,9 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
             metadata_dict["mime_type"] = str(content.mime_type)
 
             # Add to ChromaDB
-            self._collection.add(documents=[text], metadatas=[metadata_dict], ids=[str(uuid.uuid4())])
+            self._collection.add(
+                documents=[text], metadatas=[metadata_dict], ids=[str(uuid.uuid4())]
+            )
 
         except Exception as e:
             logger.error(f"Failed to add content to ChromaDB: {e}")
@@ -385,22 +412,35 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
             ):
                 return MemoryQueryResult(results=memory_results)
 
-            documents: List[Document] = results["documents"][0] if results["documents"] else []
-            metadatas: List[Metadata] = results["metadatas"][0] if results["metadatas"] else []
-            distances: List[float] = results["distances"][0] if results["distances"] else []
+            documents: List[Document] = (
+                results["documents"][0] if results["documents"] else []
+            )
+            metadatas: List[Metadata] = (
+                results["metadatas"][0] if results["metadatas"] else []
+            )
+            distances: List[float] = (
+                results["distances"][0] if results["distances"] else []
+            )
             ids: List[str] = results["ids"][0] if results["ids"] else []
 
-            for doc, metadata_dict, distance, doc_id in zip(documents, metadatas, distances, ids, strict=False):
+            for doc, metadata_dict, distance, doc_id in zip(
+                documents, metadatas, distances, ids, strict=False
+            ):
                 # Calculate score
                 score = self._calculate_score(distance)
                 metadata = dict(metadata_dict)
                 metadata["score"] = score
                 metadata["id"] = doc_id
-                if self._config.score_threshold is not None and score < self._config.score_threshold:
+                if (
+                    self._config.score_threshold is not None
+                    and score < self._config.score_threshold
+                ):
                     continue
 
                 # Extract mime_type from metadata
-                mime_type = str(metadata_dict.get("mime_type", MemoryMimeType.TEXT.value))
+                mime_type = str(
+                    metadata_dict.get("mime_type", MemoryMimeType.TEXT.value)
+                )
 
                 # Create MemoryContent
                 content = MemoryContent(
@@ -437,7 +477,9 @@ class ChromaDBVectorMemory(Memory, Component[ChromaDBVectorMemoryConfig]):
     async def reset(self) -> None:
         self._ensure_initialized()
         if not self._config.allow_reset:
-            raise RuntimeError("Reset not allowed. Set allow_reset=True in config to enable.")
+            raise RuntimeError(
+                "Reset not allowed. Set allow_reset=True in config to enable."
+            )
 
         if self._client is not None:
             try:

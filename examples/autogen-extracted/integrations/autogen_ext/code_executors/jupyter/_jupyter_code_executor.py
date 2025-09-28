@@ -134,7 +134,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
     """
 
     component_config_schema = JupyterCodeExecutorConfig
-    component_provider_override = "autogen_ext.code_executors.jupyter.JupyterCodeExecutor"
+    component_provider_override = (
+        "autogen_ext.code_executors.jupyter.JupyterCodeExecutor"
+    )
 
     def __init__(
         self,
@@ -145,7 +147,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
         if timeout < 1:
             raise ValueError("Timeout must be greater than or equal to 1.")
 
-        self._output_dir: Path = Path(tempfile.mkdtemp()) if output_dir is None else Path(output_dir)
+        self._output_dir: Path = (
+            Path(tempfile.mkdtemp()) if output_dir is None else Path(output_dir)
+        )
         self._output_dir.mkdir(exist_ok=True, parents=True)
 
         self._temp_dir: Optional[tempfile.TemporaryDirectory[str]] = None
@@ -184,7 +188,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
             if exit_code != 0:
                 break
 
-        return JupyterCodeResult(exit_code=exit_code, output="\n".join(outputs), output_files=output_files)
+        return JupyterCodeResult(
+            exit_code=exit_code, output="\n".join(outputs), output_files=output_files
+        )
 
     async def _execute_code_block(
         self, code_block: CodeBlock, cancellation_token: CancellationToken
@@ -199,12 +205,16 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
         """
         execute_task = asyncio.create_task(
             self._execute_cell(
-                nbformat.new_code_cell(silence_pip(code_block.code, code_block.language))  # type: ignore
+                nbformat.new_code_cell(
+                    silence_pip(code_block.code, code_block.language)
+                )  # type: ignore
             )
         )
 
         cancellation_token.link_future(execute_task)
-        output_cell = await asyncio.wait_for(asyncio.shield(execute_task), timeout=self._timeout)
+        output_cell = await asyncio.wait_for(
+            asyncio.shield(execute_task), timeout=self._timeout
+        )
 
         outputs: list[str] = []
         output_files: list[Path] = []
@@ -215,7 +225,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
                 case "stream":
                     outputs.append(output.get("text", ""))
                 case "error":
-                    traceback = re.sub(r"\x1b\[[0-9;]*[A-Za-z]", "", "\n".join(output["traceback"]))
+                    traceback = re.sub(
+                        r"\x1b\[[0-9;]*[A-Za-z]", "", "\n".join(output["traceback"])
+                    )
                     outputs.append(traceback)
                     exit_code = 1
                 case "execute_result" | "display_data":
@@ -238,7 +250,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
                 case _:
                     pass
 
-        return JupyterCodeResult(exit_code=exit_code, output="\n".join(outputs), output_files=output_files)
+        return JupyterCodeResult(
+            exit_code=exit_code, output="\n".join(outputs), output_files=output_files
+        )
 
     async def _execute_cell(self, cell: NotebookNode) -> NotebookNode:
         # Temporary push cell to nb as async_execute_cell expects it. But then we want to remove it again as cells can take up significant amount of memory (especially with images)
@@ -311,7 +325,9 @@ class JupyterCodeExecutor(CodeExecutor, Component[JupyterCodeExecutorConfig]):
     def _to_config(self) -> JupyterCodeExecutorConfig:
         """Convert current instance to config object"""
         return JupyterCodeExecutorConfig(
-            kernel_name=self._kernel_name, timeout=self._timeout, output_dir=str(self.output_dir)
+            kernel_name=self._kernel_name,
+            timeout=self._timeout,
+            output_dir=str(self.output_dir),
         )
 
     @property

@@ -13,7 +13,11 @@ _SystemContent = str
 
 
 def content_to_str(
-    content: _UserContent | _AssistantContent | _FunctionExecutionContent | _SystemContent | _StructuredContent,
+    content: _UserContent
+    | _AssistantContent
+    | _FunctionExecutionContent
+    | _SystemContent
+    | _StructuredContent,
 ) -> str:
     """Convert the content of an LLMMessage to a string."""
     if isinstance(content, str):
@@ -38,7 +42,11 @@ def remove_images(messages: List[LLMMessage]) -> List[LLMMessage]:
     str_messages: List[LLMMessage] = []
     for message in messages:
         if isinstance(message, UserMessage) and isinstance(message.content, list):
-            str_messages.append(UserMessage(content=content_to_str(message.content), source=message.source))
+            str_messages.append(
+                UserMessage(
+                    content=content_to_str(message.content), source=message.source
+                )
+            )
         else:
             str_messages.append(message)
     return str_messages

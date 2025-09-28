@@ -13,7 +13,10 @@ from openai.types.chat import ChatCompletionContentPartTextParam
 from openai.types.chat.chat_completion import ChatCompletion
 from openai.types.shared.chat_model import ChatModel
 from openai.types.shared_params.reasoning_effort import ReasoningEffort
-from openai.types.shared_params.response_format_json_schema import JSONSchema, ResponseFormatJSONSchema
+from openai.types.shared_params.response_format_json_schema import (
+    JSONSchema,
+    ResponseFormatJSONSchema,
+)
 from pydantic import BaseModel
 
 from ..base import BaseChatModel, IraqiChatModelMixin
@@ -23,18 +26,18 @@ from ..openai.serializer import OpenAIMessageSerializer
 from ..schema import SchemaOptimizer
 from ..views import ChatInvokeCompletion, ChatInvokeUsage
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar("T", bound=BaseModel)
 
 ReasoningModels: list[ChatModel | str] = [
-    'o4-mini',
-    'o3', 
-    'o3-mini',
-    'o1',
-    'o1-pro',
-    'o3-pro',
-    'gpt-5',
-    'gpt-5-mini',
-    'gpt-5-nano',
+    "o4-mini",
+    "o3",
+    "o3-mini",
+    "o1",
+    "o1-pro",
+    "o3-pro",
+    "gpt-5",
+    "gpt-5-mini",
+    "gpt-5-nano",
 ]
 
 
@@ -42,7 +45,7 @@ ReasoningModels: list[ChatModel | str] = [
 class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
     """
     Enhanced OpenAI chat model with Iraqi AI integration.
-    
+
     Provides cultural validation, Arabic RTL processing, and Islamic compliance
     on top of OpenAI's chat completion models.
     """
@@ -53,9 +56,9 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
     # Model params
     temperature: float | None = 0.2
     frequency_penalty: float | None = 0.3  # Avoids infinite generation
-    reasoning_effort: ReasoningEffort = 'low'
+    reasoning_effort: ReasoningEffort = "low"
     seed: int | None = None
-    service_tier: Literal['auto', 'default', 'flex', 'priority', 'scale'] | None = None
+    service_tier: Literal["auto", "default", "flex", "priority", "scale"] | None = None
     top_p: float | None = None
     add_schema_to_system_prompt: bool = False
 
@@ -83,26 +86,26 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
         super().__init__(
             cultural_validation=self.cultural_validation,
             arabic_rtl_support=self.arabic_rtl_support,
-            islamic_compliance=self.islamic_compliance
+            islamic_compliance=self.islamic_compliance,
         )
 
     @property
     def provider(self) -> str:
-        return 'iraqi-enhanced-openai'
+        return "iraqi-enhanced-openai"
 
     def _get_client_params(self) -> dict[str, Any]:
         """Prepare client parameters dictionary."""
         base_params = {
-            'api_key': self.api_key,
-            'organization': self.organization,
-            'project': self.project,
-            'base_url': self.base_url,
-            'websocket_base_url': self.websocket_base_url,
-            'timeout': self.timeout,
-            'max_retries': self.max_retries,
-            'default_headers': self.default_headers,
-            'default_query': self.default_query,
-            '_strict_response_validation': self._strict_response_validation,
+            "api_key": self.api_key,
+            "organization": self.organization,
+            "project": self.project,
+            "base_url": self.base_url,
+            "websocket_base_url": self.websocket_base_url,
+            "timeout": self.timeout,
+            "max_retries": self.max_retries,
+            "default_headers": self.default_headers,
+            "default_query": self.default_query,
+            "_strict_response_validation": self._strict_response_validation,
         }
 
         # Create client_params dict with non-None values
@@ -110,7 +113,7 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
 
         # Add http_client if provided
         if self.http_client is not None:
-            client_params['http_client'] = self.http_client
+            client_params["http_client"] = self.http_client
 
         return client_params
 
@@ -154,12 +157,14 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
         return usage
 
     @overload
-    async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
-        ...
+    async def ainvoke(
+        self, messages: list[BaseMessage], output_format: None = None
+    ) -> ChatInvokeCompletion[str]: ...
 
     @overload
-    async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
-        ...
+    async def ainvoke(
+        self, messages: list[BaseMessage], output_format: type[T]
+    ) -> ChatInvokeCompletion[T]: ...
 
     async def ainvoke(
         self, messages: list[BaseMessage], output_format: type[T] | None = None
@@ -192,29 +197,29 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
             model_params: dict[str, Any] = {}
 
             if self.temperature is not None:
-                model_params['temperature'] = self.temperature
+                model_params["temperature"] = self.temperature
 
             if self.frequency_penalty is not None:
-                model_params['frequency_penalty'] = self.frequency_penalty
+                model_params["frequency_penalty"] = self.frequency_penalty
 
             if self.max_completion_tokens is not None:
-                model_params['max_completion_tokens'] = self.max_completion_tokens
+                model_params["max_completion_tokens"] = self.max_completion_tokens
 
             if self.top_p is not None:
-                model_params['top_p'] = self.top_p
+                model_params["top_p"] = self.top_p
 
             if self.seed is not None:
-                model_params['seed'] = self.seed
+                model_params["seed"] = self.seed
 
             if self.service_tier is not None:
-                model_params['service_tier'] = self.service_tier
+                model_params["service_tier"] = self.service_tier
 
             # Handle reasoning models
             if any(str(m).lower() in str(self.model).lower() for m in ReasoningModels):
-                model_params['reasoning_effort'] = self.reasoning_effort
+                model_params["reasoning_effort"] = self.reasoning_effort
                 # Remove temperature and frequency_penalty for reasoning models
-                model_params.pop('temperature', None)
-                model_params.pop('frequency_penalty', None)
+                model_params.pop("temperature", None)
+                model_params.pop("frequency_penalty", None)
 
             if output_format is None:
                 # Return string response
@@ -225,11 +230,16 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
                 )
 
                 usage = self._get_usage(response)
-                completion_content = response.choices[0].message.content or ''
+                completion_content = response.choices[0].message.content or ""
 
                 # Apply Iraqi AI post-processing
                 if self._cultural_validation_enabled:
-                    is_appropriate, validation_msg = await self._validate_cultural_appropriateness(completion_content)
+                    (
+                        is_appropriate,
+                        validation_msg,
+                    ) = await self._validate_cultural_appropriateness(
+                        completion_content
+                    )
                     if not is_appropriate:
                         raise ModelProviderError(
                             message=f"Cultural validation failed: {validation_msg}",
@@ -238,7 +248,10 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
                         )
 
                 if self._islamic_compliance_mode:
-                    is_compliant, compliance_msg = await self._ensure_islamic_compliance(completion_content)
+                    (
+                        is_compliant,
+                        compliance_msg,
+                    ) = await self._ensure_islamic_compliance(completion_content)
                     if not is_compliant:
                         raise ModelProviderError(
                             message=f"Islamic compliance failed: {compliance_msg}",
@@ -253,32 +266,44 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
 
             else:
                 response_format: JSONSchema = {
-                    'name': 'agent_output',
-                    'strict': True,
-                    'schema': SchemaOptimizer.create_optimized_json_schema(output_format),
+                    "name": "agent_output",
+                    "strict": True,
+                    "schema": SchemaOptimizer.create_optimized_json_schema(
+                        output_format
+                    ),
                 }
 
                 # Add JSON schema to system prompt if requested
-                if self.add_schema_to_system_prompt and openai_messages and openai_messages[0]['role'] == 'system':
-                    schema_text = f'\n<json_schema>\n{response_format}\n</json_schema>'
-                    if isinstance(openai_messages[0]['content'], str):
-                        openai_messages[0]['content'] += schema_text
-                    elif isinstance(openai_messages[0]['content'], Iterable):
-                        openai_messages[0]['content'] = list(openai_messages[0]['content']) + [
-                            ChatCompletionContentPartTextParam(text=schema_text, type='text')
+                if (
+                    self.add_schema_to_system_prompt
+                    and openai_messages
+                    and openai_messages[0]["role"] == "system"
+                ):
+                    schema_text = f"\n<json_schema>\n{response_format}\n</json_schema>"
+                    if isinstance(openai_messages[0]["content"], str):
+                        openai_messages[0]["content"] += schema_text
+                    elif isinstance(openai_messages[0]["content"], Iterable):
+                        openai_messages[0]["content"] = list(
+                            openai_messages[0]["content"]
+                        ) + [
+                            ChatCompletionContentPartTextParam(
+                                text=schema_text, type="text"
+                            )
                         ]
 
                 # Return structured response
                 response = await self.get_client().chat.completions.create(
                     model=self.model,
                     messages=openai_messages,
-                    response_format=ResponseFormatJSONSchema(json_schema=response_format, type='json_schema'),
+                    response_format=ResponseFormatJSONSchema(
+                        json_schema=response_format, type="json_schema"
+                    ),
                     **model_params,
                 )
 
                 if response.choices[0].message.content is None:
                     raise ModelProviderError(
-                        message='Failed to parse structured output from model response',
+                        message="Failed to parse structured output from model response",
                         status_code=500,
                         model=self.name,
                     )
@@ -288,7 +313,10 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
                 # Apply Iraqi AI validation to structured output
                 content_str = response.choices[0].message.content
                 if self._cultural_validation_enabled:
-                    is_appropriate, validation_msg = await self._validate_cultural_appropriateness(content_str)
+                    (
+                        is_appropriate,
+                        validation_msg,
+                    ) = await self._validate_cultural_appropriateness(content_str)
                     if not is_appropriate:
                         raise ModelProviderError(
                             message=f"Cultural validation failed: {validation_msg}",
@@ -304,9 +332,11 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
                 )
 
         except RateLimitError as e:
-            error_message = e.response.json().get('error', {})
+            error_message = e.response.json().get("error", {})
             error_message = (
-                error_message.get('message', 'Unknown model error') if isinstance(error_message, dict) else error_message
+                error_message.get("message", "Unknown model error")
+                if isinstance(error_message, dict)
+                else error_message
             )
             raise ModelProviderError(
                 message=error_message,
@@ -319,11 +349,13 @@ class ChatOpenAI(IraqiChatModelMixin, BaseChatModel):
 
         except APIStatusError as e:
             try:
-                error_message = e.response.json().get('error', {})
+                error_message = e.response.json().get("error", {})
             except Exception:
                 error_message = e.response.text
             error_message = (
-                error_message.get('message', 'Unknown model error') if isinstance(error_message, dict) else error_message
+                error_message.get("message", "Unknown model error")
+                if isinstance(error_message, dict)
+                else error_message
             )
             raise ModelProviderError(
                 message=error_message,

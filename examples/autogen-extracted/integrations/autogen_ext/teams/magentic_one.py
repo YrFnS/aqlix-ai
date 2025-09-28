@@ -262,7 +262,9 @@ class MagenticOne(MagenticOneGroupChat):
         ws = MultimodalWebSurfer("WebSurfer", model_client=client)
         coder = MagenticOneCoderAgent("Coder", model_client=client)
 
-        executor = CodeExecutorAgent("ComputerTerminal", code_executor=code_executor, approval_func=approval_func)
+        executor = CodeExecutorAgent(
+            "ComputerTerminal", code_executor=code_executor, approval_func=approval_func
+        )
 
         agents: List[ChatAgent] = [fs, ws, coder, executor]
         if hil_mode:
@@ -276,12 +278,14 @@ class MagenticOne(MagenticOneGroupChat):
 
         if not all(capabilities.get(cap) for cap in required_capabilities):
             warnings.warn(
-                "Client capabilities for MagenticOne must include vision, " "function calling, and json output.",
+                "Client capabilities for MagenticOne must include vision, "
+                "function calling, and json output.",
                 stacklevel=2,
             )
 
         if not isinstance(client, BaseOpenAIChatCompletionClient):
             warnings.warn(
-                "MagenticOne performs best with OpenAI GPT-4o model either " "through OpenAI or Azure OpenAI.",
+                "MagenticOne performs best with OpenAI GPT-4o model either "
+                "through OpenAI or Azure OpenAI.",
                 stacklevel=2,
             )

@@ -6,7 +6,7 @@ and Large Language Models to interact with websites dynamically.
 
 Key Features:
 - Vision-based element detection and interaction
-- Dynamic adaptation to website layout changes  
+- Dynamic adaptation to website layout changes
 - Arabic RTL text handling and Iraqi cultural validation
 - Complex form filling with government portal support
 - Multi-step workflow execution with error recovery
@@ -24,10 +24,10 @@ from .actions.elements import ArabicElementDetector
 from .vision.processor import ArabicVisionProcessor
 
 __all__ = [
-    'IraqiBrowserFactory',
-    'IraqiActionHandler', 
-    'ArabicElementDetector',
-    'ArabicVisionProcessor'
+    "IraqiBrowserFactory",
+    "IraqiActionHandler",
+    "ArabicElementDetector",
+    "ArabicVisionProcessor",
 ]
 
 __version__ = "1.0.0-iraqi"

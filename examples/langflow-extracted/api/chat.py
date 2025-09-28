@@ -2,6 +2,7 @@
 Chat router extracted from Langflow for Iraqi AI Chat System
 Original: src/backend/base/langflow/api/v1/chat.py
 """
+
 from typing import Annotated, Any, Dict, List, Optional
 from uuid import UUID
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Path, Request
@@ -11,12 +12,13 @@ from langflow.api.v1.schemas import (
     FlowDataRequest,
     StreamResponse,
     ChatResponse,
-    ChatRequest
+    ChatRequest,
 )
 from langflow.services.auth.utils import get_current_active_user
 from langflow.services.database.models.user.model import User
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
+
 
 @router.post("/build/{flow_id}/flow")
 async def build_flow(
@@ -27,7 +29,7 @@ async def build_flow(
 ) -> ChatResponse:
     """
     Build and process a flow for chat conversation.
-    
+
     Key features for Iraqi AI Chat System:
     - Process Arabic/English mixed conversations
     - Handle RTL text processing
@@ -42,14 +44,15 @@ async def build_flow(
         # 4. Route to appropriate Iraqi domain agent
         # 5. Handle RTL text processing
         # 6. Return culturally appropriate response
-        
+
         return ChatResponse(
             message="Flow built successfully",
             flow_id=flow_id,
-            session_id=request.session_id if hasattr(request, 'session_id') else None
+            session_id=request.session_id if hasattr(request, "session_id") else None,
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/build/{job_id}/events")
 async def get_build_events(
@@ -58,26 +61,28 @@ async def get_build_events(
 ) -> StreamingResponse:
     """
     Get events for a specific build job with streaming support.
-    
+
     Iraqi AI enhancements:
     - Stream Arabic text with proper RTL handling
     - Include cultural validation status
     - Provide progress in user's preferred language
     """
+
     async def event_stream():
         # Implementation would stream events with Iraqi-specific formatting
         yield f"data: {{'status': 'processing', 'language': 'arabic'}}\n\n"
         yield f"data: {{'status': 'complete', 'culturally_validated': true}}\n\n"
-    
+
     return StreamingResponse(
         event_stream(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
-            "Content-Type": "text/event-stream; charset=utf-8"
-        }
+            "Content-Type": "text/event-stream; charset=utf-8",
+        },
     )
+
 
 @router.post("/build/{job_id}/cancel")
 async def cancel_build_job(
@@ -91,6 +96,7 @@ async def cancel_build_job(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/build_public_tmp/{flow_id}/flow")
 async def build_public_flow(
     flow_id: Annotated[str, Path(description="The flow ID")],
@@ -99,7 +105,7 @@ async def build_public_flow(
 ) -> ChatResponse:
     """
     Build a public flow without authentication.
-    
+
     Iraqi AI considerations:
     - Apply strict cultural filtering for public access
     - Limit to approved Iraqi professional domains
@@ -110,10 +116,11 @@ async def build_public_flow(
         return ChatResponse(
             message="Public flow built successfully",
             flow_id=flow_id,
-            session_id=request.session_id if hasattr(request, 'session_id') else None
+            session_id=request.session_id if hasattr(request, "session_id") else None,
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # Iraqi AI Chat System enhancements needed:
 # - Add /chat/arabic endpoint for Arabic-first conversations

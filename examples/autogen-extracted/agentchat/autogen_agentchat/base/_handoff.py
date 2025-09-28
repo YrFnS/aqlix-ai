@@ -40,7 +40,9 @@ class Handoff(BaseModel):
                 raise ValueError(f"Handoff name must be a string: {values['name']}")
             # Check if name is a valid identifier.
             if not name.isidentifier():
-                raise ValueError(f"Handoff name must be a valid identifier: {values['name']}")
+                raise ValueError(
+                    f"Handoff name must be a valid identifier: {values['name']}"
+                )
         if not values.get("message"):
             values["message"] = (
                 f"Transferred to {values['target']}, adopting the role of {values['target']} immediately."
@@ -54,7 +56,9 @@ class Handoff(BaseModel):
         def _handoff_tool() -> str:
             return self.message
 
-        return FunctionTool(_handoff_tool, name=self.name, description=self.description, strict=True)
+        return FunctionTool(
+            _handoff_tool, name=self.name, description=self.description, strict=True
+        )
 
     """
     The tool that can be used to handoff to the target agent.

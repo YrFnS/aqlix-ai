@@ -13,7 +13,9 @@ class TokenProviderConfig(BaseModel):
     scopes: List[str]
 
 
-class AzureTokenProvider(ComponentBase[TokenProviderConfig], Component[TokenProviderConfig]):
+class AzureTokenProvider(
+    ComponentBase[TokenProviderConfig], Component[TokenProviderConfig]
+):
     component_type = "token_provider"
     component_config_schema = TokenProviderConfig
     component_provider_override = "autogen_ext.auth.azure.AzureTokenProvider"
@@ -35,7 +37,9 @@ class AzureTokenProvider(ComponentBase[TokenProviderConfig], Component[TokenProv
 
         if isinstance(self.credential, DefaultAzureCredential):
             # NOTE: we are not currently inspecting the chained credentials, so this could result in a loss of information
-            return TokenProviderConfig(provider_kind="DefaultAzureCredential", scopes=self.scopes)
+            return TokenProviderConfig(
+                provider_kind="DefaultAzureCredential", scopes=self.scopes
+            )
         else:
             raise ValueError("Only DefaultAzureCredential is supported")
 

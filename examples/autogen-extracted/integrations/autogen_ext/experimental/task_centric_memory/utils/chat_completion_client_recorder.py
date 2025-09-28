@@ -1,7 +1,18 @@
 import json
 import os
 import warnings
-from typing import Any, AsyncGenerator, Dict, List, Literal, Mapping, Optional, Sequence, TypedDict, Union
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    TypedDict,
+    Union,
+)
 
 from autogen_core import CancellationToken
 from autogen_core.models import (
@@ -68,10 +79,16 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
         self._num_checked_records = 0
         if self.mode == "record":
             # Prepare to record the messages and responses.
-            self.logger.info("Recording mode enabled.\nRecording session to: " + self.session_file_path)
+            self.logger.info(
+                "Recording mode enabled.\nRecording session to: "
+                + self.session_file_path
+            )
         elif self.mode == "replay":
             # Load the previously recorded messages and responses from disk.
-            self.logger.info("Replay mode enabled.\nRetrieving session from: " + self.session_file_path)
+            self.logger.info(
+                "Replay mode enabled.\nRetrieving session from: "
+                + self.session_file_path
+            )
             try:
                 with open(self.session_file_path, "r") as f:
                     self.records = json.load(f)
@@ -92,7 +109,9 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
         cancellation_token: Optional[CancellationToken] = None,
         tool_choice: Tool | Literal["auto", "required", "none"] = "auto",
     ) -> CreateResult:
-        current_messages: List[Mapping[str, Any]] = [msg.model_dump() for msg in messages]
+        current_messages: List[Mapping[str, Any]] = [
+            msg.model_dump() for msg in messages
+        ]
         if self.mode == "record":
             response = await self.base_client.create(
                 messages,
@@ -123,9 +142,7 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
                 raise ValueError(error_str)
             recorded_messages = rec.get("messages")
             if recorded_messages != current_messages:
-                error_str = (
-                    "\nCurrent message list doesn't match the recorded message list. See the pagelogs for details."
-                )
+                error_str = "\nCurrent message list doesn't match the recorded message list. See the pagelogs for details."
                 assert recorded_messages is not None
                 self.logger.log_dict_list(recorded_messages, "recorded message list")
                 assert current_messages is not None
@@ -141,7 +158,9 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
             result = CreateResult(
                 content=data.get("content", ""),
                 finish_reason=data.get("finish_reason", "stop"),
-                usage=data.get("usage", RequestUsage(prompt_tokens=0, completion_tokens=0)),
+                usage=data.get(
+                    "usage", RequestUsage(prompt_tokens=0, completion_tokens=0)
+                ),
                 cached=True,
             )
             return result
@@ -181,18 +200,26 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
         # Calls base_client.total_usage() and returns the result.
         return self.base_client.total_usage()
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         # Calls base_client.count_tokens() and returns the result.
         return self.base_client.count_tokens(messages, tools=tools)
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         # Calls base_client.remaining_tokens() and returns the result.
         return self.base_client.remaining_tokens(messages, tools=tools)
 
     @property
     def capabilities(self) -> ModelCapabilities:  # type: ignore
         # Calls base_client.capabilities and returns the result.
-        warnings.warn("capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "capabilities is deprecated, use model_info instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.base_client.capabilities
 
     @property
@@ -213,9 +240,13 @@ class ChatCompletionClientRecorder(ChatCompletionClient):
                 # Write the records to disk.
                 with open(self.session_file_path, "w") as f:
                     json.dump(self.records, f, indent=2)
-                    self.logger.info("\nRecorded session was saved to: " + self.session_file_path)
+                    self.logger.info(
+                        "\nRecorded session was saved to: " + self.session_file_path
+                    )
             except Exception as e:
-                error_str = f"Failed to write records to '{self.session_file_path}': {e}"
+                error_str = (
+                    f"Failed to write records to '{self.session_file_path}': {e}"
+                )
                 self.logger.error(error_str)
                 raise ValueError(error_str) from e
         elif self.mode == "replay":

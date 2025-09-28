@@ -2,7 +2,13 @@ import contextlib
 import os
 from typing import Dict, Generic, Iterator, Optional
 
-from opentelemetry.trace import NoOpTracerProvider, Span, SpanKind, TracerProvider, get_tracer_provider
+from opentelemetry.trace import (
+    NoOpTracerProvider,
+    Span,
+    SpanKind,
+    TracerProvider,
+    get_tracer_provider,
+)
 from opentelemetry.util import types
 
 from ._propagation import TelemetryMetadataContainer, get_telemetry_links
@@ -21,20 +27,30 @@ class TraceHelper(Generic[Operation, Destination, ExtraAttributes]):
     def __init__(
         self,
         tracer_provider: TracerProvider | None,
-        instrumentation_builder_config: TracingConfig[Operation, Destination, ExtraAttributes],
+        instrumentation_builder_config: TracingConfig[
+            Operation, Destination, ExtraAttributes
+        ],
     ) -> None:
         self.instrumentation_builder_config = instrumentation_builder_config
 
-        disable_runtime_tracing = os.environ.get("AUTOGEN_DISABLE_RUNTIME_TRACING") == "true"
+        disable_runtime_tracing = (
+            os.environ.get("AUTOGEN_DISABLE_RUNTIME_TRACING") == "true"
+        )
         if disable_runtime_tracing:
             self.tracer_provider: TracerProvider = NoOpTracerProvider()
-            self.tracer = self.tracer_provider.get_tracer(f"autogen {instrumentation_builder_config.name}")
+            self.tracer = self.tracer_provider.get_tracer(
+                f"autogen {instrumentation_builder_config.name}"
+            )
             return
 
         # Evaluate in order: first try tracer_provider param, then get_tracer_provider(), finally fallback to NoOp
         # This allows for nested tracing with a default tracer provided by the user
-        self.tracer_provider = tracer_provider or get_tracer_provider() or NoOpTracerProvider()
-        self.tracer = self.tracer_provider.get_tracer(f"autogen {instrumentation_builder_config.name}")
+        self.tracer_provider = (
+            tracer_provider or get_tracer_provider() or NoOpTracerProvider()
+        )
+        self.tracer = self.tracer_provider.get_tracer(
+            f"autogen {instrumentation_builder_config.name}"
+        )
 
     @contextlib.contextmanager
     def trace_block(
@@ -72,16 +88,22 @@ class TraceHelper(Generic[Operation, Destination, ExtraAttributes]):
             Iterator[Span]: The span object.
 
         """
-        span_name = self.instrumentation_builder_config.get_span_name(operation, destination)
+        span_name = self.instrumentation_builder_config.get_span_name(
+            operation, destination
+        )
         span_kind = kind or self.instrumentation_builder_config.get_span_kind(operation)
         # context = get_telemetry_context(parent) if parent else None
-        context = None  # TODO: we may need to remove other code for using custom context.
+        context = (
+            None  # TODO: we may need to remove other code for using custom context.
+        )
         links = get_telemetry_links(parent) if parent else None
         attributes_with_defaults: Dict[str, types.AttributeValue] = {}
         for key, value in (attributes or {}).items():
             attributes_with_defaults[key] = value
-        instrumentation_attributes = self.instrumentation_builder_config.build_attributes(
-            operation, destination, extraAttributes
+        instrumentation_attributes = (
+            self.instrumentation_builder_config.build_attributes(
+                operation, destination, extraAttributes
+            )
         )
         for key, value in instrumentation_attributes.items():
             attributes_with_defaults[key] = value

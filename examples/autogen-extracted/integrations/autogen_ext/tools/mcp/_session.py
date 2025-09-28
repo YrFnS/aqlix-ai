@@ -8,7 +8,12 @@ from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
 from mcp.client.streamable_http import streamablehttp_client
 
-from ._config import McpServerParams, SseServerParams, StdioServerParams, StreamableHttpServerParams
+from ._config import (
+    McpServerParams,
+    SseServerParams,
+    StdioServerParams,
+    StreamableHttpServerParams,
+)
 
 
 @asynccontextmanager
@@ -21,12 +26,17 @@ async def create_mcp_server_session(
             async with ClientSession(
                 read_stream=read,
                 write_stream=write,
-                read_timeout_seconds=timedelta(seconds=server_params.read_timeout_seconds),
+                read_timeout_seconds=timedelta(
+                    seconds=server_params.read_timeout_seconds
+                ),
                 sampling_callback=sampling_callback,
             ) as session:
                 yield session
     elif isinstance(server_params, SseServerParams):
-        async with sse_client(**server_params.model_dump(exclude={"type"})) as (read, write):
+        async with sse_client(**server_params.model_dump(exclude={"type"})) as (
+            read,
+            write,
+        ):
             async with ClientSession(
                 read_stream=read,
                 write_stream=write,
@@ -38,7 +48,9 @@ async def create_mcp_server_session(
         # Convert float seconds to timedelta for the streamablehttp_client
         params_dict = server_params.model_dump(exclude={"type"})
         params_dict["timeout"] = timedelta(seconds=server_params.timeout)
-        params_dict["sse_read_timeout"] = timedelta(seconds=server_params.sse_read_timeout)
+        params_dict["sse_read_timeout"] = timedelta(
+            seconds=server_params.sse_read_timeout
+        )
 
         async with streamablehttp_client(**params_dict) as (
             read,

@@ -64,20 +64,26 @@ class MemoryBank:
                 "relevance_conversion_threshold", self.relevance_conversion_threshold
             )
             self.n_results = config.get("n_results", self.n_results)
-            self.distance_threshold = config.get("distance_threshold", self.distance_threshold)
+            self.distance_threshold = config.get(
+                "distance_threshold", self.distance_threshold
+            )
 
         memory_dir_path = os.path.expanduser(memory_dir_path)
         self.logger.info("\nMEMORY BANK DIRECTORY  {}".format(memory_dir_path))
         path_to_db_dir = os.path.join(memory_dir_path, "string_map")
         self.path_to_dict = os.path.join(memory_dir_path, "uid_memo_dict.pkl")
 
-        self.string_map = StringSimilarityMap(reset=reset, path_to_db_dir=path_to_db_dir, logger=self.logger)
+        self.string_map = StringSimilarityMap(
+            reset=reset, path_to_db_dir=path_to_db_dir, logger=self.logger
+        )
 
         # Load or create the associated memo dict on disk.
         self.uid_memo_dict: Dict[str, Memo] = {}
         self.last_memo_id = 0
         if (not reset) and os.path.exists(self.path_to_dict):
-            self.logger.info("\nLOADING MEMOS FROM DISK  at {}".format(self.path_to_dict))
+            self.logger.info(
+                "\nLOADING MEMOS FROM DISK  at {}".format(self.path_to_dict)
+            )
             with open(self.path_to_dict, "rb") as f:
                 self.uid_memo_dict = pickle.load(f)
                 self.last_memo_id = len(self.uid_memo_dict)
@@ -132,7 +138,9 @@ class MemoryBank:
         self.save_memos()
         self.logger.leave_function()
 
-    def add_memo(self, insight_str: str, topics: List[str], task_str: Optional[str] = None) -> None:
+    def add_memo(
+        self, insight_str: str, topics: List[str], task_str: Optional[str] = None
+    ) -> None:
         """
         Adds an insight to the memory bank, given topics related to the insight, and optionally the task.
         """
@@ -143,7 +151,9 @@ class MemoryBank:
         self._map_topics_to_memo(topics, id_str, insight)
         self.logger.leave_function()
 
-    def add_task_with_solution(self, task: str, solution: str, topics: List[str]) -> None:
+    def add_task_with_solution(
+        self, task: str, solution: str, topics: List[str]
+    ) -> None:
         """
         Adds a task-solution pair to the memory bank, to be retrieved together later as a combined insight.
         This is useful when the insight is a demonstration of how to solve a given type of task.
@@ -152,7 +162,9 @@ class MemoryBank:
         self.last_memo_id += 1
         id_str = str(self.last_memo_id)
         # Prepend the insight to the task description for context.
-        insight_str = "Example task:\n\n{}\n\nExample solution:\n\n{}".format(task, solution)
+        insight_str = "Example task:\n\n{}\n\nExample solution:\n\n{}".format(
+            task, solution
+        )
         memo = Memo(insight=insight_str, task=task)
         self._map_topics_to_memo(topics, id_str, memo)
         self.logger.leave_function()
@@ -164,9 +176,15 @@ class MemoryBank:
         self.logger.enter_function()
 
         # Retrieve all topic matches, and gather them into a single list.
-        matches: List[Tuple[str, str, float]] = []  # Each match is a tuple: (topic, memo_id, distance)
+        matches: List[
+            Tuple[str, str, float]
+        ] = []  # Each match is a tuple: (topic, memo_id, distance)
         for topic in topics:
-            matches.extend(self.string_map.get_related_string_pairs(topic, self.n_results, self.distance_threshold))
+            matches.extend(
+                self.string_map.get_related_string_pairs(
+                    topic, self.n_results, self.distance_threshold
+                )
+            )
 
         # Build a dict of memo-relevance pairs from the matches.
         memo_relevance_dict: Dict[str, float] = {}
@@ -179,17 +197,23 @@ class MemoryBank:
                 memo_relevance_dict[memo_id] = relevance
 
         # Log the details of all the retrieved memos.
-        self.logger.info("\n{} POTENTIALLY RELEVANT MEMOS".format(len(memo_relevance_dict)))
+        self.logger.info(
+            "\n{} POTENTIALLY RELEVANT MEMOS".format(len(memo_relevance_dict))
+        )
         for memo_id, relevance in memo_relevance_dict.items():
             memo = self.uid_memo_dict[memo_id]
             details = ""
             if memo.task is not None:
                 details += "\n  TASK: {}\n".format(memo.task)
-            details += "\n  INSIGHT: {}\n\n  RELEVANCE: {:.3f}\n".format(memo.insight, relevance)
+            details += "\n  INSIGHT: {}\n\n  RELEVANCE: {:.3f}\n".format(
+                memo.insight, relevance
+            )
             self.logger.info(details)
 
         # Sort the memo-relevance pairs by relevance, in descending order.
-        memo_relevance_dict = dict(sorted(memo_relevance_dict.items(), key=lambda item: item[1], reverse=True))
+        memo_relevance_dict = dict(
+            sorted(memo_relevance_dict.items(), key=lambda item: item[1], reverse=True)
+        )
 
         # Compose the list of sufficiently relevant memos to return.
         memo_list: List[Memo] = []

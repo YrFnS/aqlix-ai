@@ -40,7 +40,8 @@ McpFuture = asyncio.Future[McpResult]
 
 
 def _parse_sampling_content(
-    content: mcp_types.TextContent | mcp_types.ImageContent | mcp_types.AudioContent, model_info: ModelInfo
+    content: mcp_types.TextContent | mcp_types.ImageContent | mcp_types.AudioContent,
+    model_info: ModelInfo,
 ) -> str | Image:
     """Convert MCP content types to Autogen content types."""
     if content.type == "text":
@@ -56,7 +57,9 @@ def _parse_sampling_content(
         raise ValueError(f"Unsupported content type: {content.type}")
 
 
-def _parse_sampling_message(message: mcp_types.SamplingMessage, model_info: ModelInfo) -> LLMMessage:
+def _parse_sampling_message(
+    message: mcp_types.SamplingMessage, model_info: ModelInfo
+) -> LLMMessage:
     """Convert MCP sampling messages to Autogen messages."""
     content = _parse_sampling_content(message.content, model_info=model_info)
     if message.role == "user":
@@ -65,7 +68,9 @@ def _parse_sampling_message(message: mcp_types.SamplingMessage, model_info: Mode
             content=[content],
         )
     elif message.role == "assistant":
-        assert isinstance(content, str), "Assistant messages only support string content."
+        assert isinstance(content, str), (
+            "Assistant messages only support string content."
+        )
         return AssistantMessage(
             source="assistant",
             content=content,
@@ -93,7 +98,11 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
 
     # model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def __init__(self, server_params: McpServerParams, model_client: ChatCompletionClient | None = None) -> None:
+    def __init__(
+        self,
+        server_params: McpServerParams,
+        model_client: ChatCompletionClient | None = None,
+    ) -> None:
         self.server_params: McpServerParams = server_params
         self._model_client = model_client
         self.name = "mcp_session_actor"
@@ -120,7 +129,13 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
         if self._actor_task and self._actor_task.done():
             raise RuntimeError("MCP actor task crashed", self._actor_task.exception())
         fut: asyncio.Future[McpFuture] = asyncio.Future()
-        if type in {"list_tools", "list_prompts", "list_resources", "list_resource_templates", "shutdown"}:
+        if type in {
+            "list_tools",
+            "list_prompts",
+            "list_resources",
+            "list_resource_templates",
+            "shutdown",
+        }:
             await self._command_queue.put({"type": type, "future": fut})
             res = await fut
         elif type in {"call_tool", "read_resource", "get_prompt"}:
@@ -139,9 +154,13 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
                 if name is None:
                     raise ValueError("name is required for get_prompt")
                 prompt_args = kwargs.get("arguments", None)
-                await self._command_queue.put({"type": type, "name": name, "args": prompt_args, "future": fut})
+                await self._command_queue.put(
+                    {"type": type, "name": name, "args": prompt_args, "future": fut}
+                )
             else:  # call_tool
-                await self._command_queue.put({"type": type, "name": name, "args": kwargs, "future": fut})
+                await self._command_queue.put(
+                    {"type": type, "name": name, "args": kwargs, "future": fut}
+                )
             res = await fut
         else:
             raise ValueError(f"Unknown command type: {type}")
@@ -151,7 +170,9 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
         if not self._active or self._actor_task is None:
             return
         self._shutdown_future = asyncio.Future()
-        await self._command_queue.put({"type": "shutdown", "future": self._shutdown_future})
+        await self._command_queue.put(
+            {"type": "shutdown", "future": self._shutdown_future}
+        )
         await self._shutdown_future
         await self._actor_task
         self._active = False
@@ -177,7 +198,11 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
                 llm_messages.append(SystemMessage(content=params.systemPrompt))
 
             for mcp_message in params.messages:
-                llm_messages.append(_parse_sampling_message(mcp_message, model_info=self._model_client.model_info))
+                llm_messages.append(
+                    _parse_sampling_message(
+                        mcp_message, model_info=self._model_client.model_info
+                    )
+                )
 
         except Exception as e:
             return mcp_types.ErrorData(
@@ -221,7 +246,9 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
                         break
                     elif cmd["type"] == "call_tool":
                         try:
-                            result = session.call_tool(name=cmd["name"], arguments=cmd["args"])
+                            result = session.call_tool(
+                                name=cmd["name"], arguments=cmd["args"]
+                            )
                             cmd["future"].set_result(result)
                         except Exception as e:
                             cmd["future"].set_exception(e)
@@ -233,7 +260,9 @@ class McpSessionActor(ComponentBase[BaseModel], Component[McpSessionActorConfig]
                             cmd["future"].set_exception(e)
                     elif cmd["type"] == "get_prompt":
                         try:
-                            result = session.get_prompt(name=cmd["name"], arguments=cmd["args"])
+                            result = session.get_prompt(
+                                name=cmd["name"], arguments=cmd["args"]
+                            )
                             cmd["future"].set_result(result)
                         except Exception as e:
                             cmd["future"].set_exception(e)

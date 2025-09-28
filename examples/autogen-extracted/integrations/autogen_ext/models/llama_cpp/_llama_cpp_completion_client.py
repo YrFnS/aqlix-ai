@@ -2,9 +2,26 @@ import asyncio
 import logging  # added import
 import re
 import warnings
-from typing import Any, AsyncGenerator, Dict, List, Literal, Mapping, Optional, Sequence, TypedDict, Union, cast
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    TypedDict,
+    Union,
+    cast,
+)
 
-from autogen_core import EVENT_LOGGER_NAME, CancellationToken, FunctionCall, MessageHandlerContext
+from autogen_core import (
+    EVENT_LOGGER_NAME,
+    CancellationToken,
+    FunctionCall,
+    MessageHandlerContext,
+)
 from autogen_core.logging import LLMCallEvent
 from autogen_core.models import (
     AssistantMessage,
@@ -74,7 +91,9 @@ def assert_valid_name(name: str) -> str:
     For munging LLM responses use _normalize_name to ensure LLM specified names don't break the API.
     """
     if not re.match(r"^[a-zA-Z0-9_-]+$", name):
-        raise ValueError(f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed.")
+        raise ValueError(
+            f"Invalid name: {name}. Only letters, numbers, '_' and '-' are allowed."
+        )
     if len(name) > 64:
         raise ValueError(f"Invalid name: {name}. Name must be less than 64 characters.")
     return name
@@ -96,9 +115,15 @@ def convert_tools(
                 type="function",
                 function=ChatCompletionToolFunction(
                     name=tool_schema["name"],
-                    description=(tool_schema["description"] if "description" in tool_schema else ""),
+                    description=(
+                        tool_schema["description"]
+                        if "description" in tool_schema
+                        else ""
+                    ),
                     parameters=(
-                        cast(ChatCompletionFunctionParameters, tool_schema["parameters"])
+                        cast(
+                            ChatCompletionFunctionParameters, tool_schema["parameters"]
+                        )
                         if "parameters" in tool_schema
                         else {}
                     ),
@@ -228,7 +253,11 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
     """
 
     DEFAULT_MODEL_INFO: ModelInfo = ModelInfo(
-        vision=False, json_output=True, family=ModelFamily.UNKNOWN, function_calling=True, structured_output=True
+        vision=False,
+        json_output=True,
+        family=ModelFamily.UNKNOWN,
+        function_calling=True,
+        structured_output=True,
     )
 
     def __init__(
@@ -247,17 +276,26 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
             # Default model info.
             self._model_info = self.DEFAULT_MODEL_INFO
 
-        if "repo_id" in kwargs and "filename" in kwargs and kwargs["repo_id"] and kwargs["filename"]:
+        if (
+            "repo_id" in kwargs
+            and "filename" in kwargs
+            and kwargs["repo_id"]
+            and kwargs["filename"]
+        ):
             repo_id: str = cast(str, kwargs.pop("repo_id"))
             filename: str = cast(str, kwargs.pop("filename"))
-            pretrained = Llama.from_pretrained(repo_id=repo_id, filename=filename, **kwargs)  # type: ignore
+            pretrained = Llama.from_pretrained(
+                repo_id=repo_id, filename=filename, **kwargs
+            )  # type: ignore
             assert isinstance(pretrained, Llama)
             self.llm = pretrained
 
         elif "model_path" in kwargs:
             self.llm = Llama(**kwargs)  # pyright: ignore[reportUnknownMemberType]
         else:
-            raise ValueError("Please provide model_path if ... or provide repo_id and filename if ....")
+            raise ValueError(
+                "Please provide model_path if ... or provide repo_id and filename if ...."
+            )
         self._total_usage = {"prompt_tokens": 0, "completion_tokens": 0}
 
     async def create(
@@ -291,18 +329,27 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
             elif isinstance(msg, AssistantMessage) and isinstance(msg.content, str):
                 converted_messages.append({"role": "assistant", "content": msg.content})
             elif (
-                isinstance(msg, SystemMessage) or isinstance(msg, UserMessage) or isinstance(msg, AssistantMessage)
+                isinstance(msg, SystemMessage)
+                or isinstance(msg, UserMessage)
+                or isinstance(msg, AssistantMessage)
             ) and isinstance(msg.content, list):
-                raise ValueError("Multi-part messages such as those containing images are currently not supported.")
+                raise ValueError(
+                    "Multi-part messages such as those containing images are currently not supported."
+                )
             else:
                 raise ValueError(f"Unsupported message type: {type(msg)}")
 
         if isinstance(json_output, type) and issubclass(json_output, BaseModel):
-            create_args["response_format"] = {"type": "json_object", "schema": json_output.model_json_schema()}
+            create_args["response_format"] = {
+                "type": "json_object",
+                "schema": json_output.model_json_schema(),
+            }
         elif json_output is True:
             create_args["response_format"] = {"type": "json_object"}
         elif json_output is not False and json_output is not None:
-            raise ValueError("json_output must be a boolean, a BaseModel subclass or None.")
+            raise ValueError(
+                "json_output must be a boolean, a BaseModel subclass or None."
+            )
 
         # Handle tool_choice parameter
         if tool_choice != "auto":
@@ -318,12 +365,18 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
             response_future = asyncio.get_event_loop().run_in_executor(
                 None,
                 lambda: self.llm.create_chat_completion(
-                    messages=converted_messages, tools=convert_tools(tools), stream=False, **create_args
+                    messages=converted_messages,
+                    tools=convert_tools(tools),
+                    stream=False,
+                    **create_args,
                 ),
             )
         else:
             response_future = asyncio.get_event_loop().run_in_executor(
-                None, lambda: self.llm.create_chat_completion(messages=converted_messages, stream=False, **create_args)
+                None,
+                lambda: self.llm.create_chat_completion(
+                    messages=converted_messages, stream=False, **create_args
+                ),
             )
         if cancellation_token:
             cancellation_token.link_future(response_future)
@@ -368,7 +421,10 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
         if not response_tool_calls and not response_text:
             logger.debug("DEBUG: No response text found. Returning empty response.")
             return CreateResult(
-                content="", usage=RequestUsage(prompt_tokens=0, completion_tokens=0), finish_reason="stop", cached=False
+                content="",
+                usage=RequestUsage(prompt_tokens=0, completion_tokens=0),
+                finish_reason="stop",
+                cached=False,
             )
 
         # Create a CreateResult object
@@ -376,7 +432,13 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
             finish_reason = response["choices"][0]["finish_reason"]
         else:
             finish_reason = "unknown"
-        if finish_reason not in ("stop", "length", "function_calls", "content_filter", "unknown"):
+        if finish_reason not in (
+            "stop",
+            "length",
+            "function_calls",
+            "content_filter",
+            "unknown",
+        ):
             finish_reason = "unknown"
         create_result = CreateResult(
             content=content,
@@ -418,12 +480,18 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
         # Validate tool_choice parameter even though streaming is not implemented
         if tool_choice != "auto" and tool_choice != "none":
             if not self.model_info["function_calling"]:
-                raise ValueError("tool_choice specified but model does not support function calling")
+                raise ValueError(
+                    "tool_choice specified but model does not support function calling"
+                )
             if len(tools) == 0:
                 raise ValueError("tool_choice specified but no tools provided")
-            logger.warning("tool_choice parameter specified but may not be supported by llama-cpp-python")
+            logger.warning(
+                "tool_choice parameter specified but may not be supported by llama-cpp-python"
+            )
 
-        raise NotImplementedError("Stream not yet implemented for LlamaCppChatCompletionClient")
+        raise NotImplementedError(
+            "Stream not yet implemented for LlamaCppChatCompletionClient"
+        )
         yield ""
 
     # Implement abstract methods
@@ -439,7 +507,12 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
 
     def count_tokens(
         self,
-        messages: Sequence[SystemMessage | UserMessage | AssistantMessage | FunctionExecutionResultMessage],
+        messages: Sequence[
+            SystemMessage
+            | UserMessage
+            | AssistantMessage
+            | FunctionExecutionResultMessage
+        ],
         **kwargs: Any,
     ) -> int:
         total = 0
@@ -455,7 +528,12 @@ class LlamaCppChatCompletionClient(ChatCompletionClient):
 
     def remaining_tokens(
         self,
-        messages: Sequence[SystemMessage | UserMessage | AssistantMessage | FunctionExecutionResultMessage],
+        messages: Sequence[
+            SystemMessage
+            | UserMessage
+            | AssistantMessage
+            | FunctionExecutionResultMessage
+        ],
         **kwargs: Any,
     ) -> int:
         used_tokens = self.count_tokens(messages)

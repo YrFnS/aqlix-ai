@@ -72,7 +72,10 @@ class Tool(Protocol):
     def return_value_as_string(self, value: Any) -> str: ...
 
     async def run_json(
-        self, args: Mapping[str, Any], cancellation_token: CancellationToken, call_id: str | None = None
+        self,
+        args: Mapping[str, Any],
+        cancellation_token: CancellationToken,
+        call_id: str | None = None,
     ) -> Any: ...
 
     async def save_state_json(self) -> Mapping[str, Any]: ...
@@ -83,7 +86,10 @@ class Tool(Protocol):
 @runtime_checkable
 class StreamTool(Tool, Protocol):
     def run_json_stream(
-        self, args: Mapping[str, Any], cancellation_token: CancellationToken, call_id: str | None = None
+        self,
+        args: Mapping[str, Any],
+        cancellation_token: CancellationToken,
+        call_id: str | None = None,
     ) -> AsyncGenerator[Any, None]: ...
 
 
@@ -116,7 +122,9 @@ class BaseTool(ABC, Tool, Generic[ArgsT, ReturnT], ComponentBase[BaseModel]):
         model_schema: Dict[str, Any] = self._args_type.model_json_schema()
 
         if "$defs" in model_schema:
-            model_schema = cast(Dict[str, Any], jsonref.replace_refs(obj=model_schema, proxies=False))  # type: ignore
+            model_schema = cast(
+                Dict[str, Any], jsonref.replace_refs(obj=model_schema, proxies=False)
+            )  # type: ignore
             del model_schema["$defs"]
 
         parameters = ParametersSchema(
@@ -128,7 +136,9 @@ class BaseTool(ABC, Tool, Generic[ArgsT, ReturnT], ComponentBase[BaseModel]):
 
         # If strict is enabled, the tool schema should list all properties as required.
         assert "required" in parameters
-        if self._strict and set(parameters["required"]) != set(parameters["properties"].keys()):
+        if self._strict and set(parameters["required"]) != set(
+            parameters["properties"].keys()
+        ):
             raise ValueError(
                 "Strict mode is enabled, but not all input arguments are marked as required. Default arguments are not allowed in strict mode."
             )
@@ -174,10 +184,15 @@ class BaseTool(ABC, Tool, Generic[ArgsT, ReturnT], ComponentBase[BaseModel]):
         return str(value)
 
     @abstractmethod
-    async def run(self, args: ArgsT, cancellation_token: CancellationToken) -> ReturnT: ...
+    async def run(
+        self, args: ArgsT, cancellation_token: CancellationToken
+    ) -> ReturnT: ...
 
     async def run_json(
-        self, args: Mapping[str, Any], cancellation_token: CancellationToken, call_id: str | None = None
+        self,
+        args: Mapping[str, Any],
+        cancellation_token: CancellationToken,
+        call_id: str | None = None,
     ) -> Any:
         """Run the tool with the provided arguments in a dictionary.
 
@@ -195,7 +210,9 @@ class BaseTool(ABC, Tool, Generic[ArgsT, ReturnT], ComponentBase[BaseModel]):
             tool_call_id=call_id,
         ):
             # Execute the tool's run method
-            return_value = await self.run(self._args_type.model_validate(args), cancellation_token)
+            return_value = await self.run(
+                self._args_type.model_validate(args), cancellation_token
+            )
 
         # Log the tool call event
         event = ToolCallEvent(
@@ -215,12 +232,18 @@ class BaseTool(ABC, Tool, Generic[ArgsT, ReturnT], ComponentBase[BaseModel]):
 
 
 class BaseStreamTool(
-    BaseTool[ArgsT, ReturnT], StreamTool, ABC, Generic[ArgsT, StreamT, ReturnT], ComponentBase[BaseModel]
+    BaseTool[ArgsT, ReturnT],
+    StreamTool,
+    ABC,
+    Generic[ArgsT, StreamT, ReturnT],
+    ComponentBase[BaseModel],
 ):
     component_type = "tool"
 
     @abstractmethod
-    def run_stream(self, args: ArgsT, cancellation_token: CancellationToken) -> AsyncGenerator[StreamT | ReturnT, None]:
+    def run_stream(
+        self, args: ArgsT, cancellation_token: CancellationToken
+    ) -> AsyncGenerator[StreamT | ReturnT, None]:
         """Run the tool with the provided arguments and return a stream of data and end with the final return value."""
         ...
 
@@ -248,11 +271,15 @@ class BaseStreamTool(
             tool_call_id=call_id,
         ):
             # Execute the tool's run_stream method
-            async for result in self.run_stream(self._args_type.model_validate(args), cancellation_token):
+            async for result in self.run_stream(
+                self._args_type.model_validate(args), cancellation_token
+            ):
                 return_value = result
                 yield result
 
-        assert return_value is not None, "The tool must yield a final return value at the end of the stream."
+        assert return_value is not None, (
+            "The tool must yield a final return value at the end of the stream."
+        )
         if not isinstance(return_value, self._return_type):
             raise TypeError(
                 f"Expected return value of type {self._return_type.__name__}, but got {type(return_value).__name__}"
@@ -267,7 +294,12 @@ class BaseStreamTool(
         logger.info(event)
 
 
-class BaseToolWithState(BaseTool[ArgsT, ReturnT], ABC, Generic[ArgsT, ReturnT, StateT], ComponentBase[BaseModel]):
+class BaseToolWithState(
+    BaseTool[ArgsT, ReturnT],
+    ABC,
+    Generic[ArgsT, ReturnT, StateT],
+    ComponentBase[BaseModel],
+):
     def __init__(
         self,
         args_type: Type[ArgsT],

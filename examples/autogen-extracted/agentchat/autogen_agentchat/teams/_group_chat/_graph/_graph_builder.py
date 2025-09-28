@@ -101,7 +101,9 @@ class DiGraphBuilder:
     def _get_name(self, obj: Union[str, ChatAgent]) -> str:
         return obj if isinstance(obj, str) else obj.name
 
-    def add_node(self, agent: ChatAgent, activation: Literal["all", "any"] = "all") -> "DiGraphBuilder":
+    def add_node(
+        self, agent: ChatAgent, activation: Literal["all", "any"] = "all"
+    ) -> "DiGraphBuilder":
         """Add a node to the graph and register its agent."""
         name = agent.name
         if name not in self.nodes:
@@ -136,9 +138,13 @@ class DiGraphBuilder:
         target_name = self._get_name(target)
 
         if source_name not in self.nodes:
-            raise ValueError(f"Source node '{source_name}' must be added before adding an edge.")
+            raise ValueError(
+                f"Source node '{source_name}' must be added before adding an edge."
+            )
         if target_name not in self.nodes:
-            raise ValueError(f"Target node '{target_name}' must be added before adding an edge.")
+            raise ValueError(
+                f"Target node '{target_name}' must be added before adding an edge."
+            )
         if activation_group is None:
             activation_group = target_name
         if activation_condition is None:
@@ -154,7 +160,9 @@ class DiGraphBuilder:
         return self
 
     def add_conditional_edges(
-        self, source: Union[str, ChatAgent], condition_to_target: Dict[str, Union[str, ChatAgent]]
+        self,
+        source: Union[str, ChatAgent],
+        condition_to_target: Dict[str, Union[str, ChatAgent]],
     ) -> "DiGraphBuilder":
         """Add multiple conditional edges from a source node based on keyword checks.
 
@@ -191,7 +199,9 @@ class DiGraphBuilder:
         """Set the default start node of the graph."""
         node_name = self._get_name(name)
         if node_name not in self.nodes:
-            raise ValueError(f"Start node '{node_name}' must be added before setting as entry point.")
+            raise ValueError(
+                f"Start node '{node_name}' must be added before setting as entry point."
+            )
         self._default_start_node = node_name
         return self
 

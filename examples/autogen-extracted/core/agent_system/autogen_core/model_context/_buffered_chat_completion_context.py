@@ -13,7 +13,9 @@ class BufferedChatCompletionContextConfig(BaseModel):
     initial_messages: List[LLMMessage] | None = None
 
 
-class BufferedChatCompletionContext(ChatCompletionContext, Component[BufferedChatCompletionContextConfig]):
+class BufferedChatCompletionContext(
+    ChatCompletionContext, Component[BufferedChatCompletionContextConfig]
+):
     """A buffered chat completion context that keeps a view of the last n messages,
     where n is the buffer size. The buffer size is set at initialization.
 
@@ -23,9 +25,13 @@ class BufferedChatCompletionContext(ChatCompletionContext, Component[BufferedCha
     """
 
     component_config_schema = BufferedChatCompletionContextConfig
-    component_provider_override = "autogen_core.model_context.BufferedChatCompletionContext"
+    component_provider_override = (
+        "autogen_core.model_context.BufferedChatCompletionContext"
+    )
 
-    def __init__(self, buffer_size: int, initial_messages: List[LLMMessage] | None = None) -> None:
+    def __init__(
+        self, buffer_size: int, initial_messages: List[LLMMessage] | None = None
+    ) -> None:
         super().__init__(initial_messages)
         if buffer_size <= 0:
             raise ValueError("buffer_size must be greater than 0.")

@@ -91,7 +91,8 @@ class MemoryController:
         self,
         reset: bool,
         client: ChatCompletionClient,
-        task_assignment_callback: Callable[[str], Awaitable[Tuple[str, str]]] | None = None,
+        task_assignment_callback: Callable[[str], Awaitable[Tuple[str, str]]]
+        | None = None,
         config: MemoryControllerConfig | None = None,
         logger: PageLogger | None = None,
     ) -> None:
@@ -111,18 +112,26 @@ class MemoryController:
         memory_bank_config = None
         if config is not None:
             self.generalize_task = config.get("generalize_task", self.generalize_task)
-            self.revise_generalized_task = config.get("revise_generalized_task", self.revise_generalized_task)
+            self.revise_generalized_task = config.get(
+                "revise_generalized_task", self.revise_generalized_task
+            )
             self.generate_topics = config.get("generate_topics", self.generate_topics)
             self.validate_memos = config.get("validate_memos", self.validate_memos)
-            self.max_memos_to_retrieve = config.get("max_memos_to_retrieve", self.max_memos_to_retrieve)
-            self.max_train_trials = config.get("max_train_trials", self.max_train_trials)
+            self.max_memos_to_retrieve = config.get(
+                "max_memos_to_retrieve", self.max_memos_to_retrieve
+            )
+            self.max_train_trials = config.get(
+                "max_train_trials", self.max_train_trials
+            )
             self.max_test_trials = config.get("max_test_trials", self.max_test_trials)
             memory_bank_config = config.get("MemoryBank", memory_bank_config)
 
         self.client = client
         self.task_assignment_callback = task_assignment_callback
         self.prompter = Prompter(client, logger)
-        self.memory_bank = MemoryBank(reset=reset, config=memory_bank_config, logger=logger)
+        self.memory_bank = MemoryBank(
+            reset=reset, config=memory_bank_config, logger=logger
+        )
         self.grader = Grader(client, logger)
         self.logger.leave_function()
 
@@ -137,7 +146,9 @@ class MemoryController:
         Repeatedly assigns a task to the agent, and tries to learn from failures by creating useful insights as memories.
         """
         self.logger.enter_function()
-        self.logger.info("Iterate on the task, possibly discovering a useful new insight.\n")
+        self.logger.info(
+            "Iterate on the task, possibly discovering a useful new insight.\n"
+        )
         _, insight = await self._iterate_on_task(task, expected_answer)
         if insight is None:
             self.logger.info("No useful insight was discovered.\n")
@@ -146,7 +157,9 @@ class MemoryController:
             await self.add_memo(insight, task)
         self.logger.leave_function()
 
-    async def test_on_task(self, task: str, expected_answer: str, num_trials: int = 1) -> Tuple[str, int, int]:
+    async def test_on_task(
+        self, task: str, expected_answer: str, num_trials: int = 1
+    ) -> Tuple[str, int, int]:
         """
         Assigns a task to the agent, along with any relevant memos retrieved from memory.
         """
@@ -173,9 +186,10 @@ class MemoryController:
             response, _ = await self.task_assignment_callback(task_plus_insights)
 
             # Check if the response is correct.
-            response_is_correct, extracted_answer = await self.grader.is_response_correct(
-                task, response, expected_answer
-            )
+            (
+                response_is_correct,
+                extracted_answer,
+            ) = await self.grader.is_response_correct(task, response, expected_answer)
             self.logger.info("Extracted answer:  {}".format(extracted_answer))
             if response_is_correct:
                 self.logger.info("Answer is CORRECT.\n")
@@ -184,11 +198,15 @@ class MemoryController:
                 self.logger.info("Answer is INCORRECT.\n")
 
         # Calculate the success rate as a percentage, rounded to the nearest whole number.
-        self.logger.info("\nSuccess rate:  {}%\n".format(round((num_successes / num_trials) * 100)))
+        self.logger.info(
+            "\nSuccess rate:  {}%\n".format(round((num_successes / num_trials) * 100))
+        )
         self.logger.leave_function()
         return response, num_successes, num_trials
 
-    async def add_memo(self, insight: str, task: None | str = None, index_on_both: bool = True) -> None:
+    async def add_memo(
+        self, insight: str, task: None | str = None, index_on_both: bool = True
+    ) -> None:
         """
         Adds one insight to the memory bank, using the task (if provided) as context.
         """
@@ -199,7 +217,9 @@ class MemoryController:
             self.logger.info("\nGIVEN TASK:")
             self.logger.info(task)
             if self.generalize_task:
-                generalized_task = await self.prompter.generalize_task(task, revise=self.revise_generalized_task)
+                generalized_task = await self.prompter.generalize_task(
+                    task, revise=self.revise_generalized_task
+                )
             else:
                 generalized_task = task
 
@@ -252,7 +272,9 @@ class MemoryController:
         self.logger.info("")
 
         # Add the task and solution (as a combined insight) to the memory bank.
-        self.memory_bank.add_task_with_solution(task=task, solution=solution, topics=topics)
+        self.memory_bank.add_task_with_solution(
+            task=task, solution=solution, topics=topics
+        )
         self.logger.leave_function()
 
     async def retrieve_relevant_memos(self, task: str) -> List[Memo]:
@@ -267,7 +289,9 @@ class MemoryController:
 
             # Get a list of topics from the generalized task.
             if self.generalize_task:
-                generalized_task = await self.prompter.generalize_task(task, revise=self.revise_generalized_task)
+                generalized_task = await self.prompter.generalize_task(
+                    task, revise=self.revise_generalized_task
+                )
             else:
                 generalized_task = task
             if self.generate_topics:
@@ -286,7 +310,9 @@ class MemoryController:
             for memo in memo_list:
                 if len(validated_memos) >= self.max_memos_to_retrieve:
                     break
-                if (not self.validate_memos) or await self.prompter.validate_insight(memo.insight, task):
+                if (not self.validate_memos) or await self.prompter.validate_insight(
+                    memo.insight, task
+                ):
                     validated_memos.append(memo)
 
             self.logger.info("\n{} VALIDATED MEMOS".format(len(validated_memos)))
@@ -307,7 +333,9 @@ class MemoryController:
         """
         memory_section = ""
         if len(memories) > 0:
-            memory_section = "## Important insights that may help solve tasks like this\n"
+            memory_section = (
+                "## Important insights that may help solve tasks like this\n"
+            )
             for mem in memories:
                 memory_section += "- " + mem + "\n"
         return memory_section
@@ -319,7 +347,9 @@ class MemoryController:
         Attempts to solve the given task multiple times to find a failure case to learn from.
         """
         self.logger.enter_function()
-        self.logger.info("\nTask description, including any insights:  {}".format(task_plus_insights))
+        self.logger.info(
+            "\nTask description, including any insights:  {}".format(task_plus_insights)
+        )
         self.logger.info("\nExpected answer:  {}\n".format(expected_answer))
 
         assert self.task_assignment_callback is not None
@@ -331,23 +361,30 @@ class MemoryController:
 
             # Attempt to solve the task.
             self.logger.info("Try to solve the task.")
-            response, work_history = await self.task_assignment_callback(task_plus_insights)
-
-            response_is_correct, extracted_answer = await self.grader.is_response_correct(
-                task, response, expected_answer
+            response, work_history = await self.task_assignment_callback(
+                task_plus_insights
             )
+
+            (
+                response_is_correct,
+                extracted_answer,
+            ) = await self.grader.is_response_correct(task, response, expected_answer)
             self.logger.info("Extracted answer:  {}".format(extracted_answer))
             if response_is_correct:
                 self.logger.info("Answer is CORRECT.\n")
             else:
-                self.logger.info("Answer is INCORRECT.\n  Stop testing, and return the details of the failure.\n")
+                self.logger.info(
+                    "Answer is INCORRECT.\n  Stop testing, and return the details of the failure.\n"
+                )
                 failure_found = True
                 break
 
         self.logger.leave_function()
         return failure_found, response, work_history
 
-    async def _iterate_on_task(self, task: str, expected_answer: str) -> Tuple[str, None | str]:
+    async def _iterate_on_task(
+        self, task: str, expected_answer: str
+    ) -> Tuple[str, None | str]:
         """
         Repeatedly assigns a task to the agent, and tries to learn from failures by creating useful insights as memories.
         """
@@ -370,7 +407,9 @@ class MemoryController:
 
             # Add any new insights we've accumulated so far.
             if last_insight is not None:
-                memory_section = self._format_memory_section(old_insights + [last_insight])
+                memory_section = self._format_memory_section(
+                    old_insights + [last_insight]
+                )
             else:
                 memory_section = self._format_memory_section(old_insights)
             if len(memory_section) > 0:
@@ -382,7 +421,9 @@ class MemoryController:
             )
             if not failure_found:
                 # No. Time to exit the loop.
-                self.logger.info("\nResponse is CORRECT.\n  Stop looking for insights.\n")
+                self.logger.info(
+                    "\nResponse is CORRECT.\n  Stop looking for insights.\n"
+                )
                 # Was this the first trial?
                 if trial == 1:
                     # Yes. We should return the successful response, and no insight.
@@ -399,7 +440,9 @@ class MemoryController:
                 break
 
             # Try to learn from this failure.
-            self.logger.info("\nResponse is INCORRECT. Try to learn from this failure.\n")
+            self.logger.info(
+                "\nResponse is INCORRECT. Try to learn from this failure.\n"
+            )
             insight = await self.prompter.learn_from_failure(
                 task, memory_section, response, expected_answer, work_history
             )
@@ -429,7 +472,9 @@ class MemoryController:
         self.logger.leave_function()
         return task
 
-    async def assign_task(self, task: str, use_memory: bool = True, should_await: bool = True) -> str:
+    async def assign_task(
+        self, task: str, use_memory: bool = True, should_await: bool = True
+    ) -> str:
         """
         Assigns a task to some agent through the task_assignment_callback, along with any relevant memories.
         """
@@ -472,7 +517,9 @@ class MemoryController:
         advice = await self.consider_memo_storage(text)
 
         # Assign the task through the task_assignment_callback, using memory only if no advice was just provided.
-        response = await self.assign_task(text, use_memory=(advice is None), should_await=should_await)
+        response = await self.assign_task(
+            text, use_memory=(advice is None), should_await=should_await
+        )
 
         self.logger.leave_function()
         return response

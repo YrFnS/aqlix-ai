@@ -24,7 +24,9 @@ class Prompter:
         logger: An optional logger. If None, no logging will be performed.
     """
 
-    def __init__(self, client: ChatCompletionClient, logger: PageLogger | None = None) -> None:
+    def __init__(
+        self, client: ChatCompletionClient, logger: PageLogger | None = None
+    ) -> None:
         if logger is None:
             logger = PageLogger()  # Nothing will be logged by this object.
         self.logger = logger
@@ -65,8 +67,8 @@ class Prompter:
         # Double check the types of the input messages.
         for message in input_messages:
             for part in message.content:
-                assert isinstance(part, str) or isinstance(part, Image), "Invalid message content type: {}".format(
-                    type(part)
+                assert isinstance(part, str) or isinstance(part, Image), (
+                    "Invalid message content type: {}".format(type(part))
                 )
 
         # Call the model
@@ -81,7 +83,9 @@ class Prompter:
         self.num_model_calls += 1
 
         # Log the model call
-        self.logger.log_model_call(summary=summary, input_messages=input_messages, response=response)
+        self.logger.log_model_call(
+            summary=summary, input_messages=input_messages, response=response
+        )
 
         # Manage the chat history
         if keep_these_messages:
@@ -98,7 +102,12 @@ class Prompter:
         self._chat_history = []
 
     async def learn_from_failure(
-        self, task_description: str, memory_section: str, final_response: str, expected_answer: str, work_history: str
+        self,
+        task_description: str,
+        memory_section: str,
+        final_response: str,
+        expected_answer: str,
+        work_history: str,
     ) -> str:
         """
         Tries to create an insight to help avoid the given failure in the future.
@@ -107,13 +116,17 @@ class Prompter:
 - Your job is to review work done by students and help them learn how to do better."""
 
         user_message: List[Union[str, Image]] = []
-        user_message.append("# A team of students made a mistake on the following task:\n")
+        user_message.append(
+            "# A team of students made a mistake on the following task:\n"
+        )
         user_message.extend([task_description])
 
         if len(memory_section) > 0:
             user_message.append(memory_section)
 
-        user_message.append("# Here's the expected answer, which would have been correct:\n")
+        user_message.append(
+            "# Here's the expected answer, which would have been correct:\n"
+        )
         user_message.append(expected_answer)
 
         user_message.append("# Here is the students' answer, which was INCORRECT:\n")
@@ -173,7 +186,9 @@ class Prompter:
 
         self._clear_history()
         topics = await self.call_model(
-            summary="Ask the model to extract topics", system_message_content=sys_message, user_content=user_message
+            summary="Ask the model to extract topics",
+            system_message_content=sys_message,
+            user_content=user_message,
         )
 
         # Parse the topics into a list.
@@ -184,7 +199,9 @@ class Prompter:
 
         return topic_list
 
-    async def generalize_task(self, task_description: str, revise: bool | None = True) -> str:
+    async def generalize_task(
+        self, task_description: str, revise: bool | None = True
+    ) -> str:
         """
         Attempts to rewrite a task description in a more general form.
         """
@@ -266,7 +283,9 @@ class Prompter:
         user_message.append(text)
         self._clear_history()
         response = await self.call_model(
-            summary="Ask the model to extract a task", system_message_content=sys_message, user_content=user_message
+            summary="Ask the model to extract a task",
+            system_message_content=sys_message,
+            user_content=user_message,
         )
         return response if response != "None" else None
 
@@ -284,6 +303,8 @@ class Prompter:
         user_message.append(text)
         self._clear_history()
         response = await self.call_model(
-            summary="Ask the model to extract advice", system_message_content=sys_message, user_content=user_message
+            summary="Ask the model to extract advice",
+            system_message_content=sys_message,
+            user_content=user_message,
         )
         return response if response != "None" else None

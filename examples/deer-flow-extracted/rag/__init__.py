@@ -15,7 +15,7 @@ from .context_manager import IraqiContextManager
 __all__ = [
     "IraqiKnowledgeBase",
     "IraqiDocumentProcessor",
-    "IraqiRetrievalEngine", 
+    "IraqiRetrievalEngine",
     "IraqiVectorStore",
-    "IraqiContextManager"
+    "IraqiContextManager",
 ]

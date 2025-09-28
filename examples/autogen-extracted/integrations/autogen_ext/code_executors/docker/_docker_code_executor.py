@@ -14,7 +14,17 @@ from collections.abc import Sequence
 from concurrent.futures import Future as ConcurrentFuture
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Callable, ClassVar, Dict, List, Optional, ParamSpec, Tuple, Union
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Dict,
+    List,
+    Optional,
+    ParamSpec,
+    Tuple,
+    Union,
+)
 
 from autogen_core import CancellationToken, Component
 from autogen_core.code_executor import (
@@ -53,7 +63,9 @@ except ImportError as e:
     ) from e
 
 
-async def _wait_for_ready(container: Any, timeout: int = 60, stop_time: float = 0.1) -> None:
+async def _wait_for_ready(
+    container: Any, timeout: int = 60, stop_time: float = 0.1
+) -> None:
     elapsed_time = 0.0
     while container.status != "running" and elapsed_time < timeout:
         await asyncio.sleep(stop_time)
@@ -84,7 +96,9 @@ class DockerCommandLineCodeExecutorConfig(BaseModel):
     delete_tmp_files: bool = False
 
 
-class DockerCommandLineCodeExecutor(CodeExecutor, Component[DockerCommandLineCodeExecutorConfig]):
+class DockerCommandLineCodeExecutor(
+    CodeExecutor, Component[DockerCommandLineCodeExecutorConfig]
+):
     """Executes code through a command line environment in a Docker container.
 
     .. note::
@@ -137,7 +151,9 @@ class DockerCommandLineCodeExecutor(CodeExecutor, Component[DockerCommandLineCod
     """
 
     component_config_schema = DockerCommandLineCodeExecutorConfig
-    component_provider_override = "autogen_ext.code_executors.docker.DockerCommandLineCodeExecutor"
+    component_provider_override = (
+        "autogen_ext.code_executors.docker.DockerCommandLineCodeExecutor"
+    )
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = [
         "bash",
@@ -259,7 +275,11 @@ $functions"""
         func_file.write_text(func_file_content)
 
         # Collect requirements
-        lists_of_packages = [x.python_packages for x in self._functions if isinstance(x, FunctionWithRequirements)]
+        lists_of_packages = [
+            x.python_packages
+            for x in self._functions
+            if isinstance(x, FunctionWithRequirements)
+        ]
         flattened_packages = [item for sublist in lists_of_packages for item in sublist]
         required_packages = list(set(flattened_packages))
         if len(required_packages) > 0:
@@ -268,7 +288,8 @@ $functions"""
             packages = shlex.join(required_packages)
 
             result = await self._execute_code_dont_check_setup(
-                [CodeBlock(code=f"python -m pip install {packages}", language="sh")], cancellation_token
+                [CodeBlock(code=f"python -m pip install {packages}", language="sh")],
+                cancellation_token,
             )
 
             if result.exit_code != 0:
@@ -289,13 +310,21 @@ $functions"""
     async def _kill_running_command(self, command: List[str]) -> None:
         if self._container is None or not self._running:
             return
-        await asyncio.to_thread(self._container.exec_run, ["pkill", "-f", " ".join(command)])
+        await asyncio.to_thread(
+            self._container.exec_run, ["pkill", "-f", " ".join(command)]
+        )
 
-    async def _execute_command(self, command: List[str], cancellation_token: CancellationToken) -> Tuple[str, int]:
+    async def _execute_command(
+        self, command: List[str], cancellation_token: CancellationToken
+    ) -> Tuple[str, int]:
         if self._container is None or not self._running:
-            raise ValueError("Container is not running. Must first be started with either start or a context manager.")
+            raise ValueError(
+                "Container is not running. Must first be started with either start or a context manager."
+            )
 
-        exec_task = asyncio.create_task(asyncio.to_thread(self._container.exec_run, command))
+        exec_task = asyncio.create_task(
+            asyncio.to_thread(self._container.exec_run, command)
+        )
         cancellation_token.link_future(exec_task)
 
         # Wait for the exec task to finish.
@@ -310,14 +339,18 @@ $functions"""
             # Schedule a task to kill the running command in the background.
             if self._loop and not self._loop.is_closed():
                 try:
-                    logging.debug(f"Scheduling kill command via run_coroutine_threadsafe on loop {self._loop!r}")
+                    logging.debug(
+                        f"Scheduling kill command via run_coroutine_threadsafe on loop {self._loop!r}"
+                    )
                     future: ConcurrentFuture[None] = asyncio.run_coroutine_threadsafe(
                         self._kill_running_command(command), self._loop
                     )
                     self._cancellation_futures.append(future)
                     logging.debug(f"Kill command scheduled, future: {future!r}")
                 except RuntimeError as e:
-                    logging.error(f"Failed to schedule kill command on loop {self._loop!r}: {e}")
+                    logging.error(
+                        f"Failed to schedule kill command on loop {self._loop!r}: {e}"
+                    )
                 except Exception as e:
                     logging.exception(f"Unexpected error scheduling kill command: {e}")
             else:
@@ -330,7 +363,9 @@ $functions"""
         self, code_blocks: List[CodeBlock], cancellation_token: CancellationToken
     ) -> CommandLineCodeResult:
         if self._container is None or not self._running:
-            raise ValueError("Container is not running. Must first be started with either start or a context manager.")
+            raise ValueError(
+                "Container is not running. Must first be started with either start or a context manager."
+            )
 
         if len(code_blocks) == 0:
             raise ValueError("No code blocks to execute.")
@@ -361,7 +396,9 @@ $functions"""
 
                 command = ["timeout", str(self._timeout), lang_to_cmd(lang), filename]
 
-                output, exit_code = await self._execute_command(command, cancellation_token)
+                output, exit_code = await self._execute_command(
+                    command, cancellation_token
+                )
                 outputs.append(output)
                 last_exit_code = exit_code
                 if exit_code != 0:
@@ -375,7 +412,9 @@ $functions"""
                         pass
 
         code_file = str(files[0]) if files else None
-        return CommandLineCodeResult(exit_code=last_exit_code, output="".join(outputs), code_file=code_file)
+        return CommandLineCodeResult(
+            exit_code=last_exit_code, output="".join(outputs), code_file=code_file
+        )
 
     @property
     def work_dir(self) -> Path:
@@ -418,12 +457,16 @@ $functions"""
         if not self._setup_functions_complete:
             await self._setup_functions(cancellation_token)
 
-        return await self._execute_code_dont_check_setup(code_blocks, cancellation_token)
+        return await self._execute_code_dont_check_setup(
+            code_blocks, cancellation_token
+        )
 
     async def restart(self) -> None:
         """(Experimental) Restart the Docker container code executor."""
         if self._container is None or not self._running:
-            raise ValueError("Container is not running. Must first be started with either start or a context manager.")
+            raise ValueError(
+                "Container is not running. Must first be started with either start or a context manager."
+            )
 
         await asyncio.to_thread(self._container.restart)  # type: ignore
         if self._container.status != "running":
@@ -448,9 +491,13 @@ $functions"""
         client = docker.from_env()
         try:
             try:
-                container = await asyncio.to_thread(client.containers.get, self.container_name)
+                container = await asyncio.to_thread(
+                    client.containers.get, self.container_name
+                )
             except NotFound:
-                logging.debug(f"Container {self.container_name} not found during stop...")
+                logging.debug(
+                    f"Container {self.container_name} not found during stop..."
+                )
                 self._running = False
                 self._cancellation_futures.clear()
                 return
@@ -464,19 +511,28 @@ $functions"""
                     self._cancellation_futures.clear()
                 else:
                     # concurrent.futures.Future -> asyncio.Future
-                    asyncio_futures = [asyncio.wrap_future(f, loop=self._loop) for f in self._cancellation_futures]
+                    asyncio_futures = [
+                        asyncio.wrap_future(f, loop=self._loop)
+                        for f in self._cancellation_futures
+                    ]
 
                     if asyncio_futures:
                         logging.debug(
                             f"Waiting for {len(asyncio_futures)} cancellation futures to complete on loop {self._loop!r}..."
                         )
-                        results = await asyncio.gather(*asyncio_futures, return_exceptions=True)
+                        results = await asyncio.gather(
+                            *asyncio_futures, return_exceptions=True
+                        )
                         for i, result in enumerate(results):
                             original_future = self._cancellation_futures[i]
                             if isinstance(result, Exception):
-                                logging.warning(f"Cancellation future {original_future!r} failed: {result}")
+                                logging.warning(
+                                    f"Cancellation future {original_future!r} failed: {result}"
+                                )
                             else:
-                                logging.debug(f"Cancellation future {original_future!r} completed successfully.")
+                                logging.debug(
+                                    f"Cancellation future {original_future!r} completed successfully."
+                                )
                     else:
                         logging.debug("No valid cancellation futures to await.")
 
@@ -487,9 +543,13 @@ $functions"""
             logging.debug(f"Container {self.container_name} stopped.")
 
         except DockerException as e:
-            logging.error(f"Docker error while stopping container {self.container_name}: {e}")
+            logging.error(
+                f"Docker error while stopping container {self.container_name}: {e}"
+            )
         except Exception as e:
-            logging.exception(f"Unexpected error during stop operation for container {self.container_name}: {e}")
+            logging.exception(
+                f"Unexpected error during stop operation for container {self.container_name}: {e}"
+            )
         finally:
             self._running = False
             self._cancellation_futures.clear()
@@ -511,10 +571,14 @@ $functions"""
             client = docker.from_env()
         except DockerException as e:
             if "FileNotFoundError" in str(e):
-                raise RuntimeError("Failed to connect to Docker. Please ensure Docker is installed and running.") from e
+                raise RuntimeError(
+                    "Failed to connect to Docker. Please ensure Docker is installed and running."
+                ) from e
             raise
         except Exception as e:
-            raise RuntimeError(f"Unexpected error while connecting to Docker: {str(e)}") from e
+            raise RuntimeError(
+                f"Unexpected error while connecting to Docker: {str(e)}"
+            ) from e
 
         # Check if the image exists
         try:
@@ -527,11 +591,17 @@ $functions"""
 
         # Prepare the command (if needed)
         shell_command = "/bin/sh"
-        command = ["-c", f"{(self._init_command)};exec {shell_command}"] if self._init_command else None
+        command = (
+            ["-c", f"{(self._init_command)};exec {shell_command}"]
+            if self._init_command
+            else None
+        )
 
         # Check if a container with the same name already exists and remove it
         try:
-            existing_container = await asyncio.to_thread(client.containers.get, self.container_name)
+            existing_container = await asyncio.to_thread(
+                client.containers.get, self.container_name
+            )
             await asyncio.to_thread(existing_container.remove, force=True)
         except NotFound:
             pass
@@ -545,7 +615,10 @@ $functions"""
             tty=True,
             detach=True,
             auto_remove=self._auto_remove,
-            volumes={str(self.bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"}, **self._extra_volumes},
+            volumes={
+                str(self.bind_dir.resolve()): {"bind": "/workspace", "mode": "rw"},
+                **self._extra_volumes,
+            },
             working_dir="/workspace",
             extra_hosts=self._extra_hosts,
             device_requests=self._device_requests,
@@ -564,7 +637,9 @@ $functions"""
         # Check if the container is running
         if self._container.status != "running":
             logs_str = self._container.logs().decode("utf-8")
-            raise ValueError(f"Failed to start container from image {self._image}. Logs: {logs_str}")
+            raise ValueError(
+                f"Failed to start container from image {self._image}. Logs: {logs_str}"
+            )
 
         self._loop = asyncio.get_running_loop()
         self._cancellation_futures = []

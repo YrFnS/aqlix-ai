@@ -36,7 +36,18 @@ Version: 1.0.0 - Revolutionary Voice Processing System
 Extraction Value: 6-8 weeks development time saved
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Query, Body, File, UploadFile, WebSocket, WebSocketDisconnect
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    BackgroundTasks,
+    Query,
+    Body,
+    File,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func, desc, asc
 from typing import List, Optional, Dict, Any, Union, Literal, AsyncGenerator
@@ -64,7 +75,7 @@ from ..core.exceptions import (
     AccentRecognitionError,
     VoiceTranscriptionError,
     VoiceSynthesisError,
-    AudioQualityError
+    AudioQualityError,
 )
 
 # Voice Processing Models
@@ -76,7 +87,7 @@ from ..models.voice_models import (
     VoiceEmotion,
     SpeakerIdentification,
     AudioQuality,
-    VoiceProcessingSession
+    VoiceProcessingSession,
 )
 
 # Voice Processing Services
@@ -95,7 +106,7 @@ from ..tasks.voice_tasks import (
     train_accent_models,
     generate_voice_report,
     optimize_voice_models,
-    cleanup_voice_cache
+    cleanup_voice_cache,
 )
 
 # Real-time WebSocket Manager
@@ -113,13 +124,15 @@ voice_processing_router = APIRouter(
         401: {"description": "Authentication required"},
         403: {"description": "Insufficient permissions"},
         422: {"description": "Voice processing failed"},
-        500: {"description": "Voice processing error"}
-    }
+        500: {"description": "Voice processing error"},
+    },
 )
+
 
 # Voice Processing Enums
 class IraqiAccent(str, Enum):
     """Iraqi accent variations"""
+
     BAGHDADI = "baghdadi"
     BASRAWI = "basrawi"
     NAJAFI = "najafi"
@@ -130,22 +143,28 @@ class IraqiAccent(str, Enum):
     ACADEMIC = "academic"  # Formal Iraqi Arabic
     PROFESSIONAL = "professional"  # Business Iraqi Arabic
 
+
 class VoiceQuality(str, Enum):
     """Audio quality levels"""
-    LOW = "low"          # 8kHz, phone quality
-    MEDIUM = "medium"    # 16kHz, standard
-    HIGH = "high"        # 44kHz, professional
-    STUDIO = "studio"    # 96kHz, broadcast
+
+    LOW = "low"  # 8kHz, phone quality
+    MEDIUM = "medium"  # 16kHz, standard
+    HIGH = "high"  # 44kHz, professional
+    STUDIO = "studio"  # 96kHz, broadcast
+
 
 class ProcessingMode(str, Enum):
     """Voice processing modes"""
+
     REAL_TIME = "real_time"
     BATCH = "batch"
     STREAMING = "streaming"
     BACKGROUND = "background"
 
+
 class VoiceLanguage(str, Enum):
     """Supported voice languages"""
+
     ARABIC_IRAQI = "arabic_iraqi"
     ARABIC_STANDARD = "arabic_standard"
     ENGLISH_US = "english_us"
@@ -153,8 +172,10 @@ class VoiceLanguage(str, Enum):
     KURDISH = "kurdish"
     MIXED = "mixed"
 
+
 class EmotionCategory(str, Enum):
     """Voice emotion categories"""
+
     NEUTRAL = "neutral"
     HAPPY = "happy"
     SAD = "sad"
@@ -166,8 +187,10 @@ class EmotionCategory(str, Enum):
     NERVOUS = "nervous"
     RESPECTFUL = "respectful"  # Important for Iraqi culture
 
+
 class ProfessionalContext(str, Enum):
     """Professional voice contexts"""
+
     LEGAL = "legal"
     MEDICAL = "medical"
     EDUCATIONAL = "educational"
@@ -176,9 +199,11 @@ class ProfessionalContext(str, Enum):
     CUSTOMER_SERVICE = "customer_service"
     PRESENTATION = "presentation"
 
+
 # Request/Response Models
 class VoiceProcessingRequest(BaseModel):
     """Request model for voice processing"""
+
     processing_mode: ProcessingMode = Field(
         default=ProcessingMode.BATCH, description="Voice processing mode"
     )
@@ -191,15 +216,11 @@ class VoiceProcessingRequest(BaseModel):
     professional_context: Optional[ProfessionalContext] = Field(
         None, description="Professional context for analysis"
     )
-    analyze_emotion: bool = Field(
-        default=True, description="Perform emotion analysis"
-    )
+    analyze_emotion: bool = Field(default=True, description="Perform emotion analysis")
     identify_speaker: bool = Field(
         default=False, description="Perform speaker identification"
     )
-    enhance_quality: bool = Field(
-        default=True, description="Enhance audio quality"
-    )
+    enhance_quality: bool = Field(default=True, description="Enhance audio quality")
     cultural_validation: bool = Field(
         default=True, description="Validate cultural appropriateness"
     )
@@ -210,87 +231,167 @@ class VoiceProcessingRequest(BaseModel):
         default=True, description="Enable privacy protection mode"
     )
 
+
 class AccentAnalysisResult(BaseModel):
     """Iraqi accent analysis results"""
-    primary_accent: IraqiAccent = Field(..., description="Primary Iraqi accent detected")
-    confidence_score: float = Field(..., ge=0.0, le=1.0, description="Accent detection confidence")
-    accent_distribution: Dict[str, float] = Field(..., description="Distribution of accent features")
-    regional_markers: List[str] = Field(default_factory=list, description="Regional pronunciation markers")
+
+    primary_accent: IraqiAccent = Field(
+        ..., description="Primary Iraqi accent detected"
+    )
+    confidence_score: float = Field(
+        ..., ge=0.0, le=1.0, description="Accent detection confidence"
+    )
+    accent_distribution: Dict[str, float] = Field(
+        ..., description="Distribution of accent features"
+    )
+    regional_markers: List[str] = Field(
+        default_factory=list, description="Regional pronunciation markers"
+    )
     formality_level: Literal["casual", "semi_formal", "formal", "academic"] = Field(
         ..., description="Speech formality level"
     )
-    pronunciation_quality: float = Field(..., ge=0.0, le=1.0, description="Pronunciation clarity score")
-    cultural_appropriateness: float = Field(..., ge=0.0, le=1.0, description="Cultural appropriateness")
+    pronunciation_quality: float = Field(
+        ..., ge=0.0, le=1.0, description="Pronunciation clarity score"
+    )
+    cultural_appropriateness: float = Field(
+        ..., ge=0.0, le=1.0, description="Cultural appropriateness"
+    )
+
 
 class VoiceTranscriptionResult(BaseModel):
     """Voice transcription results"""
+
     transcript: str = Field(..., description="Transcribed text")
-    confidence_score: float = Field(..., ge=0.0, le=1.0, description="Transcription confidence")
+    confidence_score: float = Field(
+        ..., ge=0.0, le=1.0, description="Transcription confidence"
+    )
     language_detected: VoiceLanguage = Field(..., description="Detected language")
-    word_timestamps: List[Dict[str, Any]] = Field(..., description="Word-level timestamps")
-    speaker_segments: List[Dict[str, Any]] = Field(..., description="Speaker change segments")
-    cultural_markers: List[str] = Field(default_factory=list, description="Cultural expression markers")
-    professional_terminology: List[str] = Field(default_factory=list, description="Professional terms detected")
+    word_timestamps: List[Dict[str, Any]] = Field(
+        ..., description="Word-level timestamps"
+    )
+    speaker_segments: List[Dict[str, Any]] = Field(
+        ..., description="Speaker change segments"
+    )
+    cultural_markers: List[str] = Field(
+        default_factory=list, description="Cultural expression markers"
+    )
+    professional_terminology: List[str] = Field(
+        default_factory=list, description="Professional terms detected"
+    )
+
 
 class VoiceEmotionResult(BaseModel):
     """Voice emotion analysis results"""
-    primary_emotion: EmotionCategory = Field(..., description="Primary emotion detected")
-    emotion_confidence: float = Field(..., ge=0.0, le=1.0, description="Emotion detection confidence")
-    emotion_distribution: Dict[str, float] = Field(..., description="Emotion score distribution")
-    cultural_emotion_context: Optional[str] = Field(None, description="Cultural emotion interpretation")
+
+    primary_emotion: EmotionCategory = Field(
+        ..., description="Primary emotion detected"
+    )
+    emotion_confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Emotion detection confidence"
+    )
+    emotion_distribution: Dict[str, float] = Field(
+        ..., description="Emotion score distribution"
+    )
+    cultural_emotion_context: Optional[str] = Field(
+        None, description="Cultural emotion interpretation"
+    )
     professional_appropriateness: Optional[float] = Field(
         None, ge=0.0, le=1.0, description="Professional appropriateness of emotion"
     )
-    stress_indicators: List[str] = Field(default_factory=list, description="Voice stress indicators")
-    emotional_trajectory: List[Dict[str, Any]] = Field(..., description="Emotion changes over time")
+    stress_indicators: List[str] = Field(
+        default_factory=list, description="Voice stress indicators"
+    )
+    emotional_trajectory: List[Dict[str, Any]] = Field(
+        ..., description="Emotion changes over time"
+    )
+
 
 class AudioQualityResult(BaseModel):
     """Audio quality analysis results"""
+
     overall_quality: VoiceQuality = Field(..., description="Overall audio quality")
     quality_score: float = Field(..., ge=0.0, le=1.0, description="Quality score")
-    noise_level: float = Field(..., ge=0.0, le=1.0, description="Background noise level")
+    noise_level: float = Field(
+        ..., ge=0.0, le=1.0, description="Background noise level"
+    )
     signal_clarity: float = Field(..., ge=0.0, le=1.0, description="Signal clarity")
-    enhancement_applied: bool = Field(..., description="Whether enhancement was applied")
-    technical_metrics: Dict[str, float] = Field(..., description="Technical audio metrics")
-    recommendations: List[str] = Field(default_factory=list, description="Quality improvement recommendations")
+    enhancement_applied: bool = Field(
+        ..., description="Whether enhancement was applied"
+    )
+    technical_metrics: Dict[str, float] = Field(
+        ..., description="Technical audio metrics"
+    )
+    recommendations: List[str] = Field(
+        default_factory=list, description="Quality improvement recommendations"
+    )
+
 
 class SpeakerIdentificationResult(BaseModel):
     """Speaker identification results"""
+
     speaker_id: Optional[str] = Field(None, description="Identified speaker ID")
-    confidence_score: float = Field(..., ge=0.0, le=1.0, description="Speaker identification confidence")
-    voice_characteristics: Dict[str, Any] = Field(..., description="Voice characteristic features")
+    confidence_score: float = Field(
+        ..., ge=0.0, le=1.0, description="Speaker identification confidence"
+    )
+    voice_characteristics: Dict[str, Any] = Field(
+        ..., description="Voice characteristic features"
+    )
     gender_detection: Optional[Literal["male", "female", "unknown"]] = Field(
         None, description="Detected gender"
     )
-    age_estimation: Optional[Dict[str, float]] = Field(None, description="Age range estimation")
-    speaker_consistency: float = Field(..., ge=0.0, le=1.0, description="Voice consistency throughout")
-    biometric_features: Optional[Dict[str, float]] = Field(None, description="Voice biometric features")
+    age_estimation: Optional[Dict[str, float]] = Field(
+        None, description="Age range estimation"
+    )
+    speaker_consistency: float = Field(
+        ..., ge=0.0, le=1.0, description="Voice consistency throughout"
+    )
+    biometric_features: Optional[Dict[str, float]] = Field(
+        None, description="Voice biometric features"
+    )
+
 
 class VoiceProcessingResponse(BaseModel):
     """Comprehensive voice processing response"""
+
     processing_id: str = Field(..., description="Unique processing ID")
     audio_duration: float = Field(..., description="Audio duration in seconds")
     processing_time: float = Field(..., description="Processing time in seconds")
-    
+
     # Analysis Results
-    accent_analysis: Optional[AccentAnalysisResult] = Field(None, description="Iraqi accent analysis")
-    transcription: Optional[VoiceTranscriptionResult] = Field(None, description="Voice transcription")
-    emotion_analysis: Optional[VoiceEmotionResult] = Field(None, description="Emotion analysis")
+    accent_analysis: Optional[AccentAnalysisResult] = Field(
+        None, description="Iraqi accent analysis"
+    )
+    transcription: Optional[VoiceTranscriptionResult] = Field(
+        None, description="Voice transcription"
+    )
+    emotion_analysis: Optional[VoiceEmotionResult] = Field(
+        None, description="Emotion analysis"
+    )
     audio_quality: AudioQualityResult = Field(..., description="Audio quality analysis")
-    speaker_identification: Optional[SpeakerIdentificationResult] = Field(None, description="Speaker identification")
-    
+    speaker_identification: Optional[SpeakerIdentificationResult] = Field(
+        None, description="Speaker identification"
+    )
+
     # Cultural Analysis
-    cultural_appropriateness: float = Field(..., ge=0.0, le=1.0, description="Cultural appropriateness score")
-    professional_assessment: Optional[Dict[str, Any]] = Field(None, description="Professional context assessment")
-    
+    cultural_appropriateness: float = Field(
+        ..., ge=0.0, le=1.0, description="Cultural appropriateness score"
+    )
+    professional_assessment: Optional[Dict[str, Any]] = Field(
+        None, description="Professional context assessment"
+    )
+
     # Metadata
     processed_at: datetime = Field(..., description="Processing timestamp")
     privacy_protected: bool = Field(..., description="Privacy protection status")
     retention_expires: datetime = Field(..., description="Data retention expiration")
 
+
 class VoiceSynthesisRequest(BaseModel):
     """Request model for voice synthesis"""
-    text: str = Field(..., description="Text to synthesize", min_length=1, max_length=5000)
+
+    text: str = Field(
+        ..., description="Text to synthesize", min_length=1, max_length=5000
+    )
     target_accent: IraqiAccent = Field(
         default=IraqiAccent.BAGHDADI, description="Target Iraqi accent"
     )
@@ -316,25 +417,42 @@ class VoiceSynthesisRequest(BaseModel):
         default=VoiceQuality.HIGH, description="Output audio quality"
     )
 
+
 class VoiceSynthesisResponse(BaseModel):
     """Response model for voice synthesis"""
+
     synthesis_id: str = Field(..., description="Synthesis ID")
     audio_data: str = Field(..., description="Base64 encoded audio data")
     audio_format: str = Field(..., description="Audio format")
     audio_duration: float = Field(..., description="Audio duration in seconds")
-    synthesis_quality: float = Field(..., ge=0.0, le=1.0, description="Synthesis quality score")
-    accent_accuracy: float = Field(..., ge=0.0, le=1.0, description="Accent accuracy score")
-    cultural_appropriateness: float = Field(..., ge=0.0, le=1.0, description="Cultural appropriateness")
+    synthesis_quality: float = Field(
+        ..., ge=0.0, le=1.0, description="Synthesis quality score"
+    )
+    accent_accuracy: float = Field(
+        ..., ge=0.0, le=1.0, description="Accent accuracy score"
+    )
+    cultural_appropriateness: float = Field(
+        ..., ge=0.0, le=1.0, description="Cultural appropriateness"
+    )
     processing_time: float = Field(..., description="Synthesis time in seconds")
+
 
 class RealTimeVoiceSession(BaseModel):
     """Real-time voice processing session"""
+
     session_id: str = Field(..., description="Session ID")
-    status: Literal["active", "paused", "ended"] = Field(..., description="Session status")
+    status: Literal["active", "paused", "ended"] = Field(
+        ..., description="Session status"
+    )
     duration: float = Field(..., description="Session duration in seconds")
     messages_processed: int = Field(..., description="Number of messages processed")
-    average_confidence: float = Field(..., ge=0.0, le=1.0, description="Average processing confidence")
-    cultural_compliance: float = Field(..., ge=0.0, le=1.0, description="Cultural compliance rate")
+    average_confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Average processing confidence"
+    )
+    cultural_compliance: float = Field(
+        ..., ge=0.0, le=1.0, description="Cultural compliance rate"
+    )
+
 
 # Initialize Services
 voice_service = VoiceProcessingService()
@@ -351,17 +469,18 @@ websocket_manager = WebSocketManager()
 
 # Voice Processing Endpoints
 
+
 @voice_processing_router.post("/process", response_model=VoiceProcessingResponse)
 async def process_voice_message(
     audio_file: UploadFile = File(..., description="Audio file to process"),
     request: VoiceProcessingRequest = Depends(),
     background_tasks: BackgroundTasks = BackgroundTasks(),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> VoiceProcessingResponse:
     """
     Comprehensive voice message processing with Iraqi accent intelligence
-    
+
     Advanced voice processing featuring:
     - Real-time Iraqi accent recognition (92%+ accuracy)
     - Voice-to-text transcription with cultural context
@@ -374,39 +493,36 @@ async def process_voice_message(
     """
     start_time = datetime.now()
     processing_id = str(uuid.uuid4())
-    
+
     try:
-        logger.info(f"Starting voice processing {processing_id} for user {current_user.id}")
-        
+        logger.info(
+            f"Starting voice processing {processing_id} for user {current_user.id}"
+        )
+
         # Validate audio file
-        if not audio_file.content_type.startswith('audio/'):
+        if not audio_file.content_type.startswith("audio/"):
             raise HTTPException(
                 status_code=400,
-                detail="Invalid file type. Please upload an audio file."
+                detail="Invalid file type. Please upload an audio file.",
             )
-        
+
         # Read and validate audio data
         audio_data = await audio_file.read()
         if len(audio_data) > 100 * 1024 * 1024:  # 100MB limit
             raise HTTPException(
-                status_code=400,
-                detail="Audio file too large (max 100MB)"
+                status_code=400, detail="Audio file too large (max 100MB)"
             )
-        
+
         # Get audio duration
         try:
             duration = await voice_service.get_audio_duration(audio_data)
             if duration > 600:  # 10-minute limit
                 raise HTTPException(
-                    status_code=400,
-                    detail="Audio too long (max 10 minutes)"
+                    status_code=400, detail="Audio too long (max 10 minutes)"
                 )
         except Exception:
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid audio file format"
-            )
-        
+            raise HTTPException(status_code=400, detail="Invalid audio file format")
+
         # Cache check for repeated audio processing
         audio_hash = hash(audio_data)
         cache_key = f"voice_processing:{audio_hash}:{request.processing_mode}"
@@ -415,74 +531,83 @@ async def process_voice_message(
             logger.info(f"Using cached voice processing for {processing_id}")
             cached_result["processing_id"] = processing_id
             return VoiceProcessingResponse(**cached_result)
-        
+
         # Initialize processing results
         results = {
             "processing_id": processing_id,
             "audio_duration": duration,
             "processed_at": datetime.now(),
             "privacy_protected": request.preserve_privacy,
-            "retention_expires": datetime.now() + timedelta(hours=1 if request.preserve_privacy else 24)
+            "retention_expires": datetime.now()
+            + timedelta(hours=1 if request.preserve_privacy else 24),
         }
-        
+
         # Audio quality analysis and enhancement
         quality_result = await quality_service.analyze_and_enhance(
             audio_data=audio_data,
             enhance=request.enhance_quality,
-            target_quality=VoiceQuality.HIGH
+            target_quality=VoiceQuality.HIGH,
         )
         results["audio_quality"] = quality_result
-        
+
         # Use enhanced audio for further processing
-        enhanced_audio = quality_result.enhanced_audio if quality_result.enhancement_applied else audio_data
-        
+        enhanced_audio = (
+            quality_result.enhanced_audio
+            if quality_result.enhancement_applied
+            else audio_data
+        )
+
         # Iraqi accent analysis
         if request.expected_accent or request.cultural_validation:
             accent_result = await accent_service.analyze_accent(
                 audio_data=enhanced_audio,
                 expected_accent=request.expected_accent,
-                professional_context=request.professional_context
+                professional_context=request.professional_context,
             )
             results["accent_analysis"] = accent_result
-        
+
         # Voice transcription if requested
         if request.generate_transcript:
             transcription_result = await transcription_service.transcribe_voice(
                 audio_data=enhanced_audio,
                 expected_language=request.expected_language,
                 expected_accent=request.expected_accent,
-                professional_context=request.professional_context
+                professional_context=request.professional_context,
             )
             results["transcription"] = transcription_result
-        
+
         # Emotion analysis if requested
         if request.analyze_emotion:
             emotion_result = await emotion_service.analyze_emotion(
                 audio_data=enhanced_audio,
                 cultural_context=True,
-                professional_context=request.professional_context
+                professional_context=request.professional_context,
             )
             results["emotion_analysis"] = emotion_result
-        
+
         # Speaker identification if requested
         if request.identify_speaker:
             speaker_result = await speaker_service.identify_speaker(
                 audio_data=enhanced_audio,
-                user_id=current_user.id if not request.preserve_privacy else None
+                user_id=current_user.id if not request.preserve_privacy else None,
             )
             results["speaker_identification"] = speaker_result
-        
+
         # Cultural appropriateness validation
         cultural_score = 1.0
         if request.cultural_validation:
-            cultural_score = await cultural_voice_service.validate_cultural_appropriateness(
-                audio_data=enhanced_audio,
-                transcription=results.get("transcription", {}).get("transcript", ""),
-                emotion=results.get("emotion_analysis", {}).get("primary_emotion"),
-                professional_context=request.professional_context
+            cultural_score = (
+                await cultural_voice_service.validate_cultural_appropriateness(
+                    audio_data=enhanced_audio,
+                    transcription=results.get("transcription", {}).get(
+                        "transcript", ""
+                    ),
+                    emotion=results.get("emotion_analysis", {}).get("primary_emotion"),
+                    professional_context=request.professional_context,
+                )
             )
         results["cultural_appropriateness"] = cultural_score
-        
+
         # Professional assessment if context provided
         if request.professional_context:
             professional_assessment = await voice_service.assess_professional_context(
@@ -490,14 +615,14 @@ async def process_voice_message(
                 transcription=results.get("transcription", {}).get("transcript", ""),
                 accent=results.get("accent_analysis", {}).get("primary_accent"),
                 emotion=results.get("emotion_analysis", {}).get("primary_emotion"),
-                context=request.professional_context
+                context=request.professional_context,
             )
             results["professional_assessment"] = professional_assessment
-        
+
         # Calculate processing time
         processing_time = (datetime.now() - start_time).total_seconds()
         results["processing_time"] = processing_time
-        
+
         # Store voice processing record in database
         voice_record = VoiceMessage(
             id=processing_id,
@@ -512,53 +637,54 @@ async def process_voice_message(
             cultural_score=cultural_score,
             processing_time=processing_time,
             privacy_protected=request.preserve_privacy,
-            professional_context=request.professional_context.value if request.professional_context else None,
+            professional_context=request.professional_context.value
+            if request.professional_context
+            else None,
             created_at=datetime.now(),
-            expires_at=results["retention_expires"]
+            expires_at=results["retention_expires"],
         )
         db.add(voice_record)
         db.commit()
-        
+
         # Create response
         response = VoiceProcessingResponse(**results)
-        
+
         # Cache result for batch processing
         if request.processing_mode == ProcessingMode.BATCH:
             cache_data = results.copy()
             cache_ttl = 1800 if request.preserve_privacy else 3600  # 30min or 1hr
             await cache_manager.set(cache_key, cache_data, expire=cache_ttl)
-        
+
         # Schedule background tasks
         if not request.preserve_privacy:
             background_tasks.add_task(
-                process_voice_background,
-                processing_id,
-                audio_hash,
-                current_user.id
+                process_voice_background, processing_id, audio_hash, current_user.id
             )
-        
-        logger.info(f"Voice processing {processing_id} completed in {processing_time:.3f}s")
+
+        logger.info(
+            f"Voice processing {processing_id} completed in {processing_time:.3f}s"
+        )
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Voice processing error {processing_id}: {str(e)}")
         db.rollback()
         raise HTTPException(
-            status_code=500,
-            detail=f"Voice processing failed: {str(e)}"
+            status_code=500, detail=f"Voice processing failed: {str(e)}"
         )
+
 
 @voice_processing_router.post("/synthesize", response_model=VoiceSynthesisResponse)
 async def synthesize_voice(
     request: VoiceSynthesisRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> VoiceSynthesisResponse:
     """
     Generate Iraqi-accented voice synthesis from text
-    
+
     Voice synthesis featuring:
     - Authentic Iraqi accent generation
     - Professional context adaptation
@@ -569,22 +695,23 @@ async def synthesize_voice(
     """
     synthesis_id = str(uuid.uuid4())
     start_time = datetime.now()
-    
+
     try:
-        logger.info(f"Starting voice synthesis {synthesis_id} for user {current_user.id}")
-        
+        logger.info(
+            f"Starting voice synthesis {synthesis_id} for user {current_user.id}"
+        )
+
         # Validate text for cultural appropriateness
         cultural_score = await cultural_voice_service.validate_text_for_synthesis(
-            text=request.text,
-            professional_context=request.professional_context
+            text=request.text, professional_context=request.professional_context
         )
-        
+
         if cultural_score < 0.8:  # 80% threshold for synthesis
             raise HTTPException(
                 status_code=422,
-                detail="Text does not meet cultural appropriateness requirements for voice synthesis"
+                detail="Text does not meet cultural appropriateness requirements for voice synthesis",
             )
-        
+
         # Generate voice synthesis
         synthesis_result = await synthesis_service.synthesize_voice(
             text=request.text,
@@ -595,12 +722,12 @@ async def synthesize_voice(
             emotional_tone=request.emotional_tone,
             professional_context=request.professional_context,
             audio_format=request.audio_format,
-            quality=request.quality
+            quality=request.quality,
         )
-        
+
         # Calculate processing time
         processing_time = (datetime.now() - start_time).total_seconds()
-        
+
         # Store synthesis record
         synthesis_record = VoiceSynthesis(
             id=synthesis_id,
@@ -616,12 +743,14 @@ async def synthesize_voice(
             accent_accuracy=synthesis_result.accent_accuracy,
             cultural_appropriateness=cultural_score,
             processing_time=processing_time,
-            professional_context=request.professional_context.value if request.professional_context else None,
-            created_at=datetime.now()
+            professional_context=request.professional_context.value
+            if request.professional_context
+            else None,
+            created_at=datetime.now(),
         )
         db.add(synthesis_record)
         db.commit()
-        
+
         # Prepare response
         response = VoiceSynthesisResponse(
             synthesis_id=synthesis_id,
@@ -631,32 +760,32 @@ async def synthesize_voice(
             synthesis_quality=synthesis_result.synthesis_quality,
             accent_accuracy=synthesis_result.accent_accuracy,
             cultural_appropriateness=cultural_score,
-            processing_time=processing_time
+            processing_time=processing_time,
         )
-        
-        logger.info(f"Voice synthesis {synthesis_id} completed in {processing_time:.3f}s")
+
+        logger.info(
+            f"Voice synthesis {synthesis_id} completed in {processing_time:.3f}s"
+        )
         return response
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Voice synthesis error {synthesis_id}: {str(e)}")
         db.rollback()
-        raise HTTPException(
-            status_code=500,
-            detail=f"Voice synthesis failed: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Voice synthesis failed: {str(e)}")
+
 
 @voice_processing_router.websocket("/real-time/{session_id}")
 async def real_time_voice_processing(
     websocket: WebSocket,
     session_id: str,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Real-time voice processing WebSocket endpoint
-    
+
     Real-time features:
     - Live audio streaming processing
     - Instant accent recognition feedback
@@ -670,10 +799,12 @@ async def real_time_voice_processing(
     messages_processed = 0
     confidence_scores = []
     cultural_scores = []
-    
+
     try:
-        logger.info(f"Started real-time voice session {session_id} for user {current_user.id}")
-        
+        logger.info(
+            f"Started real-time voice session {session_id} for user {current_user.id}"
+        )
+
         # Create session record
         session_record = VoiceProcessingSession(
             id=session_id,
@@ -682,38 +813,35 @@ async def real_time_voice_processing(
             started_at=session_start,
             messages_processed=0,
             average_confidence=0.0,
-            cultural_compliance=0.0
+            cultural_compliance=0.0,
         )
         db.add(session_record)
         db.commit()
-        
+
         while True:
             try:
                 # Receive audio data from client
                 data = await websocket.receive_bytes()
-                
+
                 if len(data) > 5 * 1024 * 1024:  # 5MB chunk limit
-                    await websocket.send_json({
-                        "error": "Audio chunk too large",
-                        "max_size": "5MB"
-                    })
+                    await websocket.send_json(
+                        {"error": "Audio chunk too large", "max_size": "5MB"}
+                    )
                     continue
-                
+
                 # Process audio chunk
                 processing_result = await voice_service.process_real_time_chunk(
-                    audio_data=data,
-                    session_id=session_id,
-                    user_id=current_user.id
+                    audio_data=data, session_id=session_id, user_id=current_user.id
                 )
-                
+
                 # Extract key metrics
                 confidence = processing_result.get("confidence", 0.0)
                 cultural_score = processing_result.get("cultural_score", 1.0)
-                
+
                 confidence_scores.append(confidence)
                 cultural_scores.append(cultural_score)
                 messages_processed += 1
-                
+
                 # Send real-time results to client
                 response = {
                     "session_id": session_id,
@@ -723,21 +851,24 @@ async def real_time_voice_processing(
                     "confidence": confidence,
                     "emotion": processing_result.get("emotion"),
                     "cultural_score": cultural_score,
-                    "professional_feedback": processing_result.get("professional_feedback")
+                    "professional_feedback": processing_result.get(
+                        "professional_feedback"
+                    ),
                 }
-                
+
                 await websocket.send_json(response)
-                
+
             except WebSocketDisconnect:
                 logger.info(f"WebSocket disconnected for session {session_id}")
                 break
             except Exception as chunk_error:
-                logger.error(f"Error processing chunk in session {session_id}: {str(chunk_error)}")
-                await websocket.send_json({
-                    "error": "Processing error",
-                    "details": str(chunk_error)
-                })
-                
+                logger.error(
+                    f"Error processing chunk in session {session_id}: {str(chunk_error)}"
+                )
+                await websocket.send_json(
+                    {"error": "Processing error", "details": str(chunk_error)}
+                )
+
     except WebSocketDisconnect:
         pass
     except Exception as e:
@@ -745,9 +876,15 @@ async def real_time_voice_processing(
     finally:
         # Update session record
         session_duration = (datetime.now() - session_start).total_seconds()
-        avg_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0.0
-        avg_cultural = sum(cultural_scores) / len(cultural_scores) if cultural_scores else 0.0
-        
+        avg_confidence = (
+            sum(confidence_scores) / len(confidence_scores)
+            if confidence_scores
+            else 0.0
+        )
+        avg_cultural = (
+            sum(cultural_scores) / len(cultural_scores) if cultural_scores else 0.0
+        )
+
         session_record.status = "ended"
         session_record.ended_at = datetime.now()
         session_record.duration = session_duration
@@ -755,59 +892,65 @@ async def real_time_voice_processing(
         session_record.average_confidence = avg_confidence
         session_record.cultural_compliance = avg_cultural
         db.commit()
-        
-        await websocket_manager.disconnect(session_id)
-        logger.info(f"Real-time voice session {session_id} ended after {session_duration:.1f}s")
 
-@voice_processing_router.get("/sessions/{session_id}", response_model=RealTimeVoiceSession)
+        await websocket_manager.disconnect(session_id)
+        logger.info(
+            f"Real-time voice session {session_id} ended after {session_duration:.1f}s"
+        )
+
+
+@voice_processing_router.get(
+    "/sessions/{session_id}", response_model=RealTimeVoiceSession
+)
 async def get_voice_session(
     session_id: str,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> RealTimeVoiceSession:
     """
     Retrieve real-time voice processing session details
     """
     try:
-        session = db.query(VoiceProcessingSession).filter(
-            VoiceProcessingSession.id == session_id,
-            VoiceProcessingSession.user_id == current_user.id
-        ).first()
-        
+        session = (
+            db.query(VoiceProcessingSession)
+            .filter(
+                VoiceProcessingSession.id == session_id,
+                VoiceProcessingSession.user_id == current_user.id,
+            )
+            .first()
+        )
+
         if not session:
             raise HTTPException(
-                status_code=404,
-                detail="Voice processing session not found"
+                status_code=404, detail="Voice processing session not found"
             )
-        
+
         return RealTimeVoiceSession(
             session_id=session.id,
             status=session.status,
             duration=session.duration or 0.0,
             messages_processed=session.messages_processed,
             average_confidence=session.average_confidence,
-            cultural_compliance=session.cultural_compliance
+            cultural_compliance=session.cultural_compliance,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error retrieving voice session {session_id}: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to retrieve voice session"
-        )
+        raise HTTPException(status_code=500, detail="Failed to retrieve voice session")
+
 
 @voice_processing_router.get("/metrics")
 async def get_voice_processing_metrics(
     days: int = Query(30, description="Number of days for metrics", ge=1, le=365),
     accent: Optional[IraqiAccent] = Query(None, description="Filter by accent"),
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
     """
     Comprehensive voice processing metrics and analytics
-    
+
     Metrics featuring:
     - Voice processing performance analytics
     - Iraqi accent recognition accuracy
@@ -818,25 +961,25 @@ async def get_voice_processing_metrics(
     """
     try:
         logger.info(f"Retrieving voice processing metrics for user {current_user.id}")
-        
+
         # Calculate date range
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days)
-        
+
         # Base query for user's voice messages
         base_query = db.query(VoiceMessage).filter(
             VoiceMessage.user_id == current_user.id,
             VoiceMessage.created_at >= start_date,
-            VoiceMessage.created_at <= end_date
+            VoiceMessage.created_at <= end_date,
         )
-        
+
         # Apply accent filter if specified
         if accent:
             base_query = base_query.filter(VoiceMessage.accent_detected == accent.value)
-        
+
         # Get total processing count
         total_processing = base_query.count()
-        
+
         if total_processing == 0:
             return {
                 "total_processing": 0,
@@ -846,56 +989,72 @@ async def get_voice_processing_metrics(
                 "emotion_distribution": {},
                 "professional_context_breakdown": {},
                 "processing_time_stats": {},
-                "trends": {}
+                "trends": {},
             }
-        
+
         # Calculate average scores
-        avg_quality = base_query.with_entities(func.avg(VoiceMessage.quality_score)).scalar()
-        avg_cultural = base_query.with_entities(func.avg(VoiceMessage.cultural_score)).scalar()
-        
+        avg_quality = base_query.with_entities(
+            func.avg(VoiceMessage.quality_score)
+        ).scalar()
+        avg_cultural = base_query.with_entities(
+            func.avg(VoiceMessage.cultural_score)
+        ).scalar()
+
         # Get accent distribution
-        accent_results = db.query(
-            VoiceMessage.accent_detected,
-            func.count(VoiceMessage.id)
-        ).filter(
-            VoiceMessage.user_id == current_user.id,
-            VoiceMessage.created_at >= start_date
-        ).group_by(VoiceMessage.accent_detected).all()
-        
-        accent_distribution = {accent: count for accent, count in accent_results if accent}
-        
+        accent_results = (
+            db.query(VoiceMessage.accent_detected, func.count(VoiceMessage.id))
+            .filter(
+                VoiceMessage.user_id == current_user.id,
+                VoiceMessage.created_at >= start_date,
+            )
+            .group_by(VoiceMessage.accent_detected)
+            .all()
+        )
+
+        accent_distribution = {
+            accent: count for accent, count in accent_results if accent
+        }
+
         # Get emotion distribution
-        emotion_results = db.query(
-            VoiceMessage.emotion_detected,
-            func.count(VoiceMessage.id)
-        ).filter(
-            VoiceMessage.user_id == current_user.id,
-            VoiceMessage.created_at >= start_date
-        ).group_by(VoiceMessage.emotion_detected).all()
-        
-        emotion_distribution = {emotion: count for emotion, count in emotion_results if emotion}
-        
+        emotion_results = (
+            db.query(VoiceMessage.emotion_detected, func.count(VoiceMessage.id))
+            .filter(
+                VoiceMessage.user_id == current_user.id,
+                VoiceMessage.created_at >= start_date,
+            )
+            .group_by(VoiceMessage.emotion_detected)
+            .all()
+        )
+
+        emotion_distribution = {
+            emotion: count for emotion, count in emotion_results if emotion
+        }
+
         # Get professional context breakdown
-        professional_results = db.query(
-            VoiceMessage.professional_context,
-            func.count(VoiceMessage.id)
-        ).filter(
-            VoiceMessage.user_id == current_user.id,
-            VoiceMessage.created_at >= start_date
-        ).group_by(VoiceMessage.professional_context).all()
-        
-        professional_breakdown = {context: count for context, count in professional_results if context}
-        
+        professional_results = (
+            db.query(VoiceMessage.professional_context, func.count(VoiceMessage.id))
+            .filter(
+                VoiceMessage.user_id == current_user.id,
+                VoiceMessage.created_at >= start_date,
+            )
+            .group_by(VoiceMessage.professional_context)
+            .all()
+        )
+
+        professional_breakdown = {
+            context: count for context, count in professional_results if context
+        }
+
         # Get processing time statistics
         processing_times = base_query.with_entities(VoiceMessage.processing_time).all()
         times = [pt[0] for pt in processing_times if pt[0]]
-        
+
         processing_time_stats = {
             "average": sum(times) / len(times) if times else 0.0,
             "min": min(times) if times else 0.0,
-            "max": max(times) if times else 0.0
+            "max": max(times) if times else 0.0,
         }
-        
+
         response = {
             "total_processing": total_processing,
             "average_quality_score": float(avg_quality) if avg_quality else 0.0,
@@ -908,124 +1067,124 @@ async def get_voice_processing_metrics(
                 "quality_improvement": 0.03,  # Mock trend data
                 "accent_recognition_accuracy": 0.92,
                 "cultural_compliance_rate": 0.94,
-                "processing_speed_improvement": 0.15
-            }
+                "processing_speed_improvement": 0.15,
+            },
         }
-        
+
         logger.info(f"Voice processing metrics retrieved: {total_processing} records")
         return response
-        
+
     except Exception as e:
         logger.error(f"Error retrieving voice processing metrics: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to retrieve voice processing metrics: {str(e)}"
+            detail=f"Failed to retrieve voice processing metrics: {str(e)}",
         )
+
 
 @voice_processing_router.delete("/message/{processing_id}")
 async def delete_voice_message(
     processing_id: str,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> Dict[str, str]:
     """
     Delete voice processing record (privacy compliance)
     """
     try:
         # Find and verify ownership
-        voice_message = db.query(VoiceMessage).filter(
-            VoiceMessage.id == processing_id,
-            VoiceMessage.user_id == current_user.id
-        ).first()
-        
-        if not voice_message:
-            raise HTTPException(
-                status_code=404,
-                detail="Voice message not found"
+        voice_message = (
+            db.query(VoiceMessage)
+            .filter(
+                VoiceMessage.id == processing_id,
+                VoiceMessage.user_id == current_user.id,
             )
-        
+            .first()
+        )
+
+        if not voice_message:
+            raise HTTPException(status_code=404, detail="Voice message not found")
+
         # Delete voice message and related records
         db.delete(voice_message)
-        
+
         # Delete related analysis records
         db.query(AccentAnalysis).filter(
             AccentAnalysis.user_id == current_user.id,
-            AccentAnalysis.audio_hash == voice_message.audio_hash
+            AccentAnalysis.audio_hash == voice_message.audio_hash,
         ).delete()
-        
+
         db.query(VoiceTranscription).filter(
             VoiceTranscription.user_id == current_user.id,
-            VoiceTranscription.audio_hash == voice_message.audio_hash
+            VoiceTranscription.audio_hash == voice_message.audio_hash,
         ).delete()
-        
+
         db.query(VoiceEmotion).filter(
             VoiceEmotion.user_id == current_user.id,
-            VoiceEmotion.audio_hash == voice_message.audio_hash
+            VoiceEmotion.audio_hash == voice_message.audio_hash,
         ).delete()
-        
+
         db.commit()
-        
+
         logger.info(f"Deleted voice message {processing_id} for user {current_user.id}")
         return {"status": "deleted", "processing_id": processing_id}
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error deleting voice message {processing_id}: {str(e)}")
         db.rollback()
         raise HTTPException(
-            status_code=500,
-            detail=f"Failed to delete voice message: {str(e)}"
+            status_code=500, detail=f"Failed to delete voice message: {str(e)}"
         )
 
+
 # Administrative endpoints
-@voice_processing_router.post("/admin/train-models", dependencies=[Depends(require_permissions(["admin"]))])
+@voice_processing_router.post(
+    "/admin/train-models", dependencies=[Depends(require_permissions(["admin"]))]
+)
 async def train_accent_recognition_models(
-    background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user)
+    background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)
 ) -> Dict[str, str]:
     """
     Train Iraqi accent recognition models (Admin only)
     """
     try:
         background_tasks.add_task(train_accent_models)
-        
+
         logger.info(f"Accent model training initiated by admin {current_user.id}")
         return {
             "status": "initiated",
-            "message": "Accent recognition model training started in background"
+            "message": "Accent recognition model training started in background",
         }
-        
+
     except Exception as e:
         logger.error(f"Error initiating model training: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to initiate model training"
-        )
+        raise HTTPException(status_code=500, detail="Failed to initiate model training")
 
-@voice_processing_router.post("/admin/cleanup-cache", dependencies=[Depends(require_permissions(["admin"]))])
+
+@voice_processing_router.post(
+    "/admin/cleanup-cache", dependencies=[Depends(require_permissions(["admin"]))]
+)
 async def cleanup_voice_processing_cache(
-    background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user)
+    background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)
 ) -> Dict[str, str]:
     """
     Cleanup voice processing cache and expired data (Admin only)
     """
     try:
         background_tasks.add_task(cleanup_voice_cache)
-        
+
         logger.info(f"Voice cache cleanup initiated by admin {current_user.id}")
         return {
             "status": "initiated",
-            "message": "Voice processing cache cleanup started in background"
+            "message": "Voice processing cache cleanup started in background",
         }
-        
+
     except Exception as e:
         logger.error(f"Error initiating cache cleanup: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to initiate cache cleanup"
-        )
+        raise HTTPException(status_code=500, detail="Failed to initiate cache cleanup")
+
 
 # Health check endpoint
 @voice_processing_router.get("/health")
@@ -1043,26 +1202,27 @@ async def voice_processing_health() -> Dict[str, Any]:
             "emotion_service": await emotion_service.health_check(),
             "speaker_service": await speaker_service.health_check(),
             "quality_service": await quality_service.health_check(),
-            "cultural_voice_service": await cultural_voice_service.health_check()
+            "cultural_voice_service": await cultural_voice_service.health_check(),
         }
-        
+
         overall_health = all(services_status.values())
-        
+
         return {
             "status": "healthy" if overall_health else "degraded",
             "services": services_status,
             "real_time_sessions": len(websocket_manager.active_connections),
             "timestamp": datetime.now().isoformat(),
-            "version": "1.0.0"
+            "version": "1.0.0",
         }
-        
+
     except Exception as e:
         logger.error(f"Voice processing health check failed: {str(e)}")
         return {
             "status": "unhealthy",
             "error": str(e),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
+
 
 # Router configuration and metadata
 voice_processing_router.tags = ["Voice Processing", "Iraqi Accent Intelligence"]

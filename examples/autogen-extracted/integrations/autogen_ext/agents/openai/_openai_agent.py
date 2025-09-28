@@ -63,7 +63,9 @@ class WebSearchToolConfig(TypedDict):
 
     type: Literal["web_search_preview"]
     search_context_size: NotRequired[int]  # optional
-    user_location: NotRequired[Union[str, Dict[str, Any]]]  # optional - Can be string or structured location
+    user_location: NotRequired[
+        Union[str, Dict[str, Any]]
+    ]  # optional - Can be string or structured location
 
 
 class ComputerUseToolConfig(TypedDict):
@@ -182,7 +184,13 @@ class OpenAIMessage(TypedDict):
 
 
 def _convert_message_to_openai_message(
-    message: Union[TextMessage, MultiModalMessage, StopMessage, ToolCallSummaryMessage, HandoffMessage],
+    message: Union[
+        TextMessage,
+        MultiModalMessage,
+        StopMessage,
+        ToolCallSummaryMessage,
+        HandoffMessage,
+    ],
 ) -> OpenAIMessage:
     """Convert an AutoGen message to an OpenAI message format."""
     if isinstance(message, TextMessage):
@@ -201,7 +209,9 @@ def _convert_message_to_openai_message(
                 content_parts.append({"type": "text", "text": str(part.content)})
             elif isinstance(part, ImageMessage):
                 image_content = str(part.content)
-                content_parts.append({"type": "image_url", "image_url": {"url": image_content}})
+                content_parts.append(
+                    {"type": "image_url", "image_url": {"url": image_content}}
+                )
         return {"role": "user", "content": content_parts}
     else:
         return {"role": "user", "content": str(message.content)}
@@ -540,7 +550,12 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                     f"autogen_ext.code_executors.local.LocalCommandLineCodeExecutor for shell execution instead."
                 )
             self._tools.append({"type": "local_shell"})
-        elif tool_name in ["file_search", "code_interpreter", "computer_use_preview", "mcp"]:
+        elif tool_name in [
+            "file_search",
+            "code_interpreter",
+            "computer_use_preview",
+            "mcp",
+        ]:
             # These tools require specific parameters and must use dict configuration
             raise ValueError(
                 f"Tool '{tool_name}' requires specific parameters and cannot be added using string format. "
@@ -590,20 +605,30 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             # file_search requires vector_store_ids
             fs_config = cast(FileSearchToolConfig, tool_config)
             if "vector_store_ids" not in fs_config:
-                raise ValueError("file_search tool requires 'vector_store_ids' parameter")
+                raise ValueError(
+                    "file_search tool requires 'vector_store_ids' parameter"
+                )
 
             vector_store_ids = fs_config["vector_store_ids"]
             if not isinstance(vector_store_ids, list) or not vector_store_ids:
-                raise ValueError("file_search 'vector_store_ids' must be a non-empty list of strings")
-            if not all(isinstance(vid, str) and vid.strip() for vid in vector_store_ids):
-                raise ValueError("file_search 'vector_store_ids' must contain non-empty strings")
+                raise ValueError(
+                    "file_search 'vector_store_ids' must be a non-empty list of strings"
+                )
+            if not all(
+                isinstance(vid, str) and vid.strip() for vid in vector_store_ids
+            ):
+                raise ValueError(
+                    "file_search 'vector_store_ids' must contain non-empty strings"
+                )
 
             tool_def = {"type": "file_search", "vector_store_ids": vector_store_ids}
             # Optional parameters
             if "max_num_results" in fs_config:
                 max_results = fs_config["max_num_results"]
                 if not isinstance(max_results, int) or max_results <= 0:
-                    raise ValueError("file_search 'max_num_results' must be a positive integer")
+                    raise ValueError(
+                        "file_search 'max_num_results' must be a positive integer"
+                    )
                 tool_def["max_num_results"] = max_results
             if "ranking_options" in fs_config:
                 tool_def["ranking_options"] = fs_config["ranking_options"]
@@ -617,7 +642,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             if "search_context_size" in ws_config:
                 context_size = ws_config["search_context_size"]
                 if not isinstance(context_size, int) or context_size <= 0:
-                    raise ValueError("web_search_preview 'search_context_size' must be a positive integer")
+                    raise ValueError(
+                        "web_search_preview 'search_context_size' must be a positive integer"
+                    )
                 tool_def["search_context_size"] = context_size
             if "user_location" in ws_config:
                 user_location = ws_config["user_location"]
@@ -628,10 +655,14 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                         )
                 elif isinstance(user_location, dict):
                     if "type" not in user_location:
-                        raise ValueError("web_search_preview 'user_location' dictionary must include 'type' field")
+                        raise ValueError(
+                            "web_search_preview 'user_location' dictionary must include 'type' field"
+                        )
                     location_type = user_location["type"]
                     if location_type not in ["approximate", "exact"]:
-                        raise ValueError("web_search_preview 'user_location' type must be 'approximate' or 'exact'")
+                        raise ValueError(
+                            "web_search_preview 'user_location' type must be 'approximate' or 'exact'"
+                        )
                     # Optional fields: country, region, city can be validated if present
                     for optional_field in ["country", "region", "city"]:
                         if optional_field in user_location:
@@ -643,7 +674,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                                     f"web_search_preview 'user_location' {optional_field} must be a non-empty string"
                                 )
                 else:
-                    raise ValueError("web_search_preview 'user_location' must be a string or dictionary")
+                    raise ValueError(
+                        "web_search_preview 'user_location' must be a string or dictionary"
+                    )
                 tool_def["user_location"] = user_location
 
         elif tool_type == "computer_use_preview":
@@ -652,20 +685,28 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             required_params = ["display_height", "display_width", "environment"]
             for param in required_params:
                 if param not in cu_config:
-                    raise ValueError(f"computer_use_preview tool requires '{param}' parameter")
+                    raise ValueError(
+                        f"computer_use_preview tool requires '{param}' parameter"
+                    )
 
             # Validate display dimensions
             height = cu_config["display_height"]
             width = cu_config["display_width"]
             if not isinstance(height, int) or height <= 0:
-                raise ValueError("computer_use_preview 'display_height' must be a positive integer")
+                raise ValueError(
+                    "computer_use_preview 'display_height' must be a positive integer"
+                )
             if not isinstance(width, int) or width <= 0:
-                raise ValueError("computer_use_preview 'display_width' must be a positive integer")
+                raise ValueError(
+                    "computer_use_preview 'display_width' must be a positive integer"
+                )
 
             # Validate environment
             environment = cu_config["environment"]
             if not isinstance(environment, str) or not environment.strip():
-                raise ValueError("computer_use_preview 'environment' must be a non-empty string")
+                raise ValueError(
+                    "computer_use_preview 'environment' must be a non-empty string"
+                )
 
             tool_def = {
                 "type": "computer_use_preview",
@@ -690,7 +731,11 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             if not isinstance(server_url, str) or not server_url.strip():
                 raise ValueError("mcp 'server_url' must be a non-empty string")
 
-            tool_def = {"type": "mcp", "server_label": server_label, "server_url": server_url}
+            tool_def = {
+                "type": "mcp",
+                "server_label": server_label,
+                "server_url": server_url,
+            }
             # Optional parameters
             if "allowed_tools" in mcp_config:
                 allowed_tools = mcp_config["allowed_tools"]
@@ -718,7 +763,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
 
             container = ci_config["container"]
             if not isinstance(container, str) or not container.strip():
-                raise ValueError("code_interpreter 'container' must be a non-empty string")
+                raise ValueError(
+                    "code_interpreter 'container' must be a non-empty string"
+                )
 
             tool_def = {"type": "code_interpreter", "container": container}
 
@@ -729,12 +776,19 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             if "background" in ig_config:
                 background = ig_config["background"]
                 if not isinstance(background, str) or not background.strip():
-                    raise ValueError("image_generation 'background' must be a non-empty string")
+                    raise ValueError(
+                        "image_generation 'background' must be a non-empty string"
+                    )
                 tool_def["background"] = background
             if "input_image_mask" in ig_config:
                 input_image_mask = ig_config["input_image_mask"]
-                if not isinstance(input_image_mask, str) or not input_image_mask.strip():
-                    raise ValueError("image_generation 'input_image_mask' must be a non-empty string")
+                if (
+                    not isinstance(input_image_mask, str)
+                    or not input_image_mask.strip()
+                ):
+                    raise ValueError(
+                        "image_generation 'input_image_mask' must be a non-empty string"
+                    )
                 tool_def["input_image_mask"] = input_image_mask
 
         else:
@@ -759,10 +813,18 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
         ]
     ]:
         """Return the types of messages that this agent can produce."""
-        return [TextMessage, MultiModalMessage, StopMessage, ToolCallSummaryMessage, HandoffMessage]
+        return [
+            TextMessage,
+            MultiModalMessage,
+            StopMessage,
+            ToolCallSummaryMessage,
+            HandoffMessage,
+        ]
 
     async def _execute_tool_call(
-        self: "OpenAIAgent", tool_call: FunctionCall, cancellation_token: CancellationToken
+        self: "OpenAIAgent",
+        tool_call: FunctionCall,
+        cancellation_token: CancellationToken,
     ) -> FunctionExecutionResult:
         tool_name = tool_call.name
         if tool_name not in self._tool_map:
@@ -785,16 +847,25 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                     is_error=True,
                 )
 
-            result = await tool.run_json(arguments, cancellation_token, call_id=tool_call.id)
+            result = await tool.run_json(
+                arguments, cancellation_token, call_id=tool_call.id
+            )
             return FunctionExecutionResult(
-                content=tool.return_value_as_string(result), call_id=tool_call.id, name=tool_name, is_error=False
+                content=tool.return_value_as_string(result),
+                call_id=tool_call.id,
+                name=tool_name,
+                is_error=False,
             )
         except Exception as e:
             error_msg = f"Error: {str(e)}"
             event_logger.warning(f"Tool execution error in {tool_name}: {error_msg}")
-            return FunctionExecutionResult(content=error_msg, call_id=tool_call.id, name=tool_name, is_error=True)
+            return FunctionExecutionResult(
+                content=error_msg, call_id=tool_call.id, name=tool_name, is_error=True
+            )
 
-    def _build_api_parameters(self: "OpenAIAgent", messages: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _build_api_parameters(
+        self: "OpenAIAgent", messages: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         has_system_message = any(msg.get("role") == "system" for msg in messages)
         if self._instructions and not has_system_message:
             messages = [{"role": "system", "content": self._instructions}] + messages
@@ -817,11 +888,20 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
         return api_params
 
     async def on_messages(
-        self: "OpenAIAgent", messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+        self: "OpenAIAgent",
+        messages: Sequence[BaseChatMessage],
+        cancellation_token: CancellationToken,
     ) -> Response:
         response = None
         inner_messages: List[
-            Union[AgentEvent, TextMessage, MultiModalMessage, StopMessage, ToolCallSummaryMessage, HandoffMessage]
+            Union[
+                AgentEvent,
+                TextMessage,
+                MultiModalMessage,
+                StopMessage,
+                ToolCallSummaryMessage,
+                HandoffMessage,
+            ]
         ] = []
 
         async for msg in self.on_messages_stream(messages, cancellation_token):
@@ -844,10 +924,18 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
         return response
 
     async def on_messages_stream(
-        self: "OpenAIAgent", messages: Sequence[BaseChatMessage], cancellation_token: CancellationToken
+        self: "OpenAIAgent",
+        messages: Sequence[BaseChatMessage],
+        cancellation_token: CancellationToken,
     ) -> AsyncGenerator[
         Union[
-            AgentEvent, TextMessage, MultiModalMessage, StopMessage, ToolCallSummaryMessage, HandoffMessage, Response
+            AgentEvent,
+            TextMessage,
+            MultiModalMessage,
+            StopMessage,
+            ToolCallSummaryMessage,
+            HandoffMessage,
+            Response,
         ],
         None,
     ]:
@@ -858,14 +946,25 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
 
         for message in messages:
             if isinstance(
-                message, (TextMessage, MultiModalMessage, StopMessage, ToolCallSummaryMessage, HandoffMessage)
+                message,
+                (
+                    TextMessage,
+                    MultiModalMessage,
+                    StopMessage,
+                    ToolCallSummaryMessage,
+                    HandoffMessage,
+                ),
             ):
                 openai_message = _convert_message_to_openai_message(message)
                 dict_message = self._convert_message_to_dict(openai_message)
                 input_messages.append(dict_message)
                 self._message_history.append(dict_message)
             else:
-                msg_content = str(cast(Any, message).content) if hasattr(message, "content") else str(message)
+                msg_content = (
+                    str(cast(Any, message).content)
+                    if hasattr(message, "content")
+                    else str(message)
+                )
                 dict_message = {"role": "user", "content": msg_content}
                 input_messages.append(dict_message)
                 self._message_history.append(dict_message)
@@ -883,10 +982,14 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             response_id = getattr(response_obj, "id", None)
             self._last_response_id = response_id
             # Use a readable placeholder when the API returns no content to aid debugging
-            content_str: str = str(content) if content is not None else "[no content returned]"
+            content_str: str = (
+                str(content) if content is not None else "[no content returned]"
+            )
             self._message_history.append({"role": "assistant", "content": content_str})
             final_message = TextMessage(source=self.name, content=content_str)
-            response = Response(chat_message=final_message, inner_messages=inner_messages)
+            response = Response(
+                chat_message=final_message, inner_messages=inner_messages
+            )
             yield response
         except Exception as e:
             error_message = f"Error generating response: {str(e)}"
@@ -894,7 +997,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
             error_response = TextMessage(source=self.name, content=error_message)
             yield Response(chat_message=error_response, inner_messages=inner_messages)
 
-    async def on_reset(self: "OpenAIAgent", cancellation_token: CancellationToken) -> None:
+    async def on_reset(
+        self: "OpenAIAgent", cancellation_token: CancellationToken
+    ) -> None:
         self._last_response_id = None
         self._message_history = []
 
@@ -988,7 +1093,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
         )
 
     @classmethod
-    def _from_config(cls: Type["OpenAIAgent"], config: OpenAIAgentConfig) -> "OpenAIAgent":
+    def _from_config(
+        cls: Type["OpenAIAgent"], config: OpenAIAgentConfig
+    ) -> "OpenAIAgent":
         """Create an OpenAI agent from a declarative config.
 
         Handles both custom Tool objects (from ComponentModel) and built-in tools
@@ -1043,7 +1150,10 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                     tools_list.append(tool_config)  # type: ignore[arg-type]
 
                 else:
-                    warnings.warn(f"Unknown tool configuration format: {type(tool_config)}", stacklevel=2)
+                    warnings.warn(
+                        f"Unknown tool configuration format: {type(tool_config)}",
+                        stacklevel=2,
+                    )
 
             tools = tools_list if tools_list else None
 
@@ -1059,7 +1169,9 @@ class OpenAIAgent(BaseChatAgent, Component[OpenAIAgentConfig]):
                         Union[
                             BuiltinToolConfig,
                             Tool,
-                            Literal["web_search_preview", "image_generation", "local_shell"],
+                            Literal[
+                                "web_search_preview", "image_generation", "local_shell"
+                            ],
                         ]
                     ]
                 ],

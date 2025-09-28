@@ -39,7 +39,9 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
     component_config_schema = StaticWorkbenchConfig
 
     def __init__(
-        self, tools: List[BaseTool[Any, Any]], tool_overrides: Optional[Dict[str, ToolOverride]] = None
+        self,
+        tools: List[BaseTool[Any, Any]],
+        tool_overrides: Optional[Dict[str, ToolOverride]] = None,
     ) -> None:
         self._tools = tools
         self._tool_overrides = tool_overrides or {}
@@ -51,7 +53,10 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
         for original_name, override in self._tool_overrides.items():
             if override.name and override.name != original_name:
                 # Check for conflicts with existing tool names
-                if override.name in existing_tool_names and override.name != original_name:
+                if (
+                    override.name in existing_tool_names
+                    and override.name != original_name
+                ):
                     raise ValueError(
                         f"Tool override name '{override.name}' conflicts with existing tool name. "
                         f"Override names must not conflict with any tool names."
@@ -75,7 +80,9 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
                 override = self._tool_overrides[tool.name]
                 # Create a new ToolSchema with overrides applied
                 schema: ToolSchema = {
-                    "name": override.name if override.name is not None else original_schema["name"],
+                    "name": override.name
+                    if override.name is not None
+                    else original_schema["name"],
                     "description": override.description
                     if override.description is not None
                     else original_schema.get("description", ""),
@@ -113,7 +120,9 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
         if not arguments:
             arguments = {}
         try:
-            result_future = asyncio.ensure_future(tool.run_json(arguments, cancellation_token, call_id=call_id))
+            result_future = asyncio.ensure_future(
+                tool.run_json(arguments, cancellation_token, call_id=call_id)
+            )
             cancellation_token.link_future(result_future)
             actual_tool_output = await result_future
             is_error = False
@@ -121,7 +130,9 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
         except Exception as e:
             result_str = self._format_errors(e)
             is_error = True
-        return ToolResult(name=name, result=[TextResultContent(content=result_str)], is_error=is_error)
+        return ToolResult(
+            name=name, result=[TextResultContent(content=result_str)], is_error=is_error
+        )
 
     async def start(self) -> None:
         return None
@@ -146,18 +157,24 @@ class StaticWorkbench(Workbench, Component[StaticWorkbenchConfig]):
 
     def _to_config(self) -> StaticWorkbenchConfig:
         return StaticWorkbenchConfig(
-            tools=[tool.dump_component() for tool in self._tools], tool_overrides=self._tool_overrides
+            tools=[tool.dump_component() for tool in self._tools],
+            tool_overrides=self._tool_overrides,
         )
 
     @classmethod
     def _from_config(cls, config: StaticWorkbenchConfig) -> Self:
-        return cls(tools=[BaseTool.load_component(tool) for tool in config.tools], tool_overrides=config.tool_overrides)
+        return cls(
+            tools=[BaseTool.load_component(tool) for tool in config.tools],
+            tool_overrides=config.tool_overrides,
+        )
 
     def _format_errors(self, error: Exception) -> str:
         """Recursively format errors into a string."""
 
         error_message = ""
-        if hasattr(builtins, "ExceptionGroup") and isinstance(error, builtins.ExceptionGroup):
+        if hasattr(builtins, "ExceptionGroup") and isinstance(
+            error, builtins.ExceptionGroup
+        ):
             # ExceptionGroup is available in Python 3.11+.
             # TODO: how to make this compatible with Python 3.10?
             for sub_exception in error.exceptions:  # type: ignore
@@ -199,7 +216,9 @@ class StaticStreamWorkbench(StaticWorkbench, StreamWorkbench):
             if isinstance(tool, StreamTool):
                 previous_result: Any | None = None
                 try:
-                    async for result in tool.run_json_stream(arguments, cancellation_token, call_id=call_id):
+                    async for result in tool.run_json_stream(
+                        arguments, cancellation_token, call_id=call_id
+                    ):
                         if previous_result is not None:
                             yield previous_result
                         previous_result = result
@@ -210,11 +229,17 @@ class StaticStreamWorkbench(StaticWorkbench, StreamWorkbench):
                         yield previous_result
                     # Then yield the error result
                     result_str = self._format_errors(e)
-                    yield ToolResult(name=tool.name, result=[TextResultContent(content=result_str)], is_error=True)
+                    yield ToolResult(
+                        name=tool.name,
+                        result=[TextResultContent(content=result_str)],
+                        is_error=True,
+                    )
                     return
             else:
                 # If the tool is not a stream tool, we run it normally and yield the result
-                result_future = asyncio.ensure_future(tool.run_json(arguments, cancellation_token, call_id=call_id))
+                result_future = asyncio.ensure_future(
+                    tool.run_json(arguments, cancellation_token, call_id=call_id)
+                )
                 cancellation_token.link_future(result_future)
                 actual_tool_output = await result_future
             is_error = False
@@ -222,4 +247,8 @@ class StaticStreamWorkbench(StaticWorkbench, StreamWorkbench):
         except Exception as e:
             result_str = self._format_errors(e)
             is_error = True
-        yield ToolResult(name=tool.name, result=[TextResultContent(content=result_str)], is_error=is_error)
+        yield ToolResult(
+            name=tool.name,
+            result=[TextResultContent(content=result_str)],
+            is_error=is_error,
+        )

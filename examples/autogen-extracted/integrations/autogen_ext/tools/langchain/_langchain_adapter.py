@@ -150,10 +150,14 @@ class LangChainToolAdapter(BaseTool[BaseModel, Any]):
         description = self._langchain_tool.description or ""
 
         # Determine the callable method
-        if hasattr(self._langchain_tool, "func") and callable(self._langchain_tool.func):  # type: ignore
+        if hasattr(self._langchain_tool, "func") and callable(
+            self._langchain_tool.func
+        ):  # type: ignore
             assert self._langchain_tool.func is not None  # type: ignore
             self._callable: Callable[..., Any] = self._langchain_tool.func  # type: ignore
-        elif hasattr(self._langchain_tool, "_run") and callable(self._langchain_tool._run):  # type: ignore
+        elif hasattr(self._langchain_tool, "_run") and callable(
+            self._langchain_tool._run
+        ):  # type: ignore
             self._callable: Callable[..., Any] = self._langchain_tool._run  # type: ignore
         else:
             raise AttributeError(
@@ -169,7 +173,9 @@ class LangChainToolAdapter(BaseTool[BaseModel, Any]):
             fields = {
                 k: (v.annotation, Field(...))
                 for k, v in sig.parameters.items()
-                if k != "self" and v.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                if k != "self"
+                and v.kind
+                not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
             }
             args_type = create_model(f"{name}Args", **fields)  # type: ignore
             # Note: type ignore is used due to a LangChain typing limitation

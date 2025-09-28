@@ -517,9 +517,12 @@ class APIKeyService:
         # Update database
         try:
             client = await self.db.client
-            await client.table("api_keys").update(
-                {"last_used_at": datetime.now(timezone.utc).isoformat()}
-            ).eq("key_id", key_id).execute()
+            await (
+                client.table("api_keys")
+                .update({"last_used_at": datetime.now(timezone.utc).isoformat()})
+                .eq("key_id", key_id)
+                .execute()
+            )
 
             logger.debug(f"Updated last_used_at for key {key_id}")
 

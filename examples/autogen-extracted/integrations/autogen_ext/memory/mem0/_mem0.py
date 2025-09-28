@@ -6,7 +6,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, TypedDict, cast
 
 from autogen_core import CancellationToken, Component, ComponentBase
-from autogen_core.memory import Memory, MemoryContent, MemoryQueryResult, UpdateContextResult
+from autogen_core.memory import (
+    Memory,
+    MemoryContent,
+    MemoryQueryResult,
+    UpdateContextResult,
+)
 from autogen_core.model_context import ChatCompletionContext
 from autogen_core.models import SystemMessage
 from mem0 import Memory as Memory0
@@ -22,15 +27,23 @@ class Mem0MemoryConfig(BaseModel):
     """Configuration for Mem0Memory component."""
 
     user_id: Optional[str] = Field(
-        default=None, description="User ID for memory operations. If not provided, a UUID will be generated."
+        default=None,
+        description="User ID for memory operations. If not provided, a UUID will be generated.",
     )
-    limit: int = Field(default=10, description="Maximum number of results to return in memory queries.")
-    is_cloud: bool = Field(default=True, description="Whether to use cloud Mem0 client (True) or local client (False).")
+    limit: int = Field(
+        default=10, description="Maximum number of results to return in memory queries."
+    )
+    is_cloud: bool = Field(
+        default=True,
+        description="Whether to use cloud Mem0 client (True) or local client (False).",
+    )
     api_key: Optional[str] = Field(
-        default=None, description="API key for cloud Mem0 client. Required if is_cloud=True."
+        default=None,
+        description="API key for cloud Mem0 client. Required if is_cloud=True.",
     )
     config: Optional[Dict[str, Any]] = Field(
-        default=None, description="Configuration dictionary for local Mem0 client. Required if is_cloud=False."
+        default=None,
+        description="Configuration dictionary for local Mem0 client. Required if is_cloud=False.",
     )
 
 
@@ -173,7 +186,9 @@ class Mem0Memory(Memory, Component[Mem0MemoryConfig], ComponentBase[Mem0MemoryCo
     ) -> None:
         # Validate parameters
         if not is_cloud and config is None:
-            raise ValueError("config is required when using local Mem0 client (is_cloud=False)")
+            raise ValueError(
+                "config is required when using local Mem0 client (is_cloud=False)"
+            )
 
         # Initialize instance variables
         self._user_id = user_id or str(uuid.uuid4())
@@ -255,9 +270,18 @@ class Mem0Memory(Memory, Component[Mem0MemoryConfig], ComponentBase[Mem0MemoryCo
         try:
             user_id = metadata.pop("user_id", self._user_id)
             # Suppress warning messages from mem0 MemoryClient
-            kwargs = {} if self._client.__class__.__name__ == "Memory" else {"output_format": "v1.1"}
+            kwargs = (
+                {}
+                if self._client.__class__.__name__ == "Memory"
+                else {"output_format": "v1.1"}
+            )
             with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-                self._client.add([{"role": "user", "content": message}], user_id=user_id, metadata=metadata, **kwargs)  # type: ignore
+                self._client.add(
+                    [{"role": "user", "content": message}],
+                    user_id=user_id,
+                    metadata=metadata,
+                    **kwargs,
+                )  # type: ignore
         except Exception as e:
             # Log the error but don't crash
             logger.error(f"Error adding to mem0 memory: {str(e)}")
@@ -328,14 +352,18 @@ class Mem0Memory(Memory, Component[Mem0MemoryConfig], ComponentBase[Mem0MemoryCo
                 # For created_at
                 if "created_at" in result and result.get("created_at"):
                     try:
-                        metadata["created_at"] = datetime.fromisoformat(result["created_at"])
+                        metadata["created_at"] = datetime.fromisoformat(
+                            result["created_at"]
+                        )
                     except (ValueError, TypeError):
                         pass
 
                 # For updated_at
                 if "updated_at" in result and result.get("updated_at"):
                     try:
-                        metadata["updated_at"] = datetime.fromisoformat(result["updated_at"])
+                        metadata["updated_at"] = datetime.fromisoformat(
+                            result["updated_at"]
+                        )
                     except (ValueError, TypeError):
                         pass
 
@@ -381,7 +409,11 @@ class Mem0Memory(Memory, Component[Mem0MemoryConfig], ComponentBase[Mem0MemoryCo
 
         # Use the last message as query
         last_message = messages[-1]
-        query_text = last_message.content if isinstance(last_message.content, str) else str(last_message)
+        query_text = (
+            last_message.content
+            if isinstance(last_message.content, str)
+            else str(last_message)
+        )
 
         # Query memory
         query_results = await self.query(query_text, limit=self._limit)
@@ -389,7 +421,10 @@ class Mem0Memory(Memory, Component[Mem0MemoryConfig], ComponentBase[Mem0MemoryCo
         # If we have results, add them to the context
         if query_results.results:
             # Format memories as numbered list
-            memory_strings = [f"{i}. {str(memory.content)}" for i, memory in enumerate(query_results.results, 1)]
+            memory_strings = [
+                f"{i}. {str(memory.content)}"
+                for i, memory in enumerate(query_results.results, 1)
+            ]
             memory_context = "\nRelevant memories:\n" + "\n".join(memory_strings)
 
             # Add as system message

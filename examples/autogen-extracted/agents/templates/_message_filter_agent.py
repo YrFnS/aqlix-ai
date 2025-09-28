@@ -143,7 +143,10 @@ class MessageFilterAgent(BaseChatAgent, Component[MessageFilterAgentConfig]):
         wrapped_agent: BaseChatAgent,
         filter: MessageFilterConfig,
     ):
-        super().__init__(name=name, description=f"{wrapped_agent.description} (with message filtering)")
+        super().__init__(
+            name=name,
+            description=f"{wrapped_agent.description} (with message filtering)",
+        )
         self._wrapped_agent = wrapped_agent
         self._filter = filter
 
@@ -151,7 +154,9 @@ class MessageFilterAgent(BaseChatAgent, Component[MessageFilterAgentConfig]):
     def produced_message_types(self) -> Sequence[type[BaseChatMessage]]:
         return self._wrapped_agent.produced_message_types
 
-    def _apply_filter(self, messages: Sequence[BaseChatMessage]) -> Sequence[BaseChatMessage]:
+    def _apply_filter(
+        self, messages: Sequence[BaseChatMessage]
+    ) -> Sequence[BaseChatMessage]:
         result: List[BaseChatMessage] = []
 
         for source_filter in self._filter.per_source:
@@ -180,7 +185,9 @@ class MessageFilterAgent(BaseChatAgent, Component[MessageFilterAgentConfig]):
         cancellation_token: CancellationToken,
     ) -> AsyncGenerator[Union[BaseAgentEvent, BaseChatMessage, Response], None]:
         filtered = self._apply_filter(messages)
-        async for item in self._wrapped_agent.on_messages_stream(filtered, cancellation_token):
+        async for item in self._wrapped_agent.on_messages_stream(
+            filtered, cancellation_token
+        ):
             yield item
 
     async def on_reset(self, cancellation_token: CancellationToken) -> None:

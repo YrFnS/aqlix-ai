@@ -1,9 +1,25 @@
 import hashlib
 import json
 import warnings
-from typing import Any, AsyncGenerator, List, Literal, Mapping, Optional, Sequence, Union, cast
+from typing import (
+    Any,
+    AsyncGenerator,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
 
-from autogen_core import CacheStore, CancellationToken, Component, ComponentModel, InMemoryStore
+from autogen_core import (
+    CacheStore,
+    CancellationToken,
+    Component,
+    ComponentModel,
+    InMemoryStore,
+)
 from autogen_core.models import (
     ChatCompletionClient,
     CreateResult,
@@ -119,7 +135,9 @@ class ChatCompletionCache(ChatCompletionClient, Component[ChatCompletionCacheCon
 
         data = {
             "messages": [message.model_dump() for message in messages],
-            "tools": [(tool.schema if isinstance(tool, Tool) else tool) for tool in tools],
+            "tools": [
+                (tool.schema if isinstance(tool, Tool) else tool) for tool in tools
+            ],
             "json_output": json_output_data,
             "extra_create_args": extra_create_args,
         }
@@ -149,7 +167,9 @@ class ChatCompletionCache(ChatCompletionClient, Component[ChatCompletionCacheCon
 
         NOTE: cancellation_token is ignored for cached results.
         """
-        cached_result, cache_key = self._check_cache(messages, tools, json_output, extra_create_args)
+        cached_result, cache_key = self._check_cache(
+            messages, tools, json_output, extra_create_args
+        )
         if cached_result:
             assert isinstance(cached_result, CreateResult)
             cached_result.cached = True
@@ -223,19 +243,27 @@ class ChatCompletionCache(ChatCompletionClient, Component[ChatCompletionCacheCon
     def actual_usage(self) -> RequestUsage:
         return self.client.actual_usage()
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         return self.client.count_tokens(messages, tools=tools)
 
     @property
     def capabilities(self) -> ModelCapabilities:  # type: ignore
-        warnings.warn("capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "capabilities is deprecated, use model_info instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.client.capabilities
 
     @property
     def model_info(self) -> ModelInfo:
         return self.client.model_info
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         return self.client.remaining_tokens(messages, tools=tools)
 
     def total_usage(self) -> RequestUsage:
@@ -244,7 +272,9 @@ class ChatCompletionCache(ChatCompletionClient, Component[ChatCompletionCacheCon
     def _to_config(self) -> ChatCompletionCacheConfig:
         return ChatCompletionCacheConfig(
             client=self.client.dump_component(),
-            store=self.store.dump_component() if not isinstance(self.store, InMemoryStore) else None,
+            store=self.store.dump_component()
+            if not isinstance(self.store, InMemoryStore)
+            else None,
         )
 
     @classmethod

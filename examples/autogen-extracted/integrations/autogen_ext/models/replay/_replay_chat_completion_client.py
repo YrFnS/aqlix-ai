@@ -2,7 +2,17 @@ from __future__ import annotations
 
 import logging
 import warnings
-from typing import Any, AsyncGenerator, Dict, List, Literal, Mapping, Optional, Sequence, Union
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    Union,
+)
 
 from autogen_core import EVENT_LOGGER_NAME, CancellationToken, Component
 from autogen_core.models import (
@@ -29,7 +39,9 @@ class ReplayChatCompletionClientConfig(BaseModel):
     model_info: Optional[ModelInfo] = None
 
 
-class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompletionClientConfig]):
+class ReplayChatCompletionClient(
+    ChatCompletionClient, Component[ReplayChatCompletionClientConfig]
+):
     """
     A mock chat completion client that replays predefined responses using an index-based approach.
 
@@ -170,7 +182,9 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
         """Return the next completion from the list."""
         # Warn if tool_choice is specified since it's ignored in replay mode
         if tool_choice != "auto":
-            logger.warning("tool_choice parameter specified but is ignored in replay mode")
+            logger.warning(
+                "tool_choice parameter specified but is ignored in replay mode"
+            )
 
         if self._current_index >= len(self.chat_completions):
             raise ValueError("No more mock responses available")
@@ -179,13 +193,19 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
         _, prompt_token_count = self._tokenize(messages)
         if isinstance(response, str):
             _, output_token_count = self._tokenize(response)
-            self._cur_usage = RequestUsage(prompt_tokens=prompt_token_count, completion_tokens=output_token_count)
+            self._cur_usage = RequestUsage(
+                prompt_tokens=prompt_token_count, completion_tokens=output_token_count
+            )
             response = CreateResult(
-                finish_reason="stop", content=response, usage=self._cur_usage, cached=self._cached_bool_value
+                finish_reason="stop",
+                content=response,
+                usage=self._cur_usage,
+                cached=self._cached_bool_value,
             )
         else:
             self._cur_usage = RequestUsage(
-                prompt_tokens=prompt_token_count, completion_tokens=response.usage.completion_tokens
+                prompt_tokens=prompt_token_count,
+                completion_tokens=response.usage.completion_tokens,
             )
 
         self._update_total_usage()
@@ -214,7 +234,9 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
         """Return the next completion as a stream."""
         # Warn if tool_choice is specified since it's ignored in replay mode
         if tool_choice != "auto":
-            logger.warning("tool_choice parameter specified but is ignored in replay mode")
+            logger.warning(
+                "tool_choice parameter specified but is ignored in replay mode"
+            )
 
         if self._current_index >= len(self.chat_completions):
             raise ValueError("No more mock responses available")
@@ -223,7 +245,9 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
         _, prompt_token_count = self._tokenize(messages)
         if isinstance(response, str):
             output_tokens, output_token_count = self._tokenize(response)
-            self._cur_usage = RequestUsage(prompt_tokens=prompt_token_count, completion_tokens=output_token_count)
+            self._cur_usage = RequestUsage(
+                prompt_tokens=prompt_token_count, completion_tokens=output_token_count
+            )
 
             for i, token in enumerate(output_tokens):
                 if i < len(output_tokens) - 1:
@@ -231,12 +255,16 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
                 else:
                     yield token
             yield CreateResult(
-                finish_reason="stop", content=response, usage=self._cur_usage, cached=self._cached_bool_value
+                finish_reason="stop",
+                content=response,
+                usage=self._cur_usage,
+                cached=self._cached_bool_value,
             )
             self._update_total_usage()
         else:
             self._cur_usage = RequestUsage(
-                prompt_tokens=prompt_token_count, completion_tokens=response.usage.completion_tokens
+                prompt_tokens=prompt_token_count,
+                completion_tokens=response.usage.completion_tokens,
             )
             yield response
             self._update_total_usage()
@@ -252,19 +280,28 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
     def total_usage(self) -> RequestUsage:
         return self._total_usage
 
-    def count_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def count_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         _, token_count = self._tokenize(messages)
         return token_count
 
-    def remaining_tokens(self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []) -> int:
+    def remaining_tokens(
+        self, messages: Sequence[LLMMessage], *, tools: Sequence[Tool | ToolSchema] = []
+    ) -> int:
         return max(
-            0, self._total_available_tokens - self._total_usage.prompt_tokens - self._total_usage.completion_tokens
+            0,
+            self._total_available_tokens
+            - self._total_usage.prompt_tokens
+            - self._total_usage.completion_tokens,
         )
 
     def set_cached_bool_value(self, value: bool) -> None:
         self._cached_bool_value = value
 
-    def _tokenize(self, messages: Union[str, LLMMessage, Sequence[LLMMessage]]) -> tuple[list[str], int]:
+    def _tokenize(
+        self, messages: Union[str, LLMMessage, Sequence[LLMMessage]]
+    ) -> tuple[list[str], int]:
         total_tokens = 0
         all_tokens: List[str] = []
         if isinstance(messages, str):
@@ -295,7 +332,11 @@ class ReplayChatCompletionClient(ChatCompletionClient, Component[ReplayChatCompl
     @property
     def capabilities(self) -> ModelCapabilities:  # type: ignore
         """Return mock capabilities."""
-        warnings.warn("capabilities is deprecated, use model_info instead", DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "capabilities is deprecated, use model_info instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._model_info
 
     @property

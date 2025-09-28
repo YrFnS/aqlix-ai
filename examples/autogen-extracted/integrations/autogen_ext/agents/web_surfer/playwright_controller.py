@@ -70,7 +70,9 @@ class PlaywrightController:
 
         # Read page_script
         with open(
-            os.path.join(os.path.abspath(os.path.dirname(__file__)), "page_script.js"), "rt", encoding="utf-8"
+            os.path.join(os.path.abspath(os.path.dirname(__file__)), "page_script.js"),
+            "rt",
+            encoding="utf-8",
         ) as fh:
             self._page_script = fh.read()
 
@@ -101,7 +103,10 @@ class PlaywrightController:
             await page.evaluate(self._page_script)
         except Exception:
             pass
-        result = cast(Dict[str, Dict[str, Any]], await page.evaluate("MultimodalWebSurfer.getInteractiveRects();"))
+        result = cast(
+            Dict[str, Dict[str, Any]],
+            await page.evaluate("MultimodalWebSurfer.getInteractiveRects();"),
+        )
 
         # Convert the results into appropriate types
         assert isinstance(result, dict)
@@ -127,7 +132,9 @@ class PlaywrightController:
             await page.evaluate(self._page_script)
         except Exception:
             pass
-        return visualviewport_from_dict(await page.evaluate("MultimodalWebSurfer.getVisualViewport();"))
+        return visualviewport_from_dict(
+            await page.evaluate("MultimodalWebSurfer.getVisualViewport();")
+        )
 
     async def get_focused_rect_id(self, page: Page) -> str | None:
         """
@@ -176,9 +183,15 @@ class PlaywrightController:
         assert page is not None
         page.on("download", self._download_handler)  # type: ignore
         if self.to_resize_viewport and self.viewport_width and self.viewport_height:
-            await page.set_viewport_size({"width": self.viewport_width, "height": self.viewport_height})
+            await page.set_viewport_size(
+                {"width": self.viewport_width, "height": self.viewport_height}
+            )
         await self.sleep(page, 0.2)
-        await page.add_init_script(path=os.path.join(os.path.abspath(os.path.dirname(__file__)), "page_script.js"))
+        await page.add_init_script(
+            path=os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), "page_script.js"
+            )
+        )
         await page.wait_for_load_state()
 
     async def back(self, page: Page) -> None:
@@ -222,11 +235,14 @@ class PlaywrightController:
                         else:
                             raise e_inner
                     download = await download_info.value
-                    fname = os.path.join(self.downloads_folder, download.suggested_filename)
+                    fname = os.path.join(
+                        self.downloads_folder, download.suggested_filename
+                    )
                     await download.save_as(fname)
                     message = f"<body style=\"margin: 20px;\"><h1>Successfully downloaded '{download.suggested_filename}' to local path:<br><br>{fname}</h1></body>"
                     await page.goto(
-                        "data:text/html;base64," + base64.b64encode(message.encode("utf-8")).decode("utf-8")
+                        "data:text/html;base64,"
+                        + base64.b64encode(message.encode("utf-8")).decode("utf-8")
                     )
                     reset_last_download = True
             else:
@@ -241,7 +257,7 @@ class PlaywrightController:
             page (Page): The Playwright page object.
         """
         assert page is not None
-        await page.evaluate(f"window.scrollBy(0, {self.viewport_height-50});")
+        await page.evaluate(f"window.scrollBy(0, {self.viewport_height - 50});")
 
     async def page_up(self, page: Page) -> None:
         """
@@ -251,7 +267,7 @@ class PlaywrightController:
             page (Page): The Playwright page object.
         """
         assert page is not None
-        await page.evaluate(f"window.scrollBy(0, -{self.viewport_height-50});")
+        await page.evaluate(f"window.scrollBy(0, -{self.viewport_height - 50});")
 
     async def gradual_cursor_animation(
         self, page: Page, start_x: float, start_y: float, end_x: float, end_y: float
@@ -390,7 +406,11 @@ class PlaywrightController:
             try:
                 # Give it a chance to open a new page
                 async with page.expect_event("popup", timeout=1000) as page_info:  # type: ignore
-                    await page.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2, delay=10)
+                    await page.mouse.click(
+                        box["x"] + box["width"] / 2,
+                        box["y"] + box["height"] / 2,
+                        delay=10,
+                    )
                     new_page = await page_info.value  # type: ignore
                     assert isinstance(new_page, Page)
                     await self.on_new_page(new_page)
@@ -428,13 +448,19 @@ class PlaywrightController:
             end_x, end_y = box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
             await self.gradual_cursor_animation(page, start_x, start_y, end_x, end_y)
             await asyncio.sleep(0.1)
-            await page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+            await page.mouse.move(
+                box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
+            )
 
             await self.remove_cursor_box(page, identifier)
         else:
-            await page.mouse.move(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+            await page.mouse.move(
+                box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
+            )
 
-    async def fill_id(self, page: Page, identifier: str, value: str, press_enter: bool = True) -> None:
+    async def fill_id(
+        self, page: Page, identifier: str, value: str, press_enter: bool = True
+    ) -> None:
         """
         Fill the element with the given identifier with the specified value.
 
@@ -528,7 +554,9 @@ class PlaywrightController:
             }""")
             text_in_viewport = "\n".join(text_in_viewport.split("\n")[:n_lines])
             # remove empty lines
-            text_in_viewport = "\n".join([line for line in text_in_viewport.split("\n") if line.strip()])
+            text_in_viewport = "\n".join(
+                [line for line in text_in_viewport.split("\n") if line.strip()]
+            )
             assert isinstance(text_in_viewport, str)
             return text_in_viewport
         except Exception:

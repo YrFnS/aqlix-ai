@@ -90,7 +90,12 @@ class SseMcpToolAdapter(
     component_config_schema = SseMcpToolAdapterConfig
     component_provider_override = "autogen_ext.tools.mcp.SseMcpToolAdapter"
 
-    def __init__(self, server_params: SseServerParams, tool: Tool, session: ClientSession | None = None) -> None:
+    def __init__(
+        self,
+        server_params: SseServerParams,
+        tool: Tool,
+        session: ClientSession | None = None,
+    ) -> None:
         super().__init__(server_params=server_params, tool=tool, session=session)
 
     def _to_config(self) -> SseMcpToolAdapterConfig:
@@ -100,7 +105,9 @@ class SseMcpToolAdapter(
         Returns:
             SseMcpToolAdapterConfig: The configuration of the adapter.
         """
-        return SseMcpToolAdapterConfig(server_params=self._server_params, tool=self._tool)
+        return SseMcpToolAdapterConfig(
+            server_params=self._server_params, tool=self._tool
+        )
 
     @classmethod
     def _from_config(cls, config: SseMcpToolAdapterConfig) -> Self:

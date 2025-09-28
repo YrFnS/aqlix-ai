@@ -2,16 +2,23 @@
 Flows router extracted from Langflow for Iraqi AI Chat System
 Original: src/backend/base/langflow/api/v1/flows.py
 """
+
 from typing import List, Dict, Any, Optional
 from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from fastapi.responses import StreamingResponse
 from langflow.services.database.models.user.model import User
-from langflow.services.database.models.flow.model import Flow, FlowCreate, FlowRead, FlowUpdate
+from langflow.services.database.models.flow.model import (
+    Flow,
+    FlowCreate,
+    FlowRead,
+    FlowUpdate,
+)
 from langflow.services.auth.utils import get_current_active_user
 from langflow.services.database.utils import DbSession
 
 router = APIRouter(prefix="/flows", tags=["Flows"])
+
 
 @router.post("/", response_model=FlowRead)
 async def create_flow(
@@ -21,7 +28,7 @@ async def create_flow(
 ) -> Flow:
     """
     Create a single AI workflow.
-    
+
     Iraqi AI enhancements:
     - Apply cultural validation to workflow content
     - Set Iraqi professional domain defaults
@@ -34,7 +41,7 @@ async def create_flow(
         # - Set language preferences (Arabic/English)
         # - Apply professional domain settings
         # - Configure Islamic compliance rules
-        
+
         db_flow = Flow(
             **flow.model_dump(),
             user_id=current_user.id,
@@ -44,14 +51,15 @@ async def create_flow(
             # iraqi_domain="general",
             # rtl_compatible=True
         )
-        
+
         session.add(db_flow)
         session.commit()
         session.refresh(db_flow)
-        
+
         return db_flow
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.post("/batch/", response_model=List[FlowRead])
 async def create_multiple_flows(
@@ -61,7 +69,7 @@ async def create_multiple_flows(
 ) -> List[Flow]:
     """
     Create multiple AI workflows.
-    
+
     Iraqi AI enhancements:
     - Batch cultural validation
     - Apply consistent Iraqi settings
@@ -70,18 +78,16 @@ async def create_multiple_flows(
     try:
         db_flows = []
         for flow_data in flows:
-            db_flow = Flow(
-                **flow_data.model_dump(),
-                user_id=current_user.id
-            )
+            db_flow = Flow(**flow_data.model_dump(), user_id=current_user.id)
             db_flows.append(db_flow)
-        
+
         session.add_all(db_flows)
         session.commit()
-        
+
         return db_flows
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.post("/upload/")
 async def upload_flows(
@@ -91,7 +97,7 @@ async def upload_flows(
 ) -> Dict[str, Any]:
     """
     Upload flows from a file.
-    
+
     Iraqi AI enhancements:
     - Validate uploaded flows for cultural compliance
     - Support Arabic workflow descriptions
@@ -101,26 +107,27 @@ async def upload_flows(
         # Process uploaded file
         file_content = await file.read()
         flows_data = parse_flows_file(file_content)
-        
+
         # Iraqi AI specific processing:
         # - Cultural validation of workflow content
         # - Arabic text processing
         # - Professional domain classification
-        
+
         created_flows = []
         for flow_data in flows_data:
             db_flow = Flow(**flow_data, user_id=current_user.id)
             session.add(db_flow)
             created_flows.append(db_flow)
-        
+
         session.commit()
-        
+
         return {
             "message": f"Successfully uploaded {len(created_flows)} flows",
-            "flows": created_flows
+            "flows": created_flows,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.get("/", response_model=List[FlowRead])
 async def get_flows(
@@ -132,7 +139,7 @@ async def get_flows(
 ) -> List[Flow]:
     """
     Retrieve flows with pagination support.
-    
+
     Iraqi AI enhancements:
     - Filter by professional domain
     - Show cultural compliance status
@@ -140,21 +147,22 @@ async def get_flows(
     """
     try:
         query = session.query(Flow).filter(Flow.user_id == current_user.id)
-        
+
         if folder_id:
             query = query.filter(Flow.folder_id == folder_id)
-        
+
         flows = query.offset(skip).limit(limit).all()
-        
+
         # Iraqi AI specific metadata would be included:
         # - cultural_compliance_status
         # - language_support
         # - professional_domain
         # - rtl_compatibility
-        
+
         return flows
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/{flow_id}", response_model=FlowRead)
 async def get_flow(
@@ -164,24 +172,26 @@ async def get_flow(
 ) -> Flow:
     """
     Read a specific flow.
-    
+
     Iraqi AI enhancements:
     - Include cultural metadata
     - Show Arabic descriptions
     - Display professional domain context
     """
     try:
-        flow = session.query(Flow).filter(
-            Flow.id == flow_id,
-            Flow.user_id == current_user.id
-        ).first()
-        
+        flow = (
+            session.query(Flow)
+            .filter(Flow.id == flow_id, Flow.user_id == current_user.id)
+            .first()
+        )
+
         if not flow:
             raise HTTPException(status_code=404, detail="Flow not found")
-        
+
         return flow
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/public_flow/{flow_id}", response_model=FlowRead)
 async def get_public_flow(
@@ -190,27 +200,32 @@ async def get_public_flow(
 ) -> Flow:
     """
     Read a public flow.
-    
+
     Iraqi AI enhancements:
     - Apply cultural filtering for public access
     - Ensure Islamic compliance
     - Limit to approved Iraqi professional domains
     """
     try:
-        flow = session.query(Flow).filter(
-            Flow.id == flow_id,
-            # Flow.is_public == True  # Would need to add this field
-        ).first()
-        
+        flow = (
+            session.query(Flow)
+            .filter(
+                Flow.id == flow_id,
+                # Flow.is_public == True  # Would need to add this field
+            )
+            .first()
+        )
+
         if not flow:
             raise HTTPException(status_code=404, detail="Public flow not found")
-        
+
         # Iraqi AI specific: Apply cultural filtering for public flows
         # apply_cultural_filtering(flow)
-        
+
         return flow
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/basic_examples/")
 async def get_basic_examples(
@@ -218,7 +233,7 @@ async def get_basic_examples(
 ) -> List[Dict[str, Any]]:
     """
     Retrieve basic example flows.
-    
+
     Iraqi AI enhancements:
     - Include Iraqi professional domain examples
     - Provide Arabic-language examples
@@ -231,28 +246,29 @@ async def get_basic_examples(
         # - Educational content generation
         # - Islamic compliance validation
         # - Iraqi business templates
-        
+
         examples = [
             {
                 "name": "Iraqi Legal Document Processor",
                 "description": "معالج المستندات القانونية العراقية",
                 "domain": "legal",
                 "language": "arabic",
-                "cultural_compliant": True
+                "cultural_compliant": True,
             },
             {
                 "name": "Medical Consultation Assistant",
                 "description": "مساعد الاستشارة الطبية",
-                "domain": "medical", 
+                "domain": "medical",
                 "language": "arabic",
-                "cultural_compliant": True
+                "cultural_compliant": True,
             },
             # More examples...
         ]
-        
+
         return examples
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.patch("/{flow_id}", response_model=FlowRead)
 async def update_flow(
@@ -263,36 +279,38 @@ async def update_flow(
 ) -> Flow:
     """
     Update a specific flow.
-    
+
     Iraqi AI enhancements:
     - Validate cultural appropriateness of updates
     - Handle Arabic text updates
     - Update professional domain settings
     """
     try:
-        flow = session.query(Flow).filter(
-            Flow.id == flow_id,
-            Flow.user_id == current_user.id
-        ).first()
-        
+        flow = (
+            session.query(Flow)
+            .filter(Flow.id == flow_id, Flow.user_id == current_user.id)
+            .first()
+        )
+
         if not flow:
             raise HTTPException(status_code=404, detail="Flow not found")
-        
+
         # Iraqi AI specific validations:
         # - Cultural appropriateness validation
         # - Arabic text processing
         # - Professional domain validation
-        
+
         update_data = flow_update.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(flow, field, value)
-        
+
         session.commit()
         session.refresh(flow)
-        
+
         return flow
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.delete("/{flow_id}")
 async def delete_flow(
@@ -302,27 +320,29 @@ async def delete_flow(
 ) -> Dict[str, str]:
     """
     Delete a single flow.
-    
+
     Iraqi AI enhancements:
     - Archive according to Iraqi data retention laws
     - Clean up cultural validation data
     - Update professional domain indexes
     """
     try:
-        flow = session.query(Flow).filter(
-            Flow.id == flow_id,
-            Flow.user_id == current_user.id
-        ).first()
-        
+        flow = (
+            session.query(Flow)
+            .filter(Flow.id == flow_id, Flow.user_id == current_user.id)
+            .first()
+        )
+
         if not flow:
             raise HTTPException(status_code=404, detail="Flow not found")
-        
+
         session.delete(flow)
         session.commit()
-        
+
         return {"message": "Flow deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.delete("/")
 async def delete_multiple_flows(
@@ -332,19 +352,21 @@ async def delete_multiple_flows(
 ) -> Dict[str, str]:
     """Delete multiple flows"""
     try:
-        flows = session.query(Flow).filter(
-            Flow.id.in_(flow_ids),
-            Flow.user_id == current_user.id
-        ).all()
-        
+        flows = (
+            session.query(Flow)
+            .filter(Flow.id.in_(flow_ids), Flow.user_id == current_user.id)
+            .all()
+        )
+
         for flow in flows:
             session.delete(flow)
-        
+
         session.commit()
-        
+
         return {"message": f"Successfully deleted {len(flows)} flows"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
 
 @router.post("/download/")
 async def download_flows(
@@ -354,31 +376,35 @@ async def download_flows(
 ) -> StreamingResponse:
     """Download flows as a zip file"""
     try:
-        flows = session.query(Flow).filter(
-            Flow.id.in_(flow_ids),
-            Flow.user_id == current_user.id
-        ).all()
-        
+        flows = (
+            session.query(Flow)
+            .filter(Flow.id.in_(flow_ids), Flow.user_id == current_user.id)
+            .all()
+        )
+
         # Create zip file with flows
         zip_content = create_flows_zip(flows)
-        
+
         return StreamingResponse(
             zip_content,
             media_type="application/zip",
-            headers={"Content-Disposition": "attachment; filename=flows.zip"}
+            headers={"Content-Disposition": "attachment; filename=flows.zip"},
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 def parse_flows_file(file_content: bytes) -> List[Dict[str, Any]]:
     """Parse uploaded flows file"""
     # Implementation would parse JSON/YAML flows file
     pass
 
+
 def create_flows_zip(flows: List[Flow]) -> bytes:
     """Create zip file containing flows"""
     # Implementation would create zip file
     pass
+
 
 # Iraqi AI Chat System enhancements needed:
 # - Add /flows/cultural-validate endpoint for Islamic compliance

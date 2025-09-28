@@ -14,7 +14,12 @@ from types import SimpleNamespace
 from typing import Any, Callable, ClassVar, List, Optional, Sequence, Union
 
 from autogen_core import CancellationToken, Component
-from autogen_core.code_executor import CodeBlock, CodeExecutor, FunctionWithRequirements, FunctionWithRequirementsStr
+from autogen_core.code_executor import (
+    CodeBlock,
+    CodeExecutor,
+    FunctionWithRequirements,
+    FunctionWithRequirementsStr,
+)
 from pydantic import BaseModel
 from typing_extensions import ParamSpec, Self
 
@@ -42,7 +47,9 @@ class LocalCommandLineCodeExecutorConfig(BaseModel):
     cleanup_temp_files: bool = True
 
 
-class LocalCommandLineCodeExecutor(CodeExecutor, Component[LocalCommandLineCodeExecutorConfig]):
+class LocalCommandLineCodeExecutor(
+    CodeExecutor, Component[LocalCommandLineCodeExecutorConfig]
+):
     """A code executor class that executes code through a local command line
     environment.
 
@@ -125,7 +132,9 @@ class LocalCommandLineCodeExecutor(CodeExecutor, Component[LocalCommandLineCodeE
     """
 
     component_config_schema = LocalCommandLineCodeExecutorConfig
-    component_provider_override = "autogen_ext.code_executors.local.LocalCommandLineCodeExecutor"
+    component_provider_override = (
+        "autogen_ext.code_executors.local.LocalCommandLineCodeExecutor"
+    )
 
     SUPPORTED_LANGUAGES: ClassVar[List[str]] = [
         "bash",
@@ -210,7 +219,9 @@ $functions"""
                     stacklevel=2,
                 )
 
-    def format_functions_for_prompt(self, prompt_template: str = FUNCTION_PROMPT_TEMPLATE) -> str:
+    def format_functions_for_prompt(
+        self, prompt_template: str = FUNCTION_PROMPT_TEMPLATE
+    ) -> str:
         """(Experimental) Format the functions for a prompt.
 
         The template includes two variables:
@@ -267,7 +278,11 @@ $functions"""
         func_file.write_text(func_file_content)
 
         # Collect requirements
-        lists_of_packages = [x.python_packages for x in self._functions if isinstance(x, FunctionWithRequirements)]
+        lists_of_packages = [
+            x.python_packages
+            for x in self._functions
+            if isinstance(x, FunctionWithRequirements)
+        ]
         flattened_packages = [item for sublist in lists_of_packages for item in sublist]
         required_packages = list(set(flattened_packages))
         if len(required_packages) > 0:
@@ -293,14 +308,18 @@ $functions"""
             cancellation_token.link_future(task)
             try:
                 proc = await task
-                stdout, stderr = await asyncio.wait_for(proc.communicate(), self._timeout)
+                stdout, stderr = await asyncio.wait_for(
+                    proc.communicate(), self._timeout
+                )
             except asyncio.TimeoutError as e:
                 raise ValueError("Pip install timed out") from e
             except asyncio.CancelledError as e:
                 raise ValueError("Pip install was cancelled") from e
 
             if proc.returncode is not None and proc.returncode != 0:
-                raise ValueError(f"Pip install failed. {stdout.decode()}, {stderr.decode()}")
+                raise ValueError(
+                    f"Pip install failed. {stdout.decode()}, {stderr.decode()}"
+                )
 
         # Attempt to load the function file to check for syntax errors, imports etc.
         exec_result = await self._execute_code_dont_check_setup(
@@ -327,7 +346,9 @@ $functions"""
         if not self._setup_functions_complete:
             await self._setup_functions(cancellation_token)
 
-        return await self._execute_code_dont_check_setup(code_blocks, cancellation_token)
+        return await self._execute_code_dont_check_setup(
+            code_blocks, cancellation_token
+        )
 
     async def _execute_code_dont_check_setup(
         self, code_blocks: List[CodeBlock], cancellation_token: CancellationToken
@@ -387,13 +408,17 @@ $functions"""
             # Build environment
             env = os.environ.copy()
             if self._virtual_env_context:
-                virtual_env_bin_abs_path = os.path.abspath(self._virtual_env_context.bin_path)
+                virtual_env_bin_abs_path = os.path.abspath(
+                    self._virtual_env_context.bin_path
+                )
                 env["PATH"] = f"{virtual_env_bin_abs_path}{os.pathsep}{env['PATH']}"
 
             # Decide how to invoke the script
             if lang == "python":
                 program = (
-                    os.path.abspath(self._virtual_env_context.env_exe) if self._virtual_env_context else sys.executable
+                    os.path.abspath(self._virtual_env_context.env_exe)
+                    if self._virtual_env_context
+                    else sys.executable
                 )
                 extra_args = [str(written_file.absolute())]
             else:
@@ -429,7 +454,9 @@ $functions"""
             proc = None  # Track the process
             try:
                 proc = await task
-                stdout, stderr = await asyncio.wait_for(proc.communicate(), self._timeout)
+                stdout, stderr = await asyncio.wait_for(
+                    proc.communicate(), self._timeout
+                )
                 exitcode = proc.returncode or 0
             except asyncio.TimeoutError:
                 logs_all += "\nTimeout"
@@ -453,7 +480,9 @@ $functions"""
                 break
 
         code_file = str(file_names[0]) if file_names else None
-        code_result = CommandLineCodeResult(exit_code=exitcode, output=logs_all, code_file=code_file)
+        code_result = CommandLineCodeResult(
+            exit_code=exitcode, output=logs_all, code_file=code_file
+        )
 
         if self._cleanup_temp_files:
             for file in file_names:
@@ -498,7 +527,9 @@ $functions"""
         if self._functions:
             logging.info("Functions will not be included in serialized configuration")
         if self._virtual_env_context:
-            logging.info("Virtual environment context will not be included in serialized configuration")
+            logging.info(
+                "Virtual environment context will not be included in serialized configuration"
+            )
 
         return LocalCommandLineCodeExecutorConfig(
             timeout=self._timeout,

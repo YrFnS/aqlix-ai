@@ -1,6 +1,17 @@
 import asyncio
 from collections import Counter, deque
-from typing import Any, Callable, Deque, Dict, List, Literal, Mapping, Sequence, Set, Union
+from typing import (
+    Any,
+    Callable,
+    Deque,
+    Dict,
+    List,
+    Literal,
+    Mapping,
+    Sequence,
+    Set,
+    Union,
+)
 
 from autogen_core import AgentRuntime, Component, ComponentModel
 from pydantic import BaseModel, Field, model_validator
@@ -44,7 +55,9 @@ class DiGraphEdge(BaseModel):
     """
 
     # Using Field to exclude the condition in serialization if it's a callable
-    condition_function: Callable[[BaseChatMessage], bool] | None = Field(default=None, exclude=True)
+    condition_function: Callable[[BaseChatMessage], bool] | None = Field(
+        default=None, exclude=True
+    )
     activation_group: str = Field(default="")
     """Group identifier for forward dependencies.
 
@@ -140,7 +153,9 @@ class DiGraph(BaseModel):
             return {self.default_start_node}
 
         parents = self.get_parents()
-        return set([node_name for node_name, parent_list in parents.items() if not parent_list])
+        return set(
+            [node_name for node_name, parent_list in parents.items() if not parent_list]
+        )
 
     def get_leaf_nodes(self) -> Set[str]:
         """Return nodes that have no outgoing edges (final output nodes)."""
@@ -178,7 +193,10 @@ class DiGraph(BaseModel):
                     cycle_edges: List[DiGraphEdge] = []
                     for n in cycle_nodes:
                         cycle_edges.extend(self.nodes[n].edges)
-                    if all(edge.condition is None and edge.condition_function is None for edge in cycle_edges):
+                    if all(
+                        edge.condition is None and edge.condition_function is None
+                        for edge in cycle_edges
+                    ):
                         raise ValueError(
                             f"Cycle detected without exit condition: {' -> '.join(cycle_nodes + cycle_nodes[:1])}"
                         )
@@ -218,11 +236,17 @@ class DiGraph(BaseModel):
         for node in self.nodes.values():
             # Check that if a node has an outgoing conditional edge, then all outgoing edges are conditional
             has_condition = any(
-                edge.condition is not None or edge.condition_function is not None for edge in node.edges
+                edge.condition is not None or edge.condition_function is not None
+                for edge in node.edges
             )
-            has_unconditioned = any(edge.condition is None and edge.condition_function is None for edge in node.edges)
+            has_unconditioned = any(
+                edge.condition is None and edge.condition_function is None
+                for edge in node.edges
+            )
             if has_condition and has_unconditioned:
-                raise ValueError(f"Node '{node.name}' has a mix of conditional and unconditional edges.")
+                raise ValueError(
+                    f"Node '{node.name}' has a mix of conditional and unconditional edges."
+                )
 
         # Validate activation conditions across all edges in the graph
         self._validate_activation_conditions()
@@ -235,7 +259,9 @@ class DiGraph(BaseModel):
         Raises:
             ValueError: If edges pointing to the same target have different activation_condition values
         """
-        target_activation_conditions: Dict[str, Dict[str, str]] = {}  # target_node -> {activation_group -> condition}
+        target_activation_conditions: Dict[
+            str, Dict[str, str]
+        ] = {}  # target_node -> {activation_group -> condition}
 
         for node in self.nodes.values():
             for edge in node.edges:
@@ -246,10 +272,15 @@ class DiGraph(BaseModel):
                     target_activation_conditions[target] = {}
 
                 if activation_group in target_activation_conditions[target]:
-                    if target_activation_conditions[target][activation_group] != edge.activation_condition:
+                    if (
+                        target_activation_conditions[target][activation_group]
+                        != edge.activation_condition
+                    ):
                         # Find the source node that has the conflicting condition
                         conflicting_source = self._find_edge_source_by_target_and_group(
-                            target, activation_group, target_activation_conditions[target][activation_group]
+                            target,
+                            activation_group,
+                            target_activation_conditions[target][activation_group],
                         )
                         raise ValueError(
                             f"Conflicting activation conditions for target '{target}' group '{activation_group}': "
@@ -257,7 +288,9 @@ class DiGraph(BaseModel):
                             f"and '{edge.activation_condition}' (from node '{node.name}')"
                         )
                 else:
-                    target_activation_conditions[target][activation_group] = edge.activation_condition
+                    target_activation_conditions[target][activation_group] = (
+                        edge.activation_condition
+                    )
 
     def _find_edge_source_by_target_and_group(
         self, target: str, activation_group: str, activation_condition: str
@@ -316,7 +349,9 @@ class GraphFlowManager(BaseGroupChatManager):
         participant_topic_types: List[str],
         participant_names: List[str],
         participant_descriptions: List[str],
-        output_message_queue: asyncio.Queue[BaseAgentEvent | BaseChatMessage | GroupChatTermination],
+        output_message_queue: asyncio.Queue[
+            BaseAgentEvent | BaseChatMessage | GroupChatTermination
+        ],
         termination_condition: TerminationCondition | None,
         max_turns: int | None,
         message_factory: MessageFactory,
@@ -336,13 +371,21 @@ class GraphFlowManager(BaseGroupChatManager):
             message_factory=message_factory,
         )
         graph.graph_validate()
-        if graph.get_has_cycles() and self._termination_condition is None and self._max_turns is None:
-            raise ValueError("A termination condition is required for cyclic graphs without a maximum turn limit.")
+        if (
+            graph.get_has_cycles()
+            and self._termination_condition is None
+            and self._max_turns is None
+        ):
+            raise ValueError(
+                "A termination condition is required for cyclic graphs without a maximum turn limit."
+            )
         self._graph = graph
         # Lookup table for incoming edges for each node.
         self._parents = graph.get_parents()
         # Lookup table for outgoing edges for each node.
-        self._edges: Dict[str, List[DiGraphEdge]] = {n: node.edges for n, node in graph.nodes.items()}
+        self._edges: Dict[str, List[DiGraphEdge]] = {
+            n: node.edges for n, node in graph.nodes.items()
+        }
 
         # Build activation and enqueued_any lookup tables by collecting all edges and grouping by target node
         self._build_lookup_tables(graph)
@@ -352,7 +395,8 @@ class GraphFlowManager(BaseGroupChatManager):
         # === Mutable states for the graph execution ===
         # Count the number of remaining parents to activate each node.
         self._remaining: Dict[str, Counter[str]] = {
-            target: Counter(groups) for target, groups in graph.get_remaining_map().items()
+            target: Counter(groups)
+            for target, groups in graph.get_remaining_map().items()
         }
         # cache for remaining
         self._origin_remaining: Dict[str, Dict[str, int]] = {
@@ -380,7 +424,9 @@ class GraphFlowManager(BaseGroupChatManager):
                 if target not in self._activation:
                     self._activation[target] = {}
                 if activation_group not in self._activation[target]:
-                    self._activation[target][activation_group] = edge.activation_condition
+                    self._activation[target][activation_group] = (
+                        edge.activation_condition
+                    )
 
                 # Build enqueued_any lookup
                 if target not in self._enqueued_any:
@@ -388,7 +434,9 @@ class GraphFlowManager(BaseGroupChatManager):
                 if activation_group not in self._enqueued_any[target]:
                     self._enqueued_any[target][activation_group] = False
 
-    async def update_message_thread(self, messages: Sequence[BaseAgentEvent | BaseChatMessage]) -> None:
+    async def update_message_thread(
+        self, messages: Sequence[BaseAgentEvent | BaseChatMessage]
+    ) -> None:
         await super().update_message_thread(messages)
 
         # Find the node that ran in the current turn.
@@ -423,7 +471,9 @@ class GraphFlowManager(BaseGroupChatManager):
                     # Track which activation group was triggered
                     self._save_triggered_activation_group(target, activation_group)
 
-    def _save_triggered_activation_group(self, target: str, activation_group: str) -> None:
+    def _save_triggered_activation_group(
+        self, target: str, activation_group: str
+    ) -> None:
         """Save which activation group was triggered for a target node.
 
         Args:
@@ -448,13 +498,20 @@ class GraphFlowManager(BaseGroupChatManager):
                 self._enqueued_any[speaker][activation_group] = False
             else:
                 # Reset the remaining count for this activation group using the graph's original count
-                if speaker in self._remaining and activation_group in self._remaining[speaker]:
-                    self._remaining[speaker][activation_group] = self._origin_remaining[speaker][activation_group]
+                if (
+                    speaker in self._remaining
+                    and activation_group in self._remaining[speaker]
+                ):
+                    self._remaining[speaker][activation_group] = self._origin_remaining[
+                        speaker
+                    ][activation_group]
 
         # Clear the triggered activation groups for this speaker
         self._triggered_activation_groups[speaker].clear()
 
-    async def select_speaker(self, thread: Sequence[BaseAgentEvent | BaseChatMessage]) -> List[str]:
+    async def select_speaker(
+        self, thread: Sequence[BaseAgentEvent | BaseChatMessage]
+    ) -> List[str]:
         # Drain the ready queue for the next set of speakers.
         speakers: List[str] = []
         while self._ready:
@@ -466,11 +523,15 @@ class GraphFlowManager(BaseGroupChatManager):
 
         return speakers
 
-    async def validate_group_state(self, messages: List[BaseChatMessage] | None) -> None:
+    async def validate_group_state(
+        self, messages: List[BaseChatMessage] | None
+    ) -> None:
         pass
 
     async def _apply_termination_condition(
-        self, delta: Sequence[BaseAgentEvent | BaseChatMessage], increment_turn_count: bool = False
+        self,
+        delta: Sequence[BaseAgentEvent | BaseChatMessage],
+        increment_turn_count: bool = False,
     ) -> bool:
         """Apply termination condition including graph-specific completion logic.
 
@@ -504,8 +565,13 @@ class GraphFlowManager(BaseGroupChatManager):
 
     def _reset_execution_state(self) -> None:
         """Reset the graph execution state to the initial state."""
-        self._remaining = {target: Counter(groups) for target, groups in self._graph.get_remaining_map().items()}
-        self._enqueued_any = {n: {g: False for g in self._enqueued_any[n]} for n in self._enqueued_any}
+        self._remaining = {
+            target: Counter(groups)
+            for target, groups in self._graph.get_remaining_map().items()
+        }
+        self._enqueued_any = {
+            n: {g: False for g in self._enqueued_any[n]} for n in self._enqueued_any
+        }
         self._ready = deque([n for n in self._graph.get_start_nodes()])
 
     async def save_state(self) -> Mapping[str, Any]:
@@ -513,7 +579,9 @@ class GraphFlowManager(BaseGroupChatManager):
         state = {
             "message_thread": [message.dump() for message in self._message_thread],
             "current_turn": self._current_turn,
-            "remaining": {target: dict(counter) for target, counter in self._remaining.items()},
+            "remaining": {
+                target: dict(counter) for target, counter in self._remaining.items()
+            },
             "enqueued_any": dict(self._enqueued_any),
             "ready": list(self._ready),
         }
@@ -521,9 +589,13 @@ class GraphFlowManager(BaseGroupChatManager):
 
     async def load_state(self, state: Mapping[str, Any]) -> None:
         """Restore execution state from saved data."""
-        self._message_thread = [self._message_factory.create(msg) for msg in state["message_thread"]]
+        self._message_thread = [
+            self._message_factory.create(msg) for msg in state["message_thread"]
+        ]
         self._current_turn = state["current_turn"]
-        self._remaining = {target: Counter(groups) for target, groups in state["remaining"].items()}
+        self._remaining = {
+            target: Counter(groups) for target, groups in state["remaining"].items()
+        }
         self._enqueued_any = state["enqueued_any"]
         self._ready = deque(state["ready"])
 
@@ -789,7 +861,8 @@ class GraphFlow(BaseGroupChat, Component[GraphFlowConfig]):
         termination_condition: TerminationCondition | None = None,
         max_turns: int | None = None,
         runtime: AgentRuntime | None = None,
-        custom_message_types: List[type[BaseAgentEvent | BaseChatMessage]] | None = None,
+        custom_message_types: List[type[BaseAgentEvent | BaseChatMessage]]
+        | None = None,
     ) -> None:
         self._input_participants = participants
         self._input_termination_condition = termination_condition
@@ -821,7 +894,9 @@ class GraphFlow(BaseGroupChat, Component[GraphFlowConfig]):
         participant_topic_types: List[str],
         participant_names: List[str],
         participant_descriptions: List[str],
-        output_message_queue: asyncio.Queue[BaseAgentEvent | BaseChatMessage | GroupChatTermination],
+        output_message_queue: asyncio.Queue[
+            BaseAgentEvent | BaseChatMessage | GroupChatTermination
+        ],
         termination_condition: TerminationCondition | None,
         max_turns: int | None,
         message_factory: MessageFactory,
@@ -847,9 +922,13 @@ class GraphFlow(BaseGroupChat, Component[GraphFlowConfig]):
 
     def _to_config(self) -> GraphFlowConfig:
         """Converts the instance into a configuration object."""
-        participants = [participant.dump_component() for participant in self._input_participants]
+        participants = [
+            participant.dump_component() for participant in self._input_participants
+        ]
         termination_condition = (
-            self._input_termination_condition.dump_component() if self._input_termination_condition else None
+            self._input_termination_condition.dump_component()
+            if self._input_termination_condition
+            else None
         )
         return GraphFlowConfig(
             name=self._name,
@@ -863,9 +942,13 @@ class GraphFlow(BaseGroupChat, Component[GraphFlowConfig]):
     @classmethod
     def _from_config(cls, config: GraphFlowConfig) -> Self:
         """Reconstructs an instance from a configuration object."""
-        participants = [ChatAgent.load_component(participant) for participant in config.participants]
+        participants = [
+            ChatAgent.load_component(participant) for participant in config.participants
+        ]
         termination_condition = (
-            TerminationCondition.load_component(config.termination_condition) if config.termination_condition else None
+            TerminationCondition.load_component(config.termination_condition)
+            if config.termination_condition
+            else None
         )
         return cls(
             name=config.name,
