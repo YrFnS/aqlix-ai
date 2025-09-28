@@ -6,62 +6,22 @@ set -e
 
 echo "🎨 Running unified formatting..."
 
-# Get project root
-PROJECT_ROOT="$CLAUDE_PROJECT_DIR"
-cd "$PROJECT_ROOT"
-
-# Parse Claude Code hook JSON input from stdin
-FILE_PATH=""
-if [[ ! -t 0 ]]; then
-    # Read JSON from stdin (Claude Code hook format)
-    HOOK_INPUT=$(cat)
-    FILE_PATH=$(echo "$HOOK_INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null || echo "")
+# Get all modified Python files and format them
+if command -v python >/dev/null 2>&1 && python -m ruff --version >/dev/null 2>&1; then
+    echo "🐍 Formatting Python files..."
+    find . -name "*.py" -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" -exec python -m ruff format {} \; 2>/dev/null || true
+    echo "✅ Python formatting complete"
+else
+    echo "ℹ️  Install ruff for Python formatting"
 fi
 
-# Function to format any file based on extension
-format_file() {
-    local file="$1"
-    
-    if [[ ! -f "$file" ]]; then
-        return 0
-    fi
-    
-    echo "📝 Formatting: $(basename "$file")"
-    
-    case "$file" in
-        *.py)
-            echo "🐍 Python formatting"
-            # Use Ruff (modern Python formatter)
-            if command -v python3 >/dev/null 2>&1 && python3 -m ruff --version >/dev/null 2>&1; then
-                python3 -m ruff format "$file" >/dev/null 2>&1 && echo "✅ Ruff formatted"
-            elif command -v python >/dev/null 2>&1 && python -m ruff --version >/dev/null 2>&1; then
-                python -m ruff format "$file" >/dev/null 2>&1 && echo "✅ Ruff formatted"
-            else
-                echo "ℹ️  Install ruff for Python formatting"
-            fi
-            ;;
-        *.ts|*.tsx|*.js|*.jsx|*.json|*.md|*.css|*.scss|*.yml|*.yaml)
-            echo "⚛️  Frontend/document formatting"
-            # Use Prettier for everything web-related
-            if [[ -f "package.json" ]] && command -v npx >/dev/null 2>&1; then
-                if npx prettier --write "$file" >/dev/null 2>&1; then
-                    echo "✅ Prettier formatted"
-                else
-                    echo "ℹ️  Install prettier for formatting"
-                fi
-            fi
-            ;;
-        *)
-            echo "ℹ️  Unknown file type - skipping"
-            ;;
-    esac
-}
-
-# Process file from Claude Code hook input
-if [[ -n "$FILE_PATH" ]]; then
-    format_file "$FILE_PATH"
+# Format frontend files if package.json exists
+if [[ -f "package.json" ]] && command -v npx >/dev/null 2>&1; then
+    echo "⚛️  Formatting frontend files..."
+    npx prettier --write "**/*.{ts,tsx,js,jsx,json,md,css,scss,yml,yaml}" 2>/dev/null || true
+    echo "✅ Frontend formatting complete"
 else
-    echo "ℹ️  No file path in hook input - skipping formatting"
+    echo "ℹ️  Frontend formatting skipped (no package.json or prettier)"
 fi
 
 echo "✅ Unified formatting complete!"

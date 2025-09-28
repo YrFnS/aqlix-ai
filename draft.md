@@ -2873,6 +2873,8 @@ I'm using the new framework for coding with AI context engineering
 I'll use this repo as a reference to generate prps for the app split into small tasks, features and they shouldn't overlap with each other. They should be independent or complementary to each other
 https://github.com/coleam00/context-engineering-intro
 
+and i have in the examples folder parts from different repos
+
 i made them here in the initials folder ill create the prps from the initials
 and we need to use more than one AI for the app its better than leave all in one AI right?
 check them is it good or not? they are for the app MVP. What are your thoughts?
@@ -2898,7 +2900,18 @@ https://github.com/comfyanonymous/ComfyUI
 
 
 
+i want to build ai chat system beyound just chat i created the plan into small features c:\Users\Itokoro\Documents\projects\aqlix-ai\initials but before i start implmeneting i we need to update the
+from https://fly.io/ to https://sevalla.com/ what do you think?
 
+
+i have a question
+do we generate all prps from the initials then excute them one by one or we generate one prp from the initial then execute it then generate the next prp from the initial then execute it and so on?
+what do you think is better?
+
+
+
+we have 59 initials dont mind the number in the file name its wrong
+so what is the first initial we should start with?
 
 
 

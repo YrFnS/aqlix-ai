@@ -1,5 +1,7 @@
 # Iraqi AI Chat System - Claude Memory Rules
 
+**CRITICAL: READ ARCHON WORKFLOW RULES FIRST** - See `archon.md` for mandatory Archon-first task management workflow that overrides all other instructions.
+
 **Current Date Context**: ALWAYS use 2025 in web searches, not 2024
 **Primary Directive**: ALWAYS use specialized Iraqi AI agents for cultural compliance, Arabic processing, and professional domain expertise.
 
@@ -188,6 +190,7 @@ Use for immediate processing without context overhead:
 ## MCP Server Coordination
 
 **Required MCP Servers**:
+- **Archon**: Task management, project coordination, workflow orchestration
 - **Context7**: Official documentation, patterns
 - **@21st-dev/magic**: UI component generation
 - **Playwright**: E2E testing, browser automation
@@ -197,10 +200,11 @@ Use for immediate processing without context overhead:
 - **Puppeteer**: Advanced browser automation
 
 **Selection Rules**:
-1. Agents specify primary MCP servers in frontmatter
-2. Auto-coordination based on task complexity
-3. Fallback strategies for server unavailability
-4. Performance optimization through intelligent caching
+1. **ARCHON-FIRST RULE**: Always use Archon MCP for task management (see `archon.md`)
+2. Agents specify primary MCP servers in frontmatter
+3. Auto-coordination based on task complexity
+4. Fallback strategies for server unavailability
+5. Performance optimization through intelligent caching
 
 ## Multi-Agent Workflow Patterns
 
