@@ -11,7 +11,7 @@
  */
 
 /* Root RTL Configuration */
-[dir="rtl"] {
+[dir='rtl'] {
   --text-align-start: right;
   --text-align-end: left;
   --margin-start: margin-right;
@@ -24,7 +24,7 @@
   --inset-end: left;
 }
 
-[dir="ltr"] {
+[dir='ltr'] {
   --text-align-start: left;
   --text-align-end: right;
   --margin-start: margin-left;
@@ -39,7 +39,9 @@
 
 /* Arabic Font Configuration */
 .font-arabic {
-  font-family: 'Noto Sans Arabic', 'Amiri', 'Scheherazade', 'Arabic UI Text', 'SF Arabic', 'Segoe UI Arabic', 'Tahoma', Arial, sans-serif;
+  font-family:
+    'Noto Sans Arabic', 'Amiri', 'Scheherazade', 'Arabic UI Text', 'SF Arabic', 'Segoe UI Arabic',
+    'Tahoma', Arial, sans-serif;
   font-feature-settings: 'liga', 'calt', 'kern';
   font-variant-ligatures: common-ligatures contextual;
   text-rendering: optimizeLegibility;
@@ -458,7 +460,9 @@
 }
 
 .without-diacritics {
-  font-feature-settings: 'mark' 0, 'mkmk' 0;
+  font-feature-settings:
+    'mark' 0,
+    'mkmk' 0;
   line-height: 1.6;
 }
 
@@ -485,15 +489,15 @@
     padding-right: 1rem;
     padding-left: 1rem;
   }
-  
+
   .rtl-chat .message-bubble.user {
     margin-left: 10%;
   }
-  
+
   .rtl-chat .message-bubble.assistant {
     margin-right: 10%;
   }
-  
+
   .arabic-text {
     line-height: 1.9;
     font-size: 1.1em;
@@ -507,7 +511,7 @@
     margin-right: 5%;
     max-width: 90%;
   }
-  
+
   .arabic-text {
     line-height: 2;
     font-size: 1.05em;
@@ -519,16 +523,16 @@
   .rtl-container {
     direction: rtl;
   }
-  
+
   .arabic-text {
     line-height: 1.8;
     color: #000;
   }
-  
+
   .rtl-table {
     page-break-inside: avoid;
   }
-  
+
   .rtl-card {
     page-break-inside: avoid;
     border: 1px solid #ccc;
@@ -542,17 +546,17 @@
     color: #fff;
     border: 2px solid #fff;
   }
-  
+
   .rtl-chat .message-bubble.assistant {
     background: #fff;
     color: #000;
     border: 2px solid #000;
   }
-  
+
   .arabic-text {
     color: #000;
   }
-  
+
   .professional-legal,
   .professional-medical,
   .professional-educational,
@@ -567,7 +571,7 @@
   .rtl-chat .message-bubble {
     transition: none;
   }
-  
+
   .rtl-dropdown .dropdown-menu {
     transition: none;
   }
@@ -578,28 +582,38 @@
   .rtl-chat .message-bubble.user {
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
   }
-  
+
   .rtl-chat .message-bubble.assistant {
     background: #374151;
     color: #f9fafb;
     border: 1px solid #4b5563;
   }
-  
+
   .arabic-text {
     color: #f9fafb;
   }
-  
-  .professional-legal { color: #93c5fd; }
-  .professional-medical { color: #d1d5db; }
-  .professional-educational { color: #93c5fd; }
-  .professional-business { color: #86efac; }
-  .professional-engineering { color: #fde68a; }
-  
+
+  .professional-legal {
+    color: #93c5fd;
+  }
+  .professional-medical {
+    color: #d1d5db;
+  }
+  .professional-educational {
+    color: #93c5fd;
+  }
+  .professional-business {
+    color: #86efac;
+  }
+  .professional-engineering {
+    color: #fde68a;
+  }
+
   .islamic-theme {
     background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
     border: 1px solid #3b82f6;
   }
-  
+
   .iraqi-theme {
     background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
     border: 1px solid #dc2626;

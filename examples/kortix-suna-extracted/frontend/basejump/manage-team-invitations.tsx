@@ -4,13 +4,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { createClient } from '@/lib/supabase/server';
-import { Table, TableRow, TableBody, TableCell } from '../ui/table';
-import { Badge } from '../ui/badge';
-import CreateTeamInvitationButton from './create-team-invitation-button';
-import { formatDistanceToNow } from 'date-fns';
-import DeleteTeamInvitationButton from './delete-team-invitation-button';
+} from "../ui/card";
+import { createClient } from "@/lib/supabase/server";
+import { Table, TableRow, TableBody, TableCell } from "../ui/table";
+import { Badge } from "../ui/badge";
+import CreateTeamInvitationButton from "./create-team-invitation-button";
+import { formatDistanceToNow } from "date-fns";
+import DeleteTeamInvitationButton from "./delete-team-invitation-button";
 
 type Props = {
   accountId: string;
@@ -20,7 +20,7 @@ export default async function ManageTeamInvitations({ accountId }: Props) {
   const supabaseClient = await createClient();
 
   const { data: invitations } = await supabaseClient.rpc(
-    'get_account_invitations',
+    "get_account_invitations",
     {
       account_id: accountId,
     },
@@ -52,18 +52,18 @@ export default async function ManageTeamInvitations({ accountId }: Props) {
                       })}
                       <Badge
                         variant={
-                          invitation.invitation_type === '24_hour'
-                            ? 'default'
-                            : 'outline'
+                          invitation.invitation_type === "24_hour"
+                            ? "default"
+                            : "outline"
                         }
                       >
                         {invitation.invitation_type}
                       </Badge>
                       <Badge
                         variant={
-                          invitation.account_role === 'owner'
-                            ? 'default'
-                            : 'outline'
+                          invitation.account_role === "owner"
+                            ? "default"
+                            : "outline"
                         }
                       >
                         {invitation.account_role}

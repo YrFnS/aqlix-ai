@@ -1,28 +1,52 @@
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { Plus, Settings, Zap, Bot, ChevronDown, Star, CheckCircle, Eye, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { getCategoryEmoji } from '../utils';
-import type { AppCardProps } from '../types';
-import { usePipedreamProfiles } from '@/hooks/react-query/pipedream/use-pipedream-profiles';
-import { usePipedreamAppIcon } from '@/hooks/react-query/pipedream/use-pipedream';
-import { usePipedreamAppTools } from '@/hooks/react-query/pipedream/use-pipedream';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
+import React, { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Plus,
+  Settings,
+  Zap,
+  Bot,
+  ChevronDown,
+  Star,
+  CheckCircle,
+  Eye,
+  ExternalLink,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { getCategoryEmoji } from "../utils";
+import type { AppCardProps } from "../types";
+import { usePipedreamProfiles } from "@/hooks/react-query/pipedream/use-pipedream-profiles";
+import { usePipedreamAppIcon } from "@/hooks/react-query/pipedream/use-pipedream";
+import { usePipedreamAppTools } from "@/hooks/react-query/pipedream/use-pipedream";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export const AppCard: React.FC<AppCardProps> = ({ 
-  app, 
-  compact = false, 
-  mode = 'full',
+export const AppCard: React.FC<AppCardProps> = ({
+  app,
+  compact = false,
+  mode = "full",
   currentAgentId,
   agentName,
   agentPipedreamProfiles = [],
@@ -34,20 +58,26 @@ export const AppCard: React.FC<AppCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const { data: appToolsData, isLoading: isToolsLoading } = usePipedreamAppTools(app.name_slug, { enabled: isDialogOpen });
+  const { data: appToolsData, isLoading: isToolsLoading } =
+    usePipedreamAppTools(app.name_slug, { enabled: isDialogOpen });
   const tools = appToolsData?.tools ?? [];
 
   const { data: profiles } = usePipedreamProfiles();
   const { data: iconData } = usePipedreamAppIcon(app.name_slug, {
-    enabled: !app.img_src
+    enabled: !app.img_src,
   });
 
   const connectedProfiles = useMemo(() => {
-    return profiles?.filter(p => p.app_slug === app.name_slug && p.is_connected) || [];
+    return (
+      profiles?.filter((p) => p.app_slug === app.name_slug && p.is_connected) ||
+      []
+    );
   }, [profiles, app.name_slug]);
 
   const agentProfiles = useMemo(() => {
-    return agentPipedreamProfiles?.filter(p => p.app_slug === app.name_slug) || [];
+    return (
+      agentPipedreamProfiles?.filter((p) => p.app_slug === app.name_slug) || []
+    );
   }, [agentPipedreamProfiles, app.name_slug]);
 
   const totalToolsCount = useMemo(() => {
@@ -81,8 +111,8 @@ export const AppCard: React.FC<AppCardProps> = ({
 
   const handleActualConnect = () => {
     setIsDialogOpen(false);
-    
-    if (mode === 'simple' && onAppSelected) {
+
+    if (mode === "simple" && onAppSelected) {
       onAppSelected({ app_slug: app.name_slug, app_name: app.name });
     } else if (onConnectApp) {
       onConnectApp(app);
@@ -100,7 +130,7 @@ export const AppCard: React.FC<AppCardProps> = ({
   const hasAgentTools = agentProfiles.length > 0;
 
   return (
-    <Card 
+    <Card
       className={cn(
         "group relative overflow-hidden transition-all p-0 duration-300 hover:cursor-pointer hover:bg-muted",
       )}
@@ -109,25 +139,29 @@ export const AppCard: React.FC<AppCardProps> = ({
       <CardContent className="p-4 h-full flex flex-col">
         <div className="flex items-start gap-3 mb-3">
           <div className="flex-shrink-0 relative">
-            <div className={cn(
-              "h-8 w-8 rounded-lg border bg-muted flex items-center justify-center text-primary font-semibold overflow-hidden transition-all duration-300"
-            )}>
-              {(app.img_src || iconData?.icon_url) ? (
+            <div
+              className={cn(
+                "h-8 w-8 rounded-lg border bg-muted flex items-center justify-center text-primary font-semibold overflow-hidden transition-all duration-300",
+              )}
+            >
+              {app.img_src || iconData?.icon_url ? (
                 <img
-                  src={app.img_src || iconData?.icon_url || ''}
+                  src={app.img_src || iconData?.icon_url || ""}
                   alt={app.name}
                   className="w-5 h-5 object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    target.nextElementSibling?.classList.remove('hidden');
+                    target.style.display = "none";
+                    target.nextElementSibling?.classList.remove("hidden");
                   }}
                 />
               ) : null}
-              <span className={cn(
-                "font-bold text-lg",
-                (app.img_src || iconData?.icon_url) ? "hidden" : "block"
-              )}>
+              <span
+                className={cn(
+                  "font-bold text-lg",
+                  app.img_src || iconData?.icon_url ? "hidden" : "block",
+                )}
+              >
                 {app.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -151,15 +185,23 @@ export const AppCard: React.FC<AppCardProps> = ({
 
         {hasAgentTools && (
           <div className="mb-3">
-            <div className="rounded-xl bg-muted py-2 border border" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="rounded-xl bg-muted py-2 border border"
+              onClick={(e) => e.stopPropagation()}
+            >
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="sm" variant="ghost" className="h-auto w-full justify-between p-0 hover:bg-transparent">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-auto w-full justify-between p-0 hover:bg-transparent"
+                  >
                     <div className="flex items-center gap-2">
                       <Bot className="h-4 w-4 text-primary" />
                       <div className="text-left">
                         <div className="text-sm font-medium text-foreground">
-                          {agentProfiles.length} {agentProfiles.length === 1 ? 'Profile' : 'Profiles'}
+                          {agentProfiles.length}{" "}
+                          {agentProfiles.length === 1 ? "Profile" : "Profiles"}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {totalToolsCount} tools configured
@@ -169,20 +211,28 @@ export const AppCard: React.FC<AppCardProps> = ({
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-full min-w-[200px]">
+                <DropdownMenuContent
+                  align="start"
+                  className="w-full min-w-[200px]"
+                >
                   {agentProfiles.map((profile) => (
-                    <DropdownMenuItem 
-                      key={profile.profile_id} 
+                    <DropdownMenuItem
+                      key={profile.profile_id}
                       onClick={(e) => handleConfigureClick(e, profile)}
                       className="cursor-pointer"
                     >
                       <div className="flex items-center justify-between w-full">
                         <div className="flex items-center gap-2">
                           <Settings className="h-4 w-4" />
-                          <span className="font-medium">{profile.profile_name}</span>
+                          <span className="font-medium">
+                            {profile.profile_name}
+                          </span>
                         </div>
                         <Badge variant="outline" className="text-xs">
-                          {profile.toolsCount ?? profile.enabledTools?.length ?? 0} tools
+                          {profile.toolsCount ??
+                            profile.enabledTools?.length ??
+                            0}{" "}
+                          tools
                         </Badge>
                       </div>
                     </DropdownMenuItem>
@@ -198,14 +248,14 @@ export const AppCard: React.FC<AppCardProps> = ({
       {/* Preview Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
         <DialogContent className="overflow-hidden max-w-4xl p-0 h-[600px]">
-          <DialogTitle className='sr-only'>{app.name} Tools</DialogTitle>
+          <DialogTitle className="sr-only">{app.name} Tools</DialogTitle>
           <div className="grid grid-cols-2 h-full">
             <div className="p-8 border-r bg-gradient-to-br from-background to-muted/20">
               <div className="flex flex-col h-full">
                 <div className="text-start mb-4">
                   <div className="mx-auto mb-6 relative">
                     <div className="h-20 w-20 rounded-3xl border bg-muted flex items-center justify-center overflow-hidden">
-                      {(app.img_src || iconData?.icon_url) ? (
+                      {app.img_src || iconData?.icon_url ? (
                         <img
                           src={app.img_src || iconData?.icon_url}
                           alt={`${app.name} icon`}
@@ -218,9 +268,12 @@ export const AppCard: React.FC<AppCardProps> = ({
                       )}
                     </div>
                   </div>
-                  <h2 className="text-2xl font-bold text-foreground mb-2">{app.name}</h2>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    {app.name}
+                  </h2>
                   <Badge variant="outline" className="mb-4 bg-muted">
-                    {tools.length} {tools.length === 1 ? 'Tool' : 'Tools'} Available
+                    {tools.length} {tools.length === 1 ? "Tool" : "Tools"}{" "}
+                    Available
                   </Badge>
                 </div>
                 <div className="mb-8 flex-1">
@@ -233,7 +286,8 @@ export const AppCard: React.FC<AppCardProps> = ({
                     <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                       <CheckCircle className="h-4 w-4 text-green-600" />
                       <span className="text-sm font-medium text-green-700 dark:text-green-300">
-                        Connected ({connectedProfiles.length} profile{connectedProfiles.length !== 1 ? 's' : ''})
+                        Connected ({connectedProfiles.length} profile
+                        {connectedProfiles.length !== 1 ? "s" : ""})
                       </span>
                     </div>
                   </div>
@@ -244,15 +298,15 @@ export const AppCard: React.FC<AppCardProps> = ({
                     onClick={handleActualConnect}
                     className="w-full font-medium"
                   >
-                    {mode === 'simple' ? (
+                    {mode === "simple" ? (
                       <>
                         <Plus className="h-4 w-4" />
                         Connect
                       </>
-                    ) : mode === 'profile-only' ? (
+                    ) : mode === "profile-only" ? (
                       <>
                         <Plus className="h-4 w-4" />
-                        {isConnected ? 'Add Profile' : 'Connect'}
+                        {isConnected ? "Add Profile" : "Connect"}
                       </>
                     ) : (
                       <>
@@ -275,9 +329,12 @@ export const AppCard: React.FC<AppCardProps> = ({
             </div>
             <div className="flex flex-col h-full">
               <div className="p-4 border-b bg-muted/30">
-                <h3 className="text-lg font-semibold text-foreground">Available Tools</h3>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Available Tools
+                </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {tools.length} tool{tools.length !== 1 ? 's' : ''} ready to integrate
+                  {tools.length} tool{tools.length !== 1 ? "s" : ""} ready to
+                  integrate
                 </p>
               </div>
               <ScrollArea className="flex-1 max-h-[500px]">
@@ -294,17 +351,17 @@ export const AppCard: React.FC<AppCardProps> = ({
                   ) : tools.length > 0 ? (
                     <div className="space-y-2">
                       {tools.map((tool, index) => (
-                        <Card 
-                          key={tool.name} 
+                        <Card
+                          key={tool.name}
                           className="group p-4 rounded-xl transition-all duration-200"
                         >
-                          <CardHeader className='p-0'>
+                          <CardHeader className="p-0">
                             <CardTitle>
-                              <div className='flex items-center gap-2'>
+                              <div className="flex items-center gap-2">
                                 <div className=" flex-shrink-0 h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                                   <Zap className="h-4 w-4 text-primary" />
                                 </div>
-                                <div className='flex flex-col items-start'>
+                                <div className="flex flex-col items-start">
                                   <p className="text-sm font-medium text-foreground">
                                     {tool.name}
                                   </p>
@@ -324,8 +381,12 @@ export const AppCard: React.FC<AppCardProps> = ({
                         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                           <Settings className="h-6 w-6 text-muted-foreground" />
                         </div>
-                        <p className="text-sm text-muted-foreground">No tools available</p>
-                        <p className="text-xs text-muted-foreground mt-1">Check back later for updates</p>
+                        <p className="text-sm text-muted-foreground">
+                          No tools available
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Check back later for updates
+                        </p>
                       </div>
                     </div>
                   )}

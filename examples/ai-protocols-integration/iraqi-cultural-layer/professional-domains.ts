@@ -1,10 +1,10 @@
 /**
  * Iraqi Professional Domains Integration
- * 
+ *
  * Provides specialized support for Iraqi professional domains including
  * legal, medical, educational, and organizational sectors with cultural
  * awareness and Islamic compliance.
- * 
+ *
  * Features:
  * - Domain-specific terminology and workflows
  * - Islamic jurisprudence integration for legal domain
@@ -14,7 +14,7 @@
  */
 
 export interface ProfessionalDomainConfig {
-  enabledDomains: ('legal' | 'medical' | 'educational' | 'organizational')[];
+  enabledDomains: ("legal" | "medical" | "educational" | "organizational")[];
   islamicCompliance: boolean;
   arabicSupport: boolean;
   professionalStandards: {
@@ -59,13 +59,13 @@ export interface IraqiOrganizationalStandards {
 }
 
 export interface DomainExpertiseRequest {
-  domain: 'legal' | 'medical' | 'educational' | 'organizational';
+  domain: "legal" | "medical" | "educational" | "organizational";
   query: string;
   context?: {
     userRole?: string;
     organizationType?: string;
-    urgencyLevel?: 'low' | 'medium' | 'high' | 'critical';
-    language?: 'arabic' | 'english' | 'mixed';
+    urgencyLevel?: "low" | "medium" | "high" | "critical";
+    language?: "arabic" | "english" | "mixed";
   };
   islamicConsiderations?: boolean;
 }
@@ -83,7 +83,7 @@ export interface DomainExpertiseResponse {
 
 /**
  * Iraqi Professional Domains Support System
- * 
+ *
  * Provides specialized expertise across Iraqi professional sectors
  * with full Islamic compliance and cultural sensitivity.
  */
@@ -96,34 +96,54 @@ export class IraqiProfessionalDomains {
     this.config = config;
     this.domainExperts = new Map();
     this.initializeDomainExperts();
-    console.info('Iraqi Professional Domains initialized with Islamic compliance');
+    console.info(
+      "Iraqi Professional Domains initialized with Islamic compliance",
+    );
   }
 
   /**
    * Initialize domain-specific experts
    */
   private initializeDomainExperts(): void {
-    if (this.config.enabledDomains.includes('legal')) {
-      this.domainExperts.set('legal', new IraqiLegalExpert(this.config.professionalStandards.legal));
+    if (this.config.enabledDomains.includes("legal")) {
+      this.domainExperts.set(
+        "legal",
+        new IraqiLegalExpert(this.config.professionalStandards.legal),
+      );
     }
 
-    if (this.config.enabledDomains.includes('medical')) {
-      this.domainExperts.set('medical', new IraqiMedicalExpert(this.config.professionalStandards.medical));
+    if (this.config.enabledDomains.includes("medical")) {
+      this.domainExperts.set(
+        "medical",
+        new IraqiMedicalExpert(this.config.professionalStandards.medical),
+      );
     }
 
-    if (this.config.enabledDomains.includes('educational')) {
-      this.domainExperts.set('educational', new IraqiEducationalExpert(this.config.professionalStandards.educational));
+    if (this.config.enabledDomains.includes("educational")) {
+      this.domainExperts.set(
+        "educational",
+        new IraqiEducationalExpert(
+          this.config.professionalStandards.educational,
+        ),
+      );
     }
 
-    if (this.config.enabledDomains.includes('organizational')) {
-      this.domainExperts.set('organizational', new IraqiOrganizationalExpert(this.config.professionalStandards.organizational));
+    if (this.config.enabledDomains.includes("organizational")) {
+      this.domainExperts.set(
+        "organizational",
+        new IraqiOrganizationalExpert(
+          this.config.professionalStandards.organizational,
+        ),
+      );
     }
   }
 
   /**
    * Process domain-specific expertise request
    */
-  async provideDomainExpertise(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse> {
+  async provideDomainExpertise(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse> {
     this.queryCount++;
 
     // Validate domain availability
@@ -140,8 +160,14 @@ export class IraqiProfessionalDomains {
     const response = await expert.processQuery(request);
 
     // Validate Islamic compliance if required
-    if (this.config.islamicCompliance && request.islamicConsiderations !== false) {
-      response.islamicCompliant = await this.validateIslamicCompliance(request, response);
+    if (
+      this.config.islamicCompliance &&
+      request.islamicConsiderations !== false
+    ) {
+      response.islamicCompliant = await this.validateIslamicCompliance(
+        request,
+        response,
+      );
     }
 
     return response;
@@ -152,17 +178,17 @@ export class IraqiProfessionalDomains {
    */
   private async validateIslamicCompliance(
     request: DomainExpertiseRequest,
-    response: DomainExpertiseResponse
+    response: DomainExpertiseResponse,
   ): Promise<boolean> {
     // Domain-specific Islamic validation
     switch (request.domain) {
-      case 'legal':
+      case "legal":
         return this.validateLegalIslamicCompliance(response);
-      case 'medical':
+      case "medical":
         return this.validateMedicalIslamicCompliance(response);
-      case 'educational':
+      case "educational":
         return this.validateEducationalIslamicCompliance(response);
-      case 'organizational':
+      case "organizational":
         return this.validateOrganizationalIslamicCompliance(response);
       default:
         return true;
@@ -177,10 +203,10 @@ export class IraqiProfessionalDomains {
     capabilities: string[];
     islamicCompliance: boolean;
   }[] {
-    return this.config.enabledDomains.map(domain => ({
+    return this.config.enabledDomains.map((domain) => ({
       domain,
       capabilities: this.getDomainCapabilities(domain),
-      islamicCompliance: this.config.islamicCompliance
+      islamicCompliance: this.config.islamicCompliance,
     }));
   }
 
@@ -189,46 +215,46 @@ export class IraqiProfessionalDomains {
    */
   private getDomainCapabilities(domain: string): string[] {
     switch (domain) {
-      case 'legal':
+      case "legal":
         return [
-          'Islamic Jurisprudence (Sharia)',
-          'Iraqi Civil Law',
-          'Commercial Law',
-          'Personal Status Law',
-          'Administrative Law',
-          'Constitutional Law',
-          'Legal Document Drafting',
-          'Court Procedures'
+          "Islamic Jurisprudence (Sharia)",
+          "Iraqi Civil Law",
+          "Commercial Law",
+          "Personal Status Law",
+          "Administrative Law",
+          "Constitutional Law",
+          "Legal Document Drafting",
+          "Court Procedures",
         ];
-      case 'medical':
+      case "medical":
         return [
-          'Islamic Medical Ethics',
-          'Iraqi Healthcare System',
-          'Arabic Medical Terminology',
-          'Cultural Health Practices',
-          'Religious Medical Considerations',
-          'Patient Care Guidelines',
-          'Medical Documentation'
+          "Islamic Medical Ethics",
+          "Iraqi Healthcare System",
+          "Arabic Medical Terminology",
+          "Cultural Health Practices",
+          "Religious Medical Considerations",
+          "Patient Care Guidelines",
+          "Medical Documentation",
         ];
-      case 'educational':
+      case "educational":
         return [
-          'Iraqi Ministry of Education Standards',
-          'Islamic Educational Principles',
-          'Arabic Curriculum Development',
-          'Bilingual Education Support',
-          'Cultural Values Integration',
-          'Educational Assessment',
-          'Teaching Methodologies'
+          "Iraqi Ministry of Education Standards",
+          "Islamic Educational Principles",
+          "Arabic Curriculum Development",
+          "Bilingual Education Support",
+          "Cultural Values Integration",
+          "Educational Assessment",
+          "Teaching Methodologies",
         ];
-      case 'organizational':
+      case "organizational":
         return [
-          'Iraqi Government Processes',
-          'Islamic Work Ethics',
-          'Arabic Documentation',
-          'Hierarchical Structures',
-          'Cultural Protocols',
-          'Administrative Procedures',
-          'Organizational Development'
+          "Iraqi Government Processes",
+          "Islamic Work Ethics",
+          "Arabic Documentation",
+          "Hierarchical Structures",
+          "Cultural Protocols",
+          "Administrative Procedures",
+          "Organizational Development",
         ];
       default:
         return [];
@@ -236,48 +262,96 @@ export class IraqiProfessionalDomains {
   }
 
   // Domain-specific validation methods
-  private async validateLegalIslamicCompliance(response: DomainExpertiseResponse): Promise<boolean> {
+  private async validateLegalIslamicCompliance(
+    response: DomainExpertiseResponse,
+  ): Promise<boolean> {
     // Check for Islamic jurisprudence compatibility
-    const islamicLegalTerms = ['شريعة', 'فقه', 'حلال', 'حرام', 'sharia', 'fiqh', 'halal', 'haram'];
+    const islamicLegalTerms = [
+      "شريعة",
+      "فقه",
+      "حلال",
+      "حرام",
+      "sharia",
+      "fiqh",
+      "halal",
+      "haram",
+    ];
     const responseText = response.response.toLowerCase();
-    
-    return islamicLegalTerms.some(term => responseText.includes(term)) || 
-           !this.containsNonIslamicLegalConcepts(responseText);
+
+    return (
+      islamicLegalTerms.some((term) => responseText.includes(term)) ||
+      !this.containsNonIslamicLegalConcepts(responseText)
+    );
   }
 
-  private async validateMedicalIslamicCompliance(response: DomainExpertiseResponse): Promise<boolean> {
+  private async validateMedicalIslamicCompliance(
+    response: DomainExpertiseResponse,
+  ): Promise<boolean> {
     // Check for Islamic medical ethics compliance
-    const prohibitedMedicalPractices = ['alcohol treatment', 'pork-based medicine', 'non-halal gelatin'];
+    const prohibitedMedicalPractices = [
+      "alcohol treatment",
+      "pork-based medicine",
+      "non-halal gelatin",
+    ];
     const responseText = response.response.toLowerCase();
-    
-    return !prohibitedMedicalPractices.some(practice => responseText.includes(practice));
+
+    return !prohibitedMedicalPractices.some((practice) =>
+      responseText.includes(practice),
+    );
   }
 
-  private async validateEducationalIslamicCompliance(response: DomainExpertiseResponse): Promise<boolean> {
+  private async validateEducationalIslamicCompliance(
+    response: DomainExpertiseResponse,
+  ): Promise<boolean> {
     // Check for Islamic educational values
-    const islamicEducationalValues = ['تربية إسلامية', 'قيم إسلامية', 'islamic education', 'islamic values'];
+    const islamicEducationalValues = [
+      "تربية إسلامية",
+      "قيم إسلامية",
+      "islamic education",
+      "islamic values",
+    ];
     const responseText = response.response.toLowerCase();
-    
-    return islamicEducationalValues.some(value => responseText.includes(value)) ||
-           !this.containsNonIslamicEducationalContent(responseText);
+
+    return (
+      islamicEducationalValues.some((value) => responseText.includes(value)) ||
+      !this.containsNonIslamicEducationalContent(responseText)
+    );
   }
 
-  private async validateOrganizationalIslamicCompliance(response: DomainExpertiseResponse): Promise<boolean> {
+  private async validateOrganizationalIslamicCompliance(
+    response: DomainExpertiseResponse,
+  ): Promise<boolean> {
     // Check for Islamic work ethics
-    const islamicWorkEthics = ['أخلاق العمل', 'عدالة', 'أمانة', 'work ethics', 'justice', 'trust'];
+    const islamicWorkEthics = [
+      "أخلاق العمل",
+      "عدالة",
+      "أمانة",
+      "work ethics",
+      "justice",
+      "trust",
+    ];
     const responseText = response.response.toLowerCase();
-    
-    return islamicWorkEthics.some(ethic => responseText.includes(ethic));
+
+    return islamicWorkEthics.some((ethic) => responseText.includes(ethic));
   }
 
   private containsNonIslamicLegalConcepts(text: string): boolean {
-    const nonIslamicConcepts = ['interest-based', 'usury', 'gambling law', 'alcohol licensing'];
-    return nonIslamicConcepts.some(concept => text.includes(concept));
+    const nonIslamicConcepts = [
+      "interest-based",
+      "usury",
+      "gambling law",
+      "alcohol licensing",
+    ];
+    return nonIslamicConcepts.some((concept) => text.includes(concept));
   }
 
   private containsNonIslamicEducationalContent(text: string): boolean {
-    const nonIslamicContent = ['secular only', 'anti-religious', 'non-family values'];
-    return nonIslamicContent.some(content => text.includes(content));
+    const nonIslamicContent = [
+      "secular only",
+      "anti-religious",
+      "non-family values",
+    ];
+    return nonIslamicContent.some((content) => text.includes(content));
   }
 
   /**
@@ -290,11 +364,11 @@ export class IraqiProfessionalDomains {
       islamicCompliance: this.config.islamicCompliance,
       arabicSupport: this.config.arabicSupport,
       expertCounts: {
-        legal: this.domainExperts.has('legal') ? 1 : 0,
-        medical: this.domainExperts.has('medical') ? 1 : 0,
-        educational: this.domainExperts.has('educational') ? 1 : 0,
-        organizational: this.domainExperts.has('organizational') ? 1 : 0
-      }
+        legal: this.domainExperts.has("legal") ? 1 : 0,
+        medical: this.domainExperts.has("medical") ? 1 : 0,
+        educational: this.domainExperts.has("educational") ? 1 : 0,
+        organizational: this.domainExperts.has("organizational") ? 1 : 0,
+      },
     };
   }
 }
@@ -309,7 +383,9 @@ abstract class DomainExpert {
     this.standards = standards;
   }
 
-  abstract processQuery(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse>;
+  abstract processQuery(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse>;
 }
 
 // Iraqi Legal Expert
@@ -317,13 +393,15 @@ class IraqiLegalExpert extends DomainExpert {
   private readonly legalTerminology: Map<string, string>;
 
   constructor(standards: IraqiLegalStandards) {
-    super('legal', standards);
+    super("legal", standards);
     this.legalTerminology = this.initializeLegalTerminology();
   }
 
-  async processQuery(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse> {
+  async processQuery(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse> {
     const query = request.query.toLowerCase();
-    let response = '';
+    let response = "";
     let confidence = 85;
     const sources: string[] = [];
     const recommendations: string[] = [];
@@ -332,68 +410,89 @@ class IraqiLegalExpert extends DomainExpert {
     // Analyze query for legal context
     if (this.containsCommercialLaw(query)) {
       response = this.generateCommercialLawResponse(request);
-      sources.push('Iraqi Commercial Law Code', 'Islamic Commercial Jurisprudence');
-      recommendations.push('Ensure compliance with Islamic commercial principles');
-      culturalConsiderations.push('Consider Islamic prohibitions on interest and uncertainty');
+      sources.push(
+        "Iraqi Commercial Law Code",
+        "Islamic Commercial Jurisprudence",
+      );
+      recommendations.push(
+        "Ensure compliance with Islamic commercial principles",
+      );
+      culturalConsiderations.push(
+        "Consider Islamic prohibitions on interest and uncertainty",
+      );
     } else if (this.containsPersonalStatusLaw(query)) {
       response = this.generatePersonalStatusLawResponse(request);
-      sources.push('Iraqi Personal Status Law', 'Islamic Family Law');
-      recommendations.push('Follow Islamic family law principles');
-      culturalConsiderations.push('Respect Iraqi family structure and Islamic marriage laws');
+      sources.push("Iraqi Personal Status Law", "Islamic Family Law");
+      recommendations.push("Follow Islamic family law principles");
+      culturalConsiderations.push(
+        "Respect Iraqi family structure and Islamic marriage laws",
+      );
     } else if (this.containsCivilLaw(query)) {
       response = this.generateCivilLawResponse(request);
-      sources.push('Iraqi Civil Code', 'Islamic Legal Principles');
-      recommendations.push('Integrate Islamic jurisprudence with civil law');
-      culturalConsiderations.push('Balance modern legal concepts with Islamic values');
+      sources.push("Iraqi Civil Code", "Islamic Legal Principles");
+      recommendations.push("Integrate Islamic jurisprudence with civil law");
+      culturalConsiderations.push(
+        "Balance modern legal concepts with Islamic values",
+      );
     } else {
       response = this.generateGeneralLegalResponse(request);
       confidence = 75;
-      sources.push('Iraqi Legal System Overview');
+      sources.push("Iraqi Legal System Overview");
     }
 
     return {
-      domain: 'legal',
+      domain: "legal",
       response,
       confidence,
       islamicCompliant: true,
       sources,
       recommendations,
       followUpSuggestions: this.generateLegalFollowUp(request),
-      culturalConsiderations
+      culturalConsiderations,
     };
   }
 
   private initializeLegalTerminology(): Map<string, string> {
     return new Map([
-      ['contract', 'عقد'],
-      ['law', 'قانون'],
-      ['court', 'محكمة'],
-      ['judge', 'قاضي'],
-      ['justice', 'عدالة'],
-      ['rights', 'حقوق'],
-      ['obligations', 'التزامات'],
-      ['sharia', 'شريعة'],
-      ['jurisprudence', 'فقه']
+      ["contract", "عقد"],
+      ["law", "قانون"],
+      ["court", "محكمة"],
+      ["judge", "قاضي"],
+      ["justice", "عدالة"],
+      ["rights", "حقوق"],
+      ["obligations", "التزامات"],
+      ["sharia", "شريعة"],
+      ["jurisprudence", "فقه"],
     ]);
   }
 
   private containsCommercialLaw(query: string): boolean {
-    return ['commercial', 'business', 'contract', 'تجارة', 'عقد'].some(term => query.includes(term));
+    return ["commercial", "business", "contract", "تجارة", "عقد"].some((term) =>
+      query.includes(term),
+    );
   }
 
   private containsPersonalStatusLaw(query: string): boolean {
-    return ['marriage', 'divorce', 'inheritance', 'زواج', 'طلاق', 'ميراث'].some(term => query.includes(term));
+    return ["marriage", "divorce", "inheritance", "زواج", "طلاق", "ميراث"].some(
+      (term) => query.includes(term),
+    );
   }
 
   private containsCivilLaw(query: string): boolean {
-    return ['civil', 'property', 'rights', 'مدني', 'ملكية', 'حقوق'].some(term => query.includes(term));
+    return ["civil", "property", "rights", "مدني", "ملكية", "حقوق"].some(
+      (term) => query.includes(term),
+    );
   }
 
-  private generateCommercialLawResponse(request: DomainExpertiseRequest): string {
+  private generateCommercialLawResponse(
+    request: DomainExpertiseRequest,
+  ): string {
     return `Based on Iraqi Commercial Law and Islamic commercial principles, commercial transactions must comply with both Iraqi legal requirements and Islamic jurisprudence. Key considerations include avoiding interest-based transactions (رiba), ensuring contractual clarity, and maintaining fair dealing practices.`;
   }
 
-  private generatePersonalStatusLawResponse(request: DomainExpertiseRequest): string {
+  private generatePersonalStatusLawResponse(
+    request: DomainExpertiseRequest,
+  ): string {
     return `Iraqi Personal Status Law is primarily based on Islamic Sharia law for Muslims. Family matters including marriage, divorce, and inheritance follow Islamic jurisprudence principles while respecting personal freedom and cultural traditions.`;
   }
 
@@ -401,16 +500,18 @@ class IraqiLegalExpert extends DomainExpert {
     return `Iraqi Civil Law integrates modern legal principles with Islamic jurisprudence. Property rights, contractual obligations, and civil procedures must align with both contemporary legal standards and Islamic legal principles.`;
   }
 
-  private generateGeneralLegalResponse(request: DomainExpertiseRequest): string {
+  private generateGeneralLegalResponse(
+    request: DomainExpertiseRequest,
+  ): string {
     return `The Iraqi legal system combines civil law traditions with Islamic jurisprudence. For specific legal advice, consultation with qualified Iraqi legal professionals is recommended, ensuring both legal compliance and Islamic principles are observed.`;
   }
 
   private generateLegalFollowUp(request: DomainExpertiseRequest): string[] {
     return [
-      'Would you like specific information about Iraqi court procedures?',
-      'Do you need guidance on Islamic jurisprudence principles?',
-      'Would you like help with legal document templates?',
-      'Do you need information about legal professional services in Iraq?'
+      "Would you like specific information about Iraqi court procedures?",
+      "Do you need guidance on Islamic jurisprudence principles?",
+      "Would you like help with legal document templates?",
+      "Do you need information about legal professional services in Iraq?",
     ];
   }
 }
@@ -418,19 +519,29 @@ class IraqiLegalExpert extends DomainExpert {
 // Iraqi Medical Expert
 class IraqiMedicalExpert extends DomainExpert {
   constructor(standards: IraqiMedicalStandards) {
-    super('medical', standards);
+    super("medical", standards);
   }
 
-  async processQuery(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse> {
+  async processQuery(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse> {
     return {
-      domain: 'medical',
-      response: 'Medical expertise response with Islamic ethics compliance',
+      domain: "medical",
+      response: "Medical expertise response with Islamic ethics compliance",
       confidence: 85,
       islamicCompliant: true,
-      sources: ['Iraqi Ministry of Health', 'Islamic Medical Ethics'],
-      recommendations: ['Follow Islamic medical ethics', 'Consider cultural sensitivities'],
-      followUpSuggestions: ['Would you like information about Islamic medical ethics?'],
-      culturalConsiderations: ['Respect patient dignity', 'Consider family involvement in care']
+      sources: ["Iraqi Ministry of Health", "Islamic Medical Ethics"],
+      recommendations: [
+        "Follow Islamic medical ethics",
+        "Consider cultural sensitivities",
+      ],
+      followUpSuggestions: [
+        "Would you like information about Islamic medical ethics?",
+      ],
+      culturalConsiderations: [
+        "Respect patient dignity",
+        "Consider family involvement in care",
+      ],
     };
   }
 }
@@ -438,19 +549,33 @@ class IraqiMedicalExpert extends DomainExpert {
 // Iraqi Educational Expert
 class IraqiEducationalExpert extends DomainExpert {
   constructor(standards: IraqiEducationalStandards) {
-    super('educational', standards);
+    super("educational", standards);
   }
 
-  async processQuery(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse> {
+  async processQuery(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse> {
     return {
-      domain: 'educational',
-      response: 'Educational expertise response with Islamic values integration',
+      domain: "educational",
+      response:
+        "Educational expertise response with Islamic values integration",
       confidence: 85,
       islamicCompliant: true,
-      sources: ['Iraqi Ministry of Education', 'Islamic Educational Principles'],
-      recommendations: ['Integrate Islamic values', 'Support Arabic language development'],
-      followUpSuggestions: ['Would you like information about curriculum standards?'],
-      culturalConsiderations: ['Balance traditional and modern education', 'Respect cultural values']
+      sources: [
+        "Iraqi Ministry of Education",
+        "Islamic Educational Principles",
+      ],
+      recommendations: [
+        "Integrate Islamic values",
+        "Support Arabic language development",
+      ],
+      followUpSuggestions: [
+        "Would you like information about curriculum standards?",
+      ],
+      culturalConsiderations: [
+        "Balance traditional and modern education",
+        "Respect cultural values",
+      ],
     };
   }
 }
@@ -458,19 +583,29 @@ class IraqiEducationalExpert extends DomainExpert {
 // Iraqi Organizational Expert
 class IraqiOrganizationalExpert extends DomainExpert {
   constructor(standards: IraqiOrganizationalStandards) {
-    super('organizational', standards);
+    super("organizational", standards);
   }
 
-  async processQuery(request: DomainExpertiseRequest): Promise<DomainExpertiseResponse> {
+  async processQuery(
+    request: DomainExpertiseRequest,
+  ): Promise<DomainExpertiseResponse> {
     return {
-      domain: 'organizational',
-      response: 'Organizational expertise response with Islamic work ethics',
+      domain: "organizational",
+      response: "Organizational expertise response with Islamic work ethics",
       confidence: 85,
       islamicCompliant: true,
-      sources: ['Iraqi Administrative Procedures', 'Islamic Work Ethics'],
-      recommendations: ['Follow Islamic work ethics', 'Respect hierarchical structures'],
-      followUpSuggestions: ['Would you like information about administrative processes?'],
-      culturalConsiderations: ['Respect for authority', 'Collaborative decision-making']
+      sources: ["Iraqi Administrative Procedures", "Islamic Work Ethics"],
+      recommendations: [
+        "Follow Islamic work ethics",
+        "Respect hierarchical structures",
+      ],
+      followUpSuggestions: [
+        "Would you like information about administrative processes?",
+      ],
+      culturalConsiderations: [
+        "Respect for authority",
+        "Collaborative decision-making",
+      ],
     };
   }
 }

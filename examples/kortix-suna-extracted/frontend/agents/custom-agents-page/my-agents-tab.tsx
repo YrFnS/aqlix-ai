@@ -1,16 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { Globe } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SearchBar } from './search-bar';
-import { EmptyState } from '../empty-state';
-import { AgentsGrid } from '../agents-grid';
-import { LoadingState } from '../loading-state';
-import { Pagination } from '../pagination';
-import { AgentCard } from './agent-card';
+import React, { useState, useMemo } from "react";
+import { Globe } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SearchBar } from "./search-bar";
+import { EmptyState } from "../empty-state";
+import { AgentsGrid } from "../agents-grid";
+import { LoadingState } from "../loading-state";
+import { Pagination } from "../pagination";
+import { AgentCard } from "./agent-card";
 
-type AgentFilter = 'all' | 'templates';
+type AgentFilter = "all" | "templates";
 
 interface MyAgentsTabProps {
   agentsSearchQuery: string;
@@ -18,7 +24,7 @@ interface MyAgentsTabProps {
   agentsLoading: boolean;
   agents: any[];
   agentsPagination: any;
-  viewMode: 'grid' | 'list';
+  viewMode: "grid" | "list";
   onCreateAgent: () => void;
   onEditAgent: (agentId: string) => void;
   onDeleteAgent: (agentId: string) => void;
@@ -41,8 +47,8 @@ interface MyAgentsTabProps {
 }
 
 const filterOptions = [
-  { value: 'all', label: 'All Agents' },
-  { value: 'templates', label: 'Templates' },
+  { value: "all", label: "All Agents" },
+  { value: "templates", label: "Templates" },
 ];
 
 export const MyAgentsTab = ({
@@ -68,12 +74,12 @@ export const MyAgentsTab = ({
   onUnpublish,
   getTemplateStyling,
   onPublishAgent,
-  publishingAgentId
+  publishingAgentId,
 }: MyAgentsTabProps) => {
-  const [agentFilter, setAgentFilter] = useState<AgentFilter>('all');
+  const [agentFilter, setAgentFilter] = useState<AgentFilter>("all");
 
   const filteredAgents = useMemo(() => {
-    if (agentFilter === 'templates') {
+    if (agentFilter === "templates") {
       return [];
     }
     return agents;
@@ -84,14 +90,12 @@ export const MyAgentsTab = ({
   }, [myTemplates]);
 
   const handleClearFilters = () => {
-    setAgentFilter('all');
+    setAgentFilter("all");
     onClearFilters();
   };
 
-
-
   const getCountForFilter = (filterValue: string) => {
-    if (filterValue === 'templates') {
+    if (filterValue === "templates") {
       return templateAgentsCount;
     }
     return agents.length;
@@ -116,9 +120,12 @@ export const MyAgentsTab = ({
           <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/10 rounded-3xl flex items-center justify-center mb-6">
             <Globe className="h-10 w-10 text-primary" />
           </div>
-          <h3 className="text-xl font-semibold mb-3">No published templates yet</h3>
+          <h3 className="text-xl font-semibold mb-3">
+            No published templates yet
+          </h3>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Publish your agents to the marketplace to share them with the community and track their usage.
+            Publish your agents to the marketplace to share them with the
+            community and track their usage.
           </p>
         </div>
       );
@@ -136,7 +143,7 @@ export const MyAgentsTab = ({
               styling={getTemplateStyling(template)}
               isActioning={isActioning}
               onPrimaryAction={
-                template.is_public 
+                template.is_public
                   ? () => onUnpublish(template.template_id, template.name)
                   : () => onPublish(template)
               }
@@ -157,13 +164,20 @@ export const MyAgentsTab = ({
           onChange={setAgentsSearchQuery}
         />
         <div className="flex items-center gap-3">
-          <Select value={agentFilter} onValueChange={(value: AgentFilter) => setAgentFilter(value)}>
+          <Select
+            value={agentFilter}
+            onValueChange={(value: AgentFilter) => setAgentFilter(value)}
+          >
             <SelectTrigger className="w-[180px] h-12 rounded-xl">
               <SelectValue placeholder="Filter agents" />
             </SelectTrigger>
-            <SelectContent className='rounded-xl'>
+            <SelectContent className="rounded-xl">
               {filterOptions.map((filter) => (
-                <SelectItem key={filter.value} className='rounded-xl' value={filter.value}>
+                <SelectItem
+                  key={filter.value}
+                  className="rounded-xl"
+                  value={filter.value}
+                >
                   {filter.label}
                 </SelectItem>
               ))}
@@ -172,7 +186,7 @@ export const MyAgentsTab = ({
         </div>
       </div>
       <div className="flex-1">
-        {agentFilter === 'templates' ? (
+        {agentFilter === "templates" ? (
           renderTemplates()
         ) : (
           <>
@@ -209,4 +223,4 @@ export const MyAgentsTab = ({
       </div>
     </div>
   );
-}; 
+};

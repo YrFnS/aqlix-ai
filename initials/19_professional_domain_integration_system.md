@@ -21,6 +21,7 @@
 **Unified professional domain integration infrastructure:**
 
 ### Iraqi Professional Domain Support
+
 - **Legal Domain Integration:** Iraqi law, regulations, court procedures, legal terminology, and judicial processes
 - **Medical Domain Integration:** Iraqi healthcare system, medical terminology, treatment protocols, and Islamic medical ethics
 - **Educational Domain Integration:** Iraqi curriculum, educational standards, academic terminology, and pedagogical approaches
@@ -28,6 +29,7 @@
 - **Organizational Integration:** Iraqi government procedures, ministry operations, and institutional knowledge
 
 ### Professional Training Data Integration
+
 - **Data Quality Validation:** Professional data accuracy and cultural appropriateness validation
 - **Domain-Specific Processing:** Specialized processing for each Iraqi professional domain
 - **Terminology Management:** Professional Arabic-English terminology extraction and validation
@@ -36,6 +38,7 @@
 - **Cultural Context Integration:** Iraqi cultural appropriateness in professional contexts
 
 ### Real-time Professional Data Sources
+
 - **Live Data Feed Integration:** Real-time professional data updates from Iraqi institutions
 - **Authoritative Source Management:** Iraqi professional source credibility and authority assessment
 - **Data Validation and Verification:** Professional data accuracy validation and source verification
@@ -44,6 +47,7 @@
 - **Performance-Optimized Processing:** <500ms professional data query and processing
 
 ### Professional Expertise Validation
+
 - **Expert Review Integration:** Iraqi professional expert validation workflows
 - **Domain Authority Scoring:** Professional source credibility and authority assessment
 - **Cross-Domain Validation:** Professional knowledge consistency across domains
@@ -58,55 +62,57 @@
 **Unified professional domain integration examples:**
 
 ### Comprehensive Professional Domain Manager
+
 ```typescript
 // Iraqi Professional Domain Integration System
 class IraqiProfessionalDomainManager {
   constructor() {
-    this.domainClassifier = new ProfessionalDomainClassifier()
-    this.trainingDataIntegrator = new ProfessionalTrainingDataIntegrator()
-    this.dataSourceManager = new ProfessionalDataSourceManager()
-    this.expertValidationSystem = new ExpertValidationSystem()
-    this.terminologyManager = new ProfessionalTerminologyManager()
-    this.culturalValidator = new CulturalProfessionalValidator()
+    this.domainClassifier = new ProfessionalDomainClassifier();
+    this.trainingDataIntegrator = new ProfessionalTrainingDataIntegrator();
+    this.dataSourceManager = new ProfessionalDataSourceManager();
+    this.expertValidationSystem = new ExpertValidationSystem();
+    this.terminologyManager = new ProfessionalTerminologyManager();
+    this.culturalValidator = new CulturalProfessionalValidator();
   }
 
   async processProfessionalQuery(
     query: string,
     userContext: UserProfessionalContext,
-    culturalContext: CulturalContext
+    culturalContext: CulturalContext,
   ): Promise<ProfessionalQueryResult> {
     // Classify professional domain
     const domainClassification = await this.domainClassifier.classifyQuery({
       query,
       userProfessionalDomain: userContext.professionalDomain,
       userRegion: userContext.region,
-      culturalContext
-    })
+      culturalContext,
+    });
 
     if (!domainClassification.isProfessional) {
       return {
         success: true,
         isProfessional: false,
-        recommendGeneralResponse: true
-      }
+        recommendGeneralResponse: true,
+      };
     }
 
     // Validate professional context appropriateness
-    const contextValidation = await this.culturalValidator.validateProfessionalContext({
-      domain: domainClassification.domain,
-      query,
-      userContext,
-      culturalContext,
-      islamicComplianceRequired: true
-    })
+    const contextValidation =
+      await this.culturalValidator.validateProfessionalContext({
+        domain: domainClassification.domain,
+        query,
+        userContext,
+        culturalContext,
+        islamicComplianceRequired: true,
+      });
 
     if (!contextValidation.isAppropriate) {
       return {
         success: false,
-        error: 'Professional query violates cultural or Islamic compliance',
+        error: "Professional query violates cultural or Islamic compliance",
         culturalIssues: contextValidation.issues,
-        suggestedAlternative: contextValidation.suggestedAlternative
-      }
+        suggestedAlternative: contextValidation.suggestedAlternative,
+      };
     }
 
     // Retrieve professional knowledge
@@ -116,24 +122,27 @@ class IraqiProfessionalDomainManager {
       userProfessionalLevel: userContext.professionalLevel,
       culturalContext,
       includeCulturalContext: true,
-      includeIslamicGuidance: true
-    })
+      includeIslamicGuidance: true,
+    });
 
     // Validate knowledge with real-time data sources
-    const dataSourceValidation = await this.dataSourceManager.validateKnowledge({
-      domain: domainClassification.domain,
-      knowledge: professionalKnowledge,
-      requireCurrentData: true,
-      iraqiInstitutionalValidation: true
-    })
+    const dataSourceValidation = await this.dataSourceManager.validateKnowledge(
+      {
+        domain: domainClassification.domain,
+        knowledge: professionalKnowledge,
+        requireCurrentData: true,
+        iraqiInstitutionalValidation: true,
+      },
+    );
 
     // Process professional terminology
-    const terminologyProcessing = await this.terminologyManager.processTerminology({
-      content: professionalKnowledge.content,
-      domain: domainClassification.domain,
-      arabicTermsIncluded: true,
-      culturallyAppropriate: true
-    })
+    const terminologyProcessing =
+      await this.terminologyManager.processTerminology({
+        content: professionalKnowledge.content,
+        domain: domainClassification.domain,
+        arabicTermsIncluded: true,
+        culturallyAppropriate: true,
+      });
 
     // Generate professional response
     const response = await this.generateProfessionalResponse({
@@ -144,8 +153,8 @@ class IraqiProfessionalDomainManager {
       culturalContext,
       userContext,
       includeDisclaimer: true,
-      islamicComplianceNotes: contextValidation.islamicGuidance
-    })
+      islamicComplianceNotes: contextValidation.islamicGuidance,
+    });
 
     // Log professional interaction for expert review if needed
     if (domainClassification.expertReviewRequired) {
@@ -155,8 +164,11 @@ class IraqiProfessionalDomainManager {
         response,
         userContext,
         culturalContext,
-        priority: this.calculateReviewPriority(domainClassification, userContext)
-      })
+        priority: this.calculateReviewPriority(
+          domainClassification,
+          userContext,
+        ),
+      });
     }
 
     return {
@@ -168,29 +180,32 @@ class IraqiProfessionalDomainManager {
       culturalAppropriatenessScore: contextValidation.appropriatenessScore,
       islamicComplianceScore: contextValidation.islamicComplianceScore,
       requiresDisclaimer: true,
-      expertReviewStatus: domainClassification.expertReviewRequired ? 'queued' : 'not_required'
-    }
+      expertReviewStatus: domainClassification.expertReviewRequired
+        ? "queued"
+        : "not_required",
+    };
   }
 
   async integrateProfessionalTrainingData(
     dataSource: ProfessionalDataSource,
     domain: ProfessionalDomain,
-    culturalValidationRequired: boolean = true
+    culturalValidationRequired: boolean = true,
   ): Promise<TrainingDataIntegrationResult> {
     // Validate data source authority
     const sourceValidation = await this.dataSourceManager.validateDataSource({
       source: dataSource,
       domain,
       iraqiInstitutionalVerification: true,
-      expertCredibilityCheck: true
-    })
+      expertCredibilityCheck: true,
+    });
 
     if (!sourceValidation.isAuthoritative) {
       return {
         success: false,
-        error: 'Data source does not meet Iraqi professional authority standards',
-        sourceIssues: sourceValidation.issues
-      }
+        error:
+          "Data source does not meet Iraqi professional authority standards",
+        sourceIssues: sourceValidation.issues,
+      };
     }
 
     // Process professional data
@@ -199,29 +214,30 @@ class IraqiProfessionalDomainManager {
       domain,
       extractTerminology: true,
       preserveCulturalContext: true,
-      islamicComplianceValidation: true
-    })
+      islamicComplianceValidation: true,
+    });
 
     if (culturalValidationRequired) {
       // Validate cultural and Islamic compliance
-      const culturalValidation = await this.culturalValidator.validateProfessionalData({
-        data: dataProcessing.processedData,
-        domain,
-        islamicComplianceRequired: true,
-        iraqiCulturalStandards: true,
-        professionalEthicsCompliance: true
-      })
+      const culturalValidation =
+        await this.culturalValidator.validateProfessionalData({
+          data: dataProcessing.processedData,
+          domain,
+          islamicComplianceRequired: true,
+          iraqiCulturalStandards: true,
+          professionalEthicsCompliance: true,
+        });
 
       if (!culturalValidation.isCompliant) {
         return {
           success: false,
-          error: 'Professional data violates cultural or Islamic compliance',
+          error: "Professional data violates cultural or Islamic compliance",
           culturalIssues: culturalValidation.issues,
-          recommendedModifications: culturalValidation.suggestedModifications
-        }
+          recommendedModifications: culturalValidation.suggestedModifications,
+        };
       }
 
-      dataProcessing.culturalValidation = culturalValidation
+      dataProcessing.culturalValidation = culturalValidation;
     }
 
     // Create knowledge base entries
@@ -230,16 +246,16 @@ class IraqiProfessionalDomainManager {
       domain,
       sourceMetadata: sourceValidation.metadata,
       culturalContext: dataProcessing.culturalValidation?.culturalContext,
-      terminologyExtracted: dataProcessing.terminology
-    })
+      terminologyExtracted: dataProcessing.terminology,
+    });
 
     // Update professional terminology
     await this.terminologyManager.updateTerminology({
       newTerminology: dataProcessing.terminology,
       domain,
       arabicEnglishMapping: true,
-      culturalUsageNotes: true
-    })
+      culturalUsageNotes: true,
+    });
 
     // Queue for expert validation if required
     if (sourceValidation.requiresExpertReview) {
@@ -247,65 +263,74 @@ class IraqiProfessionalDomainManager {
         knowledgeEntries,
         domain,
         sourceInformation: sourceValidation,
-        priority: 'high'
-      })
+        priority: "high",
+      });
     }
 
     return {
       success: true,
       knowledgeEntriesCreated: knowledgeEntries.length,
       terminologyUpdated: dataProcessing.terminology.length,
-      culturalComplianceScore: dataProcessing.culturalValidation?.complianceScore || 1.0,
-      islamicComplianceScore: dataProcessing.culturalValidation?.islamicComplianceScore || 1.0,
+      culturalComplianceScore:
+        dataProcessing.culturalValidation?.complianceScore || 1.0,
+      islamicComplianceScore:
+        dataProcessing.culturalValidation?.islamicComplianceScore || 1.0,
       expertReviewRequired: sourceValidation.requiresExpertReview,
-      dataSourceCredibilityScore: sourceValidation.credibilityScore
-    }
+      dataSourceCredibilityScore: sourceValidation.credibilityScore,
+    };
   }
 }
 ```
 
 ### Professional Data Source Integration
+
 ```typescript
 // Professional Data Source Manager
 class ProfessionalDataSourceManager {
   constructor() {
-    this.legalDataConnector = new IraqiLegalDataConnector()
-    this.medicalDataConnector = new IraqiMedicalDataConnector()
-    this.educationalDataConnector = new IraqiEducationalDataConnector()
-    this.businessDataConnector = new IraqiBusinessDataConnector()
-    this.governmentDataConnector = new IraqiGovernmentDataConnector()
-    this.dataValidator = new ProfessionalDataValidator()
+    this.legalDataConnector = new IraqiLegalDataConnector();
+    this.medicalDataConnector = new IraqiMedicalDataConnector();
+    this.educationalDataConnector = new IraqiEducationalDataConnector();
+    this.businessDataConnector = new IraqiBusinessDataConnector();
+    this.governmentDataConnector = new IraqiGovernmentDataConnector();
+    this.dataValidator = new ProfessionalDataValidator();
   }
 
   async connectToIraqiProfessionalSources(
     domain: ProfessionalDomain,
     accessCredentials: AccessCredentials,
-    culturalContext: CulturalContext
+    culturalContext: CulturalContext,
   ): Promise<DataSourceConnectionResult> {
-    let connector: IProfessionalDataConnector
+    let connector: IProfessionalDataConnector;
 
     switch (domain) {
-      case 'legal':
-        connector = this.legalDataConnector
-        break
-      case 'medical':
-        connector = this.medicalDataConnector
-        break
-      case 'educational':
-        connector = this.educationalDataConnector
-        break
-      case 'business':
-        connector = this.businessDataConnector
-        break
-      case 'government':
-        connector = this.governmentDataConnector
-        break
+      case "legal":
+        connector = this.legalDataConnector;
+        break;
+      case "medical":
+        connector = this.medicalDataConnector;
+        break;
+      case "educational":
+        connector = this.educationalDataConnector;
+        break;
+      case "business":
+        connector = this.businessDataConnector;
+        break;
+      case "government":
+        connector = this.governmentDataConnector;
+        break;
       default:
         return {
           success: false,
-          error: 'Unsupported professional domain',
-          supportedDomains: ['legal', 'medical', 'educational', 'business', 'government']
-        }
+          error: "Unsupported professional domain",
+          supportedDomains: [
+            "legal",
+            "medical",
+            "educational",
+            "business",
+            "government",
+          ],
+        };
     }
 
     // Establish connection to Iraqi institutional data sources
@@ -313,15 +338,15 @@ class ProfessionalDataSourceManager {
       credentials: accessCredentials,
       culturalContext,
       validateInstitutionalAccess: true,
-      requireSecureConnection: true
-    })
+      requireSecureConnection: true,
+    });
 
     if (!connectionResult.connected) {
       return {
         success: false,
-        error: 'Failed to connect to Iraqi professional data sources',
-        connectionIssues: connectionResult.issues
-      }
+        error: "Failed to connect to Iraqi professional data sources",
+        connectionIssues: connectionResult.issues,
+      };
     }
 
     // Validate data source authority and credibility
@@ -329,8 +354,8 @@ class ProfessionalDataSourceManager {
       domain,
       dataSource: connectionResult.dataSource,
       iraqiInstitutionalValidation: true,
-      culturalComplianceCheck: true
-    })
+      culturalComplianceCheck: true,
+    });
 
     // Set up real-time data monitoring
     const monitoringSetup = await this.setupRealTimeMonitoring({
@@ -338,8 +363,8 @@ class ProfessionalDataSourceManager {
       dataSource: connectionResult.dataSource,
       updateFrequency: this.getOptimalUpdateFrequency(domain),
       culturalValidationEnabled: true,
-      islamicComplianceMonitoring: true
-    })
+      islamicComplianceMonitoring: true,
+    });
 
     return {
       success: true,
@@ -350,49 +375,55 @@ class ProfessionalDataSourceManager {
       culturalComplianceScore: authorityValidation.culturalComplianceScore,
       islamicComplianceScore: authorityValidation.islamicComplianceScore,
       realTimeMonitoringEnabled: monitoringSetup.enabled,
-      expectedUpdateFrequency: monitoringSetup.updateFrequency
-    }
+      expectedUpdateFrequency: monitoringSetup.updateFrequency,
+    };
   }
 
   async validateKnowledge(
-    params: KnowledgeValidationParams
+    params: KnowledgeValidationParams,
   ): Promise<KnowledgeValidationResult> {
-    const { domain, knowledge, requireCurrentData, iraqiInstitutionalValidation } = params
+    const {
+      domain,
+      knowledge,
+      requireCurrentData,
+      iraqiInstitutionalValidation,
+    } = params;
 
     // Get domain-specific connector
-    const connector = this.getDomainConnector(domain)
+    const connector = this.getDomainConnector(domain);
 
     // Validate knowledge against current Iraqi institutional data
     const institutionalValidation = await connector.validateAgainstCurrentData({
       knowledge: knowledge.content,
       culturalContext: knowledge.culturalContext,
       islamicComplianceRequired: true,
-      professionalStandardsCheck: true
-    })
+      professionalStandardsCheck: true,
+    });
 
     // Check for data currency and accuracy
     const currencyValidation = await this.dataValidator.validateDataCurrency({
       knowledge,
       domain,
       iraqiInstitutionalSources: true,
-      maximumAge: this.getMaximumDataAge(domain)
-    })
+      maximumAge: this.getMaximumDataAge(domain),
+    });
 
     // Validate cultural and professional appropriateness
-    const appropriatenessValidation = await this.dataValidator.validateAppropriateness({
-      knowledge,
-      domain,
-      iraqiCulturalStandards: true,
-      islamicComplianceRequired: true,
-      professionalEthicsCheck: true
-    })
+    const appropriatenessValidation =
+      await this.dataValidator.validateAppropriateness({
+        knowledge,
+        domain,
+        iraqiCulturalStandards: true,
+        islamicComplianceRequired: true,
+        professionalEthicsCheck: true,
+      });
 
     // Calculate overall validation score
     const overallValidationScore = this.calculateOverallValidationScore({
       institutional: institutionalValidation.score,
       currency: currencyValidation.score,
-      appropriateness: appropriatenessValidation.score
-    })
+      appropriateness: appropriatenessValidation.score,
+    });
 
     return {
       isValid: overallValidationScore >= 0.85,
@@ -403,41 +434,45 @@ class ProfessionalDataSourceManager {
       recommendedUpdates: this.generateUpdateRecommendations({
         institutional: institutionalValidation,
         currency: currencyValidation,
-        appropriateness: appropriatenessValidation
+        appropriateness: appropriatenessValidation,
       }),
-      validatedAt: new Date()
-    }
+      validatedAt: new Date(),
+    };
   }
 
-  private getDomainConnector(domain: ProfessionalDomain): IProfessionalDataConnector {
+  private getDomainConnector(
+    domain: ProfessionalDomain,
+  ): IProfessionalDataConnector {
     const connectors = {
       legal: this.legalDataConnector,
       medical: this.medicalDataConnector,
       educational: this.educationalDataConnector,
       business: this.businessDataConnector,
-      government: this.governmentDataConnector
-    }
+      government: this.governmentDataConnector,
+    };
 
-    return connectors[domain]
+    return connectors[domain];
   }
 }
 ```
 
 ### Expert Validation System
+
 ```typescript
 // Iraqi Professional Expert Validation System
 class ExpertValidationSystem {
   constructor() {
-    this.expertRegistry = new IraqiExpertRegistry()
-    this.validationWorkflow = new ValidationWorkflowManager()
-    this.culturalValidator = new CulturalProfessionalValidator()
-    this.qualityAssurance = new QualityAssuranceManager()
+    this.expertRegistry = new IraqiExpertRegistry();
+    this.validationWorkflow = new ValidationWorkflowManager();
+    this.culturalValidator = new CulturalProfessionalValidator();
+    this.qualityAssurance = new QualityAssuranceManager();
   }
 
   async queueForReview(
-    reviewRequest: ExpertReviewRequest
+    reviewRequest: ExpertReviewRequest,
   ): Promise<ExpertReviewQueueResult> {
-    const { domain, query, response, userContext, culturalContext, priority } = reviewRequest
+    const { domain, query, response, userContext, culturalContext, priority } =
+      reviewRequest;
 
     // Find qualified Iraqi experts for domain
     const qualifiedExperts = await this.expertRegistry.findQualifiedExperts({
@@ -446,28 +481,29 @@ class ExpertValidationSystem {
       culturalExpertise: true,
       islamicKnowledge: culturalContext.islamicComplianceRequired,
       professionalCredentials: true,
-      availability: 'available'
-    })
+      availability: "available",
+    });
 
     if (qualifiedExperts.length === 0) {
       return {
         success: false,
-        error: 'No qualified Iraqi experts available for domain',
+        error: "No qualified Iraqi experts available for domain",
         domain,
-        recommendedAlternatives: await this.suggestAlternativeValidation(domain)
-      }
+        recommendedAlternatives:
+          await this.suggestAlternativeValidation(domain),
+      };
     }
 
     // Create validation workflow
     const workflow = await this.validationWorkflow.createWorkflow({
       domain,
-      reviewType: 'professional_query_response',
+      reviewType: "professional_query_response",
       priority,
       assignedExperts: qualifiedExperts.slice(0, 2), // Assign top 2 experts
       culturalValidationRequired: true,
       islamicComplianceCheck: true,
-      deadlineHours: this.calculateReviewDeadline(priority)
-    })
+      deadlineHours: this.calculateReviewDeadline(priority),
+    });
 
     // Prepare review package
     const reviewPackage = await this.prepareReviewPackage({
@@ -479,95 +515,103 @@ class ExpertValidationSystem {
       professionalContext: {
         terminology: await this.extractProfessionalTerminology(response),
         citations: await this.extractCitations(response),
-        culturalConsiderations: await this.extractCulturalConsiderations(response)
-      }
-    })
+        culturalConsiderations:
+          await this.extractCulturalConsiderations(response),
+      },
+    });
 
     // Submit to experts
     const submissionResults = await Promise.all(
-      qualifiedExperts.slice(0, 2).map(expert =>
+      qualifiedExperts.slice(0, 2).map((expert) =>
         this.submitToExpert({
           expert,
           reviewPackage,
           workflow,
-          estimatedReviewTime: this.estimateReviewTime(domain, reviewPackage.complexity)
-        })
-      )
-    )
+          estimatedReviewTime: this.estimateReviewTime(
+            domain,
+            reviewPackage.complexity,
+          ),
+        }),
+      ),
+    );
 
     // Track submission in workflow
     await this.validationWorkflow.trackSubmissions({
       workflowId: workflow.id,
       submissions: submissionResults,
-      culturalValidationStatus: 'pending',
-      islamicComplianceStatus: 'pending'
-    })
+      culturalValidationStatus: "pending",
+      islamicComplianceStatus: "pending",
+    });
 
     return {
       success: true,
       workflowId: workflow.id,
-      assignedExperts: qualifiedExperts.slice(0, 2).map(e => e.id),
+      assignedExperts: qualifiedExperts.slice(0, 2).map((e) => e.id),
       estimatedCompletionTime: workflow.estimatedCompletion,
       priority,
       culturalValidationIncluded: true,
-      islamicComplianceValidationIncluded: culturalContext.islamicComplianceRequired
-    }
+      islamicComplianceValidationIncluded:
+        culturalContext.islamicComplianceRequired,
+    };
   }
 
   async processExpertFeedback(
     workflowId: string,
     expertId: string,
-    feedback: ExpertFeedback
+    feedback: ExpertFeedback,
   ): Promise<FeedbackProcessingResult> {
     // Validate expert credentials and authority
     const expertValidation = await this.expertRegistry.validateExpert({
       expertId,
       requiredDomain: feedback.domain,
       culturalExpertiseRequired: true,
-      currentCredentials: true
-    })
+      currentCredentials: true,
+    });
 
     if (!expertValidation.isValid) {
       return {
         success: false,
-        error: 'Expert credentials invalid or expired',
-        expertValidationIssues: expertValidation.issues
-      }
+        error: "Expert credentials invalid or expired",
+        expertValidationIssues: expertValidation.issues,
+      };
     }
 
     // Process cultural and Islamic compliance feedback
-    const culturalFeedbackProcessing = await this.culturalValidator.processFeedback({
-      feedback: feedback.culturalFeedback,
-      domain: feedback.domain,
-      expertCulturalCredentials: expertValidation.culturalCredentials,
-      islamicComplianceAssessment: feedback.islamicComplianceFeedback
-    })
+    const culturalFeedbackProcessing =
+      await this.culturalValidator.processFeedback({
+        feedback: feedback.culturalFeedback,
+        domain: feedback.domain,
+        expertCulturalCredentials: expertValidation.culturalCredentials,
+        islamicComplianceAssessment: feedback.islamicComplianceFeedback,
+      });
 
     // Process professional accuracy feedback
-    const professionalFeedbackProcessing = await this.qualityAssurance.processFeedback({
-      feedback: feedback.professionalFeedback,
-      domain: feedback.domain,
-      expertCredentials: expertValidation.professionalCredentials,
-      recommendedChanges: feedback.recommendedChanges
-    })
+    const professionalFeedbackProcessing =
+      await this.qualityAssurance.processFeedback({
+        feedback: feedback.professionalFeedback,
+        domain: feedback.domain,
+        expertCredentials: expertValidation.professionalCredentials,
+        recommendedChanges: feedback.recommendedChanges,
+      });
 
     // Update knowledge base if approved
-    if (feedback.approvalStatus === 'approved') {
+    if (feedback.approvalStatus === "approved") {
       await this.updateKnowledgeBase({
         workflowId,
         expertFeedback: feedback,
         culturalValidation: culturalFeedbackProcessing,
-        professionalValidation: professionalFeedbackProcessing
-      })
+        professionalValidation: professionalFeedbackProcessing,
+      });
     }
 
     // Generate improvement recommendations
-    const improvementRecommendations = await this.generateImprovementRecommendations({
-      feedback,
-      culturalProcessing: culturalFeedbackProcessing,
-      professionalProcessing: professionalFeedbackProcessing,
-      domain: feedback.domain
-    })
+    const improvementRecommendations =
+      await this.generateImprovementRecommendations({
+        feedback,
+        culturalProcessing: culturalFeedbackProcessing,
+        professionalProcessing: professionalFeedbackProcessing,
+        domain: feedback.domain,
+      });
 
     return {
       success: true,
@@ -578,8 +622,8 @@ class ExpertValidationSystem {
       islamicComplianceScore: culturalFeedbackProcessing.islamicComplianceScore,
       professionalAccuracyScore: professionalFeedbackProcessing.accuracyScore,
       recommendedImprovements: improvementRecommendations,
-      knowledgeBaseUpdated: feedback.approvalStatus === 'approved'
-    }
+      knowledgeBaseUpdated: feedback.approvalStatus === "approved",
+    };
   }
 }
 ```
@@ -930,6 +974,7 @@ CREATE TABLE professional_query_interactions (
 **Professional domain integration architecture patterns:**
 
 ### Domain Classification and Routing
+
 - **Intelligent Domain Detection:** Professional context classification and appropriate routing
 - **Cultural Context Integration:** Iraqi cultural appropriateness in professional domain processing
 - **Multi-domain Query Handling:** Cross-domain professional knowledge integration and consistency
@@ -937,6 +982,7 @@ CREATE TABLE professional_query_interactions (
 - **Performance Optimization:** Efficient professional domain query processing and response generation
 
 ### Training Data Integration Pipeline
+
 - **Source Validation:** Professional data source authority and credibility assessment
 - **Cultural Processing:** Iraqi cultural context integration and Islamic compliance validation
 - **Quality Assurance:** Multi-stage professional data quality validation and improvement
@@ -944,6 +990,7 @@ CREATE TABLE professional_query_interactions (
 - **Expert Integration:** Iraqi professional expert validation workflows and feedback processing
 
 ### Real-time Data Source Management
+
 - **Live Data Integration:** Real-time professional data updates from Iraqi institutions
 - **Source Monitoring:** Continuous professional data source reliability and accuracy monitoring
 - **Data Validation:** Professional information accuracy and currency validation
@@ -957,6 +1004,7 @@ CREATE TABLE professional_query_interactions (
 **Comprehensive professional domain integration validation:**
 
 ### Professional Domain Testing
+
 - **Domain Classification Accuracy:** Professional context detection and classification accuracy testing
 - **Iraqi Legal Domain:** Legal knowledge accuracy and cultural appropriateness validation
 - **Iraqi Medical Domain:** Healthcare knowledge cultural and Islamic compliance validation
@@ -964,12 +1012,14 @@ CREATE TABLE professional_query_interactions (
 - **Iraqi Business Domain:** Business knowledge cultural and Islamic business principles validation
 
 ### Expert Validation Testing
+
 - **Expert Review Workflows:** Iraqi professional expert validation process testing
 - **Cultural Validation Accuracy:** Cultural appropriateness validation in professional contexts testing
 - **Islamic Compliance Testing:** Islamic compliance validation in professional domain responses testing
 - **Cross-Domain Consistency:** Professional knowledge consistency across domains validation
 
 ### Data Integration Testing
+
 - **Real-time Data Integration:** Professional data source integration and update testing
 - **Training Data Quality:** Professional training data accuracy and cultural compliance testing
 - **Terminology Accuracy:** Professional Arabic-English terminology validation testing
@@ -982,18 +1032,21 @@ CREATE TABLE professional_query_interactions (
 **Professional domain integration points:**
 
 ### Core System Integration
+
 - **AI Agent Integration:** PydanticAI agents with specialized Iraqi professional domain knowledge
 - **Cultural Validation Integration:** Deep integration with Iraqi cultural validation systems
 - **Authentication Integration:** Professional domain access control and expert authentication
 - **Search Integration:** Professional domain-aware search and knowledge retrieval capabilities
 
 ### Iraqi Institutional Integration
+
 - **Legal System Integration:** Iraqi court systems, legal databases, and legal institution connections
 - **Healthcare Integration:** Iraqi medical institutions, healthcare protocols, and medical databases
 - **Educational Integration:** Iraqi educational institutions, curriculum databases, and academic systems
 - **Government Integration:** Iraqi ministry systems, government databases, and institutional connections
 
 ### External Service Integration
+
 - **Expert Review Platforms:** Integration with Iraqi professional expert validation systems
 - **Document Processing:** Professional document analysis and knowledge extraction services
 - **Real-time Data Services:** Live professional data feed integration and processing
@@ -1006,18 +1059,21 @@ CREATE TABLE professional_query_interactions (
 **Iraqi AI Chat System professional domain integration considerations:**
 
 ### Implementation Priorities
+
 - **Cultural-professional compliance** with Iraqi professional standards and Islamic principles
 - **Expert validation workflows** for Iraqi professional knowledge verification and quality assurance
 - **Real-time data integration** for current and accurate Iraqi professional information
 - **Cross-domain consistency** ensuring professional knowledge coherence across domains
 
 ### Performance and Scalability
+
 - **<500ms professional query response** for optimal user experience
 - **Efficient knowledge retrieval** using vector embeddings and semantic search
 - **Scalable expert validation** workflows supporting continuous professional knowledge improvement
 - **Real-time data synchronization** with Iraqi professional institutions and data sources
 
 ### Professional Domain Focus
+
 - **Iraqi legal expertise** with cultural legal practice integration and Islamic jurisprudence awareness
 - **Iraqi healthcare knowledge** with Islamic medical ethics compliance and cultural health practices
 - **Iraqi educational standards** with cultural learning approaches and Islamic educational principles

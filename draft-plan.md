@@ -7,6 +7,7 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 ## Tech Stack Overview (Updated for July 2025)
 
 ### Frontend
+
 - **Framework**: Next.js 15+ (App Router)
 - **UI Library**: React 19 (stable)
 - **Styling**: Tailwind CSS v4 + Shadcn/ui
@@ -16,6 +17,7 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 - **File Handling**: react-dropzone, file-saver
 
 ### Backend
+
 - **Primary API**: Python (FastAPI)
 - **Node Service**: Express.js (for real-time features)
 - **Task Queue**: Celery + Redis
@@ -24,7 +26,8 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 - **File Storage**: Supabase Storage / AWS S3
 
 ### AI/ML Stack (API-Based for MVP)
-- **Primary LLM**: 
+
+- **Primary LLM**:
   - OpenAI GPT-4o (main)
   - Jais API (Arabic specialized)
 - **Embeddings**: OpenAI text-embedding-3-large
@@ -34,7 +37,8 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 - **Voice**: OpenAI Whisper + TTS API
 
 ### Infrastructure
-- **Cloud**: 
+
+- **Cloud**:
   - Vercel (Next.js hosting)
   - Fly.io/Render (Python API)
   - Supabase (Database & Auth)
@@ -44,7 +48,8 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 - **CDN**: Vercel Edge Network
 
 ### Payment & Auth
-- **Payment Gateways**: 
+
+- **Payment Gateways**:
   - FastPay (primary)
   - NassWallet
   - PayTabs
@@ -57,6 +62,7 @@ A comprehensive AI chat system designed specifically for Iraqi users, featuring 
 ## AI Agent Architecture
 
 ### MVP: Single Master Agent with Tool Access
+
 ```python
 # Single intelligent agent that can access multiple tools
 class MasterAgent:
@@ -68,6 +74,7 @@ class MasterAgent:
 ```
 
 ### Future: Multi-Agent System
+
 ```python
 # Specialized agents for different tasks
 class AgentOrchestrator:
@@ -79,7 +86,7 @@ class AgentOrchestrator:
         "document": DocumentProcessingAgent(),
         "research": WebResearchAgent()
     }
-    
+
     def route_request(self, user_input, user_profession):
         # Intelligently route to appropriate agent(s)
 ```
@@ -177,6 +184,7 @@ src/
 ### Where to Add Your Database/Documents:
 
 1. **Development Phase**:
+
    ```
    data/
    ├── iraqi-law/
@@ -211,6 +219,7 @@ src/
 ## MVP Features (3-4 Months)
 
 ### 1. Core Chat Functionality
+
 - **Single Master Agent**
   - Handles all chat interactions
   - Access to document tools
@@ -225,6 +234,7 @@ src/
   - Low balance warnings
 
 ### 2. User Management
+
 - **Authentication System**
   - Email/password registration
   - Phone number verification (Iraqi numbers)
@@ -238,6 +248,7 @@ src/
   - Usage tracking & credits
 
 ### 3. Knowledge Base
+
 - **Pre-loaded Documents**
   - Iraqi law documents
   - Educational materials (Iraqi curriculum)
@@ -250,6 +261,7 @@ src/
   - Source citations in responses
 
 ### 4. Document Generation
+
 - **Basic Templates**
   - CV/Resume generator (Arabic/English)
   - Simple legal forms
@@ -257,6 +269,7 @@ src/
   - Export as PDF/Word
 
 ### 5. Pricing & Credits System
+
 - **Free Tier**
   - 10,000 tokens free on signup (~50 messages)
   - Basic features only
@@ -268,6 +281,7 @@ src/
   - 20,000 IQD = 300,000 tokens (~1500 messages)
 
 ### 6. Payment Integration
+
 - **Local Payment Methods**
   - FastPay integration
   - NassWallet support
@@ -275,6 +289,7 @@ src/
   - Payment history
 
 ### 7. Basic Admin Panel
+
 - **Content Management**
   - Upload knowledge base documents
   - Manage templates
@@ -288,6 +303,7 @@ src/
 ### Phase 1: Multi-Agent System (Months 4-6)
 
 #### Specialized Agents
+
 - **Agent Orchestrator**
   - Routes requests to specialized agents
   - Manages agent collaboration
@@ -300,6 +316,7 @@ src/
   - Business Agent (Iraqi market)
 
 #### Voice Features
+
 - **Arabic Voice Support**
   - OpenAI Whisper for speech-to-text
   - Custom Iraqi TTS model
@@ -308,6 +325,7 @@ src/
 ### Phase 2: Mobile App Launch (Months 6-9)
 
 #### React Native App
+
 - **Core Features**
   - Full chat functionality
   - Document upload/viewing
@@ -316,6 +334,7 @@ src/
   - Offline message queue
 
 #### Mobile-Specific Features
+
 - **Native Capabilities**
   - Camera document scanning
   - Biometric authentication
@@ -325,6 +344,7 @@ src/
 ### Phase 3: Advanced Features (Months 9-12)
 
 #### Enhanced Document Processing
+
 - **Advanced Capabilities**
   - Excel formula processing
   - Multi-document analysis
@@ -332,6 +352,7 @@ src/
   - Automatic summarization
 
 #### Web Integration
+
 - **External Data Access**
   - Web search capability
   - Real-time information
@@ -341,6 +362,7 @@ src/
 ### Phase 4: Collaboration (Year 2)
 
 #### Team Features
+
 - **Shared Workspaces**
   - Organization accounts
   - Shared knowledge bases
@@ -348,6 +370,7 @@ src/
   - Usage pooling
 
 #### API Platform
+
 - **Developer Access**
   - Public API
   - Webhook support
@@ -359,6 +382,7 @@ src/
 ## Implementation Roadmap
 
 ### Month 1: Foundation
+
 - Set up monorepo structure
 - Implement basic chat with single agent
 - OpenAI API integration
@@ -366,6 +390,7 @@ src/
 - Credit system implementation
 
 ### Month 2: Core Features
+
 - Document upload/processing
 - Knowledge base integration
 - RAG implementation
@@ -373,6 +398,7 @@ src/
 - Payment gateway integration
 
 ### Month 3: Iraqi Localization
+
 - Iraqi dialect fine-tuning
 - Arabic UI refinement
 - Knowledge base population
@@ -380,6 +406,7 @@ src/
 - Beta testing preparation
 
 ### Month 4: MVP Launch
+
 - Production deployment
 - Marketing website
 - User onboarding flow
@@ -391,6 +418,7 @@ src/
 ## Usage-Based Pricing Strategy
 
 ### Token Packages (Prepaid)
+
 - **Starter**: 5,000 IQD
   - 50,000 tokens
   - ~250 chat messages
@@ -412,6 +440,7 @@ src/
   - Priority support
 
 ### Token Usage Estimates
+
 - Simple chat: ~200 tokens
 - Document Q&A: ~500 tokens
 - Document generation: ~1000 tokens
@@ -422,6 +451,7 @@ src/
 ## Development Best Practices
 
 ### Shared Code Strategy
+
 ```typescript
 // packages/features/chat/useChatLogic.ts
 // Shared between web and mobile
@@ -429,20 +459,21 @@ export const useChatLogic = () => {
   const sendMessage = async (message: string) => {
     // Common chat logic
   };
-  
+
   return { sendMessage };
 };
 
 // Web implementation
 // apps/web/features/chat/ChatInterface.tsx
-import { useChatLogic } from '@iraqi-ai/features';
+import { useChatLogic } from "@iraqi-ai/features";
 
-// Mobile implementation  
+// Mobile implementation
 // apps/mobile/src/screens/Chat/ChatScreen.tsx
-import { useChatLogic } from '@iraqi-ai/features';
+import { useChatLogic } from "@iraqi-ai/features";
 ```
 
 ### API Client Architecture
+
 ```typescript
 // packages/api-client/services/agent.service.ts
 export class AgentService {
@@ -457,6 +488,7 @@ export class AgentService {
 ## Key Success Metrics
 
 ### MVP Success Criteria
+
 - 1000+ registered users in first month
 - 500+ paying users
 - <2 second response time
@@ -464,6 +496,7 @@ export class AgentService {
 - 4.5+ app store rating (when launched)
 
 ### Long-term Goals
+
 - 100,000+ active users
 - Multi-agent system handling 80% of queries
 - Government partnership for official services
@@ -475,6 +508,7 @@ export class AgentService {
 ## Budget Estimates
 
 ### MVP Development (3 months)
+
 - Development team: $0 (existing team)
 - Infrastructure: $200/month (Vercel, Supabase)
 - API costs: User-funded (prepaid)
@@ -484,6 +518,7 @@ export class AgentService {
 - **Total MVP**: ~$2,100
 
 ### Monthly Operating Costs (Post-MVP)
+
 - Infrastructure: $500-2000 (scales with users)
 - API costs: User-funded
 - Support staff: $2000
@@ -495,11 +530,13 @@ export class AgentService {
 ## Risk Mitigation
 
 ### Technical Risks
+
 - **API Costs**: Prepaid model prevents losses
 - **Arabic Accuracy**: Multi-model validation
 - **Scalability**: Auto-scaling infrastructure
 
 ### Business Risks
+
 - **Payment Processing**: Multiple gateways
 - **User Adoption**: Free tier for trial
 - **Competition**: Unique Iraqi focus
@@ -508,27 +545,27 @@ export class AgentService {
 
 ## Next Steps
 
-1. **Week 1-2**: 
+1. **Week 1-2**:
    - Set up monorepo structure
    - Initialize web and mobile projects
    - Configure shared packages
 
-2. **Week 3-4**: 
+2. **Week 3-4**:
    - Implement single agent with OpenAI
    - Basic chat interface
    - Authentication system
 
-3. **Month 2**: 
+3. **Month 2**:
    - Knowledge base integration
    - Document processing
    - Payment system
 
-4. **Month 3**: 
+4. **Month 3**:
    - Iraqi localization
    - Beta testing
    - Mobile app foundation
 
-5. **Month 4**: 
+5. **Month 4**:
    - MVP launch (web)
    - Continue mobile development
    - Gather feedback for multi-agent system
@@ -542,6 +579,7 @@ No, you don't add the PDFs directly in the app directory! Let me clarify the pro
 ## Knowledge Base Document Workflow
 
 ### 1. **Initial Storage (Development Phase)**
+
 ```
 data/                          # Temporary folder for organizing docs
 ├── iraqi-law/                # Just for development/testing
@@ -554,6 +592,7 @@ data/                          # Temporary folder for organizing docs
 The PDFs should be stored in:
 
 **Supabase Storage** (for file storage):
+
 ```sql
 -- Supabase Storage Buckets
 documents/
@@ -564,6 +603,7 @@ documents/
 ```
 
 **PostgreSQL** (for metadata):
+
 ```sql
 -- Documents table
 CREATE TABLE documents (
@@ -577,6 +617,7 @@ CREATE TABLE documents (
 ```
 
 **Vector Database** (Pinecone/Supabase Vector):
+
 ```python
 # Processed text chunks with embeddings
 {
@@ -599,22 +640,22 @@ CREATE TABLE documents (
 async def process_document(file_path: str):
     # 1. Upload PDF to Supabase Storage
     file_url = await supabase.storage.upload(file_path)
-    
+
     # 2. Extract text from PDF
     text = extract_text_from_pdf(file_path)
-    
+
     # 3. Split into chunks
     chunks = split_into_chunks(text, chunk_size=500)
-    
+
     # 4. Generate embeddings for each chunk
     embeddings = await openai.embeddings.create(
         input=chunks,
         model="text-embedding-3-large"
     )
-    
+
     # 5. Store in vector database
     await pinecone.upsert(embeddings)
-    
+
     # 6. Store metadata in PostgreSQL
     await supabase.from_('documents').insert({
         'title': document_title,
@@ -633,14 +674,14 @@ async def answer_question(question: str, user_profession: str):
         input=question,
         model="text-embedding-3-large"
     )
-    
+
     # 2. Search vector database
     relevant_chunks = await pinecone.query(
         vector=question_embedding,
         filter={"profession": user_profession},
         top_k=5
     )
-    
+
     # 3. Use retrieved chunks as context
     response = await openai.chat.completions.create(
         model="gpt-4o",
@@ -662,16 +703,16 @@ export default function DocumentsAdmin() {
     const { data } = await supabase.storage
       .from('documents')
       .upload(`${category}/${file.name}`, file);
-    
+
     // 2. Trigger processing pipeline
     await fetch('/api/process-document', {
       method: 'POST',
       body: JSON.stringify({ fileUrl: data.path })
     });
   };
-  
+
   return (
-    <DocumentUploader 
+    <DocumentUploader
       onUpload={handleUpload}
       categories={['law', 'education', 'medical']}
     />

@@ -7,7 +7,7 @@ Complete extraction of Microsoft AutoGen multi-agent framework for the Iraqi AI 
 This extraction provides the complete Microsoft AutoGen system with Iraqi enhancements, supporting:
 
 - **Multi-agent coordination** for Iraqi professional teams
-- **Cultural context preservation** across agent interactions  
+- **Cultural context preservation** across agent interactions
 - **Arabic language processing** in group conversations
 - **Islamic compliance validation** in multi-agent decisions
 - **Iraqi organizational hierarchy** patterns (manager, senior, junior)
@@ -16,18 +16,21 @@ This extraction provides the complete Microsoft AutoGen system with Iraqi enhanc
 ## Architecture Layers
 
 ### 1. AutoGen Core (`/core/`)
+
 - **Base Agent System**: Lifecycle management, communication protocols
 - **Event-Driven Architecture**: Message passing, routing, subscription system
 - **Memory Management**: Context preservation, state management
 - **Runtime System**: Single-threaded and distributed runtime support
 
 ### 2. AgentChat System (`/agentchat/`)
+
 - **Group Conversation Management**: Multi-agent coordination patterns
 - **Role-Based Interactions**: Manager, worker, reviewer patterns
 - **Conversation Flow Control**: Moderation, handoffs, termination
 - **Iraqi Cultural Context**: Cultural validation in group discussions
 
 ### 3. Agent Templates (`/agents/`)
+
 - **Professional Roles**: Iraqi organizational structure patterns
 - **Conversational Agents**: Arabic language support
 - **Assistant Agents**: Iraqi cultural context integration
@@ -35,12 +38,14 @@ This extraction provides the complete Microsoft AutoGen system with Iraqi enhanc
 - **Group Chat Managers**: Multi-agent coordination
 
 ### 4. Message Systems (`/messaging/`)
+
 - **Multi-Agent Protocols**: Communication patterns between agents
 - **Event Handling**: Routing, queuing, delivery management
 - **Cultural Validation**: Arabic text handling, Islamic compliance
 - **Iraqi Enhancements**: Professional communication patterns
 
 ### 5. Integration Patterns (`/integrations/`)
+
 - **External Services**: API wrapper patterns for Iraqi systems
 - **Tool Integration**: Government portal, institutional access
 - **Database Connectivity**: Iraqi compliance systems
@@ -49,6 +54,7 @@ This extraction provides the complete Microsoft AutoGen system with Iraqi enhanc
 ## Iraqi Professional Use Cases
 
 ### Legal Teams
+
 ```python
 # Multi-lawyer case collaboration
 legal_team = IraqiLegalTeam([
@@ -60,17 +66,19 @@ legal_team = IraqiLegalTeam([
 ```
 
 ### Medical Teams
+
 ```python
 # Doctor-nurse-specialist coordination
 medical_team = IraqiMedicalTeam([
     DoctorAgent("primary_physician"),
-    SpecialistAgent("cardiologist"), 
+    SpecialistAgent("cardiologist"),
     NurseAgent("head_nurse"),
     AdministratorAgent("medical_admin")
 ])
 ```
 
 ### Educational Teams
+
 ```python
 # Teacher-administrator-counselor coordination
 education_team = IraqiEducationTeam([
@@ -82,6 +90,7 @@ education_team = IraqiEducationTeam([
 ```
 
 ### Government Teams
+
 ```python
 # Multi-ministry project coordination
 government_team = IraqiGovernmentTeam([
@@ -95,16 +104,19 @@ government_team = IraqiGovernmentTeam([
 ## Industry-Standard Patterns
 
 ### Hierarchical Organization
+
 - **CEO → Manager → Worker**: Executive decision flow
 - **Senior → Junior**: Professional mentorship patterns
 - **Reviewer → Worker**: Quality assurance workflows
 
 ### Peer-to-Peer Collaboration
+
 - **Professional Equals**: Collaborative decision making
 - **Cross-Department**: Inter-organizational coordination
 - **Specialist Consultation**: Expert advisory patterns
 
 ### Cultural Decision Making
+
 - **Consensus Building**: Iraqi cultural decision patterns
 - **Islamic Compliance**: Religious validation in decisions
 - **Hierarchical Respect**: Traditional organizational respect
@@ -112,6 +124,7 @@ government_team = IraqiGovernmentTeam([
 ## Integration with Existing Systems
 
 ### PraisonAI Enhancement
+
 ```python
 # Enhance existing PraisonAI agents with AutoGen coordination
 from autogen_core import AgentRuntime
@@ -122,6 +135,7 @@ class EnhancedPraisonAgent(PraisonAgent, BaseAgent):
 ```
 
 ### Block/Goose MCP Integration
+
 ```python
 # Tool coordination through MCP ecosystem
 from autogen_agentchat import GroupChat
@@ -132,6 +146,7 @@ class MCPCoordinatedGroupChat(GroupChat):
 ```
 
 ### Langflow Visual Workflows
+
 ```python
 # Visual agent coordination
 from langflow import Node
@@ -230,18 +245,21 @@ autogen-extracted/
 ## Cultural Enhancements
 
 ### Islamic Compliance
+
 - **Religious validation** in multi-agent decisions
 - **Halal business practices** in professional workflows
 - **Prayer time consideration** in scheduling
 - **Cultural sensitivity** in agent interactions
 
 ### Arabic Language Support
+
 - **Iraqi dialect recognition** in group conversations
 - **RTL text handling** in agent communications
 - **Mixed Arabic-English** processing
 - **Cultural context preservation** in translations
 
 ### Professional Hierarchies
+
 - **Traditional respect patterns** in agent interactions
 - **Seniority-based decision flows** in professional teams
 - **Consensus building** in group decisions

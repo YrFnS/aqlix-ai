@@ -2,7 +2,7 @@
 [dir="rtl"] {
   direction: rtl;
   text-align: right;
-  font-family: 'Noto Sans Arabic', sans-serif;
+  font-family: "Noto Sans Arabic", sans-serif;
 }
 
 [dir="rtl"] .form-input {

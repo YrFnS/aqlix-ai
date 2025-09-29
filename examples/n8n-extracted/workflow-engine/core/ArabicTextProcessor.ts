@@ -1,9 +1,9 @@
 /**
  * Arabic Text Processor - Advanced RTL Processing Engine
- * 
+ *
  * Comprehensive Arabic text processing system for Iraqi workflow automation.
  * Handles RTL text processing, Iraqi dialect recognition, and mixed content.
- * 
+ *
  * Features:
  * - 99%+ RTL text processing accuracy
  * - Iraqi dialect recognition (Baghdadi, Basri, Moslawi)
@@ -11,13 +11,13 @@
  * - Professional terminology mapping
  * - Cultural context awareness
  * - Real-time text validation
- * 
+ *
  * @author Iraqi AI Arabic Processing Team
  * @version 2.0.0
  * @license Arabic Processing Certified License
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // Arabic processing interfaces
 export interface IArabicProcessingConfig {
@@ -28,15 +28,30 @@ export interface IArabicProcessingConfig {
   culturalValidation: boolean;
   performanceOptimization: boolean;
   cacheResults: boolean;
-  supportedDialects: ('baghdadi' | 'basri' | 'moslawi' | 'anbar' | 'kurdish' | 'standard')[];
+  supportedDialects: (
+    | "baghdadi"
+    | "basri"
+    | "moslawi"
+    | "anbar"
+    | "kurdish"
+    | "standard"
+  )[];
   processingTimeout: number;
 }
 
 export interface IArabicProcessingResult {
   originalText: string;
   processedText: string;
-  textDirection: 'rtl' | 'ltr' | 'mixed';
-  detectedDialect: 'baghdadi' | 'basri' | 'moslawi' | 'anbar' | 'kurdish' | 'standard' | 'mixed' | 'unknown';
+  textDirection: "rtl" | "ltr" | "mixed";
+  detectedDialect:
+    | "baghdadi"
+    | "basri"
+    | "moslawi"
+    | "anbar"
+    | "kurdish"
+    | "standard"
+    | "mixed"
+    | "unknown";
   dialectConfidence: number;
   hasArabicContent: boolean;
   hasMixedContent: boolean;
@@ -56,7 +71,15 @@ export interface IArabicProcessingResult {
 }
 
 export interface IDialectDetectionResult {
-  dialect: 'baghdadi' | 'basri' | 'moslawi' | 'anbar' | 'kurdish' | 'standard' | 'mixed' | 'unknown';
+  dialect:
+    | "baghdadi"
+    | "basri"
+    | "moslawi"
+    | "anbar"
+    | "kurdish"
+    | "standard"
+    | "mixed"
+    | "unknown";
   confidence: number;
   indicators: Array<{
     phrase: string;
@@ -72,25 +95,33 @@ export interface IDialectDetectionResult {
 export interface IMixedContentResult {
   segments: Array<{
     text: string;
-    language: 'ar' | 'en' | 'mixed';
-    direction: 'rtl' | 'ltr';
+    language: "ar" | "en" | "mixed";
+    direction: "rtl" | "ltr";
     startIndex: number;
     endIndex: number;
     dialectInfo?: IDialectDetectionResult;
   }>;
-  overallDirection: 'rtl' | 'ltr' | 'mixed';
-  dominantLanguage: 'ar' | 'en' | 'balanced';
-  processingComplexity: 'simple' | 'moderate' | 'complex';
+  overallDirection: "rtl" | "ltr" | "mixed";
+  dominantLanguage: "ar" | "en" | "balanced";
+  processingComplexity: "simple" | "moderate" | "complex";
 }
 
 export interface IProfessionalTermMapping {
-  domain: 'legal' | 'medical' | 'educational' | 'governmental' | 'engineering' | 'financial' | 'religious' | 'cultural';
+  domain:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "governmental"
+    | "engineering"
+    | "financial"
+    | "religious"
+    | "cultural";
   originalTerm: string;
   standardTerm: string;
   dialectVariations: Array<{
     dialect: string;
     variation: string;
-    usage: 'formal' | 'informal' | 'colloquial';
+    usage: "formal" | "informal" | "colloquial";
   }>;
   contextualUsage: string[];
   relatedTerms: string[];
@@ -98,12 +129,12 @@ export interface IProfessionalTermMapping {
 
 export interface ICulturalValidationResult {
   isAppropriate: boolean;
-  sensitivityLevel: 'high' | 'medium' | 'low';
+  sensitivityLevel: "high" | "medium" | "low";
   concerns: Array<{
     text: string;
     issue: string;
     suggestion: string;
-    severity: 'critical' | 'moderate' | 'minor';
+    severity: "critical" | "moderate" | "minor";
   }>;
   recommendations: string[];
   culturalScore: number;
@@ -116,29 +147,30 @@ export interface IRTLProcessingOptions {
   maintainPunctuation: boolean;
   convertDiacritics: boolean;
   normalizeText: boolean;
-  direction: 'rtl' | 'auto';
+  direction: "rtl" | "auto";
 }
 
 export interface INodeDataProcessingContext {
   nodeType: string;
   ministry?: string;
   professionalDomain?: string;
-  securityLevel?: 'public' | 'restricted' | 'confidential';
+  securityLevel?: "public" | "restricted" | "confidential";
   userId?: string;
   sessionId?: string;
-  processingMode: 'input' | 'output' | 'internal';
+  processingMode: "input" | "output" | "internal";
 }
 
 /**
  * Arabic Text Processor
- * 
+ *
  * Advanced Arabic text processing engine with Iraqi dialect support,
  * RTL processing, and cultural validation capabilities.
  */
 export class ArabicTextProcessor extends EventEmitter {
   private config: IArabicProcessingConfig;
   private dialectPatterns: Map<string, RegExp[]> = new Map();
-  private professionalTerms: Map<string, IProfessionalTermMapping[]> = new Map();
+  private professionalTerms: Map<string, IProfessionalTermMapping[]> =
+    new Map();
   private processingCache: Map<string, IArabicProcessingResult> = new Map();
   private culturalKeywords: Set<string> = new Set();
 
@@ -161,17 +193,16 @@ export class ArabicTextProcessor extends EventEmitter {
       preserveFormatting?: boolean;
       validateCulture?: boolean;
       rtlOptions?: IRTLProcessingOptions;
-    } = {}
+    } = {},
   ): Promise<IArabicProcessingResult> {
-    
     const processingStartTime = Date.now();
-    
+
     try {
-      this.emit('processingStarted', {
+      this.emit("processingStarted", {
         textLength: text.length,
         dialect: options.dialect,
         domain: options.professionalDomain,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Check cache first
@@ -185,8 +216,8 @@ export class ArabicTextProcessor extends EventEmitter {
       const result: IArabicProcessingResult = {
         originalText: text,
         processedText: text,
-        textDirection: 'ltr',
-        detectedDialect: 'unknown',
+        textDirection: "ltr",
+        detectedDialect: "unknown",
         dialectConfidence: 0,
         hasArabicContent: false,
         hasMixedContent: false,
@@ -201,23 +232,24 @@ export class ArabicTextProcessor extends EventEmitter {
           englishWordCount: 0,
           punctuationHandled: false,
           numbersConverted: false,
-          diacriticsPreserved: false
-        }
+          diacriticsPreserved: false,
+        },
       };
 
       // 1. Detect Arabic content
       result.hasArabicContent = this.detectArabicContent(text);
-      
+
       if (!result.hasArabicContent) {
-        result.textDirection = 'ltr';
+        result.textDirection = "ltr";
         result.processingTime = Date.now() - processingStartTime;
         return result;
       }
 
       // 2. Analyze mixed content
       const mixedContentResult = await this.analyzeMixedContent(text);
-      result.hasMixedContent = mixedContentResult.dominantLanguage === 'balanced' || 
-                              mixedContentResult.overallDirection === 'mixed';
+      result.hasMixedContent =
+        mixedContentResult.dominantLanguage === "balanced" ||
+        mixedContentResult.overallDirection === "mixed";
       result.textDirection = mixedContentResult.overallDirection;
 
       // 3. Detect Iraqi dialect
@@ -229,13 +261,16 @@ export class ArabicTextProcessor extends EventEmitter {
 
       // 4. Process professional terminology
       if (this.config.professionalTerminology && options.professionalDomain) {
-        result.professionalTerms = await this.extractProfessionalTerms(text, options.professionalDomain);
+        result.professionalTerms = await this.extractProfessionalTerms(
+          text,
+          options.professionalDomain,
+        );
       }
 
       // 5. Cultural validation
       if (this.config.culturalValidation || options.validateCulture) {
         const culturalResult = await this.validateCulturalContent(text);
-        result.culturallySensitive = culturalResult.sensitivityLevel === 'high';
+        result.culturallySensitive = culturalResult.sensitivityLevel === "high";
         if (culturalResult.concerns.length > 0) {
           result.suggestions.push(...culturalResult.recommendations);
         }
@@ -243,15 +278,18 @@ export class ArabicTextProcessor extends EventEmitter {
 
       // 6. RTL text processing
       if (this.config.rtlProcessing && result.hasArabicContent) {
-        result.processedText = await this.processRTLText(text, options.rtlOptions || {
-          preserveFormatting: options.preserveFormatting || true,
-          handleNumbers: true,
-          processUrls: true,
-          maintainPunctuation: true,
-          convertDiacritics: false,
-          normalizeText: true,
-          direction: 'auto'
-        });
+        result.processedText = await this.processRTLText(
+          text,
+          options.rtlOptions || {
+            preserveFormatting: options.preserveFormatting || true,
+            handleNumbers: true,
+            processUrls: true,
+            maintainPunctuation: true,
+            convertDiacritics: false,
+            normalizeText: true,
+            direction: "auto",
+          },
+        );
       }
 
       // 7. Calculate metadata
@@ -269,21 +307,20 @@ export class ArabicTextProcessor extends EventEmitter {
         this.processingCache.set(cacheKey, result);
       }
 
-      this.emit('processingCompleted', {
+      this.emit("processingCompleted", {
         success: true,
         textLength: text.length,
         processingTime: result.processingTime,
         dialect: result.detectedDialect,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return result;
-
     } catch (error) {
-      this.emit('processingError', {
+      this.emit("processingError", {
         error: error.message,
         textLength: text.length,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw error;
     }
@@ -298,18 +335,20 @@ export class ArabicTextProcessor extends EventEmitter {
       dialect?: string;
       professionalDomain?: string;
       preserveFormatting?: boolean;
-    }
+    },
   ): Promise<any> {
-    
     const processedData = { ...inputData };
-    
+
     if (inputData.main && Array.isArray(inputData.main)) {
       for (let i = 0; i < inputData.main.length; i++) {
         if (Array.isArray(inputData.main[i])) {
           for (let j = 0; j < inputData.main[i].length; j++) {
             const item = inputData.main[i][j];
-            if (item && typeof item === 'object') {
-              processedData.main[i][j] = await this.processDataObject(item, context);
+            if (item && typeof item === "object") {
+              processedData.main[i][j] = await this.processDataObject(
+                item,
+                context,
+              );
             }
           }
         }
@@ -328,20 +367,19 @@ export class ArabicTextProcessor extends EventEmitter {
       dialect?: string;
       professionalDomain?: string;
       ensureRTL?: boolean;
-    }
+    },
   ): Promise<any> {
-    
     const processedData = { ...outputData };
-    
+
     if (outputData.main && Array.isArray(outputData.main)) {
       for (let i = 0; i < outputData.main.length; i++) {
         if (Array.isArray(outputData.main[i])) {
           for (let j = 0; j < outputData.main[i].length; j++) {
             const item = outputData.main[i][j];
-            if (item && typeof item === 'object') {
+            if (item && typeof item === "object") {
               processedData.main[i][j] = await this.processDataObject(item, {
                 ...context,
-                preserveFormatting: true
+                preserveFormatting: true,
               });
             }
           }
@@ -364,12 +402,19 @@ export class ArabicTextProcessor extends EventEmitter {
   /**
    * Detect Iraqi dialect in text
    */
-  private async detectDialect(text: string, hintDialect?: string): Promise<IDialectDetectionResult> {
+  private async detectDialect(
+    text: string,
+    hintDialect?: string,
+  ): Promise<IDialectDetectionResult> {
     const dialectScores = new Map<string, number>();
-    const indicators: Array<{ phrase: string; dialectMarker: string; weight: number }> = [];
+    const indicators: Array<{
+      phrase: string;
+      dialectMarker: string;
+      weight: number;
+    }> = [];
 
     // Initialize scores
-    this.config.supportedDialects.forEach(dialect => {
+    this.config.supportedDialects.forEach((dialect) => {
       dialectScores.set(dialect, 0);
     });
 
@@ -382,12 +427,12 @@ export class ArabicTextProcessor extends EventEmitter {
         if (matches) {
           const score = matches.length * this.getDialectWeight(dialect);
           dialectScores.set(dialect, (dialectScores.get(dialect) || 0) + score);
-          
-          matches.forEach(match => {
+
+          matches.forEach((match) => {
             indicators.push({
               phrase: match,
               dialectMarker: dialect,
-              weight: this.getDialectWeight(dialect)
+              weight: this.getDialectWeight(dialect),
             });
           });
         }
@@ -396,20 +441,24 @@ export class ArabicTextProcessor extends EventEmitter {
 
     // Apply hint dialect boost
     if (hintDialect && dialectScores.has(hintDialect)) {
-      dialectScores.set(hintDialect, (dialectScores.get(hintDialect) || 0) * 1.2);
+      dialectScores.set(
+        hintDialect,
+        (dialectScores.get(hintDialect) || 0) * 1.2,
+      );
     }
 
     // Find best match
-    let bestDialect = 'unknown';
+    let bestDialect = "unknown";
     let bestScore = 0;
-    const alternativeDialects: Array<{ dialect: string; confidence: number }> = [];
+    const alternativeDialects: Array<{ dialect: string; confidence: number }> =
+      [];
 
     for (const [dialect, score] of dialectScores) {
       if (score > bestScore) {
         if (bestScore > 0) {
           alternativeDialects.push({
             dialect: bestDialect,
-            confidence: bestScore
+            confidence: bestScore,
           });
         }
         bestDialect = dialect;
@@ -417,56 +466,64 @@ export class ArabicTextProcessor extends EventEmitter {
       } else if (score > 0) {
         alternativeDialects.push({
           dialect,
-          confidence: score
+          confidence: score,
         });
       }
     }
 
     // Calculate confidence (0-100)
-    const totalScore = Array.from(dialectScores.values()).reduce((sum, score) => sum + score, 0);
-    const confidence = totalScore > 0 ? Math.min(100, (bestScore / totalScore) * 100) : 0;
+    const totalScore = Array.from(dialectScores.values()).reduce(
+      (sum, score) => sum + score,
+      0,
+    );
+    const confidence =
+      totalScore > 0 ? Math.min(100, (bestScore / totalScore) * 100) : 0;
 
     return {
       dialect: bestDialect as any,
       confidence,
       indicators,
-      alternativeDialects: alternativeDialects.sort((a, b) => b.confidence - a.confidence).slice(0, 3)
+      alternativeDialects: alternativeDialects
+        .sort((a, b) => b.confidence - a.confidence)
+        .slice(0, 3),
     };
   }
 
   /**
    * Analyze mixed Arabic-English content
    */
-  private async analyzeMixedContent(text: string): Promise<IMixedContentResult> {
-    const segments: IMixedContentResult['segments'] = [];
+  private async analyzeMixedContent(
+    text: string,
+  ): Promise<IMixedContentResult> {
+    const segments: IMixedContentResult["segments"] = [];
     let currentPos = 0;
     let arabicCount = 0;
     let englishCount = 0;
 
     // Split text into segments
     const words = text.split(/\s+/);
-    
+
     for (const word of words) {
       const startIndex = text.indexOf(word, currentPos);
       const endIndex = startIndex + word.length;
-      
-      let language: 'ar' | 'en' | 'mixed' = 'en';
-      let direction: 'rtl' | 'ltr' = 'ltr';
+
+      let language: "ar" | "en" | "mixed" = "en";
+      let direction: "rtl" | "ltr" = "ltr";
 
       if (this.detectArabicContent(word)) {
-        language = 'ar';
-        direction = 'rtl';
+        language = "ar";
+        direction = "rtl";
         arabicCount++;
       } else if (/[a-zA-Z]/.test(word)) {
-        language = 'en';
-        direction = 'ltr';
+        language = "en";
+        direction = "ltr";
         englishCount++;
       }
 
       // Check for mixed language in single word
       if (this.detectArabicContent(word) && /[a-zA-Z]/.test(word)) {
-        language = 'mixed';
-        direction = 'mixed';
+        language = "mixed";
+        direction = "mixed";
       }
 
       segments.push({
@@ -474,7 +531,7 @@ export class ArabicTextProcessor extends EventEmitter {
         language,
         direction,
         startIndex,
-        endIndex
+        endIndex,
       });
 
       currentPos = endIndex;
@@ -482,39 +539,46 @@ export class ArabicTextProcessor extends EventEmitter {
 
     // Determine overall characteristics
     const totalWords = arabicCount + englishCount;
-    let dominantLanguage: 'ar' | 'en' | 'balanced' = 'balanced';
-    
+    let dominantLanguage: "ar" | "en" | "balanced" = "balanced";
+
     if (totalWords > 0) {
       const arabicRatio = arabicCount / totalWords;
       if (arabicRatio > 0.6) {
-        dominantLanguage = 'ar';
+        dominantLanguage = "ar";
       } else if (arabicRatio < 0.4) {
-        dominantLanguage = 'en';
+        dominantLanguage = "en";
       }
     }
 
-    let overallDirection: 'rtl' | 'ltr' | 'mixed' = 'ltr';
-    if (dominantLanguage === 'ar') {
-      overallDirection = 'rtl';
-    } else if (dominantLanguage === 'balanced') {
-      overallDirection = 'mixed';
+    let overallDirection: "rtl" | "ltr" | "mixed" = "ltr";
+    if (dominantLanguage === "ar") {
+      overallDirection = "rtl";
+    } else if (dominantLanguage === "balanced") {
+      overallDirection = "mixed";
     }
 
-    const processingComplexity = segments.filter(s => s.language === 'mixed').length > 0 ? 'complex' :
-                                segments.filter(s => s.direction === 'mixed').length > 2 ? 'moderate' : 'simple';
+    const processingComplexity =
+      segments.filter((s) => s.language === "mixed").length > 0
+        ? "complex"
+        : segments.filter((s) => s.direction === "mixed").length > 2
+          ? "moderate"
+          : "simple";
 
     return {
       segments,
       overallDirection,
       dominantLanguage,
-      processingComplexity
+      processingComplexity,
     };
   }
 
   /**
    * Extract professional terminology
    */
-  private async extractProfessionalTerms(text: string, domain: string): Promise<string[]> {
+  private async extractProfessionalTerms(
+    text: string,
+    domain: string,
+  ): Promise<string[]> {
     const extractedTerms: string[] = [];
     const domainTerms = this.professionalTerms.get(domain) || [];
 
@@ -545,20 +609,22 @@ export class ArabicTextProcessor extends EventEmitter {
   /**
    * Validate cultural content
    */
-  private async validateCulturalContent(text: string): Promise<ICulturalValidationResult> {
-    const concerns: ICulturalValidationResult['concerns'] = [];
+  private async validateCulturalContent(
+    text: string,
+  ): Promise<ICulturalValidationResult> {
+    const concerns: ICulturalValidationResult["concerns"] = [];
     const recommendations: string[] = [];
-    let sensitivityLevel: 'high' | 'medium' | 'low' = 'low';
+    let sensitivityLevel: "high" | "medium" | "low" = "low";
 
     // Check for culturally sensitive keywords
     for (const keyword of this.culturalKeywords) {
       if (text.toLowerCase().includes(keyword.toLowerCase())) {
-        sensitivityLevel = 'high';
+        sensitivityLevel = "high";
         concerns.push({
           text: keyword,
-          issue: 'Culturally sensitive content detected',
-          suggestion: 'Review content for cultural appropriateness',
-          severity: 'moderate'
+          issue: "Culturally sensitive content detected",
+          suggestion: "Review content for cultural appropriateness",
+          severity: "moderate",
         });
       }
     }
@@ -567,19 +633,19 @@ export class ArabicTextProcessor extends EventEmitter {
     const inappropriatePatterns = [
       /\b(politics|political|حزب|سياسة)\b/gi,
       /\b(sectarian|طائفي|مذهبي)\b/gi,
-      /\b(alcohol|خمر|كحول)\b/gi
+      /\b(alcohol|خمر|كحول)\b/gi,
     ];
 
     for (const pattern of inappropriatePatterns) {
       const matches = text.match(pattern);
       if (matches) {
-        sensitivityLevel = 'high';
-        matches.forEach(match => {
+        sensitivityLevel = "high";
+        matches.forEach((match) => {
           concerns.push({
             text: match,
-            issue: 'Potentially inappropriate content',
-            suggestion: 'Consider removing or rephrasing',
-            severity: 'moderate'
+            issue: "Potentially inappropriate content",
+            suggestion: "Consider removing or rephrasing",
+            severity: "moderate",
           });
         });
       }
@@ -587,29 +653,33 @@ export class ArabicTextProcessor extends EventEmitter {
 
     // Generate recommendations
     if (concerns.length > 0) {
-      recommendations.push('Review content for cultural sensitivity');
-      recommendations.push('Consider consultation with cultural advisors');
+      recommendations.push("Review content for cultural sensitivity");
+      recommendations.push("Consider consultation with cultural advisors");
     }
 
-    if (sensitivityLevel === 'high') {
-      recommendations.push('Content requires cultural validation before use');
+    if (sensitivityLevel === "high") {
+      recommendations.push("Content requires cultural validation before use");
     }
 
-    const culturalScore = Math.max(0, 100 - (concerns.length * 20));
+    const culturalScore = Math.max(0, 100 - concerns.length * 20);
 
     return {
-      isAppropriate: concerns.filter(c => c.severity === 'critical').length === 0,
+      isAppropriate:
+        concerns.filter((c) => c.severity === "critical").length === 0,
       sensitivityLevel,
       concerns,
       recommendations,
-      culturalScore
+      culturalScore,
     };
   }
 
   /**
    * Process RTL text
    */
-  private async processRTLText(text: string, options: IRTLProcessingOptions): Promise<string> {
+  private async processRTLText(
+    text: string,
+    options: IRTLProcessingOptions,
+  ): Promise<string> {
     let processedText = text;
 
     // Normalize text if requested
@@ -644,7 +714,7 @@ export class ArabicTextProcessor extends EventEmitter {
    * Process data object recursively
    */
   private async processDataObject(obj: any, context: any): Promise<any> {
-    if (typeof obj === 'string') {
+    if (typeof obj === "string") {
       if (this.detectArabicContent(obj)) {
         const result = await this.processText(obj, context);
         return result.processedText;
@@ -660,7 +730,7 @@ export class ArabicTextProcessor extends EventEmitter {
       return processedArray;
     }
 
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === "object" && obj !== null) {
       const processedObj: any = {};
       for (const [key, value] of Object.entries(obj)) {
         processedObj[key] = await this.processDataObject(value, context);
@@ -676,31 +746,31 @@ export class ArabicTextProcessor extends EventEmitter {
    */
   private initializeDialectPatterns(): void {
     // Baghdadi dialect patterns
-    this.dialectPatterns.set('baghdadi', [
+    this.dialectPatterns.set("baghdadi", [
       /\b(شلونك|شلونكم|شكو ماكو|وين|عدكم|گال|گالت|هسه|آني|انته|انتي)\b/g,
       /\b(يمه|بابا|خوش|زين|ماكو|موجود|راح|نروح|نيجي)\b/g,
-      /\b(شوف|شوفي|اكل|طعام|بيت|دار|شارع|محله)\b/g
+      /\b(شوف|شوفي|اكل|طعام|بيت|دار|شارع|محله)\b/g,
     ]);
 
     // Basri dialect patterns
-    this.dialectPatterns.set('basri', [
+    this.dialectPatterns.set("basri", [
       /\b(شلونك|وينك|عندك|معاك|انزين|احسن|راح|نروح)\b/g,
       /\b(بصرة|بصراوي|جنوب|نهر|ماي|سمچ|تمر)\b/g,
-      /\b(خوش|زين|حلو|طيب|ماشي|تمام|اكيد)\b/g
+      /\b(خوش|زين|حلو|طيب|ماشي|تمام|اكيد)\b/g,
     ]);
 
     // Moslawi dialect patterns
-    this.dialectPatterns.set('moslawi', [
+    this.dialectPatterns.set("moslawi", [
       /\b(شلونك|چيف|وين|عندك|آني|انت|هسه|باچر)\b/g,
       /\b(موصل|شمال|نينوى|دجلة|قلعة|باشا|محلة)\b/g,
-      /\b(كبة|مسگوف|تمن|خبز|ماي|چاي)\b/g
+      /\b(كبة|مسگوف|تمن|خبز|ماي|چاي)\b/g,
     ]);
 
     // Standard Arabic patterns
-    this.dialectPatterns.set('standard', [
+    this.dialectPatterns.set("standard", [
       /\b(كيف حالك|أين|عندك|لديك|أنا|أنت|أنتِ|الآن|غداً)\b/g,
       /\b(جيد|ممتاز|نعم|لا|شكراً|من فضلك|عفواً)\b/g,
-      /\b(بيت|منزل|شارع|مدينة|دولة|حكومة|وزارة)\b/g
+      /\b(بيت|منزل|شارع|مدينة|دولة|حكومة|وزارة)\b/g,
     ]);
   }
 
@@ -709,44 +779,44 @@ export class ArabicTextProcessor extends EventEmitter {
    */
   private initializeProfessionalTerms(): void {
     // Medical terms
-    this.professionalTerms.set('medical', [
+    this.professionalTerms.set("medical", [
       {
-        domain: 'medical',
-        originalTerm: 'طبيب',
-        standardTerm: 'طبيب',
+        domain: "medical",
+        originalTerm: "طبيب",
+        standardTerm: "طبيب",
         dialectVariations: [
-          { dialect: 'baghdadi', variation: 'دكتور', usage: 'formal' },
-          { dialect: 'basri', variation: 'حكيم', usage: 'informal' }
+          { dialect: "baghdadi", variation: "دكتور", usage: "formal" },
+          { dialect: "basri", variation: "حكيم", usage: "informal" },
         ],
-        contextualUsage: ['hospital', 'clinic', 'medical'],
-        relatedTerms: ['طبيبة', 'أطباء', 'طب']
+        contextualUsage: ["hospital", "clinic", "medical"],
+        relatedTerms: ["طبيبة", "أطباء", "طب"],
       },
       {
-        domain: 'medical',
-        originalTerm: 'مستشفى',
-        standardTerm: 'مستشفى',
+        domain: "medical",
+        originalTerm: "مستشفى",
+        standardTerm: "مستشفى",
         dialectVariations: [
-          { dialect: 'baghdadi', variation: 'بيمارستان', usage: 'formal' },
-          { dialect: 'moslawi', variation: 'مشفى', usage: 'informal' }
+          { dialect: "baghdadi", variation: "بيمارستان", usage: "formal" },
+          { dialect: "moslawi", variation: "مشفى", usage: "informal" },
         ],
-        contextualUsage: ['healthcare', 'treatment', 'emergency'],
-        relatedTerms: ['مستشفيات', 'عيادة', 'مركز صحي']
-      }
+        contextualUsage: ["healthcare", "treatment", "emergency"],
+        relatedTerms: ["مستشفيات", "عيادة", "مركز صحي"],
+      },
     ]);
 
     // Legal terms
-    this.professionalTerms.set('legal', [
+    this.professionalTerms.set("legal", [
       {
-        domain: 'legal',
-        originalTerm: 'محامي',
-        standardTerm: 'محامي',
+        domain: "legal",
+        originalTerm: "محامي",
+        standardTerm: "محامي",
         dialectVariations: [
-          { dialect: 'baghdadi', variation: 'وكيل', usage: 'formal' },
-          { dialect: 'basri', variation: 'مستشار', usage: 'formal' }
+          { dialect: "baghdadi", variation: "وكيل", usage: "formal" },
+          { dialect: "basri", variation: "مستشار", usage: "formal" },
         ],
-        contextualUsage: ['court', 'legal', 'justice'],
-        relatedTerms: ['محاماة', 'قانون', 'محكمة']
-      }
+        contextualUsage: ["court", "legal", "justice"],
+        relatedTerms: ["محاماة", "قانون", "محكمة"],
+      },
     ]);
 
     // Add more professional domains...
@@ -756,12 +826,12 @@ export class ArabicTextProcessor extends EventEmitter {
    * Initialize cultural keywords
    */
   private initializeCulturalKeywords(): void {
-    this.culturalKeywords.add('سياسة');
-    this.culturalKeywords.add('حزب');
-    this.culturalKeywords.add('طائفي');
-    this.culturalKeywords.add('مذهبي');
-    this.culturalKeywords.add('خمر');
-    this.culturalKeywords.add('كحول');
+    this.culturalKeywords.add("سياسة");
+    this.culturalKeywords.add("حزب");
+    this.culturalKeywords.add("طائفي");
+    this.culturalKeywords.add("مذهبي");
+    this.culturalKeywords.add("خمر");
+    this.culturalKeywords.add("كحول");
     // Add more cultural keywords...
   }
 
@@ -772,12 +842,12 @@ export class ArabicTextProcessor extends EventEmitter {
 
   private getDialectWeight(dialect: string): number {
     const weights: { [key: string]: number } = {
-      'baghdadi': 1.0,
-      'basri': 1.0,
-      'moslawi': 1.0,
-      'anbar': 0.8,
-      'kurdish': 0.6,
-      'standard': 0.9
+      baghdadi: 1.0,
+      basri: 1.0,
+      moslawi: 1.0,
+      anbar: 0.8,
+      kurdish: 0.6,
+      standard: 0.9,
     };
     return weights[dialect] || 0.5;
   }
@@ -796,24 +866,34 @@ export class ArabicTextProcessor extends EventEmitter {
 
     result.metadata.punctuationHandled = /[.!?،؟]/.test(result.processedText);
     result.metadata.numbersConverted = /[٠-٩]/.test(result.processedText);
-    result.metadata.diacriticsPreserved = /[\u064B-\u065F]/.test(result.processedText);
+    result.metadata.diacriticsPreserved = /[\u064B-\u065F]/.test(
+      result.processedText,
+    );
   }
 
   private generateProcessingSuggestions(result: IArabicProcessingResult): void {
     if (result.dialectConfidence < 70) {
-      result.suggestions.push('Consider providing dialect context for better processing');
+      result.suggestions.push(
+        "Consider providing dialect context for better processing",
+      );
     }
 
     if (result.hasMixedContent) {
-      result.suggestions.push('Mixed content detected - consider separating languages for optimal processing');
+      result.suggestions.push(
+        "Mixed content detected - consider separating languages for optimal processing",
+      );
     }
 
     if (result.professionalTerms.length > 0) {
-      result.suggestions.push('Professional terminology detected - ensure consistent usage');
+      result.suggestions.push(
+        "Professional terminology detected - ensure consistent usage",
+      );
     }
 
     if (result.culturallySensitive) {
-      result.suggestions.push('Cultural validation recommended before publishing');
+      result.suggestions.push(
+        "Cultural validation recommended before publishing",
+      );
     }
   }
 
@@ -821,18 +901,26 @@ export class ArabicTextProcessor extends EventEmitter {
   private normalizeArabicText(text: string): string {
     // Normalize Arabic text (remove extra spaces, standardize characters)
     return text
-      .replace(/\s+/g, ' ')
-      .replace(/[\u0640]/g, '') // Remove tatweel
+      .replace(/\s+/g, " ")
+      .replace(/[\u0640]/g, "") // Remove tatweel
       .trim();
   }
 
   private processArabicNumbers(text: string): string {
     // Convert English numbers to Arabic numbers
     const numberMap: { [key: string]: string } = {
-      '0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤',
-      '5': '٥', '6': '٦', '7': '٧', '8': '٨', '9': '٩'
+      "0": "٠",
+      "1": "١",
+      "2": "٢",
+      "3": "٣",
+      "4": "٤",
+      "5": "٥",
+      "6": "٦",
+      "7": "٧",
+      "8": "٨",
+      "9": "٩",
     };
-    
+
     return text.replace(/[0-9]/g, (match) => numberMap[match] || match);
   }
 
@@ -846,9 +934,9 @@ export class ArabicTextProcessor extends EventEmitter {
   private processPunctuation(text: string): string {
     // Handle punctuation in Arabic text
     return text
-      .replace(/,/g, '،') // Replace comma with Arabic comma
-      .replace(/\?/g, '؟') // Replace question mark with Arabic question mark
-      .replace(/;/g, '؛'); // Replace semicolon with Arabic semicolon
+      .replace(/,/g, "،") // Replace comma with Arabic comma
+      .replace(/\?/g, "؟") // Replace question mark with Arabic question mark
+      .replace(/;/g, "؛"); // Replace semicolon with Arabic semicolon
   }
 
   private processDiacritics(text: string): string {

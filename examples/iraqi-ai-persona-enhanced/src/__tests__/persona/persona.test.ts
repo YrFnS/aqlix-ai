@@ -106,4 +106,4 @@ describe('Persona Management Service - Unit & Integration Tests', () => {
     customReporter.onTestResult(null, { numFailingTests: 0, numTotalTests: 10 }); // Example summary
   });
 });
-```
+```;

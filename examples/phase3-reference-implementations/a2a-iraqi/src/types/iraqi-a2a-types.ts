@@ -1,16 +1,16 @@
 /**
  * Iraqi AI Enhanced A2A Types
- * 
+ *
  * Based on A2A's 1,545-line production TypeScript types with Iraqi cultural enhancements:
  * - AgentCard with Iraqi cultural compliance metadata
  * - Transport protocols with cultural validation
  * - Agent capabilities with Arabic RTL support
  * - Professional domain specifications for Iraqi agents
- * 
+ *
  * Maintains 65% workflow efficiency improvement through A2A proven patterns.
  */
 
-import { IraqiCulturalContext } from '@iraqi-ai/types';
+import { IraqiCulturalContext } from "@iraqi-ai/types";
 
 /**
  * Iraqi Agent Provider with Cultural Context
@@ -23,8 +23,21 @@ export interface IraqiAgentProvider {
   url: string;
   /** Iraqi organizational context */
   iraqiContext?: {
-    organizationType: 'government' | 'university' | 'hospital' | 'business' | 'legal' | 'cultural';
-    region?: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'karbala' | 'other';
+    organizationType:
+      | "government"
+      | "university"
+      | "hospital"
+      | "business"
+      | "legal"
+      | "cultural";
+    region?:
+      | "baghdad"
+      | "basra"
+      | "mosul"
+      | "erbil"
+      | "najaf"
+      | "karbala"
+      | "other";
     culturalCompliance: boolean;
     arabicSupport: boolean;
   };
@@ -48,7 +61,7 @@ export interface IraqiAgentCapabilities {
     politicalNeutrality: boolean;
   };
 
-  // Arabic language capabilities  
+  // Arabic language capabilities
   arabicSupport?: {
     rtlProcessing: boolean;
     iraqiDialectRecognition: boolean;
@@ -86,7 +99,7 @@ export interface IraqiAgentExtension {
     culturallyCompliant: boolean;
     arabicSupported: boolean;
     professionalDomain?: string;
-    complianceLevel: 'basic' | 'standard' | 'professional' | 'governmental';
+    complianceLevel: "basic" | "standard" | "professional" | "governmental";
   };
 }
 
@@ -114,10 +127,10 @@ export interface IraqiAgentCard {
   iraqiMetadata: {
     culturalCompliance: {
       islamicCompliance: number; // 0-100, >90 required
-      culturalAppropriateness: number; // 0-100, >95 required  
+      culturalAppropriateness: number; // 0-100, >95 required
       politicalNeutrality: number; // Must be 100 (neutral)
     };
-    
+
     arabicCapabilities: {
       rtlAccuracy: number; // 0-100, >99 required
       dialectRecognition: number; // 0-100, >85 required for Iraqi
@@ -125,10 +138,16 @@ export interface IraqiAgentCard {
     };
 
     professionalContext: {
-      primaryDomain: 'cultural' | 'legal' | 'medical' | 'educational' | 'business' | 'technical';
+      primaryDomain:
+        | "cultural"
+        | "legal"
+        | "medical"
+        | "educational"
+        | "business"
+        | "technical";
       secondaryDomains?: string[];
       iraqiExpertise: boolean;
-      culturalSensitivity: 'high' | 'medium' | 'standard';
+      culturalSensitivity: "high" | "medium" | "standard";
     };
 
     operationalMetrics: {
@@ -146,11 +165,11 @@ export interface IraqiAgentCard {
  */
 export enum IraqiTransportProtocol {
   JSONRPC = "JSONRPC",
-  GRPC = "GRPC", 
+  GRPC = "GRPC",
   HTTP_JSON = "HTTP+JSON",
   // Iraqi-specific transports
   IRAQI_SECURE = "IRAQI_SECURE", // Enhanced security for government agents
-  CULTURAL_VALIDATED = "CULTURAL_VALIDATED" // Automatic cultural validation transport
+  CULTURAL_VALIDATED = "CULTURAL_VALIDATED", // Automatic cultural validation transport
 }
 
 /**
@@ -167,7 +186,7 @@ export interface IraqiAgentInterface {
     culturalValidationEnabled?: boolean;
     arabicProcessingEnabled?: boolean;
     professionalDomain?: string;
-    securityLevel?: 'standard' | 'enhanced' | 'governmental';
+    securityLevel?: "standard" | "enhanced" | "governmental";
   };
 }
 
@@ -176,16 +195,16 @@ export interface IraqiAgentInterface {
  * Based on A2A SecurityScheme with Iraqi requirements
  */
 export interface IraqiSecurityScheme {
-  type: 'http' | 'apiKey' | 'oauth2' | 'openIdConnect' | 'iraqi-biometric';
+  type: "http" | "apiKey" | "oauth2" | "openIdConnect" | "iraqi-biometric";
   scheme?: string;
   bearerFormat?: string;
-  
+
   // Iraqi security enhancements
   iraqiSecurity?: {
     culturalComplianceRequired: boolean;
     biometricAuthSupported?: boolean;
     governmentalClearance?: boolean;
-    encryptionLevel: 'standard' | 'enhanced' | 'governmental';
+    encryptionLevel: "standard" | "enhanced" | "governmental";
   };
 }
 
@@ -208,7 +227,7 @@ export interface IraqiAgentSkill {
     culturalRelevance: number; // 0-100
     arabicLanguageRequired: boolean;
     professionalDomain?: string;
-    complianceLevel: 'basic' | 'professional' | 'expert' | 'governmental';
+    complianceLevel: "basic" | "professional" | "expert" | "governmental";
     iraqiSpecificKnowledge: boolean;
   };
 }
@@ -223,7 +242,7 @@ export interface IraqiParameter {
   /** Parameter description */
   description?: string;
   /** Parameter type */
-  type: 'string' | 'number' | 'boolean' | 'object' | 'array';
+  type: "string" | "number" | "boolean" | "object" | "array";
   /** Whether parameter is required */
   required?: boolean;
 
@@ -250,15 +269,15 @@ export interface IraqiAgentCoordinationRequest {
   /** Cultural context for the request */
   culturalContext: IraqiCulturalContext;
   /** Coordination strategy */
-  strategy: 'sequential' | 'parallel' | 'intelligent';
+  strategy: "sequential" | "parallel" | "intelligent";
   /** Maximum coordination time allowed */
   maxCoordinationTime?: number; // Default: 5000ms
   /** Required cultural compliance level */
-  complianceLevel: 'standard' | 'professional' | 'governmental';
+  complianceLevel: "standard" | "professional" | "governmental";
 }
 
 /**
- * Iraqi Agent Coordination Response  
+ * Iraqi Agent Coordination Response
  * Multi-agent coordination results with cultural validation
  */
 export interface IraqiAgentCoordinationResponse {
@@ -285,7 +304,9 @@ export interface IraqiAgentRegistry {
   /** Register a new Iraqi agent */
   registerAgent(card: IraqiAgentCard): Promise<void>;
   /** Discover agents by capabilities */
-  discoverAgents(criteria: IraqiAgentDiscoveryCriteria): Promise<IraqiAgentCard[]>;
+  discoverAgents(
+    criteria: IraqiAgentDiscoveryCriteria,
+  ): Promise<IraqiAgentCard[]>;
   /** Get specific agent information */
   getAgent(name: string): Promise<IraqiAgentCard | null>;
   /** Validate agent cultural compliance */

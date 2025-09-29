@@ -129,7 +129,7 @@
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [x] **Intermediate** - Production-ready patterns with common features  
+- [x] **Intermediate** - Production-ready patterns with common features
 - [ ] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 
@@ -142,57 +142,57 @@
 ### Image Editor Component
 
 ```tsx
-'use client'
+"use client";
 
-import React, { useRef, useEffect, useState, useCallback } from 'react'
-import { Fabric } from 'fabric'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Slider } from '@/components/ui/slider'
-import { Task } from '@/lib/task-delegation'
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Fabric } from "fabric";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Task } from "@/lib/task-delegation";
 
 interface ImageEditorProps {
-  initialImage?: string
-  onSave?: (editedImage: string, metadata: EditedImageMetadata) => void
-  culturalValidation?: boolean
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business'
-  enableArabicText?: boolean
-  className?: string
+  initialImage?: string;
+  onSave?: (editedImage: string, metadata: EditedImageMetadata) => void;
+  culturalValidation?: boolean;
+  professionalDomain?: "legal" | "medical" | "educational" | "business";
+  enableArabicText?: boolean;
+  className?: string;
 }
 
 interface EditedImageMetadata {
-  originalDimensions: { width: number; height: number }
-  editedDimensions: { width: number; height: number }
-  filters: FilterSettings[]
-  arabicTextLayers: ArabicTextLayer[]
+  originalDimensions: { width: number; height: number };
+  editedDimensions: { width: number; height: number };
+  filters: FilterSettings[];
+  arabicTextLayers: ArabicTextLayer[];
   culturalCompliance: {
-    status: 'compliant' | 'non-compliant' | 'pending'
-    score: number
-    issues: string[]
-  }
+    status: "compliant" | "non-compliant" | "pending";
+    score: number;
+    issues: string[];
+  };
   professionalValidation?: {
-    domain: string
-    approved: boolean
-    requirements: string[]
-  }
+    domain: string;
+    approved: boolean;
+    requirements: string[];
+  };
 }
 
 interface FilterSettings {
-  type: 'brightness' | 'contrast' | 'saturation' | 'blur' | 'sepia'
-  value: number
-  timestamp: number
+  type: "brightness" | "contrast" | "saturation" | "blur" | "sepia";
+  value: number;
+  timestamp: number;
 }
 
 interface ArabicTextLayer {
-  id: string
-  text: string
-  x: number
-  y: number
-  fontSize: number
-  fontFamily: string
-  color: string
-  direction: 'rtl' | 'ltr'
-  culturallyValidated: boolean
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+  fontSize: number;
+  fontFamily: string;
+  color: string;
+  direction: "rtl" | "ltr";
+  culturallyValidated: boolean;
 }
 
 export default function ImageEditor({
@@ -201,23 +201,24 @@ export default function ImageEditor({
   culturalValidation = true,
   professionalDomain,
   enableArabicText = true,
-  className
+  className,
 }: ImageEditorProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const fabricCanvasRef = useRef<Fabric.Canvas | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [selectedTool, setSelectedTool] = useState<string>('select')
-  const [arabicText, setArabicText] = useState('')
-  const [textLayers, setTextLayers] = useState<ArabicTextLayer[]>([])
-  
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fabricCanvasRef = useRef<Fabric.Canvas | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<string>("select");
+  const [arabicText, setArabicText] = useState("");
+  const [textLayers, setTextLayers] = useState<ArabicTextLayer[]>([]);
+
   // Filter states
-  const [brightness, setBrightness] = useState(100)
-  const [contrast, setContrast] = useState(100)
-  const [saturation, setSaturation] = useState(100)
-  
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [saturation, setSaturation] = useState(100);
+
   // Cultural validation state
-  const [culturalValidationStatus, setCulturalValidationStatus] = useState<string>('')
-  const [validationResults, setValidationResults] = useState<any>(null)
+  const [culturalValidationStatus, setCulturalValidationStatus] =
+    useState<string>("");
+  const [validationResults, setValidationResults] = useState<any>(null);
 
   // Initialize Fabric.js canvas
   useEffect(() => {
@@ -225,80 +226,88 @@ export default function ImageEditor({
       const canvas = new Fabric.Canvas(canvasRef.current, {
         width: 800,
         height: 600,
-        backgroundColor: 'white'
-      })
-      
-      fabricCanvasRef.current = canvas
+        backgroundColor: "white",
+      });
+
+      fabricCanvasRef.current = canvas;
 
       // Load initial image if provided
       if (initialImage) {
         Fabric.Image.fromURL(initialImage, (img) => {
-          img.scaleToWidth(canvas.width!)
-          canvas.add(img)
-          canvas.renderAll()
-        })
+          img.scaleToWidth(canvas.width!);
+          canvas.add(img);
+          canvas.renderAll();
+        });
       }
 
       return () => {
-        canvas.dispose()
-      }
+        canvas.dispose();
+      };
     }
-  }, [initialImage])
+  }, [initialImage]);
 
   // Apply filters to canvas
   const applyFilters = useCallback(() => {
-    if (!fabricCanvasRef.current) return
+    if (!fabricCanvasRef.current) return;
 
-    const canvas = fabricCanvasRef.current
-    const objects = canvas.getObjects('image')
-    
+    const canvas = fabricCanvasRef.current;
+    const objects = canvas.getObjects("image");
+
     objects.forEach((obj: any) => {
-      const filters = []
-      
+      const filters = [];
+
       if (brightness !== 100) {
-        filters.push(new Fabric.Image.filters.Brightness({
-          brightness: (brightness - 100) / 100
-        }))
+        filters.push(
+          new Fabric.Image.filters.Brightness({
+            brightness: (brightness - 100) / 100,
+          }),
+        );
       }
-      
+
       if (contrast !== 100) {
-        filters.push(new Fabric.Image.filters.Contrast({
-          contrast: (contrast - 100) / 100
-        }))
+        filters.push(
+          new Fabric.Image.filters.Contrast({
+            contrast: (contrast - 100) / 100,
+          }),
+        );
       }
-      
+
       if (saturation !== 100) {
-        filters.push(new Fabric.Image.filters.Saturation({
-          saturation: (saturation - 100) / 100
-        }))
+        filters.push(
+          new Fabric.Image.filters.Saturation({
+            saturation: (saturation - 100) / 100,
+          }),
+        );
       }
-      
-      obj.filters = filters
-      obj.applyFilters()
-    })
-    
-    canvas.renderAll()
-  }, [brightness, contrast, saturation])
+
+      obj.filters = filters;
+      obj.applyFilters();
+    });
+
+    canvas.renderAll();
+  }, [brightness, contrast, saturation]);
 
   // Add Arabic text overlay
   const addArabicText = useCallback(async () => {
-    if (!arabicText.trim() || !fabricCanvasRef.current) return
-    
-    setIsLoading(true)
-    
+    if (!arabicText.trim() || !fabricCanvasRef.current) return;
+
+    setIsLoading(true);
+
     try {
       // Process Arabic text with RTL processor
       if (culturalValidation) {
-        setCulturalValidationStatus('معالجة النص العربي... / Processing Arabic text...')
-        
+        setCulturalValidationStatus(
+          "معالجة النص العربي... / Processing Arabic text...",
+        );
+
         const task = new Task({
-          subagent_type: 'arabic-rtl-processor',
-          description: 'Process Arabic text for image overlay',
+          subagent_type: "arabic-rtl-processor",
+          description: "Process Arabic text for image overlay",
           prompt: `Process this Arabic text for image overlay with cultural validation:
           
           Text: "${arabicText}"
           Context: Image editing overlay
-          Professional Domain: ${professionalDomain || 'general'}
+          Professional Domain: ${professionalDomain || "general"}
           
           Requirements:
           - Validate RTL text direction
@@ -306,25 +315,25 @@ export default function ImageEditor({
           - Ensure proper Arabic typography
           - Verify Islamic compliance
           
-          Return processed text with validation results.`
-        })
-        
-        const result = await task.execute()
-        
+          Return processed text with validation results.`,
+        });
+
+        const result = await task.execute();
+
         if (result.culturallyAppropriate) {
           const textObj = new Fabric.Text(arabicText, {
             left: 50,
             top: 50,
             fontSize: 24,
-            fontFamily: 'Noto Sans Arabic, Arial',
-            fill: '#333333',
-            direction: 'rtl',
-            textAlign: 'right'
-          })
-          
-          fabricCanvasRef.current.add(textObj)
-          fabricCanvasRef.current.renderAll()
-          
+            fontFamily: "Noto Sans Arabic, Arial",
+            fill: "#333333",
+            direction: "rtl",
+            textAlign: "right",
+          });
+
+          fabricCanvasRef.current.add(textObj);
+          fabricCanvasRef.current.renderAll();
+
           // Store text layer metadata
           const newLayer: ArabicTextLayer = {
             id: `text_${Date.now()}`,
@@ -332,17 +341,21 @@ export default function ImageEditor({
             x: 50,
             y: 50,
             fontSize: 24,
-            fontFamily: 'Noto Sans Arabic, Arial',
-            color: '#333333',
-            direction: 'rtl',
-            culturallyValidated: true
-          }
-          
-          setTextLayers(prev => [...prev, newLayer])
-          setArabicText('')
-          setCulturalValidationStatus('تم التحقق بنجاح / Validation successful')
+            fontFamily: "Noto Sans Arabic, Arial",
+            color: "#333333",
+            direction: "rtl",
+            culturallyValidated: true,
+          };
+
+          setTextLayers((prev) => [...prev, newLayer]);
+          setArabicText("");
+          setCulturalValidationStatus(
+            "تم التحقق بنجاح / Validation successful",
+          );
         } else {
-          setCulturalValidationStatus(`تحذير ثقافي / Cultural warning: ${result.issues?.join(', ')}`)
+          setCulturalValidationStatus(
+            `تحذير ثقافي / Cultural warning: ${result.issues?.join(", ")}`,
+          );
         }
       } else {
         // Add text without validation
@@ -350,46 +363,48 @@ export default function ImageEditor({
           left: 50,
           top: 50,
           fontSize: 24,
-          fontFamily: 'Noto Sans Arabic, Arial',
-          fill: '#333333',
-          direction: 'rtl',
-          textAlign: 'right'
-        })
-        
-        fabricCanvasRef.current.add(textObj)
-        fabricCanvasRef.current.renderAll()
-        setArabicText('')
+          fontFamily: "Noto Sans Arabic, Arial",
+          fill: "#333333",
+          direction: "rtl",
+          textAlign: "right",
+        });
+
+        fabricCanvasRef.current.add(textObj);
+        fabricCanvasRef.current.renderAll();
+        setArabicText("");
       }
     } catch (error) {
-      console.error('Error adding Arabic text:', error)
-      setCulturalValidationStatus('خطأ في معالجة النص / Text processing error')
+      console.error("Error adding Arabic text:", error);
+      setCulturalValidationStatus("خطأ في معالجة النص / Text processing error");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [arabicText, culturalValidation, professionalDomain])
+  }, [arabicText, culturalValidation, professionalDomain]);
 
   // Save edited image
   const handleSave = useCallback(async () => {
-    if (!fabricCanvasRef.current) return
-    
-    setIsLoading(true)
-    
+    if (!fabricCanvasRef.current) return;
+
+    setIsLoading(true);
+
     try {
-      const canvas = fabricCanvasRef.current
-      const dataURL = canvas.toDataURL('image/png', 1.0)
-      
+      const canvas = fabricCanvasRef.current;
+      const dataURL = canvas.toDataURL("image/png", 1.0);
+
       // Validate edited image if cultural validation enabled
-      let finalValidationResults = null
+      let finalValidationResults = null;
       if (culturalValidation) {
-        setCulturalValidationStatus('التحقق النهائي من الصورة المحررة... / Final image validation...')
-        
+        setCulturalValidationStatus(
+          "التحقق النهائي من الصورة المحررة... / Final image validation...",
+        );
+
         const task = new Task({
-          subagent_type: 'iraqi-cultural-validator',
-          description: 'Validate edited image for cultural compliance',
+          subagent_type: "iraqi-cultural-validator",
+          description: "Validate edited image for cultural compliance",
           prompt: `Validate this edited image for Iraqi cultural compliance:
           
           Image Context: User-edited image with text overlays
-          Professional Domain: ${professionalDomain || 'general'}
+          Professional Domain: ${professionalDomain || "general"}
           Text Layers: ${textLayers.length} Arabic text layers
           
           Validation Requirements:
@@ -398,50 +413,63 @@ export default function ImageEditor({
           - Professional domain standards
           - Content screening for inappropriate material
           
-          Return detailed validation report with compliance score.`
-        })
-        
-        finalValidationResults = await task.execute()
+          Return detailed validation report with compliance score.`,
+        });
+
+        finalValidationResults = await task.execute();
       }
-      
+
       const metadata: EditedImageMetadata = {
         originalDimensions: { width: 800, height: 600 },
         editedDimensions: { width: canvas.width!, height: canvas.height! },
         filters: [
-          { type: 'brightness', value: brightness, timestamp: Date.now() },
-          { type: 'contrast', value: contrast, timestamp: Date.now() },
-          { type: 'saturation', value: saturation, timestamp: Date.now() }
+          { type: "brightness", value: brightness, timestamp: Date.now() },
+          { type: "contrast", value: contrast, timestamp: Date.now() },
+          { type: "saturation", value: saturation, timestamp: Date.now() },
         ],
         arabicTextLayers: textLayers,
         culturalCompliance: {
-          status: finalValidationResults?.compliant ? 'compliant' : 'pending',
+          status: finalValidationResults?.compliant ? "compliant" : "pending",
           score: finalValidationResults?.complianceScore || 0,
-          issues: finalValidationResults?.issues || []
+          issues: finalValidationResults?.issues || [],
         },
-        professionalValidation: professionalDomain ? {
-          domain: professionalDomain,
-          approved: finalValidationResults?.professionallyAppropriate || false,
-          requirements: finalValidationResults?.requirements || []
-        } : undefined
-      }
-      
-      onSave?.(dataURL, metadata)
-      setCulturalValidationStatus('تم حفظ الصورة بنجاح / Image saved successfully')
+        professionalValidation: professionalDomain
+          ? {
+              domain: professionalDomain,
+              approved:
+                finalValidationResults?.professionallyAppropriate || false,
+              requirements: finalValidationResults?.requirements || [],
+            }
+          : undefined,
+      };
+
+      onSave?.(dataURL, metadata);
+      setCulturalValidationStatus(
+        "تم حفظ الصورة بنجاح / Image saved successfully",
+      );
     } catch (error) {
-      console.error('Error saving image:', error)
-      setCulturalValidationStatus('خطأ في حفظ الصورة / Error saving image')
+      console.error("Error saving image:", error);
+      setCulturalValidationStatus("خطأ في حفظ الصورة / Error saving image");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }, [brightness, contrast, saturation, textLayers, culturalValidation, professionalDomain, onSave])
+  }, [
+    brightness,
+    contrast,
+    saturation,
+    textLayers,
+    culturalValidation,
+    professionalDomain,
+    onSave,
+  ]);
 
   // Apply filters when values change
   useEffect(() => {
-    applyFilters()
-  }, [brightness, contrast, saturation, applyFilters])
+    applyFilters();
+  }, [brightness, contrast, saturation, applyFilters]);
 
   return (
-    <div className={`image-editor ${className || ''}`}>
+    <div className={`image-editor ${className || ""}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -469,13 +497,13 @@ export default function ImageEditor({
                 />
               </div>
             </div>
-            
+
             {/* Tools Panel */}
             <div className="space-y-6">
               {/* Filter Controls */}
               <div className="space-y-4">
                 <h3 className="font-medium">المرشحات / Filters</h3>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     السطوع / Brightness: {brightness}%
@@ -489,7 +517,7 @@ export default function ImageEditor({
                     className="w-full"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     التباين / Contrast: {contrast}%
@@ -503,7 +531,7 @@ export default function ImageEditor({
                     className="w-full"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     التشبع / Saturation: {saturation}%
@@ -518,7 +546,7 @@ export default function ImageEditor({
                   />
                 </div>
               </div>
-              
+
               {/* Arabic Text Overlay */}
               {enableArabicText && (
                 <div className="space-y-4">
@@ -536,11 +564,13 @@ export default function ImageEditor({
                     disabled={!arabicText.trim() || isLoading}
                     className="w-full"
                   >
-                    {isLoading ? 'معالجة... / Processing...' : 'إضافة النص / Add Text'}
+                    {isLoading
+                      ? "معالجة... / Processing..."
+                      : "إضافة النص / Add Text"}
                   </Button>
                 </div>
               )}
-              
+
               {/* Action Buttons */}
               <div className="space-y-2">
                 <Button
@@ -548,17 +578,17 @@ export default function ImageEditor({
                   disabled={isLoading}
                   className="w-full bg-blue-600 hover:bg-blue-700"
                 >
-                  {isLoading ? 'حفظ... / Saving...' : 'حفظ الصورة / Save Image'}
+                  {isLoading ? "حفظ... / Saving..." : "حفظ الصورة / Save Image"}
                 </Button>
-                
+
                 <Button
                   onClick={() => {
-                    fabricCanvasRef.current?.clear()
-                    setTextLayers([])
-                    setBrightness(100)
-                    setContrast(100)
-                    setSaturation(100)
-                    setCulturalValidationStatus('')
+                    fabricCanvasRef.current?.clear();
+                    setTextLayers([]);
+                    setBrightness(100);
+                    setContrast(100);
+                    setSaturation(100);
+                    setCulturalValidationStatus("");
                   }}
                   variant="outline"
                   className="w-full"
@@ -566,26 +596,33 @@ export default function ImageEditor({
                   مسح الكل / Clear All
                 </Button>
               </div>
-              
+
               {/* Text Layers List */}
               {textLayers.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium">طبقات النص / Text Layers</h4>
+                  <h4 className="text-sm font-medium">
+                    طبقات النص / Text Layers
+                  </h4>
                   <div className="space-y-1 max-h-32 overflow-y-auto">
                     {textLayers.map((layer) => (
                       <div
                         key={layer.id}
                         className="flex items-center justify-between text-xs p-2 bg-gray-50 rounded"
                       >
-                        <span className="truncate font-arabic text-right flex-1" dir="rtl">
+                        <span
+                          className="truncate font-arabic text-right flex-1"
+                          dir="rtl"
+                        >
                           {layer.text}
                         </span>
-                        <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                          layer.culturallyValidated 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {layer.culturallyValidated ? '✓' : '!'}
+                        <span
+                          className={`ml-2 px-2 py-1 rounded text-xs ${
+                            layer.culturallyValidated
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {layer.culturallyValidated ? "✓" : "!"}
                         </span>
                       </div>
                     ))}
@@ -597,7 +634,7 @@ export default function ImageEditor({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 ```
 
@@ -605,162 +642,208 @@ export default function ImageEditor({
 
 ```typescript
 // lib/image-filters.ts
-import { Task } from '@/lib/task-delegation'
+import { Task } from "@/lib/task-delegation";
 
 export interface FilterConfig {
-  name: string
-  displayName: string
-  displayNameArabic: string
-  parameters: FilterParameter[]
-  culturalValidation?: boolean
-  professionalApproved?: string[]
+  name: string;
+  displayName: string;
+  displayNameArabic: string;
+  parameters: FilterParameter[];
+  culturalValidation?: boolean;
+  professionalApproved?: string[];
 }
 
 export interface FilterParameter {
-  name: string
-  type: 'range' | 'boolean' | 'select'
-  min?: number
-  max?: number
-  step?: number
-  default: number | boolean | string
-  options?: { value: string; label: string; labelArabic: string }[]
+  name: string;
+  type: "range" | "boolean" | "select";
+  min?: number;
+  max?: number;
+  step?: number;
+  default: number | boolean | string;
+  options?: { value: string; label: string; labelArabic: string }[];
 }
 
 export class AdvancedImageFilters {
   private static culturallyApprovedFilters: FilterConfig[] = [
     {
-      name: 'brightness',
-      displayName: 'Brightness',
-      displayNameArabic: 'السطوع',
-      parameters: [
-        { name: 'value', type: 'range', min: 0, max: 200, step: 5, default: 100 }
-      ],
-      culturalValidation: false,
-      professionalApproved: ['legal', 'medical', 'educational', 'business']
-    },
-    {
-      name: 'contrast',
-      displayName: 'Contrast',
-      displayNameArabic: 'التباين',
-      parameters: [
-        { name: 'value', type: 'range', min: 0, max: 200, step: 5, default: 100 }
-      ],
-      culturalValidation: false,
-      professionalApproved: ['legal', 'medical', 'educational', 'business']
-    },
-    {
-      name: 'saturation',
-      displayName: 'Saturation',
-      displayNameArabic: 'التشبع',
-      parameters: [
-        { name: 'value', type: 'range', min: 0, max: 200, step: 5, default: 100 }
-      ],
-      culturalValidation: false,
-      professionalApproved: ['legal', 'medical', 'educational', 'business']
-    },
-    {
-      name: 'sepia',
-      displayName: 'Sepia',
-      displayNameArabic: 'بني داكن',
-      parameters: [
-        { name: 'intensity', type: 'range', min: 0, max: 100, step: 5, default: 0 }
-      ],
-      culturalValidation: true,
-      professionalApproved: ['business', 'educational']
-    },
-    {
-      name: 'blur',
-      displayName: 'Blur',
-      displayNameArabic: 'ضبابية',
-      parameters: [
-        { name: 'radius', type: 'range', min: 0, max: 20, step: 1, default: 0 }
-      ],
-      culturalValidation: false,
-      professionalApproved: ['business']
-    },
-    {
-      name: 'islamic_patterns',
-      displayName: 'Islamic Geometric Patterns',
-      displayNameArabic: 'الأنماط الهندسية الإسلامية',
+      name: "brightness",
+      displayName: "Brightness",
+      displayNameArabic: "السطوع",
       parameters: [
         {
-          name: 'pattern_type',
-          type: 'select',
-          default: 'none',
-          options: [
-            { value: 'none', label: 'None', labelArabic: 'بدون' },
-            { value: 'geometric', label: 'Geometric', labelArabic: 'هندسي' },
-            { value: 'calligraphy', label: 'Calligraphy', labelArabic: 'خط عربي' },
-            { value: 'arabesque', label: 'Arabesque', labelArabic: 'أرابيسك' }
-          ]
+          name: "value",
+          type: "range",
+          min: 0,
+          max: 200,
+          step: 5,
+          default: 100,
         },
-        { name: 'opacity', type: 'range', min: 0, max: 100, step: 5, default: 20 }
+      ],
+      culturalValidation: false,
+      professionalApproved: ["legal", "medical", "educational", "business"],
+    },
+    {
+      name: "contrast",
+      displayName: "Contrast",
+      displayNameArabic: "التباين",
+      parameters: [
+        {
+          name: "value",
+          type: "range",
+          min: 0,
+          max: 200,
+          step: 5,
+          default: 100,
+        },
+      ],
+      culturalValidation: false,
+      professionalApproved: ["legal", "medical", "educational", "business"],
+    },
+    {
+      name: "saturation",
+      displayName: "Saturation",
+      displayNameArabic: "التشبع",
+      parameters: [
+        {
+          name: "value",
+          type: "range",
+          min: 0,
+          max: 200,
+          step: 5,
+          default: 100,
+        },
+      ],
+      culturalValidation: false,
+      professionalApproved: ["legal", "medical", "educational", "business"],
+    },
+    {
+      name: "sepia",
+      displayName: "Sepia",
+      displayNameArabic: "بني داكن",
+      parameters: [
+        {
+          name: "intensity",
+          type: "range",
+          min: 0,
+          max: 100,
+          step: 5,
+          default: 0,
+        },
       ],
       culturalValidation: true,
-      professionalApproved: ['legal', 'medical', 'educational', 'business']
-    }
-  ]
+      professionalApproved: ["business", "educational"],
+    },
+    {
+      name: "blur",
+      displayName: "Blur",
+      displayNameArabic: "ضبابية",
+      parameters: [
+        { name: "radius", type: "range", min: 0, max: 20, step: 1, default: 0 },
+      ],
+      culturalValidation: false,
+      professionalApproved: ["business"],
+    },
+    {
+      name: "islamic_patterns",
+      displayName: "Islamic Geometric Patterns",
+      displayNameArabic: "الأنماط الهندسية الإسلامية",
+      parameters: [
+        {
+          name: "pattern_type",
+          type: "select",
+          default: "none",
+          options: [
+            { value: "none", label: "None", labelArabic: "بدون" },
+            { value: "geometric", label: "Geometric", labelArabic: "هندسي" },
+            {
+              value: "calligraphy",
+              label: "Calligraphy",
+              labelArabic: "خط عربي",
+            },
+            { value: "arabesque", label: "Arabesque", labelArabic: "أرابيسك" },
+          ],
+        },
+        {
+          name: "opacity",
+          type: "range",
+          min: 0,
+          max: 100,
+          step: 5,
+          default: 20,
+        },
+      ],
+      culturalValidation: true,
+      professionalApproved: ["legal", "medical", "educational", "business"],
+    },
+  ];
 
   static async validateFilter(
     filterName: string,
     parameters: Record<string, any>,
-    professionalDomain?: string
+    professionalDomain?: string,
   ): Promise<{
-    approved: boolean
-    culturallyAppropriate: boolean
-    issues: string[]
-    recommendations: string[]
+    approved: boolean;
+    culturallyAppropriate: boolean;
+    issues: string[];
+    recommendations: string[];
   }> {
-    const filter = this.culturallyApprovedFilters.find(f => f.name === filterName)
-    
+    const filter = this.culturallyApprovedFilters.find(
+      (f) => f.name === filterName,
+    );
+
     if (!filter) {
       return {
         approved: false,
         culturallyAppropriate: false,
-        issues: ['Unknown filter type'],
-        recommendations: ['Use approved filters only']
-      }
+        issues: ["Unknown filter type"],
+        recommendations: ["Use approved filters only"],
+      };
     }
 
     // Check professional domain approval
-    const professionallyApproved = !professionalDomain || 
-      filter.professionalApproved?.includes(professionalDomain)
+    const professionallyApproved =
+      !professionalDomain ||
+      filter.professionalApproved?.includes(professionalDomain);
 
     // Cultural validation if required
-    let culturalValidation = { approved: true, issues: [], recommendations: [] }
-    
+    let culturalValidation = {
+      approved: true,
+      issues: [],
+      recommendations: [],
+    };
+
     if (filter.culturalValidation) {
       try {
         const task = new Task({
-          subagent_type: 'iraqi-cultural-validator',
-          description: 'Validate image filter for cultural appropriateness',
+          subagent_type: "iraqi-cultural-validator",
+          description: "Validate image filter for cultural appropriateness",
           prompt: `Validate this image filter for Iraqi cultural compliance:
           
           Filter: ${filterName}
           Parameters: ${JSON.stringify(parameters)}
-          Professional Domain: ${professionalDomain || 'general'}
+          Professional Domain: ${professionalDomain || "general"}
           
           Validation Requirements:
           - Islamic compliance
           - Cultural appropriateness for Iraqi context
           - Professional standards compliance
           
-          Return validation results with recommendations.`
-        })
-        
-        const result = await task.execute()
+          Return validation results with recommendations.`,
+        });
+
+        const result = await task.execute();
         culturalValidation = {
           approved: result.culturallyAppropriate,
           issues: result.issues || [],
-          recommendations: result.recommendations || []
-        }
+          recommendations: result.recommendations || [],
+        };
       } catch (error) {
-        console.error('Cultural validation error:', error)
+        console.error("Cultural validation error:", error);
         culturalValidation = {
           approved: false,
-          issues: ['Cultural validation failed'],
-          recommendations: ['Retry validation or use simpler filters']
-        }
+          issues: ["Cultural validation failed"],
+          recommendations: ["Retry validation or use simpler filters"],
+        };
       }
     }
 
@@ -768,84 +851,90 @@ export class AdvancedImageFilters {
       approved: professionallyApproved && culturalValidation.approved,
       culturallyAppropriate: culturalValidation.approved,
       issues: culturalValidation.issues,
-      recommendations: culturalValidation.recommendations
-    }
+      recommendations: culturalValidation.recommendations,
+    };
   }
 
   static getAvailableFilters(professionalDomain?: string): FilterConfig[] {
-    return this.culturallyApprovedFilters.filter(filter =>
-      !professionalDomain || filter.professionalApproved?.includes(professionalDomain)
-    )
+    return this.culturallyApprovedFilters.filter(
+      (filter) =>
+        !professionalDomain ||
+        filter.professionalApproved?.includes(professionalDomain),
+    );
   }
 
   static async applyIslamicPattern(
     canvas: HTMLCanvasElement,
     patternType: string,
-    opacity: number = 20
+    opacity: number = 20,
   ): Promise<HTMLCanvasElement> {
-    const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Canvas context not available')
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas context not available");
 
     // Create pattern overlay
-    const patternCanvas = document.createElement('canvas')
-    patternCanvas.width = canvas.width
-    patternCanvas.height = canvas.height
-    const patternCtx = patternCanvas.getContext('2d')!
+    const patternCanvas = document.createElement("canvas");
+    patternCanvas.width = canvas.width;
+    patternCanvas.height = canvas.height;
+    const patternCtx = patternCanvas.getContext("2d")!;
 
     switch (patternType) {
-      case 'geometric':
-        this.drawGeometricPattern(patternCtx, canvas.width, canvas.height)
-        break
-      case 'calligraphy':
-        await this.drawCalligraphyPattern(patternCtx, canvas.width, canvas.height)
-        break
-      case 'arabesque':
-        this.drawArabesquePattern(patternCtx, canvas.width, canvas.height)
-        break
+      case "geometric":
+        this.drawGeometricPattern(patternCtx, canvas.width, canvas.height);
+        break;
+      case "calligraphy":
+        await this.drawCalligraphyPattern(
+          patternCtx,
+          canvas.width,
+          canvas.height,
+        );
+        break;
+      case "arabesque":
+        this.drawArabesquePattern(patternCtx, canvas.width, canvas.height);
+        break;
       default:
-        return canvas
+        return canvas;
     }
 
     // Apply pattern with opacity
-    ctx.globalAlpha = opacity / 100
-    ctx.drawImage(patternCanvas, 0, 0)
-    ctx.globalAlpha = 1
+    ctx.globalAlpha = opacity / 100;
+    ctx.drawImage(patternCanvas, 0, 0);
+    ctx.globalAlpha = 1;
 
-    return canvas
+    return canvas;
   }
 
   private static drawGeometricPattern(
     ctx: CanvasRenderingContext2D,
     width: number,
-    height: number
+    height: number,
   ): void {
-    ctx.strokeStyle = '#B8860B' // Gold color
-    ctx.lineWidth = 1
-    
-    const gridSize = 40
-    
+    ctx.strokeStyle = "#B8860B"; // Gold color
+    ctx.lineWidth = 1;
+
+    const gridSize = 40;
+
     // Draw Islamic geometric grid
     for (let x = 0; x < width; x += gridSize) {
       for (let y = 0; y < height; y += gridSize) {
         // Draw octagon
-        ctx.beginPath()
-        const centerX = x + gridSize / 2
-        const centerY = y + gridSize / 2
-        const radius = gridSize / 3
-        
+        ctx.beginPath();
+        const centerX = x + gridSize / 2;
+        const centerY = y + gridSize / 2;
+        const radius = gridSize / 3;
+
         for (let i = 0; i < 8; i++) {
-          const angle = (i * Math.PI * 2) / 8
-          const pointX = centerX + radius * Math.cos(angle)
-          const pointY = centerY + radius * Math.sin(angle)
-          
+          const angle = (i * Math.PI * 2) / 8;
+          const pointX = centerX + radius * Math.cos(angle);
+          const pointY = centerY + radius * Math.sin(angle);
+
           if (i === 0) {
-            ctx.moveTo(pointX, pointY)
+            ctx.moveTo(pointX, pointY);
           } else {
-            ctx.lineTo(pointX, pointY)
+            ctx.lineTo(pointX, pointY);
           }
         }
-        ctx.closePath()
-        ctx.stroke()
+        ctx.closePath();
+        ctx.stroke();
       }
     }
   }
@@ -853,22 +942,27 @@ export class AdvancedImageFilters {
   private static async drawCalligraphyPattern(
     ctx: CanvasRenderingContext2D,
     width: number,
-    height: number
+    height: number,
   ): Promise<void> {
-    ctx.fillStyle = '#8B4513' // Brown color
-    ctx.font = '24px "Noto Naskh Arabic", serif'
-    ctx.textAlign = 'center'
-    
+    ctx.fillStyle = "#8B4513"; // Brown color
+    ctx.font = '24px "Noto Naskh Arabic", serif';
+    ctx.textAlign = "center";
+
     // Arabic calligraphy phrases (respectful and appropriate)
-    const phrases = ['بسم الله', 'الحمد لله', 'سبحان الله', 'لا حول ولا قوة إلا بالله']
-    
-    const gridSize = 120
-    let phraseIndex = 0
-    
+    const phrases = [
+      "بسم الله",
+      "الحمد لله",
+      "سبحان الله",
+      "لا حول ولا قوة إلا بالله",
+    ];
+
+    const gridSize = 120;
+    let phraseIndex = 0;
+
     for (let x = gridSize; x < width; x += gridSize) {
       for (let y = gridSize; y < height; y += gridSize) {
-        ctx.fillText(phrases[phraseIndex % phrases.length], x, y)
-        phraseIndex++
+        ctx.fillText(phrases[phraseIndex % phrases.length], x, y);
+        phraseIndex++;
       }
     }
   }
@@ -876,26 +970,36 @@ export class AdvancedImageFilters {
   private static drawArabesquePattern(
     ctx: CanvasRenderingContext2D,
     width: number,
-    height: number
+    height: number,
   ): void {
-    ctx.strokeStyle = '#CD853F' // Peru color
-    ctx.lineWidth = 2
-    
-    const step = 60
-    
+    ctx.strokeStyle = "#CD853F"; // Peru color
+    ctx.lineWidth = 2;
+
+    const step = 60;
+
     for (let x = 0; x < width; x += step) {
       for (let y = 0; y < height; y += step) {
         // Draw flowing arabesque curves
-        ctx.beginPath()
-        ctx.moveTo(x, y + step / 2)
-        
+        ctx.beginPath();
+        ctx.moveTo(x, y + step / 2);
+
         // Create flowing S-curve pattern
-        ctx.quadraticCurveTo(x + step / 4, y, x + step / 2, y + step / 4)
-        ctx.quadraticCurveTo(x + (3 * step) / 4, y + step / 2, x + step, y + step / 4)
-        ctx.quadraticCurveTo(x + (3 * step) / 4, y + step, x + step / 2, y + (3 * step) / 4)
-        ctx.quadraticCurveTo(x + step / 4, y + step / 2, x, y + (3 * step) / 4)
-        
-        ctx.stroke()
+        ctx.quadraticCurveTo(x + step / 4, y, x + step / 2, y + step / 4);
+        ctx.quadraticCurveTo(
+          x + (3 * step) / 4,
+          y + step / 2,
+          x + step,
+          y + step / 4,
+        );
+        ctx.quadraticCurveTo(
+          x + (3 * step) / 4,
+          y + step,
+          x + step / 2,
+          y + (3 * step) / 4,
+        );
+        ctx.quadraticCurveTo(x + step / 4, y + step / 2, x, y + (3 * step) / 4);
+
+        ctx.stroke();
       }
     }
   }

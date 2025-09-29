@@ -1,14 +1,38 @@
-import React from 'react';
-import { Search, Filter, SortAsc, SortDesc, X, Settings, Wrench, Grid3X3, List } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
+import React from "react";
+import {
+  Search,
+  Filter,
+  SortAsc,
+  SortDesc,
+  X,
+  Settings,
+  Wrench,
+  Grid3X3,
+  List,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu";
 
-type AgentSortOption = 'name' | 'created_at' | 'updated_at' | 'tools_count';
-type SortOrder = 'asc' | 'desc';
-type ViewMode = 'grid' | 'list';
+type AgentSortOption = "name" | "created_at" | "updated_at" | "tools_count";
+type SortOrder = "asc" | "desc";
+type ViewMode = "grid" | "list";
 
 interface FilterOptions {
   hasDefaultAgent: boolean;
@@ -46,7 +70,7 @@ export const SearchAndFilters = ({
   clearFilters,
   viewMode,
   setViewMode,
-  allTools
+  allTools,
 }: SearchAndFiltersProps) => {
   return (
     <div className="flex flex-col w-full gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -64,7 +88,7 @@ export const SearchAndFilters = ({
               variant="ghost"
               size="sm"
               className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
-              onClick={() => setSearchQuery('')}
+              onClick={() => setSearchQuery("")}
             >
               <X className="h-3 w-3" />
             </Button>
@@ -160,4 +184,4 @@ export const SearchAndFilters = ({
       </div>
     </div>
   );
-}
+};

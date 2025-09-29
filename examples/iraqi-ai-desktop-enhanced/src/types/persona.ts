@@ -9,9 +9,9 @@ export interface Persona {
   domain: string; // e.g., 'legal', 'medical' (professional/organization)
   traits?: PersonaTraits[]; // Associated traits
   dialectSupport: boolean; // Iraqi dialect compatibility
-  culturalValidation: 'pass' | 'warning' | 'fail'; // From validation service
+  culturalValidation: "pass" | "warning" | "fail"; // From validation service
   lastUsed?: Date;
-  syncStatus?: 'pending' | 'synced' | 'conflict'; // For offline
+  syncStatus?: "pending" | "synced" | "conflict"; // For offline
   memoryContext?: any; // Applied memory from service
 }
 

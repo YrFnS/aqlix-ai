@@ -4,27 +4,24 @@
  * Enhanced for Iraqi government deployment with Arabic and Islamic compliance testing
  */
 
-import { 
-  IraqiCollaborationEngine, 
+import {
+  IraqiCollaborationEngine,
   IraqiCollaborationConfig,
   CollaborationParticipant,
-  MinistryType 
+  MinistryType,
 } from '../src/CollaborationEngine';
 
-import { 
+import {
   ArabicCollaborativeTextEngine,
-  ArabicTextConfig 
+  ArabicTextConfig,
 } from '../src/ArabicCollaborativeTextEngine';
 
-import { 
-  RealTimeCollaborationServer,
-  ServerConfig 
-} from '../src/RealTimeCollaborationServer';
+import { RealTimeCollaborationServer, ServerConfig } from '../src/RealTimeCollaborationServer';
 
 describe('Iraqi Collaboration Engine', () => {
   let collaborationEngine: IraqiCollaborationEngine;
   let testConfig: IraqiCollaborationConfig;
-  
+
   beforeEach(() => {
     testConfig = {
       ministry: 'health' as MinistryType,
@@ -47,12 +44,12 @@ describe('Iraqi Collaboration Engine', () => {
       rtlOptimized: true,
       wcagCompliance: true,
       governmentAccessibility: true,
-      multiLanguageSupport: true
+      multiLanguageSupport: true,
     };
-    
+
     collaborationEngine = new IraqiCollaborationEngine(testConfig);
   });
-  
+
   afterEach(async () => {
     await collaborationEngine.destroy();
   });
@@ -66,7 +63,7 @@ describe('Iraqi Collaboration Engine', () => {
     test('should fail initialization with invalid configuration', async () => {
       const invalidConfig = { ...testConfig, maxParticipants: -1 };
       const invalidEngine = new IraqiCollaborationEngine(invalidConfig);
-      
+
       // Should handle invalid config gracefully
       expect(invalidEngine).toBeDefined();
       await invalidEngine.destroy();
@@ -92,8 +89,8 @@ describe('Iraqi Collaboration Engine', () => {
           nameArabic: 'د. أحمد تست',
           ministry: 'health',
           department: 'Testing',
-          preferredLanguage: 'bilingual'
-        }
+          preferredLanguage: 'bilingual',
+        },
       ];
 
       const session = await collaborationEngine.createCollaborationSession({
@@ -105,10 +102,10 @@ describe('Iraqi Collaboration Engine', () => {
         culturalContext: {
           islamicContext: true,
           arabicPrimary: true,
-          governmentFormal: true
+          governmentFormal: true,
         },
         workflowRequired: false,
-        securityLevel: 'internal'
+        securityLevel: 'internal',
       });
 
       expect(session).toBeDefined();
@@ -127,7 +124,7 @@ describe('Iraqi Collaboration Engine', () => {
           id: `test-user-${i}`,
           name: `Test User ${i}`,
           nameArabic: `مستخدم تست ${i}`,
-          ministry: 'health'
+          ministry: 'health',
         });
       }
 
@@ -135,7 +132,7 @@ describe('Iraqi Collaboration Engine', () => {
         await collaborationEngine.createCollaborationSession({
           name: 'Overload Test',
           participants: manyParticipants,
-          documentType: 'policy-document'
+          documentType: 'policy-document',
         });
       } catch (error) {
         expect(error.message).toContain('maximum capacity');
@@ -145,20 +142,22 @@ describe('Iraqi Collaboration Engine', () => {
     test('should join existing session successfully', async () => {
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Join Test',
-        participants: [{
-          id: 'initial-user',
-          name: 'Initial User',
-          nameArabic: 'المستخدم الأولي',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'initial-user',
+            name: 'Initial User',
+            nameArabic: 'المستخدم الأولي',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       const joinResult = await collaborationEngine.joinSession(session.id, {
         id: 'joining-user',
         name: 'Joining User',
         nameArabic: 'المستخدم المنضم',
-        ministry: 'health'
+        ministry: 'health',
       });
 
       expect(joinResult).toBe(true);
@@ -167,18 +166,20 @@ describe('Iraqi Collaboration Engine', () => {
     test('should end session properly', async () => {
       const session = await collaborationEngine.createCollaborationSession({
         name: 'End Test',
-        participants: [{
-          id: 'test-user',
-          name: 'Test User',
-          nameArabic: 'مستخدم تست',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'test-user',
+            name: 'Test User',
+            nameArabic: 'مستخدم تست',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       const endResult = await collaborationEngine.endSession(
-        session.id, 
-        'test-user', 
+        session.id,
+        'test-user',
         'Test completed'
       );
 
@@ -193,13 +194,15 @@ describe('Iraqi Collaboration Engine', () => {
       await collaborationEngine.initialize();
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Annotation Test',
-        participants: [{
-          id: 'annotator',
-          name: 'Test Annotator',
-          nameArabic: 'معلق تست',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'annotator',
+            name: 'Test Annotator',
+            nameArabic: 'معلق تست',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
       sessionId = session.id;
     });
@@ -211,7 +214,7 @@ describe('Iraqi Collaboration Engine', () => {
         textArabic: 'هذا تعليق باللغة العربية',
         textEnglish: 'This is an Arabic comment',
         type: 'comment',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       expect(annotation).toBeDefined();
@@ -229,7 +232,7 @@ describe('Iraqi Collaboration Engine', () => {
         textEnglish: 'In the name of Allah, Most Gracious, Most Merciful',
         type: 'islamic',
         priority: 'high',
-        culturalContext: true
+        culturalContext: true,
       });
 
       expect(annotation.islamicCompliant).toBe(true);
@@ -243,7 +246,7 @@ describe('Iraqi Collaboration Engine', () => {
         textArabic: 'نص عربي مختلط English text',
         textEnglish: 'Mixed Arabic نص عربي and English',
         type: 'suggestion',
-        priority: 'medium'
+        priority: 'medium',
       });
 
       expect(annotation).toBeDefined();
@@ -259,62 +262,52 @@ describe('Iraqi Collaboration Engine', () => {
       await collaborationEngine.initialize();
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Document Test',
-        participants: [{
-          id: 'editor',
-          name: 'Test Editor',
-          nameArabic: 'محرر تست',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'editor',
+            name: 'Test Editor',
+            nameArabic: 'محرر تست',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
       sessionId = session.id;
     });
 
     test('should update document content successfully', async () => {
-      const updateResult = await collaborationEngine.updateDocumentContent(
-        sessionId,
-        'editor',
-        {
-          operation: 'insert',
-          position: 0,
-          content: 'Test document content with Arabic نص عربي',
-          culturalValidation: true
-        }
-      );
+      const updateResult = await collaborationEngine.updateDocumentContent(sessionId, 'editor', {
+        operation: 'insert',
+        position: 0,
+        content: 'Test document content with Arabic نص عربي',
+        culturalValidation: true,
+      });
 
       expect(updateResult).toBe(true);
     });
 
     test('should handle RTL text content', async () => {
       const arabicContent = 'هذا نص باللغة العربية من اليمين إلى اليسار';
-      
-      const updateResult = await collaborationEngine.updateDocumentContent(
-        sessionId,
-        'editor',
-        {
-          operation: 'insert',
-          position: 0,
-          content: arabicContent,
-          culturalValidation: true
-        }
-      );
+
+      const updateResult = await collaborationEngine.updateDocumentContent(sessionId, 'editor', {
+        operation: 'insert',
+        position: 0,
+        content: arabicContent,
+        culturalValidation: true,
+      });
 
       expect(updateResult).toBe(true);
     });
 
     test('should validate cultural content', async () => {
       const islamicContent = 'بسم الله الرحمن الرحيم - الحمد لله رب العالمين';
-      
-      const updateResult = await collaborationEngine.updateDocumentContent(
-        sessionId,
-        'editor',
-        {
-          operation: 'insert',
-          position: 0,
-          content: islamicContent,
-          culturalValidation: true
-        }
-      );
+
+      const updateResult = await collaborationEngine.updateDocumentContent(sessionId, 'editor', {
+        operation: 'insert',
+        position: 0,
+        content: islamicContent,
+        culturalValidation: true,
+      });
 
       expect(updateResult).toBe(true);
     });
@@ -328,17 +321,19 @@ describe('Iraqi Collaboration Engine', () => {
     test('should handle prayer time pause', async () => {
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Prayer Test',
-        participants: [{
-          id: 'believer',
-          name: 'Faithful User',
-          nameArabic: 'مستخدم مؤمن',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'believer',
+            name: 'Faithful User',
+            nameArabic: 'مستخدم مؤمن',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       await collaborationEngine.handlePrayerTimePause('dhuhr');
-      
+
       // Prayer break should be initiated
       const exportData = collaborationEngine.exportSessionData(session.id);
       expect(exportData).toBeDefined();
@@ -347,7 +342,7 @@ describe('Iraqi Collaboration Engine', () => {
     test('should resume from prayer break', async () => {
       await collaborationEngine.handlePrayerTimePause('asr');
       await collaborationEngine.resumeFromPrayerBreak('asr');
-      
+
       // Should complete without errors
       expect(true).toBe(true);
     });
@@ -360,14 +355,16 @@ describe('Iraqi Collaboration Engine', () => {
       await collaborationEngine.initialize();
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Workflow Test',
-        participants: [{
-          id: 'approver',
-          name: 'Test Approver',
-          nameArabic: 'موافق تست',
-          ministry: 'health'
-        }],
+        participants: [
+          {
+            id: 'approver',
+            name: 'Test Approver',
+            nameArabic: 'موافق تست',
+            ministry: 'health',
+          },
+        ],
         documentType: 'policy-document',
-        workflowRequired: true
+        workflowRequired: true,
       });
       sessionId = session.id;
     });
@@ -379,7 +376,7 @@ describe('Iraqi Collaboration Engine', () => {
         {
           urgentReview: false,
           culturalReview: true,
-          islamicReview: true
+          islamicReview: true,
         }
       );
 
@@ -394,7 +391,7 @@ describe('Iraqi Collaboration Engine', () => {
         'approver',
         {
           culturalReview: true,
-          islamicReview: true
+          islamicReview: true,
         }
       );
 
@@ -406,20 +403,22 @@ describe('Iraqi Collaboration Engine', () => {
   describe('Performance Metrics', () => {
     test('should track performance metrics', async () => {
       await collaborationEngine.initialize();
-      
+
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Metrics Test',
-        participants: [{
-          id: 'test-user',
-          name: 'Metrics User',
-          nameArabic: 'مستخدم مقاييس',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'test-user',
+            name: 'Metrics User',
+            nameArabic: 'مستخدم مقاييس',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       const metrics = collaborationEngine.getPerformanceMetrics();
-      
+
       expect(metrics).toBeDefined();
       expect(metrics.activeSessions).toBeGreaterThanOrEqual(1);
       expect(metrics.totalParticipants).toBeGreaterThanOrEqual(1);
@@ -430,14 +429,14 @@ describe('Iraqi Collaboration Engine', () => {
     test('should maintain target sync latency', async () => {
       await collaborationEngine.initialize();
       const metrics = collaborationEngine.getPerformanceMetrics();
-      
+
       expect(metrics.syncLatency).toBeLessThanOrEqual(testConfig.syncLatencyTarget);
     });
 
     test('should achieve cultural compliance targets', async () => {
       await collaborationEngine.initialize();
       const metrics = collaborationEngine.getPerformanceMetrics();
-      
+
       expect(metrics.culturalComplianceRate).toBeGreaterThanOrEqual(0.95);
     });
   });
@@ -450,17 +449,19 @@ describe('Iraqi Collaboration Engine', () => {
     test('should maintain audit trail', async () => {
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Audit Test',
-        participants: [{
-          id: 'audited-user',
-          name: 'Audited User',
-          nameArabic: 'مستخدم مراجع',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'audited-user',
+            name: 'Audited User',
+            nameArabic: 'مستخدم مراجع',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       const exportData = collaborationEngine.exportSessionData(session.id);
-      
+
       expect(exportData.auditLog).toBeDefined();
       expect(exportData.auditLog.length).toBeGreaterThan(0);
     });
@@ -468,17 +469,19 @@ describe('Iraqi Collaboration Engine', () => {
     test('should export session data correctly', async () => {
       const session = await collaborationEngine.createCollaborationSession({
         name: 'Export Test',
-        participants: [{
-          id: 'export-user',
-          name: 'Export User',
-          nameArabic: 'مستخدم تصدير',
-          ministry: 'health'
-        }],
-        documentType: 'policy-document'
+        participants: [
+          {
+            id: 'export-user',
+            name: 'Export User',
+            nameArabic: 'مستخدم تصدير',
+            ministry: 'health',
+          },
+        ],
+        documentType: 'policy-document',
       });
 
       const exportData = collaborationEngine.exportSessionData(session.id);
-      
+
       expect(exportData.session).toBeDefined();
       expect(exportData.auditLog).toBeDefined();
       expect(exportData.performanceMetrics).toBeDefined();
@@ -510,7 +513,7 @@ describe('Arabic Collaborative Text Engine', () => {
       optimizedRendering: true,
       contentFiltering: true,
       auditLogging: true,
-      encryptionEnabled: true
+      encryptionEnabled: true,
     };
 
     textEngine = new ArabicCollaborativeTextEngine(textConfig);
@@ -589,16 +592,16 @@ describe('Arabic Collaborative Text Engine', () => {
       const bidiRuns = await textEngine.processBidirectionalText(mixedText);
 
       expect(bidiRuns.length).toBeGreaterThan(1);
-      expect(bidiRuns.some(run => run.direction === 'rtl')).toBe(true);
-      expect(bidiRuns.some(run => run.direction === 'ltr')).toBe(true);
+      expect(bidiRuns.some((run) => run.direction === 'rtl')).toBe(true);
+      expect(bidiRuns.some((run) => run.direction === 'ltr')).toBe(true);
     });
 
     test('should identify script types correctly', async () => {
       const mixedText = 'عربي English مختلط';
       const bidiRuns = await textEngine.processBidirectionalText(mixedText);
 
-      expect(bidiRuns.some(run => run.script === 'arabic')).toBe(true);
-      expect(bidiRuns.some(run => run.script === 'latin')).toBe(true);
+      expect(bidiRuns.some((run) => run.script === 'arabic')).toBe(true);
+      expect(bidiRuns.some((run) => run.script === 'latin')).toBe(true);
     });
   });
 
@@ -606,11 +609,11 @@ describe('Arabic Collaborative Text Engine', () => {
     test('should maintain processing latency targets', async () => {
       const testText = 'نص تجريبي للأداء';
       const startTime = Date.now();
-      
+
       await textEngine.analyzeDialect(testText);
       await textEngine.validateCulturalContent(testText);
       await textEngine.processBidirectionalText(testText);
-      
+
       const endTime = Date.now();
       const totalLatency = endTime - startTime;
 
@@ -621,7 +624,7 @@ describe('Arabic Collaborative Text Engine', () => {
     test('should track performance metrics', async () => {
       await textEngine.analyzeDialect('نص تجريبي');
       await textEngine.validateCulturalContent('نص آخر');
-      
+
       const metrics = textEngine.getPerformanceMetrics();
 
       expect(metrics.totalOperations).toBeGreaterThan(0);
@@ -649,11 +652,11 @@ describe('Arabic Collaborative Text Engine', () => {
         formalAddress: true,
         respectTitles: true,
         elderRespect: true,
-        genderConsiderations: true
+        genderConsiderations: true,
       };
 
       await textEngine.updateUserCursor('test-user', position, preferences);
-      
+
       const textState = textEngine.getTextState();
       expect(textState.userCursors.has('test-user')).toBe(true);
     });
@@ -693,7 +696,7 @@ describe('Real-Time Collaboration Server', () => {
       latencyTarget: 30,
       compressionEnabled: false,
       connectionPooling: true,
-      messageBuffering: true
+      messageBuffering: true,
     };
   });
 
@@ -714,7 +717,7 @@ describe('Real-Time Collaboration Server', () => {
 
     test('should get initial metrics', () => {
       const metrics = server.getMetrics();
-      
+
       expect(metrics).toBeDefined();
       expect(metrics.totalConnections).toBe(0);
       expect(metrics.currentConnections).toBe(0);
@@ -730,9 +733,9 @@ describe('Real-Time Collaboration Server', () => {
   describe('Performance Metrics', () => {
     test('should track server metrics', async () => {
       await server.start();
-      
+
       const metrics = server.getMetrics();
-      
+
       expect(metrics.sessions).toBe(0);
       expect(metrics.connections).toBe(0);
       expect(metrics.ministryChannels).toBeDefined();
@@ -743,7 +746,7 @@ describe('Real-Time Collaboration Server', () => {
   describe('Cultural Features', () => {
     test('should support prayer time awareness', async () => {
       await server.start();
-      
+
       // Server should be configured for prayer time awareness
       expect(serverConfig.prayerTimeAware).toBe(true);
       expect(serverConfig.islamicWorkflowCompliance).toBe(true);
@@ -782,7 +785,7 @@ describe('Integration Tests', () => {
       rtlOptimized: true,
       wcagCompliance: true,
       governmentAccessibility: true,
-      multiLanguageSupport: true
+      multiLanguageSupport: true,
     });
 
     const textEngine = new ArabicCollaborativeTextEngine({
@@ -803,23 +806,22 @@ describe('Integration Tests', () => {
       optimizedRendering: true,
       contentFiltering: true,
       auditLogging: true,
-      encryptionEnabled: false
+      encryptionEnabled: false,
     });
 
     try {
       await collaborationEngine.initialize();
-      
+
       // Both engines should be functional
       expect(collaborationEngine).toBeDefined();
       expect(textEngine).toBeDefined();
-      
+
       // Should be able to get metrics from both
       const collabMetrics = collaborationEngine.getPerformanceMetrics();
       const textMetrics = textEngine.getPerformanceMetrics();
-      
+
       expect(collabMetrics).toBeDefined();
       expect(textMetrics).toBeDefined();
-      
     } finally {
       await collaborationEngine.destroy();
       textEngine.destroy();
@@ -849,12 +851,12 @@ describe('Integration Tests', () => {
       rtlOptimized: true,
       wcagCompliance: true,
       governmentAccessibility: true,
-      multiLanguageSupport: true
+      multiLanguageSupport: true,
     });
 
     try {
       await collaborationEngine.initialize();
-      
+
       // Create a full ministry collaboration session
       const session = await collaborationEngine.createCollaborationSession({
         name: 'National Health Policy Review',
@@ -866,15 +868,15 @@ describe('Integration Tests', () => {
             name: 'Minister of Health',
             nameArabic: 'وزير الصحة',
             ministry: 'health',
-            department: 'Ministry Office'
+            department: 'Ministry Office',
           },
           {
             id: 'deputy-minister',
             name: 'Deputy Minister',
             nameArabic: 'نائب الوزير',
             ministry: 'health',
-            department: 'Policy Development'
-          }
+            department: 'Policy Development',
+          },
         ],
         documentType: 'policy-document',
         culturalContext: {
@@ -891,21 +893,20 @@ describe('Integration Tests', () => {
           ministryProtocol: true,
           officialCommunication: true,
           diplomaticLanguage: true,
-          confidentialityAware: true
+          confidentialityAware: true,
         },
         workflowRequired: true,
-        securityLevel: 'confidential'
+        securityLevel: 'confidential',
       });
-      
+
       expect(session).toBeDefined();
       expect(session.islamicCompliance).toBe(true);
       expect(session.arabicPrimary).toBe(true);
       expect(session.securityLevel).toBe('confidential');
-      
+
       // Verify cultural compliance is maintained throughout
       const metrics = collaborationEngine.getPerformanceMetrics();
       expect(metrics.culturalComplianceRate).toBeGreaterThanOrEqual(0.95);
-      
     } finally {
       await collaborationEngine.destroy();
     }

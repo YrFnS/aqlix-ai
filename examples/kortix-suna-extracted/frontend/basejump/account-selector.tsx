@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { ComponentPropsWithoutRef, useMemo, useState } from 'react';
-import { Check, ChevronsUpDown, PlusCircle } from 'lucide-react';
+import { ComponentPropsWithoutRef, useMemo, useState } from "react";
+import { Check, ChevronsUpDown, PlusCircle } from "lucide-react";
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,7 +13,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -21,18 +21,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import NewTeamForm from '@/components/basejump/new-team-form';
-import { useAccounts } from '@/hooks/use-accounts';
+} from "@/components/ui/popover";
+import NewTeamForm from "@/components/basejump/new-team-form";
+import { useAccounts } from "@/hooks/use-accounts";
 
 type PopoverTriggerProps = ComponentPropsWithoutRef<typeof PopoverTrigger>;
 
-type SelectedAccount = NonNullable<ReturnType<typeof useAccounts>['data']>[0];
+type SelectedAccount = NonNullable<ReturnType<typeof useAccounts>["data"]>[0];
 
 interface AccountSelectorProps extends PopoverTriggerProps {
   accountId: string;
@@ -44,7 +44,7 @@ export default function AccountSelector({
   className,
   accountId,
   onAccountSelected,
-  placeholder = 'Select an account...',
+  placeholder = "Select an account...",
 }: AccountSelectorProps) {
   const [open, setOpen] = useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = useState(false);
@@ -79,7 +79,7 @@ export default function AccountSelector({
             aria-expanded={open}
             aria-label="Select a team"
             className={cn(
-              'w-full flex items-center gap-2 h-9 pl-3 pr-2 rounded-md justify-between border border-subtle dark:border-white/10 bg-transparent hover:bg-hover-bg text-foreground/90',
+              "w-full flex items-center gap-2 h-9 pl-3 pr-2 rounded-md justify-between border border-subtle dark:border-white/10 bg-transparent hover:bg-hover-bg text-foreground/90",
               className,
             )}
           >
@@ -116,11 +116,11 @@ export default function AccountSelector({
                   {personalAccount?.name}
                   <Check
                     className={cn(
-                      'ml-auto h-4 w-4 text-primary',
+                      "ml-auto h-4 w-4 text-primary",
                       selectedAccount?.account_id ===
                         personalAccount?.account_id
-                        ? 'opacity-100'
-                        : 'opacity-0',
+                        ? "opacity-100"
+                        : "opacity-0",
                     )}
                   />
                 </CommandItem>
@@ -145,10 +145,10 @@ export default function AccountSelector({
                       {team.name}
                       <Check
                         className={cn(
-                          'ml-auto h-4 w-4 text-primary',
+                          "ml-auto h-4 w-4 text-primary",
                           selectedAccount?.account_id === team.account_id
-                            ? 'opacity-100'
-                            : 'opacity-0',
+                            ? "opacity-100"
+                            : "opacity-0",
                         )}
                       />
                     </CommandItem>

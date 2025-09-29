@@ -1,16 +1,16 @@
 /**
  * Iraqi AI Enhanced CopilotKit Runtime Types
- * 
+ *
  * Extended type definitions for Iraqi cultural sovereignty layer
  * Based on CopilotKit's 203-line frontend action types with Iraqi enhancements
  */
 
-import { 
-  Action, 
-  Parameter, 
+import {
+  Action,
+  Parameter,
   CopilotRequestContext,
-  CopilotServiceAdapter 
-} from '@copilotkit/shared';
+  CopilotServiceAdapter,
+} from "@copilotkit/shared";
 
 /**
  * Iraqi Runtime Configuration
@@ -38,7 +38,7 @@ export interface IraqiRuntimeConfig {
 
   // Agent coordination configuration
   agentCoordination?: {
-    mode?: 'intelligent' | 'sequential' | 'parallel';
+    mode?: "intelligent" | "sequential" | "parallel";
     culturalValidationRequired?: boolean; // Default: true
     maxCoordinationTime?: number; // Default: 5000ms
   };
@@ -65,7 +65,12 @@ export interface IraqiCopilotRuntimeRequest extends CopilotRequestContext {
   requiresArabicProcessing?: boolean; // Auto-detected
   requiresAgentCoordination?: boolean; // Based on complexity
   requiredAgents?: string[]; // Specific Iraqi agents needed
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'governmental' | 'commercial';
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "governmental"
+    | "commercial";
   culturalContext?: IraqiCulturalContext;
 }
 
@@ -103,10 +108,24 @@ export interface IraqiCopilotRuntimeResponse {
  * Iraqi Cultural Context
  */
 export interface IraqiCulturalContext {
-  userRegion?: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'karbala' | 'other';
-  professionalRole?: 'lawyer' | 'doctor' | 'teacher' | 'engineer' | 'government' | 'business' | 'student';
-  languagePreference?: 'arabic' | 'english' | 'mixed';
-  culturalSensitivity?: 'high' | 'medium' | 'standard';
+  userRegion?:
+    | "baghdad"
+    | "basra"
+    | "mosul"
+    | "erbil"
+    | "najaf"
+    | "karbala"
+    | "other";
+  professionalRole?:
+    | "lawyer"
+    | "doctor"
+    | "teacher"
+    | "engineer"
+    | "government"
+    | "business"
+    | "student";
+  languagePreference?: "arabic" | "english" | "mixed";
+  culturalSensitivity?: "high" | "medium" | "standard";
   islamicComplianceRequired?: boolean;
   politicalNeutralityRequired?: boolean;
 }
@@ -133,7 +152,13 @@ export interface ArabicProcessingResult {
   rtlAccuracy: number; // 0-100, >99 required
   dialectRecognition: {
     confidence: number; // 0-100, >85 required for Iraqi
-    dialect: 'iraqi' | 'levantine' | 'gulf' | 'egyptian' | 'maghrebi' | 'standard';
+    dialect:
+      | "iraqi"
+      | "levantine"
+      | "gulf"
+      | "egyptian"
+      | "maghrebi"
+      | "standard";
   };
   processedContent: any;
   mixedLanguageHandling: boolean;
@@ -145,7 +170,7 @@ export interface ArabicProcessingResult {
  */
 export interface AgentCoordinationResult {
   coordinatedAgents: string[];
-  coordinationMode: 'intelligent' | 'sequential' | 'parallel';
+  coordinationMode: "intelligent" | "sequential" | "parallel";
   culturalConsistency: boolean;
   totalCoordinationTime: number; // Target: <5000ms
   agentResponses: Record<string, any>;
@@ -170,15 +195,21 @@ export interface IraqiPerformanceMetrics {
  * Iraqi Agent Definition
  */
 export interface IraqiAgentDefinition {
-  type: 'cultural-intelligence' | 'business-intelligence' | 'design-intelligence' | 
-        'research-intelligence' | 'technical-intelligence' | 'language-processing-tool' |
-        'financial-security-tool' | 'system-coordination';
+  type:
+    | "cultural-intelligence"
+    | "business-intelligence"
+    | "design-intelligence"
+    | "research-intelligence"
+    | "technical-intelligence"
+    | "language-processing-tool"
+    | "financial-security-tool"
+    | "system-coordination";
   contextManaged: boolean; // true for 13 context-managed agents
   primaryFunction: string;
   culturalConstraints?: boolean;
   rtlSupport?: boolean;
   arabicNLPSupport?: boolean;
-  dialectRecognition?: 'iraqi' | 'general';
+  dialectRecognition?: "iraqi" | "general";
   accuracyTarget?: number;
   complianceTargets?: {
     islamic?: number;
@@ -207,7 +238,7 @@ export interface IraqiAction<T extends Parameter[] = []> extends Action<T> {
  * Iraqi Payment Gateway Types
  */
 export interface IraqiPaymentGatewayConfig {
-  gateways: ('zaincash' | 'fastpay' | 'nasswallet')[];
+  gateways: ("zaincash" | "fastpay" | "nasswallet")[];
   securityCompliance: number; // Must be 100%
   culturalPaymentPatterns: boolean; // Iraqi-specific payment behaviors
 }

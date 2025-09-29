@@ -15,6 +15,7 @@
 ### 1. Context Compression Engine
 
 **Intelligence Layer**:
+
 ```python
 class IraqiContextCompressionEngine:
     def __init__(self):
@@ -54,6 +55,7 @@ class IraqiContextCompressionEngine:
 ```
 
 **Compression Rules**:
+
 - **Cultural Priority**: Islamic/Arabic content never compressed
 - **Agent-Specific**: Tailor compression to receiving agent needs
 - **Semantic Preservation**: Maintain meaning while reducing tokens
@@ -62,6 +64,7 @@ class IraqiContextCompressionEngine:
 ### 2. Intelligent Caching System
 
 **Multi-Level Cache Architecture**:
+
 ```typescript
 interface IraqiContextCacheSystem {
   // L1: Cultural validation cache (fastest)
@@ -83,13 +86,12 @@ class IraqiContextCacheManager {
 
   async getCachedContext(
     contextKey: string,
-    agentType: AgentType
+    agentType: AgentType,
   ): Promise<CachedContext | null> {
-
     // L1: Check cultural validation cache first
     const culturalResult = this.cache.culturalValidationCache.get(contextKey);
     if (culturalResult && this.isValidCacheEntry(culturalResult)) {
-      this.cacheMetrics.recordHit('cultural');
+      this.cacheMetrics.recordHit("cultural");
       return culturalResult.context;
     }
 
@@ -97,14 +99,14 @@ class IraqiContextCacheManager {
     const agentCache = this.cache.agentContextCache.get(agentType);
     const agentContext = agentCache?.get(contextKey);
     if (agentContext && this.isValidCacheEntry(agentContext)) {
-      this.cacheMetrics.recordHit('agent');
+      this.cacheMetrics.recordHit("agent");
       return agentContext;
     }
 
     // L3: Check cultural pattern cache
     const culturalPattern = this.findMatchingCulturalPattern(contextKey);
     if (culturalPattern) {
-      this.cacheMetrics.recordHit('pattern');
+      this.cacheMetrics.recordHit("pattern");
       return this.generateContextFromPattern(culturalPattern);
     }
 
@@ -115,6 +117,7 @@ class IraqiContextCacheManager {
 ```
 
 **Cache Performance Targets**:
+
 - **Hit Rate**: 90%+ for cultural validation, 85%+ for agent context
 - **TTL Strategy**: Cultural cache (1 hour), Agent cache (30 minutes), Pattern cache (24 hours)
 - **Eviction Policy**: LRU with cultural priority protection
@@ -122,6 +125,7 @@ class IraqiContextCacheManager {
 ### 3. Context Routing Intelligence
 
 **Smart Routing Engine**:
+
 ```python
 class IraqiContextRoutingEngine:
     def __init__(self):
@@ -176,6 +180,7 @@ class IraqiContextRoutingEngine:
 ```
 
 **Routing Strategies**:
+
 - **Cultural First**: Always route through cultural validation when needed
 - **Parallel Processing**: Split context for concurrent agent processing
 - **Cascade Routing**: Sequential processing for dependent validations
@@ -184,6 +189,7 @@ class IraqiContextRoutingEngine:
 ### 4. Performance Optimization Engine
 
 **Optimization Algorithms**:
+
 ```typescript
 interface PerformanceOptimizationConfig {
   target_response_time: number; // <100ms for context operations
@@ -198,46 +204,49 @@ class IraqiContextPerformanceOptimizer {
   private optimizer: AdaptiveOptimizer;
 
   async optimizeContextFlow(
-    contextFlow: ContextFlow
+    contextFlow: ContextFlow,
   ): Promise<OptimizedContextFlow> {
-
     // Real-time performance analysis
-    const currentPerformance = await this.analyzeCurrentPerformance(contextFlow);
+    const currentPerformance =
+      await this.analyzeCurrentPerformance(contextFlow);
 
     // Cultural preservation check
-    const culturalConstraints = await this.analyzeCulturalConstraints(contextFlow);
+    const culturalConstraints =
+      await this.analyzeCulturalConstraints(contextFlow);
 
     // Optimization strategy selection
     const optimizationStrategy = await this.selectOptimizationStrategy(
       currentPerformance,
-      culturalConstraints
+      culturalConstraints,
     );
 
     // Apply optimizations
     const optimizedFlow = await this.applyOptimizations(
       contextFlow,
-      optimizationStrategy
+      optimizationStrategy,
     );
 
     // Validate optimization results
     const validationResults = await this.validateOptimization(
       optimizedFlow,
-      culturalConstraints
+      culturalConstraints,
     );
 
     return OptimizedContextFlow({
       flow: optimizedFlow,
-      performance_improvement: this.calculateImprovement(currentPerformance, optimizedFlow),
+      performance_improvement: this.calculateImprovement(
+        currentPerformance,
+        optimizedFlow,
+      ),
       cultural_accuracy_preserved: validationResults.cultural_accuracy,
-      optimization_strategy_used: optimizationStrategy
+      optimization_strategy_used: optimizationStrategy,
     });
   }
 
   private async selectOptimizationStrategy(
     performance: PerformanceMetrics,
-    constraints: CulturalConstraints
+    constraints: CulturalConstraints,
   ): Promise<OptimizationStrategy> {
-
     if (performance.response_time > this.config.target_response_time) {
       if (constraints.allows_aggressive_compression) {
         return OptimizationStrategy.AGGRESSIVE_COMPRESSION;
@@ -266,6 +275,7 @@ class IraqiContextPerformanceOptimizer {
 ### 1. Agent Coordination Integration
 
 **Context Sharing Flow**:
+
 ```python
 # Example: Cultural validation → Arabic processing → UI design
 async def cultural_ui_development_flow(request: UIRequest):
@@ -299,13 +309,13 @@ async def cultural_ui_development_flow(request: UIRequest):
 ### 2. Cross-Session Optimization
 
 **Persistent Context Optimization**:
+
 ```typescript
 class CrossSessionContextOptimizer {
   async optimizeForNextSession(
     sessionContext: SessionContext,
-    userProfile: IraqiUserProfile
+    userProfile: IraqiUserProfile,
   ): Promise<OptimizedSessionContext> {
-
     // Extract reusable cultural patterns
     const culturalPatterns = await this.extractCulturalPatterns(sessionContext);
 
@@ -313,16 +323,17 @@ class CrossSessionContextOptimizer {
     await this.cacheUserOptimizations(userProfile.id, culturalPatterns);
 
     // Pre-compress frequent context patterns
-    const precompressedPatterns = await this.precompressFrequentPatterns(
-      culturalPatterns
-    );
+    const precompressedPatterns =
+      await this.precompressFrequentPatterns(culturalPatterns);
 
     // Generate next session optimization profile
     return OptimizedSessionContext({
       cached_cultural_patterns: culturalPatterns,
       precompressed_context: precompressedPatterns,
-      user_specific_optimizations: await this.getUserOptimizations(userProfile.id),
-      estimated_performance_gain: this.calculateExpectedGain(culturalPatterns)
+      user_specific_optimizations: await this.getUserOptimizations(
+        userProfile.id,
+      ),
+      estimated_performance_gain: this.calculateExpectedGain(culturalPatterns),
     });
   }
 }
@@ -335,6 +346,7 @@ class CrossSessionContextOptimizer {
 ### 1. Real-Time Metrics
 
 **Key Performance Indicators**:
+
 ```typescript
 interface ContextOptimizationMetrics {
   // Performance metrics
@@ -360,6 +372,7 @@ interface ContextOptimizationMetrics {
 ### 2. Adaptive Learning
 
 **Optimization Learning Engine**:
+
 ```python
 class ContextOptimizationLearningEngine:
     def __init__(self):
@@ -402,6 +415,7 @@ class ContextOptimizationLearningEngine:
 ### 1. Cultural Context Preservation
 
 **Preservation Rules**:
+
 - **Arabic Text**: Never compress Arabic content below 80% of original
 - **Islamic References**: Preserve all Islamic terminology and concepts
 - **Professional Terms**: Maintain professional domain accuracy
@@ -410,6 +424,7 @@ class ContextOptimizationLearningEngine:
 ### 2. Security Considerations
 
 **Context Security**:
+
 ```python
 class ContextSecurityValidator:
     async def validate_context_sharing(
@@ -444,6 +459,7 @@ class ContextSecurityValidator:
 ### 1. Performance Targets
 
 **Quantitative Goals**:
+
 - **35% Context Size Reduction**: Achieved through intelligent compression
 - **90%+ Cache Hit Rate**: For frequently accessed cultural validations
 - **<100ms Context Operations**: From compression to routing
@@ -452,19 +468,32 @@ class ContextSecurityValidator:
 ### 2. Quality Assurance
 
 **Validation Framework**:
+
 ```typescript
 class ContextOptimizationValidator {
   async validateOptimization(
     originalContext: IraqiAgentContext,
-    optimizedContext: OptimizedContext
+    optimizedContext: OptimizedContext,
   ): Promise<ValidationResults> {
-
     return ValidationResults({
-      compression_ratio_achieved: this.calculateCompressionRatio(originalContext, optimizedContext),
-      cultural_accuracy_preserved: await this.validateCulturalAccuracy(originalContext, optimizedContext),
-      semantic_integrity_maintained: await this.validateSemanticIntegrity(originalContext, optimizedContext),
-      performance_improvement: await this.measurePerformanceImprovement(originalContext, optimizedContext),
-      agent_coordination_impact: await this.analyzeCoordinationImpact(optimizedContext)
+      compression_ratio_achieved: this.calculateCompressionRatio(
+        originalContext,
+        optimizedContext,
+      ),
+      cultural_accuracy_preserved: await this.validateCulturalAccuracy(
+        originalContext,
+        optimizedContext,
+      ),
+      semantic_integrity_maintained: await this.validateSemanticIntegrity(
+        originalContext,
+        optimizedContext,
+      ),
+      performance_improvement: await this.measurePerformanceImprovement(
+        originalContext,
+        optimizedContext,
+      ),
+      agent_coordination_impact:
+        await this.analyzeCoordinationImpact(optimizedContext),
     });
   }
 }

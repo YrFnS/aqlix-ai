@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   User,
   Plus,
@@ -25,9 +25,9 @@ import {
   Loader2,
   Settings,
   AlertCircle,
-} from 'lucide-react';
-import { usePipedreamProfiles } from '@/hooks/react-query/pipedream/use-pipedream-profiles';
-import { CredentialProfileManager } from './credential-profile-manager';
+} from "lucide-react";
+import { usePipedreamProfiles } from "@/hooks/react-query/pipedream/use-pipedream-profiles";
+import { CredentialProfileManager } from "./credential-profile-manager";
 
 interface CredentialProfileSelectorProps {
   appSlug: string;
@@ -38,7 +38,9 @@ interface CredentialProfileSelectorProps {
   showCreateOption?: boolean;
 }
 
-export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps> = ({
+export const CredentialProfileSelector: React.FC<
+  CredentialProfileSelectorProps
+> = ({
   appSlug,
   appName,
   selectedProfileId,
@@ -47,17 +49,24 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
   showCreateOption = true,
 }) => {
   const [showProfileManager, setShowProfileManager] = useState(false);
-  const { data: profiles, isLoading } = usePipedreamProfiles({ app_slug: appSlug, is_active: true });
+  const { data: profiles, isLoading } = usePipedreamProfiles({
+    app_slug: appSlug,
+    is_active: true,
+  });
 
-  const selectedProfile = profiles?.find(p => p.profile_id === selectedProfileId);
-  const connectedProfiles = profiles?.filter(p => p.is_connected) || [];
+  const selectedProfile = profiles?.find(
+    (p) => p.profile_id === selectedProfileId,
+  );
+  const connectedProfiles = profiles?.filter((p) => p.is_connected) || [];
 
   if (isLoading) {
     return (
       <div className={className}>
         <div className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm text-muted-foreground">Loading profiles...</span>
+          <span className="text-sm text-muted-foreground">
+            Loading profiles...
+          </span>
         </div>
       </div>
     );
@@ -88,7 +97,10 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
         </Card>
 
         {showProfileManager && (
-          <Dialog open={showProfileManager} onOpenChange={setShowProfileManager}>
+          <Dialog
+            open={showProfileManager}
+            onOpenChange={setShowProfileManager}
+          >
             <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Manage {appName} Profiles</DialogTitle>
@@ -135,7 +147,10 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
         </Card>
 
         {showProfileManager && (
-          <Dialog open={showProfileManager} onOpenChange={setShowProfileManager}>
+          <Dialog
+            open={showProfileManager}
+            onOpenChange={setShowProfileManager}
+          >
             <DialogContent className="max-w-3xl">
               <DialogHeader>
                 <DialogTitle>Manage {appName} Profiles</DialogTitle>
@@ -163,7 +178,7 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
       <div className="space-y-2">
         <div className="flex gap-2">
           <Select
-            value={selectedProfileId || ''}
+            value={selectedProfileId || ""}
             onValueChange={(value) => onProfileSelect(value || null)}
           >
             <SelectTrigger className="flex-1 w-full">
@@ -204,7 +219,7 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
             </Button>
           )}
         </div>
-        
+
         {selectedProfile && !selectedProfile.is_connected && (
           <p className="text-xs text-destructive flex items-center gap-1">
             <XCircle className="h-3 w-3" />
@@ -235,4 +250,4 @@ export const CredentialProfileSelector: React.FC<CredentialProfileSelectorProps>
       )}
     </div>
   );
-}; 
+};

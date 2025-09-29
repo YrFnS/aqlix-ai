@@ -1,5 +1,5 @@
-import React from 'react';
-import { AgentBuilderChat } from '../agent-builder-chat';
+import React from "react";
+import { AgentBuilderChat } from "../agent-builder-chat";
 
 interface AgentBuilderTabProps {
   agentId: string;
@@ -37,9 +37,12 @@ export function AgentBuilderTab({
         <div className="text-center space-y-3 max-w-md px-6">
           <div className="text-4xl opacity-50">🔒</div>
           <div>
-            <h3 className="text-base font-semibold text-foreground mb-1">Builder Unavailable</h3>
+            <h3 className="text-base font-semibold text-foreground mb-1">
+              Builder Unavailable
+            </h3>
             <p className="text-sm text-muted-foreground">
-              Only available for the current version. Please activate this version first.
+              Only available for the current version. Please activate this
+              version first.
             </p>
           </div>
         </div>
@@ -49,7 +52,7 @@ export function AgentBuilderTab({
 
   return (
     <div className="px-4 h-full">
-      <AgentBuilderChat 
+      <AgentBuilderChat
         agentId={agentId}
         formData={displayData}
         handleFieldChange={onFieldChange}
@@ -58,4 +61,4 @@ export function AgentBuilderTab({
       />
     </div>
   );
-} 
+}

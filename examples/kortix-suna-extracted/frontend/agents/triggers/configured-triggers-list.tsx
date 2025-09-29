@@ -1,26 +1,31 @@
 "use client";
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { 
-  Edit, 
-  Trash2, 
-  ExternalLink, 
-  MessageSquare, 
-  Webhook, 
-  Clock, 
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Edit,
+  Trash2,
+  ExternalLink,
+  MessageSquare,
+  Webhook,
+  Clock,
   Mail,
   Github,
   Gamepad2,
   Activity,
-  Copy
-} from 'lucide-react';
-import { TriggerConfiguration } from './types';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { getTriggerIcon } from './utils';
-import { truncateString } from '@/lib/utils';
+  Copy,
+} from "lucide-react";
+import { TriggerConfiguration } from "./types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { getTriggerIcon } from "./utils";
+import { truncateString } from "@/lib/utils";
 
 interface ConfiguredTriggersListProps {
   triggers: TriggerConfiguration[];
@@ -34,25 +39,25 @@ const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
   } catch (err) {
-    console.error('Failed to copy text: ', err);
+    console.error("Failed to copy text: ", err);
   }
 };
 
 const getCronDescription = (cron: string): string => {
   const cronDescriptions: Record<string, string> = {
-    '0 9 * * *': 'Daily at 9:00 AM',
-    '0 18 * * *': 'Daily at 6:00 PM',
-    '0 9 * * 1-5': 'Weekdays at 9:00 AM',
-    '0 10 * * 1-5': 'Weekdays at 10:00 AM',
-    '0 9 * * 1': 'Every Monday at 9:00 AM',
-    '0 9 1 * *': 'Monthly on the 1st at 9:00 AM',
-    '0 9 1 1 *': 'Yearly on Jan 1st at 9:00 AM',
-    '0 */2 * * *': 'Every 2 hours',
-    '*/30 * * * *': 'Every 30 minutes',
-    '0 0 * * *': 'Daily at midnight',
-    '0 12 * * *': 'Daily at noon',
-    '0 9 * * 0': 'Every Sunday at 9:00 AM',
-    '0 9 * * 6': 'Every Saturday at 9:00 AM',
+    "0 9 * * *": "Daily at 9:00 AM",
+    "0 18 * * *": "Daily at 6:00 PM",
+    "0 9 * * 1-5": "Weekdays at 9:00 AM",
+    "0 10 * * 1-5": "Weekdays at 10:00 AM",
+    "0 9 * * 1": "Every Monday at 9:00 AM",
+    "0 9 1 * *": "Monthly on the 1st at 9:00 AM",
+    "0 9 1 1 *": "Yearly on Jan 1st at 9:00 AM",
+    "0 */2 * * *": "Every 2 hours",
+    "*/30 * * * *": "Every 30 minutes",
+    "0 0 * * *": "Daily at midnight",
+    "0 12 * * *": "Daily at noon",
+    "0 9 * * 0": "Every Sunday at 9:00 AM",
+    "0 9 * * 6": "Every Saturday at 9:00 AM",
   };
 
   return cronDescriptions[cron] || cron;
@@ -77,33 +82,38 @@ export const ConfiguredTriggersList: React.FC<ConfiguredTriggersListProps> = ({
               <div className="p-2 rounded-lg bg-muted border">
                 {getTriggerIcon(trigger.trigger_type)}
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-1">
                   <h4 className="text-sm font-medium truncate">
                     {trigger.name}
                   </h4>
-                  <Badge 
+                  <Badge
                     variant={trigger.is_active ? "default" : "secondary"}
                     className="text-xs"
                   >
                     {trigger.is_active ? "Active" : "Inactive"}
                   </Badge>
                 </div>
-                
+
                 {trigger.description && (
                   <p className="text-xs text-muted-foreground truncate">
                     {truncateString(trigger.description, 50)}
                   </p>
                 )}
-                {trigger.trigger_type === 'schedule' && trigger.config && (
+                {trigger.trigger_type === "schedule" && trigger.config && (
                   <div className="text-xs text-muted-foreground mt-1">
-                    {trigger.config.execution_type === 'agent' && trigger.config.agent_prompt && (
-                      <p>Prompt: {truncateString(trigger.config.agent_prompt, 40)}</p>
-                    )}
-                    {trigger.config.execution_type === 'workflow' && trigger.config.workflow_id && (
-                      <p>Workflow: {trigger.config.workflow_id}</p>
-                    )}
+                    {trigger.config.execution_type === "agent" &&
+                      trigger.config.agent_prompt && (
+                        <p>
+                          Prompt:{" "}
+                          {truncateString(trigger.config.agent_prompt, 40)}
+                        </p>
+                      )}
+                    {trigger.config.execution_type === "workflow" &&
+                      trigger.config.workflow_id && (
+                        <p>Workflow: {trigger.config.workflow_id}</p>
+                      )}
                   </div>
                 )}
                 {trigger.webhook_url && (
@@ -126,14 +136,16 @@ export const ConfiguredTriggersList: React.FC<ConfiguredTriggersListProps> = ({
                         <p>Copy webhook URL</p>
                       </TooltipContent>
                     </Tooltip>
-                    {trigger.webhook_url.startsWith('http') && (
+                    {trigger.webhook_url.startsWith("http") && (
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
                             size="sm"
                             variant="ghost"
                             className="h-6 w-6 p-0"
-                            onClick={() => window.open(trigger.webhook_url, '_blank')}
+                            onClick={() =>
+                              window.open(trigger.webhook_url, "_blank")
+                            }
                           >
                             <ExternalLink className="h-3 w-3" />
                           </Button>
@@ -159,10 +171,10 @@ export const ConfiguredTriggersList: React.FC<ConfiguredTriggersListProps> = ({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{trigger.is_active ? 'Disable' : 'Enable'} trigger</p>
+                  <p>{trigger.is_active ? "Disable" : "Enable"} trigger</p>
                 </TooltipContent>
               </Tooltip>
-              
+
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -179,7 +191,7 @@ export const ConfiguredTriggersList: React.FC<ConfiguredTriggersListProps> = ({
                   <p>Edit trigger</p>
                 </TooltipContent>
               </Tooltip>
-              
+
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -202,4 +214,4 @@ export const ConfiguredTriggersList: React.FC<ConfiguredTriggersListProps> = ({
       </div>
     </TooltipProvider>
   );
-}; 
+};

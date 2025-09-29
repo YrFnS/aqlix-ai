@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { PricingSection } from '@/components/home/sections/pricing-section';
-import { isLocalMode } from '@/lib/config';
-import { createPortalSession } from '@/lib/api';
-import { useAuth } from '@/components/AuthProvider';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useSubscription } from '@/hooks/react-query';
-import Link from 'next/link';
-import { CreditCard, Settings, HelpCircle } from 'lucide-react';
-import { OpenInNewWindowIcon } from '@radix-ui/react-icons';
-import SubscriptionStatusManagement from './subscription-status-management';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+} from "@/components/ui/dialog";
+import { PricingSection } from "@/components/home/sections/pricing-section";
+import { isLocalMode } from "@/lib/config";
+import { createPortalSession } from "@/lib/api";
+import { useAuth } from "@/components/AuthProvider";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useSubscription } from "@/hooks/react-query";
+import Link from "next/link";
+import { CreditCard, Settings, HelpCircle } from "lucide-react";
+import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
+import SubscriptionStatusManagement from "./subscription-status-management";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   open: boolean;
@@ -29,24 +29,22 @@ type Props = {
   returnUrl: string;
 };
 
-export default function SubscriptionManagementModal({ 
-  open, 
-  onOpenChange, 
-  accountId, 
-  returnUrl 
+export default function SubscriptionManagementModal({
+  open,
+  onOpenChange,
+  accountId,
+  returnUrl,
 }: Props) {
   const { session, isLoading: authLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isManaging, setIsManaging] = useState(false);
   const [isManagingPayment, setIsManagingPayment] = useState(false);
-  
+
   const {
     data: subscriptionData,
     isLoading,
     error: subscriptionQueryError,
   } = useSubscription();
-
-
 
   const handleManageSubscription = async () => {
     try {
@@ -54,9 +52,9 @@ export default function SubscriptionManagementModal({
       const { url } = await createPortalSession({ return_url: returnUrl });
       window.location.href = url;
     } catch (err) {
-      console.error('Failed to create portal session:', err);
+      console.error("Failed to create portal session:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to create portal session',
+        err instanceof Error ? err.message : "Failed to create portal session",
       );
     } finally {
       setIsManaging(false);
@@ -66,14 +64,14 @@ export default function SubscriptionManagementModal({
   const handleManagePaymentMethods = async () => {
     try {
       setIsManagingPayment(true);
-      const { url } = await createPortalSession({ 
-        return_url: returnUrl 
+      const { url } = await createPortalSession({
+        return_url: returnUrl,
       });
       window.location.href = url;
     } catch (err) {
-      console.error('Failed to create payment portal session:', err);
+      console.error("Failed to create payment portal session:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to open payment methods',
+        err instanceof Error ? err.message : "Failed to open payment methods",
       );
     } finally {
       setIsManagingPayment(false);
@@ -129,7 +127,7 @@ export default function SubscriptionManagementModal({
           </DialogHeader>
           <div className="p-4 mb-4 bg-destructive/10 border border-destructive/20 rounded-lg text-center">
             <p className="text-sm text-destructive">
-              Error loading billing status:{' '}
+              Error loading billing status:{" "}
               {error || subscriptionQueryError.message}
             </p>
           </div>
@@ -142,13 +140,13 @@ export default function SubscriptionManagementModal({
     return subscriptionData?.plan_name === planId;
   };
 
-  const planName = isPlan('free')
-    ? 'Free'
-    : isPlan('base')
-      ? 'Pro'
-      : isPlan('extra')
-        ? 'Enterprise'
-        : 'Unknown';
+  const planName = isPlan("free")
+    ? "Free"
+    : isPlan("base")
+      ? "Pro"
+      : isPlan("extra")
+        ? "Enterprise"
+        : "Unknown";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -182,7 +180,7 @@ export default function SubscriptionManagementModal({
                         </div>
                       </Link>
                     </Button>
-                    
+
                     <Button
                       onClick={handleManagePaymentMethods}
                       disabled={isManagingPayment}
@@ -224,8 +222,14 @@ export default function SubscriptionManagementModal({
           ) : (
             <>
               <div>
-                <h3 className="text-lg font-semibold mb-4">Upgrade Your Plan</h3>
-                <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} insideDialog={true} />
+                <h3 className="text-lg font-semibold mb-4">
+                  Upgrade Your Plan
+                </h3>
+                <PricingSection
+                  returnUrl={returnUrl}
+                  showTitleAndTabs={false}
+                  insideDialog={true}
+                />
               </div>
             </>
           )}

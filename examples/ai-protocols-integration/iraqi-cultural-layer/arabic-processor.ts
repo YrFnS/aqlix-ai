@@ -1,12 +1,12 @@
 /**
  * Iraqi Arabic RTL Processor
- * 
+ *
  * Advanced Arabic text processing with Iraqi dialect recognition,
  * RTL layout optimization, and mixed-language content handling.
- * 
+ *
  * Features:
  * - Iraqi dialect recognition and processing
- * - RTL text formatting and layout optimization  
+ * - RTL text formatting and layout optimization
  * - Mixed Arabic-English content handling
  * - Real-time text direction detection
  * - Cultural context preservation
@@ -69,7 +69,7 @@ export interface IraqiEnhancementConfig {
 
 /**
  * Iraqi Arabic RTL Processor
- * 
+ *
  * Handles Arabic text processing with Iraqi dialect recognition
  */
 export class ArabicRTLProcessor {
@@ -81,62 +81,138 @@ export class ArabicRTLProcessor {
   private readonly iraqiDialectFeatures: IraqiDialectFeatures = {
     // Phonetic variations specific to Iraqi Arabic
     phonetic: [
-      'چ', 'گ', 'ژ', 'پ', // Persian-influenced letters
-      'تشلون', 'شلونك', 'شلونج', 'داچ', 'چان', // Common Iraqi greetings/expressions
+      "چ",
+      "گ",
+      "ژ",
+      "پ", // Persian-influenced letters
+      "تشلون",
+      "شلونك",
+      "شلونج",
+      "داچ",
+      "چان", // Common Iraqi greetings/expressions
     ],
 
-    // Lexical items unique to Iraqi Arabic  
+    // Lexical items unique to Iraqi Arabic
     lexical: [
-      'فلوس', 'دراهم', 'هواي', 'وايد', 'شنو', 'وين', 'كدام', 'جاي',
-      'راح', 'جاب', 'ويا', 'كلش', 'خوش', 'زين', 'حلو', 'يعني',
-      'صدگ', 'بس', 'خلاص', 'مال', 'حجي', 'استاذ', 'دكتور', 'مهندس',
+      "فلوس",
+      "دراهم",
+      "هواي",
+      "وايد",
+      "شنو",
+      "وين",
+      "كدام",
+      "جاي",
+      "راح",
+      "جاب",
+      "ويا",
+      "كلش",
+      "خوش",
+      "زين",
+      "حلو",
+      "يعني",
+      "صدگ",
+      "بس",
+      "خلاص",
+      "مال",
+      "حجي",
+      "استاذ",
+      "دكتور",
+      "مهندس",
       // Money and commerce
-      'دينار', 'عراقي', 'فلس', 'ألف', 'مليون', 'سعر', 'غالي', 'رخيص',
+      "دينار",
+      "عراقي",
+      "فلس",
+      "ألف",
+      "مليون",
+      "سعر",
+      "غالي",
+      "رخيص",
       // Family and relationships
-      'أهل', 'عيال', 'ولد', 'بنت', 'أخ', 'أخت', 'عم', 'خال', 'عمة', 'خالة',
+      "أهل",
+      "عيال",
+      "ولد",
+      "بنت",
+      "أخ",
+      "أخت",
+      "عم",
+      "خال",
+      "عمة",
+      "خالة",
       // Common verbs in Iraqi dialect
-      'أشوف', 'أروح', 'آجي', 'أگول', 'أكل', 'أشرب', 'أنام', 'أقعد',
+      "أشوف",
+      "أروح",
+      "آجي",
+      "أگول",
+      "أكل",
+      "أشرب",
+      "أنام",
+      "أقعد",
     ],
 
     // Syntactic patterns in Iraqi Arabic
     syntactic: [
-      'مال', 'تاع', 'حق', 'وياه', 'ويانا', 'وياكم', 'وياهم',
-      'گال', 'گالت', 'گالوا', 'چان', 'لو چان', 'اگول', 'اگولك',
+      "مال",
+      "تاع",
+      "حق",
+      "وياه",
+      "ويانا",
+      "وياكم",
+      "وياهم",
+      "گال",
+      "گالت",
+      "گالوا",
+      "چان",
+      "لو چان",
+      "اگول",
+      "اگولك",
     ],
 
     // Iraqi expressions and idioms
     expressions: [
-      'الله يعطيك العافية', 'ماشاء الله', 'الحمد لله', 'إن شاء الله',
-      'بارك الله فيك', 'الله يحفظك', 'الله معك', 'الله يوفقك',
-      'حياك الله', 'أهلاً وسهلاً', 'تسلم', 'يعطيك العافية',
-      'خوش ولد', 'زين الكلام', 'حجي صدك', 'الله وكيلك',
+      "الله يعطيك العافية",
+      "ماشاء الله",
+      "الحمد لله",
+      "إن شاء الله",
+      "بارك الله فيك",
+      "الله يحفظك",
+      "الله معك",
+      "الله يوفقك",
+      "حياك الله",
+      "أهلاً وسهلاً",
+      "تسلم",
+      "يعطيك العافية",
+      "خوش ولد",
+      "زين الكلام",
+      "حجي صدك",
+      "الله وكيلك",
     ],
   };
 
   // Arabic character ranges and patterns
   private readonly arabicPatterns = {
     // Arabic Unicode blocks
-    arabicBlock: /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g,
-    
+    arabicBlock:
+      /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g,
+
     // Arabic letters
     arabicLetters: /[\u0627-\u064A]/g,
-    
+
     // Arabic diacritics
     diacritics: /[\u064B-\u0652\u0670\u0640]/g,
-    
+
     // Arabic punctuation
     arabicPunctuation: /[\u061B\u061F\u060C\u0640]/g,
-    
+
     // Mixed content detection
     mixedContent: /[a-zA-Z][\u0600-\u06FF]|[\u0600-\u06FF][a-zA-Z]/g,
-    
+
     // Iraqi-specific characters
     iraqiChars: /[چگژپ]/g,
   };
 
   constructor(config: IraqiEnhancementConfig) {
     this.config = config;
-    console.info('Iraqi Arabic RTL Processor initialized with dialect support');
+    console.info("Iraqi Arabic RTL Processor initialized with dialect support");
   }
 
   /**
@@ -144,7 +220,7 @@ export class ArabicRTLProcessor {
    */
   async processText(
     text: string,
-    options: ArabicProcessingOptions = {}
+    options: ArabicProcessingOptions = {},
   ): Promise<ArabicProcessingResult> {
     this.processingCount++;
 
@@ -158,30 +234,33 @@ export class ArabicRTLProcessor {
 
     // Analyze text composition
     const textAnalysis = this.analyzeTextComposition(text);
-    
+
     // Detect text direction
     const direction = this.detectTextDirection(text, textAnalysis);
-    
+
     // Recognize Iraqi dialect
-    const dialectConfidence = processingOptions.dialectSupport 
+    const dialectConfidence = processingOptions.dialectSupport
       ? await this.recognizeIraqiDialect(text)
       : 0;
-    
+
     // Apply RTL formatting
     const rtlFormatted = await this.applyRTLFormatting(
-      text, 
-      direction, 
-      processingOptions
+      text,
+      direction,
+      processingOptions,
     );
-    
+
     // Handle mixed language content
-    const mixedLanguageHandling = direction === 'mixed';
-    
+    const mixedLanguageHandling = direction === "mixed";
+
     // Collect dialect words found
     const dialectWords = this.extractDialectWords(text);
-    
+
     // Track formatting operations applied
-    const formattingApplied = this.getFormattingOperations(direction, textAnalysis);
+    const formattingApplied = this.getFormattingOperations(
+      direction,
+      textAnalysis,
+    );
 
     return {
       rtlFormatted,
@@ -210,14 +289,16 @@ export class ArabicRTLProcessor {
   } {
     const arabicMatches = text.match(this.arabicPatterns.arabicBlock) || [];
     const englishMatches = text.match(/[a-zA-Z]/g) || [];
-    const totalChars = text.replace(/\s/g, '').length;
-    
+    const totalChars = text.replace(/\s/g, "").length;
+
     const arabicChars = arabicMatches.length;
     const englishChars = englishMatches.length;
-    
-    const arabicPercentage = totalChars > 0 ? (arabicChars / totalChars) * 100 : 0;
-    const englishPercentage = totalChars > 0 ? (englishChars / totalChars) * 100 : 0;
-    
+
+    const arabicPercentage =
+      totalChars > 0 ? (arabicChars / totalChars) * 100 : 0;
+    const englishPercentage =
+      totalChars > 0 ? (englishChars / totalChars) * 100 : 0;
+
     const hasIraqiChars = this.arabicPatterns.iraqiChars.test(text);
 
     return {
@@ -235,20 +316,20 @@ export class ArabicRTLProcessor {
    */
   private detectTextDirection(
     text: string,
-    analysis: ReturnType<typeof this.analyzeTextComposition>
+    analysis: ReturnType<typeof this.analyzeTextComposition>,
   ): "rtl" | "ltr" | "mixed" {
     const { arabicPercentage, englishPercentage } = analysis;
 
     if (arabicPercentage > 60) {
-      return 'rtl';
+      return "rtl";
     } else if (englishPercentage > 60) {
-      return 'ltr';
+      return "ltr";
     } else if (arabicPercentage > 20 && englishPercentage > 20) {
-      return 'mixed';
+      return "mixed";
     } else if (arabicPercentage > englishPercentage) {
-      return 'rtl';
+      return "rtl";
     } else {
-      return 'ltr';
+      return "ltr";
     }
   }
 
@@ -299,8 +380,13 @@ export class ArabicRTLProcessor {
       }
     }
 
-    const confidence = totalPossibleScore > 0 ? 
-      Math.min(100, (dialectScore / Math.min(totalPossibleScore, 300)) * 100) : 0;
+    const confidence =
+      totalPossibleScore > 0
+        ? Math.min(
+            100,
+            (dialectScore / Math.min(totalPossibleScore, 300)) * 100,
+          )
+        : 0;
 
     // Cache result
     this.dialectCache.set(cacheKey, confidence);
@@ -314,21 +400,21 @@ export class ArabicRTLProcessor {
   private async applyRTLFormatting(
     text: string,
     direction: "rtl" | "ltr" | "mixed",
-    options: ArabicProcessingOptions
+    options: ArabicProcessingOptions,
   ): Promise<string> {
-    if (direction === 'ltr') {
+    if (direction === "ltr") {
       return text; // No RTL formatting needed
     }
 
     let formatted = text;
 
     // Apply RTL direction markers
-    if (direction === 'rtl') {
+    if (direction === "rtl") {
       formatted = `\u202E${formatted}\u202C`; // RLE (Right-to-Left Embedding) + PDF (Pop Directional Formatting)
     }
 
     // Handle mixed content
-    if (direction === 'mixed') {
+    if (direction === "mixed") {
       formatted = this.formatMixedContent(formatted);
     }
 
@@ -347,32 +433,36 @@ export class ArabicRTLProcessor {
   private formatMixedContent(text: string): string {
     // Split text into Arabic and English segments
     const segments = this.segmentMixedText(text);
-    
-    return segments.map(segment => {
-      if (segment.type === 'arabic') {
-        return `\u202E${segment.text}\u202C`; // Wrap Arabic segments
-      } else {
-        return `\u202D${segment.text}\u202C`; // Wrap English segments with LRE
-      }
-    }).join('');
+
+    return segments
+      .map((segment) => {
+        if (segment.type === "arabic") {
+          return `\u202E${segment.text}\u202C`; // Wrap Arabic segments
+        } else {
+          return `\u202D${segment.text}\u202C`; // Wrap English segments with LRE
+        }
+      })
+      .join("");
   }
 
   /**
    * Segment mixed text into Arabic and English parts
    */
-  private segmentMixedText(text: string): Array<{type: 'arabic' | 'english', text: string}> {
-    const segments: Array<{type: 'arabic' | 'english', text: string}> = [];
-    let currentSegment = '';
-    let currentType: 'arabic' | 'english' | null = null;
+  private segmentMixedText(
+    text: string,
+  ): Array<{ type: "arabic" | "english"; text: string }> {
+    const segments: Array<{ type: "arabic" | "english"; text: string }> = [];
+    let currentSegment = "";
+    let currentType: "arabic" | "english" | null = null;
 
     for (const char of text) {
       const isArabic = this.arabicPatterns.arabicBlock.test(char);
       const isEnglish = /[a-zA-Z]/.test(char);
       const isSpace = /\s/.test(char);
 
-      let charType: 'arabic' | 'english' | null = null;
-      if (isArabic) charType = 'arabic';
-      else if (isEnglish) charType = 'english';
+      let charType: "arabic" | "english" | null = null;
+      if (isArabic) charType = "arabic";
+      else if (isEnglish) charType = "english";
 
       if (charType && charType !== currentType) {
         // Type change detected
@@ -409,10 +499,10 @@ export class ArabicRTLProcessor {
 
     // Fix Arabic numerals if needed
     improved = this.normalizeArabicNumerals(improved);
-    
+
     // Fix punctuation positioning
     improved = this.fixArabicPunctuation(improved);
-    
+
     // Normalize Arabic characters
     improved = this.normalizeArabicChars(improved);
 
@@ -423,16 +513,19 @@ export class ArabicRTLProcessor {
    * Normalize Arabic numerals
    */
   private normalizeArabicNumerals(text: string): string {
-    const arabicNumerals = '٠١٢٣٤٥٦٧٨٩';
-    const englishNumerals = '0123456789';
-    
+    const arabicNumerals = "٠١٢٣٤٥٦٧٨٩";
+    const englishNumerals = "0123456789";
+
     let normalized = text;
-    
+
     // Convert Arabic-Indic digits to Western digits for consistency
     for (let i = 0; i < arabicNumerals.length; i++) {
       const arabicDigit = arabicNumerals[i];
       const englishDigit = englishNumerals[i];
-      normalized = normalized.replace(new RegExp(arabicDigit, 'g'), englishDigit);
+      normalized = normalized.replace(
+        new RegExp(arabicDigit, "g"),
+        englishDigit,
+      );
     }
 
     return normalized;
@@ -446,13 +539,13 @@ export class ArabicRTLProcessor {
 
     // Arabic punctuation replacements
     const punctuationMap = {
-      '؟': '?', // Arabic question mark to regular question mark for consistency
-      '؛': ';', // Arabic semicolon to regular semicolon
-      '،': ',', // Arabic comma to regular comma
+      "؟": "?", // Arabic question mark to regular question mark for consistency
+      "؛": ";", // Arabic semicolon to regular semicolon
+      "،": ",", // Arabic comma to regular comma
     };
 
     for (const [arabic, english] of Object.entries(punctuationMap)) {
-      fixed = fixed.replace(new RegExp(arabic, 'g'), english);
+      fixed = fixed.replace(new RegExp(arabic, "g"), english);
     }
 
     return fixed;
@@ -466,12 +559,12 @@ export class ArabicRTLProcessor {
 
     // Common Arabic character normalizations
     const normalizations = {
-      'ي': 'ي', // Ya
-      'ك': 'ك', // Kaf  
-      'ة': 'ة', // Ta marbuta
-      'أ': 'أ', // Alif with hamza above
-      'إ': 'إ', // Alif with hamza below
-      'آ': 'آ', // Alif with madda
+      ي: "ي", // Ya
+      ك: "ك", // Kaf
+      ة: "ة", // Ta marbuta
+      أ: "أ", // Alif with hamza above
+      إ: "إ", // Alif with hamza below
+      آ: "آ", // Alif with madda
     };
 
     // Apply normalizations (this is a simplified version)
@@ -485,7 +578,7 @@ export class ArabicRTLProcessor {
     // Add proper line break opportunities for long Arabic text
     return text.replace(/(\S{50,})/g, (match) => {
       // Insert zero-width space every 50 characters to allow line breaks
-      return match.replace(/(.{50})/g, '$1\u200B');
+      return match.replace(/(.{50})/g, "$1\u200B");
     });
   }
 
@@ -517,23 +610,23 @@ export class ArabicRTLProcessor {
    */
   private getFormattingOperations(
     direction: string,
-    analysis: ReturnType<typeof this.analyzeTextComposition>
+    analysis: ReturnType<typeof this.analyzeTextComposition>,
   ): string[] {
     const operations: string[] = [];
 
-    if (direction === 'rtl') {
-      operations.push('RTL embedding applied');
+    if (direction === "rtl") {
+      operations.push("RTL embedding applied");
     }
-    if (direction === 'mixed') {
-      operations.push('Mixed content segmentation');
-      operations.push('Bidirectional text formatting');
+    if (direction === "mixed") {
+      operations.push("Mixed content segmentation");
+      operations.push("Bidirectional text formatting");
     }
     if (analysis.hasIraqiChars) {
-      operations.push('Iraqi character normalization');
+      operations.push("Iraqi character normalization");
     }
     if (analysis.arabicPercentage > 0) {
-      operations.push('Arabic display optimization');
-      operations.push('Arabic punctuation normalization');
+      operations.push("Arabic display optimization");
+      operations.push("Arabic punctuation normalization");
     }
 
     return operations;
@@ -547,7 +640,7 @@ export class ArabicRTLProcessor {
       totalProcessed: this.processingCount,
       dialectCacheSize: this.dialectCache.size,
       configStatus: this.config.arabicProcessing,
-      supportedDialects: ['iraqi', 'standard_arabic'],
+      supportedDialects: ["iraqi", "standard_arabic"],
       processingCapabilities: {
         rtlFormatting: true,
         dialectRecognition: this.config.arabicProcessing.dialectSupport,
@@ -562,7 +655,7 @@ export class ArabicRTLProcessor {
    */
   clearCache(): void {
     this.dialectCache.clear();
-    console.info('Iraqi dialect recognition cache cleared');
+    console.info("Iraqi dialect recognition cache cleared");
   }
 
   /**
@@ -570,6 +663,6 @@ export class ArabicRTLProcessor {
    */
   updateConfig(newConfig: Partial<IraqiEnhancementConfig>): void {
     Object.assign(this.config, newConfig);
-    console.info('Iraqi Arabic processor configuration updated');
+    console.info("Iraqi Arabic processor configuration updated");
   }
 }

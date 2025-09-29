@@ -29,7 +29,7 @@ export interface TelegramTriggerConfig {
   trigger_commands?: string[];
   trigger_keywords?: string[];
   respond_to_all_messages?: boolean;
-  response_mode?: 'reply' | 'new_message';
+  response_mode?: "reply" | "new_message";
 }
 
 export interface SlackTriggerConfig {
@@ -63,9 +63,9 @@ export interface DiscordTriggerConfig {
 
 export interface ScheduleTriggerConfig {
   cron_expression: string;
-  execution_type: 'agent' | 'workflow';
+  execution_type: "agent" | "workflow";
   agent_prompt?: string;
   workflow_id?: string;
   workflow_input?: Record<string, any>;
   timezone?: string;
-} 
+}

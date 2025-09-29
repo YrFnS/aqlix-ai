@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Bot, ShoppingBag, FileText, Plus } from 'lucide-react';
-import { FancyTabs, TabConfig } from '@/components/ui/fancy-tabs';
+import React from "react";
+import { Bot, ShoppingBag, FileText, Plus } from "lucide-react";
+import { FancyTabs, TabConfig } from "@/components/ui/fancy-tabs";
 
 interface TabsNavigationProps {
   activeTab: string;
@@ -12,31 +12,35 @@ interface TabsNavigationProps {
 
 const agentTabs: TabConfig[] = [
   {
-    value: 'marketplace',
+    value: "marketplace",
     icon: ShoppingBag,
-    label: 'Explore',
-    shortLabel: 'Explore',
+    label: "Explore",
+    shortLabel: "Explore",
   },
   {
-    value: 'my-agents',
+    value: "my-agents",
     icon: Bot,
-    label: 'My Agents',
+    label: "My Agents",
   },
-]; 
+];
 
-export const TabsNavigation = ({ activeTab, onTabChange, onCreateAgent }: TabsNavigationProps) => {
+export const TabsNavigation = ({
+  activeTab,
+  onTabChange,
+  onCreateAgent,
+}: TabsNavigationProps) => {
   const tabs = React.useMemo(() => {
     if (onCreateAgent) {
       return [
         ...agentTabs,
-        { value: 'create-agent', icon: Plus, label: 'Create Agent' }
+        { value: "create-agent", icon: Plus, label: "Create Agent" },
       ];
     }
     return agentTabs;
   }, [onCreateAgent]);
 
   const handleTabSelection = (value: string) => {
-    if (value === 'create-agent') {
+    if (value === "create-agent") {
       onCreateAgent?.();
     } else {
       onTabChange(value);
@@ -49,5 +53,5 @@ export const TabsNavigation = ({ activeTab, onTabChange, onCreateAgent }: TabsNa
       activeTab={activeTab}
       onTabChange={handleTabSelection}
     />
-);
-}
+  );
+};

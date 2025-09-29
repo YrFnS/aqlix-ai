@@ -11,17 +11,24 @@
       "style_options": ["vivid", "natural"],
       "cultural_optimization": true,
       "arabic_support": true,
-      "professional_domains": ["legal", "medical", "educational", "business", "engineering", "general"],
+      "professional_domains": [
+        "legal",
+        "medical",
+        "educational",
+        "business",
+        "engineering",
+        "general"
+      ],
       "pricing": {
         "standard": {
-          "1024x1024": 0.040,
-          "1792x1024": 0.080,
-          "1024x1792": 0.080
+          "1024x1024": 0.04,
+          "1792x1024": 0.08,
+          "1024x1792": 0.08
         },
         "hd": {
-          "1024x1024": 0.080,
-          "1792x1024": 0.120,
-          "1024x1792": 0.120
+          "1024x1024": 0.08,
+          "1792x1024": 0.12,
+          "1024x1792": 0.12
         }
       },
       "limitations": {
@@ -40,7 +47,7 @@
         "rtl_layout_awareness": true
       }
     },
-    
+
     "dall-e-2": {
       "name": "DALL-E 2",
       "provider": "openai",
@@ -52,22 +59,29 @@
       "style_options": [],
       "cultural_optimization": true,
       "arabic_support": true,
-      "professional_domains": ["legal", "medical", "educational", "business", "engineering", "general"],
+      "professional_domains": [
+        "legal",
+        "medical",
+        "educational",
+        "business",
+        "engineering",
+        "general"
+      ],
       "pricing": {
         "standard": {
           "256x256": 0.016,
           "512x512": 0.018,
-          "1024x1024": 0.020
+          "1024x1024": 0.02
         },
         "editing": {
           "256x256": 0.016,
           "512x512": 0.018,
-          "1024x1024": 0.020
+          "1024x1024": 0.02
         },
         "variations": {
           "256x256": 0.016,
           "512x512": 0.018,
-          "1024x1024": 0.020
+          "1024x1024": 0.02
         }
       },
       "limitations": {
@@ -102,14 +116,17 @@
         "local_deployment": true
       }
     },
-    
+
     "iraqi-cultural-diffusion": {
       "name": "Iraqi Cultural Diffusion Model",
       "provider": "custom",
       "type": "generation",
       "status": "research",
       "estimated_availability": "long-term",
-      "capabilities": ["culturally-aware-generation", "arabic-text-integration"],
+      "capabilities": [
+        "culturally-aware-generation",
+        "arabic-text-integration"
+      ],
       "iraqi_enhancements": {
         "cultural_validation": "built-in",
         "iraqi_dialect_support": true,
@@ -123,7 +140,7 @@
     "default_generation": "dall-e-3",
     "default_editing": "dall-e-2",
     "default_variations": "dall-e-2",
-    
+
     "domain_preferences": {
       "legal": {
         "primary": "dall-e-3",
@@ -185,7 +202,10 @@
     "fallback_chain": {
       "primary_failure": ["dall-e-2"],
       "secondary_failure": ["manual_intervention"],
-      "validation_failure": ["prompt_optimization", "retry_with_enhanced_prompt"],
+      "validation_failure": [
+        "prompt_optimization",
+        "retry_with_enhanced_prompt"
+      ],
       "rate_limit": ["queue_request", "upgrade_tier_suggestion"]
     }
   },
@@ -195,16 +215,16 @@
       "minimum_score": 0.95,
       "islamic_compliance_required": true,
       "professional_appropriateness_required": true,
-      "automatic_rejection_threshold": 0.70
+      "automatic_rejection_threshold": 0.7
     },
-    
+
     "technical_validation": {
       "image_format_requirements": ["png", "jpg", "webp"],
       "minimum_resolution": "256x256",
       "maximum_file_size": "10MB",
       "color_space": "sRGB"
     },
-    
+
     "performance_targets": {
       "generation_time": {
         "target": "30s",
@@ -230,7 +250,7 @@
         "fallback_enabled": true
       },
       "arabic_processor": {
-        "endpoint": "arabic-rtl-processor", 
+        "endpoint": "arabic-rtl-processor",
         "timeout": 3000,
         "retry_attempts": 2,
         "fallback_enabled": true
@@ -242,7 +262,7 @@
         "fallback_enabled": false
       }
     },
-    
+
     "external_services": {
       "openai": {
         "base_url": "https://api.openai.com/v1",
@@ -261,12 +281,12 @@
       "error_rate_by_type": true,
       "user_satisfaction_score": true
     },
-    
+
     "alerting": {
       "high_error_rate_threshold": 0.05,
       "slow_response_threshold": "60s",
-      "cultural_validation_failure_threshold": 0.10,
-      "api_quota_warning_threshold": 0.80
+      "cultural_validation_failure_threshold": 0.1,
+      "api_quota_warning_threshold": 0.8
     }
   }
 }

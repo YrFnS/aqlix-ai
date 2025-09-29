@@ -21,6 +21,7 @@
 **Essential cultural and Islamic compliance infrastructure:**
 
 ### Cultural Validation Core
+
 - **Iraqi Cultural Validation:** Content appropriateness for Iraqi cultural context and social norms
 - **Regional Adaptation:** Baghdad, Basra, Mosul, Erbil cultural variation support
 - **Professional Context Validation:** Iraqi legal, medical, educational, business cultural standards
@@ -28,6 +29,7 @@
 - **Language Cultural Validation:** Iraqi dialect appropriateness and cultural expressions
 
 ### Islamic Compliance Core
+
 - **Sharia Compliance Checking:** Content validation against Islamic Sharia principles
 - **Religious Content Validation:** Islamic appropriateness checking for all content
 - **Haram Content Filtering:** Detection and filtering of religiously prohibited content
@@ -35,6 +37,7 @@
 - **Halal Content Verification:** Ensuring content aligns with Islamic permissibility
 
 ### Integrated Compliance System
+
 - **Unified Validation Pipeline:** Combined cultural and religious validation processing
 - **Compliance Scoring Engine:** Dual-metric scoring for both cultural and Islamic appropriateness
 - **Content Filtering System:** Multi-layered filtering for cultural and religious sensitivity
@@ -49,6 +52,7 @@
 **Working cultural and Islamic compliance examples:**
 
 ### Core Validation Functions
+
 - **Unified Compliance Validator:** Single function handling both cultural and Islamic validation
 - **Cultural Appropriateness Checker:** Iraqi cultural context validation with regional variations
 - **Islamic Compliance Checker:** Sharia principles and Islamic value validation
@@ -56,6 +60,7 @@
 - **Compliance Scoring Calculator:** Dual-metric scoring for comprehensive appropriateness
 
 ### Integration Components
+
 - **Validation Middleware:** Express/FastAPI middleware for automatic content validation
 - **React Validation Hooks:** Frontend hooks for real-time cultural-Islamic validation
 - **Agent Integration Patterns:** PydanticAI agent integration with compliance validation
@@ -63,6 +68,7 @@
 - **Professional Domain Adapters:** Specialized validators for Iraqi professional contexts
 
 ### Configuration Examples
+
 - **Validation Rule Sets:** Configurable cultural and Islamic validation rule definitions
 - **Regional Configuration:** Baghdad, Basra, Mosul, Erbil specific cultural adaptations
 - **Professional Templates:** Legal, medical, educational, business compliance templates
@@ -75,12 +81,14 @@
 **Cultural and Islamic compliance documentation:**
 
 ### Cultural Research Sources
+
 - **Iraqi Cultural Guidelines:** Iraqi cultural norms and appropriate content standards
 - **Regional Cultural Variations:** Baghdad, Basra, Mosul, Erbil cultural differences
 - **Professional Cultural Standards:** Iraqi professional domain cultural requirements
 - **Political Sensitivity Guidelines:** Sectarian, political, and tribal sensitivity protocols
 
 ### Islamic Research Sources
+
 - **Islamic Digital Guidelines:** Sharia-compliant digital content and technology guidelines
 - **Islamic AI Ethics:** Guidelines for Islamic compliance in artificial intelligence systems
 - **Halal Technology Standards:** Standards for religiously appropriate technology and content
@@ -88,6 +96,7 @@
 - **Scholarly Islamic Sources:** Consensus-based Islamic rulings for digital contexts
 
 ### Technical Integration Sources
+
 - **Content Moderation Systems:** Best practices for cultural and religious content moderation
 - **Compliance Architecture:** Multi-dimensional compliance validation system patterns
 - **Cultural Sensitivity Implementation:** Technical implementation of cultural awareness
@@ -100,6 +109,7 @@
 **Comprehensive compliance considerations:**
 
 ### Iraqi Cultural Compliance
+
 - **Regional Sensitivity:** Support for Baghdad, Basra, Mosul, Erbil cultural variations
 - **Tribal Neutrality:** Avoiding tribal favoritism or bias in content and responses
 - **Professional Etiquette:** Iraqi professional communication standards and protocols
@@ -107,6 +117,7 @@
 - **Political Neutrality:** Maintaining neutrality on sectarian and political sensitive topics
 
 ### Islamic Compliance Standards
+
 - **Sharia Principles:** Compliance with fundamental Islamic legal and ethical principles
 - **Halal Content Assurance:** Ensuring all content meets Islamic permissibility standards
 - **Religious Respect:** Respectful handling of Islamic concepts, practices, and terminology
@@ -114,6 +125,7 @@
 - **Prayer and Religious Observance:** Support for Islamic prayer times and religious practices
 
 ### Integrated Compliance Framework
+
 - **Dual Validation:** Every piece of content validated against both cultural and Islamic standards
 - **Hierarchical Compliance:** Islamic principles take precedence when cultural-religious conflicts arise
 - **Context Awareness:** Understanding when cultural practices align with or contradict Islamic principles
@@ -267,6 +279,7 @@ CREATE TABLE cultural_islamic_knowledge (
 **Cultural and Islamic compliance architecture patterns:**
 
 ### Unified Validation Pipeline
+
 - **Pre-validation:** Content preprocessing for cultural-Islamic analysis
 - **Parallel Validation:** Simultaneous cultural and Islamic compliance checking
 - **Score Aggregation:** Weighted combination of cultural and Islamic compliance scores
@@ -274,6 +287,7 @@ CREATE TABLE cultural_islamic_knowledge (
 - **Feedback Integration:** User guidance based on validation results
 
 ### Compliance Architecture Patterns
+
 - **Rule Engine Design:** Flexible cultural-Islamic rule definition and execution
 - **Regional Adaptation:** Dynamic cultural variation handling for Iraqi regions
 - **Professional Context:** Domain-specific cultural-Islamic compliance patterns
@@ -281,6 +295,7 @@ CREATE TABLE cultural_islamic_knowledge (
 - **Agent Integration:** Seamless PydanticAI agent integration with compliance validation
 
 ### Cultural-Islamic Integration Patterns
+
 - **Hierarchical Validation:** Islamic principles as primary filter, cultural as secondary
 - **Contextual Awareness:** Understanding when cultural practices align with Islamic principles
 - **Educational Guidance:** Providing learning opportunities for cultural-religious improvement
@@ -294,18 +309,21 @@ CREATE TABLE cultural_islamic_knowledge (
 **Comprehensive cultural and Islamic compliance testing:**
 
 ### Cultural Validation Testing
+
 - **Regional Appropriateness:** Test Baghdad, Basra, Mosul, Erbil cultural variation handling
 - **Professional Context:** Validate Iraqi legal, medical, educational, business compliance
 - **Political Neutrality:** Test sectarian, political, tribal sensitivity detection
 - **Social Appropriateness:** Validate Iraqi social norm compliance and etiquette
 
 ### Islamic Compliance Testing
+
 - **Sharia Principle Testing:** Validate fundamental Islamic principle compliance
 - **Halal Content Verification:** Test Islamic permissibility content checking
 - **Religious Sensitivity:** Validate respectful handling of Islamic concepts
 - **Scholarly Consensus:** Test alignment with established Islamic digital ethics
 
 ### Integration Testing
+
 - **Unified Validation:** Test combined cultural-Islamic validation pipeline
 - **Performance Benchmarks:** <200ms validation response time testing
 - **Agent Integration:** PydanticAI agent cultural-Islamic validation integration
@@ -318,18 +336,21 @@ CREATE TABLE cultural_islamic_knowledge (
 **Cultural and Islamic compliance integration points:**
 
 ### Core System Integration
+
 - **Content Processing:** Real-time cultural-Islamic validation in all content processing
 - **AI Agent Integration:** PydanticAI agents with built-in cultural-Islamic compliance
 - **User Interface:** Cultural-Islamic feedback integration in all user interfaces
 - **API Middleware:** Automatic cultural-Islamic validation in all API endpoints
 
 ### Professional Domain Integration
+
 - **Legal Domain:** Iraqi legal cultural standards with Islamic jurisprudence principles
 - **Medical Domain:** Iraqi healthcare culture with Islamic medical ethics
 - **Educational Domain:** Iraqi educational standards with Islamic learning principles
 - **Business Domain:** Iraqi business culture with Islamic finance and ethics compliance
 
 ### External Service Integration
+
 - **Cultural Validation Services:** Integration with external Iraqi cultural expertise
 - **Islamic Scholarly Services:** Connection to Islamic scholarly review and guidance
 - **Regional Authorities:** Integration with Iraqi regional cultural and religious authorities
@@ -342,18 +363,21 @@ CREATE TABLE cultural_islamic_knowledge (
 **Iraqi AI Chat System cultural and Islamic compliance considerations:**
 
 ### Implementation Priorities
+
 - **Islamic principles take precedence** when cultural-religious conflicts arise
 - **Respectful cultural guidance** while maintaining Islamic compliance standards
 - **Regional sensitivity** with Islamic universal principles as foundation
 - **Professional domain expertise** with cultural-religious appropriateness
 
 ### Performance and Scalability
+
 - **<200ms validation response** for combined cultural-Islamic compliance checking
 - **Efficient caching strategies** for cultural-Islamic rule lookups and validation results
 - **Scalable architecture** supporting 100+ concurrent cultural-Islamic validations
 - **Progressive enhancement** for improved cultural-Islamic awareness over time
 
 ### Educational and Guidance Focus
+
 - **Learning-oriented feedback** helping users understand cultural-Islamic principles
 - **Respectful correction** when content doesn't meet compliance standards
 - **Positive reinforcement** for culturally and religiously appropriate content

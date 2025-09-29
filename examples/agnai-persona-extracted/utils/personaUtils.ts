@@ -1,7 +1,7 @@
 /**
  * Iraqi Persona Utility Functions
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Cultural validation and scoring utilities
  * - Professional domain helpers
@@ -19,7 +19,7 @@ import {
   IraqiProfessionalDomain,
   IslamicComplianceLevel,
   PersonaAnalytics,
-  IraqiDialect
+  IraqiDialect,
 } from '../types/persona';
 
 // ===== CULTURAL VALIDATION UTILITIES =====
@@ -27,7 +27,10 @@ import {
 /**
  * Validates persona name for Iraqi cultural appropriateness
  */
-export const validatePersonaName = (name: string, arabicName: string): {
+export const validatePersonaName = (
+  name: string,
+  arabicName: string
+): {
   isValid: boolean;
   issues: string[];
   suggestions: string[];
@@ -55,7 +58,7 @@ export const validatePersonaName = (name: string, arabicName: string): {
   // Check for inappropriate content
   const inappropriatePatterns = [
     /\b(casino|gambling|alcohol|wine|beer)\b/gi,
-    /\b(dating|romance|adult)\b/gi
+    /\b(dating|romance|adult)\b/gi,
   ];
 
   inappropriatePatterns.forEach(pattern => {
@@ -79,7 +82,7 @@ export const validatePersonaName = (name: string, arabicName: string): {
   return {
     isValid: issues.length === 0,
     issues,
-    suggestions
+    suggestions,
   };
 };
 
@@ -96,9 +99,9 @@ export const calculateCulturalComplianceScore = (persona: IraqiPersona): number 
     strict: 100,
     moderate: 85,
     general: 70,
-    flexible: 55
+    flexible: 55,
   };
-  
+
   const baseComplianceScore = complianceScores[persona.islamicCompliance];
   score = (score + baseComplianceScore) / 2;
 
@@ -106,7 +109,7 @@ export const calculateCulturalComplianceScore = (persona: IraqiPersona): number 
   if (traits.hospitalit === 'high' && traits.respectfulness === 'traditional') {
     score += 5;
   }
-  
+
   if (traits.familyOriented && traits.communityFocused) {
     score += 5;
   }
@@ -136,7 +139,9 @@ export const calculateCulturalComplianceScore = (persona: IraqiPersona): number 
 /**
  * Get domain-specific knowledge requirements
  */
-export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
+export const getDomainRequirements = (
+  domain: IraqiProfessionalDomain
+): {
   requiredKnowledge: string[];
   recommendedTraits: Partial<IraqiCulturalTraits>;
   complianceLevel: IslamicComplianceLevel;
@@ -149,16 +154,16 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Commercial Law',
         'Court Procedures',
         'Legal Documentation',
-        'Constitutional Law'
+        'Constitutional Law',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         formalityLevel: 'very_formal' as const,
         directness: 'diplomatic' as const,
-        authorityRespect: 'high' as const
+        authorityRespect: 'high' as const,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'very_formal' as const
+      formalityLevel: 'very_formal' as const,
     },
     medical: {
       requiredKnowledge: [
@@ -166,16 +171,16 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Ministry of Health Guidelines',
         'Medical Ethics',
         'Patient Care Protocols',
-        'Public Health Guidelines'
+        'Public Health Guidelines',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         patientGuidance: true,
         moralGuidance: true,
-        wisdomSharing: true
+        wisdomSharing: true,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'formal' as const
+      formalityLevel: 'formal' as const,
     },
     educational: {
       requiredKnowledge: [
@@ -183,16 +188,16 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Educational Psychology',
         'Teaching Methods',
         'Student Assessment',
-        'Educational Administration'
+        'Educational Administration',
       ],
       recommendedTraits: {
         respectfulness: 'traditional' as const,
         patientGuidance: true,
         wisdomSharing: true,
-        familyOriented: true
+        familyOriented: true,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'moderate' as const
+      formalityLevel: 'moderate' as const,
     },
     religious: {
       requiredKnowledge: [
@@ -200,17 +205,17 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Quranic Studies',
         'Hadith Literature',
         'Islamic Ethics',
-        'Religious Counseling'
+        'Religious Counseling',
       ],
       recommendedTraits: {
         respectfulness: 'traditional' as const,
         islamicGreetings: true,
         moralGuidance: true,
         wisdomSharing: true,
-        formalityLevel: 'very_formal' as const
+        formalityLevel: 'very_formal' as const,
       },
       complianceLevel: 'strict' as IslamicComplianceLevel,
-      formalityLevel: 'very_formal' as const
+      formalityLevel: 'very_formal' as const,
     },
     engineering: {
       requiredKnowledge: [
@@ -218,15 +223,15 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Engineering Standards',
         'Project Management',
         'Technical Specifications',
-        'Infrastructure Development'
+        'Infrastructure Development',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         directness: 'direct' as const,
-        authorityRespect: 'moderate' as const
+        authorityRespect: 'moderate' as const,
       },
       complianceLevel: 'general' as IslamicComplianceLevel,
-      formalityLevel: 'formal' as const
+      formalityLevel: 'formal' as const,
     },
     business: {
       requiredKnowledge: [
@@ -234,15 +239,15 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Business Regulations',
         'Trade Practices',
         'Investment Guidelines',
-        'Economic Development'
+        'Economic Development',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         communityFocused: true,
-        directness: 'diplomatic' as const
+        directness: 'diplomatic' as const,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'moderate' as const
+      formalityLevel: 'moderate' as const,
     },
     government: {
       requiredKnowledge: [
@@ -250,15 +255,15 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Government Procedures',
         'Administrative Law',
         'Public Policy',
-        'Civil Service Regulations'
+        'Civil Service Regulations',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         formalityLevel: 'very_formal' as const,
-        authorityRespect: 'high' as const
+        authorityRespect: 'high' as const,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'very_formal' as const
+      formalityLevel: 'very_formal' as const,
     },
     cultural: {
       requiredKnowledge: [
@@ -266,16 +271,16 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Traditional Arts',
         'Cultural Events',
         'Folklore and Literature',
-        'Cultural Preservation'
+        'Cultural Preservation',
       ],
       recommendedTraits: {
         respectfulness: 'traditional' as const,
         communityFocused: true,
         wisdomSharing: true,
-        familyOriented: true
+        familyOriented: true,
       },
       complianceLevel: 'moderate' as IslamicComplianceLevel,
-      formalityLevel: 'moderate' as const
+      formalityLevel: 'moderate' as const,
     },
     general: {
       requiredKnowledge: [
@@ -283,16 +288,16 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
         'Iraqi Current Affairs',
         'Basic Iraqi History',
         'Common Cultural Practices',
-        'General Assistance'
+        'General Assistance',
       ],
       recommendedTraits: {
         respectfulness: 'professional' as const,
         hospitality: 'moderate' as const,
-        patientGuidance: true
+        patientGuidance: true,
       },
       complianceLevel: 'general' as IslamicComplianceLevel,
-      formalityLevel: 'moderate' as const
-    }
+      formalityLevel: 'moderate' as const,
+    },
   };
 
   return domainMap[domain];
@@ -301,7 +306,9 @@ export const getDomainRequirements = (domain: IraqiProfessionalDomain): {
 /**
  * Get professional title suggestions based on domain
  */
-export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
+export const getProfessionalTitles = (
+  domain: IraqiProfessionalDomain
+): {
   english: string[];
   arabic: string[];
 } => {
@@ -312,15 +319,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Senior Legal Consultant',
         'Legal Counsel',
         'Iraqi Law Specialist',
-        'Legal Expert'
+        'Legal Expert',
       ],
       arabic: [
         'المستشار القانوني',
         'مستشار قانوني أول',
         'المحامي الاستشاري',
         'أخصائي القانون العراقي',
-        'الخبير القانوني'
-      ]
+        'الخبير القانوني',
+      ],
     },
     medical: {
       english: [
@@ -328,15 +335,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Healthcare Specialist',
         'Clinical Advisor',
         'Medical Consultant',
-        'Health Expert'
+        'Health Expert',
       ],
       arabic: [
         'الطبيب المحترف',
         'أخصائي الرعاية الصحية',
         'المستشار الطبي',
         'الطبيب الاستشاري',
-        'خبير الصحة'
-      ]
+        'خبير الصحة',
+      ],
     },
     educational: {
       english: [
@@ -344,15 +351,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Academic Advisor',
         'Learning Consultant',
         'Education Expert',
-        'Curriculum Specialist'
+        'Curriculum Specialist',
       ],
       arabic: [
         'أخصائي التعليم',
         'المستشار الأكاديمي',
         'مستشار التعلم',
         'خبير التعليم',
-        'أخصائي المناهج'
-      ]
+        'أخصائي المناهج',
+      ],
     },
     religious: {
       english: [
@@ -360,15 +367,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Religious Advisor',
         'Islamic Studies Expert',
         'Religious Counselor',
-        'Islamic Guidance Specialist'
+        'Islamic Guidance Specialist',
       ],
       arabic: [
         'العالم الإسلامي',
         'المستشار الديني',
         'خبير الدراسات الإسلامية',
         'المرشد الديني',
-        'أخصائي التوجيه الإسلامي'
-      ]
+        'أخصائي التوجيه الإسلامي',
+      ],
     },
     engineering: {
       english: [
@@ -376,15 +383,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Technical Consultant',
         'Engineering Expert',
         'Project Engineer',
-        'Infrastructure Specialist'
+        'Infrastructure Specialist',
       ],
       arabic: [
         'أخصائي الهندسة',
         'المستشار التقني',
         'الخبير الهندسي',
         'مهندس المشاريع',
-        'أخصائي البنية التحتية'
-      ]
+        'أخصائي البنية التحتية',
+      ],
     },
     business: {
       english: [
@@ -392,15 +399,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Commercial Consultant',
         'Business Development Expert',
         'Trade Specialist',
-        'Economic Advisor'
+        'Economic Advisor',
       ],
       arabic: [
         'المستشار التجاري',
         'الاستشاري التجاري',
         'خبير تطوير الأعمال',
         'أخصائي التجارة',
-        'المستشار الاقتصادي'
-      ]
+        'المستشار الاقتصادي',
+      ],
     },
     government: {
       english: [
@@ -408,15 +415,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Government Affairs Specialist',
         'Administrative Consultant',
         'Public Policy Expert',
-        'Government Relations Advisor'
+        'Government Relations Advisor',
       ],
       arabic: [
         'مستشار الخدمة العامة',
         'أخصائي الشؤون الحكومية',
         'المستشار الإداري',
         'خبير السياسة العامة',
-        'مستشار العلاقات الحكومية'
-      ]
+        'مستشار العلاقات الحكومية',
+      ],
     },
     cultural: {
       english: [
@@ -424,15 +431,15 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Heritage Consultant',
         'Cultural Affairs Advisor',
         'Arts and Culture Expert',
-        'Cultural Preservation Specialist'
+        'Cultural Preservation Specialist',
       ],
       arabic: [
         'أخصائي الثقافة',
         'مستشار التراث',
         'مستشار الشؤون الثقافية',
         'خبير الفنون والثقافة',
-        'أخصائي المحافظة على التراث'
-      ]
+        'أخصائي المحافظة على التراث',
+      ],
     },
     general: {
       english: [
@@ -440,16 +447,16 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
         'Information Specialist',
         'General Consultant',
         'Support Specialist',
-        'General Advisor'
+        'General Advisor',
       ],
       arabic: [
         'المساعد العام',
         'أخصائي المعلومات',
         'المستشار العام',
         'أخصائي الدعم',
-        'المستشار العام'
-      ]
-    }
+        'المستشار العام',
+      ],
+    },
   };
 
   return titleMap[domain];
@@ -460,7 +467,9 @@ export const getProfessionalTitles = (domain: IraqiProfessionalDomain): {
 /**
  * Validates Arabic text for proper RTL formatting
  */
-export const validateArabicText = (text: string): {
+export const validateArabicText = (
+  text: string
+): {
   isValid: boolean;
   issues: string[];
   correctedText?: string;
@@ -477,7 +486,7 @@ export const validateArabicText = (text: string): {
   // Check for mixed LTR/RTL issues
   const hasEnglish = /[a-zA-Z]/.test(text);
   const hasArabic = arabicPattern.test(text);
-  
+
   if (hasEnglish && hasArabic) {
     // Mixed content - ensure proper formatting
     correctedText = text.replace(/([a-zA-Z]+)/g, '\u202D$1\u202C'); // Wrap English in LTR override
@@ -495,7 +504,7 @@ export const validateArabicText = (text: string): {
   return {
     isValid: issues.length === 0,
     issues,
-    correctedText: issues.length > 0 ? correctedText : undefined
+    correctedText: issues.length > 0 ? correctedText : undefined,
   };
 };
 
@@ -510,7 +519,9 @@ export const formatMixedText = (text: string): string => {
 /**
  * Detects Iraqi dialect in Arabic text
  */
-export const detectIraqiDialect = (text: string): {
+export const detectIraqiDialect = (
+  text: string
+): {
   isIraqiDialect: boolean;
   confidence: number;
   region?: 'baghdad' | 'basra' | 'mosul' | 'general';
@@ -520,7 +531,7 @@ export const detectIraqiDialect = (text: string): {
     baghdad: ['شلونك', 'وين', 'شنو', 'هسه', 'كلش'],
     basra: ['شلونكم', 'ويش', 'شنهو', 'هسع', 'واجد'],
     mosul: ['كيفك', 'وين', 'شو', 'هلا', 'كتير'],
-    general: ['شلون', 'وين', 'شنو', 'هسا', 'كثير']
+    general: ['شلون', 'وين', 'شنو', 'هسا', 'كثير'],
   };
 
   let maxMatches = 0;
@@ -542,7 +553,7 @@ export const detectIraqiDialect = (text: string): {
     isIraqiDialect: maxMatches > 0,
     confidence,
     region: maxMatches > 0 ? detectedRegion : undefined,
-    dialectWords
+    dialectWords,
   };
 };
 
@@ -551,7 +562,9 @@ export const detectIraqiDialect = (text: string): {
 /**
  * Calculates persona performance score based on analytics
  */
-export const calculatePerformanceScore = (analytics: PersonaAnalytics): {
+export const calculatePerformanceScore = (
+  analytics: PersonaAnalytics
+): {
   overall: number;
   breakdown: {
     usage: number;
@@ -564,33 +577,35 @@ export const calculatePerformanceScore = (analytics: PersonaAnalytics): {
     usage: Math.min(100, (analytics.usageCount / 100) * 100),
     satisfaction: analytics.userSatisfactionRating * 20,
     compliance: analytics.culturalComplianceScore,
-    engagement: Math.min(100, (analytics.averageSessionLength / 600) * 100) // 10 minutes = 100%
+    engagement: Math.min(100, (analytics.averageSessionLength / 600) * 100), // 10 minutes = 100%
   };
 
   const weights = {
     usage: 0.25,
     satisfaction: 0.35,
     compliance: 0.25,
-    engagement: 0.15
+    engagement: 0.15,
   };
 
   const overall = Math.round(
     breakdown.usage * weights.usage +
-    breakdown.satisfaction * weights.satisfaction +
-    breakdown.compliance * weights.compliance +
-    breakdown.engagement * weights.engagement
+      breakdown.satisfaction * weights.satisfaction +
+      breakdown.compliance * weights.compliance +
+      breakdown.engagement * weights.engagement
   );
 
   return {
     overall,
-    breakdown
+    breakdown,
   };
 };
 
 /**
  * Optimizes persona configuration for better performance
  */
-export const optimizePersonaConfig = (persona: IraqiPersona): {
+export const optimizePersonaConfig = (
+  persona: IraqiPersona
+): {
   optimizedPersona: IraqiPersona;
   optimizations: string[];
 } => {
@@ -612,7 +627,10 @@ export const optimizePersonaConfig = (persona: IraqiPersona): {
   }
 
   // Optimize greeting style consistency
-  if (persona.culturalTraits.islamicGreetings && persona.responsePatterns.greetingStyle !== 'islamic') {
+  if (
+    persona.culturalTraits.islamicGreetings &&
+    persona.responsePatterns.greetingStyle !== 'islamic'
+  ) {
     optimized.responsePatterns.greetingStyle = 'islamic';
     optimizations.push('Aligned greeting style with Islamic greetings preference');
   }
@@ -626,7 +644,7 @@ export const optimizePersonaConfig = (persona: IraqiPersona): {
 
   return {
     optimizedPersona: optimized,
-    optimizations
+    optimizations,
   };
 };
 
@@ -645,8 +663,8 @@ export const exportPersonaData = (personas: IraqiPersona[]): string => {
       id: undefined,
       createdAt: undefined,
       updatedAt: undefined,
-      lastUsed: undefined
-    }))
+      lastUsed: undefined,
+    })),
   };
 
   return JSON.stringify(exportData, null, 2);
@@ -655,7 +673,9 @@ export const exportPersonaData = (personas: IraqiPersona[]): string => {
 /**
  * Imports persona data from JSON format
  */
-export const importPersonaData = (jsonData: string): {
+export const importPersonaData = (
+  jsonData: string
+): {
   personas: Partial<IraqiPersona>[];
   errors: string[];
   warnings: string[];
@@ -676,10 +696,9 @@ export const importPersonaData = (jsonData: string): {
       const validationResult = validatePersonaForImport(persona, index);
       errors.push(...validationResult.errors);
       warnings.push(...validationResult.warnings);
-      
+
       return validationResult.persona;
     });
-
   } catch (error) {
     errors.push(`JSON parsing error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
@@ -690,7 +709,10 @@ export const importPersonaData = (jsonData: string): {
 /**
  * Validates imported persona data
  */
-const validatePersonaForImport = (data: any, index: number): {
+const validatePersonaForImport = (
+  data: any,
+  index: number
+): {
   persona: Partial<IraqiPersona>;
   errors: string[];
   warnings: string[];
@@ -717,7 +739,7 @@ const validatePersonaForImport = (data: any, index: number): {
   return {
     persona: data,
     errors,
-    warnings
+    warnings,
   };
 };
 
@@ -738,7 +760,7 @@ export const toApiFormat = (persona: IraqiPersona): Record<string, any> => {
     knowledge_areas: persona.knowledgeAreas,
     is_active: persona.isActive,
     created_at: persona.createdAt,
-    updated_at: persona.updatedAt
+    updated_at: persona.updatedAt,
   };
 };
 
@@ -757,7 +779,7 @@ export const fromApiFormat = (apiData: Record<string, any>): Partial<IraqiPerson
     knowledgeAreas: apiData.knowledge_areas,
     isActive: apiData.is_active,
     createdAt: apiData.created_at ? new Date(apiData.created_at) : undefined,
-    updatedAt: apiData.updated_at ? new Date(apiData.updated_at) : undefined
+    updatedAt: apiData.updated_at ? new Date(apiData.updated_at) : undefined,
   };
 };
 
@@ -775,5 +797,5 @@ export {
   exportPersonaData,
   importPersonaData,
   toApiFormat,
-  fromApiFormat
+  fromApiFormat,
 };

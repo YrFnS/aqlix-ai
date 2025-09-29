@@ -80,4 +80,4 @@ describe('Memory Management Tests', () => {
     });
   });
 });
-```
+```;

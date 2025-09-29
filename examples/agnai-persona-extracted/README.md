@@ -7,6 +7,7 @@ A sophisticated persona management system designed specifically for the Iraqi AI
 ## 🌟 Key Features
 
 ### 🇮🇶 Iraqi Professional Integration
+
 - **10+ Professional Domains**: Lawyers, doctors, teachers, engineers, government officials, religious scholars, and more
 - **15 Iraqi Governorates**: Baghdad, Basra, Mosul, Erbil, Najaf, Karbala, and all major Iraqi regions
 - **Professional License Validation**: Integration with Iraqi professional bodies and ministries
@@ -14,6 +15,7 @@ A sophisticated persona management system designed specifically for the Iraqi AI
 - **Regional Adaptation**: Governorate-specific cultural nuances and dialect preferences
 
 ### 🕌 Cultural & Islamic Compliance
+
 - **96%+ Islamic Values Compliance**: Rigorous adherence to Islamic principles and values
 - **95%+ Cultural Appropriateness**: Real-time cultural sensitivity monitoring and enforcement
 - **Halal Content Filtering**: Comprehensive content validation ensuring Islamic compliance
@@ -22,6 +24,7 @@ A sophisticated persona management system designed specifically for the Iraqi AI
 - **Professional Islamic Ethics**: Shariah-compliant advice and business principles
 
 ### 🧠 Advanced Memory Management
+
 - **Cultural Context Retention**: Remembers Arabic terminology, cultural preferences, and Islamic context
 - **Professional Knowledge Base**: Domain-specific expertise accumulation and refinement
 - **Arabic Language Learning**: Iraqi dialect recognition and mixed Arabic-English processing
@@ -30,6 +33,7 @@ A sophisticated persona management system designed specifically for the Iraqi AI
 - **Cross-Session Continuity**: Persona state preservation across user interactions
 
 ### 🎨 Arabic-First Interface Design
+
 - **RTL/LTR Adaptive Layout**: Seamless switching between Arabic and English interfaces
 - **Professional Arabic Typography**: Noto Sans Arabic with proper font rendering and spacing
 - **Cultural Color Schemes**: Islamic-appropriate design patterns and professional aesthetics
@@ -37,6 +41,7 @@ A sophisticated persona management system designed specifically for the Iraqi AI
 - **Cultural Iconography**: Professionally appropriate visual elements and symbols
 
 ### 🔐 Enterprise Security & Compliance
+
 - **Government-Grade Security**: AES-256 encryption and comprehensive audit trails
 - **Role-Based Access Control**: Professional domain permissions and organizational hierarchy
 - **Cultural Compliance Monitoring**: Real-time validation and automated reporting
@@ -124,6 +129,7 @@ ENABLE_DIALECT_PROCESSING=true
 ## 🎯 Core Components
 
 ### 1. PersonaCreator.tsx
+
 **Comprehensive persona creation wizard with cultural validation**
 
 ```typescript
@@ -149,6 +155,7 @@ import PersonaCreator from '@/components/PersonaCreator';
 ```
 
 **Key Features:**
+
 - **7-Step Creation Process**: Basic info → Professional domain → Cultural profile → Islamic compliance → Personality → Communication → Memory
 - **Real-Time Validation**: Cultural compliance scoring and Islamic values verification
 - **Professional Templates**: Pre-built personas for Iraqi professional domains
@@ -156,6 +163,7 @@ import PersonaCreator from '@/components/PersonaCreator';
 - **Government Integration**: Ministry validation and professional license verification
 
 ### 2. PersonaManager.tsx
+
 **Advanced persona management with professional domain filtering**
 
 ```typescript
@@ -178,6 +186,7 @@ import PersonaManager from '@/components/PersonaManager';
 ```
 
 **Advanced Filtering:**
+
 - **Professional Domains**: Legal, medical, educational, engineering, business, government, religious, cultural, technology
 - **Iraqi Governorates**: All 15 major Iraqi governorates with Arabic names
 - **Compliance Scores**: Cultural compliance (95%+) and Islamic compliance (96%+) filtering
@@ -185,6 +194,7 @@ import PersonaManager from '@/components/PersonaManager';
 - **Search & Sort**: Multi-criteria search with Arabic text support
 
 ### 3. PersonaService.ts
+
 **Complete API client for persona management**
 
 ```typescript
@@ -198,14 +208,14 @@ const persona = await personaService.createPersona({
     name: 'Dr. Ahmed Al-Baghdadi',
     nameArabic: 'د. أحمد البغدادي',
     description: 'Iraqi medical professional specializing in cardiology',
-    descriptionArabic: 'طبيب عراقي متخصص في أمراض القلب'
+    descriptionArabic: 'طبيب عراقي متخصص في أمراض القلب',
   },
   professionalDomain: 'medical',
   governorate: 'baghdad',
   culturalProfile: {
     culturalSensitivity: 96,
-    islamicCompliance: { islamicValuesCompliance: 98 }
-  }
+    islamicCompliance: { islamicValuesCompliance: 98 },
+  },
 });
 
 // Advanced persona filtering
@@ -213,11 +223,12 @@ const { personas, metrics } = await personaService.listPersonas({
   professionalDomain: ['medical', 'legal'],
   governorate: ['baghdad', 'basra'],
   culturalCompliance: 95,
-  islamicCompliance: 96
+  islamicCompliance: 96,
 });
 ```
 
 **Service Capabilities:**
+
 - **Cultural Validation**: Pre-creation and ongoing compliance monitoring
 - **Professional Templates**: Iraqi domain-specific persona generation
 - **Memory Management**: Cultural context and professional knowledge retention
@@ -225,6 +236,7 @@ const { personas, metrics } = await personaService.listPersonas({
 - **Analytics**: Comprehensive compliance metrics and performance tracking
 
 ### 4. MemorySystem.ts
+
 **Advanced cultural memory management**
 
 ```typescript
@@ -238,7 +250,7 @@ await memorySystem.storeCulturalAdaptation(personaId, userId, {
   userResponse: 'positive',
   culturalElement: 'islamic_greeting',
   adaptationMade: 'Switched to "As-salamu alaikum" greeting',
-  effectiveness: 9
+  effectiveness: 9,
 });
 
 // Store Arabic terminology
@@ -249,7 +261,7 @@ await memorySystem.storeArabicTerminology(personaId, userId, {
   dialect: 'baghdadi',
   professionalDomain: 'legal',
   usage: 'professional',
-  frequency: 5
+  frequency: 5,
 });
 
 // Get professional knowledge
@@ -261,6 +273,7 @@ const { knowledge, expertise } = await memorySystem.getProfessionalKnowledge(
 ```
 
 **Memory Types:**
+
 - **Cultural Adaptation**: Learning from cultural interactions and preferences
 - **Professional Knowledge**: Domain-specific expertise accumulation
 - **Arabic Terminology**: Iraqi dialect and professional Arabic terms
@@ -270,6 +283,7 @@ const { knowledge, expertise } = await memorySystem.getProfessionalKnowledge(
 ## 📊 System Metrics & Compliance
 
 ### Performance Benchmarks
+
 - **Persona Creation**: <3 seconds end-to-end with cultural validation
 - **Cultural Validation**: <200ms real-time compliance checking
 - **Memory Retrieval**: <100ms context-aware memory access
@@ -277,6 +291,7 @@ const { knowledge, expertise } = await memorySystem.getProfessionalKnowledge(
 - **Professional Validation**: <500ms ministry integration and verification
 
 ### Compliance Standards
+
 - **Islamic Compliance**: 96% minimum adherence to Islamic values and principles
 - **Cultural Appropriateness**: 95% minimum cultural sensitivity score
 - **Professional Standards**: 92% minimum compliance across all Iraqi domains
@@ -284,6 +299,7 @@ const { knowledge, expertise } = await memorySystem.getProfessionalKnowledge(
 - **Memory Retention**: 90% cultural context preservation across sessions
 
 ### Quality Assurance
+
 - **Automated Testing**: 200+ cultural compliance tests and Islamic validation scenarios
 - **Professional Validation**: Integration with Iraqi professional bodies and ministries
 - **Accessibility**: WCAG 2.1 AA compliance with Arabic screen reader support
@@ -341,13 +357,13 @@ const customLegalPersona = {
   credentials: {
     barAssociationId: 'IBA-2024-001',
     courtRegistration: 'Baghdad-Family-Court',
-    islamicJurisprudence: true
+    islamicJurisprudence: true,
   },
   culturalAdaptation: {
     conservativeApproach: true,
     familyValuesEmphasis: 'high',
-    islamicLawIntegration: true
-  }
+    islamicLawIntegration: true,
+  },
 };
 ```
 
@@ -408,15 +424,34 @@ export const culturalConfig = {
   culturalComplianceThreshold: 95,
   islamicComplianceThreshold: 96,
   professionalDomains: [
-    'legal', 'medical', 'educational', 'engineering',
-    'business', 'government', 'religious', 'cultural',
-    'technology', 'general'
+    'legal',
+    'medical',
+    'educational',
+    'engineering',
+    'business',
+    'government',
+    'religious',
+    'cultural',
+    'technology',
+    'general',
   ],
   governorates: [
-    'baghdad', 'basra', 'mosul', 'erbil', 'najaf',
-    'karbala', 'hillah', 'ramadi', 'kirkuk', 'dohuk',
-    'samarra', 'kut', 'amarah', 'nasiriyah', 'diwaniyah'
-  ]
+    'baghdad',
+    'basra',
+    'mosul',
+    'erbil',
+    'najaf',
+    'karbala',
+    'hillah',
+    'ramadi',
+    'kirkuk',
+    'dohuk',
+    'samarra',
+    'kut',
+    'amarah',
+    'nasiriyah',
+    'diwaniyah',
+  ],
 };
 ```
 
@@ -429,25 +464,26 @@ export const professionalConfig = {
     legal: {
       barAssociation: 'https://api.iraqi-bar.org',
       courtSystem: 'https://api.iraqi-courts.gov.iq',
-      islamicJurisprudence: true
+      islamicJurisprudence: true,
     },
     medical: {
       medicalAssociation: 'https://api.iraqi-medical.org',
       healthMinistry: 'https://api.moh.gov.iq',
-      islamicMedicalEthics: true
+      islamicMedicalEthics: true,
     },
     educational: {
       educationMinistry: 'https://api.education.gov.iq',
       universitiesCouncil: 'https://api.iraqi-universities.org',
-      islamicEducation: true
-    }
-  }
+      islamicEducation: true,
+    },
+  },
 };
 ```
 
 ## 📈 Iraqi Professional Integration
 
 ### Professional Domains
+
 - **Legal**: Iraqi lawyers, judges, legal assistants with Islamic jurisprudence integration
 - **Medical**: Iraqi doctors, nurses, medical staff with Islamic medical ethics
 - **Educational**: Iraqi teachers, professors, administrators with Islamic educational values
@@ -460,6 +496,7 @@ export const professionalConfig = {
 - **General**: Versatile assistants for general Iraqi professional needs
 
 ### Governorate Specialization
+
 - **Baghdad**: Capital city professional standards and government integration
 - **Basra**: Oil industry and southern Iraqi cultural specialization
 - **Mosul**: Northern Iraqi cultural adaptation and reconstruction expertise
@@ -479,6 +516,7 @@ export const professionalConfig = {
 ## 🤝 Contributing
 
 ### Development Guidelines
+
 1. **Cultural Sensitivity**: All contributions must respect Iraqi cultural values and Islamic principles
 2. **Arabic-First Development**: Prioritize Arabic language support while maintaining English accessibility
 3. **Professional Standards**: Maintain Iraqi government and professional body compliance requirements
@@ -486,6 +524,7 @@ export const professionalConfig = {
 5. **Accessibility**: Full WCAG 2.1 AA compliance with Arabic RTL support
 
 ### Contribution Process
+
 ```bash
 # Fork and clone the repository
 git clone https://github.com/your-username/iraqi-ai-persona-management.git
@@ -503,12 +542,14 @@ bun run test:cultural
 ## 📞 Support
 
 ### Technical Support
+
 - **Development Team**: personas@iraqi-ai.gov.iq
 - **Cultural Compliance**: cultural@iraqi-ai.gov.iq
 - **Islamic Compliance**: islamic@iraqi-ai.gov.iq
 - **Professional Integration**: professional@iraqi-ai.gov.iq
 
 ### Professional Integration Support
+
 - **Legal Domain**: legal-support@iraqi-ai.gov.iq
 - **Medical Domain**: medical-support@iraqi-ai.gov.iq
 - **Educational Domain**: education-support@iraqi-ai.gov.iq
@@ -528,22 +569,24 @@ This software is proprietary and confidential. Licensed exclusively for use by I
 
 ---
 
-*Built with ❤️ for Iraq and its professional community*
+_Built with ❤️ for Iraq and its professional community_
 
-*في خدمة العراق ومهنييه الكرام*
+_في خدمة العراق ومهنييه الكرام_
 
 ## 🔗 Integration with Iraqi AI Chat System
 
 This persona management system is designed to integrate seamlessly with the broader Iraqi AI Chat System:
 
 ### System Integration
+
 - **Real-time Cultural Validation**: Live compliance monitoring during chat interactions
-- **Professional Domain Routing**: Automatic persona selection based on user professional context  
+- **Professional Domain Routing**: Automatic persona selection based on user professional context
 - **Memory Continuity**: Cross-session persona state preservation and cultural learning
 - **Arabic-English Code Switching**: Intelligent language detection and response adaptation
 - **Islamic Calendar Integration**: Prayer time awareness and religious observance support
 
 ### Professional Workflow Integration
+
 - **Ministry APIs**: Direct integration with Iraqi government professional registries
 - **Professional Bodies**: Real-time validation with Iraqi Bar Association, Medical Association, etc.
 - **Cultural Validation Pipeline**: Automated cultural appropriateness checking and compliance reporting

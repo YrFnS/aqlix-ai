@@ -1,11 +1,11 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Settings, X, Sparkles, Key, AlertTriangle } from 'lucide-react';
-import { MCPConfiguration } from './types';
-import { useCredentialProfilesForMcp } from '@/hooks/react-query/mcp/use-credential-profiles';
-import { usePipedreamAppIcon } from '@/hooks/react-query/pipedream/use-pipedream';
+import React from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Settings, X, Sparkles, Key, AlertTriangle } from "lucide-react";
+import { MCPConfiguration } from "./types";
+import { useCredentialProfilesForMcp } from "@/hooks/react-query/mcp/use-credential-profiles";
+import { usePipedreamAppIcon } from "@/hooks/react-query/pipedream/use-pipedream";
 
 interface ConfiguredMcpListProps {
   configuredMCPs: MCPConfiguration[];
@@ -15,13 +15,13 @@ interface ConfiguredMcpListProps {
 }
 
 const extractAppSlug = (mcp: MCPConfiguration): string | null => {
-  if (mcp.customType === 'pipedream') {
+  if (mcp.customType === "pipedream") {
     const qualifiedMatch = mcp.qualifiedName.match(/^pipedream_([^_]+)_/);
     if (qualifiedMatch) {
       return qualifiedMatch[1];
     }
-    if (mcp.config?.headers?.['x-pd-app-slug']) {
-      return mcp.config.headers['x-pd-app-slug'];
+    if (mcp.config?.headers?.["x-pd-app-slug"]) {
+      return mcp.config.headers["x-pd-app-slug"];
     }
   }
   return null;
@@ -29,8 +29,8 @@ const extractAppSlug = (mcp: MCPConfiguration): string | null => {
 
 const MCPLogo: React.FC<{ mcp: MCPConfiguration }> = ({ mcp }) => {
   const appSlug = extractAppSlug(mcp);
-  const { data: iconData } = usePipedreamAppIcon(appSlug || '', {
-    enabled: !!appSlug
+  const { data: iconData } = usePipedreamAppIcon(appSlug || "", {
+    enabled: !!appSlug,
   });
 
   const logoUrl = iconData?.icon_url;
@@ -45,12 +45,18 @@ const MCPLogo: React.FC<{ mcp: MCPConfiguration }> = ({ mcp }) => {
           className="w-full h-full object-cover rounded"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            target.nextElementSibling?.classList.remove('hidden');
+            target.style.display = "none";
+            target.nextElementSibling?.classList.remove("hidden");
           }}
         />
       ) : null}
-      <div className={logoUrl ? "hidden" : "flex w-full h-full items-center justify-center bg-muted rounded-md text-xs font-medium text-muted-foreground"}>
+      <div
+        className={
+          logoUrl
+            ? "hidden"
+            : "flex w-full h-full items-center justify-center bg-muted rounded-md text-xs font-medium text-muted-foreground"
+        }
+      >
         {firstLetter}
       </div>
     </div>
@@ -64,10 +70,12 @@ const MCPConfigurationItem: React.FC<{
   onRemove: (index: number) => void;
   onConfigureTools?: (index: number) => void;
 }> = ({ mcp, index, onEdit, onRemove, onConfigureTools }) => {
-  const { data: profiles = [] } = useCredentialProfilesForMcp(mcp.qualifiedName);
+  const { data: profiles = [] } = useCredentialProfilesForMcp(
+    mcp.qualifiedName,
+  );
   const profileId = mcp.selectedProfileId || mcp.config?.profile_id;
-  const selectedProfile = profiles.find(p => p.profile_id === profileId);
-  
+  const selectedProfile = profiles.find((p) => p.profile_id === profileId);
+
   const hasCredentialProfile = !!profileId && !!selectedProfile;
 
   return (

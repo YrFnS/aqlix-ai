@@ -1,12 +1,13 @@
 # Task-Centric Memory
+
 _(EXPERIMENTAL, RESEARCH IN PROGRESS)_
 
 **Task-Centric Memory** is an active research project aimed at giving AI agents the ability to:
 
-* Accomplish general tasks more effectively by learning quickly and continually beyond context-window limitations.
-* Remember guidance, corrections, plans, and demonstrations provided by users.
-* Learn through the agent's own experience and adapt quickly to changing circumstances.
-* Avoid repeating mistakes on tasks that are similar to those previously encountered.
+- Accomplish general tasks more effectively by learning quickly and continually beyond context-window limitations.
+- Remember guidance, corrections, plans, and demonstrations provided by users.
+- Learn through the agent's own experience and adapt quickly to changing circumstances.
+- Avoid repeating mistakes on tasks that are similar to those previously encountered.
 
 ## Installation
 
@@ -154,7 +155,6 @@ The example above modifies the agent's code.
 But it's also possible to add task-centric memory to an agent or multi-agent team _without_ modifying any agent code.
 See the [sample code](../../../../../../samples/task_centric_memory) for that and other forms of fast, memory-based learning.
 
-
 ## Architecture
 
 <p align="right">
@@ -200,6 +200,7 @@ the memory controller repeats the following learning loop in the background some
 
 The memory controller provides methods for different types of memory retrieval.
 When the agent is given a task, the following steps are performed by the controller:
+
 1. The task is rephrased into a generalized form.
 2. A set of free-form, multi-word query topics are generated from the generalized task.
 3. A potentially large number of previously stored topics, those most similar to each query topic, are retrieved from the vector DB along with the insights they map to.

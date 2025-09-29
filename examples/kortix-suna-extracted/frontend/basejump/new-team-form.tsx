@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useActionState } from 'react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { createTeam } from '@/lib/actions/teams';
-import { SubmitButton } from '@/components/ui/submit-button';
-import { AtSign, Check, Info } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { useActionState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { createTeam } from "@/lib/actions/teams";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { AtSign, Check, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const initialState = {
-  message: '',
+  message: "",
 };
 
 export default function NewTeamForm() {
   const [state, formAction] = useActionState(createTeam, initialState);
-  const [slugValue, setSlugValue] = useState('');
-  const [nameValue, setNameValue] = useState('');
+  const [slugValue, setSlugValue] = useState("");
+  const [nameValue, setNameValue] = useState("");
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -26,8 +26,8 @@ export default function NewTeamForm() {
     if (!slugValue) {
       const generatedSlug = value
         .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9-]/g, '');
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "");
       setSlugValue(generatedSlug);
     }
   };
@@ -66,7 +66,7 @@ export default function NewTeamForm() {
             htmlFor="slug"
             className="text-sm font-medium text-foreground/90 flex items-center gap-2"
           >
-            Team URL{' '}
+            Team URL{" "}
             <span className="text-xs text-muted-foreground">
               (unique identifier)
             </span>
@@ -88,7 +88,7 @@ export default function NewTeamForm() {
             <p>
               This will be used for your team URL:
               <span className="block text-primary font-medium mt-0.5">
-                yourapp.com/{slugValue || 'team-name'}
+                yourapp.com/{slugValue || "team-name"}
               </span>
             </p>
           </div>
@@ -108,9 +108,9 @@ export default function NewTeamForm() {
         }
         pendingText="Creating team..."
         className={cn(
-          'w-full rounded-lg shadow-xs transition-all',
-          'bg-primary hover:bg-primary/90 text-white',
-          'dark:bg-primary/90 dark:hover:bg-primary',
+          "w-full rounded-lg shadow-xs transition-all",
+          "bg-primary hover:bg-primary/90 text-white",
+          "dark:bg-primary/90 dark:hover:bg-primary",
         )}
         size="lg"
       >

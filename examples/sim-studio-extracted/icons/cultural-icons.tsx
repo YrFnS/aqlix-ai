@@ -3,7 +3,7 @@
  * SVG icons for Iraqi AI enhanced features
  */
 
-import type { SVGProps } from 'react'
+import type { SVGProps } from "react";
 
 export function CulturalValidatorIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -21,11 +21,18 @@ export function CulturalValidatorIcon(props: SVGProps<SVGSVGElement>) {
     >
       <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
       <path d="M9 12l2 2 4-4" />
-      <circle cx="12" cy="12" r="8" stroke="none" fill="currentColor" opacity="0.1" />
+      <circle
+        cx="12"
+        cy="12"
+        r="8"
+        stroke="none"
+        fill="currentColor"
+        opacity="0.1"
+      />
       <path d="M8 12h8" strokeWidth="1" />
       <path d="M12 8v8" strokeWidth="1" />
     </svg>
-  )
+  );
 }
 
 export function ArabicProcessorIcon(props: SVGProps<SVGSVGElement>) {
@@ -51,7 +58,7 @@ export function ArabicProcessorIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M12 2v2" strokeDasharray="2 2" />
       <path d="M12 20v2" strokeDasharray="2 2" />
     </svg>
-  )
+  );
 }
 
 export function PaymentGatewayIcon(props: SVGProps<SVGSVGElement>) {
@@ -77,7 +84,7 @@ export function PaymentGatewayIcon(props: SVGProps<SVGSVGElement>) {
         IQD
       </text>
     </svg>
-  )
+  );
 }
 
 export function ProfessionalDomainIcon(props: SVGProps<SVGSVGElement>) {
@@ -100,7 +107,7 @@ export function ProfessionalDomainIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M8 6h8" strokeWidth="1" opacity="0.5" />
       <circle cx="12" cy="15" r="2" strokeWidth="1" />
     </svg>
-  )
+  );
 }
 
 export function IslamicComplianceIcon(props: SVGProps<SVGSVGElement>) {
@@ -124,7 +131,7 @@ export function IslamicComplianceIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M10.5 9.5l3 3" strokeWidth="0.5" opacity="0.7" />
       <path d="M13.5 9.5l-3 3" strokeWidth="0.5" opacity="0.7" />
     </svg>
-  )
+  );
 }
 
 export function RTLLayoutIcon(props: SVGProps<SVGSVGElement>) {
@@ -149,7 +156,7 @@ export function RTLLayoutIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M21 10l-2 2 2 2" />
       <path d="M21 16l-2 2 2 2" />
     </svg>
-  )
+  );
 }
 
 export function LegalDocumentIcon(props: SVGProps<SVGSVGElement>) {
@@ -173,7 +180,7 @@ export function LegalDocumentIcon(props: SVGProps<SVGSVGElement>) {
       <polyline points="10,9 9,9 8,9" />
       <path d="M12 9h4" strokeWidth="3" opacity="0.7" />
     </svg>
-  )
+  );
 }
 
 export function MedicalRecordIcon(props: SVGProps<SVGSVGElement>) {
@@ -198,5 +205,5 @@ export function MedicalRecordIcon(props: SVGProps<SVGSVGElement>) {
       <path d="M12 12v-2h2" />
       <circle cx="12" cy="12" r="4" strokeWidth="1" opacity="0.3" />
     </svg>
-  )
+  );
 }

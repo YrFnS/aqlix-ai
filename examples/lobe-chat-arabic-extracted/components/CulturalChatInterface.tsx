@@ -1,7 +1,7 @@
 /**
  * Iraqi Cultural Chat Interface Component
  * Extracted and enhanced from lobe-chat with Iraqi cultural context
- * 
+ *
  * Features:
  * - Cultural greetings and interaction patterns
  * - Professional domain interface adaptation
@@ -56,7 +56,7 @@ export function CulturalChatInterface({
   professionalMode = false,
   enableDialectDetection = true,
   enableCulturalAdaptation = true,
-  className = ''
+  className = '',
 }: CulturalChatInterfaceProps) {
   const {
     direction,
@@ -66,14 +66,10 @@ export function CulturalChatInterface({
     culturalTheme,
     formatText,
     detectTextDirection,
-    detectDialect
+    detectDialect,
   } = useRTL();
-  
-  const {
-    getCulturalGreeting,
-    getCulturalFarewell,
-    adaptContent
-  } = useCulturalAdaptation();
+
+  const { getCulturalGreeting, getCulturalFarewell, adaptContent } = useCulturalAdaptation();
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -91,7 +87,7 @@ export function CulturalChatInterface({
         'بارك الله فيك',
         'جزاك الله خيراً',
         'حفظك الله',
-        'في أمان الله'
+        'في أمان الله',
       ],
       en: [
         'In the name of Allah',
@@ -99,8 +95,8 @@ export function CulturalChatInterface({
         'May Allah bless you',
         'May Allah reward you',
         'May Allah protect you',
-        'Go in peace'
-      ]
+        'Go in peace',
+      ],
     },
     iraqi: {
       baghdad: [
@@ -109,24 +105,10 @@ export function CulturalChatInterface({
         'زين، ماشي الحال',
         'الله وياك',
         'سلامات عليك',
-        'شدسوي هسة؟'
+        'شدسوي هسة؟',
       ],
-      basra: [
-        'شلونچم؟',
-        'شكد الحال؟',
-        'هوائي زين',
-        'الله معاچ',
-        'بالسلامة',
-        'وين رايح؟'
-      ],
-      mosul: [
-        'شونك؟',
-        'كيفچم اليوم؟',
-        'هاي زين',
-        'الله معك',
-        'سلامات',
-        'شد تسوي؟'
-      ]
+      basra: ['شلونچم؟', 'شكد الحال؟', 'هوائي زين', 'الله معاچ', 'بالسلامة', 'وين رايح؟'],
+      mosul: ['شونك؟', 'كيفچم اليوم؟', 'هاي زين', 'الله معك', 'سلامات', 'شد تسوي؟'],
     },
     professional: {
       legal: [
@@ -135,7 +117,7 @@ export function CulturalChatInterface({
         'وفقاً للأنظمة',
         'بموجب القانون',
         'حسب الأصول القانونية',
-        'As per Iraqi law'
+        'As per Iraqi law',
       ],
       medical: [
         'من الناحية الطبية',
@@ -143,7 +125,7 @@ export function CulturalChatInterface({
         'بناءً على التشخيص',
         'وفقاً للبروتوكول',
         'حسب الأخلاق الطبية',
-        'Medically speaking'
+        'Medically speaking',
       ],
       educational: [
         'من الناحية التعليمية',
@@ -151,9 +133,9 @@ export function CulturalChatInterface({
         'وفقاً للمعايير',
         'في السياق التعليمي',
         'حسب الأساليب التربوية',
-        'Educationally'
-      ]
-    }
+        'Educationally',
+      ],
+    },
   };
 
   // Scroll to bottom when messages change
@@ -162,37 +144,54 @@ export function CulturalChatInterface({
   }, [messages]);
 
   // Generate cultural suggestions based on context
-  const generateCulturalSuggestions = useCallback((text: string) => {
-    if (!enableCulturalAdaptation) return [];
+  const generateCulturalSuggestions = useCallback(
+    (text: string) => {
+      if (!enableCulturalAdaptation) return [];
 
-    const suggestions: string[] = [];
-    const lowerText = text.toLowerCase();
+      const suggestions: string[] = [];
+      const lowerText = text.toLowerCase();
 
-    // Islamic suggestions
-    if (culturalTheme === 'islamic') {
-      if (lowerText.includes('start') || lowerText.includes('begin') || lowerText.includes('نبدأ')) {
-        suggestions.push(...culturalPhrases.islamic[language === 'ar' ? 'ar' : 'en']);
+      // Islamic suggestions
+      if (culturalTheme === 'islamic') {
+        if (
+          lowerText.includes('start') ||
+          lowerText.includes('begin') ||
+          lowerText.includes('نبدأ')
+        ) {
+          suggestions.push(...culturalPhrases.islamic[language === 'ar' ? 'ar' : 'en']);
+        }
       }
-    }
 
-    // Iraqi dialect suggestions
-    if (culturalTheme === 'iraqi' && dialect) {
-      const dialectPhrases = culturalPhrases.iraqi[dialect as keyof typeof culturalPhrases.iraqi];
-      if (dialectPhrases) {
-        suggestions.push(...dialectPhrases);
+      // Iraqi dialect suggestions
+      if (culturalTheme === 'iraqi' && dialect) {
+        const dialectPhrases = culturalPhrases.iraqi[dialect as keyof typeof culturalPhrases.iraqi];
+        if (dialectPhrases) {
+          suggestions.push(...dialectPhrases);
+        }
       }
-    }
 
-    // Professional domain suggestions
-    if (professionalMode && professionalDomain) {
-      const domainPhrases = culturalPhrases.professional[professionalDomain as keyof typeof culturalPhrases.professional];
-      if (domainPhrases) {
-        suggestions.push(...domainPhrases);
+      // Professional domain suggestions
+      if (professionalMode && professionalDomain) {
+        const domainPhrases =
+          culturalPhrases.professional[
+            professionalDomain as keyof typeof culturalPhrases.professional
+          ];
+        if (domainPhrases) {
+          suggestions.push(...domainPhrases);
+        }
       }
-    }
 
-    return suggestions.slice(0, 6); // Limit to 6 suggestions
-  }, [culturalTheme, dialect, professionalDomain, language, professionalMode, enableCulturalAdaptation]);
+      return suggestions.slice(0, 6); // Limit to 6 suggestions
+    },
+    [
+      culturalTheme,
+      dialect,
+      professionalDomain,
+      language,
+      professionalMode,
+      enableCulturalAdaptation,
+    ]
+  );
 
   // Handle input change with cultural adaptation
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,7 +217,7 @@ export function CulturalChatInterface({
     // Detect text properties
     const textDirection = detectTextDirection(textToSend);
     const detectedDialect = enableDialectDetection ? detectDialect(textToSend) : null;
-    
+
     // Adapt content culturally
     const adaptedContent = enableCulturalAdaptation ? adaptContent(textToSend) : textToSend;
 
@@ -228,7 +227,7 @@ export function CulturalChatInterface({
       detectedDialect,
       culturalTheme,
       professionalDomain,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     // Send message with metadata
@@ -260,9 +259,9 @@ export function CulturalChatInterface({
   // Get message formatting
   const getMessageFormatting = (message: CulturalMessage) => {
     const formatting = formatText(message.content);
-    
+
     let additionalClasses = '';
-    
+
     // Add sender-specific styling
     if (message.sender === 'user') {
       additionalClasses += ' message-user';
@@ -286,7 +285,7 @@ export function CulturalChatInterface({
 
     return {
       ...formatting,
-      className: formatting.className + additionalClasses
+      className: formatting.className + additionalClasses,
     };
   };
 
@@ -298,7 +297,11 @@ export function CulturalChatInterface({
     const { className, direction: msgDirection, lang } = formatText(greeting);
 
     return (
-      <div className={`welcome-message ${className} rtl-card islamic-theme`} dir={msgDirection} lang={lang}>
+      <div
+        className={`welcome-message ${className} rtl-card islamic-theme`}
+        dir={msgDirection}
+        lang={lang}
+      >
         <div className="welcome-content">
           <h3 className="welcome-title">
             {language === 'ar' ? 'مرحباً بك في النظام' : 'Welcome to the System'}
@@ -306,11 +309,18 @@ export function CulturalChatInterface({
           <p className="welcome-text">{greeting}</p>
           {professionalMode && professionalDomain && (
             <p className="professional-notice">
-              {language === 'ar' 
-                ? `تم تفعيل الوضع المهني: ${professionalDomain === 'legal' ? 'القانوني' : 
-                                               professionalDomain === 'medical' ? 'الطبي' :
-                                               professionalDomain === 'educational' ? 'التعليمي' :
-                                               professionalDomain === 'business' ? 'التجاري' : 'الهندسي'}`
+              {language === 'ar'
+                ? `تم تفعيل الوضع المهني: ${
+                    professionalDomain === 'legal'
+                      ? 'القانوني'
+                      : professionalDomain === 'medical'
+                        ? 'الطبي'
+                        : professionalDomain === 'educational'
+                          ? 'التعليمي'
+                          : professionalDomain === 'business'
+                            ? 'التجاري'
+                            : 'الهندسي'
+                  }`
                 : `Professional mode active: ${professionalDomain}`}
             </p>
           )}
@@ -331,10 +341,8 @@ export function CulturalChatInterface({
         dir={formatting.direction}
       >
         <div className={`message-bubble ${formatting.className}`} lang={formatting.lang}>
-          <div className="message-content">
-            {message.content}
-          </div>
-          
+          <div className="message-content">{message.content}</div>
+
           {message.metadata?.suggestions && (
             <div className="message-suggestions">
               <small className="suggestions-label">
@@ -353,25 +361,19 @@ export function CulturalChatInterface({
               </div>
             </div>
           )}
-          
+
           <div className="message-meta">
             <span className="message-time">
               {message.timestamp.toLocaleTimeString(language === 'ar' ? 'ar-IQ' : 'en-US', {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
               })}
             </span>
-            
-            {message.dialect && (
-              <span className="message-dialect">
-                {message.dialect}
-              </span>
-            )}
-            
+
+            {message.dialect && <span className="message-dialect">{message.dialect}</span>}
+
             {message.professionalDomain && (
-              <span className="message-domain">
-                {message.professionalDomain}
-              </span>
+              <span className="message-domain">{message.professionalDomain}</span>
             )}
           </div>
         </div>
@@ -385,20 +387,18 @@ export function CulturalChatInterface({
     <div className={`cultural-chat-interface ${direction}-layout ${className}`} dir={direction}>
       {/* Welcome Message */}
       {renderWelcomeMessage()}
-      
+
       {/* Messages Container */}
       <div className="messages-container rtl-container">
         {messages.map(renderMessage)}
-        
+
         {isLoading && (
           <div className="loading-indicator rtl-flex rtl-items-center">
             <div className="loading-spinner"></div>
-            <span className="loading-text">
-              {language === 'ar' ? 'يكتب...' : 'Typing...'}
-            </span>
+            <span className="loading-text">{language === 'ar' ? 'يكتب...' : 'Typing...'}</span>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -439,16 +439,20 @@ export function CulturalChatInterface({
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             placeholder={
-              language === 'ar' 
-                ? (professionalMode ? 'اكتب استفسارك المهني هنا...' : 'اكتب رسالتك هنا...')
-                : (professionalMode ? 'Type your professional inquiry...' : 'Type your message...')
+              language === 'ar'
+                ? professionalMode
+                  ? 'اكتب استفسارك المهني هنا...'
+                  : 'اكتب رسالتك هنا...'
+                : professionalMode
+                  ? 'Type your professional inquiry...'
+                  : 'Type your message...'
             }
             className={`message-input ${inputFormatting.className}`}
             dir={inputFormatting.direction}
             lang={inputFormatting.lang}
             disabled={isLoading}
           />
-          
+
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputValue.trim() || isLoading}
@@ -462,10 +466,7 @@ export function CulturalChatInterface({
               fill="none"
               className={`send-icon ${direction === 'rtl' ? 'rtl-flip' : ''}`}
             >
-              <path
-                d="M2 21l21-9L2 3v7l15 2-15 2v7z"
-                fill="currentColor"
-              />
+              <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" fill="currentColor" />
             </svg>
           </button>
         </div>
@@ -475,19 +476,18 @@ export function CulturalChatInterface({
           <div className="input-meta">
             <div className="input-stats">
               <span className="text-direction">
-                {inputFormatting.direction === 'rtl' ? 'عربي' : 
-                 inputFormatting.direction === 'mixed' ? 'مختلط' : 'English'}
+                {inputFormatting.direction === 'rtl'
+                  ? 'عربي'
+                  : inputFormatting.direction === 'mixed'
+                    ? 'مختلط'
+                    : 'English'}
               </span>
-              
+
               {enableDialectDetection && inputFormatting.direction !== 'ltr' && (
-                <span className="detected-dialect">
-                  {detectDialect(inputValue) || 'عام'}
-                </span>
+                <span className="detected-dialect">{detectDialect(inputValue) || 'عام'}</span>
               )}
-              
-              <span className="char-count">
-                {inputValue.length}/1000
-              </span>
+
+              <span className="char-count">{inputValue.length}/1000</span>
             </div>
           </div>
         )}
@@ -571,7 +571,7 @@ export function CulturalChatInterface({
           color: #2d3748;
           border: 1px solid #e2e8f0;
           border-radius: 18px 18px 18px 6px;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .message-content {
@@ -706,7 +706,9 @@ export function CulturalChatInterface({
         }
 
         @keyframes spin {
-          to { transform: rotate(360deg); }
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .loading-text {
@@ -746,7 +748,7 @@ export function CulturalChatInterface({
           .message-bubble {
             max-width: 90%;
           }
-          
+
           .suggestions-grid {
             justify-content: center;
           }

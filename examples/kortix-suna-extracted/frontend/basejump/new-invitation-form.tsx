@@ -1,6 +1,6 @@
-'use client';
-import { SubmitButton } from '../ui/submit-button';
-import { Label } from '../ui/label';
+"use client";
+import { SubmitButton } from "../ui/submit-button";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectTrigger,
@@ -9,28 +9,28 @@ import {
   SelectGroup,
   SelectLabel,
   SelectItem,
-} from '@/components/ui/select';
-import { createInvitation } from '@/lib/actions/invitations';
-import { useFormState } from 'react-dom';
-import fullInvitationUrl from '@/lib/full-invitation-url';
+} from "@/components/ui/select";
+import { createInvitation } from "@/lib/actions/invitations";
+import { useFormState } from "react-dom";
+import fullInvitationUrl from "@/lib/full-invitation-url";
 
 type Props = {
   accountId: string;
 };
 
 const invitationOptions = [
-  { label: '24 Hour', value: '24_hour' },
-  { label: 'One time use', value: 'one_time' },
+  { label: "24 Hour", value: "24_hour" },
+  { label: "One time use", value: "one_time" },
 ];
 
 const memberOptions = [
-  { label: 'Owner', value: 'owner' },
-  { label: 'Member', value: 'member' },
+  { label: "Owner", value: "owner" },
+  { label: "Member", value: "member" },
 ];
 
 const initialState = {
-  message: '',
-  token: '',
+  message: "",
+  token: "",
 };
 
 export default function NewInvitationForm({ accountId }: Props) {

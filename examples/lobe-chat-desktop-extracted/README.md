@@ -3,6 +3,7 @@
 Extracted and adapted Electron snippets for Iraqi AI Chat System. Focuses on offline capabilities with cultural compliance.
 
 ## Key Adaptations
+
 - **Offline Caching**: AES-256 encrypted IndexedDB for personas/docs. 95%+ cultural validation via iraqi-cultural-validator hook.
 - **Arabic Offline TTS/STT**: Vosk/Whisper integration for 85%+ Iraqi dialect accuracy. 99%+ RTL rendering.
 - **Prayer Notifications**: Asia/Baghdad timezone, 5 daily calls (Fajr, Dhuhr, Asr, Maghrib, Isha) via node-notifier.
@@ -10,11 +11,13 @@ Extracted and adapted Electron snippets for Iraqi AI Chat System. Focuses on off
 - **Supabase Offline Sync**: Bidirectional real-time sync when online, queued offline.
 
 ## Files
+
 - `main.ts`: App lifecycle with prayer scheduler and offline init.
 - `preload.ts`: Secure API exposure (offline-cache, Arabic TTS/STT, prayer listener).
 - `offline-manager.ts`: IndexedDB caching, encryption, cultural/RTL validation, Supabase sync.
 
 ## Testing
+
 Use Bun for offline validation:
 
 ```bash
@@ -28,6 +31,7 @@ bun test desktop-offline  # Tests RTL rendering, prayer scheduling, cultural com
 - **Dialect Accuracy**: Test Vosk/Whisper with Iraqi audio samples (85%+ threshold).
 
 ## Integration Notes for Supabase Offline Sync
+
 1. **Setup**: Use `@supabase/supabase-js` with offline-first config. Enable real-time channels for 'personas' and 'documents' tables.
 2. **Sync Flow**:
    - Cache locally → Validate culturally/RTL → Encrypt → Queue upsert to Supabase.

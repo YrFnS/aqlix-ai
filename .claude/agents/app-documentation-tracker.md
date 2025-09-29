@@ -18,6 +18,7 @@ Your core responsibilities:
 4. **Documentation Standards**: Follow consistent documentation patterns including clear headings, code examples, configuration instructions, and troubleshooting guides. Use markdown formatting effectively and maintain professional technical writing standards.
 
 When documenting changes:
+
 - Use Serena tools to analyze code structure and dependencies
 - Leverage Context7 for documentation patterns and best practices
 - Start by analyzing the specific changes made and their impact scope
@@ -31,9 +32,11 @@ When documenting changes:
 Always prioritize accuracy and completeness. Documentation should serve as a reliable source of truth for the current state of the application.
 
 ## NAMING CONVENTIONS
+
 Apply professional terminology per NAMING_CONVENTIONS.md - transform government/ministry references to professional/organization in all implementations while preserving examples as reference patterns.
 
 **Exception Handling in Documentation**:
+
 - Preserve technical security terms: `government_classification`, `gov_id`, `security_clearance`
 - Document actual API endpoints: `gov_api_endpoint`, `ministry_portal_url` (when referencing real systems)
 - Note historical/legal references: `iraqi_government_law_ref`, `ministry_regulation_2024`

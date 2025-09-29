@@ -1,6 +1,7 @@
 # Iraqi Feature Development Workflow
 
 ## Workflow Overview
+
 **Purpose**: Complete feature development with Iraqi cultural context, Arabic language support, and Islamic compliance validation.
 
 **Estimated Duration**: 8-12 hours  
@@ -10,18 +11,21 @@
 ## Agent Coordination Chain
 
 ### Phase 1: Requirements & Market Analysis
+
 **Primary Agent**: `iraqi-product-manager`
 **Duration**: 1-2 hours
 **Input Context**: User requirements, market context
 **Output**: `iraqi-requirements.md`
 
 **Responsibilities**:
+
 - Analyze Iraqi market dynamics and user preferences
 - Prioritize features based on Iraqi social needs and Islamic values
 - Define requirements with cultural and technical constraints
 - Validate business alignment with Iraqi cultural values
 
 **Success Criteria**:
+
 - Requirements culturally validated (>90%)
 - Business value clearly defined
 - Iraqi market context integrated
@@ -32,18 +36,21 @@
 ---
 
 ### Phase 2: Cultural Appropriateness Validation
+
 **Primary Agent**: `iraqi-cultural-validator`
 **Duration**: 1-2 hours
 **Input Context**: `iraqi-requirements.md`, `cultural-decisions.md`
 **Output**: `cultural-validation.md`
 
 **Responsibilities**:
+
 - Validate Islamic compliance and appropriateness
 - Ensure political neutrality and sectarian sensitivity
 - Verify professional etiquette alignment
 - Assess family value integration
 
 **Success Criteria**:
+
 - Cultural appropriateness score >95%
 - Islamic compliance verified
 - Political neutrality confirmed
@@ -54,6 +61,7 @@
 ---
 
 ### Phase 3: Design Coordination
+
 **Primary Agent**: `iraqi-ui-designer`
 **Supporting Agents**: `iraqi-ux-researcher`, `iraqi-interaction-designer`
 **Duration**: 3-4 hours
@@ -61,6 +69,7 @@
 **Output**: `design-specification.md`
 
 **Coordination Strategy**:
+
 1. **UX Research Phase** (1 hour)
    - Agent: `iraqi-ux-researcher`
    - Action: Analyze Iraqi user behavior patterns
@@ -79,6 +88,7 @@
    - Output: Interaction specifications
 
 **Success Criteria**:
+
 - RTL compliance 100%
 - Cultural design acceptance >90%
 - Iraqi user behavior alignment verified
@@ -89,18 +99,21 @@
 ---
 
 ### Phase 4: Technical Implementation Planning
+
 **Primary Agent**: `iraqi-ai-agent-architect`
 **Duration**: 2-3 hours
 **Input Context**: All previous contexts + `technical-solutions.md`
 **Output**: `implementation-plan.md`
 
 **Responsibilities**:
+
 - Design PydanticAI agent architecture with Iraqi context
 - Plan Arabic NLP pipeline implementation
 - Define cultural context integration patterns
 - Specify Islamic compliance validation mechanisms
 
 **Success Criteria**:
+
 - Technical architecture culturally aware
 - Arabic language processing integrated
 - Performance targets defined (<500ms)
@@ -111,6 +124,7 @@
 ---
 
 ### Phase 5: Comprehensive Testing Validation
+
 **Primary Agent**: `iraqi-cultural-tester`
 **Supporting Agents**: `iraqi-arabic-tester`, `iraqi-payment-tester` (if applicable)
 **Duration**: 2-3 hours
@@ -118,6 +132,7 @@
 **Output**: `comprehensive-test-results.md`
 
 **Testing Coordination**:
+
 1. **Cultural Testing** (1 hour)
    - Agent: `iraqi-cultural-tester`
    - Focus: Islamic compliance, cultural scenarios
@@ -134,6 +149,7 @@
    - Validation: ZainCash/FastPay/NassWallet
 
 **Success Criteria**:
+
 - All tests passing (100%)
 - Cultural acceptance >95%
 - Arabic rendering perfect (99%+)
@@ -146,30 +162,37 @@
 ## Context Flow Optimization
 
 ### Context Compression Strategy
+
 ```yaml
 phase_1_to_2:
-  essential_context: [cultural_requirements, islamic_considerations, political_sensitivity]
+  essential_context:
+    [cultural_requirements, islamic_considerations, political_sensitivity]
   compression_level: low
   validation_required: true
 
 phase_2_to_3:
-  essential_context: [cultural_compliance_score, design_constraints, color_preferences]
+  essential_context:
+    [cultural_compliance_score, design_constraints, color_preferences]
   compression_level: moderate
   validation_required: true
 
 phase_3_to_4:
-  essential_context: [rtl_specifications, interaction_patterns, accessibility_requirements]
+  essential_context:
+    [rtl_specifications, interaction_patterns, accessibility_requirements]
   compression_level: moderate
   validation_required: false
 
 phase_4_to_5:
-  essential_context: [implementation_architecture, performance_targets, security_measures]
+  essential_context:
+    [implementation_architecture, performance_targets, security_measures]
   compression_level: low
   validation_required: true
 ```
 
 ### Knowledge Base Updates
+
 After successful completion, update:
+
 - `cultural-decisions.md`: New cultural validation patterns
 - `technical-solutions.md`: Implementation approaches
 - `ui-ux-decisions.md`: Design patterns and decisions
@@ -180,6 +203,7 @@ After successful completion, update:
 ## Error Handling & Recovery
 
 ### Common Failure Points
+
 1. **Cultural Validation Failure** (Phase 2)
    - Recovery: Escalate to cultural expert consultation
    - Fallback: Conservative cultural interpretation
@@ -196,6 +220,7 @@ After successful completion, update:
    - Duration Impact: +3-6 hours
 
 ### Success Rate Optimization
+
 - **Preparation**: Load all relevant knowledge base files
 - **Validation**: Checkpoint validation at each phase
 - **Communication**: Maintain context quality >95%
@@ -206,6 +231,7 @@ After successful completion, update:
 ## Performance Metrics
 
 ### Target Performance
+
 - **Total Duration**: 8-12 hours
 - **Context Efficiency**: >85%
 - **Cultural Compliance**: >95%
@@ -213,6 +239,7 @@ After successful completion, update:
 - **User Acceptance**: >88%
 
 ### Success Indicators
+
 - ✅ Feature meets Iraqi cultural expectations
 - ✅ Arabic language perfectly integrated
 - ✅ Islamic compliance verified

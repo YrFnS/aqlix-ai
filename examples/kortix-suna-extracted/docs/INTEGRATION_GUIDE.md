@@ -7,13 +7,15 @@ Comprehensive guide for integrating the extracted Kortix-Suna enterprise system 
 This guide covers the complete integration of enterprise-grade agent management, team collaboration, billing systems, and workflow automation capabilities from the Kortix-Suna platform into the Iraqi AI Chat System.
 
 ### Integration Timeline: 22-32 weeks
+
 - **Phase 1**: Core Integration (6-8 weeks)
-- **Phase 2**: Advanced Features (8-12 weeks)  
+- **Phase 2**: Advanced Features (8-12 weeks)
 - **Phase 3**: Enterprise Deployment (8-12 weeks)
 
 ## 📋 Prerequisites
 
 ### Backend Requirements
+
 - Python 3.11+
 - FastAPI framework
 - Supabase or PostgreSQL database
@@ -21,6 +23,7 @@ This guide covers the complete integration of enterprise-grade agent management,
 - Docker for containerization
 
 ### Frontend Requirements
+
 - Next.js 15+
 - TypeScript
 - React 18+
@@ -28,6 +31,7 @@ This guide covers the complete integration of enterprise-grade agent management,
 - Arabic RTL support
 
 ### Iraqi-Specific Requirements
+
 - ZainCash/FastPay/NassWallet payment gateway accounts
 - Arabic language localization
 - Islamic business compliance validation
@@ -49,16 +53,16 @@ class SunaAgentManager:
     def __init__(self):
         self.version_service = get_version_service()
         self.billing_service = IraqiBillingService()
-    
+
     async def create_iraqi_agent(self, agent_config: IraqiAgentConfig):
         # Validate Iraqi professional domain requirements
         if not self.validate_iraqi_compliance(agent_config):
             raise ComplianceError("Agent configuration not compliant with Iraqi standards")
-        
+
         # Create agent with cultural validation
         agent = await self.create_agent_with_validation(agent_config)
         return agent
-    
+
     def validate_iraqi_compliance(self, config: IraqiAgentConfig) -> bool:
         # Implement Iraqi-specific validation
         # - Islamic content compliance
@@ -125,20 +129,20 @@ import { IraqiOrganizationTemplateSelector } from '../../../kortix-suna-extracte
 
 export const IraqiTeamManagement: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<IraqiOrganization | null>(null);
-  
+
   const handleTemplateSelect = (template: IraqiOrganization) => {
     setSelectedTemplate(template);
     // Initialize organization with Iraqi-specific settings
     initializeIraqiOrganization(template);
   };
-  
+
   return (
     <div className="space-y-6" dir={language === 'arabic' ? 'rtl' : 'ltr'}>
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">
           {language === 'arabic' ? 'إدارة الفريق' : 'Team Management'}
         </h2>
-        
+
         {!selectedTemplate ? (
           <IraqiOrganizationTemplateSelector onSelect={handleTemplateSelect} />
         ) : (
@@ -172,15 +176,15 @@ export const IraqiBillingManagement: React.FC = () => {
       api_secret: process.env.NASSWALLET_API_SECRET
     }
   }));
-  
+
   return (
     <div className="space-y-6" dir={language === 'arabic' ? 'rtl' : 'ltr'}>
       {/* Iraqi payment gateway selection */}
       <IraqiPaymentGatewaySelector paymentService={paymentService} />
-      
+
       {/* Existing billing modal with Iraqi customizations */}
-      <BillingModal 
-        open={billingModalOpen} 
+      <BillingModal
+        open={billingModalOpen}
         onOpenChange={setBillingModalOpen}
         customPaymentHandlers={{
           zaincash: handleZainCashPayment,
@@ -200,7 +204,7 @@ export const IraqiBillingManagement: React.FC = () => {
 ```python
 # apps/api/src/services/iraqi_payments.py
 from kortix_suna_extracted.templates.iraqi_payment_integration import (
-    IraqiPaymentService, 
+    IraqiPaymentService,
     IraqiPaymentRequest,
     ZainCashConfig,
     FastPayConfig,
@@ -223,11 +227,11 @@ class IraqiPaymentManager:
                 api_secret=os.getenv("NASSWALLET_API_SECRET")
             )
         )
-    
+
     async def process_subscription_payment(self, user_id: str, plan: str, gateway: str):
         # Calculate pricing based on Iraqi market
         amount = self.calculate_iraqi_pricing(plan)
-        
+
         # Create payment request
         payment_request = IraqiPaymentRequest(
             amount=amount,
@@ -239,7 +243,7 @@ class IraqiPaymentManager:
             description=f"Iraqi AI Chat Subscription - {plan}",
             callback_url=f"{config.BASE_URL}/payment/callback"
         )
-        
+
         return await self.payment_service.create_payment(payment_request)
 ```
 
@@ -257,17 +261,17 @@ payment_manager = IraqiPaymentManager()
 async def zaincash_callback(request: Request):
     # Handle ZainCash payment callback
     payload = await request.json()
-    
+
     # Verify payment with ZainCash
     payment_response = await payment_manager.verify_zaincash_payment(
         payload.get("transactionId")
     )
-    
+
     if payment_response.status == PaymentStatus.COMPLETED:
         # Activate subscription
         await activate_user_subscription(payment_response.customer_id)
         return {"status": "success"}
-    
+
     return {"status": "failed"}
 
 @router.post("/payment/callback/fastpay")
@@ -298,29 +302,29 @@ from kortix_suna_extracted.templates.iraqi_organization_templates import (
 class IraqiWorkflowManager:
     def __init__(self):
         self.trigger_service = TriggerService()
-    
+
     async def create_law_firm_workflows(self, organization_id: str):
         """Create law firm specific workflows"""
         law_firm_template = IraqiLawFirmTemplate
-        
+
         for workflow in law_firm_template.workflows:
             # Create workflow in system
             workflow_id = await self.create_workflow(
                 organization_id=organization_id,
                 workflow_config=workflow
             )
-            
+
             # Set up triggers for automation
             for step in workflow.steps:
                 if step.aiAgent:
                     await self.setup_ai_agent_trigger(workflow_id, step)
-            
+
         return f"Created {len(law_firm_template.workflows)} workflows for law firm"
-    
+
     async def create_medical_practice_workflows(self, organization_id: str):
         """Create medical practice specific workflows"""
         medical_template = IraqiMedicalPracticeTemplate
-        
+
         # Similar implementation for medical workflows
         pass
 ```
@@ -336,24 +340,24 @@ export const IraqiWorkflowBuilder: React.FC<{
   organization: IraqiOrganization;
 }> = ({ organization }) => {
   const [selectedWorkflow, setSelectedWorkflow] = useState<WorkflowTemplate | null>(null);
-  
+
   const handleWorkflowCreate = async (workflowConfig: WorkflowTemplate) => {
     // Add Iraqi-specific validations
     const validatedConfig = await validateIraqiWorkflow(workflowConfig, organization);
-    
+
     // Create workflow with cultural considerations
     const workflow = await createWorkflowWithCulturalValidation(validatedConfig);
-    
+
     return workflow;
   };
-  
+
   return (
     <div className="space-y-6" dir={language === 'arabic' ? 'rtl' : 'ltr'}>
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">
           {language === 'arabic' ? 'منشئ سير العمل' : 'Workflow Builder'}
         </h2>
-        
+
         {/* Iraqi workflow templates */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {organization.workflows.map((workflow) => (
@@ -368,7 +372,7 @@ export const IraqiWorkflowBuilder: React.FC<{
             </div>
           ))}
         </div>
-        
+
         {/* Workflow builder component */}
         <WorkflowBuilder
           onWorkflowCreate={handleWorkflowCreate}
@@ -395,23 +399,23 @@ from kortix_suna_extracted.templates.iraqi_organization_templates import Organiz
 class IraqiProfessionalAgentBuilder:
     def __init__(self):
         self.agent_config_tool = AgentConfigTool()
-    
+
     async def create_legal_agent(self, specialization: str) -> str:
         """Create Iraqi legal domain agent"""
         legal_prompt = f"""
         You are an Iraqi legal assistant specializing in {specialization}.
-        
+
         Key responsibilities:
         - Provide legal guidance based on Iraqi law
         - Draft legal documents in Arabic and English
         - Research Iraqi legal precedents
         - Ensure Islamic law compliance where applicable
         - Maintain client confidentiality
-        
+
         Important: Always include Arabic translations for legal terms.
         Never provide advice that conflicts with Iraqi legal system.
         """
-        
+
         agent_config = {
             "name": f"Iraqi Legal Assistant - {specialization}",
             "nameArabic": f"المساعد القانوني العراقي - {specialization}",
@@ -426,25 +430,25 @@ class IraqiProfessionalAgentBuilder:
                 "case_management": True
             }
         }
-        
+
         return await self.agent_config_tool.create_agent(agent_config)
-    
+
     async def create_medical_agent(self, specialization: str) -> str:
         """Create Iraqi medical domain agent"""
         medical_prompt = f"""
         You are an Iraqi medical assistant specializing in {specialization}.
-        
+
         Key responsibilities:
         - Assist with patient coordination
         - Help with medical record management
         - Provide appointment scheduling support
         - Ensure HIPAA and Iraqi medical privacy compliance
         - Support both Arabic and English communication
-        
+
         Important: Never provide direct medical diagnoses.
         Always encourage patients to consult with licensed physicians.
         """
-        
+
         agent_config = {
             "name": f"Iraqi Medical Assistant - {specialization}",
             "nameArabic": f"المساعد الطبي العراقي - {specialization}",
@@ -459,7 +463,7 @@ class IraqiProfessionalAgentBuilder:
                 "medical_records": True
             }
         }
-        
+
         return await self.agent_config_tool.create_agent(agent_config)
 ```
 
@@ -481,7 +485,7 @@ class IraqiComplianceStandard(Enum):
 class IraqiComplianceValidator:
     def __init__(self):
         self.compliance_rules = self.load_compliance_rules()
-    
+
     async def validate_content(self, content: str, standard: IraqiComplianceStandard) -> Dict[str, Any]:
         """Validate content against Iraqi compliance standards"""
         validation_result = {
@@ -489,47 +493,47 @@ class IraqiComplianceValidator:
             "violations": [],
             "recommendations": []
         }
-        
+
         if standard == IraqiComplianceStandard.ISLAMIC_BUSINESS:
             violations = await self.check_islamic_compliance(content)
             validation_result["violations"].extend(violations)
-        
+
         if standard == IraqiComplianceStandard.GOVERNMENT_REGULATION:
             violations = await self.check_government_compliance(content)
             validation_result["violations"].extend(violations)
-        
+
         validation_result["compliant"] = len(validation_result["violations"]) == 0
         return validation_result
-    
+
     async def check_islamic_compliance(self, content: str) -> List[str]:
         """Check Islamic business practice compliance"""
         violations = []
-        
+
         # Check for prohibited content
         prohibited_terms = [
-            "interest", "riba", "gambling", "alcohol", 
+            "interest", "riba", "gambling", "alcohol",
             "pork", "lottery", "casino"
         ]
-        
+
         for term in prohibited_terms:
             if term.lower() in content.lower():
                 violations.append(f"Contains prohibited term: {term}")
-        
+
         return violations
-    
+
     async def check_government_compliance(self, content: str) -> List[str]:
         """Check Iraqi government regulation compliance"""
         violations = []
-        
+
         # Check for sensitive political content
         sensitive_terms = [
             "sectarian", "political party", "tribal conflict"
         ]
-        
+
         for term in sensitive_terms:
             if term.lower() in content.lower():
                 violations.append(f"Contains sensitive term: {term}")
-        
+
         return violations
 ```
 
@@ -546,15 +550,15 @@ from backend.services.supabase import DBConnection
 class MultiTenantManager:
     def __init__(self):
         self.db = DBConnection()
-    
+
     async def get_tenant_context(self, request: Request) -> Optional[Dict[str, Any]]:
         """Extract tenant context from request"""
         # Get account_id from JWT token
         account_id = await self.extract_account_id(request)
-        
+
         if not account_id:
             return None
-        
+
         # Get organization details
         org_query = """
         SELECT io.*, a.name as account_name
@@ -562,9 +566,9 @@ class MultiTenantManager:
         JOIN accounts a ON io.account_id = a.id
         WHERE io.account_id = %s
         """
-        
+
         result = await self.db.fetch_one(org_query, account_id)
-        
+
         if result:
             return {
                 "account_id": account_id,
@@ -573,19 +577,19 @@ class MultiTenantManager:
                 "compliance_level": result["compliance_level"],
                 "billing_config": result["billing_config"]
             }
-        
+
         return {"account_id": account_id}
-    
+
     async def enforce_tenant_isolation(self, tenant_context: Dict[str, Any], resource_query: str) -> str:
         """Enforce tenant isolation in database queries"""
         account_id = tenant_context["account_id"]
-        
+
         # Add RLS filter to query
         if "WHERE" in resource_query.upper():
             resource_query += f" AND account_id = '{account_id}'"
         else:
             resource_query += f" WHERE account_id = '{account_id}'"
-        
+
         return resource_query
 ```
 
@@ -650,44 +654,44 @@ spec:
         app: iraqi-ai-chat-enterprise
     spec:
       containers:
-      - name: backend
-        image: iraqi-ai-chat:enterprise-latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: iraqi-enterprise-secrets
-              key: database-url
-        - name: ZAINCASH_MERCHANT_ID
-          valueFrom:
-            secretKeyRef:
-              name: iraqi-payment-secrets
-              key: zaincash-merchant-id
-        - name: FASTPAY_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: iraqi-payment-secrets
-              key: fastpay-api-key
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-      - name: frontend
-        image: iraqi-ai-chat-frontend:enterprise-latest
-        ports:
-        - containerPort: 3000
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "125m"
-          limits:
-            memory: "512Mi"
-            cpu: "250m"
+        - name: backend
+          image: iraqi-ai-chat:enterprise-latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: iraqi-enterprise-secrets
+                  key: database-url
+            - name: ZAINCASH_MERCHANT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: iraqi-payment-secrets
+                  key: zaincash-merchant-id
+            - name: FASTPAY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: iraqi-payment-secrets
+                  key: fastpay-api-key
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+        - name: frontend
+          image: iraqi-ai-chat-frontend:enterprise-latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "125m"
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
 ```
 
 ### Week 25-28: Monitoring & Analytics
@@ -810,60 +814,64 @@ export const IraqiEnterpriseMonitoringDashboard: React.FC = () => {
 
 ```typescript
 // tests/e2e/iraqi-enterprise.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Iraqi Enterprise Integration', () => {
-  test('Complete law firm workflow', async ({ page }) => {
+test.describe("Iraqi Enterprise Integration", () => {
+  test("Complete law firm workflow", async ({ page }) => {
     // Login as law firm user
-    await page.goto('/auth');
-    await page.fill('input[type="email"]', 'admin@adalawfirm.iq');
-    await page.fill('input[type="password"]', 'secure_password');
+    await page.goto("/auth");
+    await page.fill('input[type="email"]', "admin@adalawfirm.iq");
+    await page.fill('input[type="password"]', "secure_password");
     await page.click('button[type="submit"]');
 
     // Navigate to team management
-    await page.click('text=Team Management');
-    expect(await page.textContent('h1')).toContain('إدارة الفريق');
+    await page.click("text=Team Management");
+    expect(await page.textContent("h1")).toContain("إدارة الفريق");
 
     // Create new case workflow
-    await page.click('text=New Case');
-    await page.fill('input[name="client_name"]', 'أحمد محمد علي');
-    await page.fill('input[name="case_type"]', 'Civil Law');
+    await page.click("text=New Case");
+    await page.fill('input[name="client_name"]', "أحمد محمد علي");
+    await page.fill('input[name="case_type"]', "Civil Law");
     await page.click('button:has-text("Create Case")');
 
     // Verify workflow creation
-    expect(await page.textContent('.success-message')).toContain('Case created successfully');
+    expect(await page.textContent(".success-message")).toContain(
+      "Case created successfully",
+    );
 
     // Test billing integration
-    await page.click('text=Billing');
-    await page.click('text=ZainCash');
-    await page.fill('input[name="amount"]', '5000');
+    await page.click("text=Billing");
+    await page.click("text=ZainCash");
+    await page.fill('input[name="amount"]', "5000");
     await page.click('button:has-text("Process Payment")');
 
     // Verify payment processing
-    expect(await page.textContent('.payment-status')).toContain('Payment initiated');
+    expect(await page.textContent(".payment-status")).toContain(
+      "Payment initiated",
+    );
   });
 
-  test('Medical practice patient workflow', async ({ page }) => {
+  test("Medical practice patient workflow", async ({ page }) => {
     // Similar test for medical practice workflow
-    await page.goto('/auth');
-    await page.fill('input[type="email"]', 'admin@shifamedical.iq');
+    await page.goto("/auth");
+    await page.fill('input[type="email"]', "admin@shifamedical.iq");
     // ... complete medical workflow test
   });
 
-  test('Arabic RTL support', async ({ page }) => {
-    await page.goto('/');
-    
+  test("Arabic RTL support", async ({ page }) => {
+    await page.goto("/");
+
     // Switch to Arabic
     await page.click('[data-testid="language-selector"]');
-    await page.click('text=العربية');
+    await page.click("text=العربية");
 
     // Verify RTL layout
-    const body = await page.$('body');
-    const direction = await body?.getAttribute('dir');
-    expect(direction).toBe('rtl');
+    const body = await page.$("body");
+    const direction = await body?.getAttribute("dir");
+    expect(direction).toBe("rtl");
 
     // Verify Arabic translations
-    expect(await page.textContent('h1')).toMatch(/[\u0600-\u06FF]/); // Arabic Unicode range
+    expect(await page.textContent("h1")).toMatch(/[\u0600-\u06FF]/); // Arabic Unicode range
   });
 });
 ```
@@ -871,12 +879,14 @@ test.describe('Iraqi Enterprise Integration', () => {
 ## 🔐 Security & Compliance Checklist
 
 ### Iraqi Business Compliance
+
 - [ ] Islamic business practices validation
 - [ ] Government regulation adherence
 - [ ] Professional licensing verification
 - [ ] Data protection compliance (Iraqi standards)
 
 ### Technical Security
+
 - [ ] Multi-tenant data isolation
 - [ ] Role-based access controls
 - [ ] API security (rate limiting, authentication)
@@ -884,6 +894,7 @@ test.describe('Iraqi Enterprise Integration', () => {
 - [ ] Audit logging and monitoring
 
 ### Cultural & Language Support
+
 - [ ] Arabic RTL layout support
 - [ ] Iraqi dialect recognition
 - [ ] Professional Arabic terminology
@@ -892,12 +903,14 @@ test.describe('Iraqi Enterprise Integration', () => {
 ## 📊 Success Metrics
 
 ### Technical Metrics
+
 - System uptime: >99.5%
 - API response time: <200ms
 - Payment success rate: >98%
 - Database query performance: <100ms
 
 ### Business Metrics
+
 - Organization onboarding time: <2 hours
 - User satisfaction score: >4.5/5
 - Monthly recurring revenue growth: >15%
@@ -906,6 +919,7 @@ test.describe('Iraqi Enterprise Integration', () => {
 ## 🚀 Deployment Checklist
 
 ### Pre-Deployment
+
 - [ ] Environment variables configured
 - [ ] Database migrations applied
 - [ ] Payment gateway credentials validated
@@ -913,6 +927,7 @@ test.describe('Iraqi Enterprise Integration', () => {
 - [ ] Monitoring dashboards configured
 
 ### Post-Deployment
+
 - [ ] Health checks passing
 - [ ] Payment integration testing
 - [ ] User acceptance testing
@@ -923,4 +938,4 @@ test.describe('Iraqi Enterprise Integration', () => {
 
 **Integration Complete: Iraqi AI Chat System with Enterprise Kortix-Suna Capabilities**
 
-*22-32 weeks of enterprise-grade development delivering comprehensive team management, billing integration, workflow automation, and agent lifecycle management for Iraqi professional organizations.*
+_22-32 weeks of enterprise-grade development delivering comprehensive team management, billing integration, workflow automation, and agent lifecycle management for Iraqi professional organizations._

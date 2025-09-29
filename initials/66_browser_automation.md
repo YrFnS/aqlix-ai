@@ -6,11 +6,13 @@
 **Based on**: Botpress browser integration pattern + Iraqi professional website automation
 
 ## Overview
+
 Implement browser automation capabilities for Iraqi professional websites, organizational services, and Arabic form handling. This system enables automated form filling, document submission, and web-based service interactions while respecting Iraqi cultural and legal requirements.
 
 ## Core Features
 
 ### Iraqi Professional Website Automation
+
 - **Organization Websites**: Automated interaction with Iraqi professional organization websites
 - **Document Submission**: Automated submission of official documents and applications
 - **Status Checking**: Automated checking of application and document processing status
@@ -18,6 +20,7 @@ Implement browser automation capabilities for Iraqi professional websites, organ
 - **Multi-Language Support**: Handle Arabic and English forms seamlessly
 
 ### Professional Services Integration
+
 - **Legal Services**: Automate interactions with Iraqi legal databases and court systems
 - **Medical Services**: Integration with Iraqi healthcare system websites and portals
 - **Educational Services**: Automate university and educational institution processes
@@ -25,6 +28,7 @@ Implement browser automation capabilities for Iraqi professional websites, organ
 - **Business Registration**: Automate business registration and licensing processes
 
 ### Arabic Web Handling
+
 - **RTL Form Processing**: Handle right-to-left form layouts and Arabic input fields
 - **Arabic Text Recognition**: OCR and text recognition for Arabic web content
 - **Cultural Date Formats**: Handle both Islamic and Gregorian date formats
@@ -34,6 +38,7 @@ Implement browser automation capabilities for Iraqi professional websites, organ
 ## Technical Implementation
 
 ### Core Architecture
+
 ```python
 # Browser Automation Service
 from typing import Dict, List, Any, Optional
@@ -44,7 +49,7 @@ from dataclasses import dataclass
 
 class IraqiWebsiteType(Enum):
     PROFESSIONAL = "professional"
-    LEGAL = "legal"  
+    LEGAL = "legal"
     MEDICAL = "medical"
     EDUCATIONAL = "educational"
     BANKING = "banking"
@@ -66,14 +71,14 @@ class IraqiBrowserAutomation:
         self.cultural_validator = cultural_validator
         self.website_handlers = {}
         self.security_validator = SecurityValidator()
-        
+
     async def initialize(self):
         self.playwright = await async_playwright().start()
         self.browser = await self.playwright.chromium.launch(
             headless=True,
             locale='ar-IQ'  # Iraqi Arabic locale
         )
-        
+
     async def automate_website_task(
         self,
         website_url: str,
@@ -85,16 +90,17 @@ class IraqiBrowserAutomation:
         security_check = await self.security_validator.validate_website(website_url)
         if not security_check.is_safe:
             raise WebsiteSecurityError(security_check.issues)
-            
+
         # Detect website type and select appropriate handler
         website_type = await self._detect_website_type(website_url)
         handler = self._get_website_handler(website_type)
-        
+
         # Execute automation with cultural context
         return await handler.execute_task(website_url, task_type, form_data, user_context)
 ```
 
 ### Professional Website Handler
+
 ```python
 class IraqiProfessionalWebsiteHandler:
     def __init__(self):
@@ -106,7 +112,7 @@ class IraqiProfessionalWebsiteHandler:
             "finance": "وزارة المالية"
         }
         self.form_patterns = ProfessionalFormPatterns()
-        
+
     async def execute_task(
         self,
         url: str,
@@ -118,20 +124,20 @@ class IraqiProfessionalWebsiteHandler:
         await page.set_extra_http_headers({
             'Accept-Language': 'ar-IQ,ar;q=0.9,en;q=0.8'
         })
-        
+
         try:
             # Navigate to professional website
             await page.goto(url, wait_until='networkidle')
-            
+
             # Handle SSL warnings and security checks
             await self._handle_professional_security_checks(page)
-            
+
             # Fill forms with Iraqi cultural context
             await self._fill_professional_form(page, form_data, task_type)
-            
+
             # Submit and handle confirmation
             result = await self._submit_and_confirm(page, task_type)
-            
+
             return {
                 "success": True,
                 "reference_number": result.get("reference_number"),
@@ -139,7 +145,7 @@ class IraqiProfessionalWebsiteHandler:
                 "next_steps": result.get("next_steps"),
                 "estimated_processing_time": result.get("processing_time")
             }
-            
+
         except Exception as e:
             return await self._handle_automation_error(e, page, task_type)
         finally:
@@ -147,6 +153,7 @@ class IraqiProfessionalWebsiteHandler:
 ```
 
 ### Arabic Form Processing
+
 ```python
 class ArabicFormProcessor:
     def __init__(self):
@@ -154,7 +161,7 @@ class ArabicFormProcessor:
             # Common Arabic form field labels
             "الاسم الكامل": "full_name",
             "رقم الهوية": "national_id",
-            "رقم الهاتف": "phone_number", 
+            "رقم الهاتف": "phone_number",
             "العنوان": "address",
             "تاريخ الميلاد": "birth_date",
             "الجنس": "gender",
@@ -162,7 +169,7 @@ class ArabicFormProcessor:
             "البريد الإلكتروني": "email"
         }
         self.cultural_data_formatter = CulturalDataFormatter()
-        
+
     async def process_arabic_form(
         self,
         page: Page,
@@ -171,46 +178,47 @@ class ArabicFormProcessor:
     ) -> Dict[str, Any]:
         # Detect form fields and their Arabic labels
         form_fields = await self._detect_form_fields(page, form_selector)
-        
+
         # Map Arabic labels to data fields
         field_mapping = await self._map_arabic_fields(form_fields)
-        
+
         # Fill fields with culturally formatted data
         for field_selector, data_key in field_mapping.items():
             value = self._get_formatted_value(form_data, data_key)
             await self._fill_field_with_validation(page, field_selector, value)
-            
+
         return {"filled_fields": len(field_mapping), "validation_errors": []}
 ```
 
 ### Security and Validation
+
 ```python
 class WebsiteSecurityValidator:
     def __init__(self):
         self.trusted_domains = {
             # Iraqi professional domains
             "gov.iq": "professional",
-            "edu.iq": "educational", 
+            "edu.iq": "educational",
             "mil.iq": "military",
             # Trusted Iraqi institutions
             "cbi.iq": "central_bank",
             "mohesr.gov.iq": "higher_education"
         }
         self.security_patterns = SecurityPatterns()
-        
+
     async def validate_website(self, url: str) -> SecurityValidationResult:
         # Check domain legitimacy
         domain_check = await self._validate_domain(url)
-        
+
         # Check SSL certificate
         ssl_check = await self._validate_ssl_certificate(url)
-        
+
         # Check for known phishing patterns
         phishing_check = await self._check_phishing_patterns(url)
-        
+
         # Validate Iraqi professional website authenticity
         prof_check = await self._validate_professional_authenticity(url)
-        
+
         return SecurityValidationResult(
             is_safe=all([domain_check, ssl_check, not phishing_check, gov_check]),
             domain_trusted=domain_check,
@@ -223,12 +231,13 @@ class WebsiteSecurityValidator:
 ## Cultural Integration
 
 ### Iraqi Address Handling
+
 ```python
 class IraqiAddressHandler:
     def __init__(self):
         self.governorates = {
             "Baghdad": "بغداد",
-            "Basra": "البصرة", 
+            "Basra": "البصرة",
             "Mosul": "الموصل",
             "Erbil": "أربيل",
             "Najaf": "النجف",
@@ -236,7 +245,7 @@ class IraqiAddressHandler:
             # ... all Iraqi governorates
         }
         self.address_patterns = IraqiAddressPatterns()
-        
+
     def format_iraqi_address(
         self,
         address_data: Dict[str, Any],
@@ -252,12 +261,13 @@ class IraqiAddressHandler:
 ```
 
 ### Cultural Date and Time Handling
+
 ```python
 class IraqiDateTimeHandler:
     def __init__(self):
         self.islamic_calendar = IslamicCalendar()
         self.cultural_preferences = CulturalDatePreferences()
-        
+
     def format_date_for_forms(
         self,
         date_value: str,
@@ -267,7 +277,7 @@ class IraqiDateTimeHandler:
         # Support both Gregorian and Islamic calendars
         gregorian_date = self._parse_gregorian_date(date_value)
         islamic_date = self.islamic_calendar.convert_from_gregorian(gregorian_date)
-        
+
         return {
             "gregorian": gregorian_date.strftime("%d/%m/%Y"),
             "islamic": islamic_date.strftime_islamic(),
@@ -279,6 +289,7 @@ class IraqiDateTimeHandler:
 ## Database Integration
 
 ### Automation History Tracking
+
 ```sql
 -- Browser Automation Sessions
 CREATE TABLE browser_automation_sessions (
@@ -316,6 +327,7 @@ CREATE TABLE website_automation_templates (
 ```
 
 ### Professional Service Tracking
+
 ```sql
 -- Professional Service Requests
 CREATE TABLE professional_service_requests (
@@ -338,6 +350,7 @@ CREATE TABLE professional_service_requests (
 ## API Integration
 
 ### FastAPI Routes
+
 ```python
 @router.post("/automation/professional")
 async def automate_professional_service(
@@ -345,21 +358,21 @@ async def automate_professional_service(
     current_user: User = Depends(get_current_user)
 ) -> AutomationResult:
     """Automate Iraqi professional service interaction"""
-    
+
 @router.post("/automation/form-fill")
 async def automate_form_filling(
     request: FormFillingRequest,
     current_user: User = Depends(get_current_user)
 ) -> FormFillingResult:
     """Automate form filling with cultural context"""
-    
+
 @router.get("/automation/templates/{website_type}")
 async def get_automation_templates(
     website_type: str,
     current_user: User = Depends(get_current_user)
 ) -> List[AutomationTemplate]:
     """Get available automation templates for website type"""
-    
+
 @router.get("/automation/history")
 async def get_automation_history(
     limit: int = 50,
@@ -371,6 +384,7 @@ async def get_automation_history(
 ## Security and Compliance
 
 ### Iraqi Legal Compliance
+
 - **Data Protection**: Comply with Iraqi data protection regulations
 - **Professional Authentication**: Proper authentication for professional services
 - **Digital Signature**: Support for Iraqi digital signature requirements
@@ -378,7 +392,8 @@ async def get_automation_history(
 - **Privacy Protection**: Protect sensitive personal and professional information
 
 ### Ethical Automation
-- **User Consent**: Explicit user consent for all automation activities  
+
+- **User Consent**: Explicit user consent for all automation activities
 - **Transparency**: Clear disclosure of automated actions
 - **Human Oversight**: Human review for critical professional submissions
 - **Error Handling**: Graceful handling of automation failures
@@ -387,6 +402,7 @@ async def get_automation_history(
 ## Testing Strategy
 
 ### Professional Website Testing
+
 - **Organization Website Testing**: Test automation on all major Iraqi organization websites
 - **Form Validation Testing**: Validate Arabic form processing accuracy
 - **Security Testing**: Test security validation and fraud detection
@@ -394,6 +410,7 @@ async def get_automation_history(
 - **Error Handling Testing**: Test graceful handling of website changes and errors
 
 ### Performance Testing
+
 - **Automation Speed**: <30 seconds for standard form completion
 - **Accuracy Rate**: 95%+ successful form submissions
 - **Cultural Formatting**: 99%+ correct Iraqi address and date formatting
@@ -403,6 +420,7 @@ async def get_automation_history(
 ## Success Metrics
 
 ### Functional Metrics
+
 - **Professional Service Success**: 95%+ successful professional service completions
 - **Form Accuracy**: 99%+ accurate form field completion
 - **Cultural Compliance**: 95%+ culturally appropriate interactions
@@ -410,6 +428,7 @@ async def get_automation_history(
 - **User Satisfaction**: 90%+ positive feedback on automation quality
 
 ### Technical Metrics
+
 - **Response Time**: <30 seconds average automation completion time
 - **Availability**: 99%+ uptime for automation services
 - **Error Rate**: <2% automation failure rate
@@ -419,18 +438,21 @@ async def get_automation_history(
 ## Implementation Phases
 
 ### Phase 1: Basic Automation (Post-MVP)
+
 - Core browser automation framework
 - Basic Arabic form processing
 - Simple professional website integration
 - Security validation system
 
 ### Phase 2: Advanced Features (Future)
+
 - AI-powered form recognition
 - Advanced cultural adaptation
 - Multi-step process automation
 - Intelligent error recovery
 
 ### Phase 3: Enterprise Integration (Future)
+
 - Professional service automation
 - Batch processing capabilities
 - Advanced reporting and analytics

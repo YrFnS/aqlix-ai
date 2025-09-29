@@ -4,13 +4,25 @@
  * Supports pattern: /[locale]/[workspaceid]/[feature]
  */
 
-import { NextRequest } from 'next/server';
+import { NextRequest } from "next/server";
 
 // ====================== Types & Interfaces ======================
 
-export type SupportedLocale = 'ar' | 'ar-IQ' | 'en' | 'en-US';
-export type ProfessionalDomain = 'personal' | 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-export type WorkspaceFeature = 'chat' | 'documents' | 'settings' | 'members' | 'analytics' | 'compliance';
+export type SupportedLocale = "ar" | "ar-IQ" | "en" | "en-US";
+export type ProfessionalDomain =
+  | "personal"
+  | "legal"
+  | "medical"
+  | "educational"
+  | "business"
+  | "engineering";
+export type WorkspaceFeature =
+  | "chat"
+  | "documents"
+  | "settings"
+  | "members"
+  | "analytics"
+  | "compliance";
 
 export interface WorkspaceRoute {
   locale: SupportedLocale;
@@ -24,7 +36,7 @@ export interface IraqiRouteConfig {
   locale: SupportedLocale;
   rtlMode: boolean;
   culturalCompliance: boolean;
-  dialectPreference: 'baghdad' | 'basra' | 'mosul' | 'general';
+  dialectPreference: "baghdad" | "basra" | "mosul" | "general";
   professionalContext?: ProfessionalDomain;
   isAuthRequired: boolean;
   culturalValidationRequired: boolean;
@@ -43,46 +55,103 @@ export interface RoutePermissions {
 export const WORKSPACE_ROUTE_PATTERNS = {
   // Workspace root: /ar/ws_123
   WORKSPACE_ROOT: /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)$/,
-  
+
   // Feature routes: /ar/ws_123/chat
   WORKSPACE_FEATURE: /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)\/([a-z]+)$/,
-  
+
   // Sub-feature routes: /ar/ws_123/settings/members
-  WORKSPACE_SUB_FEATURE: /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)\/([a-z]+)\/([a-z]+)$/,
-  
+  WORKSPACE_SUB_FEATURE:
+    /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)\/([a-z]+)\/([a-z]+)$/,
+
   // API routes: /api/workspace/ws_123/chat
   API_WORKSPACE: /^\/api\/workspace\/([a-zA-Z0-9_-]+)\/([a-z]+)$/,
-  
+
   // Cultural validation routes: /ar/ws_123/compliance/validate
-  CULTURAL_VALIDATION: /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)\/compliance\/([a-z]+)$/
+  CULTURAL_VALIDATION:
+    /^\/([a-z]{2}(?:-[A-Z]{2})?)\/([a-zA-Z0-9_-]+)\/compliance\/([a-z]+)$/,
 };
 
 export const PROFESSIONAL_DOMAIN_ROUTES = {
   legal: {
-    baseRoute: 'legal',
-    features: ['consultations', 'cases', 'documents', 'clients', 'court-calendar', 'legal-research'],
-    culturalRequirements: ['islamic-jurisprudence', 'iraqi-civil-law', 'professional-ethics']
+    baseRoute: "legal",
+    features: [
+      "consultations",
+      "cases",
+      "documents",
+      "clients",
+      "court-calendar",
+      "legal-research",
+    ],
+    culturalRequirements: [
+      "islamic-jurisprudence",
+      "iraqi-civil-law",
+      "professional-ethics",
+    ],
   },
   medical: {
-    baseRoute: 'medical',
-    features: ['patients', 'appointments', 'diagnoses', 'prescriptions', 'medical-records', 'telemedicine'],
-    culturalRequirements: ['islamic-medical-ethics', 'patient-privacy', 'halal-medications']
+    baseRoute: "medical",
+    features: [
+      "patients",
+      "appointments",
+      "diagnoses",
+      "prescriptions",
+      "medical-records",
+      "telemedicine",
+    ],
+    culturalRequirements: [
+      "islamic-medical-ethics",
+      "patient-privacy",
+      "halal-medications",
+    ],
   },
   educational: {
-    baseRoute: 'education',
-    features: ['courses', 'students', 'assessments', 'curriculum', 'research', 'academic-calendar'],
-    culturalRequirements: ['islamic-education', 'arabic-language-support', 'cultural-sensitivity']
+    baseRoute: "education",
+    features: [
+      "courses",
+      "students",
+      "assessments",
+      "curriculum",
+      "research",
+      "academic-calendar",
+    ],
+    culturalRequirements: [
+      "islamic-education",
+      "arabic-language-support",
+      "cultural-sensitivity",
+    ],
   },
   business: {
-    baseRoute: 'business',
-    features: ['projects', 'clients', 'invoicing', 'reports', 'team', 'marketplace'],
-    culturalRequirements: ['halal-business-practices', 'islamic-finance', 'cultural-marketing']
+    baseRoute: "business",
+    features: [
+      "projects",
+      "clients",
+      "invoicing",
+      "reports",
+      "team",
+      "marketplace",
+    ],
+    culturalRequirements: [
+      "halal-business-practices",
+      "islamic-finance",
+      "cultural-marketing",
+    ],
   },
   engineering: {
-    baseRoute: 'engineering',
-    features: ['projects', 'blueprints', 'calculations', 'specifications', 'quality-assurance', 'safety'],
-    culturalRequirements: ['iraqi-building-codes', 'environmental-compliance', 'safety-standards']
-  }
+    baseRoute: "engineering",
+    features: [
+      "projects",
+      "blueprints",
+      "calculations",
+      "specifications",
+      "quality-assurance",
+      "safety",
+    ],
+    culturalRequirements: [
+      "iraqi-building-codes",
+      "environmental-compliance",
+      "safety-standards",
+    ],
+  },
 };
 
 // ====================== Route Parser ======================
@@ -111,13 +180,15 @@ export class IraqiWorkspaceRouter {
 
     // Try different route patterns
     if (WORKSPACE_ROUTE_PATTERNS.WORKSPACE_SUB_FEATURE.test(pathname)) {
-      const match = pathname.match(WORKSPACE_ROUTE_PATTERNS.WORKSPACE_SUB_FEATURE);
+      const match = pathname.match(
+        WORKSPACE_ROUTE_PATTERNS.WORKSPACE_SUB_FEATURE,
+      );
       if (match) {
         route = {
           locale: match[1] as SupportedLocale,
           workspaceId: match[2],
           feature: match[3] as WorkspaceFeature,
-          subFeature: match[4]
+          subFeature: match[4],
         };
       }
     } else if (WORKSPACE_ROUTE_PATTERNS.WORKSPACE_FEATURE.test(pathname)) {
@@ -126,7 +197,7 @@ export class IraqiWorkspaceRouter {
         route = {
           locale: match[1] as SupportedLocale,
           workspaceId: match[2],
-          feature: match[3] as WorkspaceFeature
+          feature: match[3] as WorkspaceFeature,
         };
       }
     } else if (WORKSPACE_ROUTE_PATTERNS.WORKSPACE_ROOT.test(pathname)) {
@@ -134,17 +205,19 @@ export class IraqiWorkspaceRouter {
       if (match) {
         route = {
           locale: match[1] as SupportedLocale,
-          workspaceId: match[2]
+          workspaceId: match[2],
         };
       }
     } else if (WORKSPACE_ROUTE_PATTERNS.CULTURAL_VALIDATION.test(pathname)) {
-      const match = pathname.match(WORKSPACE_ROUTE_PATTERNS.CULTURAL_VALIDATION);
+      const match = pathname.match(
+        WORKSPACE_ROUTE_PATTERNS.CULTURAL_VALIDATION,
+      );
       if (match) {
         route = {
           locale: match[1] as SupportedLocale,
           workspaceId: match[2],
-          feature: 'compliance',
-          subFeature: match[3]
+          feature: "compliance",
+          subFeature: match[3],
         };
       }
     }
@@ -159,25 +232,30 @@ export class IraqiWorkspaceRouter {
 
   // ====================== Route Generation ======================
 
-  generateWorkspaceUrl(workspaceId: string, locale: SupportedLocale = 'ar', feature?: WorkspaceFeature, subFeature?: string): string {
+  generateWorkspaceUrl(
+    workspaceId: string,
+    locale: SupportedLocale = "ar",
+    feature?: WorkspaceFeature,
+    subFeature?: string,
+  ): string {
     let url = `/${locale}/${workspaceId}`;
-    
+
     if (feature) {
       url += `/${feature}`;
     }
-    
+
     if (subFeature) {
       url += `/${subFeature}`;
     }
-    
+
     return url;
   }
 
   generateProfessionalDomainUrl(
-    workspaceId: string, 
-    domain: ProfessionalDomain, 
+    workspaceId: string,
+    domain: ProfessionalDomain,
     feature: string,
-    locale: SupportedLocale = 'ar'
+    locale: SupportedLocale = "ar",
   ): string {
     const domainConfig = PROFESSIONAL_DOMAIN_ROUTES[domain];
     return `/${locale}/${workspaceId}/${domainConfig.baseRoute}/${feature}`;
@@ -188,9 +266,9 @@ export class IraqiWorkspaceRouter {
   }
 
   generateCulturalValidationUrl(
-    workspaceId: string, 
+    workspaceId: string,
     validationType: string,
-    locale: SupportedLocale = 'ar'
+    locale: SupportedLocale = "ar",
   ): string {
     return `/${locale}/${workspaceId}/compliance/${validationType}`;
   }
@@ -198,19 +276,21 @@ export class IraqiWorkspaceRouter {
   // ====================== Route Configuration ======================
 
   getRouteConfig(route: WorkspaceRoute): IraqiRouteConfig {
-    const isArabic = route.locale.startsWith('ar');
+    const isArabic = route.locale.startsWith("ar");
     const dialectMap = {
-      'ar': 'general',
-      'ar-IQ': 'general'
+      ar: "general",
+      "ar-IQ": "general",
     };
 
     return {
       locale: route.locale,
       rtlMode: isArabic,
       culturalCompliance: true,
-      dialectPreference: dialectMap[route.locale as keyof typeof dialectMap] || 'general',
-      isAuthRequired: route.feature !== 'compliance',
-      culturalValidationRequired: route.feature === 'chat' || route.feature === 'documents'
+      dialectPreference:
+        dialectMap[route.locale as keyof typeof dialectMap] || "general",
+      isAuthRequired: route.feature !== "compliance",
+      culturalValidationRequired:
+        route.feature === "chat" || route.feature === "documents",
     };
   }
 
@@ -219,7 +299,10 @@ export class IraqiWorkspaceRouter {
 
     // Check if feature belongs to a professional domain
     for (const [domain, config] of Object.entries(PROFESSIONAL_DOMAIN_ROUTES)) {
-      if (route.feature === config.baseRoute || config.features.includes(route.feature)) {
+      if (
+        route.feature === config.baseRoute ||
+        config.features.includes(route.feature)
+      ) {
         return domain as ProfessionalDomain;
       }
     }
@@ -229,20 +312,36 @@ export class IraqiWorkspaceRouter {
 
   // ====================== Permission Checking ======================
 
-  async checkRoutePermissions(route: WorkspaceRoute, userId: string): Promise<RoutePermissions> {
+  async checkRoutePermissions(
+    route: WorkspaceRoute,
+    userId: string,
+  ): Promise<RoutePermissions> {
     const cacheKey = `${route.workspaceId}-${route.feature}-${userId}`;
-    
+
     if (this.permissionCache.has(cacheKey)) {
       return this.permissionCache.get(cacheKey)!;
     }
 
     // Simulate permission checking - in real implementation, check database
     const permissions: RoutePermissions = {
-      workspaceAccess: await this.checkWorkspaceAccess(route.workspaceId, userId),
-      featureAccess: await this.checkFeatureAccess(route.workspaceId, route.feature, userId),
-      culturallyApproved: await this.checkCulturalApproval(route.workspaceId, userId),
-      professionallyAuthorized: await this.checkProfessionalAuthorization(route, userId),
-      requiresIslamicCompliance: this.requiresIslamicCompliance(route)
+      workspaceAccess: await this.checkWorkspaceAccess(
+        route.workspaceId,
+        userId,
+      ),
+      featureAccess: await this.checkFeatureAccess(
+        route.workspaceId,
+        route.feature,
+        userId,
+      ),
+      culturallyApproved: await this.checkCulturalApproval(
+        route.workspaceId,
+        userId,
+      ),
+      professionallyAuthorized: await this.checkProfessionalAuthorization(
+        route,
+        userId,
+      ),
+      requiresIslamicCompliance: this.requiresIslamicCompliance(route),
     };
 
     // Cache permissions for 5 minutes
@@ -252,16 +351,23 @@ export class IraqiWorkspaceRouter {
     return permissions;
   }
 
-  private async checkWorkspaceAccess(workspaceId: string, userId: string): Promise<boolean> {
+  private async checkWorkspaceAccess(
+    workspaceId: string,
+    userId: string,
+  ): Promise<boolean> {
     // Simulate database check
     return true; // Simplified
   }
 
-  private async checkFeatureAccess(workspaceId: string, feature: WorkspaceFeature | undefined, userId: string): Promise<boolean> {
+  private async checkFeatureAccess(
+    workspaceId: string,
+    feature: WorkspaceFeature | undefined,
+    userId: string,
+  ): Promise<boolean> {
     if (!feature) return true;
 
     // Check if user has access to specific features
-    const restrictedFeatures = ['settings', 'members', 'compliance'];
+    const restrictedFeatures = ["settings", "members", "compliance"];
     if (restrictedFeatures.includes(feature)) {
       // Check if user is workspace admin/owner
       return true; // Simplified
@@ -270,18 +376,24 @@ export class IraqiWorkspaceRouter {
     return true;
   }
 
-  private async checkCulturalApproval(workspaceId: string, userId: string): Promise<boolean> {
+  private async checkCulturalApproval(
+    workspaceId: string,
+    userId: string,
+  ): Promise<boolean> {
     // Check user's cultural compliance score
     return true; // Simplified
   }
 
-  private async checkProfessionalAuthorization(route: WorkspaceRoute, userId: string): Promise<boolean> {
+  private async checkProfessionalAuthorization(
+    route: WorkspaceRoute,
+    userId: string,
+  ): Promise<boolean> {
     const professionalContext = this.getProfessionalContext(route);
-    
+
     if (!professionalContext) return true;
 
     // For professional domains, check if user has required credentials
-    const professionalDomains = ['legal', 'medical'];
+    const professionalDomains = ["legal", "medical"];
     if (professionalDomains.includes(professionalContext)) {
       // Check professional license/certification
       return true; // Simplified
@@ -291,26 +403,32 @@ export class IraqiWorkspaceRouter {
   }
 
   private requiresIslamicCompliance(route: WorkspaceRoute): boolean {
-    const complianceRequiredFeatures = ['chat', 'documents', 'compliance'];
-    return route.feature ? complianceRequiredFeatures.includes(route.feature) : false;
+    const complianceRequiredFeatures = ["chat", "documents", "compliance"];
+    return route.feature
+      ? complianceRequiredFeatures.includes(route.feature)
+      : false;
   }
 
   // ====================== Locale Management ======================
 
   getSupportedLocales(): SupportedLocale[] {
-    return ['ar', 'ar-IQ', 'en', 'en-US'];
+    return ["ar", "ar-IQ", "en", "en-US"];
   }
 
   getDefaultLocale(): SupportedLocale {
-    return 'ar';
+    return "ar";
   }
 
-  getLocaleDirection(locale: SupportedLocale): 'ltr' | 'rtl' {
-    return locale.startsWith('ar') ? 'rtl' : 'ltr';
+  getLocaleDirection(locale: SupportedLocale): "ltr" | "rtl" {
+    return locale.startsWith("ar") ? "rtl" : "ltr";
   }
 
-  getLocalizedWorkspaceTitle(workspaceName: string, workspaceNameAr: string | undefined, locale: SupportedLocale): string {
-    if (locale.startsWith('ar')) {
+  getLocalizedWorkspaceTitle(
+    workspaceName: string,
+    workspaceNameAr: string | undefined,
+    locale: SupportedLocale,
+  ): string {
+    if (locale.startsWith("ar")) {
       return workspaceNameAr || workspaceName;
     }
     return workspaceName;
@@ -329,7 +447,14 @@ export class IraqiWorkspaceRouter {
   }
 
   isValidFeature(feature: string): feature is WorkspaceFeature {
-    const validFeatures: WorkspaceFeature[] = ['chat', 'documents', 'settings', 'members', 'analytics', 'compliance'];
+    const validFeatures: WorkspaceFeature[] = [
+      "chat",
+      "documents",
+      "settings",
+      "members",
+      "analytics",
+      "compliance",
+    ];
     return validFeatures.includes(feature as WorkspaceFeature);
   }
 
@@ -347,10 +472,10 @@ export class IraqiWorkspaceRouter {
     }
 
     // Fall back to Accept-Language header
-    const acceptLanguage = request.headers.get('accept-language');
+    const acceptLanguage = request.headers.get("accept-language");
     if (acceptLanguage) {
-      if (acceptLanguage.includes('ar')) return 'ar-IQ';
-      if (acceptLanguage.includes('en')) return 'en-US';
+      if (acceptLanguage.includes("ar")) return "ar-IQ";
+      if (acceptLanguage.includes("en")) return "en-US";
     }
 
     return this.getDefaultLocale();
@@ -358,44 +483,56 @@ export class IraqiWorkspaceRouter {
 
   // ====================== Breadcrumb Generation ======================
 
-  generateBreadcrumbs(route: WorkspaceRoute): Array<{ label: string; labelAr: string; url: string; isActive: boolean }> {
+  generateBreadcrumbs(
+    route: WorkspaceRoute,
+  ): Array<{ label: string; labelAr: string; url: string; isActive: boolean }> {
     const breadcrumbs = [];
 
     // Workspace root
     breadcrumbs.push({
-      label: 'Workspace',
-      labelAr: 'مساحة العمل',
+      label: "Workspace",
+      labelAr: "مساحة العمل",
       url: this.generateWorkspaceUrl(route.workspaceId, route.locale),
-      isActive: !route.feature
+      isActive: !route.feature,
     });
 
     // Feature level
     if (route.feature) {
       const featureLabels = {
-        chat: { en: 'Chat', ar: 'المحادثة' },
-        documents: { en: 'Documents', ar: 'المستندات' },
-        settings: { en: 'Settings', ar: 'الإعدادات' },
-        members: { en: 'Members', ar: 'الأعضاء' },
-        analytics: { en: 'Analytics', ar: 'التحليلات' },
-        compliance: { en: 'Compliance', ar: 'الامتثال' }
+        chat: { en: "Chat", ar: "المحادثة" },
+        documents: { en: "Documents", ar: "المستندات" },
+        settings: { en: "Settings", ar: "الإعدادات" },
+        members: { en: "Members", ar: "الأعضاء" },
+        analytics: { en: "Analytics", ar: "التحليلات" },
+        compliance: { en: "Compliance", ar: "الامتثال" },
       };
 
       const featureLabel = featureLabels[route.feature];
       breadcrumbs.push({
         label: featureLabel.en,
         labelAr: featureLabel.ar,
-        url: this.generateWorkspaceUrl(route.workspaceId, route.locale, route.feature),
-        isActive: !route.subFeature
+        url: this.generateWorkspaceUrl(
+          route.workspaceId,
+          route.locale,
+          route.feature,
+        ),
+        isActive: !route.subFeature,
       });
     }
 
     // Sub-feature level
     if (route.subFeature) {
       breadcrumbs.push({
-        label: route.subFeature.charAt(0).toUpperCase() + route.subFeature.slice(1),
+        label:
+          route.subFeature.charAt(0).toUpperCase() + route.subFeature.slice(1),
         labelAr: route.subFeature, // Would need translation mapping
-        url: this.generateWorkspaceUrl(route.workspaceId, route.locale, route.feature, route.subFeature),
-        isActive: true
+        url: this.generateWorkspaceUrl(
+          route.workspaceId,
+          route.locale,
+          route.feature,
+          route.subFeature,
+        ),
+        isActive: true,
       });
     }
 
@@ -413,50 +550,53 @@ export class IraqiWorkspaceRouter {
     const domainConfig = PROFESSIONAL_DOMAIN_ROUTES[domain];
     const labels = {
       // Legal
-      consultations: { en: 'Consultations', ar: 'الاستشارات' },
-      cases: { en: 'Cases', ar: 'القضايا' },
-      clients: { en: 'Clients', ar: 'العملاء' },
-      'court-calendar': { en: 'Court Calendar', ar: 'جدول المحكمة' },
-      'legal-research': { en: 'Legal Research', ar: 'البحث القانوني' },
-      
+      consultations: { en: "Consultations", ar: "الاستشارات" },
+      cases: { en: "Cases", ar: "القضايا" },
+      clients: { en: "Clients", ar: "العملاء" },
+      "court-calendar": { en: "Court Calendar", ar: "جدول المحكمة" },
+      "legal-research": { en: "Legal Research", ar: "البحث القانوني" },
+
       // Medical
-      patients: { en: 'Patients', ar: 'المرضى' },
-      appointments: { en: 'Appointments', ar: 'المواعيد' },
-      diagnoses: { en: 'Diagnoses', ar: 'التشخيصات' },
-      prescriptions: { en: 'Prescriptions', ar: 'الوصفات الطبية' },
-      'medical-records': { en: 'Medical Records', ar: 'السجلات الطبية' },
-      telemedicine: { en: 'Telemedicine', ar: 'الطب عن بُعد' },
-      
+      patients: { en: "Patients", ar: "المرضى" },
+      appointments: { en: "Appointments", ar: "المواعيد" },
+      diagnoses: { en: "Diagnoses", ar: "التشخيصات" },
+      prescriptions: { en: "Prescriptions", ar: "الوصفات الطبية" },
+      "medical-records": { en: "Medical Records", ar: "السجلات الطبية" },
+      telemedicine: { en: "Telemedicine", ar: "الطب عن بُعد" },
+
       // Educational
-      courses: { en: 'Courses', ar: 'الدورات' },
-      students: { en: 'Students', ar: 'الطلاب' },
-      assessments: { en: 'Assessments', ar: 'التقييمات' },
-      curriculum: { en: 'Curriculum', ar: 'المنهج' },
-      research: { en: 'Research', ar: 'البحث' },
-      'academic-calendar': { en: 'Academic Calendar', ar: 'التقويم الأكاديمي' },
-      
+      courses: { en: "Courses", ar: "الدورات" },
+      students: { en: "Students", ar: "الطلاب" },
+      assessments: { en: "Assessments", ar: "التقييمات" },
+      curriculum: { en: "Curriculum", ar: "المنهج" },
+      research: { en: "Research", ar: "البحث" },
+      "academic-calendar": { en: "Academic Calendar", ar: "التقويم الأكاديمي" },
+
       // Business
-      projects: { en: 'Projects', ar: 'المشاريع' },
-      invoicing: { en: 'Invoicing', ar: 'إصدار الفواتير' },
-      reports: { en: 'Reports', ar: 'التقارير' },
-      team: { en: 'Team', ar: 'الفريق' },
-      marketplace: { en: 'Marketplace', ar: 'السوق' },
-      
+      projects: { en: "Projects", ar: "المشاريع" },
+      invoicing: { en: "Invoicing", ar: "إصدار الفواتير" },
+      reports: { en: "Reports", ar: "التقارير" },
+      team: { en: "Team", ar: "الفريق" },
+      marketplace: { en: "Marketplace", ar: "السوق" },
+
       // Engineering
-      blueprints: { en: 'Blueprints', ar: 'المخططات' },
-      calculations: { en: 'Calculations', ar: 'الحسابات' },
-      specifications: { en: 'Specifications', ar: 'المواصفات' },
-      'quality-assurance': { en: 'Quality Assurance', ar: 'ضمان الجودة' },
-      safety: { en: 'Safety', ar: 'السلامة' }
+      blueprints: { en: "Blueprints", ar: "المخططات" },
+      calculations: { en: "Calculations", ar: "الحسابات" },
+      specifications: { en: "Specifications", ar: "المواصفات" },
+      "quality-assurance": { en: "Quality Assurance", ar: "ضمان الجودة" },
+      safety: { en: "Safety", ar: "السلامة" },
     };
 
-    return domainConfig.features.map(feature => {
-      const label = labels[feature as keyof typeof labels] || { en: feature, ar: feature };
+    return domainConfig.features.map((feature) => {
+      const label = labels[feature as keyof typeof labels] || {
+        en: feature,
+        ar: feature,
+      };
       return {
         feature,
         label: label.en,
         labelAr: label.ar,
-        culturalRequirements: domainConfig.culturalRequirements
+        culturalRequirements: domainConfig.culturalRequirements,
       };
     });
   }
@@ -466,36 +606,42 @@ export class IraqiWorkspaceRouter {
   createRouteMiddleware() {
     return async (request: NextRequest) => {
       const route = this.extractRouteFromRequest(request);
-      
+
       if (!route) {
-        return new Response('Invalid route', { status: 400 });
+        return new Response("Invalid route", { status: 400 });
       }
 
       // Validate workspace ID format
       if (!this.isValidWorkspaceId(route.workspaceId)) {
-        return new Response('Invalid workspace ID', { status: 400 });
+        return new Response("Invalid workspace ID", { status: 400 });
       }
 
       // Validate locale
       if (!this.isValidLocale(route.locale)) {
         // Redirect to preferred locale
         const preferredLocale = this.getPreferredLocale(request);
-        const redirectUrl = request.nextUrl.pathname.replace(`/${route.locale}/`, `/${preferredLocale}/`);
+        const redirectUrl = request.nextUrl.pathname.replace(
+          `/${route.locale}/`,
+          `/${preferredLocale}/`,
+        );
         return Response.redirect(new URL(redirectUrl, request.url));
       }
 
       // Add route information to request headers for downstream use
       const response = Response.next();
-      response.headers.set('x-workspace-id', route.workspaceId);
-      response.headers.set('x-locale', route.locale);
-      response.headers.set('x-rtl-mode', this.getLocaleDirection(route.locale) === 'rtl' ? 'true' : 'false');
-      
+      response.headers.set("x-workspace-id", route.workspaceId);
+      response.headers.set("x-locale", route.locale);
+      response.headers.set(
+        "x-rtl-mode",
+        this.getLocaleDirection(route.locale) === "rtl" ? "true" : "false",
+      );
+
       if (route.feature) {
-        response.headers.set('x-feature', route.feature);
+        response.headers.set("x-feature", route.feature);
       }
-      
+
       if (route.subFeature) {
-        response.headers.set('x-sub-feature', route.subFeature);
+        response.headers.set("x-sub-feature", route.subFeature);
       }
 
       return response;
@@ -515,7 +661,7 @@ export class IraqiWorkspaceRouter {
   } {
     return {
       routeCacheSize: this.routeCache.size,
-      permissionCacheSize: this.permissionCache.size
+      permissionCacheSize: this.permissionCache.size,
     };
   }
 }

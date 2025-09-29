@@ -47,6 +47,7 @@ The Model Context Protocol becomes culturally intelligent in our Iraqi AI system
 ### Iraqi Cultural Tool Categories
 
 #### 1. Cultural Intelligence Tools
+
 ```typescript
 interface IraqiCulturalTools {
   // Islamic jurisprudence and religious guidance
@@ -54,12 +55,12 @@ interface IraqiCulturalTools {
   hadithSearchEngine: MCPTool;
   islamicCalendarAndPrayers: MCPTool;
   halalHaramValidator: MCPTool;
-  
+
   // Iraqi cultural knowledge
   iraqiCulturalNorms: MCPTool;
   traditionalIraqiCustoms: MCPTool;
   culturalSensitivityChecker: MCPTool;
-  
+
   // Arabic language processing
   arabicNLPProcessor: MCPTool;
   iraqiDialectRecognizer: MCPTool;
@@ -69,6 +70,7 @@ interface IraqiCulturalTools {
 ```
 
 #### 2. Professional Domain Tools
+
 ```typescript
 interface IraqiProfessionalTools {
   // Legal domain
@@ -76,19 +78,19 @@ interface IraqiProfessionalTools {
   islamicLawReference: MCPTool;
   iraqiCourtSystemIntegration: MCPTool;
   legalDocumentGenerator: MCPTool;
-  
+
   // Medical domain
   iraqiHealthcareProtocols: MCPTool;
   islamicMedicalEthicsGuide: MCPTool;
   iraqiMedicalTerminology: MCPTool;
   healthSystemIntegration: MCPTool;
-  
+
   // Educational domain
   iraqiCurriculumStandards: MCPTool;
   islamicEducationResource: MCPTool;
   arabicEducationalContent: MCPTool;
   educationalAssessmentTools: MCPTool;
-  
+
   // Business domain
   iraqiCommercialLawGuide: MCPTool;
   islamicFinanceValidator: MCPTool;
@@ -98,13 +100,14 @@ interface IraqiProfessionalTools {
 ```
 
 #### 3. Payment and Financial Tools
+
 ```typescript
 interface IraqiPaymentTools {
   // Iraqi payment gateways
   zainCashIntegration: MCPTool;
   fastPayProcessor: MCPTool;
   nassWalletConnector: MCPTool;
-  
+
   // Islamic finance compliance
   shariaComplianceValidator: MCPTool;
   ribaDetectionTool: MCPTool;
@@ -125,55 +128,55 @@ const islamicJurisprudenceTool: IraqiMCPTool = {
     islamicCompliance: true,
     culturalSensitivity: "high",
     religiousAuthority: "moderate", // Balanced approach
-    madhab: ["hanafi", "shafi", "hanbali", "maliki"] // Iraqi Islamic schools
+    madhab: ["hanafi", "shafi", "hanbali", "maliki"], // Iraqi Islamic schools
   },
-  
+
   inputSchema: {
     type: "object",
     properties: {
       query: {
-        type: "string", 
-        description: "Legal or ethical question in Arabic or English"
+        type: "string",
+        description: "Legal or ethical question in Arabic or English",
       },
       context: {
         type: "string",
         enum: ["family", "commercial", "personal", "worship", "social"],
-        description: "Context of the religious inquiry"
+        description: "Context of the religious inquiry",
       },
       urgency: {
         type: "string",
         enum: ["critical", "high", "medium", "low"],
-        description: "Urgency of religious guidance needed"
+        description: "Urgency of religious guidance needed",
       },
       language: {
         type: "string",
         enum: ["arabic", "english", "mixed"],
-        default: "arabic"
-      }
+        default: "arabic",
+      },
     },
-    required: ["query", "context"]
+    required: ["query", "context"],
   },
-  
+
   async handler({ query, context, urgency = "medium", language = "arabic" }) {
     // Cultural validation
     const culturalValidation = await validateCulturalQuery(query, {
       islamicCompliance: true,
-      culturalSensitivity: "high"
+      culturalSensitivity: "high",
     });
-    
+
     if (!culturalValidation.appropriate) {
       throw new CulturalValidationError("Query not culturally appropriate");
     }
-    
+
     // Islamic jurisprudence processing
     const jurisprudenceResult = await processIslamicJurisprudence({
       query,
       context,
       madhab: "hanafi", // Primary school in Iraq
       sources: ["quran", "hadith", "ijma", "qiyas"],
-      language
+      language,
     });
-    
+
     // Format response with cultural context
     return {
       guidance: jurisprudenceResult.islamicGuidance,
@@ -182,16 +185,16 @@ const islamicJurisprudenceTool: IraqiMCPTool = {
       culturalContext: {
         islamicCompliance: jurisprudenceResult.compliant,
         madhab: jurisprudenceResult.schoolOfThought,
-        sources: jurisprudenceResult.authenticSources
+        sources: jurisprudenceResult.authenticSources,
       },
       arabicTranslation: jurisprudenceResult.arabicGuidance,
       disclaimers: [
         "This guidance is for informational purposes only",
         "Consult qualified Islamic scholars for definitive rulings",
-        "Consider local Iraqi Islamic authorities"
-      ]
+        "Consider local Iraqi Islamic authorities",
+      ],
     };
-  }
+  },
 };
 ```
 
@@ -200,89 +203,101 @@ const islamicJurisprudenceTool: IraqiMCPTool = {
 ```typescript
 const zainCashIntegrationTool: IraqiMCPTool = {
   name: "zain_cash_payment",
-  description: "Process payments through ZainCash with Islamic finance compliance",
+  description:
+    "Process payments through ZainCash with Islamic finance compliance",
   culturalContext: {
     islamicFinanceCompliant: true,
     iraqiRegulatory: true,
-    culturalSensitivity: "medium"
+    culturalSensitivity: "medium",
   },
-  
+
   inputSchema: {
     type: "object",
     properties: {
       amount: {
         type: "number",
         minimum: 1000, // 1000 IQD minimum
-        description: "Payment amount in Iraqi Dinars"
+        description: "Payment amount in Iraqi Dinars",
       },
       description: {
         type: "string",
         maxLength: 200,
-        description: "Payment description in English"
+        description: "Payment description in English",
       },
       descriptionArabic: {
-        type: "string", 
+        type: "string",
         maxLength: 200,
-        description: "Payment description in Arabic"
+        description: "Payment description in Arabic",
       },
       recipient: {
         type: "object",
         properties: {
           phoneNumber: { type: "string", pattern: "^964[0-9]{10}$" },
-          name: { type: "string" }
-        }
+          name: { type: "string" },
+        },
       },
       islamicCompliance: {
         type: "boolean",
         default: true,
-        description: "Ensure Islamic finance compliance"
-      }
+        description: "Ensure Islamic finance compliance",
+      },
     },
-    required: ["amount", "description", "recipient"]
+    required: ["amount", "description", "recipient"],
   },
-  
-  async handler({ amount, description, descriptionArabic, recipient, islamicCompliance = true }) {
+
+  async handler({
+    amount,
+    description,
+    descriptionArabic,
+    recipient,
+    islamicCompliance = true,
+  }) {
     // Islamic finance validation
     if (islamicCompliance) {
       const shariaValidation = await validateShariaCompliance({
         transactionType: "service_payment",
         amount,
         description,
-        purpose: "general_service"
+        purpose: "general_service",
       });
-      
+
       if (!shariaValidation.halal) {
         throw new IslamicFinanceViolationError(
-          `Transaction not Sharia-compliant: ${shariaValidation.issues.join(", ")}`
+          `Transaction not Sharia-compliant: ${shariaValidation.issues.join(", ")}`,
         );
       }
     }
-    
+
     // Cultural validation
-    const culturalCheck = await validateCulturalContent([description, descriptionArabic]);
+    const culturalCheck = await validateCulturalContent([
+      description,
+      descriptionArabic,
+    ]);
     if (!culturalCheck.appropriate) {
-      throw new CulturalValidationError("Payment description not culturally appropriate");
+      throw new CulturalValidationError(
+        "Payment description not culturally appropriate",
+      );
     }
-    
+
     // Process ZainCash payment
     const paymentResult = await processZainCashPayment({
       amount,
       currency: "IQD",
       description: {
         english: description,
-        arabic: descriptionArabic || await translateToArabic(description)
+        arabic: descriptionArabic || (await translateToArabic(description)),
       },
       recipient: {
         phoneNumber: recipient.phoneNumber,
-        name: recipient.name
+        name: recipient.name,
       },
       metadata: {
         islamicCompliant: islamicCompliance,
         culturallyValidated: true,
-        processedAt: new Date().toISOString()
-      }
+        processedAt: new Date().toISOString(),
+      },
     });
-    
+
     return {
       transactionId: paymentResult.transactionId,
       status: paymentResult.status,
@@ -290,15 +305,15 @@ const zainCashIntegrationTool: IraqiMCPTool = {
       currency: "IQD",
       islamicCompliance: {
         validated: islamicCompliance,
-        shariaCompliant: paymentResult.shariaCompliant
+        shariaCompliant: paymentResult.shariaCompliant,
       },
       culturalContext: {
         arabicDescription: descriptionArabic || paymentResult.arabicDescription,
-        culturallyValidated: true
+        culturallyValidated: true,
       },
-      gatewayResponse: paymentResult.gatewayData
+      gatewayResponse: paymentResult.gatewayData,
     };
-  }
+  },
 };
 ```
 
@@ -315,19 +330,19 @@ const remoteAgentTools = await a2aClient.discoverAgentTools({
   culturalRequirements: {
     islamicCompliance: true,
     arabicSupport: true,
-    professionalDomain: "legal"
-  }
+    professionalDomain: "legal",
+  },
 });
 
 // Use remote agent's Islamic jurisprudence tool
 const jurisprudenceGuidance = await a2aClient.invokeRemoteTool({
-  agentId: "iraqi-legal-specialist", 
+  agentId: "iraqi-legal-specialist",
   toolName: "islamic_jurisprudence_query",
   params: {
     query: "ما حكم العقود التجارية في الإسلام؟",
     context: "commercial",
-    language: "arabic"
-  }
+    language: "arabic",
+  },
 });
 ```
 
@@ -345,7 +360,7 @@ const IraqiLegalConsultationInterface = () => {
       arabicSupport: true
     }
   });
-  
+
   return (
     <IraqiCopilotChat
       tools={[invokeIslamicJurisprudence]}
@@ -372,20 +387,20 @@ const culturalToolRouter = {
   routeTool: async (query: string, culturalContext: IraqiCulturalContext) => {
     // Detect professional domain
     const domain = await detectProfessionalDomain(query);
-    
+
     // Check Islamic compliance requirements
     const islamicRequired = await assessIslamicComplianceNeed(query);
-    
+
     // Select culturally-appropriate tools
     const availableTools = await getAvailableTools({
       domain,
       islamicCompliance: islamicRequired,
       arabicSupport: culturalContext.arabicSupport,
-      culturalSensitivity: culturalContext.culturalSensitivity
+      culturalSensitivity: culturalContext.culturalSensitivity,
     });
-    
+
     return selectOptimalTool(availableTools, query, culturalContext);
-  }
+  },
 };
 ```
 
@@ -397,20 +412,31 @@ Different professional domains have specialized tool requirements:
 const domainToolSpecialization = {
   legal: {
     requiredTools: ["islamic_jurisprudence", "iraqi_civil_law", "court_system"],
-    culturalRequirements: { islamicCompliance: true, culturalSensitivity: "high" }
+    culturalRequirements: {
+      islamicCompliance: true,
+      culturalSensitivity: "high",
+    },
   },
   medical: {
-    requiredTools: ["islamic_medical_ethics", "iraqi_healthcare", "medical_terminology"],
-    culturalRequirements: { islamicCompliance: true, privacyLevel: "high" }
+    requiredTools: [
+      "islamic_medical_ethics",
+      "iraqi_healthcare",
+      "medical_terminology",
+    ],
+    culturalRequirements: { islamicCompliance: true, privacyLevel: "high" },
   },
   educational: {
     requiredTools: ["iraqi_curriculum", "islamic_education", "arabic_content"],
-    culturalRequirements: { islamicCompliance: true, arabicSupport: true }
+    culturalRequirements: { islamicCompliance: true, arabicSupport: true },
   },
   business: {
-    requiredTools: ["islamic_finance", "iraqi_commercial_law", "payment_gateways"],
-    culturalRequirements: { islamicFinance: true, regulatoryCompliance: true }
-  }
+    requiredTools: [
+      "islamic_finance",
+      "iraqi_commercial_law",
+      "payment_gateways",
+    ],
+    culturalRequirements: { islamicFinance: true, regulatoryCompliance: true },
+  },
 };
 ```
 

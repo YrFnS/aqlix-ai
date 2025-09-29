@@ -21,6 +21,7 @@
 **Iraqi AI chat-specific API infrastructure:**
 
 ### Chat Conversation APIs
+
 - **Conversation Management:** REST APIs for creating, managing, and retrieving Iraqi AI chat conversations
 - **Message Processing:** Arabic-aware message APIs with cultural validation and Iraqi dialect processing
 - **Conversation History:** Conversation history APIs with cultural context preservation and professional domain filtering
@@ -29,6 +30,7 @@
 - **Real-time Messaging:** WebSocket APIs for live chat with cultural timing awareness
 
 ### Arabic Text Processing APIs
+
 - **RTL Text Processing:** APIs for right-to-left text processing and Arabic language validation
 - **Iraqi Dialect Recognition:** Dialect processing APIs with Baghdad, Basra, Mosul, Erbil regional support
 - **Mixed Language Processing:** APIs handling Arabic-English code-switching and mixed content
@@ -37,6 +39,7 @@
 - **Arabic Search and Retrieval:** Search APIs optimized for Arabic text with dialect-aware indexing
 
 ### Cultural Validation Endpoints
+
 - **Cultural Appropriateness Validation:** APIs for validating content against Iraqi cultural standards
 - **Islamic Compliance Checking:** APIs for Islamic compliance validation and Sharia principle verification
 - **Regional Cultural Adaptation:** APIs for adapting content to specific Iraqi regional cultural variations
@@ -45,6 +48,7 @@
 - **Cultural Recommendation Engine:** APIs providing cultural improvement recommendations and guidance
 
 ### Agent Coordination APIs
+
 - **Multi-Agent Orchestration:** APIs for coordinating workflows across 21 specialized Iraqi AI agents
 - **Agent Performance Monitoring:** APIs for tracking agent performance and cultural compliance metrics
 - **Context Sharing APIs:** APIs for sharing cultural and professional context between agents
@@ -59,6 +63,7 @@
 **Iraqi AI chat-specific API examples:**
 
 ### Chat Conversation APIs
+
 ```python
 # Iraqi Chat Conversation API Endpoints
 from fastapi import FastAPI, HTTPException, Depends
@@ -258,6 +263,7 @@ async def send_message(
 ```
 
 ### Cultural Validation APIs
+
 ```python
 # Cultural Validation API Endpoints
 class CulturalValidationRequest(BaseModel):
@@ -417,6 +423,7 @@ async def get_cultural_guidelines(
 ```
 
 ### Agent Coordination APIs
+
 ```python
 # Agent Coordination API Endpoints
 class AgentCoordinationRequest(BaseModel):
@@ -576,6 +583,7 @@ async def get_agent_performance(
 ```
 
 ### Real-time WebSocket APIs
+
 ```python
 # Real-time WebSocket API Endpoints
 from fastapi import WebSocket, WebSocketDisconnect
@@ -783,6 +791,7 @@ async def process_websocket_chat_message(params: dict):
 **API integration with Iraqi AI system components:**
 
 ### Database Integration
+
 - **Iraqi AI Database Schema:** Direct integration with Iraqi-specific database tables and cultural data structures
 - **Arabic Text Storage:** APIs optimized for Arabic text storage and retrieval with dialect preservation
 - **Cultural Context Persistence:** API integration with cultural context storage and cross-session persistence
@@ -790,6 +799,7 @@ async def process_websocket_chat_message(params: dict):
 - **Agent Coordination Data:** APIs for storing and retrieving multi-agent coordination history and performance
 
 ### Agent Ecosystem Integration
+
 - **21 Specialized Agents:** API endpoints coordinating with all 21 specialized Iraqi AI agents
 - **Agent Performance Monitoring:** APIs tracking agent performance and cultural compliance metrics
 - **Context Sharing APIs:** Secure APIs for sharing cultural and professional context between agents
@@ -797,6 +807,7 @@ async def process_websocket_chat_message(params: dict):
 - **Real-time Agent Communication:** WebSocket APIs for live agent coordination and user interaction
 
 ### Cultural System Integration
+
 - **Iraqi Cultural Validation:** Deep API integration with Iraqi cultural validation and compliance systems
 - **Islamic Compliance APIs:** API integration with Islamic compliance checking and Sharia validation
 - **Regional Cultural Adaptation:** APIs adapting content and responses to specific Iraqi regional variations
@@ -804,6 +815,7 @@ async def process_websocket_chat_message(params: dict):
 - **Political Neutrality APIs:** API integration ensuring political neutrality and avoiding sectarian content
 
 ### Payment and Billing Integration
+
 - **Iraqi Payment Gateways:** API integration with ZainCash, FastPay, NassWallet payment processing
 - **Islamic Finance APIs:** API integration with Sharia-compliant billing and Islamic finance principles
 - **Usage Tracking APIs:** API integration with usage tracking and token consumption monitoring
@@ -817,6 +829,7 @@ async def process_websocket_chat_message(params: dict):
 **Iraqi AI chat API validation:**
 
 ### Chat API Testing
+
 - **Arabic Message Processing:** Test Arabic text processing APIs with Iraqi dialect and RTL text
 - **Cultural Validation APIs:** Test cultural appropriateness validation with Iraqi cultural standards
 - **Multi-Agent Coordination:** Test agent coordination APIs with 21 specialized Iraqi agents
@@ -824,6 +837,7 @@ async def process_websocket_chat_message(params: dict):
 - **Professional Domain APIs:** Test professional domain APIs for Iraqi legal, medical, educational contexts
 
 ### Performance Testing
+
 - **API Response Times:** Validate <200ms API response times for chat and cultural validation
 - **WebSocket Performance:** Test real-time WebSocket performance under high concurrent load
 - **Arabic Processing Performance:** Test Arabic text processing API performance with large texts
@@ -831,6 +845,7 @@ async def process_websocket_chat_message(params: dict):
 - **Cultural Validation Performance:** Test cultural validation API performance and accuracy
 
 ### Integration Testing
+
 - **Database API Integration:** Test API integration with Iraqi AI database schema and cultural data
 - **Agent Ecosystem Integration:** Test API integration with 21 specialized Iraqi AI agents
 - **Payment Gateway Integration:** Test API integration with Iraqi payment gateways and billing
@@ -844,18 +859,21 @@ async def process_websocket_chat_message(params: dict):
 **Iraqi AI chat API implementation considerations:**
 
 ### Implementation Priorities
+
 - **Cultural API integration first** - All APIs must respect Iraqi cultural values and Islamic principles
 - **Arabic text optimization** - API endpoints optimized for Arabic text processing and RTL handling
 - **Professional domain expertise** - APIs adapted for Iraqi professional contexts and requirements
 - **Real-time cultural validation** - Live cultural validation in WebSocket and real-time communications
 
 ### Performance and Scalability
+
 - **<200ms API response times** for immediate user feedback and cultural validation
 - **<100ms WebSocket message processing** for real-time chat experience
 - **<300ms multi-agent coordination** for complex agent workflows and coordination
 - **Scalable architecture** supporting 100,000+ concurrent Iraqi users and chat sessions
 
 ### Cultural and Professional Focus
+
 - **Iraqi cultural pattern integration** - APIs supporting Iraqi cultural patterns and regional variations
 - **Islamic compliance validation** - API integration ensuring Islamic compliance in all interactions
 - **Professional domain specialization** - APIs specialized for Iraqi legal, medical, educational, business contexts

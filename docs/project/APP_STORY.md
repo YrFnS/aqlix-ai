@@ -34,6 +34,7 @@ Iraqi professionals face unique challenges:
 ## The User Journey
 
 ### Chapter 1: First Contact
+
 ```
 User opens Aqlix AI for the first time
 ↓
@@ -48,6 +49,7 @@ AI responds with appropriate cultural context and professional courtesy
 ```
 
 ### Chapter 2: Building Trust
+
 ```
 Professional introduces themselves: "أنا المهندس أحمد من بغداد"
 ↓
@@ -63,6 +65,7 @@ AI provides expertise with:
 ```
 
 ### Chapter 3: Deep Integration
+
 ```
 User uploads Iraqi legal document in Arabic
 ↓
@@ -78,6 +81,7 @@ Provides analysis and suggestions while maintaining:
 ```
 
 ### Chapter 4: Voice Interaction
+
 ```
 User speaks in Iraqi dialect: "شلونك دكتور، أريد أسأل عن..."
 ↓
@@ -89,6 +93,7 @@ Natural conversation flow respecting Iraqi communication patterns
 ```
 
 ### Chapter 5: Professional Growth
+
 ```
 Regular usage builds understanding of user's:
 - Professional preferences
@@ -104,18 +109,21 @@ AI becomes more personalized while maintaining:
 ## Core Cultural Values Integration
 
 ### Islamic Values Respect
+
 - **Respectful Greetings**: "السلام عليكم" when appropriate
 - **Blessing Expressions**: "بارك الله فيك" for appreciation
 - **Religious Sensitivity**: Understanding of halal/haram considerations
 - **Prayer Time Awareness**: Respectful scheduling around prayer times
 
 ### Iraqi Professional Culture
+
 - **Hierarchy Respect**: Proper use of professional titles
 - **Social Courtesy**: Understanding of Iraqi business etiquette
 - **Regional Awareness**: Respect for different Iraqi dialects and regions
 - **Economic Sensitivity**: Understanding of local economic realities
 
 ### Content Safety
+
 - **Political Neutrality**: Avoiding sectarian, tribal, or political content
 - **Historical Sensitivity**: Respectful treatment of Iraqi historical experiences
 - **Social Harmony**: Promoting unity and understanding
@@ -124,16 +132,20 @@ AI becomes more personalized while maintaining:
 ## Feature Stories
 
 ### The Document Helper
-*"Dr. Layla uploads a patient file in Arabic. The AI instantly understands the medical terminology, cultural context, and helps her create a treatment plan that respects both medical best practices and Islamic medical ethics."*
+
+_"Dr. Layla uploads a patient file in Arabic. The AI instantly understands the medical terminology, cultural context, and helps her create a treatment plan that respects both medical best practices and Islamic medical ethics."_
 
 ### The Voice Assistant
-*"Engineer Kareem is driving to a construction site. He asks in Iraqi dialect about building code requirements. The AI responds naturally in the same dialect, providing technical information while understanding the local construction context."*
+
+_"Engineer Kareem is driving to a construction site. He asks in Iraqi dialect about building code requirements. The AI responds naturally in the same dialect, providing technical information while understanding the local construction context."_
 
 ### The Cultural Bridge
-*"Teacher Noor needs to explain Iraqi history to her students. The AI helps her create culturally sensitive educational content that promotes understanding and avoids divisive topics, focusing on Iraq's rich cultural heritage."*
+
+_"Teacher Noor needs to explain Iraqi history to her students. The AI helps her create culturally sensitive educational content that promotes understanding and avoids divisive topics, focusing on Iraq's rich cultural heritage."_
 
 ### The Professional Network
-*"Lawyer Ahmed collaborates with colleagues. The AI helps maintain professional courtesy in all communications, using appropriate titles and formal language while facilitating effective legal collaboration."*
+
+_"Lawyer Ahmed collaborates with colleagues. The AI helps maintain professional courtesy in all communications, using appropriate titles and formal language while facilitating effective legal collaboration."_
 
 ## Technical Story
 
@@ -150,21 +162,25 @@ AI becomes more personalized while maintaining:
 ## Success Metrics That Matter
 
 ### Cultural Appropriateness
+
 - 95%+ cultural sensitivity score across all interactions
 - Zero tolerance for inappropriate political/sectarian content
 - High user satisfaction with cultural respect
 
 ### Professional Value
+
 - Measurable productivity improvements for Iraqi professionals
 - Positive feedback on domain-specific expertise
 - Growing professional user community
 
 ### Trust Building
+
 - Strong user retention rates
 - Positive word-of-mouth recommendations
 - Professional endorsements from Iraqi institutions
 
 ### Technical Excellence
+
 - Sub-3-second response times on 3G networks
 - 99.9% uptime for professional users
 - Seamless Arabic RTL support
@@ -172,18 +188,21 @@ AI becomes more personalized while maintaining:
 ## The Future Vision
 
 ### Phase 1: Foundation (MVP)
+
 - Core chat functionality with cultural integration
 - Professional domains for legal, medical, educational, engineering
 - Document processing with Arabic OCR
 - Voice features with Iraqi dialect support
 
 ### Phase 2: Expansion
+
 - Mobile app for broader accessibility
 - Enhanced professional networking features
 - Integration with Iraqi professional associations
 - Advanced voice features with dialect recognition
 
 ### Phase 3: Community
+
 - Professional mentorship platform
 - Cultural knowledge sharing
 - Educational content creation tools
@@ -213,9 +232,9 @@ This isn't just about building another AI chat system. It's about:
 
 ---
 
-*"في عقلكس، نحن لا نبني مجرد ذكاء اصطناعي، بل نبني جسراً ثقافياً ومهنياً يخدم العراق وأهله"*
+_"في عقلكس، نحن لا نبني مجرد ذكاء اصطناعي، بل نبني جسراً ثقافياً ومهنياً يخدم العراق وأهله"_
 
-*"At Aqlix, we're not just building artificial intelligence, we're building a cultural and professional bridge that serves Iraq and its people."*
+_"At Aqlix, we're not just building artificial intelligence, we're building a cultural and professional bridge that serves Iraq and its people."_
 
 ---
 

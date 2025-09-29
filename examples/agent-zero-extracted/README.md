@@ -8,6 +8,7 @@
 ## 📋 Extracted Components
 
 ### Document Processing (`services/`)
+
 - **`iraqi_document_processor.py`** - Document processing with Arabic OCR and cultural validation
 
 **Compatibility**: 85% direct use from Agent Zero  
@@ -16,7 +17,9 @@
 ## 🎯 Agent Zero Integration Points
 
 ### Core Document Processing
+
 Agent Zero's `python/helpers/document_query.py` provides:
+
 - PDF processing with PyMuPDF
 - Image OCR with Tesseract
 - Text extraction and chunking
@@ -24,7 +27,9 @@ Agent Zero's `python/helpers/document_query.py` provides:
 - Multi-format document support
 
 ### Iraqi Enhancements Added
+
 Our `iraqi_document_processor.py` extends with:
+
 - **Arabic OCR Configuration**: Enhanced Tesseract settings for Arabic text
 - **Cultural Validation**: Islamic compliance and appropriateness checking
 - **Iraqi Entity Extraction**: Recognition of Iraqi locations, institutions, legal terms
@@ -34,6 +39,7 @@ Our `iraqi_document_processor.py` extends with:
 ## 📊 Compatibility Analysis
 
 ### Direct Use (85% Compatible)
+
 ```python
 # Core document processing pipeline from Agent Zero
 class DocumentProcessor:
@@ -47,15 +53,16 @@ class DocumentProcessor:
 ```
 
 ### Iraqi Enhancements (15% Addition)
+
 ```python
 # Arabic-specific processing additions
 class IraqiDocumentProcessor(DocumentProcessor):
     async def _process_arabic_text(self, content: str) -> ArabicProcessingMeta:
         # Dialect detection, RTL processing, cultural validation
-        
+
     async def _validate_cultural_content(self, content: str) -> CulturalValidationMeta:
         # Islamic compliance, sectarian neutrality, professional appropriateness
-        
+
     async def _extract_iraqi_entities(self, content: str) -> List[str]:
         # Iraqi locations, institutions, professional terms
 ```
@@ -63,6 +70,7 @@ class IraqiDocumentProcessor(DocumentProcessor):
 ## 🔧 Agent Zero Core Features Preserved
 
 ### Multi-Format Support
+
 - **PDF Processing**: PyMuPDF with OCR fallback
 - **Image Processing**: Tesseract OCR with Arabic language support
 - **Text Processing**: Multiple encoding support for Arabic
@@ -70,12 +78,14 @@ class IraqiDocumentProcessor(DocumentProcessor):
 - **Unstructured Documents**: Fallback processing for unknown formats
 
 ### Document Chunking
+
 - **Smart Chunking**: Recursive text splitting optimized for Arabic
 - **Context Preservation**: Maintain document structure and meaning
 - **Metadata Tracking**: Document source, processing time, confidence scores
 - **Vector Database Ready**: Prepared for embedding and search
 
 ### Error Handling
+
 - **Graceful Degradation**: Multiple fallback strategies for processing failures
 - **Progress Tracking**: Real-time processing updates with Arabic messages
 - **Comprehensive Logging**: Detailed processing logs for debugging
@@ -84,6 +94,7 @@ class IraqiDocumentProcessor(DocumentProcessor):
 ## 🌟 Iraqi-Specific Enhancements
 
 ### Arabic OCR Configuration
+
 ```python
 # Enhanced OCR settings for Arabic text
 self.arabic_ocr_config = {
@@ -94,6 +105,7 @@ self.arabic_ocr_config = {
 ```
 
 ### Cultural Validation
+
 ```python
 # Islamic compliance and cultural appropriateness
 def validate_cultural_content(self, content: str, document_type: IraqiDocumentType):
@@ -106,6 +118,7 @@ def validate_cultural_content(self, content: str, document_type: IraqiDocumentTy
 ```
 
 ### Iraqi Entity Recognition
+
 ```python
 # Extract Iraqi-specific entities
 iraqi_locations = ["بغداد", "البصرة", "أربيل", "النجف", "كربلاء", ...]
@@ -118,22 +131,24 @@ professional_terms = {
 ```
 
 ### Arabic Text Enhancement
+
 ```python
 # Proper Arabic text processing
 def _enhance_arabic_text(self, text: str) -> str:
     # Clean and normalize Arabic text
     cleaned_text = clean_arabic_text(text)
-    
+
     # Reshape Arabic text for proper display
     reshaped = arabic_reshaper.reshape(cleaned_text)
     bidi_text = get_display(reshaped)
-    
+
     return bidi_text
 ```
 
 ## 🚀 Implementation Strategy
 
 ### Phase 1: Basic Document Processing
+
 ```python
 # Start with Agent Zero's core functionality
 from examples.agent_zero_extracted.services.iraqi_document_processor import IraqiDocumentProcessor
@@ -143,6 +158,7 @@ result = await processor.process_document(file_path, document_type=IraqiDocument
 ```
 
 ### Phase 2: Arabic OCR Integration
+
 ```python
 # Add Arabic OCR capabilities
 processor = IraqiDocumentProcessor()
@@ -151,10 +167,11 @@ result = await processor.process_document(arabic_pdf_path, document_type=IraqiDo
 ```
 
 ### Phase 3: Cultural Validation
+
 ```python
 # Enable cultural validation
 result = await processor.process_document(
-    file_path, 
+    file_path,
     document_type=IraqiDocumentType.RELIGIOUS_TEXT,
     user_id=user_id,  # For professional context
     progress_callback=lambda msg: print(f"Processing: {msg}")
@@ -165,6 +182,7 @@ if result.cultural_validation.islamic_compliance == "inappropriate":
 ```
 
 ### Phase 4: Iraqi Entity Extraction
+
 ```python
 # Extract Iraqi-specific information
 result = await processor.process_document(file_path)
@@ -210,17 +228,20 @@ Files.update_processing_status(file_id, ProcessingStatus.COMPLETED)
 ## 🎯 Enhancement Strategy with Block/goose Integration
 
 ### ✅ **KEEP Agent Zero Document Processing**
+
 - Excellent offline Arabic OCR and processing capabilities
 - Strong cultural validation and Iraqi entity extraction
 - Proven Arabic text enhancement and dialect detection
 
 ### ➕ **ADD Block/goose MCP Integration**
+
 - **MCP Protocol**: `crates/mcp-core/` - Tool integration ecosystem
 - **Multi-LLM Support**: 15+ provider integration for enhanced processing
 - **Agent Platform**: Connect document processing with broader agent framework
 - **Value Addition**: +25-35 weeks development time
 
 ### Enhanced Implementation Strategy:
+
 1. **Keep Current**: Arabic OCR, cultural validation, Iraqi enhancements
 2. **Add MCP Integration**: Connect with Block/goose tool ecosystem
 3. **Multi-LLM Enhancement**: Support 15+ providers for document analysis
@@ -228,6 +249,7 @@ Files.update_processing_status(file_id, ProcessingStatus.COMPLETED)
 5. **Desktop UI**: Leverage Block/goose 200+ React components for file management
 
 ### Combined Value:
+
 - Agent Zero processing: 8-12 weeks
 - Block/goose integration: +25-35 weeks
 - **Total Enhanced Value**: 33-47 weeks (vs original 8-12 weeks)

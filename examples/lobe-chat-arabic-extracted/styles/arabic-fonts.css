@@ -19,11 +19,15 @@
   font-style: normal;
   font-weight: 300 700;
   font-display: swap;
-  src: url('/fonts/Cairo-VariableFont.woff2') format('woff2-variations'),
-       url('/fonts/Cairo-Regular.woff2') format('woff2'),
-       url('/fonts/Cairo-Regular.woff') format('woff');
+  src:
+    url('/fonts/Cairo-VariableFont.woff2') format('woff2-variations'),
+    url('/fonts/Cairo-Regular.woff2') format('woff2'),
+    url('/fonts/Cairo-Regular.woff') format('woff');
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1;
 }
 
 /* Traditional Arabic Font - Amiri (Legal/Formal) */
@@ -32,10 +36,15 @@
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
-  src: url('/fonts/Amiri-Regular.woff2') format('woff2'),
-       url('/fonts/Amiri-Regular.woff') format('woff');
+  src:
+    url('/fonts/Amiri-Regular.woff2') format('woff2'),
+    url('/fonts/Amiri-Regular.woff') format('woff');
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "dlig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1,
+    'dlig' 1;
 }
 
 /* Clean Arabic Font - Noto Sans Arabic (Medical/Technical) */
@@ -44,11 +53,15 @@
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
-  src: url('/fonts/NotoSansArabic-VariableFont.woff2') format('woff2-variations'),
-       url('/fonts/NotoSansArabic-Regular.woff2') format('woff2'),
-       url('/fonts/NotoSansArabic-Regular.woff') format('woff');
+  src:
+    url('/fonts/NotoSansArabic-VariableFont.woff2') format('woff2-variations'),
+    url('/fonts/NotoSansArabic-Regular.woff2') format('woff2'),
+    url('/fonts/NotoSansArabic-Regular.woff') format('woff');
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1;
 }
 
 /* Iraqi Dialect Font - Harmattan (Chat/Informal) */
@@ -57,10 +70,14 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('/fonts/Harmattan-Regular.woff2') format('woff2'),
-       url('/fonts/Harmattan-Regular.woff') format('woff');
+  src:
+    url('/fonts/Harmattan-Regular.woff2') format('woff2'),
+    url('/fonts/Harmattan-Regular.woff') format('woff');
   unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1;
 }
 
 /* ============================================================================
@@ -73,7 +90,7 @@
   --font-arabic-traditional: 'Amiri', 'Times New Roman', 'Geeza Pro', serif;
   --font-arabic-clean: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
   --font-arabic-informal: 'Harmattan', 'Tahoma', 'Arial Unicode MS', sans-serif;
-  
+
   /* Professional Domain Fonts */
   --font-legal: var(--font-arabic-traditional);
   --font-medical: var(--font-arabic-clean);
@@ -81,29 +98,29 @@
   --font-business: var(--font-arabic-clean);
   --font-engineering: 'Cascadia Code', 'Fira Code', var(--font-arabic-clean);
   --font-general: var(--font-arabic-primary);
-  
+
   /* Arabic Typography Settings */
   --arabic-line-height: 1.7;
   --arabic-letter-spacing: 0.02em;
   --arabic-word-spacing: 0.1em;
-  
+
   /* Iraqi Dialect-Specific Settings */
   --iraqi-line-height: 1.7;
   --iraqi-letter-spacing: 0.02em;
   --iraqi-word-spacing: 0.1em;
-  
+
   --baghdad-line-height: 1.65;
   --baghdad-letter-spacing: 0.015em;
   --baghdad-word-spacing: 0.08em;
-  
+
   --basra-line-height: 1.75;
   --basra-letter-spacing: 0.025em;
   --basra-word-spacing: 0.12em;
-  
+
   --mosul-line-height: 1.68;
   --mosul-letter-spacing: 0.02em;
   --mosul-word-spacing: 0.09em;
-  
+
   /* Performance Optimization Settings */
   --text-rendering-speed: optimizeSpeed;
   --text-rendering-quality: optimizeLegibility;
@@ -115,8 +132,8 @@
    ============================================================================ */
 
 /* Global Arabic text optimization */
-[lang="ar"], 
-[dir="rtl"],
+[lang='ar'],
+[dir='rtl'],
 .arabic-text {
   font-family: var(--font-arabic-primary);
   line-height: var(--arabic-line-height);
@@ -125,7 +142,10 @@
   text-rendering: var(--text-rendering-balanced);
   font-kerning: auto;
   font-variant-ligatures: common-ligatures;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   direction: rtl;
@@ -230,21 +250,30 @@
   text-rendering: var(--text-rendering-speed);
   font-kerning: none;
   font-variant-ligatures: none;
-  font-feature-settings: "kern" 0, "liga" 0;
+  font-feature-settings:
+    'kern' 0,
+    'liga' 0;
 }
 
 .optimization-quality {
   text-rendering: var(--text-rendering-quality);
   font-kerning: normal;
   font-variant-ligatures: common-ligatures discretionary-ligatures;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1, "dlig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1,
+    'dlig' 1;
 }
 
 .optimization-balanced {
   text-rendering: var(--text-rendering-balanced);
   font-kerning: auto;
   font-variant-ligatures: common-ligatures;
-  font-feature-settings: "kern" 1, "liga" 1, "clig" 1;
+  font-feature-settings:
+    'kern' 1,
+    'liga' 1,
+    'clig' 1;
 }
 
 /* ============================================================================
@@ -324,16 +353,18 @@
 
 /* Mobile optimizations */
 @media (max-width: 640px) {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     font-size: 0.95em;
     line-height: 1.65;
     letter-spacing: 0.015em;
   }
-  
+
   .domain-legal {
     font-size: 1.05em;
   }
-  
+
   .domain-educational {
     font-size: 1.03em;
   }
@@ -341,7 +372,9 @@
 
 /* Tablet optimizations */
 @media (min-width: 641px) and (max-width: 1024px) {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     font-size: 1em;
     line-height: 1.7;
   }
@@ -349,15 +382,17 @@
 
 /* Desktop optimizations */
 @media (min-width: 1025px) {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     font-size: 1.05em;
     line-height: 1.75;
   }
-  
+
   .domain-legal {
     font-size: 1.15em;
   }
-  
+
   .domain-educational {
     font-size: 1.12em;
   }
@@ -368,7 +403,9 @@
    ============================================================================ */
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     -webkit-font-smoothing: subpixel-antialiased;
     -moz-osx-font-smoothing: auto;
   }
@@ -379,7 +416,9 @@
    ============================================================================ */
 
 @media print {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     font-family: var(--font-arabic-traditional);
     font-size: 12pt;
     line-height: 1.8;
@@ -387,12 +426,12 @@
     text-rendering: optimizeLegibility;
     font-kerning: normal;
   }
-  
+
   .domain-legal {
     font-size: 13pt;
     font-weight: 600;
   }
-  
+
   .domain-medical,
   .domain-educational {
     font-size: 12.5pt;
@@ -405,7 +444,9 @@
 
 /* High contrast mode */
 @media (prefers-contrast: high) {
-  [lang="ar"], [dir="rtl"], .arabic-text {
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     font-weight: 500;
     letter-spacing: 0.025em;
   }
@@ -430,8 +471,10 @@
     --business-text-color: #a6acaf;
     --engineering-text-color: #95a5a6;
   }
-  
-  [lang="ar"], [dir="rtl"], .arabic-text {
+
+  [lang='ar'],
+  [dir='rtl'],
+  .arabic-text {
     color: #e8eaed;
     -webkit-font-smoothing: antialiased;
   }

@@ -6,11 +6,13 @@
 **Based on**: LibreChat BaseClient.js pattern + Iraqi cultural AI requirements
 
 ## Overview
+
 Implement an intelligent multi-model AI provider system that dynamically routes requests to the most appropriate AI model based on cultural context, language requirements, and professional domain expertise.
 
 ## Core Features
 
 ### Intelligent Model Routing
+
 - **Cultural Context Routing**: Route to models with best Arabic/Islamic understanding
 - **Professional Domain Matching**: Select models specialized for Iraqi professional contexts
 - **Language Optimization**: Prioritize Arabic-capable models for Arabic content
@@ -18,6 +20,7 @@ Implement an intelligent multi-model AI provider system that dynamically routes 
 - **Fallback Chains**: Graceful degradation when primary models unavailable
 
 ### Iraqi Cultural AI Enhancement
+
 - **Arabic Language Priority**: Prefer models with superior Arabic language capabilities
 - **Islamic Compliance Filtering**: Route through culturally appropriate models first
 - **Dialect Recognition**: Support for Iraqi Arabic dialect variations
@@ -25,6 +28,7 @@ Implement an intelligent multi-model AI provider system that dynamically routes 
 - **Professional Domain Awareness**: Model selection based on Iraqi professional standards
 
 ### Multi-Provider Support
+
 - **OpenAI Integration**: GPT models with Arabic optimization
 - **Anthropic Integration**: Claude models with cultural context awareness
 - **Local Models**: Iraqi-specific fine-tuned models via Ollama
@@ -34,6 +38,7 @@ Implement an intelligent multi-model AI provider system that dynamically routes 
 ## Technical Implementation
 
 ### Core Architecture
+
 ```python
 # Multi-Model Provider System
 from typing import Dict, List, Any, Optional, Union
@@ -67,7 +72,7 @@ class IraqiMultiModelProvider:
         self.performance_metrics = {}
         self.cultural_validator = cultural_validator
         self.routing_strategy = IntelligentRoutingStrategy()
-        
+
     async def route_request(
         self,
         request: IraqiAIRequest,
@@ -75,18 +80,19 @@ class IraqiMultiModelProvider:
     ) -> Dict[str, Any]:
         # Analyze request for optimal model selection
         analysis = await self._analyze_request(request)
-        
+
         # Select best model based on cultural and technical requirements
         selected_model = await self._select_optimal_model(analysis, user_context)
-        
+
         # Enhance request with Iraqi cultural context
         enhanced_request = await self._inject_cultural_context(request, user_context)
-        
+
         # Execute request with fallback handling
         return await self._execute_with_fallback(enhanced_request, selected_model)
 ```
 
 ### Model Selection Intelligence
+
 ```python
 class IraqiModelSelector:
     def __init__(self):
@@ -97,7 +103,7 @@ class IraqiModelSelector:
             "performance_metrics": 0.15,    # Speed and accuracy
             "islamic_compliance": 0.1       # Religious appropriateness
         }
-        
+
     async def select_model(
         self,
         request: IraqiAIRequest,
@@ -106,13 +112,14 @@ class IraqiModelSelector:
         scores = {}
         for model in available_models:
             scores[model] = await self._calculate_model_score(model, request)
-        
+
         # Return highest scoring model with cultural validation
         best_model = max(scores, key=scores.get)
         return await self._validate_cultural_appropriateness(best_model, request)
 ```
 
 ### Cultural Context Enhancement
+
 ```python
 class CulturalContextInjector:
     def __init__(self):
@@ -122,7 +129,7 @@ class CulturalContextInjector:
             "professional_medical": "Considering Iraqi medical practices and Islamic medical ethics...",
             "professional_educational": "Aligned with Iraqi educational system and Islamic learning principles..."
         }
-        
+
     async def enhance_prompt(
         self,
         original_prompt: str,
@@ -131,57 +138,60 @@ class CulturalContextInjector:
     ) -> str:
         # Inject Iraqi cultural context
         cultural_prefix = self._get_cultural_prefix(request, user_context)
-        
+
         # Add professional domain context
         professional_context = self._get_professional_context(request)
-        
+
         # Combine with Islamic compliance guidelines
         islamic_guidelines = self._get_islamic_guidelines(request)
-        
+
         return f"{cultural_prefix}\n{professional_context}\n{islamic_guidelines}\n\n{original_prompt}"
 ```
 
 ## Provider Integration
 
 ### OpenAI Integration with Iraqi Enhancements
+
 ```python
 class IraqiOpenAIProvider(BaseProvider):
     def __init__(self):
         super().__init__()
         self.arabic_models = ["gpt-4", "gpt-3.5-turbo"]
         self.cultural_preprocessing = True
-        
+
     async def process_request(self, request: IraqiAIRequest) -> Dict[str, Any]:
         # Preprocess for Arabic content
         if self._contains_arabic(request.content):
             request.content = await self._optimize_arabic_prompt(request.content)
-            
+
         # Add Iraqi cultural system message
         system_message = await self._build_iraqi_system_message(request)
-        
+
         return await self._call_openai_with_cultural_context(request, system_message)
 ```
 
 ### Anthropic Integration with Cultural Awareness
+
 ```python
 class IraqiAnthropicProvider(BaseProvider):
     def __init__(self):
         super().__init__()
         self.cultural_context_window = 8000  # Tokens for cultural context
         self.islamic_compliance_prompt = True
-        
+
     async def process_request(self, request: IraqiAIRequest) -> Dict[str, Any]:
         # Enhance with Iraqi cultural context
         enhanced_prompt = await self._add_iraqi_cultural_context(request)
-        
+
         # Apply Islamic compliance guidelines
         if request.requires_islamic_compliance:
             enhanced_prompt = await self._add_islamic_guidelines(enhanced_prompt)
-            
+
         return await self._call_claude_with_cultural_validation(enhanced_prompt)
 ```
 
 ### Local Iraqi Model Integration
+
 ```python
 class IraqiLocalModelProvider(BaseProvider):
     def __init__(self):
@@ -191,11 +201,11 @@ class IraqiLocalModelProvider(BaseProvider):
             "iraqi-medical": "ollama:iraqi-medical-assistant:latest",
             "arabic-general": "ollama:arabic-llama:latest"
         }
-        
+
     async def process_request(self, request: IraqiAIRequest) -> Dict[str, Any]:
         # Select Iraqi-specific model
         model = await self._select_iraqi_model(request)
-        
+
         # Process with local cultural optimization
         return await self._call_local_model(model, request)
 ```
@@ -203,20 +213,21 @@ class IraqiLocalModelProvider(BaseProvider):
 ## Cultural Validation Integration
 
 ### PydanticAI Cultural Agents
+
 ```python
 from pydantic_ai import Agent
 
 cultural_router_agent = Agent(
     'openai:gpt-4',
-    system_prompt="""You are an Iraqi AI routing specialist responsible for 
+    system_prompt="""You are an Iraqi AI routing specialist responsible for
     selecting the most culturally appropriate AI model for requests. Consider:
-    
+
     1. Arabic language capabilities
-    2. Islamic compliance requirements  
+    2. Islamic compliance requirements
     3. Iraqi cultural sensitivity
     4. Professional domain expertise (legal, medical, educational)
     5. Regional dialect support (Baghdad, Basra, Mosul, Erbil)
-    
+
     Route requests to models that best understand Iraqi culture and Islamic values."""
 )
 
@@ -233,12 +244,13 @@ async def analyze_cultural_requirements(content: str, domain: str) -> Dict[str, 
 ```
 
 ### Real-time Cultural Validation
+
 ```python
 class RealTimeCulturalValidator:
     def __init__(self):
         self.validation_agent = Agent('anthropic:claude-3-sonnet')
         self.islamic_guidelines = IslamicComplianceGuidelines()
-        
+
     async def validate_response(
         self,
         response: str,
@@ -246,16 +258,16 @@ class RealTimeCulturalValidator:
     ) -> Dict[str, Any]:
         # Check Islamic compliance
         islamic_score = await self.islamic_guidelines.validate(response)
-        
+
         # Check Iraqi cultural appropriateness
         cultural_score = await self._validate_cultural_appropriateness(response)
-        
+
         # Check professional standards
         professional_score = await self._validate_professional_standards(
-            response, 
+            response,
             original_request.professional_domain
         )
-        
+
         return {
             "overall_score": (islamic_score + cultural_score + professional_score) / 3,
             "islamic_compliance": islamic_score,
@@ -272,6 +284,7 @@ class RealTimeCulturalValidator:
 ## Database Integration
 
 ### Model Performance Tracking
+
 ```sql
 -- AI Model Performance Metrics
 CREATE TABLE ai_model_performance (
@@ -305,6 +318,7 @@ CREATE TABLE model_selection_history (
 ```
 
 ### Configuration Management
+
 ```sql
 -- Provider Configuration
 CREATE TABLE ai_provider_configs (
@@ -326,6 +340,7 @@ CREATE TABLE ai_provider_configs (
 ## API Integration
 
 ### FastAPI Routes
+
 ```python
 @router.post("/ai/query")
 async def intelligent_ai_query(
@@ -333,7 +348,7 @@ async def intelligent_ai_query(
     current_user: User = Depends(get_current_user)
 ) -> AIQueryResponse:
     """Process AI query with intelligent model routing"""
-    
+
 @router.get("/ai/models/recommendations")
 async def get_model_recommendations(
     content_preview: str,
@@ -341,7 +356,7 @@ async def get_model_recommendations(
     current_user: User = Depends(get_current_user)
 ) -> List[ModelRecommendation]:
     """Get recommended AI models for specific content"""
-    
+
 @router.get("/ai/performance/metrics")
 async def get_performance_metrics(
     time_range: str = "7d",
@@ -353,6 +368,7 @@ async def get_performance_metrics(
 ## Testing Strategy
 
 ### Cultural Validation Tests
+
 - **Islamic Compliance Testing**: Validate model responses against Islamic principles
 - **Arabic Language Testing**: Test Arabic text processing and RTL handling
 - **Professional Domain Testing**: Validate domain-specific responses
@@ -360,6 +376,7 @@ async def get_performance_metrics(
 - **Dialect Recognition Testing**: Test Iraqi Arabic dialect understanding
 
 ### Performance Testing
+
 - **Model Selection Speed**: <200ms for model selection decisions
 - **Response Quality**: 90%+ user satisfaction scores
 - **Cultural Compliance**: 95%+ Islamic compliance scores
@@ -369,6 +386,7 @@ async def get_performance_metrics(
 ## Success Metrics
 
 ### Cultural Metrics
+
 - **Islamic Compliance Rate**: 95%+ responses meet Islamic standards
 - **Arabic Accuracy**: 99%+ correct Arabic text processing
 - **Cultural Appropriateness**: 90%+ culturally sensitive responses
@@ -376,6 +394,7 @@ async def get_performance_metrics(
 - **User Satisfaction**: 92%+ positive feedback on cultural sensitivity
 
 ### Technical Metrics
+
 - **Model Selection Speed**: <200ms average selection time
 - **Response Time**: <3 seconds average response time
 - **Availability**: 99.9% uptime through intelligent fallbacks
@@ -385,18 +404,21 @@ async def get_performance_metrics(
 ## Implementation Priority
 
 ### Phase 1: Basic Routing (Immediate)
+
 - Core model selection algorithm
 - Basic cultural context injection
 - OpenAI and Anthropic integration
 - Simple fallback mechanisms
 
 ### Phase 2: Advanced Intelligence (Post-MVP)
+
 - PydanticAI cultural routing agents
 - Real-time performance optimization
 - Advanced cultural validation
 - Local Iraqi model integration
 
 ### Phase 3: AI-Powered Optimization (Future)
+
 - Machine learning model selection
 - Predictive cultural validation
 - Advanced Arabic dialect support

@@ -1,23 +1,27 @@
 /**
  * Iraqi Cultural Decision Engine Types
- * 
+ *
  * Type definitions for Iraqi cultural decision-making framework
  * Based on Islamic principles, Iraqi cultural values, and professional ethics
  */
 
-import { IraqiCulturalContext, ProfessionalDomain } from '@iraqi-ai/types';
+import { IraqiCulturalContext, ProfessionalDomain } from "@iraqi-ai/types";
 
 // Core Cultural Decision Types
 export interface CulturalDecisionRequest {
   content: any;
   context: IraqiCulturalContext;
   domain?: ProfessionalDomain;
-  decisionType: 'content-validation' | 'action-approval' | 'response-generation' | 'professional-guidance';
-  urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
+  decisionType:
+    | "content-validation"
+    | "action-approval"
+    | "response-generation"
+    | "professional-guidance";
+  urgencyLevel: "low" | "medium" | "high" | "critical";
   requesterInfo?: {
     role: string;
     organization?: string;
-    securityClearance?: 'public' | 'internal' | 'confidential' | 'restricted';
+    securityClearance?: "public" | "internal" | "confidential" | "restricted";
   };
 }
 
@@ -56,14 +60,21 @@ export interface QuranReference {
   verse: string;
   arabicText: string;
   translation: string;
-  relevance: 'directly-applicable' | 'general-guidance' | 'contextual' | 'interpretive';
+  relevance:
+    | "directly-applicable"
+    | "general-guidance"
+    | "contextual"
+    | "interpretive";
   scholarlyInterpretation?: string;
 }
 
 export interface QuranConflict {
-  conflictType: 'direct-contradiction' | 'interpretive-difference' | 'contextual-variance';
+  conflictType:
+    | "direct-contradiction"
+    | "interpretive-difference"
+    | "contextual-variance";
   description: string;
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  severity: "minor" | "moderate" | "major" | "critical";
   resolution?: string;
 }
 
@@ -75,25 +86,44 @@ export interface HadithComplianceAssessment {
 }
 
 export interface HadithReference {
-  collection: 'Sahih al-Bukhari' | 'Sahih Muslim' | 'Sunan Abu Dawood' | 'Jami at-Tirmidhi' | 'Sunan an-Nasai' | 'Sunan Ibn Majah' | 'Other';
+  collection:
+    | "Sahih al-Bukhari"
+    | "Sahih Muslim"
+    | "Sunan Abu Dawood"
+    | "Jami at-Tirmidhi"
+    | "Sunan an-Nasai"
+    | "Sunan Ibn Majah"
+    | "Other";
   hadithNumber: string;
   arabicText: string;
   translation: string;
-  authenticity: 'Sahih' | 'Hasan' | 'Daif' | 'Disputed';
-  relevance: 'directly-applicable' | 'general-guidance' | 'contextual' | 'analogical';
+  authenticity: "Sahih" | "Hasan" | "Daif" | "Disputed";
+  relevance:
+    | "directly-applicable"
+    | "general-guidance"
+    | "contextual"
+    | "analogical";
   scholarlyNotes?: string;
 }
 
 export interface HadithConflict {
-  conflictType: 'contradictory-guidance' | 'authenticity-dispute' | 'contextual-difference';
+  conflictType:
+    | "contradictory-guidance"
+    | "authenticity-dispute"
+    | "contextual-difference";
   description: string;
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  severity: "minor" | "moderate" | "major" | "critical";
   scholarlyResolution?: string;
 }
 
 export interface ScholarlyConsensusAssessment {
   score: number; // 0-100
-  consensusLevel: 'unanimous' | 'majority' | 'significant-minority' | 'disputed' | 'no-consensus';
+  consensusLevel:
+    | "unanimous"
+    | "majority"
+    | "significant-minority"
+    | "disputed"
+    | "no-consensus";
   iraqiScholarOpinions: IraqiScholarOpinion[];
   internationalConsensus: InternationalConsensus;
   contemporaryRelevance: number; // 0-100
@@ -103,14 +133,19 @@ export interface IraqiScholarOpinion {
   scholarName: string;
   institution: string;
   position: string;
-  opinion: 'strongly-supports' | 'supports' | 'neutral' | 'opposes' | 'strongly-opposes';
+  opinion:
+    | "strongly-supports"
+    | "supports"
+    | "neutral"
+    | "opposes"
+    | "strongly-opposes";
   reasoning: string;
   date: Date;
   authority: number; // 0-100, based on scholar's recognition and expertise
 }
 
 export interface InternationalConsensus {
-  sunniConsensus: 'unanimous' | 'majority' | 'divided' | 'minority' | 'opposed';
+  sunniConsensus: "unanimous" | "majority" | "divided" | "minority" | "opposed";
   majorInstitutions: InstitutionOpinion[];
   regionalVariations: RegionalVariation[];
 }
@@ -118,7 +153,12 @@ export interface InternationalConsensus {
 export interface InstitutionOpinion {
   institution: string;
   country: string;
-  position: 'strongly-supports' | 'supports' | 'neutral' | 'opposes' | 'strongly-opposes';
+  position:
+    | "strongly-supports"
+    | "supports"
+    | "neutral"
+    | "opposes"
+    | "strongly-opposes";
   authority: number; // 0-100
 }
 
@@ -144,7 +184,11 @@ export interface ModernFatwa {
   question: string;
   ruling: string;
   reasoning: string;
-  applicability: 'directly-applicable' | 'analogous' | 'contextual' | 'general-principle';
+  applicability:
+    | "directly-applicable"
+    | "analogous"
+    | "contextual"
+    | "general-principle";
   authorityLevel: number; // 0-100
 }
 
@@ -165,12 +209,21 @@ export interface TechnologicalConsideration {
   benefits: string[];
   concerns: string[];
   conditions: string[];
-  overallAssessment: 'permissible' | 'recommended' | 'neutral' | 'discouraged' | 'prohibited';
+  overallAssessment:
+    | "permissible"
+    | "recommended"
+    | "neutral"
+    | "discouraged"
+    | "prohibited";
 }
 
 export interface IslamicComplianceIssue {
-  issueType: 'theological-concern' | 'practical-implementation' | 'cultural-sensitivity' | 'ethical-consideration';
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  issueType:
+    | "theological-concern"
+    | "practical-implementation"
+    | "cultural-sensitivity"
+    | "ethical-consideration";
+  severity: "minor" | "moderate" | "major" | "critical";
   description: string;
   islamicBasis: string[];
   suggestedResolution: string;
@@ -296,8 +349,12 @@ export interface ContextualSensitivityAssessment {
 }
 
 export interface CulturalAppropriatenessIssue {
-  issueType: 'language-inappropriate' | 'culturally-insensitive' | 'socially-inappropriate' | 'contextually-wrong';
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  issueType:
+    | "language-inappropriate"
+    | "culturally-insensitive"
+    | "socially-inappropriate"
+    | "contextually-wrong";
+  severity: "minor" | "moderate" | "major" | "critical";
   description: string;
   culturalBasis: string[];
   suggestedCorrection: string;
@@ -325,19 +382,24 @@ export interface DomainCriteria {
   criteriaName: string;
   score: number; // 0-100
   description: string;
-  importance: 'critical' | 'high' | 'medium' | 'low';
+  importance: "critical" | "high" | "medium" | "low";
 }
 
 export interface ProfessionalGuideline {
   guideline: string;
-  compliance: 'full' | 'partial' | 'non-compliant';
+  compliance: "full" | "partial" | "non-compliant";
   authority: string;
   importance: number; // 0-100
 }
 
 export interface BestPractice {
   practice: string;
-  implementation: 'excellent' | 'good' | 'adequate' | 'poor' | 'not-implemented';
+  implementation:
+    | "excellent"
+    | "good"
+    | "adequate"
+    | "poor"
+    | "not-implemented";
   recommendation: string;
 }
 
@@ -351,7 +413,11 @@ export interface IraqiProfessionalStandardsAssessment {
 export interface RegulatoryComplianceAssessment {
   score: number; // 0-100
   applicableRegulations: ApplicableRegulation[];
-  complianceStatus: 'fully-compliant' | 'mostly-compliant' | 'partially-compliant' | 'non-compliant';
+  complianceStatus:
+    | "fully-compliant"
+    | "mostly-compliant"
+    | "partially-compliant"
+    | "non-compliant";
   requiredActions: string[];
 }
 
@@ -388,8 +454,12 @@ export interface IslamicProfessionalEthicsAssessment {
 }
 
 export interface ProfessionalEthicsIssue {
-  issueType: 'regulatory-violation' | 'professional-misconduct' | 'quality-concern' | 'islamic-ethics-violation';
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  issueType:
+    | "regulatory-violation"
+    | "professional-misconduct"
+    | "quality-concern"
+    | "islamic-ethics-violation";
+  severity: "minor" | "moderate" | "major" | "critical";
   description: string;
   professionalBasis: string[];
   regulatoryImplications: string[];
@@ -410,7 +480,7 @@ export interface DecisionReasoning {
 export interface ReasoningFactor {
   factor: string;
   weight: number; // 0-100
-  impact: 'positive' | 'negative' | 'neutral';
+  impact: "positive" | "negative" | "neutral";
   confidence: number; // 0-100
   evidence: string[];
 }
@@ -438,7 +508,7 @@ export interface ProfessionalJustification {
 }
 
 export interface RiskAssessment {
-  overallRiskLevel: 'very-low' | 'low' | 'medium' | 'high' | 'very-high';
+  overallRiskLevel: "very-low" | "low" | "medium" | "high" | "very-high";
   culturalRisks: Risk[];
   islamicRisks: Risk[];
   professionalRisks: Risk[];
@@ -447,17 +517,17 @@ export interface RiskAssessment {
 
 export interface Risk {
   riskType: string;
-  probability: 'very-low' | 'low' | 'medium' | 'high' | 'very-high';
-  impact: 'minor' | 'moderate' | 'major' | 'severe' | 'critical';
+  probability: "very-low" | "low" | "medium" | "high" | "very-high";
+  impact: "minor" | "moderate" | "major" | "severe" | "critical";
   description: string;
-  timeframe: 'immediate' | 'short-term' | 'medium-term' | 'long-term';
+  timeframe: "immediate" | "short-term" | "medium-term" | "long-term";
 }
 
 export interface MitigationStrategy {
   strategy: string;
-  effectiveness: 'low' | 'medium' | 'high' | 'very-high';
-  implementation: 'immediate' | 'short-term' | 'medium-term' | 'long-term';
-  cost: 'low' | 'medium' | 'high' | 'very-high';
+  effectiveness: "low" | "medium" | "high" | "very-high";
+  implementation: "immediate" | "short-term" | "medium-term" | "long-term";
+  cost: "low" | "medium" | "high" | "very-high";
 }
 
 export interface AlternativeOption {
@@ -465,13 +535,22 @@ export interface AlternativeOption {
   culturalCompliance: number; // 0-100
   islamicCompliance: number; // 0-100
   professionalCompliance: number; // 0-100
-  feasibility: 'high' | 'medium' | 'low' | 'very-low';
-  recommendation: 'strongly-recommended' | 'recommended' | 'neutral' | 'not-recommended' | 'strongly-discouraged';
+  feasibility: "high" | "medium" | "low" | "very-low";
+  recommendation:
+    | "strongly-recommended"
+    | "recommended"
+    | "neutral"
+    | "not-recommended"
+    | "strongly-discouraged";
 }
 
 // Content Modification Framework
 export interface ContentModification {
-  modificationType: 'language-adjustment' | 'cultural-adaptation' | 'islamic-compliance' | 'professional-enhancement';
+  modificationType:
+    | "language-adjustment"
+    | "cultural-adaptation"
+    | "islamic-compliance"
+    | "professional-enhancement";
   originalContent: string;
   modifiedContent: string;
   justification: string;
@@ -502,7 +581,11 @@ export interface UserFeedback {
 
 export interface ExpertFeedback {
   expertId: string;
-  expertiseArea: 'islamic-scholarship' | 'cultural-anthropology' | 'professional-domain' | 'arabic-linguistics';
+  expertiseArea:
+    | "islamic-scholarship"
+    | "cultural-anthropology"
+    | "professional-domain"
+    | "arabic-linguistics";
   institution: string;
   evaluation: ExpertEvaluation;
   recommendations: string[];
@@ -514,7 +597,12 @@ export interface ExpertEvaluation {
   appropriateness: number; // 0-100
   compliance: number; // 0-100
   improvement: number; // 0-100
-  overallAssessment: 'excellent' | 'good' | 'satisfactory' | 'needs-improvement' | 'unsatisfactory';
+  overallAssessment:
+    | "excellent"
+    | "good"
+    | "satisfactory"
+    | "needs-improvement"
+    | "unsatisfactory";
 }
 
 export interface OutcomeValidation {
@@ -523,12 +611,16 @@ export interface OutcomeValidation {
   accuracyScore: number; // 0-100
   userSatisfaction: number; // 0-100
   culturalAcceptance: number; // 0-100
-  longTermImpact: 'positive' | 'neutral' | 'negative';
+  longTermImpact: "positive" | "neutral" | "negative";
 }
 
 // Cultural Learning Result Types
 export interface LearningUpdate {
-  updateType: 'model-improvement' | 'rule-refinement' | 'new-pattern' | 'exception-handling';
+  updateType:
+    | "model-improvement"
+    | "rule-refinement"
+    | "new-pattern"
+    | "exception-handling";
   affectedComponents: string[];
   improvementMetrics: ImprovementMetrics;
   validationRequired: boolean;
@@ -569,7 +661,7 @@ export interface MonitoringPlan {
   metricsToMonitor: string[];
   alertThresholds: AlertThreshold[];
   monitoringDuration: number; // hours
-  reportingSchedule: 'hourly' | 'daily' | 'weekly';
+  reportingSchedule: "hourly" | "daily" | "weekly";
 }
 
 export interface AlertThreshold {
@@ -588,7 +680,7 @@ export interface CulturalEngineConfig {
   enableLearning: boolean; // default true
   expertReviewRequired: boolean; // default true for critical decisions
   cacheEnabled: boolean; // default true
-  logLevel: 'debug' | 'info' | 'warn' | 'error'; // default 'info'
+  logLevel: "debug" | "info" | "warn" | "error"; // default 'info'
 }
 
 export interface CulturalEngineMetrics {

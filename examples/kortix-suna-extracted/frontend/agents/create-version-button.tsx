@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Save, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { Save, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,12 +10,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useCreateAgentVersion } from '@/lib/versioning';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useCreateAgentVersion } from "@/lib/versioning";
+import { toast } from "sonner";
 
 interface CreateVersionButtonProps {
   agentId: string;
@@ -29,20 +29,20 @@ interface CreateVersionButtonProps {
   onVersionCreated?: () => void;
 }
 
-export function CreateVersionButton({ 
-  agentId, 
+export function CreateVersionButton({
+  agentId,
   currentFormData,
   hasChanges,
-  onVersionCreated 
+  onVersionCreated,
 }: CreateVersionButtonProps) {
   const [showDialog, setShowDialog] = useState(false);
-  const [versionName, setVersionName] = useState('');
-  const [description, setDescription] = useState('');
+  const [versionName, setVersionName] = useState("");
+  const [description, setDescription] = useState("");
   const createVersionMutation = useCreateAgentVersion();
 
   const handleCreateVersion = async () => {
     if (!versionName.trim()) {
-      toast.error('Please provide a version name');
+      toast.error("Please provide a version name");
       return;
     }
 
@@ -56,21 +56,21 @@ export function CreateVersionButton({
           agentpress_tools: currentFormData.agentpress_tools,
           version_name: versionName.trim(),
           description: description.trim() || undefined,
-        }
+        },
       });
 
       setShowDialog(false);
-      setVersionName('');
-      setDescription('');
-      
+      setVersionName("");
+      setDescription("");
+
       if (onVersionCreated) {
         onVersionCreated();
       }
-      
-      toast.success('New version created successfully');
+
+      toast.success("New version created successfully");
     } catch (error) {
-      console.error('Failed to create version:', error);
-      toast.error('Failed to create version');
+      console.error("Failed to create version:", error);
+      toast.error("Failed to create version");
     }
   };
 
@@ -81,10 +81,11 @@ export function CreateVersionButton({
           <DialogHeader>
             <DialogTitle>Create New Version</DialogTitle>
             <DialogDescription>
-              Save the current agent configuration as a new version. This allows you to preserve different configurations and switch between them.
+              Save the current agent configuration as a new version. This allows
+              you to preserve different configurations and switch between them.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="version-name">Version Name</Label>
@@ -96,7 +97,7 @@ export function CreateVersionButton({
                 autoFocus
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="description">Description (Optional)</Label>
               <Textarea
@@ -108,7 +109,7 @@ export function CreateVersionButton({
               />
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button
               variant="outline"
@@ -122,4 +123,4 @@ export function CreateVersionButton({
       </Dialog>
     </>
   );
-} 
+}

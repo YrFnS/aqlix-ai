@@ -5,13 +5,13 @@
         "explicit_human_figures",
         "inappropriate_clothing",
         "alcohol_related_imagery",
-        "gambling_content", 
+        "gambling_content",
         "religious_symbols_misuse",
         "inappropriate_religious_references",
         "sectarian_content",
         "political_propaganda"
       ],
-      
+
       "encouraged_content": [
         "respectful_human_representation",
         "modest_clothing_styles",
@@ -22,7 +22,7 @@
         "architectural_elements",
         "nature_and_landscapes"
       ],
-      
+
       "contextual_considerations": [
         "professional_vs_personal_use",
         "educational_vs_commercial_purpose",
@@ -37,30 +37,38 @@
         "clothing": {
           "minimum_modesty_level": "conservative",
           "professional_attire_preferred": true,
-          "cultural_appropriate_styles": ["business", "traditional", "modest_casual"],
+          "cultural_appropriate_styles": [
+            "business",
+            "traditional",
+            "modest_casual"
+          ],
           "avoid": ["revealing", "tight_fitting", "inappropriate_for_context"]
         },
-        
+
         "poses_and_gestures": {
           "professional_poses_preferred": true,
           "respectful_interactions_only": true,
-          "avoid": ["inappropriate_gestures", "disrespectful_positions", "culturally_offensive_poses"]
+          "avoid": [
+            "inappropriate_gestures",
+            "disrespectful_positions",
+            "culturally_offensive_poses"
+          ]
         },
-        
+
         "facial_features": {
           "natural_representation": true,
           "respectful_portrayal": true,
           "cultural_sensitivity": "high"
         }
       },
-      
+
       "exceptions": {
         "medical_context": {
           "anatomical_accuracy_allowed": true,
           "educational_purpose_priority": true,
           "professional_validation_required": true
         },
-        
+
         "educational_context": {
           "historical_representation_allowed": true,
           "cultural_education_priority": true,
@@ -76,14 +84,14 @@
         "avoid_misinterpretation": true,
         "scholarly_validation_preferred": true
       },
-      
+
       "interfaith_respect": {
         "inclusive_approach": true,
         "respectful_of_all_traditions": true,
         "avoid_comparative_judgments": true,
         "focus_on_shared_values": true
       },
-      
+
       "cultural_symbols": {
         "proper_usage_required": true,
         "context_appropriate": true,
@@ -101,14 +109,14 @@
         "intergenerational_respect": true,
         "traditional_roles_sensitivity": true
       },
-      
+
       "hospitality_traditions": {
         "guest_honor_representation": true,
         "traditional_welcoming_customs": true,
         "food_sharing_cultural_significance": true,
         "home_sanctity_respect": true
       },
-      
+
       "community_relationships": {
         "neighborly_respect": true,
         "community_support_emphasis": true,
@@ -124,21 +132,21 @@
         "patience_and_relationship_building": true,
         "trust_establishment_importance": true
       },
-      
+
       "educational_settings": {
         "teacher_student_respect": true,
         "knowledge_reverence": true,
         "collaborative_learning": true,
         "practical_application_focus": true
       },
-      
+
       "healthcare_environments": {
         "patient_dignity_priority": true,
         "family_involvement_consideration": true,
         "privacy_respect": true,
         "holistic_care_approach": true
       },
-      
+
       "legal_contexts": {
         "justice_and_fairness_emphasis": true,
         "procedural_respect": true,
@@ -154,7 +162,7 @@
         "respectful_language_mandatory": true,
         "cultural_expressions_preservation": true
       },
-      
+
       "multilingual_contexts": {
         "arabic_english_balance": true,
         "cultural_code_switching_natural": true,
@@ -172,14 +180,14 @@
         "neutrality_mandatory": true,
         "procedural_correctness": true
       },
-      
+
       "cultural_adaptations": {
         "iraqi_legal_system_awareness": true,
         "islamic_law_considerations": true,
         "customary_practice_respect": true,
         "modern_legal_framework_integration": true
       },
-      
+
       "prohibited_elements": [
         "legal_advice_provision",
         "case_specific_guidance",
@@ -195,14 +203,14 @@
         "cultural_sensitivity": "highest",
         "family_involvement_consideration": true
       },
-      
+
       "representation_guidelines": {
         "modest_anatomical_representation": true,
         "gender_appropriate_contexts": true,
         "age_appropriate_content": true,
         "respectful_patient_portrayal": true
       },
-      
+
       "prohibited_elements": [
         "medical_diagnosis_provision",
         "treatment_recommendations",
@@ -218,7 +226,7 @@
         "inclusive_representation": true,
         "practical_application_focus": true
       },
-      
+
       "cultural_integration": {
         "iraqi_history_respect": true,
         "local_context_incorporation": true,
@@ -234,7 +242,7 @@
         "cultural_business_norms": true,
         "relationship_based_approach": true
       },
-      
+
       "representation_guidelines": {
         "diverse_professional_representation": true,
         "respectful_workplace_dynamics": true,
@@ -250,7 +258,7 @@
         "practical_applicability": true,
         "local_conditions_consideration": true
       },
-      
+
       "cultural_adaptations": {
         "infrastructure_context_awareness": true,
         "environmental_considerations": true,
@@ -268,7 +276,7 @@
         "professional_context": 0.2,
         "language_respectfulness": 0.1
       },
-      
+
       "threshold_levels": {
         "excellent": 0.95,
         "good": 0.85,
@@ -303,7 +311,7 @@
       "respectful_language_suggestions": true,
       "inclusive_representation_examples": true
     },
-    
+
     "continuous_improvement": {
       "rule_refinement_process": true,
       "community_feedback_integration": true,

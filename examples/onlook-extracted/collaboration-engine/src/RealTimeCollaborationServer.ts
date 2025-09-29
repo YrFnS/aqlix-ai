@@ -2,7 +2,7 @@
  * Iraqi AI System - Real-Time Collaboration WebSocket Server
  * Advanced WebSocket server for multi-user collaboration with cultural intelligence
  * Enhanced for Iraqi government deployment with ministry-grade real-time capabilities
- * 
+ *
  * Key Features:
  * - WebSocket-based real-time multi-user collaboration with <30ms latency
  * - Cultural event-aware connection management (prayer times, Ramadan)
@@ -18,10 +18,19 @@ import { createServer, Server } from 'http';
 import { parse } from 'url';
 
 export type MinistryType = 'health' | 'education' | 'interior' | 'justice';
-export type MessageType = 
-  | 'session-join' | 'session-leave' | 'document-update' | 'cursor-position'
-  | 'annotation-create' | 'annotation-update' | 'prayer-pause' | 'prayer-resume'
-  | 'cultural-event' | 'workflow-update' | 'participant-status' | 'heartbeat';
+export type MessageType =
+  | 'session-join'
+  | 'session-leave'
+  | 'document-update'
+  | 'cursor-position'
+  | 'annotation-create'
+  | 'annotation-update'
+  | 'prayer-pause'
+  | 'prayer-resume'
+  | 'cultural-event'
+  | 'workflow-update'
+  | 'participant-status'
+  | 'heartbeat';
 
 export interface CollaborationMessage {
   id: string;
@@ -30,13 +39,13 @@ export interface CollaborationMessage {
   userId: string;
   timestamp: Date;
   data: any;
-  
+
   // Cultural context
   culturalContext?: boolean;
   islamicCompliant?: boolean;
   arabicContent?: boolean;
   prayerTimeAware?: boolean;
-  
+
   // Security context
   securityLevel: string;
   encryptionEnabled: boolean;
@@ -48,22 +57,22 @@ export interface CollaborationConnection {
   websocket: WebSocket;
   userId: string;
   sessionId: string;
-  
+
   // User context
   ministry: MinistryType;
   role: string;
   permissions: string[];
-  
+
   // Cultural context
   prayerSchedule?: PrayerSchedule;
   culturalPreferences: CulturalPreferences;
-  
+
   // Connection state
   isAlive: boolean;
   lastActivity: Date;
   latency: number;
   messageQueue: CollaborationMessage[];
-  
+
   // Performance metrics
   messagesProcessed: number;
   averageLatency: number;
@@ -92,19 +101,19 @@ export interface ServerConfig {
   maxConnections: number;
   heartbeatInterval: number;
   messageQueueSize: number;
-  
+
   // Cultural settings
   prayerTimeAware: boolean;
   islamicWorkflowCompliance: boolean;
   arabicRTLSupport: boolean;
   ramadanScheduleAware: boolean;
-  
+
   // Security settings
   encryptionEnabled: boolean;
   authenticationRequired: boolean;
   auditTrailEnabled: boolean;
   ministerialOversight: boolean;
-  
+
   // Performance settings
   latencyTarget: number; // milliseconds
   compressionEnabled: boolean;
@@ -116,22 +125,22 @@ export interface SessionChannel {
   sessionId: string;
   ministry: MinistryType;
   connections: Map<string, CollaborationConnection>;
-  
+
   // Document state
   documentState: any;
   editHistory: EditOperation[];
   conflictResolutions: ConflictResolution[];
-  
+
   // Cultural state
   prayerPaused: boolean;
   ramadanMode: boolean;
   culturalEvents: CulturalEvent[];
-  
+
   // Performance metrics
   messageCount: number;
   averageLatency: number;
   concurrentUsers: number;
-  
+
   // Workflow state
   approvalWorkflow?: WorkflowState;
   annotations: Annotation[];
@@ -188,17 +197,17 @@ export class RealTimeCollaborationServer extends EventEmitter {
   private server: Server;
   private wss: WebSocket.Server;
   private config: ServerConfig;
-  
+
   // Connection management
   private connections: Map<string, CollaborationConnection> = new Map();
   private sessions: Map<string, SessionChannel> = new Map();
   private ministryChannels: Map<MinistryType, Set<string>> = new Map();
-  
+
   // Cultural management
   private prayerTimeScheduler: NodeJS.Timeout | null = null;
   private ramadanScheduler: NodeJS.Timeout | null = null;
   private culturalEventScheduler: NodeJS.Timeout | null = null;
-  
+
   // Performance monitoring
   private performanceMetrics = {
     totalConnections: 0,
@@ -207,12 +216,12 @@ export class RealTimeCollaborationServer extends EventEmitter {
     averageLatency: 0,
     errorCount: 0,
     culturalEventsHandled: 0,
-    prayerPausesInitiated: 0
+    prayerPausesInitiated: 0,
   };
-  
+
   // Security and audit
   private auditLog: AuditEntry[] = [];
-  
+
   constructor(config: ServerConfig) {
     super();
     this.config = config;
@@ -225,12 +234,12 @@ export class RealTimeCollaborationServer extends EventEmitter {
   private initializeServer(): void {
     // Create HTTP server
     this.server = createServer();
-    
+
     // Create WebSocket server
     this.wss = new WebSocket.Server({
       server: this.server,
       maxPayload: 16 * 1024 * 1024, // 16MB max payload
-      perMessageDeflate: this.config.compressionEnabled
+      perMessageDeflate: this.config.compressionEnabled,
     });
 
     // Setup connection handling
@@ -293,8 +302,8 @@ export class RealTimeCollaborationServer extends EventEmitter {
       userId,
       sessionId,
       ministry,
-      role: url.query.role as string || 'participant',
-      permissions: (url.query.permissions as string || '').split(','),
+      role: (url.query.role as string) || 'participant',
+      permissions: ((url.query.permissions as string) || '').split(','),
       isAlive: true,
       lastActivity: new Date(),
       latency: 0,
@@ -306,8 +315,8 @@ export class RealTimeCollaborationServer extends EventEmitter {
         primaryLanguage: (url.query.language as any) || 'bilingual',
         formalityLevel: (url.query.formality as any) || 'professional',
         islamicGreetings: url.query.islamicGreetings === 'true',
-        respectTitles: url.query.respectTitles === 'true'
-      }
+        respectTitles: url.query.respectTitles === 'true',
+      },
     };
 
     // Setup connection handlers
@@ -358,10 +367,13 @@ export class RealTimeCollaborationServer extends EventEmitter {
   /**
    * Handle incoming messages from clients
    */
-  private async handleMessage(connection: CollaborationConnection, data: WebSocket.Data): Promise<void> {
+  private async handleMessage(
+    connection: CollaborationConnection,
+    data: WebSocket.Data
+  ): Promise<void> {
     try {
       const message: CollaborationMessage = JSON.parse(data.toString());
-      
+
       // Update connection activity
       connection.lastActivity = new Date();
       connection.messagesProcessed++;
@@ -387,7 +399,6 @@ export class RealTimeCollaborationServer extends EventEmitter {
       connection.averageLatency = (connection.averageLatency + latency) / 2;
 
       this.performanceMetrics.messagesProcessed++;
-
     } catch (error) {
       connection.errorCount++;
       this.performanceMetrics.errorCount++;
@@ -398,7 +409,10 @@ export class RealTimeCollaborationServer extends EventEmitter {
   /**
    * Process specific message types
    */
-  private async processMessage(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async processMessage(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     switch (message.type) {
       case 'document-update':
         await this.handleDocumentUpdate(connection, message);
@@ -432,7 +446,10 @@ export class RealTimeCollaborationServer extends EventEmitter {
   /**
    * Handle document update operations
    */
-  private async handleDocumentUpdate(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleDocumentUpdate(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     const session = this.sessions.get(connection.sessionId);
     if (!session) {
       this.sendError(connection, 'Session not found');
@@ -447,7 +464,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
       operation: message.data.operation,
       position: message.data.position,
       content: message.data.content,
-      culturalValidated: message.culturalContext !== false
+      culturalValidated: message.culturalContext !== false,
     };
 
     // Add to edit history
@@ -455,7 +472,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
 
     // Check for conflicts
     const conflicts = await this.detectConflicts(session, editOperation);
-    
+
     if (conflicts.length > 0) {
       // Resolve conflicts with cultural considerations
       const resolution = await this.resolveConflicts(session, conflicts, connection);
@@ -463,11 +480,15 @@ export class RealTimeCollaborationServer extends EventEmitter {
     }
 
     // Broadcast update to other session participants
-    this.broadcastToSession(connection.sessionId, {
-      ...message,
-      id: this.generateMessageId(),
-      timestamp: new Date()
-    }, connection.id);
+    this.broadcastToSession(
+      connection.sessionId,
+      {
+        ...message,
+        id: this.generateMessageId(),
+        timestamp: new Date(),
+      },
+      connection.id
+    );
 
     // Update session metrics
     session.messageCount++;
@@ -476,24 +497,34 @@ export class RealTimeCollaborationServer extends EventEmitter {
   /**
    * Handle cursor position updates for real-time collaboration
    */
-  private async handleCursorPosition(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleCursorPosition(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     // Broadcast cursor position to other session participants
-    this.broadcastToSession(connection.sessionId, {
-      ...message,
-      id: this.generateMessageId(),
-      timestamp: new Date(),
-      data: {
-        ...message.data,
-        userId: connection.userId,
-        culturalContext: connection.culturalPreferences
-      }
-    }, connection.id);
+    this.broadcastToSession(
+      connection.sessionId,
+      {
+        ...message,
+        id: this.generateMessageId(),
+        timestamp: new Date(),
+        data: {
+          ...message.data,
+          userId: connection.userId,
+          culturalContext: connection.culturalPreferences,
+        },
+      },
+      connection.id
+    );
   }
 
   /**
    * Handle annotation creation with Arabic support
    */
-  private async handleAnnotationCreate(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleAnnotationCreate(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     const session = this.sessions.get(connection.sessionId);
     if (!session) {
       this.sendError(connection, 'Session not found');
@@ -509,7 +540,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
       textEnglish: message.data.textEnglish || '',
       type: message.data.type,
       timestamp: new Date(),
-      resolved: false
+      resolved: false,
     };
 
     // Add to session annotations
@@ -527,7 +558,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
       islamicCompliant: message.islamicCompliant,
       securityLevel: message.securityLevel,
       encryptionEnabled: message.encryptionEnabled,
-      auditRequired: message.auditRequired
+      auditRequired: message.auditRequired,
     });
   }
 
@@ -560,7 +591,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
     // Pause all active sessions
     for (const [sessionId, session] of this.sessions.entries()) {
       session.prayerPaused = true;
-      
+
       // Notify all participants in the session
       this.broadcastToSession(sessionId, {
         type: 'prayer-pause',
@@ -572,13 +603,13 @@ export class RealTimeCollaborationServer extends EventEmitter {
           prayerName: prayer.name,
           prayerNameArabic: prayer.nameArabic,
           duration: prayer.duration,
-          resumeTime: new Date(Date.now() + prayer.duration * 60000)
+          resumeTime: new Date(Date.now() + prayer.duration * 60000),
         },
         culturalContext: true,
         islamicCompliant: true,
         securityLevel: 'internal',
         encryptionEnabled: false,
-        auditRequired: true
+        auditRequired: true,
       });
     }
 
@@ -599,7 +630,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
   private resumeFromPrayerBreak(prayer: CulturalEvent): void {
     for (const [sessionId, session] of this.sessions.entries()) {
       session.prayerPaused = false;
-      
+
       this.broadcastToSession(sessionId, {
         type: 'prayer-resume',
         id: this.generateMessageId(),
@@ -610,13 +641,13 @@ export class RealTimeCollaborationServer extends EventEmitter {
           prayerName: prayer.name,
           prayerNameArabic: prayer.nameArabic,
           message: 'صلاة مباركة - Prayer completed. Session resumed.',
-          resumedAt: new Date()
+          resumedAt: new Date(),
         },
         culturalContext: true,
         islamicCompliant: true,
         securityLevel: 'internal',
         encryptionEnabled: false,
-        auditRequired: true
+        auditRequired: true,
       });
     }
 
@@ -626,13 +657,17 @@ export class RealTimeCollaborationServer extends EventEmitter {
   /**
    * Broadcast message to all session participants except sender
    */
-  private broadcastToSession(sessionId: string, message: CollaborationMessage, excludeConnectionId?: string): void {
+  private broadcastToSession(
+    sessionId: string,
+    message: CollaborationMessage,
+    excludeConnectionId?: string
+  ): void {
     const session = this.sessions.get(sessionId);
     if (!session) return;
 
     for (const [connectionId, connection] of session.connections.entries()) {
       if (connectionId === excludeConnectionId) continue;
-      
+
       if (connection.websocket.readyState === WebSocket.OPEN) {
         try {
           connection.websocket.send(JSON.stringify(message));
@@ -648,7 +683,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
    */
   private addConnectionToSession(connection: CollaborationConnection): void {
     let session = this.sessions.get(connection.sessionId);
-    
+
     if (!session) {
       // Create new session channel
       session = {
@@ -664,9 +699,9 @@ export class RealTimeCollaborationServer extends EventEmitter {
         messageCount: 0,
         averageLatency: 0,
         concurrentUsers: 0,
-        annotations: []
+        annotations: [],
       };
-      
+
       this.sessions.set(connection.sessionId, session);
     }
 
@@ -699,14 +734,14 @@ export class RealTimeCollaborationServer extends EventEmitter {
           sessionId: connection.sessionId,
           ministry: connection.ministry,
           culturalContext: this.config.islamicWorkflowCompliance,
-          prayerTimeAware: this.config.prayerTimeAware
-        }
+          prayerTimeAware: this.config.prayerTimeAware,
+        },
       },
       culturalContext: true,
       islamicCompliant: true,
       securityLevel: 'internal',
       encryptionEnabled: this.config.encryptionEnabled,
-      auditRequired: this.config.auditTrailEnabled
+      auditRequired: this.config.auditTrailEnabled,
     };
 
     connection.websocket.send(JSON.stringify(welcomeMessage));
@@ -743,11 +778,13 @@ export class RealTimeCollaborationServer extends EventEmitter {
 
   private sendError(connection: CollaborationConnection, error: string): void {
     if (connection.websocket.readyState === WebSocket.OPEN) {
-      connection.websocket.send(JSON.stringify({
-        type: 'error',
-        error,
-        timestamp: new Date()
-      }));
+      connection.websocket.send(
+        JSON.stringify({
+          type: 'error',
+          error,
+          timestamp: new Date(),
+        })
+      );
     }
   }
 
@@ -761,7 +798,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
   }
 
   private isAlreadyInPrayerBreak(): boolean {
-    return Array.from(this.sessions.values()).some(session => session.prayerPaused);
+    return Array.from(this.sessions.values()).some((session) => session.prayerPaused);
   }
 
   private isRamadanPeriod(): boolean {
@@ -769,24 +806,35 @@ export class RealTimeCollaborationServer extends EventEmitter {
     return false;
   }
 
-  private async detectConflicts(session: SessionChannel, operation: EditOperation): Promise<EditOperation[]> {
+  private async detectConflicts(
+    session: SessionChannel,
+    operation: EditOperation
+  ): Promise<EditOperation[]> {
     // Implementation would detect conflicting operations
     return [];
   }
 
-  private async resolveConflicts(session: SessionChannel, conflicts: EditOperation[], connection: CollaborationConnection): Promise<ConflictResolution> {
+  private async resolveConflicts(
+    session: SessionChannel,
+    conflicts: EditOperation[],
+    connection: CollaborationConnection
+  ): Promise<ConflictResolution> {
     // Implementation would resolve conflicts with cultural considerations
     return {
       id: this.generateOperationId(),
-      conflictedOperations: conflicts.map(c => c.id),
+      conflictedOperations: conflicts.map((c) => c.id),
       resolution: 'merge',
       resolvedBy: connection.userId,
       timestamp: new Date(),
-      culturalContext: true
+      culturalContext: true,
     };
   }
 
-  private handleConnectionClose(connection: CollaborationConnection, code: number, reason: string): void {
+  private handleConnectionClose(
+    connection: CollaborationConnection,
+    code: number,
+    reason: string
+  ): void {
     // Remove from tracking
     this.connections.delete(connection.id);
     this.performanceMetrics.currentConnections--;
@@ -812,20 +860,31 @@ export class RealTimeCollaborationServer extends EventEmitter {
     this.emit('connection-error', { connectionId: connection.id, error: error.message });
   }
 
-  private async handleParticipantStatus(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleParticipantStatus(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     // Implementation for participant status updates
   }
 
-  private async handleWorkflowUpdate(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleWorkflowUpdate(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     // Implementation for workflow updates
   }
 
-  private async handleHeartbeat(connection: CollaborationConnection, message: CollaborationMessage): Promise<void> {
+  private async handleHeartbeat(
+    connection: CollaborationConnection,
+    message: CollaborationMessage
+  ): Promise<void> {
     connection.isAlive = true;
-    connection.websocket.send(JSON.stringify({
-      type: 'heartbeat-response',
-      timestamp: new Date()
-    }));
+    connection.websocket.send(
+      JSON.stringify({
+        type: 'heartbeat-response',
+        timestamp: new Date(),
+      })
+    );
   }
 
   private initializeRamadanManagement(): void {
@@ -840,8 +899,10 @@ export class RealTimeCollaborationServer extends EventEmitter {
 
   private collectPerformanceMetrics(): void {
     // Update average latency
-    const totalLatency = Array.from(this.connections.values())
-      .reduce((sum, conn) => sum + conn.latency, 0);
+    const totalLatency = Array.from(this.connections.values()).reduce(
+      (sum, conn) => sum + conn.latency,
+      0
+    );
     this.performanceMetrics.averageLatency = totalLatency / this.connections.size || 0;
 
     this.emit('performance-metrics', this.performanceMetrics);
@@ -875,10 +936,11 @@ export class RealTimeCollaborationServer extends EventEmitter {
       sessions: this.sessions.size,
       connections: this.connections.size,
       ministryChannels: Object.fromEntries(
-        Array.from(this.ministryChannels.entries()).map(([ministry, sessions]) => 
-          [ministry, sessions.size]
-        )
-      )
+        Array.from(this.ministryChannels.entries()).map(([ministry, sessions]) => [
+          ministry,
+          sessions.size,
+        ])
+      ),
     };
   }
 
@@ -904,7 +966,7 @@ export class RealTimeCollaborationServer extends EventEmitter {
 
     // Close WebSocket server
     this.wss.close();
-    
+
     // Close HTTP server
     this.server.close();
 

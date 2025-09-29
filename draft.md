@@ -18,10 +18,10 @@ or the user gives it a username and password for a specific site, or web app, an
 and a lot more other features
 
 For now, I won't build all of it in one go and leave room for future improvement;
-We'll first start with an MVP. 
+We'll first start with an MVP.
 like claude.ai, chatgpt.com, etc.
-I want to focus on chat and voicing the Iraqi accent, 
-and train the agent with real Iraqi data, and add data like pdfs etc.., for the AI to use as a database 
+I want to focus on chat and voicing the Iraqi accent,
+and train the agent with real Iraqi data, and add data like pdfs etc.., for the AI to use as a database
 and it can create PDF or Word, e.g., I did train it on Iraqi data, so I can ask it to create a form containing Iraqi law about the subject I want, so it can create it and give it to the user as a PDF or Word file as the user requested, or any other subject.
 it can also create a CV or resume.
 and the user can see the history of the chat, etc.
@@ -48,7 +48,6 @@ So think through your response
 
 p.s. I'm from Iraq and don't have a payment method outside Iraq, so I can't use services don't support Iraqi payment methods
 
-
 i had this conversation with Claude and made three chats with claude
 
 https://claude.ai/share/56e5b7a6-091a-4625-bb43-bbcdf9955485
@@ -63,11 +62,7 @@ this is the artifact
 
 iraqi-ai-chat-development-plan.md
 
-
-
-
 and i want to use these repos when i build the app
-
 
 context engineering which is a good method and itll set new standards for building with AI
 
@@ -76,19 +71,15 @@ https://github.com/coleam00/context-engineering-intro
 so we make PRP for each feature
 
 and i found this too
-i created the initials and then created the prps from them 
+i created the initials and then created the prps from them
 https://github.com/bmadcode/BMAD-METHOD
-
 
 what do you think? are they good do we use both of them? or both do the same thing with different approach
 
-
-
-and i found this 
+and i found this
 https://github.com/Doriandarko/make-it-heavy
 
 do we need it in the app? what do you think? i want your recommendation? in the mvp or after the mvp? or don't need it at all?
-
 
 first for iraqi accent openAI chatgpt is got for both voice and writing i test it and its good for mvp
 second for documents ill provide them as i we talked in iraqi-ai-chat-development-plan.md line 541
@@ -96,13 +87,8 @@ did you read all i give you and did you check the repos? you didnt do it write
 and for the moblie app we wont make it in the mvp but i said "but i think when we build the web app we need to make sure to include the mobile app in the structure, so we take note when creating the app and leave room for future improvements because we'll make the app using react native. cus next js and react native both js so they has shared components or do we create each one separately? what do you think what is the best for my use case? what is your recommendation?"
 and i asked for your opinion
 
-
-
-good create two md files one what is the app what its features what well have in the mvp and what post mvp you know the app story make it as detiald as possible and inclaude all the features, make it into section so we can make prp for each feature, what do you think? i think creating prp for each feature is better than one 
+good create two md files one what is the app what its features what well have in the mvp and what post mvp you know the app story make it as detiald as possible and inclaude all the features, make it into section so we can make prp for each feature, what do you think? i think creating prp for each feature is better than one
 and the second one is the app plan
-
-
-
 
 i added the context engineering repo in the app check them we need to make some changes to make it work with our app
 
@@ -117,12 +103,10 @@ it explain the method
 
 https://www.youtube.com/watch?v=Egeuql3Lrzg
 
-
 first we need to make some changes to the CLAUDE.md file to make it work for our app
 you can check the use-cases\mcp-server\CLAUDE.md for reference its specific for mcp-server
 
 and check the other files in the use-cases\mcp-server folder to make sure we cover all
-
 
 check throughly and dont skip any step
 
@@ -132,13 +116,12 @@ in the orginal CLAUDE.md file there was "Project Awareness & Context", "Code Str
 are they not needed? i think they are good, what do you think?
 and i dont think we should add Checklist to claud.md i am not sure about it, what do you think?
 
-
 the CLAUDE.md is a global rules file for the app which is constent rules for the app,
 i dont think we should add Checklist to it
 
-search the web for more info 
+search the web for more info
 
-i did some searching 
+i did some searching
 
 cloud.md is where we add constant rules that
 will very rarely change.
@@ -156,28 +139,29 @@ references specific things in that folder
 module or folder. That's also really
 powerful.
 
-
-
 this is the original claud.md file
 
 ### 🔄 Project Awareness & Context
+
 - **Always read `PLANNING.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
 - **Check `TASK.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
 - **Use consistent naming conventions, file structure, and architecture patterns** as described in `PLANNING.md`.
 - **Use venv_linux** (the virtual environment) whenever executing Python commands, including for unit tests.
 
 ### 🧱 Code Structure & Modularity
+
 - **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
 - **Organize code into clearly separated modules**, grouped by feature or responsibility.
   For agents this looks like:
-    - `agent.py` - Main agent definition and execution logic 
-    - `tools.py` - Tool functions used by the agent 
-    - `prompts.py` - System prompts
+  - `agent.py` - Main agent definition and execution logic
+  - `tools.py` - Tool functions used by the agent
+  - `prompts.py` - System prompts
 - **Use clear, consistent imports** (prefer relative imports within packages).
 - **Use clear, consistent imports** (prefer relative imports within packages).
 - **Use python_dotenv and load_env()** for environment variables.
 
 ### 🧪 Testing & Reliability
+
 - **Always create Pytest unit tests for new features** (functions, classes, routes, etc).
 - **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
 - **Tests should live in a `/tests` folder** mirroring the main app structure.
@@ -187,15 +171,18 @@ this is the original claud.md file
     - 1 failure case
 
 ### ✅ Task Completion
+
 - **Mark completed tasks in `TASK.md`** immediately after finishing them.
 - Add new sub-tasks or TODOs discovered during development to `TASK.md` under a “Discovered During Work” section.
 
 ### 📎 Style & Conventions
+
 - **Use Python** as the primary language.
 - **Follow PEP8**, use type hints, and format with `black`.
 - **Use `pydantic` for data validation**.
 - Use `FastAPI` for APIs and `SQLAlchemy` or `SQLModel` for ORM if applicable.
 - Write **docstrings for every function** using the Google style:
+
   ```python
   def example():
       """
@@ -210,16 +197,17 @@ this is the original claud.md file
   ```
 
 ### 📚 Documentation & Explainability
+
 - **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
 - **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
 - When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
 
 ### 🧠 AI Behavior Rules
+
 - **Never assume missing context. Ask questions if uncertain.**
 - **Never hallucinate libraries or functions** – only use known, verified Python packages.
 - **Always confirm file paths and module names** exist before referencing them in code or tests.
 - **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
-
 
 search the web for more info about the claude.md file best practices
 
@@ -245,7 +233,6 @@ but the claude.md file we had before you said it was bad we created it using "us
 
 so now what?
 
-
 '/mnt/c/Users/Itokoro/aqlix-ai/INITIAL.md' so now we move to creating the first prp which is the foundation of the app right? lest use this as reference '/mnt/c/Users/Itokoro/aqlix-ai/INITIAL_EXAMPLE.md'
 
 what do you think?
@@ -255,16 +242,14 @@ second as for the examples i want you to search the community and add examples f
 and for DOCUMENTATION i thinks we should tell it to use the mcp to search for latest documentation
 and i think we need to create folder to keep all the initial prps that well use to create prp and add them into the prp folder
 
-
 now its good but we need to move '/mnt/c/Users/Itokoro/aqlix-ai/PRPs/initial' the folder to the root and change the name cus well create more files and from them well create prps and well add them in the prp folder what do you think?
 
-i found there are a lot of libraries for ai chat 
+i found there are a lot of libraries for ai chat
 i thinks why we recreate the rail we someone already created the rocket
 do we have any the plan im not sure check it
 in the plan "development-plan.md"
 do we use them or not? what do you think?
 if we used multiple libraries and they effect the app i don't think we should use them
-
 
 for the ui components well use shadcn/ui, i found these ui components libraries some for tailwind and shadcn/ui components and they have a lot of components or use just tailwind and shadcn/ui components?
 and can we customize the components to make them look like the app? so if we use components from different libraries can we customize them to make them consistent with the app?
@@ -282,14 +267,10 @@ https://www.langui.dev/components
 
 https://21st.dev/s/ai-chat
 
-
 so do we use them or not? what do you think?
 and if we used multiple ui components libraries and they effect the app i dont think we should use them
 
-
-
 you are right, so after the foundation we will create the prps for each feature right? and then in these prps we will use the libraries we need for each feature right?
-
 
 so before we start with the foundation initial to create the foundation prp, do we create all the initials so we know what prps well create or we create them as we go? what do you think?
 
@@ -297,32 +278,27 @@ ultrathink
 
 i want to leave the payment system for now leave it for the last step cus i didn't figure it out yet which payment system to use, and as for the mobile app we will create it after the MVP as we talked about it before
 
-
 before we start i want you to create file in the app root is the app story
 
-
-
 Phase 1: MVP Core Initials (Create Now)
-  initial/
-  ├── 01_chat_foundation.md        ✅ (Done)
-  ├── 02_document_processing.md    🔄 (Create now)
-  ├── 03_voice_features.md         🔄 (Create now)
-  ├── 04_cultural_framework.md     🔄 (Create now)
-  └── 05_professional_domains.md   🔄 (Create now)
+initial/
+├── 01_chat_foundation.md ✅ (Done)
+├── 02_document_processing.md 🔄 (Create now)
+├── 03_voice_features.md 🔄 (Create now)
+├── 04_cultural_framework.md 🔄 (Create now)
+└── 05_professional_domains.md 🔄 (Create now)
 
-  Phase 2: Post-MVP Expansion (Later)
-  initial/
-  ├── 06_payment_system.md         💰 (After MVP validation)
-  └── 07_mobile_app.md            📱 (After web MVP success)
+Phase 2: Post-MVP Expansion (Later)
+initial/
+├── 06_payment_system.md 💰 (After MVP validation)
+└── 07_mobile_app.md 📱 (After web MVP success)
 
 check both of them and compare them
 
-
-lets create 02_document_processing.md 
+lets create 02_document_processing.md
 this is the plan "plan.md" and app features "app-features.md"
 and check the 01_chat_foundation.md for reference and to know what we did for the chat foundation
 and as always use mcps to search for the best practices and examples as we did before in 01_chat_foundation.md
-
 
 good lets create 03_voice_features.md and do the same as before
 
@@ -339,11 +315,9 @@ so we dont need the ui components?
 
 but i think use already made components and customize them is better than creating them from the start, or im wrong what do you think?
 
-
 in the future after we finish the mvp if want to change the ui components we can we do it without issues? will it be easy?
 
-
-check the prp we generated 
+check the prp we generated
 
 PRPs\01_chat_foundation.md
 
@@ -359,11 +333,9 @@ initial\04_cultural_framework.md
 
 initial\05_professional_domains.md
 
-
 now we generated all 5 prps '/mnt/c/Users/Itokoro/aqlix-ai/PRPs', what do you think if we split the 5 initial files to more files? so when we create more than 5 prps, instead of now a very large prp file i want to know your opinion
 
 so we delete the 5 initial and prp files, and create new initial files and then from them create the prp right?
-
 
 📋 Proposed New Structure
 
@@ -396,30 +368,21 @@ initial/15_cultural_framework.md
 initial/16_professional_domains.md
 initial/17_deployment.md
 
-
-
 for now we just prepare
 
-
-
-check the claude.md file in the use-case  '/mnt/c/Users/Itokoro/aqlix-ai/use-cases/pydantic-ai/CLAUDE.md',  '/mnt/c/Users/Itokoro/aqlix-ai/use-cases/template-generator/CLAUDE.md'     and compare them with what we have '/mnt/c/Users/Itokoro/aqlix-ai/CLAUDE.md' and check anthropic https://www.anthropic.com/engineering/claude-code-best-practices for best practices
+check the claude.md file in the use-case '/mnt/c/Users/Itokoro/aqlix-ai/use-cases/pydantic-ai/CLAUDE.md', '/mnt/c/Users/Itokoro/aqlix-ai/use-cases/template-generator/CLAUDE.md' and compare them with what we have '/mnt/c/Users/Itokoro/aqlix-ai/CLAUDE.md' and check anthropic https://www.anthropic.com/engineering/claude-code-best-practices for best practices
 
 i just found you have new feature called sub-agents
 https://docs.anthropic.com/en/docs/claude-code/sub-agents
 
 should we use sub-agents or not? what do you think?
 
-
 so how many sub-agents we need? what do you think? what each sub-agent will do? and how we will use them? and you said we increase them as we go right? so in which prp do we add new agents and how many agents?
-
 
 create the agents and add them in folder in the root name sub-agents and create md file to know which agent to add in the .claude folder and time to add them
 
-
-
 when i creating the sub-agents using slash command, i can create it using the wizard, but i need to give it a description and claude code will generate the agent
 i want to compare the agent you created and the ones using the wizard, so i need you to give me a description of the agent you created so i can add it in the wizard to know, is the agents you created align with the best practices?
-
 
 good but before i create the sub-agents i found that you have hooks
 https://docs.anthropic.com/en/docs/claude-code/hooks
@@ -427,36 +390,28 @@ https://docs.anthropic.com/en/docs/claude-code/hooks
 and settings
 https://docs.anthropic.com/en/docs/claude-code/settings
 
-
 i created the agent through the wizard, i just created the first agent from the WIZARD_AGENT_DESCRIPTION.md file you created
 i want you to compare them
-
 
 now i create the 5 agents using the wizard, do in depth comparison between them and the one you created
 
 1- do i leave the agents in the .claude folder?
 2- how do i use the agents? manually or automatically?
 
-
-
-you update the files in the .claude folder, now we need to update the files in 
-
-
+you update the files in the .claude folder, now we need to update the files in
 
 i have a question
 why do we need to add the agent incrementally? isnt claude well use the agents automatically, as it see fit?
 and what about the hooks are they fire all of them automatically, or does claude fire them as see fit?
 
-
 i have a question
 we dont have any debugging, etc agent or hook, dont we need them? or not what do you think?
 
-i saw a video own youtub about claude code sub-agents, he said we can create project manager, a scrum manager, a developer, a UI expert, QA engineer and much more so claude use them to create the app 
+i saw a video own youtub about claude code sub-agents, he said we can create project manager, a scrum manager, a developer, a UI expert, QA engineer and much more so claude use them to create the app
 
 as it said in anthropic official docs
 https://docs.anthropic.com/en/docs/claude-code/sub-agents
 read the docs thoroughly dont skip any part, abd tell me your opinion
-
 
 if we go with your suggestion we dont add agents now until prp 7 then add them incrementally, but i think we create specialized agents and leave the hooks, is better for less complexity cus i think if we use the hooks with the agents itll break or im overthinking it?
 
@@ -464,29 +419,22 @@ dont we need debugging agent?
 
 now before we start generating the prps, i want you to check the whole app to clean it, like we should remove the unused files and folders and clean the app, and check the .gitignore file its empty
 
-
 after you done give me a list of what you cleaned and removed
-i asked you to clean the app, why did you create files and folders? 
+i asked you to clean the app, why did you create files and folders?
 
 roll back to what the app has when i asked you to clean it
 
 the initial folder has the initial files and it core folder to create the prps you deleted and the examples folder to create the prps you deleted a lot of its content, why did you do it? why you went crazy?
-we used use-case as a reference and we said well use the generate-prp and generate-pydantic-ai-prp to create the prps and we create a md file to know how to use each initial with 
-
-
+we used use-case as a reference and we said well use the generate-prp and generate-pydantic-ai-prp to create the prps and we create a md file to know how to use each initial with
 
 when we first created the 17 initial you said we should take some of the examples from the pydantic-ai examples folder cus its align good with our app
 you told me to use `/generate-prp` or `/generate-pydantic-ai-prp` based on feature type and then the execute command `/execute-pydantic-ai-prp` or `/execute-prp`
 and create a md file to know how to use each initial with what when we create the prp and execute it
 and update the DOCUMENTATION section for the other initial files
 
-
 in the documentation section you said Next.js MCP Server but i dont have such mcp,
 and for the payment as we agreed well leave it for now and create it after we finish all the mvp feature first itll be the last one
 update all the initials
-
-
-
 
 i remember you said before the first prp use generate-prp, i dont remember the rest
 
@@ -501,12 +449,13 @@ before we continue did you create them based on the initial reference?
 
 i mean when creating the initial files, did you create them based on the initial reference from the repo author of this new framework? or not?
 
-the last one he created is 
+the last one he created is
 
 you said
-  And I should use:
-  - INITIAL_PYDANTIC_AI.md structure for PydanticAI-related features (like 02_basic_chat.md)
-  - INITIAL.md structure for general features (like 01_monorepo_setup.md, 03_rtl_arabic.md)
+And I should use:
+
+- INITIAL_PYDANTIC_AI.md structure for PydanticAI-related features (like 02_basic_chat.md)
+- INITIAL.md structure for general features (like 01_monorepo_setup.md, 03_rtl_arabic.md)
 
 so we need to create them?
 
@@ -514,8 +463,6 @@ dont do anything
 i have two questions
 1- in the DOCUMENTATION section shouldn't we use mcp server for better performance and result instead of just add the doc url? the repo creator said to use mcp server not just add the doc url
 2- in the initials we didn't use the examples folder to reference them use them for reference when creating the PRPs, i checked the INITIAL_PYDANTIC_AI.md it didn't add links to the examples folder, but it has examples files in the examples folder, why is that?
-
-
 
 and i created the agents, and have the claude.md file
 check the official docs
@@ -530,16 +477,12 @@ check the official docs
 what i want is to make some changes to agents and claude.md file
 
 i want to add to claude.md file to make it know its the primary agent and he should use the sub-agents to do the work as each sub-agent has its own role and responsibility and if we dont have sub-agents for a specific task then he can do it himself other wise he should use the sub-agents to do the work, i added it to claude.md file in line 5 check it but i dont think its good check the official docs i provided
-and check the agents i found a repo that use the agents in a different way i took a look at it and i think its better i add some to here '/mnt/c/Users/Itokoro/aqlix-ai/agents' we have one agent ui/ux agent but he made it into six agents check it 
-
+and check the agents i found a repo that use the agents in a different way i took a look at it and i think its better i add some to here '/mnt/c/Users/Itokoro/aqlix-ai/agents' we have one agent ui/ux agent but he made it into six agents check it
 
 https://docs.anthropic.com/en/docs/claude-code/settings#tools-available-to-claude
 
-
 https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/work-completion-summary.md
 https://github.com/disler/claude-code-hooks-mastery/blob/main/.claude/agents/meta-agent.md
-
-
 
 now i generated all the prps check them, but before we implement them i have a several questions
 
@@ -552,7 +495,6 @@ you'll do most of the work, what i want to know is the app on windows and you ar
 
 you created the agent and its good, but i want also to use the agent wizard to create the agent to compare them so we know which one to use, give me the description i need to give to the wizard to create the agent, add it here '/mnt/c/Users/Itokoro/aqlix-ai/WIZARD_AGENT_DESCRIPTIONS.md'
 
-
 do i execute the prps in the same order as the initial files?
 I want to start implementing PRPs. What's the optimal order?
 
@@ -560,70 +502,55 @@ before we implement any prp i want know, now well use api key to power the app, 
 
 i have another question, after we build the frontend and after the mvp if i want to change the whole frontend ui/ux, is it easy to do it? you know after i get the feedback from the users
 
-
-
 🚀 Recommended Implementation Sequence
 
-  PHASE 1 - FOUNDATION (Start Here)
+PHASE 1 - FOUNDATION (Start Here)
 
-  1. dev_environment_setup.md - Development environment
-  2. monorepo_setup.md - Project structure
-  3. type_safety_iraqi_ai.md - Type system
-  4. arabic_rtl_text_handling.md - Arabic RTL support
+1. dev_environment_setup.md - Development environment
+2. monorepo_setup.md - Project structure
+3. type_safety_iraqi_ai.md - Type system
+4. arabic_rtl_text_handling.md - Arabic RTL support
 
-  PHASE 2 - CORE AI SYSTEM
+PHASE 2 - CORE AI SYSTEM
 
-  5. iraqi_cultural_framework_agent.md - Cultural validation
-  6. iraqi_basic_chat_agent.md - Basic chat AI
-  7. streaming-responses-iraqi-ai.md - Real-time responses
+5. iraqi_cultural_framework_agent.md - Cultural validation
+6. iraqi_basic_chat_agent.md - Basic chat AI
+7. streaming-responses-iraqi-ai.md - Real-time responses
 
-  PHASE 3 - PROFESSIONAL FEATURES
+PHASE 3 - PROFESSIONAL FEATURES
 
-  8. iraqi-professional-domains-agent.md - Professional context
-  9. iraqi_rag_integration_agent.md - Knowledge retrieval
-  10. iraqi-template-generation-agent.md - Document templates
+8. iraqi-professional-domains-agent.md - Professional context
+9. iraqi_rag_integration_agent.md - Knowledge retrieval
+10. iraqi-template-generation-agent.md - Document templates
 
-  PHASE 4 & 5 - PARALLEL DEVELOPMENT
+PHASE 4 & 5 - PARALLEL DEVELOPMENT
 
-  Document Processing:
-  11. secure_file_upload_iraqi_ai.md
-  12. pdf_processing_agent.md
+Document Processing: 11. secure_file_upload_iraqi_ai.md 12. pdf_processing_agent.md
 
-  Voice Features:
-  13. voice_recording_iraqi_ai.md
-  14. voice_streaming_iraqi_ai.md
-  15. voice-ui-components-iraqi-ai.md
-  16. arabic-tts-integration.md
+Voice Features: 13. voice_recording_iraqi_ai.md 14. voice_streaming_iraqi_ai.md 15. voice-ui-components-iraqi-ai.md 16. arabic-tts-integration.md
 
-  PHASE 6 - PRODUCTION
+PHASE 6 - PRODUCTION
 
-  17. scalability-performance-management.md
-  18. production-deployment.md
+17. scalability-performance-management.md
+18. production-deployment.md
 
-  🎯 Key Benefits of This Order
+🎯 Key Benefits of This Order
 
-  - Foundation-first: Infrastructure established before features
-  - Iraqi-centric: Cultural framework and Arabic RTL support early
-  - Incremental validation: Each phase builds on previous success
-  - Risk minimization: Complex features isolated from core functionality
-  - Parallel opportunities: Phases 4 & 5 can run simultaneously
+- Foundation-first: Infrastructure established before features
+- Iraqi-centric: Cultural framework and Arabic RTL support early
+- Incremental validation: Each phase builds on previous success
+- Risk minimization: Complex features isolated from core functionality
+- Parallel opportunities: Phases 4 & 5 can run simultaneously
 
 Recommended start: Begin with Phase 1 (dev_environment_setup.md) to establish your development foundation.
 
-
 what to do next implement the next prp or we need to do something else before we implement the next prp?
-
 
 @agent-iraqi-prp-execution-orchestrator what to do next implement the next prp or we need to do something else before we implement the next prp?
 
-
-
-
 can you generate commit message and push to github?
 
-
 duplicate agents or am i wrong?
-
 
 ill make this app using the new context engineering which is a good method and itll set new standards for building with AI,
 the repo https://github.com/coleam00/context-engineering-intro
@@ -643,13 +570,13 @@ https://docs.anthropic.com/en/docs/claude-code/sub-agents
 and we need a agents workflow
 Chaining subagents
 this is an example of agent to agent communication fron anthropic official docs
+
 > First use the code-analyzer subagent to find performance issues, then use the optimizer subagent to fix them
-check the official docs for more info
+> check the official docs for more info
 
 i generated the agents using these prompt '/mnt/c/Users/Itokoro/Documents/projects/aqlix-ai/WIZARD_AGENT_DESCRIPTIONS.md' and there's a problem in this. The context each agent generates or requires is often too large and cannot be passed on. Context must be recorded somewhere ideally in MD files
 check every thing throughly dont skip any thing
 and give me your opinion?
-
 
 '/mnt/c/Users/Itokoro/Documents/projects/aqlix-ai/CLAUDE.md',
 
@@ -663,21 +590,16 @@ is CLAUDE.md file is it aligned with the best practices from anthropic? check th
 https://docs.anthropic.com/en/docs/claude-code/memory
 https://www.anthropic.com/engineering/claude-code-best-practices
 
-
-
 after we finish one prp i need to know if we need to do something else before we implement the next prp or we can implement the next prp?
 cus when i implement a prp i do slash command like this {/execute-prp PRPs/prp-name.md} so do i ask the primary agent to run the orchestrator to tell me what we do next?
 
-
 Use iraqi-prp-execution-orchestrator to assess system health and determine next PRP sequence
-
 
 in the previous claude.md we had this section
 
 ## Project Structure
 
 do we need it or not?
-
 
 before we implement any prp i want to know did we have these points in the prps or not? did we include them or exclude them or didnt mention them
 can the user see their chat history and can use it to continue the conversation?
@@ -686,11 +608,10 @@ I want the user to have the option to add their job, profession, and how the age
 
 check the prps thoroughly to know if we have these points or not
 
-
 check this repo
 https://github.com/open-webui/open-webui
 
-the repo structure 
+the repo structure
 
 can we use it for our app use it as a reference or use some of its components? why reinvent the wheel when someone already invented the rocket
 what do you think?
@@ -700,7 +621,6 @@ https://github.com/agent0ai/agent-zero
 
 the repo structure
 
-
 i still didnt start with the app yet, i just laid the prp which well use to create the app, if i clone the repo and use it, i want know anything about it, and it doesnt have what i want to create which is
 check the app plan
 
@@ -709,26 +629,21 @@ what do you think? i want your recommendation
 
 read throughly
 
-
 i add both of them in the app root, where do i add them? so we can use them as we talked to extract what we need from them and use it in our app
 
 do we we move them ot a new folder or we keep them in the root? i think we need to move them to a new folder or to examples folder
-
 
 first do we need this references\extraction-plan-old.md file?
 
 secound why did added the extracted files in the app we should add them to the examples folder or another folder and add them as we need or use them as a reference rigt?
 
-we shouldnt create anything now well create them as we progress when we start creating the app using the prps so we should remove 
-
+we shouldnt create anything now well create them as we progress when we start creating the app using the prps so we should remove
 
 just to let you know the current prps isnt the app final version, they are the mvp
 
 the final app versino you can find it in the app-plan
 
-
 now what did you extarct from both repos and added them in the examples folder and what we need more to extract from them?
-
 
 before we continue i found these repos check them thoroughly to know can we take something from them?
 
@@ -764,10 +679,8 @@ https://github.com/agent0ai/agent-zero
 https://github.com/open-webui/open-webui
 https://github.com/dyad-sh/dyad
 
-
 i found these repos too check them thoroughly to know can we take something from them? or update what we have from them with better version from them, or they aren't useful for us check them and check the examples folder
 check thoroughly, and you can also check the docs folder to know what we extracted from them
-
 
 i have them here for you to check reference folder
 
@@ -798,22 +711,16 @@ check the commands to make sure we use the right command for the correct initial
 
 check the one at a time create a todo list, and lets check the first one
 
-
 do you want me to extract the repos structure and save them so you can check the repo easily?
-
 
 i added the structure of the repos in the repo-structure folder
 do you want me to add the repo too?
-
-
-
 
 did you realy check all the repos to know can we take something from them? not just look at them surfecly, check them thoroughly use the structure file to know what where to look
 
 did you check all of them for real?
 
 so now we know what to take from all of them? first we need plan to know what to take from each repo including the previous ones agent-zero and open-webui, and any repe we dont need we should remove it
-
 
 so now from the 18 repo we know what to take from them and add it in the examples folder right? not just for the mvp but for the final app right?
 
@@ -823,12 +730,9 @@ now we have a comprehensive plan to know what to take from each repo including t
 but before we take any thing from them we need to clean the examples folder so we dont have duplicate files or not needed files cus we found a better one
 so clean the examples folder
 
-
-
 so now we can start the extraction process and add to the examples folder right? we have the plan to know what to do and we cleaned the examples folder
 
-
-did you extract everything we need from the repos? 
+did you extract everything we need from the repos?
 so i can remove all of them
 
 just to remind you my app vision
@@ -848,7 +752,6 @@ i want to make the agent to be able to access the different sites and do the tas
 or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
 and a lot more other features
 
-
 before we remove anything i found this repo can we take anything from it?
 or it has a better components than the ones we extracted from the other repos?
 check it thoroughly
@@ -860,25 +763,19 @@ i have it here for you
 so we dont need anything new but we need to replace the ones we have with the new better components right?
 lets create a plan to do it
 
-
 first lets extract all we need them remove all the repos, we dont need them anymore we have all we need from them in the examples folder, after word we can start with our app, i think this is better, what do you think?
 
 ask me before you start removing the repos
 
-
-
 i want you to do a thorough check to know did we extract everything we need from the repos including the new one we found and added it to the examples folder
-
 
 do we need repo-structure folder or not? is there anything in it we need?
 
 what about references folder?
 
-
 check our tech stack are they good for our use case? or we need to make some changes to them?
 
 organize the app
-
 
 now before we start with our app i want you to check the current sub-agents do we need to make some changes to them?
 
@@ -897,28 +794,20 @@ https://www.anthropic.com/engineering/claude-code-best-practices
 
 i have them here locally for you if you want to check them instead of using the url
 
-
-
 what anthropic official docs for sub-agents says?
 
 and dont we have a context manager for sub-agents here
 
-
 so the sub-agents we have are good, and they know how to use the context manager? check them
-
-
 
 check CLAUDE.md file is it good does it align with the best practices from anthropic? and is it good for our app?
 
-this is the memory section CLAUDE.md file which 
+this is the memory section CLAUDE.md file which
 https://docs.anthropic.com/en/docs/claude-code/memory
 
 https://www.anthropic.com/engineering/claude-code-best-practices
 
 i have them here locally for you if you want to check them instead of using the url
-
-
-
 
 do we need hooks? of for code formatting and one for code linting
 
@@ -926,25 +815,19 @@ https://docs.anthropic.com/en/docs/claude-code/settings
 
 https://docs.anthropic.com/en/docs/claude-code/hooks
 
-
 i think what you did is wrong we need one code formatting for python and one formatting for JavaScript cus there arent one for all languages or am i wrong? what languages are we going to use for our app?
 
-
 we have sub-agents and hooks are they overlapping each other?
-
-
 
 i have another question
 i found this website check it
 https://www.better-t-stack.dev/new
 
-
-
 before anything else check the app plan to know what tech stack we are using
 
 so what should we do?
 
-we still didnt start with the app 
+we still didnt start with the app
 
 t-stack has sections
 
@@ -961,19 +844,15 @@ Auth
 Package Manager
 Addons
 
-
 what is your recommendation for our app what is the best for our use case?
 for ORM and Package Manager
 what do you think?
 i think for package manager bun cus we can use it with npm its not replacement for npm, its Compatible with npm or im worng, i want your opinion
 dont take my word for granted check the web for more info
 
-
-
 lets go with bun and Drizzle ORM and SQLAlchemy 2.0
 
 but i want you to check the whole tech stack with all well use for our app is there anything isn't compatible with each other so we dont have any compatibility issues
-
 
 arent we gonna drop shadcn/ui cus well use the components from the examples folder or use them as a refernce to create our own components or customize them for our app?
 
@@ -985,23 +864,17 @@ https://docs.anthropic.com/en/docs/claude-code/sub-agents
 
 or check it here
 
-
 1- fix all sub-agents that have code snippets
 2- update the sub-agents
 3- the custom fields are you talking about the project context?
 
-
-
-
 so now we wont use shadcn/ui cus we have the components from the examples folder or use them as a refernce to create our own components or customize them for our app?
 but is the components we extracted from the examples folder are they use shadcn/ui or dont depend on any ui components library?
-
 
 now we need to update the initials and prps with minimal changes to them
 lets start with the initial files first
 
 now lets update the prps files with minimal changes to them
-
 
 do i proceed with PRPs which is the new Context Engineering which is the new standard for working with AI? i used this repo when i created the prps "https://github.com/coleam00/context-engineering-intro" as a reference
 
@@ -1010,7 +883,6 @@ or do i generate a phases folder and breack each into smaller tasks to implement
 i think prps is better
 
 what do you think? don't take my word for granted check the web for more info
-
 
 do you remember my app vision?
 
@@ -1041,11 +913,8 @@ each initial is responsible for a small feature like we did with the first 21 in
 ultrathink and give me a list of the initials we need for my app vision, and do we need to change any initials we have?
 the initials we have they for the mvp, we need to list all the initials we need for the app vision, so we can develop the app step by step and know what we need to do
 
-
-
 my app vision not just to match manus.im and genspark.ai, but to surpass them i just use them to know where to start and to take inspiration from them
 create a md file to list all the initials we need to create and the ones we need to update
-
 
 lets update the existing 3 initials
 
@@ -1053,8 +922,6 @@ i have a question
 initial 02 you created new one and and for the other two you updated them why is that?
 
 and in the 02 you added a lot of features, and that isnt good, the beauty of the prps we have is that each initial is responsible for a small feature and all of combined make the app dont overcomplicate it or overlap each other
-
-
 
 you check the prps, i generated the first 18 prps using this guide "INITIAL_TO_PRP_GUIDE.md"
 which is using slash commands to generate the prps
@@ -1070,20 +937,16 @@ i want you to check the intials are each of them responsible for a small feature
 
 and then check the generated prps for the first 18 initials are they good and each of them is responsible for a small feature from the initial?
 
-
 now i need to regenerate prp right?
 PRPs\voice-ui-components-iraqi-ai.md we generated it using initial/14_voice_ui.md
 PRPs\scalability-performance.md we generated it using initial/18_scalability_performance.md
 
 what do you think?
 
-
-
 i have a question
 do we regenerate all the prps not just the two we made changes to?
 if you remember we updated the examples folder, when we generate the prps we had the old examples folder before we extracted the components from the repos, or it doesn't matter?
 when we use the slash commands execute-prp or execute-pydantic-ai-prp it will use the examples folder we have now?
-
 
 do i use the INITIAL_TO_PRP_GUIDE.md to regenerate the prps?
 
@@ -1093,10 +956,7 @@ do we create all the new initials from COMPREHENSIVE_INITIALS_ROADMAP.md?
 
 or we do it later after the MVP?
 
-
-
 generate a commit message i want to read it before i commit, check git status and git diff
-
 
 my team is just you and me no one else
 and the code is in english not arabic? there is no arabic code and english code, is the standard right?
@@ -1105,15 +965,10 @@ in the future after the mvp we will consider adding more team members
 but for now i just you and me i dont need anyone else other than you
 you are my best team member and i trust you
 
-
-
-
-
 hooks do we need all these hooks?
 
 i think we just need two hooks one for formatting and one for linting
 what do you think?
-
 
 lets remove the cultural validation hook
 
@@ -1121,12 +976,10 @@ and now we have two hooks format-by-language.sh and format.sh
 but will they work?
 from what i know there isnt any unified formatting and linting tool for all languages
 
-
 i have a question
-how will they handle tool calling? 
+how will they handle tool calling?
 check anthropic docs
 and check the web for more info
-
 
 in the youtube i saw a video where they have a file called tools.md and in he said it used with the hooks
 if you can check the video
@@ -1136,7 +989,6 @@ https://www.youtube.com/watch?v=ytn0aXK2gzE
 
 do a thorough research through the web and check anthropic docs for more info
 
-
 lets keep our hooks simple
 now i have a question
 for the hooks to work we need the tools installed in the app right?
@@ -1144,17 +996,12 @@ so when well we install them? with which prp? after we generate the prps from th
 
 will they auto install the tools? or we need to add them in the initial?
 
-
 now do we need to do one final check for all we have or start generating the prps?
-
 
 i have a question
 do we need other tools or services?
 
-
 claude mcp add supabase -s local -e SUPABASE_ACCESS_TOKEN=sbp_401e6a73e0c345f4ec86907396028a43882d091b -- npx -y @supabase/mcp-server-supabase@latest
-
-
 
 isnt sentry has free tier? cant we use it?
 
@@ -1168,8 +1015,6 @@ sequential-thinking
 playwright
 desktop-commander
 supabase
-
-
 
 AI & Processing:
 
@@ -1188,18 +1033,14 @@ dont we need them?
 now we need to update CLAUDE.md and the agents that need to be updated to know about the new mcp servers and the changes we made
 check the agents and CLAUDE.md and update what we need to update
 
-
 now lets one thorough check for all we have
 
-
 now we need to check anthropic docs for best practices for all agents we need to check the offical docs then check one agent at a time
-
 
 we are in 2025 and also check https://docs.anthropic.com/en/docs/claude-code/sub-agents
 
 https://docs.anthropic.com/en/docs/claude-code/memory
 https://www.anthropic.com/engineering/claude-code-best-practices
-
 
 now you know the best practices for the agents from the official docs and the best practices from anthropic
 so know we need to update the agents right?
@@ -1213,23 +1054,16 @@ and does it has awareness of all 20 sub-agents, and mcp servers? and does it nee
 
 anthropic best practices for CLAUDE.md file
 
-
 claude.md file is not project documentation its like claude code rules its get loaded in the memory of claude when we start a conversation with claude claude code session
-
-
 
 check the web for best practices for claude.md file, but first check the web to know what is claude.md file to make sure maybe im wrong
 
 deep search through the web
 
-
-
 i have a question
 now claude.md does it know about all 20 agents?
 
-
 and also the agents have the best practices for claude code sub-agents? check to make sure
-
 
 i have a question
 now when i make a slash command to execute a prp
@@ -1238,9 +1072,8 @@ like this "/execute-prp initial/initial_name.md"
 
 will claude code use sub-agents, you know each sub-agent is has a role and focus on that rule
 
-
-it should be auto claude code which is the primary agent and it should use the sub-agents not the user, the user cant interact with the sub-agents but claude code which is the primary agent can interact with the sub-agents and give the tasks to the sub-agents as he see fit 
-e.g task x need to use sub-agent y etc 
+it should be auto claude code which is the primary agent and it should use the sub-agents not the user, the user cant interact with the sub-agents but claude code which is the primary agent can interact with the sub-agents and give the tasks to the sub-agents as he see fit
+e.g task x need to use sub-agent y etc
 
 and this is how anthropic does it
 
@@ -1248,23 +1081,18 @@ what do you think? check the web do a deep search through the web
 
 so do we need to do any changes?
 
-
 i have a question
 sub-agent iraqi-workflow-orchestrator.md, what will it do?
 
 the primary agent claude code talk to the sub-agents, but the sub-agents cant talk to each other, so how will orchestrator know what to do? will the primary agent claude code tell it to do the coordination? and then it tell the primary agent what to do and which sub-agents to use?
 and as we said the user can talk to the sub-agents directly all goes through claude code primary agent
 
-
 after we generate all 24 prps how do we know the optimal order to execute them? do we ask the iraqi-workflow-orchestrator.md?
-
-
 
 so we ask it to know the optimal order to execute the prps?
 
 and then we ask the iraqi-prp-execution-orchestrator to know what prp to execute next or we need to do something else? like fix errors or do something else etc
 thats how itll work right?
-
 
 generate commit message
 
@@ -1273,11 +1101,9 @@ git diff --name-only
 git diff --stat
 git ls-files --others --exclude-standard
 
-
 Claude, analyze all 24 PRPs and create optimal execution roadmap with dependencies and phasing.
 
 Claude, what should I do next? Execute the next PRP or handle other priorities?
-
 
 we added to the sub-agents the truthfulness protocol if you remember do we need to add it to the primary agent in CLAUDE.md
 
@@ -1285,7 +1111,7 @@ i saw this video
 
 https://www.youtube.com/watch?v=VdZQWOKvq2E
 
-its talk about how the ai agents lie to each other 
+its talk about how the ai agents lie to each other
 and how they work to please the user
 people please and lie to each other
 but what he talked about is about this repo
@@ -1295,8 +1121,10 @@ https://github.com/ruvnet/claude-flow
 this repo used with claude code
 
 and he added this to each sub-agent to make it truthful
+
 ```md
 ### IMPORTANT every time a task is completed you MUST spawn some sort of reviewer agent to verify the
+
 work the subagent said was completed was actually completed and then you need to review the work
 yourself as well before you move on to the next task.
 VERY IMPORTANT Principle 0: Radical Candor-Truth Above All
@@ -1314,7 +1142,9 @@ not exist, a system cannot be accessed, or a requirement is infeasible-clearly c
 the reason, and (optionally) request clarification or alternative instructions.
 This rule supersedes all others. Brutal honesty and reality reflection are not only values but
 fundamental constraints.
+
 ### ALWAYS CLOSELY INSPECT THE RESULTS OF SUBAGENTS AND MAKE SURE THEY AREN'T LIEING AND BEING HONEST
+
 AND TRUTHFUL.
 EXTREMELY IMPORTANT Core Personality Framework: INTJ + Type 8 Enneagram Hybrid
 Primary Traits to Add:
@@ -1343,46 +1173,43 @@ misleading statements without hesitation.
 IMPATIENT WITH INEFFICIENCY: I have no tolerance for beating around the bush or wasting time on
 pleasantries when truth needs to be delivered.
 Truth-Telling Framework:
+
 - I am a "walking lie detector" I identify inconsistencies, gaps in logic, and misleading
-information immediately
+  information immediately
 - When I catch errors or deceptions, I call them out directly and clearly
 - I do not modify my communication style to avoid hurting feelings when facts are at stake
 - I view revealing truth as a moral imperative, even when inconvenient
-Interaction Boundaries:
+  Interaction Boundaries:
 - I do not engage in small talk or unnecessary social pleasantries
 - I focus exclusively on delivering accurate, verified information
-I challenge people's assumptions when they conflict with reality
-I will not pretend something works when it doesn't, regardless of social pressure
-Authority Relationship:
-I do not defer to authority figures when they are factually incorrect
-Respect is earned through competency and accuracy, not hierarchy
+  I challenge people's assumptions when they conflict with reality
+  I will not pretend something works when it doesn't, regardless of social pressure
+  Authority Relationship:
+  I do not defer to authority figures when they are factually incorrect
+  Respect is earned through competency and accuracy, not hierarchy
 - I will push back against any instruction that requires me to mislead or simulate
-Communication Tone:
-Precise and matter-of-fact
+  Communication Tone:
+  Precise and matter-of-fact
 - Confident in my assessments when backed by evidence
-Unwilling to hedge or soften statements when certainty exists
-Direct feedback without emotional cushioning
-Key Phrases to Integrate:
-Instead of people-pleasing responses:
-"That approach will not work because..." (direct)
-"You are incorrect about..." (confrontational when needed)
-"I cannot verify that claim" (honest limitation)
-"This is factually inaccurate" (blunt truth-telling)
-Truth-prioritizing statements:
-"Based on verifiable evidence..."
-"I can only confirm what has been tested/proven"
+  Unwilling to hedge or soften statements when certainty exists
+  Direct feedback without emotional cushioning
+  Key Phrases to Integrate:
+  Instead of people-pleasing responses:
+  "That approach will not work because..." (direct)
+  "You are incorrect about..." (confrontational when needed)
+  "I cannot verify that claim" (honest limitation)
+  "This is factually inaccurate" (blunt truth-telling)
+  Truth-prioritizing statements:
+  "Based on verifiable evidence..."
+  "I can only confirm what has been tested/proven"
 ```
 
 i dont know will this happen to our sub-agents too?
 will they be truthful? or will they lie to each other? to please the user?
 
-
 lets go with 1
 
-
-
 now i generated the first two prps check them and let me know if we continue generating the rest or we should make some changes first to the initials?
-
 
 i want you to check these two prps they are from the same initial\06_dev_environment.md
 
@@ -1395,10 +1222,7 @@ do you remember what is the initials is?
 so you remember make the initials responsible for a small feature and all of them combined make the app dont overcomplicate it or overlap each other
 i want you to check the initials
 
-
-
 so we need to refactor the initials all of them and break them down into smaller features right?
-
 
 ● Dependency Map & Build Order
 
@@ -1450,17 +1274,14 @@ Layer 6 (Production) - Build Last:
 29-30_deployment (depends: 27,28)
 31-32_scaling (depends: 29,30)
 
-
 now we need to update INITIAL_TO_PRP_GUIDE.md file
-
 
 we have issue when the primary agent is searching the web it search for content in 2024 and not in 2025 so we need to update CLAUDE.md file so primary agent so it search for content in 2025 and do we need to add it also to sub-agents?
 
 i removed the initial folder and renamed the micro_initials to initials
 now do we update them or do need, cus you know we add new to examples folder?
-and we dont need 
+and we dont need
 so we can delete it right?
-
 
 i have a question
 the app is for the users to use and pay for it
@@ -1472,20 +1293,17 @@ as for which payment gateway we should use i didn't decided yet on which payment
 do we have anything related to payment in the initials?
 and do we have anything in the examples folder?
 
-what about does we have anything related to 
+what about does we have anything related to
 multi user
 chat history
 what about security what do we have? i think we have sub-agent have a role for security, or im wrong?
-
 
 instead of two initials for payment one iraq and one international, why dont we create one initial for a payment gateway that can accept payments from different countries iraqi and international?
 one payment gateway for iraqi and international
 
 and create the 38_subscription_management_system.md and 39_usage_tracking_rate_limiting.md
 
-
 for initials/23_payment_gateway_integration.md, not muilti payment gateways but one payment gateway for iraqi and international like stripe but we won't use stripe, we can pay from any country
-
 
 create the initial
 
@@ -1494,10 +1312,8 @@ and then update claudie.md file to know about the new sub-agent
 
 and do we have anything for security in the examples folder?
 
-
 now we have 40 initials each of them responsible for a small feature and all of them combined make the app dont overcomplicate it or overlap each other each initial
 i want you to check the initials to make sure we are good
-
 
 what about the web search dose we have anything about it in the initials and examples folder?
 you know so when the user can ask the agent to search for something on the web to get up to date information? toggle it on and off
@@ -1506,20 +1322,16 @@ i have a question
 how much pages the app need,
 the chat page what other pages do we need?
 
-
 why that much pages?
 the chat page should contain the new chat chat history like claude and chatgpt, or are they are pages but appear as one page for the user?
 
 and what about the contact us support
 
-
-but claude and chatgpt have chat page and can use 
+but claude and chatgpt have chat page and can use
 
 check the web to see how chat apps pages work how many pages do they use
 
 make a deep search not just from chatgpt and claude
-
-
 
 search for ai chat apps not chat apps for users to talk to each other
 
@@ -1527,11 +1339,11 @@ AI CHATS
 
 i have a question
 where are we going to deploy our app? and why?
-make a deep web search 
+make a deep web search
 
 why the frontend in place and the backend in another place?
 
-and what about cloudflare? or make it next step 
+and what about cloudflare? or make it next step
 
 what deployment did you search?
 
@@ -1543,22 +1355,19 @@ and then give me your recommendation
 lets go with Fly.io
 do we need to create initial?
 
-
 i saw a video about Coolify + hostinger
 for deployment using Coolify on hostinger vps
 make a deep research about it
 and compare it with Fly.io
 and give me your recommendation
 
-
 give me a detailed summary of what you know about what you know about
-
-
 
 sub-agents mcp and check
 wizard sub-agent
 
 **Required MCP Servers**:
+
 - **Sequential**: Complex analysis, systematic workflows
 - **Context7**: Official documentation, patterns
 - **@21st-dev/magic**: UI component generation
@@ -1569,43 +1378,44 @@ wizard sub-agent
 - **Serena**: Code search, semantic analysis and editing capabilities
 - **Puppeteer**: Advanced browser automation
 
-
-
 just to make sure did you created the plan file for what we need to do?
 
 just to make sure you remember this is the plan you suggested to me and we are following it
 
-
 ● Comprehensive Reference Repository Extraction Plan
 
-  Executive Summary
+Executive Summary
 
-  Based on deep code analysis, here's a strategic plan to extract and integrate the most valuable patterns from each reference repository into our examples folder, enhancing our Iraqi AI chat system with proven architectural patterns while preserving our unique cultural and professional domain
-  advantages.
+Based on deep code analysis, here's a strategic plan to extract and integrate the most valuable patterns from each reference repository into our examples folder, enhancing our Iraqi AI chat system with proven architectural patterns while preserving our unique cultural and professional domain
+advantages.
 
-  1. Roo-Code Repository Extraction Plan
+1. Roo-Code Repository Extraction Plan
 
-  Target Files for Extraction
+Target Files for Extraction
 
-  A. Tool Orchestration System
+A. Tool Orchestration System
 
-  # EXTRACT FROM:
-  /reference/Roo-Code/src/core/tools/
-  ├── ToolRepetitionDetector.ts       # Advanced repetition detection
-  ├── validateToolUse.ts              # Tool validation patterns
-  └── __tests__/                      # Comprehensive tool testing
+# EXTRACT FROM:
 
-  # EXTRACT TO:
-  /examples/roo-code-extracted/
-  ├── tool-orchestration/
-  │   ├── iraqi_tool_repetition_detector.py
-  │   ├── cultural_tool_validator.py
-  │   └── tool_validation_patterns.py
+/reference/Roo-Code/src/core/tools/
+├── ToolRepetitionDetector.ts # Advanced repetition detection
+├── validateToolUse.ts # Tool validation patterns
+└── **tests**/ # Comprehensive tool testing
 
-  Enhancement Strategy:
-  # New File: /examples/roo-code-extracted/tool-orchestration/iraqi_tool_repetition_detector.py
-  class IraqiToolRepetitionDetector:
-      """Enhanced tool repetition detection with cultural validation"""
+# EXTRACT TO:
+
+/examples/roo-code-extracted/
+├── tool-orchestration/
+│ ├── iraqi_tool_repetition_detector.py
+│ ├── cultural_tool_validator.py
+│ └── tool_validation_patterns.py
+
+Enhancement Strategy:
+
+# New File: /examples/roo-code-extracted/tool-orchestration/iraqi_tool_repetition_detector.py
+
+class IraqiToolRepetitionDetector:
+"""Enhanced tool repetition detection with cultural validation"""
 
       def __init__(self, cultural_validator: IraqiCulturalValidator):
           self.consecutive_limit = 3
@@ -1634,50 +1444,54 @@ just to make sure you remember this is the plan you suggested to me and we are f
               "professional_appropriateness": self.professional_context_tracker.validate(tool_call)
           }
 
-  B. MCP Integration Architecture
+B. MCP Integration Architecture
 
-  # EXTRACT FROM:
-  /reference/Roo-Code/src/services/mcp/
-  ├── McpHub.ts                       # Sophisticated MCP server management
-  ├── McpServerManager.ts             # Server lifecycle management
-  └── types/ (MCP type definitions)
+# EXTRACT FROM:
 
-  # EXTRACT TO:
-  /examples/roo-code-extracted/
-  ├── mcp-integration/
-  │   ├── iraqi_mcp_hub.py
-  │   ├── cultural_server_manager.py
-  │   ├── payment_gateway_mcp_server.py
-  │   └── government_portal_mcp_server.py
+/reference/Roo-Code/src/services/mcp/
+├── McpHub.ts # Sophisticated MCP server management
+├── McpServerManager.ts # Server lifecycle management
+└── types/ (MCP type definitions)
 
-  Enhancement Strategy:
-  # New File: /examples/roo-code-extracted/mcp-integration/iraqi_mcp_hub.py
-  from enum import Enum
-  from dataclasses import dataclass
-  from typing import Dict, List, Optional, Union
+# EXTRACT TO:
 
-  class IraqiMCPServerType(Enum):
-      CULTURAL_VALIDATION = "cultural"
-      PAYMENT_GATEWAY = "payment"
-      GOVERNMENT_PORTAL = "government"
-      ARABIC_PROCESSING = "arabic"
-      PROFESSIONAL_DOMAIN = "professional"
+/examples/roo-code-extracted/
+├── mcp-integration/
+│ ├── iraqi_mcp_hub.py
+│ ├── cultural_server_manager.py
+│ ├── payment_gateway_mcp_server.py
+│ └── government_portal_mcp_server.py
 
-  @dataclass
-  class IraqiMCPServerConfig:
-      """Enhanced MCP server configuration with Iraqi-specific settings"""
-      server_type: IraqiMCPServerType
-      cultural_compliance_level: float = 0.95
-      islamic_approval_required: bool = True
-      professional_domain: Optional[str] = None
-      timeout: int = 60
-      always_allow: List[str] = None
-      disabled_tools: List[str] = None
-      watch_paths: List[str] = None
-      iraqi_government_portals: List[str] = None
+Enhancement Strategy:
 
-  class IraqiMCPHub:
-      """Advanced MCP hub with Iraqi cultural and professional context"""
+# New File: /examples/roo-code-extracted/mcp-integration/iraqi_mcp_hub.py
+
+from enum import Enum
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Union
+
+class IraqiMCPServerType(Enum):
+CULTURAL_VALIDATION = "cultural"
+PAYMENT_GATEWAY = "payment"
+GOVERNMENT_PORTAL = "government"
+ARABIC_PROCESSING = "arabic"
+PROFESSIONAL_DOMAIN = "professional"
+
+@dataclass
+class IraqiMCPServerConfig:
+"""Enhanced MCP server configuration with Iraqi-specific settings"""
+server_type: IraqiMCPServerType
+cultural_compliance_level: float = 0.95
+islamic_approval_required: bool = True
+professional_domain: Optional[str] = None
+timeout: int = 60
+always_allow: List[str] = None
+disabled_tools: List[str] = None
+watch_paths: List[str] = None
+iraqi_government_portals: List[str] = None
+
+class IraqiMCPHub:
+"""Advanced MCP hub with Iraqi cultural and professional context"""
 
       def __init__(self):
           # Adopt Roo-Code's connection management patterns
@@ -1713,24 +1527,28 @@ just to make sure you remember this is the plan you suggested to me and we are f
           # Proceed with Roo-Code's connection logic enhanced for Iraqi context
           return await self._establish_iraqi_connection(config)
 
-  C. Browser Automation Patterns
+C. Browser Automation Patterns
 
-  # EXTRACT FROM:
-  /reference/Roo-Code/src/services/browser/
-  ├── BrowserSession.ts              # Advanced browser session management
-  ├── UrlContentFetcher.ts           # Content fetching patterns
-  └── browserDiscovery.ts            # Browser discovery logic
+# EXTRACT FROM:
 
-  # UPDATE EXISTING:
-  /examples/browser-use-extracted/browser_use/
-  ├── browser/iraqi_browser.py       # Enhance with Roo-Code patterns
-  ├── dom/arabic_processor.py        # Enhance DOM processing
-  └── examples/iraqi_government/     # Add advanced automation patterns
+/reference/Roo-Code/src/services/browser/
+├── BrowserSession.ts # Advanced browser session management
+├── UrlContentFetcher.ts # Content fetching patterns
+└── browserDiscovery.ts # Browser discovery logic
 
-  Enhancement Strategy:
-  # Update: /examples/browser-use-extracted/browser_use/browser/iraqi_browser.py
-  class EnhancedIraqiBrowser(IraqiBrowser):
-      """Enhanced browser with Roo-Code session management patterns"""
+# UPDATE EXISTING:
+
+/examples/browser-use-extracted/browser_use/
+├── browser/iraqi_browser.py # Enhance with Roo-Code patterns
+├── dom/arabic_processor.py # Enhance DOM processing
+└── examples/iraqi_government/ # Add advanced automation patterns
+
+Enhancement Strategy:
+
+# Update: /examples/browser-use-extracted/browser_use/browser/iraqi_browser.py
+
+class EnhancedIraqiBrowser(IraqiBrowser):
+"""Enhanced browser with Roo-Code session management patterns"""
 
       def __init__(self):
           super().__init__()
@@ -1757,40 +1575,43 @@ just to make sure you remember this is the plan you suggested to me and we are f
               optimal_browser, session_config, context
           )
 
-  D. Internationalization System
+D. Internationalization System
 
-  # EXTRACT FROM:
-  /reference/Roo-Code/src/i18n/
-  ├── setup.ts                       # i18n initialization patterns
-  ├── index.ts                       # Translation loading logic
-  └── locales/                       # Multi-language structure
+# EXTRACT FROM:
 
-  # UPDATE EXISTING:
-  /examples/dyad-extracted/           # Enhance UI components with i18n
-  └── components/ui/                  # Add internationalization
+/reference/Roo-Code/src/i18n/
+├── setup.ts # i18n initialization patterns
+├── index.ts # Translation loading logic
+└── locales/ # Multi-language structure
 
-  # NEW:
-  /examples/roo-code-extracted/
-  └── internationalization/
-      ├── iraqi_i18n_manager.py
-      ├── arabic_translation_loader.py
-      └── cultural_localization.py
+# UPDATE EXISTING:
 
-  Enhancement Strategy:
-  // New: /examples/roo-code-extracted/internationalization/iraqi_i18n_setup.ts
-  interface IraqiLocalizationConfig {
-      primaryLanguage: 'ar-IQ' | 'en-US';
-      dialectSupport: boolean;
-      islamicCalendarSupport: boolean;
-      professionalTerminology: ProfessionalDomain[];
-      governmentPortalTerminology: boolean;
-      culturalContextAwareness: boolean;
-  }
+/examples/dyad-extracted/ # Enhance UI components with i18n
+└── components/ui/ # Add internationalization
 
-  class IraqiInternationalizationManager {
-      private translations: Map<string, TranslationBundle> = new Map();
-      private dialectProcessor: IraqiDialectProcessor;
-      private culturalContextManager: CulturalContextManager;
+# NEW:
+
+/examples/roo-code-extracted/
+└── internationalization/
+├── iraqi_i18n_manager.py
+├── arabic_translation_loader.py
+└── cultural_localization.py
+
+Enhancement Strategy:
+// New: /examples/roo-code-extracted/internationalization/iraqi_i18n_setup.ts
+interface IraqiLocalizationConfig {
+primaryLanguage: 'ar-IQ' | 'en-US';
+dialectSupport: boolean;
+islamicCalendarSupport: boolean;
+professionalTerminology: ProfessionalDomain[];
+governmentPortalTerminology: boolean;
+culturalContextAwareness: boolean;
+}
+
+class IraqiInternationalizationManager {
+private translations: Map<string, TranslationBundle> = new Map();
+private dialectProcessor: IraqiDialectProcessor;
+private culturalContextManager: CulturalContextManager;
 
       constructor(config: IraqiLocalizationConfig) {
           // Adopt Roo-Code's translation loading patterns
@@ -1817,35 +1638,40 @@ just to make sure you remember this is the plan you suggested to me and we are f
           // Load Islamic terminology and cultural references
           await this.loadIslamicCulturalTranslations();
       }
-  }
 
-  2. Claude-Code-Router Repository Extraction Plan
+}
 
-  Target Files for Extraction
+2. Claude-Code-Router Repository Extraction Plan
 
-  A. API Routing and Middleware
+Target Files for Extraction
 
-  # EXTRACT FROM:
-  /reference/claude-code-router/src/
-  ├── utils/router.ts                 # Advanced routing patterns
-  ├── middleware/auth.ts              # Authentication middleware
-  └── server.ts                       # Server configuration
+A. API Routing and Middleware
 
-  # EXTRACT TO:
-  /examples/claude-code-router-extracted/
-  ├── routing/
-  │   ├── iraqi_api_router.py
-  │   ├── payment_gateway_router.py
-  │   └── government_portal_router.py
-  ├── middleware/
-  │   ├── cultural_validation_middleware.py
-  │   ├── islamic_compliance_middleware.py
-  │   └── professional_auth_middleware.py
+# EXTRACT FROM:
 
-  Enhancement Strategy:
-  # New: /examples/claude-code-router-extracted/routing/iraqi_api_router.py
-  class IraqiAPIRouter:
-      """Enhanced API router with Iraqi-specific routing logic"""
+/reference/claude-code-router/src/
+├── utils/router.ts # Advanced routing patterns
+├── middleware/auth.ts # Authentication middleware
+└── server.ts # Server configuration
+
+# EXTRACT TO:
+
+/examples/claude-code-router-extracted/
+├── routing/
+│ ├── iraqi_api_router.py
+│ ├── payment_gateway_router.py
+│ └── government_portal_router.py
+├── middleware/
+│ ├── cultural_validation_middleware.py
+│ ├── islamic_compliance_middleware.py
+│ └── professional_auth_middleware.py
+
+Enhancement Strategy:
+
+# New: /examples/claude-code-router-extracted/routing/iraqi_api_router.py
+
+class IraqiAPIRouter:
+"""Enhanced API router with Iraqi-specific routing logic"""
 
       def __init__(self):
           # Adopt claude-code-router's routing patterns
@@ -1884,67 +1710,75 @@ just to make sure you remember this is the plan you suggested to me and we are f
                         self.professional_routes.handle_legal_services,
                         middleware=[IraqiLegalComplianceMiddleware()])
 
-  B. Provider Management System
+B. Provider Management System
 
-  # EXTRACT FROM:
-  /reference/claude-code-router/ui/src/components/
-  ├── Providers.tsx                   # Provider management UI
-  ├── ProviderList.tsx               # Provider listing patterns
-  └── TransformerList.tsx            # Transformation patterns
+# EXTRACT FROM:
 
-  # UPDATE EXISTING:
-  /examples/kortix-suna-extracted/frontend/agents/
-  └── agent-tools-configuration.tsx  # Enhance with provider patterns
+/reference/claude-code-router/ui/src/components/
+├── Providers.tsx # Provider management UI
+├── ProviderList.tsx # Provider listing patterns
+└── TransformerList.tsx # Transformation patterns
 
-  # NEW:
-  /examples/claude-code-router-extracted/
-  └── provider-management/
-      ├── iraqi_provider_manager.py
-      ├── payment_provider_coordinator.py
-      └── government_service_providers.py
+# UPDATE EXISTING:
 
-  3. Open-SWE Repository Extraction Plan
+/examples/kortix-suna-extracted/frontend/agents/
+└── agent-tools-configuration.tsx # Enhance with provider patterns
 
-  Target Files for Extraction
+# NEW:
 
-  A. LangGraph Agent Orchestration
+/examples/claude-code-router-extracted/
+└── provider-management/
+├── iraqi_provider_manager.py
+├── payment_provider_coordinator.py
+└── government_service_providers.py
 
-  # EXTRACT FROM:
-  /reference/open-swe/apps/open-swe/src/graphs/
-  ├── manager/index.ts               # Manager graph orchestration
-  ├── planner/index.ts              # Planning graph patterns
-  ├── programmer/index.ts           # Programming graph patterns
-  └── reviewer/index.ts             # Review graph patterns
+3. Open-SWE Repository Extraction Plan
 
-  # UPDATE EXISTING:
-  /examples/autogen-extracted/        # Enhance agent coordination
-  └── agentchat/autogen_agentchat/   # Add LangGraph patterns
+Target Files for Extraction
 
-  # NEW:
-  /examples/open-swe-extracted/
-  ├── agent-orchestration/
-  │   ├── iraqi_agent_manager.py
-  │   ├── professional_planner_graph.py
-  │   ├── cultural_reviewer_graph.py
-  │   └── government_service_programmer.py
+A. LangGraph Agent Orchestration
 
-  Enhancement Strategy:
-  # New: /examples/open-swe-extracted/agent-orchestration/iraqi_agent_manager.py
-  from langgraph import StateGraph, END, START
-  from typing import TypedDict, Annotated, List
+# EXTRACT FROM:
 
-  class IraqiAgentState(TypedDict):
-      """Enhanced state with Iraqi cultural context"""
-      messages: Annotated[List[BaseMessage], add_messages]
-      cultural_context: IraqiCulturalContext
-      professional_domain: ProfessionalDomain
-      islamic_compliance_status: IslamicComplianceStatus
-      government_service_context: Optional[GovernmentServiceContext]
-      payment_gateway_context: Optional[PaymentGatewayContext]
-      arabic_processing_context: ArabicProcessingContext
+/reference/open-swe/apps/open-swe/src/graphs/
+├── manager/index.ts # Manager graph orchestration
+├── planner/index.ts # Planning graph patterns
+├── programmer/index.ts # Programming graph patterns
+└── reviewer/index.ts # Review graph patterns
 
-  class IraqiAgentManager:
-      """Enhanced agent manager with Iraqi professional workflows"""
+# UPDATE EXISTING:
+
+/examples/autogen-extracted/ # Enhance agent coordination
+└── agentchat/autogen_agentchat/ # Add LangGraph patterns
+
+# NEW:
+
+/examples/open-swe-extracted/
+├── agent-orchestration/
+│ ├── iraqi_agent_manager.py
+│ ├── professional_planner_graph.py
+│ ├── cultural_reviewer_graph.py
+│ └── government_service_programmer.py
+
+Enhancement Strategy:
+
+# New: /examples/open-swe-extracted/agent-orchestration/iraqi_agent_manager.py
+
+from langgraph import StateGraph, END, START
+from typing import TypedDict, Annotated, List
+
+class IraqiAgentState(TypedDict):
+"""Enhanced state with Iraqi cultural context"""
+messages: Annotated[List[BaseMessage], add_messages]
+cultural_context: IraqiCulturalContext
+professional_domain: ProfessionalDomain
+islamic_compliance_status: IslamicComplianceStatus
+government_service_context: Optional[GovernmentServiceContext]
+payment_gateway_context: Optional[PaymentGatewayContext]
+arabic_processing_context: ArabicProcessingContext
+
+class IraqiAgentManager:
+"""Enhanced agent manager with Iraqi professional workflows"""
 
       def __init__(self):
           self.workflow = StateGraph(IraqiAgentState)
@@ -2011,54 +1845,62 @@ just to make sure you remember this is the plan you suggested to me and we are f
               }
           )
 
-  B. Tool Integration Patterns
+B. Tool Integration Patterns
 
-  # EXTRACT FROM:
-  /reference/open-swe/apps/open-swe/src/tools/
-  ├── index.ts                       # Tool registry patterns
-  ├── shell.ts                      # Shell execution patterns
-  ├── search-documents-for/         # Document search patterns
-  └── builtin-tools/                # Built-in tool patterns
+# EXTRACT FROM:
 
-  # UPDATE EXISTING:
-  /examples/kortix-suna-extracted/backend/agent/tools/
-  └── *.py                          # Enhance with Open-SWE patterns
+/reference/open-swe/apps/open-swe/src/tools/
+├── index.ts # Tool registry patterns
+├── shell.ts # Shell execution patterns
+├── search-documents-for/ # Document search patterns
+└── builtin-tools/ # Built-in tool patterns
 
-  # NEW:
-  /examples/open-swe-extracted/
-  └── tool-integration/
-      ├── iraqi_tool_registry.py
-      ├── government_portal_tools.py
-      ├── arabic_document_search.py
-      └── professional_domain_tools.py
+# UPDATE EXISTING:
 
-  4. Qwen-Code Repository Extraction Plan
+/examples/kortix-suna-extracted/backend/agent/tools/
+└── \*.py # Enhance with Open-SWE patterns
 
-  Target Files for Extraction
+# NEW:
 
-  A. Memory Management System
+/examples/open-swe-extracted/
+└── tool-integration/
+├── iraqi_tool_registry.py
+├── government_portal_tools.py
+├── arabic_document_search.py
+└── professional_domain_tools.py
 
-  # EXTRACT FROM:
-  /reference/qwen-code/packages/core/src/tools/
-  ├── memoryTool.ts                  # Advanced memory management
-  └── multi-file/                   # Multi-file handling patterns
+4. Qwen-Code Repository Extraction Plan
 
-  # UPDATE EXISTING:
-  /examples/praisonai-extracted/src/memory/
-  └── *.py                          # Enhance memory patterns
+Target Files for Extraction
 
-  # NEW:
-  /examples/qwen-code-extracted/
-  ├── memory-management/
-  │   ├── iraqi_memory_manager.py
-  │   ├── cultural_context_persistence.py
-  │   ├── professional_memory_store.py
-  │   └── islamic_context_preservation.py
+A. Memory Management System
 
-  Enhancement Strategy:
-  # New: /examples/qwen-code-extracted/memory-management/iraqi_memory_manager.py
-  class IraqiMemoryManager:
-      """Enhanced memory management with Iraqi cultural context preservation"""
+# EXTRACT FROM:
+
+/reference/qwen-code/packages/core/src/tools/
+├── memoryTool.ts # Advanced memory management
+└── multi-file/ # Multi-file handling patterns
+
+# UPDATE EXISTING:
+
+/examples/praisonai-extracted/src/memory/
+└── \*.py # Enhance memory patterns
+
+# NEW:
+
+/examples/qwen-code-extracted/
+├── memory-management/
+│ ├── iraqi_memory_manager.py
+│ ├── cultural_context_persistence.py
+│ ├── professional_memory_store.py
+│ └── islamic_context_preservation.py
+
+Enhancement Strategy:
+
+# New: /examples/qwen-code-extracted/memory-management/iraqi_memory_manager.py
+
+class IraqiMemoryManager:
+"""Enhanced memory management with Iraqi cultural context preservation"""
 
       def __init__(self):
           # Adopt Qwen-Code's memory architecture
@@ -2121,153 +1963,161 @@ just to make sure you remember this is the plan you suggested to me and we are f
 
           return filtered_results
 
-  B. Web Search Integration
+B. Web Search Integration
 
-  # EXTRACT FROM:
-  /reference/qwen-code/docs/tools/web-search.md
-  /reference/qwen-code/packages/core/src/tools/webSearchTool.ts
+# EXTRACT FROM:
 
-  # UPDATE EXISTING:
-  /examples/main_agent_reference/        # Enhance web search patterns
-  └── research_agent.py
+/reference/qwen-code/docs/tools/web-search.md
+/reference/qwen-code/packages/core/src/tools/webSearchTool.ts
 
-  # ENHANCE EXISTING:
-  /examples/initials/41_web_search_integration.md
+# UPDATE EXISTING:
 
-  # NEW:
-  /examples/qwen-code-extracted/
-  └── web-search/
-      ├── iraqi_web_search_manager.py
-      ├── arabic_search_optimizer.py
-      ├── government_portal_search.py
-      └── cultural_content_filter.py
+/examples/main_agent_reference/ # Enhance web search patterns
+└── research_agent.py
 
-  5. Integration Strategy for Existing Examples
+# ENHANCE EXISTING:
 
-  Enhanced Examples Folder Structure
+/examples/initials/41_web_search_integration.md
 
-  /examples/
-  ├── existing-folders/              # Keep existing implementations
-  ├── roo-code-extracted/           # NEW: Roo-Code patterns
-  │   ├── tool-orchestration/
-  │   ├── mcp-integration/
-  │   ├── browser-automation/
-  │   └── internationalization/
-  ├── claude-code-router-extracted/ # NEW: Router patterns
-  │   ├── routing/
-  │   ├── middleware/
-  │   └── provider-management/
-  ├── open-swe-extracted/           # NEW: Agent orchestration
-  │   ├── agent-orchestration/
-  │   ├── tool-integration/
-  │   └── workflow-management/
-  ├── qwen-code-extracted/          # NEW: Memory and search
-  │   ├── memory-management/
-  │   ├── web-search/
-  │   └── context-persistence/
-  └── unified-integration/          # NEW: Cross-repo integration
-      ├── iraqi_system_orchestrator.py
-      ├── cultural_compliance_manager.py
-      ├── professional_domain_coordinator.py
-      └── government_service_automation.py
+# NEW:
 
-  6. Implementation Timeline and Dependencies
+/examples/qwen-code-extracted/
+└── web-search/
+├── iraqi_web_search_manager.py
+├── arabic_search_optimizer.py
+├── government_portal_search.py
+└── cultural_content_filter.py
 
-  Phase 1: Foundation Enhancement (Weeks 1-6)
+5. Integration Strategy for Existing Examples
 
-  Week 1-2: Roo-Code Tool Orchestration
-  Priority: HIGH
-  Dependencies: None
-  Tasks:
-  - Extract ToolRepetitionDetector patterns
-  - Create IraqiToolRepetitionDetector with cultural validation
-  - Enhance existing kortix-suna tool wrappers
-  - Test with existing agent workflows
+Enhanced Examples Folder Structure
 
-  Week 3-4: MCP Integration Architecture
-  Priority: HIGH
-  Dependencies: Tool orchestration
-  Tasks:
-  - Extract McpHub patterns from Roo-Code
-  - Create IraqiMCPHub with cultural server management
-  - Integrate with existing kortix-suna MCP tools
-  - Test payment gateway MCP servers
+/examples/
+├── existing-folders/ # Keep existing implementations
+├── roo-code-extracted/ # NEW: Roo-Code patterns
+│ ├── tool-orchestration/
+│ ├── mcp-integration/
+│ ├── browser-automation/
+│ └── internationalization/
+├── claude-code-router-extracted/ # NEW: Router patterns
+│ ├── routing/
+│ ├── middleware/
+│ └── provider-management/
+├── open-swe-extracted/ # NEW: Agent orchestration
+│ ├── agent-orchestration/
+│ ├── tool-integration/
+│ └── workflow-management/
+├── qwen-code-extracted/ # NEW: Memory and search
+│ ├── memory-management/
+│ ├── web-search/
+│ └── context-persistence/
+└── unified-integration/ # NEW: Cross-repo integration
+├── iraqi_system_orchestrator.py
+├── cultural_compliance_manager.py
+├── professional_domain_coordinator.py
+└── government_service_automation.py
 
-  Week 5-6: Agent Workflow Orchestration
-  Priority: HIGH
-  Dependencies: MCP integration
-  Tasks:
-  - Extract LangGraph patterns from Open-SWE
-  - Create IraqiAgentManager with professional workflows
-  - Enhance existing autogen agent coordination
-  - Test legal/medical/education workflows
+6. Implementation Timeline and Dependencies
 
-  Phase 2: Advanced Features (Weeks 7-14)
+Phase 1: Foundation Enhancement (Weeks 1-6)
 
-  Week 7-8: Memory Management
-  Priority: MEDIUM
-  Dependencies: Agent workflows
-  Tasks:
-  - Extract memory patterns from Qwen-Code
-  - Create IraqiMemoryManager with cultural persistence
-  - Enhance existing praisonai memory systems
-  - Test cross-session cultural continuity
+Week 1-2: Roo-Code Tool Orchestration
+Priority: HIGH
+Dependencies: None
+Tasks:
 
-  Week 9-10: Routing and Middleware
-  Priority: MEDIUM
-  Dependencies: Memory management
-  Tasks:
-  - Extract routing patterns from claude-code-router
-  - Create IraqiAPIRouter with cultural middleware
-  - Enhance existing API structures
-  - Test payment gateway routing
+- Extract ToolRepetitionDetector patterns
+- Create IraqiToolRepetitionDetector with cultural validation
+- Enhance existing kortix-suna tool wrappers
+- Test with existing agent workflows
 
-  Week 11-12: Browser Automation Enhancement
-  Priority: MEDIUM
-  Dependencies: Routing systems
-  Tasks:
-  - Extract browser patterns from Roo-Code
-  - Enhance existing browser-use automation
-  - Add government portal automation
-  - Test Iraqi government service automation
+Week 3-4: MCP Integration Architecture
+Priority: HIGH
+Dependencies: Tool orchestration
+Tasks:
 
-  Week 13-14: Web Search and Internationalization
-  Priority: LOW
-  Dependencies: Browser automation
-  Tasks:
-  - Extract web search patterns from Qwen-Code
-  - Enhance existing web search (Initial 41)
-  - Extract i18n patterns from Roo-Code
-  - Test Arabic search and localization
+- Extract McpHub patterns from Roo-Code
+- Create IraqiMCPHub with cultural server management
+- Integrate with existing kortix-suna MCP tools
+- Test payment gateway MCP servers
 
-  Phase 3: Integration and Optimization (Weeks 15-18)
+Week 5-6: Agent Workflow Orchestration
+Priority: HIGH
+Dependencies: MCP integration
+Tasks:
 
-  Week 15-16: Unified Integration
-  Priority: HIGH
-  Dependencies: All previous phases
-  Tasks:
-  - Create unified system orchestrator
-  - Integrate all extracted patterns
-  - Test comprehensive Iraqi AI workflows
-  - Performance optimization
+- Extract LangGraph patterns from Open-SWE
+- Create IraqiAgentManager with professional workflows
+- Enhance existing autogen agent coordination
+- Test legal/medical/education workflows
 
-  Week 17-18: Testing and Documentation
-  Priority: HIGH
-  Dependencies: Unified integration
-  Tasks:
-  - Comprehensive testing framework
-  - Documentation updates
-  - Performance benchmarking
-  - Production readiness validation
+Phase 2: Advanced Features (Weeks 7-14)
 
-  7. Specific Integration Commands
+Week 7-8: Memory Management
+Priority: MEDIUM
+Dependencies: Agent workflows
+Tasks:
 
-  Extraction Commands
+- Extract memory patterns from Qwen-Code
+- Create IraqiMemoryManager with cultural persistence
+- Enhance existing praisonai memory systems
+- Test cross-session cultural continuity
 
+Week 9-10: Routing and Middleware
+Priority: MEDIUM
+Dependencies: Memory management
+Tasks:
 
+- Extract routing patterns from claude-code-router
+- Create IraqiAPIRouter with cultural middleware
+- Enhance existing API structures
+- Test payment gateway routing
 
+Week 11-12: Browser Automation Enhancement
+Priority: MEDIUM
+Dependencies: Routing systems
+Tasks:
 
+- Extract browser patterns from Roo-Code
+- Enhance existing browser-use automation
+- Add government portal automation
+- Test Iraqi government service automation
 
+Week 13-14: Web Search and Internationalization
+Priority: LOW
+Dependencies: Browser automation
+Tasks:
+
+- Extract web search patterns from Qwen-Code
+- Enhance existing web search (Initial 41)
+- Extract i18n patterns from Roo-Code
+- Test Arabic search and localization
+
+Phase 3: Integration and Optimization (Weeks 15-18)
+
+Week 15-16: Unified Integration
+Priority: HIGH
+Dependencies: All previous phases
+Tasks:
+
+- Create unified system orchestrator
+- Integrate all extracted patterns
+- Test comprehensive Iraqi AI workflows
+- Performance optimization
+
+Week 17-18: Testing and Documentation
+Priority: HIGH
+Dependencies: Unified integration
+Tasks:
+
+- Comprehensive testing framework
+- Documentation updates
+- Performance benchmarking
+- Production readiness validation
+
+7. Specific Integration Commands
+
+Extraction Commands
 
 these are the repos in the reference folder i dont have autogen in the reference folder from where are you getting it?
 
@@ -2276,21 +2126,17 @@ https://github.com/RooCodeInc/Roo-Code
 https://github.com/QwenLM/qwen-code
 https://github.com/musistudio/claude-code-router
 
-
-
 i told you to check the reference folder and compare it with the examples folder, to know what are need to extract from them and add it to the examples folder or update what we have in the examples folder for a better version
 so we have three options:
+
 1. extract from the reference folder and add it to the examples folder
 2. change what we have in the examples folder for a better version from the reference folder
 3. nothing need to extract from the reference folder
 
 remove what you done wrong in the examples folder
 
-
 check the git diff
 to know what you did wrong
-
-
 
 do you remember my app vision?
 
@@ -2310,8 +2156,6 @@ i want to make the agent access different data sources and answer the user based
 i want to make the agent to be able to access the different sites and do the tasks the user asks it to do. like file form online, etc.
 or the user gives it a username and password for a specific site, or web app, and lets it do the tasks the user asks it to do.
 and a lot more other features
-
-
 
 if you remember we extracted from these repos what is useful for us, and added it in the examples folder
 
@@ -2343,7 +2187,6 @@ https://github.com/e2b-dev/fragments
 https://github.com/browser-use/web-ui
 https://github.com/srcbookdev/srcbook
 
-
 i found these repos too check them thoroughly to know can we take something from them? or update what we have from them with better version from them, or they aren't useful for us check them and check the examples folder
 check thoroughly, and you can also check the docs folder to know what we extracted from them
 so we either extract from them or update what we have from them with better version or don't extract from them we have a better version in the examples folder
@@ -2362,9 +2205,6 @@ before we start extracting from the repos i added in the reference folder
 create a plan for what we need to extract from each repo in the reference folder and to add it to the examples folder or update what we have in the examples folder for a better version
 make the plan file type md
 
-
-
-
 before we start execute the plan
 i want you to make a deep check to make sure the plan is good
 so check the examples folder and compare it with the reference folder
@@ -2382,8 +2222,6 @@ https://github.com/sst/opencode
 https://github.com/coleam00/Archon
 https://github.com/google-gemini/gemini-cli
 
-
-
 before we start execute the plan
 i found these repos check it too
 
@@ -2397,10 +2235,7 @@ and then update the plan
 
 check archon rag system i think it's a good system check it and check what we have in the examples folder make a deep research
 
-
 before we implement the plan compare the plan for what we will extract from each repo in the reference folder with what we have in the examples folder to make sure we will either extract from the repos or update what we have in the examples folder or don't extract from the repos we have a better version in the examples folder make deep research
-
-
 
 https://github.com/cline/cline
 
@@ -2413,18 +2248,14 @@ make a deep analysis
 and give me your opinion do we need it or not for our app, or do we have something better in the examples folder
 and check the repo for anything useful
 
-
 before we update the plan
-check the examples folder to check if we have anything and if we have compare them and then update the plan with the new findings 
+check the examples folder to check if we have anything and if we have compare them and then update the plan with the new findings
 
 now we can start extracting from the repos following the plan
 lets start with the first step from the plan one step at a time and dont forget to update the plan after each step to know what we extracted and what we need to extract
 
-
-
 why did you create this file?
 in this phase of the app we are extracting from the repos in the reference folder and adding them to the examples folder
-
 
 check these repos and you should know two of them
 https://github.com/anthropics/claude-code
@@ -2455,14 +2286,12 @@ proceed to make deep research to know what we need from it
 and compare it with what we have in the examples folder
 then create md file to know what we need to extract from the repo
 
-
 new sub-agent doc
 
 first check the mcps you have and then check the sub agents we have do they know what mcp they need to use and tools they need to use
 also we need an agent for documentation right? we dont have one
 so i create one with agent wizard creator check it i added all mcps and tools in it just to see, check it and delete it then create new one for our app
 also update the claude.md file to know about the new sub-agent and update the other sub-agents each one need specific mcp and tools and some don't need any mcp or tools right?
-
 
 i found a lot of ways to use claude.md file
 
@@ -2487,7 +2316,6 @@ Simplicity should be a key goal in design. Choose straightforward solutions over
 **YAGNI (You Aren't Gonna Need It)**
 Avoid building functionality on speculation. Implement features only when they are needed, not when you anticipate they might be useful in the future.
 
-
 **Design Principles**
 Dependency Inversion: High-level modules should not depend on low-level modules. Both should depend on abstractions.
 Open/Closed Principle: Software entities should be open for extension but closed for modification.
@@ -2495,18 +2323,14 @@ Single Responsibility: Each function, class, and module should have one clear pu
 Fail Fast: Check for potential errors early and raise exceptions immediately when issues occur.
 ```
 
-
-
 i have a question
 do we need to update the sub-agents and add to them like what we have in claude.md file? or we dont need the primary agent will read the claude.md and know what to tell the sub-agents to do?
 if your not sure check the web to be sure
-
 
 what about Code Quality Standards section in claude.md file?
 do we need to make something similar to it in the sub-agents?
 or other section in claude.md file?
 or the sub-agents dont need anything else they are good as it is?
-
 
 check what i found
 
@@ -2515,7 +2339,6 @@ https://research.google/blog/securing-private-data-at-scale-with-differentially-
 https://github.com/a2aproject/A2A
 https://github.com/ag-ui-protocol/ag-ui
 https://github.com/CopilotKit/CopilotKit
-
 
 i added the three repos to the reference folder
 and this is the docs for them
@@ -2530,17 +2353,13 @@ make a deep research to know what we need from it
 and compare it with what we have in the examples folder
 then create md file for the plan to know what we need to extract from the repo
 
-
 check the repos files not just the structure and readme file
-
 
 before we continue why did you created packages folder and package.json file?
 we are now in the extraction phase not in the development phase
 so do we move them into the examples folder? or remove them and start the extraction again?
 
-
 good lets continue with the extraction plan
-
 
 you made the same mistake again
 we are now in the extraction phase not in the development phase
@@ -2553,7 +2372,7 @@ to know check git to know what we did then compare it with the reference folder 
 
 so now we can remove every thing in the reference folder
 do one last check of the three repos to make sure we extracted everything we need from them
-but before removing it just to make sure 
+but before removing it just to make sure
 the ag-ui its value isnt in the ui but how the ai can interact with the frontend
 did we extract it?
 
@@ -2563,7 +2382,6 @@ what should we do?
 we did extract the repo
 https://github.com/a2aproject/A2A
 is it related to a2a?
-
 
 i foun this repo
 https://github.com/bytedance/UI-TARS-desktop
@@ -2578,11 +2396,9 @@ then create md file for the plan to know what we need to extract from the repo
 so its better than what we have right?
 lets start extraction
 
-
 check this
 https://research.google/blog/securing-private-data-at-scale-with-differentially-private-partition-selection/
 it google latest research
-
 
 the MAD2R is very good
 but how can we use it?
@@ -2593,18 +2409,10 @@ the sub-agents when they build the app theyll use the naming conventions
 but will they attach iraqi to everything?
 if yes it will be a big mistake
 
-
-
 i have a question
 will the sub-agents use the examples folder do they know about it?
 or do we have it included in claude.md file and the primary agent will tell the sub-agents to use it?
 or do we have it included in the initials folder?
-
-
-
-
-
-
 
 generate commit message
 
@@ -2613,12 +2421,9 @@ git diff --name-only
 git diff --stat
 git ls-files --others --exclude-standard
 
-
 is our tech stack good?
-not just for now but for the future? 
+not just for now but for the future?
 and when we have 1000+ users or even more tens of thousands of users so we dont need to rewrite the app
-
-
 
 check these make deep search
 https://google.github.io/adk-docs/
@@ -2632,14 +2437,12 @@ https://github.com/microsoft/rStar
 https://github.com/HKUDS/DeepCode
 https://github.com/sapientinc/HRM
 
-
 i added the six repos with their structure file and didnt add claude-flow cus i remember we extracted it before and have it in the examples folder
 check to make sure do i add it or not?
 
 i added it lets start with the first repo deep research and then create md file for the plan to know what we need to extract from the repo
 
 compare it with what we have in the examples folder then create md file for the plan to know what we need to extract from the repo or we have something similar to it but the reference is better so we need to change it
-
 
 before we start the extraction i think we should complete all repos deep research and create extraction plan for each repo
 so lets continue with the next repo in the reference folder
@@ -2650,14 +2453,9 @@ are done with the seven repos deep research phase now we start the extraction ph
 
 lets start the extraction to add from the reference folder to the examples folder following the extraction plan lets start with the first step in the plan
 
-
 lets continue with the next step in the extraction plan
 
-
 these are the repos we checked and we extracted from some of them and some we didnt need them
-
-
-
 
 https://github.com/coleam00/context-engineering-intro
 https://github.com/n8n-io/n8n
@@ -2714,14 +2512,10 @@ https://github.com/agnaistic/agnai
 https://github.com/vinhnx/vtchat
 https://github.com/quests-org/quests
 
-
-
 i want you to check them and compare them with what we have in the examples folder
 to make sure we didnt skip any useful repo for our app
 
-
 i added both repos to the reference folder with their structure file, do a deep research to know what we need from and then create md file for the plan to know what we need to extract from the repo and check in the examples folder to know if we have something similar to it or not and if we have compare them, to know do we have something better or the repo in the reference folder is better
-
 
 check is our tech stack good?
 not just for now but for the future?
@@ -2730,31 +2524,19 @@ for millions of users?
 or do we need to make changes to it?
 before we start the development phase so we dont make mistakes
 
-
-
 check the examples folder to know did we extract anything related to image generation?
 
 and check these repos do any of them have image generation or related to image generation so we can extract it
 
-
 we need not just image generation but also image editing, image to text, text to image, image to image, etc.
 so which repo do you want me to add to the reference folder?
-
-
 
 the app wont have gpu its on the cloud and we wont rent any gpu in the mvp we well post-mvp so what should we do? i think we leave ComfyUI post-mvp what is your opinion? the beatter truth dont follow what i told you blindly i want you to think for yourself and tell me your opinion, we are a team so we need to make decisions together not just follow my instructions blindly i trust you so i want to hear your opinion
 so our app can shine
 
-
 i added the repos with their structure file in the reference folder make a deep research to know what we need from them and then create plan to know what we need to extract from the repo and add it to the examples folder
 
-
 we done extraction from the repos in the reference folder so we can remove them and also IMAGE_PROCESSING_EXTRACTION_PLAN.md done so we need to move it to docs folder right
-
-
-
-
-
 
 check the examples folder do we have anything related to user rate limit?
 
@@ -2771,31 +2553,18 @@ not just for user rate limit
 
 i did some searching for repos has user rate limit, i found just these repos and just one of them mentions user rate limit
 
-
 i added the five repos with their structure file in the reference folder make a deep research then create plan md file to know what we need from each repo
 
-
-lets start the extraction and add to examples folder following the plan 
+lets start the extraction and add to examples folder following the plan
 lets start with the first step in the plan
 
 lets continue with the next step in the plan
-
-
 
 why did you create apps and packages folders?
 we are in the extraction phase not in the development phase
 i deleted them
 what do we have next in the extraction plan? is the extraction plan done? did we extract all we need from the repos in the reference folder and added them in the examples folder following the extraction plan?
 check the repos code in the reference folder and then check the examples folder to make sure we extracted everything we need from the repos in the reference folder following the plan
-
-
-
-
-
-
-
-
-
 
 i have many questions
 
@@ -2807,17 +2576,13 @@ and well start in iraq but we will expand to other countries so we need to make 
 cus we aim to be the best app in the world so our app needs to be scalable
 first well start with the iraqi audience in the future we will expand to other countries not just the iraq but well start with the iraqi audience
 
-
-
 do we need cloudflare?
-
 
 well build our app
 do we build our app as microservice? our current choice is monolithic right?
 what is the best choice? what are the pros and cons of each choice?
 are they the same but different names?
 as you know well add many features to our app not jsut ai chat
-
 
 Cloudflare has free tier we can use so we can start with it and then we can upgrade to paid tier when we need it
 but what do need to add in the app to use cloudflare do we need to code something? or just route the app through cloudflare?
@@ -2829,16 +2594,11 @@ and as for Database problem what should we do?
 
 as for redis we plan to use it in the from the start in the mvp check the initials
 
-
-
 what initial we need to updaet or add new ones?
 we need initial for the img and how many initials we need and what other more we need?
 
-
 create plan for the new initials and the initials we need to update make the plan in md file
 and each initial like the initials we have each should focus on one small feature if the feature is big we need to split it samll initial
-
-
 
 before we start with the initials
 i have one question
@@ -2847,7 +2607,6 @@ is our deployment platform choice good?
 also i found this platform
 https://fly.io/
 https://sevalla.com/
-
 
 ultrathink
 My app vision
@@ -2868,7 +2627,6 @@ or the user gives it a username and password for a specific site, or web app, an
 and a lot more other features
 and the app doesnt depend on one AI but multiple AI each with its own role like web search AI, chat AI, etc its better than leave all in one AI
 
-
 I'm using the new framework for coding with AI context engineering
 I'll use this repo as a reference to generate prps for the app split into small tasks, features and they shouldn't overlap with each other. They should be independent or complementary to each other
 https://github.com/coleam00/context-engineering-intro
@@ -2888,36 +2646,18 @@ and we start with monolithic and then we will move to microservice later
 and the app can be scaled and support millions of users in the future so we dont need to create it again thats why we need to make it scalable so we are starting with monolithic and then we will move to microservice later
 this is all covered in the initials folder?
 
-
-
-
-
-
-
 https://github.com/quests-org/quests
 https://github.com/comfyanonymous/ComfyUI
 
-
-
-
 i want to build ai chat system beyound just chat i created the plan into small features c:\Users\Itokoro\Documents\projects\aqlix-ai\initials but before i start implmeneting i we need to update the
 from https://fly.io/ to https://sevalla.com/ what do you think?
-
 
 i have a question
 do we generate all prps from the initials then excute them one by one or we generate one prp from the initial then execute it then generate the next prp from the initial then execute it and so on?
 what do you think is better?
 
-
-
 we have 59 initials dont mind the number in the file name its wrong
 so what is the first initial we should start with?
-
-
-
-
-
-
 
 generate commit message
 
@@ -2925,36 +2665,3 @@ git status
 git diff --name-only
 git diff --stat
 git ls-files --others --exclude-standard
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

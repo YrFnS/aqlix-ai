@@ -1,9 +1,9 @@
 /**
  * Iraqi AG-UI Event System
- * 
+ *
  * Enhanced AG-UI event system with Iraqi cultural sovereignty,
  * Arabic language support, and Islamic compliance integration.
- * 
+ *
  * Features:
  * - Real-time event streaming with cultural validation
  * - Arabic text event processing
@@ -22,37 +22,37 @@ export enum IraqiEventType {
   TEXT_MESSAGE_CONTENT = "TEXT_MESSAGE_CONTENT",
   TEXT_MESSAGE_END = "TEXT_MESSAGE_END",
   TEXT_MESSAGE_CHUNK = "TEXT_MESSAGE_CHUNK",
-  
+
   // Thinking Events
   THINKING_TEXT_MESSAGE_START = "THINKING_TEXT_MESSAGE_START",
   THINKING_TEXT_MESSAGE_CONTENT = "THINKING_TEXT_MESSAGE_CONTENT",
   THINKING_TEXT_MESSAGE_END = "THINKING_TEXT_MESSAGE_END",
   THINKING_START = "THINKING_START",
   THINKING_END = "THINKING_END",
-  
+
   // Tool Call Events
   TOOL_CALL_START = "TOOL_CALL_START",
   TOOL_CALL_ARGS = "TOOL_CALL_ARGS",
   TOOL_CALL_END = "TOOL_CALL_END",
   TOOL_CALL_CHUNK = "TOOL_CALL_CHUNK",
   TOOL_CALL_RESULT = "TOOL_CALL_RESULT",
-  
+
   // State Management Events
   STATE_SNAPSHOT = "STATE_SNAPSHOT",
   STATE_DELTA = "STATE_DELTA",
   MESSAGES_SNAPSHOT = "MESSAGES_SNAPSHOT",
-  
+
   // Run Lifecycle Events
   RUN_STARTED = "RUN_STARTED",
   RUN_FINISHED = "RUN_FINISHED",
   RUN_ERROR = "RUN_ERROR",
   STEP_STARTED = "STEP_STARTED",
   STEP_FINISHED = "STEP_FINISHED",
-  
+
   // Generic Events
   RAW = "RAW",
   CUSTOM = "CUSTOM",
-  
+
   // Iraqi Cultural Events
   CULTURAL_VALIDATION_START = "CULTURAL_VALIDATION_START",
   CULTURAL_VALIDATION_RESULT = "CULTURAL_VALIDATION_RESULT",
@@ -62,7 +62,7 @@ export enum IraqiEventType {
   ARABIC_TEXT_PROCESSING_START = "ARABIC_TEXT_PROCESSING_START",
   ARABIC_TEXT_PROCESSING_RESULT = "ARABIC_TEXT_PROCESSING_RESULT",
   ARABIC_TEXT_PROCESSING_END = "ARABIC_TEXT_PROCESSING_END",
-  
+
   // Professional Domain Events
   PROFESSIONAL_DOMAIN_REQUEST = "PROFESSIONAL_DOMAIN_REQUEST",
   PROFESSIONAL_DOMAIN_RESPONSE = "PROFESSIONAL_DOMAIN_RESPONSE",
@@ -70,14 +70,14 @@ export enum IraqiEventType {
   LEGAL_CONSULTATION_END = "LEGAL_CONSULTATION_END",
   MEDICAL_CONSULTATION_START = "MEDICAL_CONSULTATION_START",
   MEDICAL_CONSULTATION_END = "MEDICAL_CONSULTATION_END",
-  
+
   // Payment Gateway Events
   PAYMENT_PROCESSING_START = "PAYMENT_PROCESSING_START",
   PAYMENT_PROCESSING_RESULT = "PAYMENT_PROCESSING_RESULT",
   PAYMENT_PROCESSING_END = "PAYMENT_PROCESSING_END",
   PAYMENT_GATEWAY_SELECTION = "PAYMENT_GATEWAY_SELECTION",
   PAYMENT_VALIDATION_RESULT = "PAYMENT_VALIDATION_RESULT",
-  
+
   // Agent Coordination Events
   AGENT_COORDINATION_START = "AGENT_COORDINATION_START",
   AGENT_COORDINATION_ROUTING = "AGENT_COORDINATION_ROUTING",
@@ -85,7 +85,7 @@ export enum IraqiEventType {
   AGENT_COORDINATION_END = "AGENT_COORDINATION_END",
   MULTI_AGENT_WORKFLOW_START = "MULTI_AGENT_WORKFLOW_START",
   MULTI_AGENT_WORKFLOW_END = "MULTI_AGENT_WORKFLOW_END",
-  
+
   // RTL Processing Events
   RTL_LAYOUT_ADJUSTMENT = "RTL_LAYOUT_ADJUSTMENT",
   ARABIC_FONT_RENDERING = "ARABIC_FONT_RENDERING",
@@ -98,12 +98,14 @@ const BaseIraqiEventSchema = z.object({
   type: z.nativeEnum(IraqiEventType),
   timestamp: z.number().optional(),
   rawEvent: z.any().optional(),
-  culturalContext: z.object({
-    culturalScore: z.number().optional(),
-    islamicCompliance: z.boolean().optional(),
-    arabicProcessing: z.boolean().optional(),
-    professionalDomain: z.string().optional(),
-  }).optional(),
+  culturalContext: z
+    .object({
+      culturalScore: z.number().optional(),
+      islamicCompliance: z.boolean().optional(),
+      arabicProcessing: z.boolean().optional(),
+      professionalDomain: z.string().optional(),
+    })
+    .optional(),
   metadata: z.record(z.any()).optional(),
 });
 
@@ -120,7 +122,9 @@ export const IraqiTextMessageStartEventSchema = BaseIraqiEventSchema.extend({
 export const IraqiTextMessageContentEventSchema = BaseIraqiEventSchema.extend({
   type: z.literal(IraqiEventType.TEXT_MESSAGE_CONTENT),
   messageId: z.string(),
-  delta: z.string().refine((s) => s.length > 0, "Delta must not be an empty string"),
+  delta: z
+    .string()
+    .refine((s) => s.length > 0, "Delta must not be an empty string"),
   isArabic: z.boolean().optional(),
   dialectFeatures: z.array(z.string()).optional(),
   culturallyValidated: z.boolean().optional(),
@@ -189,30 +193,42 @@ export const IslamicComplianceResultEventSchema = BaseIraqiEventSchema.extend({
 });
 
 // Arabic Text Processing Events
-export const ArabicTextProcessingStartEventSchema = BaseIraqiEventSchema.extend({
-  type: z.literal(IraqiEventType.ARABIC_TEXT_PROCESSING_START),
-  processingId: z.string(),
-  text: z.string(),
-  processingType: z.enum(["rtl_layout", "dialect_detection", "mixed_content", "font_rendering"]),
-});
+export const ArabicTextProcessingStartEventSchema = BaseIraqiEventSchema.extend(
+  {
+    type: z.literal(IraqiEventType.ARABIC_TEXT_PROCESSING_START),
+    processingId: z.string(),
+    text: z.string(),
+    processingType: z.enum([
+      "rtl_layout",
+      "dialect_detection",
+      "mixed_content",
+      "font_rendering",
+    ]),
+  },
+);
 
-export const ArabicTextProcessingResultEventSchema = BaseIraqiEventSchema.extend({
-  type: z.literal(IraqiEventType.ARABIC_TEXT_PROCESSING_RESULT),
-  processingId: z.string(),
-  processedText: z.string().optional(),
-  direction: z.enum(["ltr", "rtl", "auto"]),
-  dialectFeatures: z.array(z.string()).optional(),
-  mixedContent: z.object({
-    hasArabic: z.boolean(),
-    hasEnglish: z.boolean(),
-    segments: z.array(z.object({
-      text: z.string(),
-      direction: z.enum(["ltr", "rtl"]),
-      language: z.enum(["ar", "en"]),
-    })),
-  }).optional(),
-  confidence: z.number(),
-});
+export const ArabicTextProcessingResultEventSchema =
+  BaseIraqiEventSchema.extend({
+    type: z.literal(IraqiEventType.ARABIC_TEXT_PROCESSING_RESULT),
+    processingId: z.string(),
+    processedText: z.string().optional(),
+    direction: z.enum(["ltr", "rtl", "auto"]),
+    dialectFeatures: z.array(z.string()).optional(),
+    mixedContent: z
+      .object({
+        hasArabic: z.boolean(),
+        hasEnglish: z.boolean(),
+        segments: z.array(
+          z.object({
+            text: z.string(),
+            direction: z.enum(["ltr", "rtl"]),
+            language: z.enum(["ar", "en"]),
+          }),
+        ),
+      })
+      .optional(),
+    confidence: z.number(),
+  });
 
 export const ArabicTextProcessingEndEventSchema = BaseIraqiEventSchema.extend({
   type: z.literal(IraqiEventType.ARABIC_TEXT_PROCESSING_END),
@@ -222,25 +238,28 @@ export const ArabicTextProcessingEndEventSchema = BaseIraqiEventSchema.extend({
 });
 
 // Professional Domain Events
-export const ProfessionalDomainRequestEventSchema = BaseIraqiEventSchema.extend({
-  type: z.literal(IraqiEventType.PROFESSIONAL_DOMAIN_REQUEST),
-  requestId: z.string(),
-  domain: z.enum(["legal", "medical", "educational", "organizational"]),
-  query: z.string(),
-  islamicConsiderations: z.boolean().optional(),
-  urgencyLevel: z.enum(["low", "medium", "high", "critical"]).optional(),
-});
+export const ProfessionalDomainRequestEventSchema = BaseIraqiEventSchema.extend(
+  {
+    type: z.literal(IraqiEventType.PROFESSIONAL_DOMAIN_REQUEST),
+    requestId: z.string(),
+    domain: z.enum(["legal", "medical", "educational", "organizational"]),
+    query: z.string(),
+    islamicConsiderations: z.boolean().optional(),
+    urgencyLevel: z.enum(["low", "medium", "high", "critical"]).optional(),
+  },
+);
 
-export const ProfessionalDomainResponseEventSchema = BaseIraqiEventSchema.extend({
-  type: z.literal(IraqiEventType.PROFESSIONAL_DOMAIN_RESPONSE),
-  requestId: z.string(),
-  domain: z.string(),
-  response: z.string(),
-  confidence: z.number(),
-  islamicCompliant: z.boolean(),
-  sources: z.array(z.string()),
-  recommendations: z.array(z.string()),
-});
+export const ProfessionalDomainResponseEventSchema =
+  BaseIraqiEventSchema.extend({
+    type: z.literal(IraqiEventType.PROFESSIONAL_DOMAIN_RESPONSE),
+    requestId: z.string(),
+    domain: z.string(),
+    response: z.string(),
+    confidence: z.number(),
+    islamicCompliant: z.boolean(),
+    sources: z.array(z.string()),
+    recommendations: z.array(z.string()),
+  });
 
 // Payment Gateway Events
 export const PaymentProcessingStartEventSchema = BaseIraqiEventSchema.extend({
@@ -347,13 +366,15 @@ export const ArabicFontRenderingEventSchema = BaseIraqiEventSchema.extend({
 export const MixedContentProcessingEventSchema = BaseIraqiEventSchema.extend({
   type: z.literal(IraqiEventType.MIXED_CONTENT_PROCESSING),
   contentId: z.string(),
-  segments: z.array(z.object({
-    text: z.string(),
-    direction: z.enum(["ltr", "rtl"]),
-    language: z.enum(["ar", "en"]),
-    startIndex: z.number(),
-    endIndex: z.number(),
-  })),
+  segments: z.array(
+    z.object({
+      text: z.string(),
+      direction: z.enum(["ltr", "rtl"]),
+      language: z.enum(["ar", "en"]),
+      startIndex: z.number(),
+      endIndex: z.number(),
+    }),
+  ),
   overallDirection: z.enum(["ltr", "rtl", "auto"]),
 });
 
@@ -378,14 +399,14 @@ export const IraqiEventSchemas = z.discriminatedUnion("type", [
   IraqiTextMessageStartEventSchema,
   IraqiTextMessageContentEventSchema,
   IraqiTextMessageEndEventSchema,
-  
+
   // Iraqi Cultural Events
   CulturalValidationStartEventSchema,
   CulturalValidationResultEventSchema,
   CulturalValidationEndEventSchema,
   IslamicComplianceCheckEventSchema,
   IslamicComplianceResultEventSchema,
-  
+
   // Arabic Processing Events
   ArabicTextProcessingStartEventSchema,
   ArabicTextProcessingResultEventSchema,
@@ -394,16 +415,16 @@ export const IraqiEventSchemas = z.discriminatedUnion("type", [
   ArabicFontRenderingEventSchema,
   MixedContentProcessingEventSchema,
   DialectRecognitionResultEventSchema,
-  
+
   // Professional Domain Events
   ProfessionalDomainRequestEventSchema,
   ProfessionalDomainResponseEventSchema,
-  
+
   // Payment Events
   PaymentProcessingStartEventSchema,
   PaymentProcessingResultEventSchema,
   PaymentValidationResultEventSchema,
-  
+
   // Agent Coordination Events
   AgentCoordinationStartEventSchema,
   AgentCoordinationRoutingEventSchema,
@@ -414,31 +435,81 @@ export const IraqiEventSchemas = z.discriminatedUnion("type", [
 
 // Type Exports
 export type BaseIraqiEvent = z.infer<typeof BaseIraqiEventSchema>;
-export type IraqiTextMessageStartEvent = z.infer<typeof IraqiTextMessageStartEventSchema>;
-export type IraqiTextMessageContentEvent = z.infer<typeof IraqiTextMessageContentEventSchema>;
-export type IraqiTextMessageEndEvent = z.infer<typeof IraqiTextMessageEndEventSchema>;
-export type CulturalValidationStartEvent = z.infer<typeof CulturalValidationStartEventSchema>;
-export type CulturalValidationResultEvent = z.infer<typeof CulturalValidationResultEventSchema>;
-export type CulturalValidationEndEvent = z.infer<typeof CulturalValidationEndEventSchema>;
-export type IslamicComplianceCheckEvent = z.infer<typeof IslamicComplianceCheckEventSchema>;
-export type IslamicComplianceResultEvent = z.infer<typeof IslamicComplianceResultEventSchema>;
-export type ArabicTextProcessingStartEvent = z.infer<typeof ArabicTextProcessingStartEventSchema>;
-export type ArabicTextProcessingResultEvent = z.infer<typeof ArabicTextProcessingResultEventSchema>;
-export type ArabicTextProcessingEndEvent = z.infer<typeof ArabicTextProcessingEndEventSchema>;
-export type ProfessionalDomainRequestEvent = z.infer<typeof ProfessionalDomainRequestEventSchema>;
-export type ProfessionalDomainResponseEvent = z.infer<typeof ProfessionalDomainResponseEventSchema>;
-export type PaymentProcessingStartEvent = z.infer<typeof PaymentProcessingStartEventSchema>;
-export type PaymentProcessingResultEvent = z.infer<typeof PaymentProcessingResultEventSchema>;
-export type PaymentValidationResultEvent = z.infer<typeof PaymentValidationResultEventSchema>;
-export type AgentCoordinationStartEvent = z.infer<typeof AgentCoordinationStartEventSchema>;
-export type AgentCoordinationRoutingEvent = z.infer<typeof AgentCoordinationRoutingEventSchema>;
-export type AgentCoordinationResultEvent = z.infer<typeof AgentCoordinationResultEventSchema>;
-export type MultiAgentWorkflowStartEvent = z.infer<typeof MultiAgentWorkflowStartEventSchema>;
-export type MultiAgentWorkflowEndEvent = z.infer<typeof MultiAgentWorkflowEndEventSchema>;
-export type RTLLayoutAdjustmentEvent = z.infer<typeof RTLLayoutAdjustmentEventSchema>;
-export type ArabicFontRenderingEvent = z.infer<typeof ArabicFontRenderingEventSchema>;
-export type MixedContentProcessingEvent = z.infer<typeof MixedContentProcessingEventSchema>;
-export type DialectRecognitionResultEvent = z.infer<typeof DialectRecognitionResultEventSchema>;
+export type IraqiTextMessageStartEvent = z.infer<
+  typeof IraqiTextMessageStartEventSchema
+>;
+export type IraqiTextMessageContentEvent = z.infer<
+  typeof IraqiTextMessageContentEventSchema
+>;
+export type IraqiTextMessageEndEvent = z.infer<
+  typeof IraqiTextMessageEndEventSchema
+>;
+export type CulturalValidationStartEvent = z.infer<
+  typeof CulturalValidationStartEventSchema
+>;
+export type CulturalValidationResultEvent = z.infer<
+  typeof CulturalValidationResultEventSchema
+>;
+export type CulturalValidationEndEvent = z.infer<
+  typeof CulturalValidationEndEventSchema
+>;
+export type IslamicComplianceCheckEvent = z.infer<
+  typeof IslamicComplianceCheckEventSchema
+>;
+export type IslamicComplianceResultEvent = z.infer<
+  typeof IslamicComplianceResultEventSchema
+>;
+export type ArabicTextProcessingStartEvent = z.infer<
+  typeof ArabicTextProcessingStartEventSchema
+>;
+export type ArabicTextProcessingResultEvent = z.infer<
+  typeof ArabicTextProcessingResultEventSchema
+>;
+export type ArabicTextProcessingEndEvent = z.infer<
+  typeof ArabicTextProcessingEndEventSchema
+>;
+export type ProfessionalDomainRequestEvent = z.infer<
+  typeof ProfessionalDomainRequestEventSchema
+>;
+export type ProfessionalDomainResponseEvent = z.infer<
+  typeof ProfessionalDomainResponseEventSchema
+>;
+export type PaymentProcessingStartEvent = z.infer<
+  typeof PaymentProcessingStartEventSchema
+>;
+export type PaymentProcessingResultEvent = z.infer<
+  typeof PaymentProcessingResultEventSchema
+>;
+export type PaymentValidationResultEvent = z.infer<
+  typeof PaymentValidationResultEventSchema
+>;
+export type AgentCoordinationStartEvent = z.infer<
+  typeof AgentCoordinationStartEventSchema
+>;
+export type AgentCoordinationRoutingEvent = z.infer<
+  typeof AgentCoordinationRoutingEventSchema
+>;
+export type AgentCoordinationResultEvent = z.infer<
+  typeof AgentCoordinationResultEventSchema
+>;
+export type MultiAgentWorkflowStartEvent = z.infer<
+  typeof MultiAgentWorkflowStartEventSchema
+>;
+export type MultiAgentWorkflowEndEvent = z.infer<
+  typeof MultiAgentWorkflowEndEventSchema
+>;
+export type RTLLayoutAdjustmentEvent = z.infer<
+  typeof RTLLayoutAdjustmentEventSchema
+>;
+export type ArabicFontRenderingEvent = z.infer<
+  typeof ArabicFontRenderingEventSchema
+>;
+export type MixedContentProcessingEvent = z.infer<
+  typeof MixedContentProcessingEventSchema
+>;
+export type DialectRecognitionResultEvent = z.infer<
+  typeof DialectRecognitionResultEventSchema
+>;
 
 // Union type for all Iraqi events
 export type IraqiEvent = z.infer<typeof IraqiEventSchemas>;
@@ -447,7 +518,8 @@ export type IraqiEvent = z.infer<typeof IraqiEventSchemas>;
  * Iraqi Event Bus for handling real-time events with cultural context
  */
 export class IraqiEventBus {
-  private listeners: Map<IraqiEventType, Set<(event: IraqiEvent) => void>> = new Map();
+  private listeners: Map<IraqiEventType, Set<(event: IraqiEvent) => void>> =
+    new Map();
   private eventHistory: IraqiEvent[] = [];
   private maxHistorySize = 1000;
 
@@ -489,7 +561,7 @@ export class IraqiEventBus {
     // Notify listeners
     const listeners = this.listeners.get(event.type);
     if (listeners) {
-      listeners.forEach(listener => {
+      listeners.forEach((listener) => {
         try {
           listener(event);
         } catch (error) {
@@ -504,7 +576,7 @@ export class IraqiEventBus {
    */
   getEventHistory(eventType?: IraqiEventType): IraqiEvent[] {
     if (eventType) {
-      return this.eventHistory.filter(event => event.type === eventType);
+      return this.eventHistory.filter((event) => event.type === eventType);
     }
     return [...this.eventHistory];
   }
@@ -523,8 +595,10 @@ export class IraqiEventBus {
     if (eventType) {
       return this.listeners.get(eventType)?.size || 0;
     }
-    return Array.from(this.listeners.values())
-      .reduce((total, listeners) => total + listeners.size, 0);
+    return Array.from(this.listeners.values()).reduce(
+      (total, listeners) => total + listeners.size,
+      0,
+    );
   }
 }
 
@@ -543,7 +617,7 @@ export const IraqiEventUtils = {
   createCulturalValidationEvent: (
     validationId: string,
     content: string,
-    options?: { strictMode?: boolean; professionalDomain?: string }
+    options?: { strictMode?: boolean; professionalDomain?: string },
   ): CulturalValidationStartEvent => ({
     type: IraqiEventType.CULTURAL_VALIDATION_START,
     validationId,
@@ -559,7 +633,11 @@ export const IraqiEventUtils = {
   createArabicProcessingEvent: (
     processingId: string,
     text: string,
-    processingType: "rtl_layout" | "dialect_detection" | "mixed_content" | "font_rendering"
+    processingType:
+      | "rtl_layout"
+      | "dialect_detection"
+      | "mixed_content"
+      | "font_rendering",
   ): ArabicTextProcessingStartEvent => ({
     type: IraqiEventType.ARABIC_TEXT_PROCESSING_START,
     processingId,
@@ -574,7 +652,10 @@ export const IraqiEventUtils = {
   createPaymentEvent: (
     transactionId: string,
     amount: number,
-    options?: { gateway?: "zainCash" | "fastPay" | "nassWallet"; islamicCompliant?: boolean }
+    options?: {
+      gateway?: "zainCash" | "fastPay" | "nassWallet";
+      islamicCompliant?: boolean;
+    },
   ): PaymentProcessingStartEvent => ({
     type: IraqiEventType.PAYMENT_PROCESSING_START,
     transactionId,
@@ -589,9 +670,11 @@ export const IraqiEventUtils = {
    * Validate event cultural context
    */
   validateCulturalContext: (event: IraqiEvent): boolean => {
-    return event.culturalContext !== undefined &&
-           event.culturalContext.culturalScore !== undefined &&
-           event.culturalContext.culturalScore >= 85;
+    return (
+      event.culturalContext !== undefined &&
+      event.culturalContext.culturalScore !== undefined &&
+      event.culturalContext.culturalScore >= 85
+    );
   },
 
   /**

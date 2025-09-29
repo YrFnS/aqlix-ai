@@ -1,11 +1,13 @@
 # Iraqi AI Chat System - Core Rules & Principles
 
 # Rules Must Follow
+
 Must always follow these rules before doing anything:
 
 ## Sub-Agent Utilization Strategy
 
 ### Core Specialized Agents (8 Total)
+
 - **Cultural Content**: Use iraqi-cultural-validator for all Iraqi cultural appropriateness validation and Islamic compliance
 - **Professional Context**: Use iraqi-professional-domain-expert for Iraqi legal/medical/educational/engineering domain queries
 - **Technical Issues**: Use iraqi-technical-debugger for Iraqi-specific technical troubleshooting and performance optimization
@@ -16,29 +18,35 @@ Must always follow these rules before doing anything:
 - **Service Integration**: Use external-service-coordinator for multi-gateway payment processing and service health monitoring
 
 ### Processing & Security Specialists (2 Total)
+
 - **Arabic Processing**: Use arabic-rtl-processor for RTL text handling, Iraqi dialect recognition, and mixed content formatting
 - **Security Tasks**: Use payment-security-guardian for payment gateway security, financial transaction validation, and fraud detection
 
 ### UI/UX Design Specialists (4 Total)
+
 - **Visual Design**: Use iraqi-ui-designer for RTL-first visual design, Arabic typography, and Iraqi design patterns
 - **User Research**: Use iraqi-ux-researcher for Iraqi user behavior analysis and cultural context research
 - **Interaction Design**: Use iraqi-interaction-designer for culturally-appropriate user interactions and workflow design
 - **Accessibility**: Use iraqi-accessibility-specialist for Arabic screen reader compatibility and Iraqi accessibility standards
 
 ### Quality Assurance Specialists (3 Total)
+
 - **Cultural Testing**: Use iraqi-cultural-tester for comprehensive Iraqi cultural test scenarios and Islamic compliance
 - **Arabic Testing**: Use iraqi-arabic-tester for RTL layout validation, Iraqi dialect testing, and cross-browser Arabic compatibility
 - **Payment Testing**: Use iraqi-payment-tester for Iraqi payment gateway integration testing and security validation
 
 ### Workflow Orchestration Agents (3 Total)
+
 - **Multi-Agent Coordination**: Use iraqi-workflow-orchestrator for complex multi-agent workflows and context flow optimization
 - **Context Management**: Use iraqi-context-manager for persistent context handling, session logging, and knowledge base updates
 - **PRP Execution**: Use iraqi-prp-execution-orchestrator for intelligent PRP execution, health assessment, and workflow sequencing
 
 ### Fallback Strategy
+
 - **Complete tasks independently** when no specialized sub-agent matches the requirement or for simple, single-domain tasks
 
 ## MCP Server Integration Requirements
+
 - Always use MCP servers to search for the latest documentation during development
 - Always use Sequential MCP for analysis and complex problem-solving
 - Always use Context7 MCP for latest docs and official library documentation
@@ -53,12 +61,14 @@ Core constants and principles for Iraqi AI chat system. Rarely change. For imple
 ## 🔄 Context Engineering & Development Workflow
 
 ### Claude Code Best Practices
+
 - **Explore-Plan-Code-Commit Pattern**: Read files first, create plan, implement with verification, commit
 - **Test-Driven Development**: Write tests first, confirm failures, implement to pass, verify incrementally
 - **Be Specific**: Mention exact files to work on, use visual references, course-correct early
 - **Use `/clear`** to maintain focused context when switching between complex tasks
 
 ### Context Engineering Principles
+
 - **Always start with INITIAL.md** - Define requirements before generating PRPs
 - **Research First**: Web search extensively before implementation, study official docs
 - **Pattern Extraction**: Identify reusable patterns and architectural conventions
@@ -66,6 +76,7 @@ Core constants and principles for Iraqi AI chat system. Rarely change. For imple
 - **Context is King**: Include ALL necessary documentation, examples, and patterns
 
 ### PRP Framework Workflow
+
 - Use appropriate commands: `/generate-prp` or `/generate-pydantic-ai-prp` based on feature type
 - Follow validation loops for quality assurance at each step
 - Break complex tasks into smaller steps with clear completion criteria
@@ -131,6 +142,7 @@ Core constants and principles for Iraqi AI chat system. Rarely change. For imple
 ## 🤖 PydanticAI Development Standards
 
 ### Agent Architecture Patterns
+
 - **Use environment-based configuration** with python-dotenv and pydantic-settings
 - **Default to string outputs** - Only use `result_type` when structured output specifically needed
 - **Implement dependency injection** with `deps_type` for external services and Iraqi context
@@ -138,6 +150,7 @@ Core constants and principles for Iraqi AI chat system. Rarely change. For imple
 - **Use virtual environments** - Create if one doesn't exist when needed
 
 ### Environment Configuration (CRITICAL)
+
 ```python
 # Always use this pattern for environment setup
 from pydantic_settings import BaseSettings
@@ -146,14 +159,14 @@ from dotenv import load_dotenv
 
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
-    
+
     model_config = ConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore"
     )
-    
+
     # LLM Configuration
     llm_api_key: str = Field(..., description="API key for the LLM provider")
     llm_model: str = Field(default="gpt-4", description="Model name to use")
@@ -170,6 +183,7 @@ def load_settings() -> Settings:
 ```
 
 ### Agent Creation Patterns
+
 ```python
 # Standard agent pattern for Iraqi AI
 from pydantic_ai import Agent, RunContext
@@ -195,7 +209,7 @@ iraqi_agent = Agent(
 
 @iraqi_agent.tool
 async def cultural_validation_tool(
-    ctx: RunContext[IraqiAgentDependencies], 
+    ctx: RunContext[IraqiAgentDependencies],
     content: str
 ) -> str:
     """Validate content for Iraqi cultural appropriateness."""
@@ -204,6 +218,7 @@ async def cultural_validation_tool(
 ```
 
 ### Testing Standards for AI Agents
+
 - **Use TestModel for development** - Fast validation without API costs
 - **Use FunctionModel for custom behavior** - Control agent responses in tests
 - **Use Agent.override() for testing** - Replace models in test contexts
@@ -225,12 +240,14 @@ async def test_iraqi_agent():
 ```
 
 ### Tool Integration Standards
+
 - **Use @agent.tool decorator** for context-aware tools with RunContext[DepsType]
 - **Use @agent.tool_plain decorator** for simple tools without context dependencies
 - **Implement Iraqi-specific tools** - Cultural validation, Arabic processing, dialect handling
 - **Handle tool errors gracefully** - Implement retry mechanisms and cultural error messages
 
 ### Security Best Practices for AI Agents
+
 - **API key management** - Use python-dotenv with .env files, never commit keys
 - **Input validation** - Use Pydantic models for all tool parameters
 - **Iraqi cultural filtering** - Validate content for political/sectarian sensitivity
@@ -240,15 +257,17 @@ async def test_iraqi_agent():
 
 **Target Users**: Iraqi professionals (lawyers, teachers, doctors, engineers) and general users
 
-**Cultural Framework**: 
+**Cultural Framework**:
+
 - Respect Islamic values and Iraqi customs
 - Use Iraqi dialect vocabulary patterns
 - Professional titles use Iraqi formal address conventions
 - Avoid political, sectarian, or tribal sensitive topics
 
 **Professional Knowledge Domains**:
+
 - Legal: Iraqi civil law, criminal procedures, commercial law
-- Educational: Iraqi curriculum standards, teaching methods  
+- Educational: Iraqi curriculum standards, teaching methods
 - Medical: Iraqi healthcare system, medical terminology
 - Engineering: Iraqi building codes, safety regulations
 
@@ -257,24 +276,28 @@ async def test_iraqi_agent():
 ## Code Standards
 
 **TypeScript Rules**:
+
 - Strict mode enabled, zero `any` types
 - All UI components handle RTL text direction
 - Zod validation for all API inputs/outputs
 - Cross-platform types work on both web and mobile
 
 **Python Rules (PydanticAI)**:
+
 - **Always use python-dotenv** with `load_dotenv()` - Follow examples/main_agent_reference/settings.py
 - **Never hardcode API keys** - Use .env files and pydantic-settings
 - **Use async/await consistently** - PydanticAI is designed for async patterns
 - **Keep agent files under 500 lines** - Split into agent.py, tools.py, models.py modules
 
 **React Component Standards**:
+
 - `dir={language === 'arabic' ? 'rtl' : 'ltr'}` for all text containers
 - `font-arabic` class for Arabic text, `font-sans` for English
 - Right-align Arabic, left-align English
 - Iraqi professional honorifics in Arabic
 
 **File Organization**:
+
 - Keep files focused on single responsibility
 - Group by features, not technology
 - Absolute imports: @/ for src, @iraqi-ai/ for packages
@@ -309,12 +332,14 @@ async def test_iraqi_agent():
 - **Preserve user privacy** - Session-only training, auto-expire data, no persistent storage
 
 **Professional Context Rules**:
+
 - Lawyer: Iraqi civil law, commercial law, family law (cannot provide specific legal advice)
 - Teacher: Iraqi curriculum, teaching methods, assessment (cannot diagnose learning disabilities)
 - Doctor: General health info, Iraqi healthcare system (cannot diagnose or prescribe)
 - Engineer: Iraqi building codes, safety regulations (cannot approve structural designs)
 
 **Language Rules**:
+
 - Prefer Iraqi Arabic dialect vocabulary when speaking Arabic
 - Switch languages only when user explicitly requests
 - Use formal Arabic for professional contexts, informal for casual chat
@@ -337,8 +362,9 @@ async def test_iraqi_agent():
 - **AI-Powered Features**: Use PydanticAI for intelligent Iraqi-context chat, document processing, cultural validation
 
 **Integration Touchpoints** - When modifying ANY component, consider impacts on:
+
 1. Arabic text handling (RTL direction, Iraqi dialect)
-2. Professional context (works across all Iraqi professions) 
+2. Professional context (works across all Iraqi professions)
 3. Payment flow (credit consumption, Iraqi gateway compatibility)
 4. Mobile readiness (shared components work on React Native)
 5. Cultural sensitivity (respects Iraqi customs and norms)
@@ -348,12 +374,14 @@ async def test_iraqi_agent():
 ## 🚫 Critical Anti-Patterns to Avoid
 
 ### General Development
+
 - ❌ Don't skip research - Always understand the technology deeply first
 - ❌ Don't ignore validation - Every step must include verification
 - ❌ Don't assume knowledge - Document everything explicitly
 - ❌ Don't skip examples - Always include working code examples
 
 ### PydanticAI Specific
+
 - ❌ **Don't hardcode API keys** - Always use .env files with load_dotenv()
 - ❌ **Don't use result_type unless needed** - Default to string outputs
 - ❌ **Don't skip agent testing** - Always use TestModel/FunctionModel
@@ -362,6 +390,7 @@ async def test_iraqi_agent():
 - ❌ **Don't skip environment configuration** - Follow examples/main_agent_reference/settings.py
 
 ### Iraqi AI Specific
+
 - ❌ **Don't ignore cultural validation** - Test all AI responses for Iraqi appropriateness
 - ❌ **Don't hardcode Arabic text** - Handle RTL direction and font selection properly
 - ❌ **Don't skip dialect testing** - Verify Iraqi Arabic recognition works correctly
@@ -369,6 +398,7 @@ async def test_iraqi_agent():
 ## Quick Reference
 
 **Adding New Features**:
+
 1. Create PRP in `PRPs/` using appropriate template
 2. Include Iraqi context: culture, dialect, professional requirements
 3. Define types in `packages/types/` with Arabic text support
@@ -380,6 +410,7 @@ async def test_iraqi_agent():
 9. Update documentation with Iraqi-specific examples
 
 **Available Examples & References**:
+
 - `examples/basic_chat_agent/` - Simple conversational agent patterns
 - `examples/main_agent_reference/` - Production-grade agent architecture
 - `examples/tool_enabled_agent/` - Agent with external tools integration
@@ -387,7 +418,8 @@ async def test_iraqi_agent():
 - `examples/testing_examples/` - Comprehensive agent testing patterns
 
 # important-instruction-reminders
+
 Do what has been asked; nothing more, nothing less.
 NEVER create files unless they're absolutely necessary for achieving your goal.
 ALWAYS prefer editing an existing file to creating a new one.
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User.

@@ -1,12 +1,12 @@
 /**
  * Iraqi Enterprise Authentication - Telecom MFA Integration
  * Multi-Factor Authentication via Iraqi telecom providers
- * 
+ *
  * Supported providers:
  * - Zain Iraq (زين العراق)
  * - Asiacell (آسياسيل)
  * - Korek Telecom (كوريك تيليكوم)
- * 
+ *
  * Features:
  * - SMS OTP with Arabic support
  * - Voice call verification with Arabic IVR
@@ -16,11 +16,11 @@
  * - Encrypted communication channels
  */
 
-import { EventEmitter } from 'events';
-import type { SecondaryCredential } from '../interfaces/authentication';
-import type { IraqiUser } from '../interfaces/types';
+import { EventEmitter } from "events";
+import type { SecondaryCredential } from "../interfaces/authentication";
+import type { IraqiUser } from "../interfaces/types";
 
-export type IraqiTelecomProvider = 'zain' | 'asiacell' | 'korek';
+export type IraqiTelecomProvider = "zain" | "asiacell" | "korek";
 
 export interface TelecomConfiguration {
   provider: IraqiTelecomProvider;
@@ -28,7 +28,7 @@ export interface TelecomConfiguration {
   apiKey: string;
   secretKey: string;
   serviceId: string; // Government service identifier
-  
+
   // SMS Configuration
   smsSettings: {
     enabled: boolean;
@@ -37,7 +37,7 @@ export interface TelecomConfiguration {
     expiryMinutes: number;
     maxAttempts: number;
   };
-  
+
   // Voice Call Configuration
   voiceSettings: {
     enabled: boolean;
@@ -46,14 +46,14 @@ export interface TelecomConfiguration {
     maxDuration: number; // seconds
     retryAttempts: number;
   };
-  
+
   // USSD Configuration (for basic phones)
   ussdSettings: {
     enabled: boolean;
     shortCode: string;
     sessionTimeout: number;
   };
-  
+
   // Government settings
   priorityRouting: boolean;
   encryptionRequired: boolean;

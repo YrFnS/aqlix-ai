@@ -1,7 +1,7 @@
 /**
  * Iraqi Persona Management Dashboard
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Arabic-first persona management interface
  * - Real-time persona analytics and performance metrics
@@ -19,11 +19,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
+import {
   Search,
   Plus,
   Filter,
@@ -43,14 +55,14 @@ import {
   Award,
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
 } from 'lucide-react';
 
 import {
   IraqiPersona,
   PersonaAnalytics,
   IraqiProfessionalDomain,
-  IslamicComplianceLevel
+  IslamicComplianceLevel,
 } from '../types/persona';
 import { personaService } from '../services/personaService';
 import PersonaCreationWizard from './PersonaCreationWizard';
@@ -71,7 +83,7 @@ interface PersonaWithAnalytics extends IraqiPersona {
 export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProps> = ({
   className = '',
   showArabicLabels = false,
-  onPersonaSelect
+  onPersonaSelect,
 }) => {
   const [personas, setPersonas] = useState<PersonaWithAnalytics[]>([]);
   const [filteredPersonas, setFilteredPersonas] = useState<PersonaWithAnalytics[]>([]);
@@ -93,17 +105,17 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
     try {
       setLoading(true);
       const allPersonas = personaService.getAllPersonas();
-      
+
       // Enhance with analytics and scores
       const enhancedPersonas: PersonaWithAnalytics[] = await Promise.all(
-        allPersonas.map(async (persona) => {
+        allPersonas.map(async persona => {
           const analytics = personaService.getPersonaAnalytics(persona.id);
           return {
             ...persona,
             analytics,
             complianceScore: analytics?.culturalComplianceScore || 95,
             performanceScore: calculatePerformanceScore(analytics),
-            lastActivity: analytics?.lastUsed || persona.updatedAt
+            lastActivity: analytics?.lastUsed || persona.updatedAt,
           };
         })
       );
@@ -119,11 +131,11 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
 
   const calculatePerformanceScore = (analytics?: PersonaAnalytics): number => {
     if (!analytics) return 0;
-    
+
     const usageScore = Math.min(100, analytics.usageCount * 2);
     const satisfactionScore = analytics.userSatisfactionRating * 20;
     const complianceScore = analytics.culturalComplianceScore;
-    
+
     return Math.round((usageScore + satisfactionScore + complianceScore) / 3);
   };
 
@@ -134,12 +146,13 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(persona => 
-        persona.name.toLowerCase().includes(query) ||
-        persona.arabicName.includes(query) ||
-        persona.description.toLowerCase().includes(query) ||
-        persona.arabicDescription.includes(query) ||
-        persona.knowledgeAreas.some(area => area.toLowerCase().includes(query))
+      filtered = filtered.filter(
+        persona =>
+          persona.name.toLowerCase().includes(query) ||
+          persona.arabicName.includes(query) ||
+          persona.description.toLowerCase().includes(query) ||
+          persona.arabicDescription.includes(query) ||
+          persona.knowledgeAreas.some(area => area.toLowerCase().includes(query))
       );
     }
 
@@ -157,7 +170,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name':
-          return showArabicLabels 
+          return showArabicLabels
             ? a.arabicName.localeCompare(b.arabicName, 'ar')
             : a.name.localeCompare(b.name);
         case 'domain':
@@ -182,14 +195,19 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
   const dashboardStats = useMemo(() => {
     const totalPersonas = personas.length;
     const activePersonas = personas.filter(p => p.isActive).length;
-    const averageCompliance = personas.reduce((sum, p) => sum + (p.complianceScore || 0), 0) / totalPersonas || 0;
-    const averagePerformance = personas.reduce((sum, p) => sum + (p.performanceScore || 0), 0) / totalPersonas || 0;
+    const averageCompliance =
+      personas.reduce((sum, p) => sum + (p.complianceScore || 0), 0) / totalPersonas || 0;
+    const averagePerformance =
+      personas.reduce((sum, p) => sum + (p.performanceScore || 0), 0) / totalPersonas || 0;
     const totalUsage = personas.reduce((sum, p) => sum + (p.analytics?.usageCount || 0), 0);
 
-    const domainDistribution = personas.reduce((acc, p) => {
-      acc[p.domain] = (acc[p.domain] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
+    const domainDistribution = personas.reduce(
+      (acc, p) => {
+        acc[p.domain] = (acc[p.domain] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return {
       totalPersonas,
@@ -197,7 +215,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
       averageCompliance: Math.round(averageCompliance),
       averagePerformance: Math.round(averagePerformance),
       totalUsage,
-      domainDistribution
+      domainDistribution,
     };
   }, [personas]);
 
@@ -219,7 +237,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
           name: `${persona.name} (Copy)`,
           arabicName: `${persona.arabicName} (نسخة)`,
           createdAt: undefined,
-          updatedAt: undefined
+          updatedAt: undefined,
         });
         loadPersonas();
         break;
@@ -228,7 +246,13 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
         loadPersonas();
         break;
       case 'delete':
-        if (confirm(showArabicLabels ? 'هل أنت متأكد من حذف هذه الشخصية؟' : 'Are you sure you want to delete this persona?')) {
+        if (
+          confirm(
+            showArabicLabels
+              ? 'هل أنت متأكد من حذف هذه الشخصية؟'
+              : 'Are you sure you want to delete this persona?'
+          )
+        ) {
           // Implementation would depend on delete method
           loadPersonas();
         }
@@ -261,7 +285,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
       government: '🏛️',
       religious: '🕌',
       cultural: '🎭',
-      general: '💡'
+      general: '💡',
     };
     return icons[domain] || '💡';
   };
@@ -291,7 +315,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -301,7 +325,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
             >
               <Play className="w-4 h-4" />
             </Button>
-            
+
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -361,12 +385,12 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="pt-0">
         <p className="text-sm text-gray-600 line-clamp-2 mb-3">
           {showArabicLabels ? persona.arabicDescription : persona.description}
         </p>
-        
+
         {/* Performance Metrics */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
@@ -378,7 +402,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
               {persona.complianceScore || 0}%
             </Badge>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
@@ -388,15 +412,13 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
               {persona.performanceScore || 0}%
             </Badge>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <span className="text-xs text-gray-500 flex items-center gap-1">
               <MessageSquare className="w-3 h-3" />
               {showArabicLabels ? 'الاستخدام' : 'Usage'}
             </span>
-            <span className="text-xs font-medium">
-              {persona.analytics?.usageCount || 0}
-            </span>
+            <span className="text-xs font-medium">{persona.analytics?.usageCount || 0}</span>
           </div>
 
           {persona.lastActivity && (
@@ -513,7 +535,10 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
   );
 
   return (
-    <div className={`persona-management-dashboard ${className}`} dir={showArabicLabels ? 'rtl' : 'ltr'}>
+    <div
+      className={`persona-management-dashboard ${className}`}
+      dir={showArabicLabels ? 'rtl' : 'ltr'}
+    >
       {/* Dashboard Overview */}
       {renderDashboardOverview()}
 
@@ -521,9 +546,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
       <Tabs defaultValue="personas" className="w-full">
         <div className="flex items-center justify-between mb-6">
           <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="personas">
-              {showArabicLabels ? 'الشخصيات' : 'Personas'}
-            </TabsTrigger>
+            <TabsTrigger value="personas">{showArabicLabels ? 'الشخصيات' : 'Personas'}</TabsTrigger>
             <TabsTrigger value="analytics">
               {showArabicLabels ? 'التحليلات' : 'Analytics'}
             </TabsTrigger>
@@ -544,17 +567,14 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
-                      placeholder={showArabicLabels 
-                        ? 'البحث في الشخصيات...' 
-                        : 'Search personas...'
-                      }
+                      placeholder={showArabicLabels ? 'البحث في الشخصيات...' : 'Search personas...'}
                       value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onChange={e => setSearchQuery(e.target.value)}
                       className="pl-10"
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex gap-4">
                   <Select value={selectedDomain} onValueChange={setSelectedDomain}>
                     <SelectTrigger className="w-48">
@@ -587,9 +607,7 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
                       <SelectValue placeholder={showArabicLabels ? 'ترتيب حسب' : 'Sort by'} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="name">
-                        {showArabicLabels ? 'الاسم' : 'Name'}
-                      </SelectItem>
+                      <SelectItem value="name">{showArabicLabels ? 'الاسم' : 'Name'}</SelectItem>
                       <SelectItem value="domain">
                         {showArabicLabels ? 'المجال' : 'Domain'}
                       </SelectItem>
@@ -638,10 +656,9 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
                   {showArabicLabels ? 'لا توجد شخصيات' : 'No personas found'}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  {showArabicLabels 
+                  {showArabicLabels
                     ? 'ابدأ بإنشاء أول شخصية لك'
-                    : 'Get started by creating your first persona'
-                  }
+                    : 'Get started by creating your first persona'}
                 </p>
                 <Button onClick={() => setShowCreationWizard(true)}>
                   <Plus className="w-4 h-4 mr-2" />
@@ -660,16 +677,13 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
           {/* Analytics content would go here */}
           <Card>
             <CardHeader>
-              <CardTitle>
-                {showArabicLabels ? 'تحليلات الشخصيات' : 'Persona Analytics'}
-              </CardTitle>
+              <CardTitle>{showArabicLabels ? 'تحليلات الشخصيات' : 'Persona Analytics'}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                {showArabicLabels 
+                {showArabicLabels
                   ? 'تحليلات مفصلة للشخصيات قيد التطوير'
-                  : 'Detailed persona analytics coming soon'
-                }
+                  : 'Detailed persona analytics coming soon'}
               </p>
             </CardContent>
           </Card>
@@ -681,13 +695,16 @@ export const PersonaManagementDashboard: React.FC<PersonaManagementDashboardProp
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {showArabicLabels 
-                ? (selectedPersona ? 'تحرير الشخصية' : 'إنشاء شخصية جديدة')
-                : (selectedPersona ? 'Edit Persona' : 'Create New Persona')
-              }
+              {showArabicLabels
+                ? selectedPersona
+                  ? 'تحرير الشخصية'
+                  : 'إنشاء شخصية جديدة'
+                : selectedPersona
+                  ? 'Edit Persona'
+                  : 'Create New Persona'}
             </DialogTitle>
           </DialogHeader>
-          
+
           <PersonaCreationWizard
             onPersonaCreated={handlePersonaCreated}
             onCancel={() => {

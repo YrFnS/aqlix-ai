@@ -1,6 +1,6 @@
-import React from 'react';
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PaginationProps {
   currentPage: number;
@@ -13,7 +13,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  isLoading = false
+  isLoading = false,
 }) => {
   if (totalPages <= 1) return null;
 
@@ -22,12 +22,16 @@ export const Pagination: React.FC<PaginationProps> = ({
     const range = [];
     const rangeWithDots = [];
 
-    for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+    for (
+      let i = Math.max(2, currentPage - delta);
+      i <= Math.min(totalPages - 1, currentPage + delta);
+      i++
+    ) {
       range.push(i);
     }
 
     if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
+      rangeWithDots.push(1, "...");
     } else {
       rangeWithDots.push(1);
     }
@@ -35,7 +39,7 @@ export const Pagination: React.FC<PaginationProps> = ({
     rangeWithDots.push(...range);
 
     if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
+      rangeWithDots.push("...", totalPages);
     } else if (totalPages > 1) {
       rangeWithDots.push(totalPages);
     }
@@ -59,7 +63,7 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       {visiblePages.map((page, index) => (
         <React.Fragment key={index}>
-          {page === '...' ? (
+          {page === "..." ? (
             <div className="flex h-8 w-8 items-center justify-center">
               <MoreHorizontal className="h-4 w-4" />
             </div>
@@ -88,4 +92,4 @@ export const Pagination: React.FC<PaginationProps> = ({
       </Button>
     </div>
   );
-}; 
+};

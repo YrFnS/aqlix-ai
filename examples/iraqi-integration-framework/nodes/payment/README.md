@@ -18,6 +18,7 @@ This package provides five specialized payment gateway nodes designed specifical
 ## 🚀 Key Features
 
 ### ✅ Production-Ready Implementation
+
 - **TypeScript**: Fully typed with comprehensive interfaces
 - **Error Handling**: Robust error management with cultural messaging
 - **Audit Logging**: Government-grade audit trails
@@ -25,6 +26,7 @@ This package provides five specialized payment gateway nodes designed specifical
 - **Scalability**: Enterprise-grade architecture
 
 ### 🕌 Islamic Banking Compliance
+
 - **Riba-Free Transactions**: Automated interest detection and blocking
 - **Halal Business Validation**: Merchant category compliance checking
 - **Sharia Compliance Scoring**: 0-100% compliance measurement
@@ -32,6 +34,7 @@ This package provides five specialized payment gateway nodes designed specifical
 - **Islamic Calendar**: Prayer time and Hijri date awareness
 
 ### 🛡️ Government-Grade Security
+
 - **Fraud Detection**: ML-powered real-time threat analysis
 - **AML Compliance**: Anti-money laundering screening
 - **PCI DSS**: Payment card security standards
@@ -39,6 +42,7 @@ This package provides five specialized payment gateway nodes designed specifical
 - **Data Sovereignty**: Iraqi jurisdiction data processing
 
 ### 🌐 Cultural Intelligence
+
 - **Arabic RTL Support**: Right-to-left interface adaptation
 - **Bilingual Processing**: Arabic/English content handling
 - **Cultural Validation**: Context-aware appropriateness checking
@@ -48,6 +52,7 @@ This package provides five specialized payment gateway nodes designed specifical
 ## 📋 Prerequisites
 
 ### Required Dependencies
+
 ```bash
 npm install n8n-workflow
 npm install axios
@@ -56,6 +61,7 @@ npm install crypto
 ```
 
 ### Iraqi Payment Gateway Credentials
+
 Each node requires specific API credentials:
 
 - **ZainCash**: Merchant ID, Merchant Secret, Sandbox Mode
@@ -65,30 +71,35 @@ Each node requires specific API credentials:
 ## 🔧 Installation
 
 ### 1. Copy Node Files
+
 ```bash
 cp -r nodes/payment/ /path/to/your/n8n/nodes/
 ```
 
 ### 2. Register Nodes
+
 Add to your n8n configuration:
+
 ```typescript
 // n8n.config.ts
 export const nodes = [
-  'iraqi-integration-framework.ZainCashPaymentNode',
-  'iraqi-integration-framework.FastPayPaymentNode',
-  'iraqi-integration-framework.NassWalletPaymentNode',
-  'iraqi-integration-framework.UnifiedGovernmentPaymentHubNode',
-  'iraqi-integration-framework.PaymentSecurityValidationNode'
+  "iraqi-integration-framework.ZainCashPaymentNode",
+  "iraqi-integration-framework.FastPayPaymentNode",
+  "iraqi-integration-framework.NassWalletPaymentNode",
+  "iraqi-integration-framework.UnifiedGovernmentPaymentHubNode",
+  "iraqi-integration-framework.PaymentSecurityValidationNode",
 ];
 ```
 
 ### 3. Configure Credentials
+
 Set up credential types in n8n:
+
 ```typescript
 // credentials/
-- zainCashApi.credentials.ts
-- fastPayApi.credentials.ts
-- nassWalletApi.credentials.ts
+-zainCashApi.credentials.ts -
+  fastPayApi.credentials.ts -
+  nassWalletApi.credentials.ts;
 ```
 
 ## 📖 Node Documentation
@@ -98,6 +109,7 @@ Set up credential types in n8n:
 **Foundation class providing core Iraqi government functionality**
 
 ### Core Features
+
 - **Cultural Context Management**: Language, dialect, audience type
 - **Islamic Compliance Validation**: Comprehensive Sharia compliance checking
 - **Currency Formatting**: IQD formatting with Arabic/Western numerals
@@ -108,20 +120,26 @@ Set up credential types in n8n:
 ### Key Methods
 
 #### `validateIslamicCompliance(transactionData, context): IslamicComplianceCheck`
+
 Comprehensive Islamic banking compliance validation:
+
 - **Riba Detection**: Interest-based transaction identification
 - **Halal Validation**: Business practice compliance checking
 - **Speculation Check**: Maysir (gambling) detection
 - **Uncertainty Assessment**: Gharar (excessive uncertainty) evaluation
 
 #### `formatIraqiCurrency(amount, currency, showBothNumerals): IraqiCurrencyFormatting`
+
 Cultural currency formatting:
+
 - **Dual Numerals**: Arabic-Indic (٠١٢٣) and Western (0123) display
 - **Exchange Rates**: USD to IQD conversion with rate age tracking
 - **Cultural Preferences**: Iraqi formatting standards
 
 #### `detectFraud(transactionData, userContext, historicalData): FraudDetectionResult`
+
 Advanced fraud detection:
+
 - **Amount Analysis**: Large transaction flagging (>5M IQD)
 - **Velocity Checks**: Transaction frequency monitoring
 - **Geographic Risk**: Location-based risk assessment
@@ -134,6 +152,7 @@ Advanced fraud detection:
 **Mobile wallet integration with JWT authentication**
 
 ### Configuration
+
 - **Minimum Amount**: 1000 IQD
 - **Authentication**: JWT with merchant credentials
 - **Timeout**: 5 minutes default
@@ -142,6 +161,7 @@ Advanced fraud detection:
 ### Operations
 
 #### Create Payment
+
 ```typescript
 {
   amount: 5000, // IQD
@@ -157,6 +177,7 @@ Advanced fraud detection:
 ```
 
 #### Response Structure
+
 ```typescript
 {
   success: true,
@@ -176,6 +197,7 @@ Advanced fraud detection:
 ```
 
 ### Security Features
+
 - **JWT Token Authentication**: Secure API communication
 - **Islamic Compliance**: Automated Sharia validation
 - **Fraud Detection**: Real-time risk analysis
@@ -189,6 +211,7 @@ Advanced fraud detection:
 **Digital payment processing with card support**
 
 ### Configuration
+
 - **Minimum Amount**: 500 IQD
 - **Payment Methods**: Wallet, Credit/Debit Cards
 - **Timeout**: 15 minutes default
@@ -197,6 +220,7 @@ Advanced fraud detection:
 ### Operations
 
 #### Create Payment
+
 ```typescript
 {
   amount: 2500, // IQD
@@ -212,6 +236,7 @@ Advanced fraud detection:
 ```
 
 #### Advanced Features
+
 - **Phone Validation**: Iraqi number format verification
 - **Payment Methods**: Flexible wallet/card selection
 - **QR Code Generation**: Mobile-friendly payment codes
@@ -225,6 +250,7 @@ Advanced fraud detection:
 **Central Bank of Iraq licensed wallet operations**
 
 ### Configuration
+
 - **Minimum Amount**: 1000 IQD
 - **Maximum Amount**: 50M IQD (highest for government)
 - **License**: Central Bank of Iraq approved
@@ -233,6 +259,7 @@ Advanced fraud detection:
 ### Operations
 
 #### Create Payment
+
 ```typescript
 {
   amount: 15000, // IQD
@@ -251,6 +278,7 @@ Advanced fraud detection:
 ```
 
 #### Enhanced Features
+
 - **Balance Checking**: Real-time wallet balance validation
 - **Payment Reversal**: 24-hour reversal window
 - **Compliance Scoring**: Advanced AML compliance metrics
@@ -264,6 +292,7 @@ Advanced fraud detection:
 **Multi-gateway orchestration with intelligent routing**
 
 ### Core Capabilities
+
 - **Gateway Selection**: Intelligent routing based on amount, performance, fees
 - **Failover Management**: Automatic backup gateway activation
 - **Fraud Analysis**: Cross-gateway fraud pattern detection
@@ -273,19 +302,20 @@ Advanced fraud detection:
 ### Intelligent Gateway Selection
 
 #### Selection Criteria
+
 ```typescript
-const gatewayScore = (
+const gatewayScore =
   performanceScore * 0.25 +
   reliabilityScore * 0.15 +
   availabilityScore * 0.25 +
   feeScore * 0.15 +
-  processingTimeScore * 0.10 +
+  processingTimeScore * 0.1 +
   governmentPreference * 0.05 +
-  amountOptimization * 0.05
-);
+  amountOptimization * 0.05;
 ```
 
 #### Amount-Based Routing
+
 - **FastPay**: Optimal for ≤1M IQD (lower fees, faster processing)
 - **ZainCash**: Best for 1M-5M IQD (balanced performance)
 - **NassWallet**: Preferred for ≥5M IQD (highest limits, government integration)
@@ -293,6 +323,7 @@ const gatewayScore = (
 ### Operations
 
 #### Process Payment
+
 ```typescript
 {
   amount: 3500000, // 3.5M IQD
@@ -310,6 +341,7 @@ const gatewayScore = (
 ```
 
 #### Unified Response
+
 ```typescript
 {
   success: true,
@@ -339,18 +371,21 @@ const gatewayScore = (
 ### Validation Categories
 
 #### 1. Islamic Banking Compliance
+
 - **Riba Detection**: Interest-based transaction blocking
 - **Halal Validation**: Business category compliance
 - **Sharia Scoring**: 0-100% compliance measurement
 - **Ethical Screening**: Business practice validation
 
 #### 2. Fraud Detection
+
 - **ML Analysis**: Machine learning risk scoring
 - **Device Fingerprinting**: Device-based fraud detection
 - **Behavioral Analysis**: Transaction pattern recognition
 - **Geolocation Validation**: Location-based risk assessment
 
 #### 3. Regulatory Compliance
+
 - **Central Bank of Iraq**: CBI requirement validation
 - **PCI DSS**: Payment card security standards
 - **AML/KYC**: Anti-money laundering compliance
@@ -359,6 +394,7 @@ const gatewayScore = (
 ### Operations
 
 #### Full Security Assessment
+
 ```typescript
 {
   transactionId: 'TXN-SEC-001',
@@ -373,6 +409,7 @@ const gatewayScore = (
 ```
 
 #### Comprehensive Security Report
+
 ```typescript
 {
   success: true,
@@ -405,12 +442,14 @@ const gatewayScore = (
 ## 🔒 Security Features
 
 ### Comprehensive Threat Detection
+
 - **Real-time Analysis**: <100ms security validation
 - **ML-Powered Fraud Detection**: Advanced pattern recognition
 - **Government-Grade Encryption**: AES-256 data protection
 - **Audit Compliance**: Complete transaction logging
 
 ### Iraqi Regulatory Compliance
+
 - **Central Bank of Iraq**: Full CBI requirement compliance
 - **Data Sovereignty**: Iraqi jurisdiction data processing
 - **AML/KYC**: Enhanced customer identification
@@ -419,12 +458,14 @@ const gatewayScore = (
 ## 🌍 Cultural Intelligence
 
 ### Arabic Language Support
+
 - **RTL Interface**: Right-to-left layout adaptation
 - **Dual Numerals**: Arabic-Indic and Western number display
 - **Iraqi Dialect**: Specialized Iraqi Arabic processing
 - **Cultural Messaging**: Context-appropriate communications
 
 ### Islamic Banking Integration
+
 - **Sharia Compliance**: Automated Islamic law validation
 - **Halal Certification**: Business practice verification
 - **Riba Detection**: Interest-based transaction blocking
@@ -433,6 +474,7 @@ const gatewayScore = (
 ## 📊 Performance Metrics
 
 ### Benchmark Results
+
 - **Response Time**: <200ms average (95th percentile <500ms)
 - **Success Rate**: 99.2% payment processing success
 - **Security Score**: 94/100 average security validation
@@ -440,6 +482,7 @@ const gatewayScore = (
 - **Fraud Detection**: 98.5% accuracy with <1% false positives
 
 ### Scalability
+
 - **Throughput**: 1000+ concurrent transactions
 - **Availability**: 99.9% uptime SLA
 - **Gateway Health**: Real-time monitoring and failover
@@ -448,46 +491,49 @@ const gatewayScore = (
 ## 🛠️ Configuration Examples
 
 ### Environment Setup
+
 ```typescript
 // .env
-ZAINCASH_MERCHANT_ID=your_merchant_id
-ZAINCASH_SECRET=your_merchant_secret
-ZAINCASH_SANDBOX=true
+ZAINCASH_MERCHANT_ID = your_merchant_id;
+ZAINCASH_SECRET = your_merchant_secret;
+ZAINCASH_SANDBOX = true;
 
-FASTPAY_API_KEY=your_api_key
-FASTPAY_MERCHANT_ID=your_merchant_id
-FASTPAY_SECRET_KEY=your_secret_key
-FASTPAY_SANDBOX=true
+FASTPAY_API_KEY = your_api_key;
+FASTPAY_MERCHANT_ID = your_merchant_id;
+FASTPAY_SECRET_KEY = your_secret_key;
+FASTPAY_SANDBOX = true;
 
-NASSWALLET_CLIENT_ID=your_client_id
-NASSWALLET_CLIENT_SECRET=your_client_secret
-NASSWALLET_API_KEY=your_api_key
-NASSWALLET_SANDBOX=true
+NASSWALLET_CLIENT_ID = your_client_id;
+NASSWALLET_CLIENT_SECRET = your_client_secret;
+NASSWALLET_API_KEY = your_api_key;
+NASSWALLET_SANDBOX = true;
 ```
 
 ### Node Configuration
+
 ```typescript
 // Cultural Context Configuration
 const culturalSettings = {
-  language: 'ar', // Arabic primary
-  dialect: 'iraqi', // Iraqi dialect
+  language: "ar", // Arabic primary
+  dialect: "iraqi", // Iraqi dialect
   islamicCompliance: true,
   governmentStandard: true,
-  audienceType: 'government'
+  audienceType: "government",
 };
 
 // Security Configuration
 const securitySettings = {
   fraudDetection: true,
-  auditLevel: 'comprehensive',
-  dataClassification: 'confidential',
-  ministryDepartment: 'Ministry of Interior'
+  auditLevel: "comprehensive",
+  dataClassification: "confidential",
+  ministryDepartment: "Ministry of Interior",
 };
 ```
 
 ## 📝 Error Handling
 
 ### Bilingual Error Messages
+
 All error messages are provided in both Arabic and English:
 
 ```typescript
@@ -502,6 +548,7 @@ All error messages are provided in both Arabic and English:
 ```
 
 ### Common Error Types
+
 - **INSUFFICIENT_AMOUNT**: Below minimum payment threshold
 - **INVALID_PHONE**: Iraqi phone number format validation
 - **ISLAMIC_COMPLIANCE_VIOLATION**: Sharia law violation
@@ -512,6 +559,7 @@ All error messages are provided in both Arabic and English:
 ## 🔍 Monitoring and Analytics
 
 ### Real-time Monitoring
+
 ```typescript
 // Gateway Health Check
 {
@@ -530,6 +578,7 @@ All error messages are provided in both Arabic and English:
 ```
 
 ### Payment Analytics
+
 ```typescript
 // 7-day Analytics Summary
 {
@@ -554,6 +603,7 @@ All error messages are provided in both Arabic and English:
 ## 🚀 Getting Started
 
 ### Quick Start Example
+
 ```typescript
 // 1. Initialize ZainCash Payment
 const zaincashNode = new ZainCashPaymentNode();
@@ -561,17 +611,17 @@ const zaincashNode = new ZainCashPaymentNode();
 // 2. Configure payment request
 const paymentRequest = {
   amount: 5000, // 5000 IQD
-  serviceType: 'government_services',
-  orderId: 'GOV-PAYMENT-001',
+  serviceType: "government_services",
+  orderId: "GOV-PAYMENT-001",
   customerInfo: {
-    name: 'أحمد محمد علي',
-    phone: '+964-771-234-5678'
+    name: "أحمد محمد علي",
+    phone: "+964-771-234-5678",
   },
   culturalContext: {
-    language: 'ar',
+    language: "ar",
     islamicCompliance: true,
-    governmentStandard: true
-  }
+    governmentStandard: true,
+  },
 };
 
 // 3. Process payment
@@ -579,6 +629,7 @@ const result = await zaincashNode.execute(paymentRequest);
 ```
 
 ### Production Deployment Checklist
+
 - [ ] Configure all gateway credentials
 - [ ] Set up SSL certificates
 - [ ] Configure audit logging
@@ -593,12 +644,14 @@ const result = await zaincashNode.execute(paymentRequest);
 ## 📞 Support and Documentation
 
 ### Technical Support
+
 - **Documentation**: Complete API documentation included
 - **Examples**: Production-ready integration examples
 - **Testing**: Comprehensive test suites
 - **Monitoring**: Real-time performance dashboards
 
 ### Compliance Support
+
 - **Islamic Banking**: Sharia compliance guidance
 - **Iraqi Regulations**: Central Bank compliance assistance
 - **Security Standards**: PCI DSS and government security

@@ -3,18 +3,26 @@
  * Enhanced types for cultural intelligence and Arabic RTL support
  */
 
-export type ExecutionStatus = 
-  | 'new'
-  | 'running' 
-  | 'success'
-  | 'error'
-  | 'canceled'
-  | 'waiting'
-  | 'warning';
+export type ExecutionStatus =
+  | "new"
+  | "running"
+  | "success"
+  | "error"
+  | "canceled"
+  | "waiting"
+  | "warning";
 
 export interface IExecutionResponse {
   data: IRunExecutionData;
-  mode: 'cli' | 'error' | 'integrated' | 'internal' | 'manual' | 'retry' | 'trigger' | 'webhook';
+  mode:
+    | "cli"
+    | "error"
+    | "integrated"
+    | "internal"
+    | "manual"
+    | "retry"
+    | "trigger"
+    | "webhook";
   startedAt: Date;
   stoppedAt: Date | null;
   finished: boolean;
@@ -43,7 +51,7 @@ export interface IRunExecutionData {
 }
 
 export interface IWorkflowSettings {
-  executionOrder: 'v0' | 'v1';
+  executionOrder: "v0" | "v1";
   saveManualExecutions: boolean;
   callerPolicy: string;
   errorWorkflow?: string;
@@ -75,9 +83,16 @@ export interface IWorkflowExecuteAdditionalData {
 
 export interface IWorkflowExecuteHooks {
   workflowExecuteBefore?: (workflow: any) => Promise<void>;
-  workflowExecuteAfter?: (data: IExecutionResponse, workflow: any) => Promise<void>;
+  workflowExecuteAfter?: (
+    data: IExecutionResponse,
+    workflow: any,
+  ) => Promise<void>;
   nodeExecuteBefore?: (nodeName: string, node: INode) => Promise<void>;
-  nodeExecuteAfter?: (nodeName: string, data: any, node: INode) => Promise<void>;
+  nodeExecuteAfter?: (
+    nodeName: string,
+    data: any,
+    node: INode,
+  ) => Promise<void>;
 }
 
 export interface INode {
@@ -94,7 +109,7 @@ export interface INode {
   waitBetweenTries?: number;
   alwaysOutputData?: boolean;
   executeOnce?: boolean;
-  onError?: 'stopWorkflow' | 'continueRegularOutput' | 'continueErrorOutput';
+  onError?: "stopWorkflow" | "continueRegularOutput" | "continueErrorOutput";
   continueOnFail?: boolean;
   parameters: INodeParameters;
   credentials?: INodeCredentials;
@@ -195,8 +210,8 @@ export interface IWorkflowBase {
   meta?: IWorkflowMetadata;
   // Iraqi-specific workflow properties
   culturalProfile?: {
-    targetAudience: 'government' | 'private' | 'education' | 'healthcare';
-    languageSupport: 'arabic' | 'english' | 'bilingual';
+    targetAudience: "government" | "private" | "education" | "healthcare";
+    languageSupport: "arabic" | "english" | "bilingual";
     islamicCompliance: boolean;
     ministryApproval?: string;
   };
@@ -261,13 +276,13 @@ export class ExecutionError extends Error {
     public cause?: Error,
     // Iraqi-specific error properties
     public culturalIssue?: {
-      type: 'islamic_compliance' | 'arabic_processing' | 'cultural_sensitivity';
-      severity: 'low' | 'medium' | 'high' | 'critical';
+      type: "islamic_compliance" | "arabic_processing" | "cultural_sensitivity";
+      severity: "low" | "medium" | "high" | "critical";
       recommendations: string[];
-    }
+    },
   ) {
     super(message);
-    this.name = 'ExecutionError';
+    this.name = "ExecutionError";
   }
 }
 
@@ -289,7 +304,12 @@ export interface ICulturalComplianceMetrics {
 
 export interface IIslamicComplianceConfig {
   strictMode: boolean;
-  professionalDomain: 'health' | 'education' | 'interior' | 'justice' | 'general';
+  professionalDomain:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "general";
   allowedBusinessHours?: {
     start: string; // HH:mm format
     end: string; // HH:mm format
@@ -312,24 +332,24 @@ export interface IArabicProcessingConfig {
     fallbackFonts: string[];
   };
   textDirection?: {
-    arabic: 'rtl';
-    english: 'ltr';
-    mixed: 'auto';
+    arabic: "rtl";
+    english: "ltr";
+    mixed: "auto";
   };
 }
 
 export interface IIraqiTimezoneConfig {
-  timezone: 'Asia/Baghdad';
+  timezone: "Asia/Baghdad";
   hijriCalendar: boolean;
   prayerTimeAwareness: boolean;
   workingHours: {
-    sunday: { start: string; end: string; };
-    monday: { start: string; end: string; };
-    tuesday: { start: string; end: string; };
-    wednesday: { start: string; end: string; };
-    thursday: { start: string; end: string; };
-    friday?: { start: string; end: string; }; // Optional for government offices
-    saturday: { start: string; end: string; };
+    sunday: { start: string; end: string };
+    monday: { start: string; end: string };
+    tuesday: { start: string; end: string };
+    wednesday: { start: string; end: string };
+    thursday: { start: string; end: string };
+    friday?: { start: string; end: string }; // Optional for government offices
+    saturday: { start: string; end: string };
   };
   holidays: {
     islamic: string[]; // Hijri dates
@@ -358,7 +378,7 @@ export interface IIraqiServiceIntegration {
       partnerId?: string;
     };
   };
-  
+
   governmentAPIs: {
     citizenId: {
       enabled: boolean;
@@ -366,13 +386,13 @@ export interface IIraqiServiceIntegration {
       certificateValidation: boolean;
     };
     ministryServices: {
-      health: { enabled: boolean; endpoints: string[]; };
-      education: { enabled: boolean; endpoints: string[]; };
-      interior: { enabled: boolean; endpoints: string[]; };
-      justice: { enabled: boolean; endpoints: string[]; };
+      health: { enabled: boolean; endpoints: string[] };
+      education: { enabled: boolean; endpoints: string[] };
+      interior: { enabled: boolean; endpoints: string[] };
+      justice: { enabled: boolean; endpoints: string[] };
     };
   };
-  
+
   arabicNLP: {
     dialectProcessing: boolean;
     sentimentAnalysis: boolean;
@@ -384,11 +404,11 @@ export interface IIraqiServiceIntegration {
 // Node Type Definitions for Iraqi Services
 
 export interface IIraqiPaymentNode extends INode {
-  type: 'iraqi-payment';
+  type: "iraqi-payment";
   parameters: {
-    gateway: 'zainCash' | 'fastPay' | 'nassWallet';
+    gateway: "zainCash" | "fastPay" | "nassWallet";
     amount: number;
-    currency: 'IQD';
+    currency: "IQD";
     description: string;
     arabicDescription?: string;
     customerPhone: string;
@@ -397,9 +417,9 @@ export interface IIraqiPaymentNode extends INode {
 }
 
 export interface IIraqiGovernmentNode extends INode {
-  type: 'iraqi-government';
+  type: "iraqi-government";
   parameters: {
-    ministry: 'health' | 'education' | 'interior' | 'justice';
+    ministry: "health" | "education" | "interior" | "justice";
     service: string;
     citizenId?: string;
     arabicForm: boolean;
@@ -408,19 +428,19 @@ export interface IIraqiGovernmentNode extends INode {
 }
 
 export interface IIraqiArabicNLPNode extends INode {
-  type: 'iraqi-arabic-nlp';
+  type: "iraqi-arabic-nlp";
   parameters: {
-    operation: 'sentiment' | 'entity' | 'classification' | 'translation';
+    operation: "sentiment" | "entity" | "classification" | "translation";
     text: string;
-    dialect: 'baghdadi' | 'basri' | 'moslawi' | 'standard';
-    outputFormat: 'json' | 'text';
+    dialect: "baghdadi" | "basri" | "moslawi" | "standard";
+    outputFormat: "json" | "text";
   };
 }
 
 export interface ICulturalValidationNode extends INode {
-  type: 'cultural-validation';
+  type: "cultural-validation";
   parameters: {
-    validationType: 'islamic' | 'arabic' | 'professional' | 'complete';
+    validationType: "islamic" | "arabic" | "professional" | "complete";
     strictMode: boolean;
     professionalDomain?: string;
     generateReport: boolean;

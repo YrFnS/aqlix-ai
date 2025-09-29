@@ -46,9 +46,7 @@
           "*.creditbank.iq"
         ],
         "validation_score": 0.9733333333333333,
-        "issues": [
-          "Cultural validation failed"
-        ],
+        "issues": ["Cultural validation failed"],
         "cultural_score": 0.95,
         "islamic_score": 0.98,
         "security_score": 0.99,
@@ -72,9 +70,7 @@
           "*.mohesr.gov.iq"
         ],
         "validation_score": 0.93,
-        "issues": [
-          "Cultural validation failed"
-        ],
+        "issues": ["Cultural validation failed"],
         "cultural_score": 0.93,
         "islamic_score": 0.97,
         "security_score": 0.89,
@@ -98,9 +94,7 @@
           "*.health-dohuk.gov.iq"
         ],
         "validation_score": 0.93,
-        "issues": [
-          "Cultural validation failed"
-        ],
+        "issues": ["Cultural validation failed"],
         "cultural_score": 0.94,
         "islamic_score": 0.96,
         "security_score": 0.89,
@@ -123,9 +117,7 @@
           "*.post.gov.iq"
         ],
         "validation_score": 0.9766666666666666,
-        "issues": [
-          "Cultural validation failed"
-        ],
+        "issues": ["Cultural validation failed"],
         "cultural_score": 0.95,
         "islamic_score": 0.98,
         "security_score": 1.0,

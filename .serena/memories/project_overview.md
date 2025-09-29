@@ -1,9 +1,11 @@
 # Iraqi AI Chat System - Project Overview
 
 ## Purpose
+
 Iraqi AI chat system designed for Iraqi professionals (lawyers, teachers, doctors, engineers) and general users. Features cultural sensitivity, Arabic RTL support, and Iraqi dialect processing.
 
 ## Tech Stack
+
 - **Frontend**: Next.js 15+, TypeScript, Arabic RTL support
 - **Backend**: Python FastAPI, PydanticAI, OpenAI GPT-4o
 - **Shared**: Cross-platform packages for web/mobile future
@@ -11,6 +13,7 @@ Iraqi AI chat system designed for Iraqi professionals (lawyers, teachers, doctor
 - **Languages**: Iraqi Arabic (primary), Standard Arabic, English
 
 ## Key Features
+
 - Privacy-first training (session-only, 1-hour auto-expire)
 - Iraqi cultural context and Arabic RTL support
 - Professional domain expertise

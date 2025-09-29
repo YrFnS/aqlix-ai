@@ -88,7 +88,7 @@ async def main():
         name="my-iraqi-assistant",
         system_prompt="You are a helpful Iraqi AI assistant with cultural intelligence."
     )
-    
+
     # Set up cultural context
     context = IraqiCulturalContext(
         user_cultural_background="iraqi",
@@ -96,16 +96,16 @@ async def main():
         islamic_compliance_required=True,
         professional_domain=ProfessionalDomain.BUSINESS
     )
-    
+
     # Process message
     input_msg = IraqiAgentInput(
         message="السلام عليكم، أريد معلومات عن التجارة في العراق",
         cultural_context=context,
         require_validation=True
     )
-    
+
     result = await agent.process_message(input_msg)
-    
+
     print(f"Response: {result.response}")
     print(f"Cultural Score: {result.cultural_validation.cultural_appropriateness:.3f}")
     print(f"Islamic Compliance: {result.cultural_validation.islamic_compliance:.3f}")
@@ -151,7 +151,7 @@ graph TD
     F --> G[Response Generation]
     G --> H[Cultural Validation]
     H --> I[Final Response]
-    
+
     J[Iraqi Cultural Database] --> B
     K[Arabic NLP Engine] --> C
     L[Islamic Knowledge Base] --> D
@@ -325,13 +325,13 @@ for model_name, model_stats in stats['model_stats'].items():
 
 ### Performance Targets
 
-| Metric | Target | Actual |
-|--------|--------|--------|
+| Metric              | Target | Actual |
+| ------------------- | ------ | ------ |
 | Cultural Validation | <200ms | ~150ms |
-| Islamic Compliance | 100% | 99.8% |
-| Arabic RTL Accuracy | >99% | 99.2% |
-| Dialect Recognition | >85% | 87% |
-| Agent Response Time | <2s | ~1.2s |
+| Islamic Compliance  | 100%   | 99.8%  |
+| Arabic RTL Accuracy | >99%   | 99.2%  |
+| Dialect Recognition | >85%   | 87%    |
+| Agent Response Time | <2s    | ~1.2s  |
 
 ---
 
@@ -376,7 +376,7 @@ The test suite covers:
 
 - ✅ Agent creation and initialization
 - ✅ Message processing with cultural validation
-- ✅ Arabic text detection and RTL processing  
+- ✅ Arabic text detection and RTL processing
 - ✅ Islamic compliance validation
 - ✅ Professional domain context handling
 - ✅ Payment gateway validation
@@ -432,11 +432,11 @@ async def health_check():
     try:
         # Test agent creation
         agent = await create_iraqi_agent("health-check-agent")
-        
+
         # Test cultural validation
         test_msg = IraqiAgentInput(message="السلام عليكم")
         result = await agent.process_message(test_msg)
-        
+
         return {
             "status": "healthy",
             "cultural_intelligence": "operational",
@@ -463,7 +463,7 @@ class CustomIraqiValidator(IraqiCulturalValidator):
         # Custom validation logic
         cultural_score = await self.analyze_iraqi_cultural_patterns(content)
         islamic_score = await self.validate_islamic_principles(content)
-        
+
         return IraqiValidationResult(
             cultural_appropriateness=cultural_score,
             islamic_compliance=islamic_score,
@@ -482,44 +482,44 @@ agent = IraqiBaseAgent(
 ```python
 async def multi_agent_iraqi_workflow():
     """Example of coordinated Iraqi agents for different domains"""
-    
+
     # Create specialized agents
     legal_agent = await create_iraqi_agent(
         name="iraqi-legal-expert",
         system_prompt="Iraqi legal expert with Sharia compliance"
     )
-    
+
     business_agent = await create_iraqi_agent(
-        name="iraqi-business-advisor", 
+        name="iraqi-business-advisor",
         system_prompt="Iraqi business advisor with Islamic finance expertise"
     )
-    
+
     cultural_agent = await create_iraqi_agent(
         name="iraqi-cultural-guide",
         system_prompt="Iraqi cultural guide with traditional knowledge"
     )
-    
+
     # Coordinate responses
     user_query = "I want to start a business in Iraq following Islamic principles"
-    
+
     # Get legal perspective
     legal_context = IraqiCulturalContext(professional_domain=ProfessionalDomain.LEGAL)
     legal_response = await legal_agent.process_message(
         IraqiAgentInput(message=user_query, cultural_context=legal_context)
     )
-    
-    # Get business perspective  
+
+    # Get business perspective
     business_context = IraqiCulturalContext(professional_domain=ProfessionalDomain.BUSINESS)
     business_response = await business_agent.process_message(
         IraqiAgentInput(message=user_query, cultural_context=business_context)
     )
-    
+
     # Get cultural perspective
     cultural_context = IraqiCulturalContext(professional_domain=ProfessionalDomain.CULTURAL)
     cultural_response = await cultural_agent.process_message(
         IraqiAgentInput(message=user_query, cultural_context=cultural_context)
     )
-    
+
     # Combine insights
     return {
         "legal_guidance": legal_response,
@@ -563,11 +563,11 @@ from apps.agents.core.tools import tool, IraqiToolResult, IraqiToolContext
 @tool
 async def my_iraqi_tool(input_data: str, context: IraqiToolContext) -> IraqiToolResult:
     """Custom Iraqi AI tool with cultural intelligence"""
-    
+
     # Implement tool logic with cultural validation
     cultural_validation = await validate_cultural_appropriateness(input_data)
     islamic_compliance = await check_islamic_compliance(input_data)
-    
+
     return IraqiToolResult(
         success=True,
         data={"processed": input_data},
@@ -585,7 +585,7 @@ IRAQI_TOOLS["my_iraqi_tool"] = my_iraqi_tool
 ## 📖 Documentation
 
 - [API Reference](docs/api.md) - Complete API documentation
-- [Cultural Guidelines](docs/cultural-guidelines.md) - Iraqi cultural implementation guide  
+- [Cultural Guidelines](docs/cultural-guidelines.md) - Iraqi cultural implementation guide
 - [Islamic Compliance](docs/islamic-compliance.md) - Islamic principles validation
 - [Arabic Processing](docs/arabic-processing.md) - RTL and dialect processing
 - [Payment Integration](docs/payment-integration.md) - Iraqi payment gateway guide

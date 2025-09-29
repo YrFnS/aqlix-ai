@@ -6,13 +6,13 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "jsx": "react-jsx",
-    
+
     /* Bundler mode */
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    
+
     /* Type Checking */
     "strict": true,
     "noUnusedLocals": false,
@@ -24,7 +24,7 @@
     "noImplicitOverride": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    
+
     /* Modules */
     "baseUrl": ".",
     "paths": {
@@ -34,7 +34,7 @@
       "@/types/*": ["src/types/*"],
       "@/styles/*": ["styles/*"]
     },
-    
+
     /* Emit */
     "outDir": "./dist",
     "rootDir": "./src",
@@ -44,35 +44,29 @@
     "removeComments": false,
     "importHelpers": true,
     "downlevelIteration": true,
-    
+
     /* JavaScript Support */
     "allowJs": true,
     "checkJs": false,
-    
+
     /* Interop Constraints */
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    
+
     /* Skip Lib Check */
     "skipLibCheck": true,
-    
+
     /* Advanced Options */
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": true,
-    
+
     /* Performance */
     "incremental": true,
     "tsBuildInfoFile": "./.tsbuildinfo"
   },
-  "include": [
-    "src/**/*",
-    "examples/**/*",
-    "tests/**/*",
-    "*.ts",
-    "*.tsx"
-  ],
+  "include": ["src/**/*", "examples/**/*", "tests/**/*", "*.ts", "*.tsx"],
   "exclude": [
     "node_modules",
     "dist",

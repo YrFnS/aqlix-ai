@@ -1,9 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { GitBranch, ChevronDown, Clock, RotateCcw, Check, AlertCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  GitBranch,
+  ChevronDown,
+  Clock,
+  RotateCcw,
+  Check,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,14 +19,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useAgentVersions, useActivateAgentVersion, useCreateAgentVersion } from '@/lib/versioning';
-import { formatDistanceToNow } from 'date-fns';
-import { toast } from 'sonner';
-import type { AgentVersion } from '@/lib/versioning';
-import { VersionInlineEditor } from './version-inline-editor';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  useAgentVersions,
+  useActivateAgentVersion,
+  useCreateAgentVersion,
+} from "@/lib/versioning";
+import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
+import type { AgentVersion } from "@/lib/versioning";
+import { VersionInlineEditor } from "./version-inline-editor";
 
 interface AgentVersionSwitcherProps {
   agentId: string;
@@ -31,25 +43,29 @@ interface AgentVersionSwitcherProps {
   };
 }
 
-export function AgentVersionSwitcher({ 
-  agentId, 
+export function AgentVersionSwitcher({
+  agentId,
   currentVersionId,
-  currentFormData 
+  currentFormData,
 }: AgentVersionSwitcherProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const versionParam = searchParams.get('version');
-  
+  const versionParam = searchParams.get("version");
+
   const { data: versions, isLoading } = useAgentVersions(agentId);
   const activateVersionMutation = useActivateAgentVersion();
   const createVersionMutation = useCreateAgentVersion();
-  
+
   const [showRollbackDialog, setShowRollbackDialog] = useState(false);
-  const [selectedVersion, setSelectedVersion] = useState<AgentVersion | null>(null);
+  const [selectedVersion, setSelectedVersion] = useState<AgentVersion | null>(
+    null,
+  );
   const [isRollingBack, setIsRollingBack] = useState(false);
 
   const viewingVersionId = versionParam || currentVersionId;
-  const viewingVersion = versions?.find(v => v.versionId.value === viewingVersionId) || versions?.[0];
+  const viewingVersion =
+    versions?.find((v) => v.versionId.value === viewingVersionId) ||
+    versions?.[0];
 
   const canRollback = viewingVersion && viewingVersion.versionNumber.value > 1;
 
@@ -57,11 +73,13 @@ export function AgentVersionSwitcher({
     if (version.versionId.value === viewingVersionId) return;
     const params = new URLSearchParams(searchParams.toString());
     if (version.versionId.value === currentVersionId) {
-      params.delete('version');
+      params.delete("version");
     } else {
-      params.set('version', version.versionId.value);
+      params.set("version", version.versionId.value);
     }
-    const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    const newUrl = params.toString()
+      ? `?${params.toString()}`
+      : window.location.pathname;
     router.push(newUrl);
     if (version.versionId.value !== currentVersionId) {
       toast.success(`Viewing ${version.versionName} (read-only)`);
@@ -70,7 +88,7 @@ export function AgentVersionSwitcher({
 
   const handleRollback = async () => {
     if (!selectedVersion || !viewingVersion) return;
-    
+
     setIsRollingBack(true);
     try {
       const newVersion = await createVersionMutation.mutateAsync({
@@ -80,24 +98,28 @@ export function AgentVersionSwitcher({
           configured_mcps: selectedVersion.configuredMcps,
           custom_mcps: selectedVersion.customMcps,
           agentpress_tools: selectedVersion.toolConfiguration.tools,
-          description: `Rolled back from ${viewingVersion.versionName} to ${selectedVersion.versionName}`
-        }
+          description: `Rolled back from ${viewingVersion.versionName} to ${selectedVersion.versionName}`,
+        },
       });
-      await activateVersionMutation.mutateAsync({ 
-        agentId, 
-        versionId: newVersion.versionId.value 
+      await activateVersionMutation.mutateAsync({
+        agentId,
+        versionId: newVersion.versionId.value,
       });
-      
+
       const params = new URLSearchParams(searchParams.toString());
-      params.delete('version');
-      const newUrl = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      params.delete("version");
+      const newUrl = params.toString()
+        ? `?${params.toString()}`
+        : window.location.pathname;
       router.push(newUrl);
 
       setShowRollbackDialog(false);
-      toast.success(`Rolled back to ${selectedVersion.versionName} configuration`);
+      toast.success(
+        `Rolled back to ${selectedVersion.versionName} configuration`,
+      );
     } catch (error) {
-      console.error('Failed to rollback:', error);
-      toast.error('Failed to rollback version');
+      console.error("Failed to rollback:", error);
+      toast.error("Failed to rollback version");
     } finally {
       setIsRollingBack(false);
     }
@@ -112,7 +134,9 @@ export function AgentVersionSwitcher({
     return (
       <div className="flex items-center gap-2 px-3 py-2">
         <Loader2 className="h-4 w-4 animate-spin" />
-        <span className="text-sm text-muted-foreground">Loading versions...</span>
+        <span className="text-sm text-muted-foreground">
+          Loading versions...
+        </span>
       </div>
     );
   }
@@ -135,7 +159,7 @@ export function AgentVersionSwitcher({
                 )}
               </>
             ) : (
-              'Select Version'
+              "Select Version"
             )}
             <ChevronDown className="h-4 w-4 ml-1" />
           </Button>
@@ -143,19 +167,21 @@ export function AgentVersionSwitcher({
         <DropdownMenuContent align="start" className="w-80">
           <DropdownMenuLabel>Version History</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          
+
           <div className="max-h-96 overflow-y-auto">
             {versions.map((version) => {
               const isViewing = version.versionId.value === viewingVersionId;
               const isCurrent = version.versionId.value === currentVersionId;
-              
+
               return (
                 <div key={version.versionId.value} className="relative mb-1">
-                  <div className={`p-2 hover:bg-accent rounded-sm ${isViewing ? 'bg-accent' : ''}`}>
+                  <div
+                    className={`p-2 hover:bg-accent rounded-sm ${isViewing ? "bg-accent" : ""}`}
+                  >
                     <div className="flex items-start justify-between w-full">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <div 
+                          <div
                             className="flex-1 cursor-pointer"
                             onClick={() => handleVersionSelect(version)}
                           >
@@ -178,17 +204,19 @@ export function AgentVersionSwitcher({
                             </Badge>
                           )}
                         </div>
-                        <div 
+                        <div
                           className="flex items-center gap-2 mt-1 cursor-pointer"
                           onClick={() => handleVersionSelect(version)}
                         >
                           <Clock className="h-3 w-3 text-muted-foreground" />
                           <span className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(version.createdAt, { addSuffix: true })}
+                            {formatDistanceToNow(version.createdAt, {
+                              addSuffix: true,
+                            })}
                           </span>
                         </div>
                       </div>
-                      
+
                       {isViewing && (
                         <Check className="h-4 w-4 text-primary ml-2" />
                       )}
@@ -210,4 +238,4 @@ export function AgentVersionSwitcher({
       </DropdownMenu>
     </>
   );
-} 
+}

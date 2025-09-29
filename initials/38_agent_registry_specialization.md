@@ -15,6 +15,7 @@
 ### 1. Centralized Agent Registry
 
 **Core Registry Engine**:
+
 ```python
 class IraqiAgentRegistry:
     def __init__(self):
@@ -142,6 +143,7 @@ class AgentConfiguration:
 ### 2. Dynamic Specialization Management
 
 **Specialization Tracking & Evolution**:
+
 ```typescript
 interface AgentSpecialization {
   specialization_id: string;
@@ -181,37 +183,38 @@ class SpecializationManager {
   async updateSpecialization(
     agentId: string,
     specializationId: string,
-    performanceMetrics: PerformanceMetrics
+    performanceMetrics: PerformanceMetrics,
   ): Promise<SpecializationUpdateResult> {
-
     // Get current specialization
-    const currentSpecialization = await this.specializationDatabase.getSpecialization(
-      agentId,
-      specializationId
-    );
+    const currentSpecialization =
+      await this.specializationDatabase.getSpecialization(
+        agentId,
+        specializationId,
+      );
 
     // Analyze performance trends
-    const performanceAnalysis = await this.performanceAnalyzer.analyzeSpecializationPerformance(
-      currentSpecialization,
-      performanceMetrics
-    );
+    const performanceAnalysis =
+      await this.performanceAnalyzer.analyzeSpecializationPerformance(
+        currentSpecialization,
+        performanceMetrics,
+      );
 
     // Update proficiency based on performance
     const updatedProficiency = await this.learningEngine.updateProficiency(
       currentSpecialization.proficiency_level,
-      performanceAnalysis
+      performanceAnalysis,
     );
 
     // Update accuracy metrics
     const updatedAccuracy = await this.calculateUpdatedAccuracy(
       currentSpecialization,
-      performanceMetrics
+      performanceMetrics,
     );
 
     // Cultural performance updates
     const culturalUpdates = await this.updateCulturalSpecialization(
       currentSpecialization,
-      performanceMetrics.cultural_metrics
+      performanceMetrics.cultural_metrics,
     );
 
     // Create updated specialization
@@ -221,14 +224,15 @@ class SpecializationManager {
       accuracy_rate: updatedAccuracy,
       cultural_accuracy: culturalUpdates.cultural_accuracy,
       islamic_compliance_rate: culturalUpdates.islamic_compliance_rate,
-      arabic_processing_capability: culturalUpdates.arabic_processing_capability,
-      last_updated: new Date()
+      arabic_processing_capability:
+        culturalUpdates.arabic_processing_capability,
+      last_updated: new Date(),
     };
 
     // Store updated specialization
     const saveResult = await this.specializationDatabase.saveSpecialization(
       agentId,
-      updatedSpecialization
+      updatedSpecialization,
     );
 
     return SpecializationUpdateResult({
@@ -236,50 +240,50 @@ class SpecializationManager {
       specialization: updatedSpecialization,
       performance_improvement: this.calculatePerformanceImprovement(
         currentSpecialization,
-        updatedSpecialization
+        updatedSpecialization,
       ),
       cultural_improvement: this.calculateCulturalImprovement(
         currentSpecialization.cultural_accuracy,
-        updatedSpecialization.cultural_accuracy
-      )
+        updatedSpecialization.cultural_accuracy,
+      ),
     });
   }
 
   async discoverNewSpecializations(
     agentId: string,
-    recentPerformance: RecentPerformanceData
+    recentPerformance: RecentPerformanceData,
   ): Promise<NewSpecializationDiscovery> {
-
     // Analyze patterns in recent performance
-    const patterns = await this.learningEngine.analyzePerformancePatterns(
-      recentPerformance
-    );
+    const patterns =
+      await this.learningEngine.analyzePerformancePatterns(recentPerformance);
 
     // Identify potential new specializations
-    const potentialSpecializations = await this.identifyPotentialSpecializations(
-      patterns
-    );
+    const potentialSpecializations =
+      await this.identifyPotentialSpecializations(patterns);
 
     // Validate specializations
     const validatedSpecializations = await this.validateSpecializations(
       agentId,
-      potentialSpecializations
+      potentialSpecializations,
     );
 
     // Cultural specialization opportunities
-    const culturalOpportunities = await this.identifyCulturalSpecializationOpportunities(
-      agentId,
-      recentPerformance.cultural_performance
-    );
+    const culturalOpportunities =
+      await this.identifyCulturalSpecializationOpportunities(
+        agentId,
+        recentPerformance.cultural_performance,
+      );
 
     return NewSpecializationDiscovery({
       potential_specializations: validatedSpecializations,
       cultural_opportunities: culturalOpportunities,
-      confidence_scores: this.calculateConfidenceScores(validatedSpecializations),
+      confidence_scores: this.calculateConfidenceScores(
+        validatedSpecializations,
+      ),
       recommended_specializations: this.selectRecommendedSpecializations(
         validatedSpecializations,
-        culturalOpportunities
-      )
+        culturalOpportunities,
+      ),
     });
   }
 }
@@ -288,6 +292,7 @@ class SpecializationManager {
 ### 3. Cultural Profile Management
 
 **Cultural Capability Tracking**:
+
 ```python
 class CulturalProfileManager:
     def __init__(self):
@@ -418,6 +423,7 @@ class CulturalCapabilities:
 ### 4. Performance-Based Agent Ranking
 
 **Intelligent Agent Ranking System**:
+
 ```typescript
 class AgentRankingSystem {
   private performanceWeights: PerformanceWeights;
@@ -427,40 +433,39 @@ class AgentRankingSystem {
   async rankAgents(
     agents: Agent[],
     requirements: AgentRequirements,
-    context: RankingContext
+    context: RankingContext,
   ): Promise<RankedAgentList> {
-
     const rankedAgents: RankedAgent[] = [];
 
     for (const agent of agents) {
       // Calculate performance score
       const performanceScore = await this.calculatePerformanceScore(
         agent,
-        requirements.performance_requirements
+        requirements.performance_requirements,
       );
 
       // Calculate cultural appropriateness score
       const culturalScore = await this.calculateCulturalScore(
         agent,
-        requirements.cultural_requirements
+        requirements.cultural_requirements,
       );
 
       // Calculate specialization match score
       const specializationScore = await this.calculateSpecializationScore(
         agent,
-        requirements.required_specializations
+        requirements.required_specializations,
       );
 
       // Calculate availability score
       const availabilityScore = await this.calculateAvailabilityScore(
         agent,
-        context.urgency_level
+        context.urgency_level,
       );
 
       // Calculate contextual bonus
       const contextualBonus = await this.calculateContextualBonus(
         agent,
-        context
+        context,
       );
 
       // Calculate overall ranking score
@@ -469,7 +474,7 @@ class AgentRankingSystem {
         cultural: culturalScore,
         specialization: specializationScore,
         availability: availabilityScore,
-        contextual: contextualBonus
+        contextual: contextualBonus,
       });
 
       rankedAgents.push({
@@ -484,8 +489,8 @@ class AgentRankingSystem {
           culturalScore,
           specializationScore,
           availabilityScore,
-          contextualBonus
-        )
+          contextualBonus,
+        ),
       });
     }
 
@@ -496,7 +501,7 @@ class AgentRankingSystem {
       ranked_agents: rankedAgents,
       ranking_criteria: this.getCurrentRankingCriteria(),
       context_applied: context,
-      total_agents_ranked: rankedAgents.length
+      total_agents_ranked: rankedAgents.length,
     });
   }
 
@@ -507,45 +512,50 @@ class AgentRankingSystem {
     availability: number;
     contextual: number;
   }): number {
-
     return (
       scores.performance * this.performanceWeights.overall_weight +
       scores.cultural * this.culturalWeights.overall_weight +
       scores.specialization * this.specializationWeights.overall_weight +
       scores.availability * 0.15 + // Availability weight
-      scores.contextual * 0.10 // Contextual bonus weight
+      scores.contextual * 0.1 // Contextual bonus weight
     );
   }
 
   private async calculateCulturalScore(
     agent: Agent,
-    culturalRequirements: CulturalRequirements
+    culturalRequirements: CulturalRequirements,
   ): Promise<number> {
-
     const culturalProfile = await this.getCulturalProfile(agent.id);
 
     let culturalScore = 0;
 
     // Islamic compliance score
     if (culturalRequirements.requires_islamic_compliance) {
-      culturalScore += culturalProfile.islamic_compliance_level * this.culturalWeights.islamic_weight;
+      culturalScore +=
+        culturalProfile.islamic_compliance_level *
+        this.culturalWeights.islamic_weight;
     }
 
     // Arabic processing score
     if (culturalRequirements.requires_arabic_processing) {
-      culturalScore += culturalProfile.arabic_processing_level * this.culturalWeights.arabic_weight;
+      culturalScore +=
+        culturalProfile.arabic_processing_level *
+        this.culturalWeights.arabic_weight;
     }
 
     // Professional cultural score
     if (culturalRequirements.professional_domain) {
-      const professionalScore = culturalProfile.professional_cultural_capabilities.get(
-        culturalRequirements.professional_domain
-      ) || 0;
-      culturalScore += professionalScore * this.culturalWeights.professional_weight;
+      const professionalScore =
+        culturalProfile.professional_cultural_capabilities.get(
+          culturalRequirements.professional_domain,
+        ) || 0;
+      culturalScore +=
+        professionalScore * this.culturalWeights.professional_weight;
     }
 
     // Regional appropriateness score
-    culturalScore += culturalProfile.regional_awareness * this.culturalWeights.regional_weight;
+    culturalScore +=
+      culturalProfile.regional_awareness * this.culturalWeights.regional_weight;
 
     return Math.min(culturalScore, 100); // Cap at 100
   }
@@ -559,6 +569,7 @@ class AgentRankingSystem {
 ### 1. Agent Registration & Onboarding
 
 **Comprehensive Agent Onboarding**:
+
 ```python
 class AgentLifecycleManager:
     def __init__(self):
@@ -648,6 +659,7 @@ class AgentLifecycleManager:
 ### 2. Agent Performance Monitoring
 
 **Continuous Performance Tracking**:
+
 ```typescript
 class AgentPerformanceMonitor {
   private metricsCollector: MetricsCollector;
@@ -655,17 +667,15 @@ class AgentPerformanceMonitor {
   private alertManager: AlertManager;
 
   async monitorAgentPerformance(agentId: string): Promise<void> {
-
     // Continuous monitoring loop
     while (this.isAgentActive(agentId)) {
-
       // Collect performance metrics
       const metrics = await this.metricsCollector.collectAgentMetrics(agentId);
 
       // Analyze performance
       const analysis = await this.performanceAnalyzer.analyzePerformance(
         agentId,
-        metrics
+        metrics,
       );
 
       // Check for performance issues
@@ -682,7 +692,7 @@ class AgentPerformanceMonitor {
       // Cultural performance specific checks
       const culturalAnalysis = await this.analyzeCulturalPerformance(
         agentId,
-        metrics.cultural_metrics
+        metrics.cultural_metrics,
       );
 
       if (culturalAnalysis.requires_attention) {
@@ -695,9 +705,8 @@ class AgentPerformanceMonitor {
   }
 
   private async identifyPerformanceIssues(
-    analysis: PerformanceAnalysis
+    analysis: PerformanceAnalysis,
   ): Promise<PerformanceIssue[]> {
-
     const issues: PerformanceIssue[] = [];
 
     // Response time issues
@@ -707,7 +716,7 @@ class AgentPerformanceMonitor {
         severity: this.calculateSeverity(analysis.average_response_time, 500),
         metric: analysis.average_response_time,
         threshold: 500,
-        recommendation: "Optimize processing algorithms or increase resources"
+        recommendation: "Optimize processing algorithms or increase resources",
       });
     }
 
@@ -718,7 +727,7 @@ class AgentPerformanceMonitor {
         severity: PerformanceIssueSeverity.HIGH,
         metric: analysis.error_rate,
         threshold: 5,
-        recommendation: "Investigate error patterns and implement fixes"
+        recommendation: "Investigate error patterns and implement fixes",
       });
     }
 
@@ -729,7 +738,8 @@ class AgentPerformanceMonitor {
         severity: PerformanceIssueSeverity.CRITICAL,
         metric: analysis.cultural_compliance_rate,
         threshold: 95,
-        recommendation: "Review cultural validation logic and retrain if necessary"
+        recommendation:
+          "Review cultural validation logic and retrain if necessary",
       });
     }
 
@@ -745,6 +755,7 @@ class AgentPerformanceMonitor {
 ### 1. Registry API Interface
 
 **Comprehensive Registry API**:
+
 ```python
 class AgentRegistryAPI:
     def __init__(self, registry: IraqiAgentRegistry):
@@ -796,13 +807,13 @@ class AgentRegistryAPI:
 ### 2. Real-Time Registry Events
 
 **Event-Driven Registry Updates**:
+
 ```typescript
 class RegistryEventManager {
   private eventBus: EventBus;
   private subscribers: Map<string, EventSubscriber[]>;
 
   async publishAgentEvent(event: AgentRegistryEvent): Promise<void> {
-
     // Validate event
     const validation = await this.validateEvent(event);
     if (!validation.is_valid) {
@@ -827,9 +838,8 @@ class RegistryEventManager {
 
   async subscribeToEvents(
     eventTypes: RegistryEventType[],
-    subscriber: EventSubscriber
+    subscriber: EventSubscriber,
   ): Promise<SubscriptionResult> {
-
     for (const eventType of eventTypes) {
       if (!this.subscribers.has(eventType)) {
         this.subscribers.set(eventType, []);
@@ -840,19 +850,19 @@ class RegistryEventManager {
     return SubscriptionResult({
       subscribed_events: eventTypes,
       subscriber_id: subscriber.id,
-      subscription_successful: true
+      subscription_successful: true,
     });
   }
 }
 
 enum RegistryEventType {
-  AGENT_REGISTERED = 'agent_registered',
-  AGENT_UPDATED = 'agent_updated',
-  AGENT_DEACTIVATED = 'agent_deactivated',
-  SPECIALIZATION_UPDATED = 'specialization_updated',
-  PERFORMANCE_ALERT = 'performance_alert',
-  CULTURAL_COMPLIANCE_ALERT = 'cultural_compliance_alert',
-  CAPABILITY_ENHANCED = 'capability_enhanced'
+  AGENT_REGISTERED = "agent_registered",
+  AGENT_UPDATED = "agent_updated",
+  AGENT_DEACTIVATED = "agent_deactivated",
+  SPECIALIZATION_UPDATED = "specialization_updated",
+  PERFORMANCE_ALERT = "performance_alert",
+  CULTURAL_COMPLIANCE_ALERT = "cultural_compliance_alert",
+  CAPABILITY_ENHANCED = "capability_enhanced",
 }
 ```
 

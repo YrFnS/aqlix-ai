@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { PricingSection } from '@/components/home/sections/pricing-section';
-import { isLocalMode } from '@/lib/config';
-import { createPortalSession } from '@/lib/api';
-import { useAuth } from '@/components/AuthProvider';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useSubscription, useSubscriptionCommitment } from '@/hooks/react-query';
-import Link from 'next/link';
-import { OpenInNewWindowIcon } from '@radix-ui/react-icons';
-import SubscriptionManagementModal from './subscription-management-modal';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PricingSection } from "@/components/home/sections/pricing-section";
+import { isLocalMode } from "@/lib/config";
+import { createPortalSession } from "@/lib/api";
+import { useAuth } from "@/components/AuthProvider";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  useSubscription,
+  useSubscriptionCommitment,
+} from "@/hooks/react-query";
+import Link from "next/link";
+import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
+import SubscriptionManagementModal from "./subscription-management-modal";
 
 type Props = {
   accountId: string;
@@ -28,10 +31,8 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
     error: subscriptionQueryError,
   } = useSubscription();
 
-  const {
-    data: commitmentInfo,
-    isLoading: commitmentLoading,
-  } = useSubscriptionCommitment(subscriptionData?.subscription_id);
+  const { data: commitmentInfo, isLoading: commitmentLoading } =
+    useSubscriptionCommitment(subscriptionData?.subscription_id);
 
   const handleManageSubscription = async () => {
     try {
@@ -39,9 +40,9 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
       const { url } = await createPortalSession({ return_url: returnUrl });
       window.location.href = url;
     } catch (err) {
-      console.error('Failed to create portal session:', err);
+      console.error("Failed to create portal session:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to create portal session',
+        err instanceof Error ? err.message : "Failed to create portal session",
       );
     } finally {
       setIsManaging(false);
@@ -86,7 +87,7 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
         <h2 className="text-xl font-semibold mb-4">Billing Status</h2>
         <div className="p-4 mb-4 bg-destructive/10 border border-destructive/20 rounded-lg text-center">
           <p className="text-sm text-destructive">
-            Error loading billing status:{' '}
+            Error loading billing status:{" "}
             {error || subscriptionQueryError.message}
           </p>
         </div>
@@ -98,13 +99,13 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
     return subscriptionData?.plan_name === planId;
   };
 
-  const planName = isPlan('free')
-    ? 'Free'
-    : isPlan('base')
-      ? 'Pro'
-      : isPlan('extra')
-        ? 'Enterprise'
-        : 'Unknown';
+  const planName = isPlan("free")
+    ? "Free"
+    : isPlan("base")
+      ? "Pro"
+      : isPlan("extra")
+        ? "Enterprise"
+        : "Unknown";
 
   return (
     <div className="rounded-xl border shadow-sm bg-card p-6">
@@ -119,30 +120,33 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
                   Agent Usage This Month
                 </span>
                 <span className="text-sm font-medium text-card-title">
-                  ${subscriptionData.current_usage?.toFixed(2) || '0'} /{' '}
-                  ${subscriptionData.cost_limit || '0'}
+                  ${subscriptionData.current_usage?.toFixed(2) || "0"} / $
+                  {subscriptionData.cost_limit || "0"}
                 </span>
-                <Button variant='outline' asChild className='text-sm'>
-                  <Link href="/settings/usage-logs">
-                    Usage logs
-                  </Link>
+                <Button variant="outline" asChild className="text-sm">
+                  <Link href="/settings/usage-logs">Usage logs</Link>
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Plans Comparison */}
-          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} insideDialog={true} />
+          <PricingSection
+            returnUrl={returnUrl}
+            showTitleAndTabs={false}
+            insideDialog={true}
+          />
 
           <div className="mt-8"></div>
           {/* Manage Subscription Button */}
-          <div className='flex justify-center items-center gap-4'>
+          <div className="flex justify-center items-center gap-4">
             <Button
               variant="outline"
               className="border-border hover:bg-muted/50 shadow-sm hover:shadow-md transition-all whitespace-nowrap flex items-center"
             >
               <Link href="/model-pricing">
-                View Model Pricing <OpenInNewWindowIcon className='w-4 h-4 inline ml-2' />
+                View Model Pricing{" "}
+                <OpenInNewWindowIcon className="w-4 h-4 inline ml-2" />
               </Link>
             </Button>
             <Button
@@ -171,20 +175,24 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
                   Agent Usage This Month
                 </span>
                 <span className="text-sm font-medium text-card-title">
-                  ${subscriptionData?.current_usage?.toFixed(2) || '0'} /{' '}
-                  ${subscriptionData?.cost_limit || '0'}
+                  ${subscriptionData?.current_usage?.toFixed(2) || "0"} / $
+                  {subscriptionData?.cost_limit || "0"}
                 </span>
               </div>
             </div>
           </div>
 
           {/* Plans Comparison */}
-          <PricingSection returnUrl={returnUrl} showTitleAndTabs={false} insideDialog={true} />
+          <PricingSection
+            returnUrl={returnUrl}
+            showTitleAndTabs={false}
+            insideDialog={true}
+          />
 
           {/* Action Buttons */}
           <div className="space-y-3">
             <Button
-              onClick={() => window.open('/model-pricing', '_blank')}
+              onClick={() => window.open("/model-pricing", "_blank")}
               variant="outline"
               className="w-full border-border hover:bg-muted/50 shadow-sm hover:shadow-md transition-all"
             >
@@ -199,7 +207,7 @@ export default function AccountBillingStatus({ accountId, returnUrl }: Props) {
           </div>
         </>
       )}
-      
+
       <SubscriptionManagementModal
         open={showModal}
         onOpenChange={setShowModal}

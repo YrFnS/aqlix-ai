@@ -9,6 +9,7 @@ Complete browser automation system with multi-LLM integration, designed specific
 ## 🎯 Iraqi-Specific Features
 
 ### Government Portal Automation
+
 - **Passport Office**: Automated renewal applications and status checking
 - **Ministry Websites**: Document downloads and service requests
 - **University Systems**: Application processing and transcript requests
@@ -17,6 +18,7 @@ Complete browser automation system with multi-LLM integration, designed specific
 - **Banking Services**: Account management and transaction processing
 
 ### Arabic & RTL Support
+
 - **Text Detection**: Automatic Arabic content identification
 - **Form Filling**: Iraqi data validation and formatting
 - **Layout Handling**: RTL layout interaction strategies
@@ -24,6 +26,7 @@ Complete browser automation system with multi-LLM integration, designed specific
 - **Dialect Support**: Iraqi Arabic interface recognition
 
 ### Network Optimization
+
 - **Iraqi Conditions**: Optimized for local network speeds
 - **Government Hours**: Respects official working schedules
 - **Retry Strategies**: Handles common portal timeouts
@@ -51,11 +54,13 @@ browser-use-extracted/
 ## 🚀 Quick Start
 
 ### Installation
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Basic Usage
+
 ```python
 from browser_use import Agent
 from browser_use.browser import Browser
@@ -80,12 +85,14 @@ result = await agent.run()
 ## 📊 Capabilities
 
 ### Browser Support
+
 - **Chrome**: Primary automation browser
 - **Firefox**: Secondary support
 - **Safari**: macOS compatibility
 - **Edge**: Windows integration
 
 ### LLM Integration
+
 - **OpenAI GPT-4**: Advanced reasoning
 - **Anthropic Claude**: Cultural awareness
 - **Google Gemini**: Multimodal processing
@@ -93,6 +100,7 @@ result = await agent.run()
 - **Custom Models**: Iraqi-trained variants
 
 ### Automation Features
+
 - **Form Filling**: Intelligent field detection
 - **Document Download**: Automated file processing
 - **Screenshot Analysis**: Visual validation
@@ -102,6 +110,7 @@ result = await agent.run()
 ## 🎯 Iraqi Use Cases
 
 ### Government Services
+
 1. **Passport Services**
    - Renewal applications
    - Status tracking
@@ -127,6 +136,7 @@ result = await agent.run()
    - Compliance reporting
 
 ### Citizen Services
+
 - **Healthcare**: Appointment booking, medical record access
 - **Banking**: Account management, transaction processing
 - **Utilities**: Bill payments, service requests
@@ -135,6 +145,7 @@ result = await agent.run()
 ## 🔧 Configuration
 
 ### Iraqi Portal Settings
+
 ```python
 IRAQI_CONFIG = {
     "arabic_support": True,
@@ -148,6 +159,7 @@ IRAQI_CONFIG = {
 ```
 
 ### Security Settings
+
 ```python
 SECURITY_CONFIG = {
     "secure_credentials": True,
@@ -161,16 +173,19 @@ SECURITY_CONFIG = {
 ## 🔗 Integration
 
 ### Langflow Integration
+
 - Process downloaded documents through Langflow pipelines
 - Automated data extraction and validation
 - Workflow orchestration for complex processes
 
 ### Block/Goose Agents
+
 - Intelligent decision making for web interactions
 - Context-aware navigation strategies
 - Multi-step process coordination
 
 ### Iraqi AI Chat System
+
 - Seamless integration with chat interface
 - Real-time status updates
 - Cultural context preservation
@@ -178,12 +193,14 @@ SECURITY_CONFIG = {
 ## ⚡ Performance
 
 ### Optimization Features
+
 - **Parallel Processing**: Multiple browser sessions
 - **Caching**: Intelligent page and session caching
 - **Load Balancing**: Distributed automation tasks
 - **Resource Management**: Memory and CPU optimization
 
 ### Iraqi Network Conditions
+
 - **Bandwidth Adaptation**: Optimized for local speeds
 - **Timeout Handling**: Extended timeouts for government portals
 - **Retry Logic**: Smart retry strategies for connection issues
@@ -192,12 +209,14 @@ SECURITY_CONFIG = {
 ## 🛡️ Security & Privacy
 
 ### Data Protection
+
 - **Credential Security**: Encrypted storage and transmission
 - **Session Isolation**: Separate sessions for different users
 - **Data Minimization**: Only collect necessary information
 - **Audit Trails**: Complete logging for compliance
 
 ### Cultural Compliance
+
 - **Islamic Values**: Respect for religious principles
 - **Privacy Rights**: Iraqi data protection standards
 - **Government Relations**: Respectful portal interaction
@@ -206,12 +225,14 @@ SECURITY_CONFIG = {
 ## 🧪 Testing
 
 ### Test Coverage
+
 - **Unit Tests**: Component-level validation
 - **Integration Tests**: End-to-end workflows
 - **Cultural Tests**: Iraqi appropriateness validation
 - **Performance Tests**: Load and stress testing
 
 ### Iraqi Portal Testing
+
 - **Government Sites**: Automated testing against real portals
 - **Form Validation**: Iraqi data format compliance
 - **Error Scenarios**: Handling common portal issues
@@ -220,16 +241,19 @@ SECURITY_CONFIG = {
 ## 📈 Development Timeline
 
 ### Phase 1: Core Integration (4-6 weeks)
+
 - Browser engine setup and configuration
 - Basic DOM processing with Arabic support
 - Initial LLM integration
 
 ### Phase 2: Iraqi Customization (6-8 weeks)
+
 - Government portal adaptations
 - Cultural validation systems
 - Arabic RTL optimization
 
 ### Phase 3: Advanced Features (6-9 weeks)
+
 - Multi-step workflow automation
 - Advanced error handling
 - Performance optimization
@@ -239,12 +263,14 @@ SECURITY_CONFIG = {
 ## 🔮 Future Enhancements
 
 ### Planned Features
+
 - **AI Vision**: Screenshot analysis and visual automation
 - **Voice Integration**: Arabic voice commands for automation
 - **Mobile Support**: Mobile browser automation
 - **API Integration**: Direct government API connections
 
 ### Iraqi-Specific Roadmap
+
 - **Regional Expansion**: Support for other Iraqi cities
 - **Service Expansion**: Additional government services
 - **Language Support**: Kurdish and other local languages
@@ -253,6 +279,7 @@ SECURITY_CONFIG = {
 ## 📞 Support
 
 For Iraqi-specific customizations and government portal integrations, refer to:
+
 - `examples/iraqi_government/` - Government portal templates
 - `docs/iraqi_integration.md` - Detailed integration guide
 - `tests/iraqi_portals/` - Government portal test suites
@@ -260,6 +287,7 @@ For Iraqi-specific customizations and government portal integrations, refer to:
 ## 🤝 Contributing
 
 When contributing Iraqi portal automation:
+
 1. Test against real government websites
 2. Ensure cultural appropriateness
 3. Validate Arabic text handling

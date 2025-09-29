@@ -1,28 +1,26 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { 
-  Activity,
-  Copy,
-  ExternalLink,
-  Loader2
-} from 'lucide-react';
-import { TriggerProvider, TriggerConfiguration, ScheduleTriggerConfig } from './types';
-import { ScheduleTriggerConfigForm } from './providers/schedule-config';
-import { getDialogIcon } from './utils';
-
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Activity, Copy, ExternalLink, Loader2 } from "lucide-react";
+import {
+  TriggerProvider,
+  TriggerConfiguration,
+  ScheduleTriggerConfig,
+} from "./types";
+import { ScheduleTriggerConfigForm } from "./providers/schedule-config";
+import { getDialogIcon } from "./utils";
 
 interface TriggerConfigDialogProps {
   provider: TriggerProvider;
@@ -41,8 +39,10 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
   isLoading = false,
   agentId,
 }) => {
-  const [name, setName] = useState(existingConfig?.name || '');
-  const [description, setDescription] = useState(existingConfig?.description || '');
+  const [name, setName] = useState(existingConfig?.name || "");
+  const [description, setDescription] = useState(
+    existingConfig?.description || "",
+  );
   const [isActive, setIsActive] = useState(existingConfig?.is_active ?? true);
   const [config, setConfig] = useState(existingConfig?.config || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,27 +56,27 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     if (!name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     }
-    if (provider.provider_id === 'telegram') {
+    if (provider.provider_id === "telegram") {
       if (!config.bot_token) {
-        newErrors.bot_token = 'Bot token is required';
+        newErrors.bot_token = "Bot token is required";
       }
-    } else if (provider.provider_id === 'slack') {
+    } else if (provider.provider_id === "slack") {
       if (!config.signing_secret) {
-        newErrors.signing_secret = 'Signing secret is required';
+        newErrors.signing_secret = "Signing secret is required";
       }
-    } else if (provider.provider_id === 'schedule') {
+    } else if (provider.provider_id === "schedule") {
       if (!config.cron_expression) {
-        newErrors.cron_expression = 'Cron expression is required';
+        newErrors.cron_expression = "Cron expression is required";
       }
-      if (config.execution_type === 'workflow') {
+      if (config.execution_type === "workflow") {
         if (!config.workflow_id) {
-          newErrors.workflow_id = 'Workflow selection is required';
+          newErrors.workflow_id = "Workflow selection is required";
         }
       } else {
         if (!config.agent_prompt) {
-          newErrors.agent_prompt = 'Agent prompt is required';
+          newErrors.agent_prompt = "Agent prompt is required";
         }
       }
     }
@@ -97,7 +97,7 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
 
   const renderProviderSpecificConfig = () => {
     switch (provider.provider_id) {
-      case 'schedule':
+      case "schedule":
         return (
           <ScheduleTriggerConfigForm
             provider={provider}
@@ -117,7 +117,9 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
         return (
           <div className="text-center py-8 text-muted-foreground">
             <Activity className="h-12 w-12 mx-auto mb-4" />
-            <p>Configuration form for {provider.name} is not yet implemented.</p>
+            <p>
+              Configuration form for {provider.name} is not yet implemented.
+            </p>
           </div>
         );
     }
@@ -134,12 +136,10 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
             <span>Configure {provider.name}</span>
           </div>
         </DialogTitle>
-        <DialogDescription>
-          {provider.description}
-        </DialogDescription>
+        <DialogDescription>{provider.description}</DialogDescription>
       </DialogHeader>
       <div className="flex-1 overflow-y-auto space-y-6 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-        {provider.provider_id === 'schedule' ? (
+        {provider.provider_id === "schedule" ? (
           renderProviderSpecificConfig()
         ) : (
           <>
@@ -151,13 +151,13 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Enter a name for this trigger"
-                  className={errors.name ? 'border-destructive' : ''}
+                  className={errors.name ? "border-destructive" : ""}
                 />
                 {errors.name && (
                   <p className="text-sm text-destructive">{errors.name}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="trigger-description">Description</Label>
                 <Textarea
@@ -168,7 +168,7 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
                   rows={2}
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Switch
                   id="trigger-active"
@@ -202,14 +202,18 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => navigator.clipboard.writeText(existingConfig.webhook_url!)}
+                  onClick={() =>
+                    navigator.clipboard.writeText(existingConfig.webhook_url!)
+                  }
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => window.open(existingConfig.webhook_url, '_blank')}
+                  onClick={() =>
+                    window.open(existingConfig.webhook_url, "_blank")
+                  }
                 >
                   <ExternalLink className="h-4 w-4" />
                 </Button>
@@ -229,13 +233,13 @@ export const TriggerConfigDialog: React.FC<TriggerConfigDialogProps> = ({
           {isLoading ? (
             <>
               <Loader2 className="animate-spin rounded-full h-4 w-4" />
-              {existingConfig ? 'Updating...' : 'Creating...'}
+              {existingConfig ? "Updating..." : "Creating..."}
             </>
           ) : (
-            `${existingConfig ? 'Update' : 'Create'} Trigger`
+            `${existingConfig ? "Update" : "Create"} Trigger`
           )}
         </Button>
       </DialogFooter>
     </DialogContent>
   );
-}; 
+};

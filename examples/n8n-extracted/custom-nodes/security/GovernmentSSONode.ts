@@ -1,11 +1,11 @@
 /**
  * Government Single Sign-On (SSO) Authentication Node
- * 
+ *
  * Enterprise-grade n8n custom node for Iraqi government SSO authentication with
  * multi-factor authentication, biometric validation, security clearance checking,
  * and comprehensive audit logging. Provides centralized authentication for all
  * Iraqi government ministries with cultural intelligence and Islamic compliance.
- * 
+ *
  * Key Features:
  * - Ministry-wide single sign-on authentication
  * - Multi-factor authentication (MFA) with SMS, email, and biometric support
@@ -26,9 +26,12 @@ import {
   NodeApiError,
   ICredentialDataDecryptedObject,
   IDataObject,
-} from 'n8n-workflow';
+} from "n8n-workflow";
 
-import { IraqiGovernmentNodeBase, IIraqiNodeTypeDescription } from '../base/IraqiGovernmentNodeBase';
+import {
+  IraqiGovernmentNodeBase,
+  IIraqiNodeTypeDescription,
+} from "../base/IraqiGovernmentNodeBase";
 
 // ================================
 // Government SSO Interfaces
@@ -36,14 +39,18 @@ import { IraqiGovernmentNodeBase, IIraqiNodeTypeDescription } from '../base/Iraq
 
 export interface IGovernmentSSOConfig {
   ministry: string;
-  authMethod: 'password' | 'mfa' | 'biometric' | 'smart-card' | 'combined';
-  securityClearanceRequired: 'public' | 'restricted' | 'confidential' | 'secret';
+  authMethod: "password" | "mfa" | "biometric" | "smart-card" | "combined";
+  securityClearanceRequired:
+    | "public"
+    | "restricted"
+    | "confidential"
+    | "secret";
   sessionTimeout: number; // minutes
   requireBiometric: boolean;
   requireMFA: boolean;
   prayerTimeAware: boolean;
   culturalValidation: boolean;
-  auditLevel: 'basic' | 'detailed' | 'comprehensive';
+  auditLevel: "basic" | "detailed" | "comprehensive";
 }
 
 export interface IGovernmentAuthRequest {
@@ -94,12 +101,12 @@ export interface IGovernmentUserProfile {
   email: string;
   phoneNumber: string;
   securityClearanceLevel: string;
-  accountStatus: 'active' | 'suspended' | 'locked' | 'expired' | 'pending';
+  accountStatus: "active" | "suspended" | "locked" | "expired" | "pending";
   lastLogin: Date;
   passwordLastChanged: Date;
   mfaEnabled: boolean;
   biometricEnabled: boolean;
-  preferredLanguage: 'ar' | 'en' | 'ar-IQ';
+  preferredLanguage: "ar" | "en" | "ar-IQ";
   profilePhoto?: string;
   emergencyContact: IEmergencyContact;
 }
@@ -117,7 +124,7 @@ export interface IUserPermissions {
 }
 
 export interface ISecurityClearance {
-  level: 'public' | 'restricted' | 'confidential' | 'secret';
+  level: "public" | "restricted" | "confidential" | "secret";
   grantedBy: string;
   grantedDate: Date;
   expiryDate: Date;
@@ -125,7 +132,7 @@ export interface ISecurityClearance {
   nextReviewDue: Date;
   clearanceScope: string[];
   restrictions: string[];
-  backgroundCheckStatus: 'valid' | 'pending' | 'expired' | 'revoked';
+  backgroundCheckStatus: "valid" | "pending" | "expired" | "revoked";
   polygraphRequired: boolean;
   polygraphLastCompleted?: Date;
 }
@@ -141,7 +148,7 @@ export interface ISessionInfo {
   authMethod: string;
   mfaCompleted: boolean;
   biometricCompleted: boolean;
-  sessionType: 'web' | 'mobile' | 'api' | 'kiosk';
+  sessionType: "web" | "mobile" | "api" | "kiosk";
   ministry: string;
   department: string;
   securityLevel: string;
@@ -149,7 +156,7 @@ export interface ISessionInfo {
 }
 
 export interface IBiometricData {
-  type: 'fingerprint' | 'facial' | 'iris' | 'voice' | 'palm' | 'retina';
+  type: "fingerprint" | "facial" | "iris" | "voice" | "palm" | "retina";
   data: string; // Base64 encoded biometric template
   quality: number; // 0-100
   confidence: number; // 0-100
@@ -163,7 +170,7 @@ export interface ISmartCardData {
   cardId: string;
   certificate: string;
   digitalSignature: string;
-  cardType: 'government' | 'military' | 'contractor' | 'visitor';
+  cardType: "government" | "military" | "contractor" | "visitor";
   issuer: string;
   validFrom: Date;
   validUntil: Date;
@@ -171,13 +178,13 @@ export interface ISmartCardData {
 }
 
 export interface ICulturalAuthContext {
-  preferredLanguage: 'ar' | 'en' | 'ar-IQ';
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'general';
-  dialect: 'baghdadi' | 'basri' | 'moslawi' | 'standard';
+  preferredLanguage: "ar" | "en" | "ar-IQ";
+  region: "baghdad" | "basra" | "mosul" | "erbil" | "najaf" | "general";
+  dialect: "baghdadi" | "basri" | "moslawi" | "standard";
   islamicCalendarPreference: boolean;
   prayerTimeNotifications: boolean;
   culturalEventReminders: boolean;
-  professionalTerminologyPreference: 'arabic' | 'english' | 'mixed';
+  professionalTerminologyPreference: "arabic" | "english" | "mixed";
 }
 
 export interface ICulturalAuthPreferences {
@@ -188,8 +195,8 @@ export interface ICulturalAuthPreferences {
   prayerTimeAlerts: boolean;
   culturalHolidays: boolean;
   professionalTerminology: string;
-  timeFormat: '12-hour' | '24-hour';
-  dateFormat: 'gregorian' | 'hijri' | 'both';
+  timeFormat: "12-hour" | "24-hour";
+  dateFormat: "gregorian" | "hijri" | "both";
 }
 
 export interface IUserRole {
@@ -207,7 +214,7 @@ export interface IUserRole {
 
 export interface ISystemAccess {
   systemName: string;
-  accessLevel: 'read' | 'write' | 'admin' | 'full';
+  accessLevel: "read" | "write" | "admin" | "full";
   grantedPermissions: string[];
   restrictions: string[];
   lastAccessed?: Date;
@@ -217,7 +224,7 @@ export interface ISystemAccess {
 export interface IOperationalPermission {
   operation: string;
   operationArabic: string;
-  scope: 'self' | 'department' | 'ministry' | 'cross-ministry';
+  scope: "self" | "department" | "ministry" | "cross-ministry";
   dataClassification: string;
   timeRestrictions?: ITimeRestriction[];
   locationRestrictions?: ILocationRestriction[];
@@ -238,7 +245,7 @@ export interface ITemporaryPermission {
 }
 
 export interface IAccessRestriction {
-  type: 'time' | 'location' | 'ip' | 'device' | 'cultural' | 'prayer-time';
+  type: "time" | "location" | "ip" | "device" | "cultural" | "prayer-time";
   description: string;
   descriptionArabic: string;
   isActive: boolean;
@@ -248,8 +255,12 @@ export interface IAccessRestriction {
 }
 
 export interface ICulturalPermission {
-  type: 'arabic-processing' | 'cultural-validation' | 'islamic-compliance' | 'ministry-specific';
-  level: 'basic' | 'advanced' | 'expert';
+  type:
+    | "arabic-processing"
+    | "cultural-validation"
+    | "islamic-compliance"
+    | "ministry-specific";
+  level: "basic" | "advanced" | "expert";
   scope: string[];
   culturalSensitivity: number; // 0-100
   islamicCompliance: boolean;
@@ -290,8 +301,13 @@ export interface IPrayerTimeSessionConfig {
 
 export interface ISecurityWarning {
   id: string;
-  type: 'suspicious-activity' | 'unusual-location' | 'failed-biometric' | 'expired-clearance' | 'cultural-violation';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:
+    | "suspicious-activity"
+    | "unusual-location"
+    | "failed-biometric"
+    | "expired-clearance"
+    | "cultural-violation";
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   messageArabic: string;
   timestamp: Date;
@@ -303,15 +319,20 @@ export interface ISecurityWarning {
 export interface ISecurityAuditEntry {
   auditId: string;
   timestamp: Date;
-  eventType: 'authentication' | 'authorization' | 'session' | 'biometric' | 'cultural';
-  outcome: 'success' | 'failure' | 'warning' | 'blocked';
+  eventType:
+    | "authentication"
+    | "authorization"
+    | "session"
+    | "biometric"
+    | "cultural";
+  outcome: "success" | "failure" | "warning" | "blocked";
   userId: string;
   ministry: string;
   ipAddress: string;
   userAgent: string;
   authMethod: string;
   riskScore: number; // 0-100
-  threatLevel: 'none' | 'low' | 'medium' | 'high' | 'critical';
+  threatLevel: "none" | "low" | "medium" | "high" | "critical";
   culturalCompliance: number; // 0-100
   islamicCompliance: boolean;
   details: IDataObject;
@@ -320,7 +341,7 @@ export interface ISecurityAuditEntry {
 
 export interface ITimeRestriction {
   startTime: string; // HH:MM
-  endTime: string;   // HH:MM
+  endTime: string; // HH:MM
   daysOfWeek: number[]; // 0-6, Sunday=0
   timezone: string;
   excludePrayerTimes: boolean;
@@ -328,7 +349,7 @@ export interface ITimeRestriction {
 }
 
 export interface ILocationRestriction {
-  type: 'allow' | 'deny';
+  type: "allow" | "deny";
   locations: IAllowedLocation[];
   ipRanges: string[];
   countries: string[];
@@ -357,7 +378,7 @@ export interface IGPSRadius {
 }
 
 export interface ICulturalRestriction {
-  type: 'language' | 'content' | 'behavior' | 'timing';
+  type: "language" | "content" | "behavior" | "timing";
   description: string;
   descriptionArabic: string;
   parameters: IDataObject;
@@ -372,433 +393,441 @@ export interface ICulturalRestriction {
 
 export class GovernmentSSONode extends IraqiGovernmentNodeBase {
   description: IIraqiNodeTypeDescription = {
-    displayName: 'Government SSO Authenticator / مصادق الدخول الموحد الحكومي',
-    name: 'governmentSSOAuthenticator',
-    icon: 'fa:shield-alt',
-    group: ['security', 'authentication', 'government'],
+    displayName: "Government SSO Authenticator / مصادق الدخول الموحد الحكومي",
+    name: "governmentSSOAuthenticator",
+    icon: "fa:shield-alt",
+    group: ["security", "authentication", "government"],
     version: 1,
-    description: 'Secure single sign-on authentication for Iraqi government ministries with MFA, biometric validation, and cultural intelligence',
-    descriptionArabic: 'مصادقة آمنة للدخول الموحد للوزارات العراقية مع المصادقة متعددة العوامل والتحقق البيومتري والذكاء الثقافي',
-    
+    description:
+      "Secure single sign-on authentication for Iraqi government ministries with MFA, biometric validation, and cultural intelligence",
+    descriptionArabic:
+      "مصادقة آمنة للدخول الموحد للوزارات العراقية مع المصادقة متعددة العوامل والتحقق البيومتري والذكاء الثقافي",
+
     // Node configuration
-    ministry: 'general',
+    ministry: "general",
     culturalIntelligence: {
       arabicSupport: true,
-      dialectRecognition: ['baghdadi', 'basri', 'moslawi', 'standard'],
+      dialectRecognition: ["baghdadi", "basri", "moslawi", "standard"],
       culturalValidation: true,
-      professionalTerminology: 'administrative',
+      professionalTerminology: "administrative",
       islamicCompliance: true,
       prayerTimeAwareness: true,
       ministrySpecificRules: [
-        'government-authentication',
-        'security-clearance-validation',
-        'multi-factor-authentication',
-        'biometric-validation',
-        'prayer-time-session-management'
+        "government-authentication",
+        "security-clearance-validation",
+        "multi-factor-authentication",
+        "biometric-validation",
+        "prayer-time-session-management",
       ],
-      culturalSensitivityLevel: 'strict',
+      culturalSensitivityLevel: "strict",
       rtlLayoutSupport: true,
-      mixedContentHandling: true
+      mixedContentHandling: true,
     },
-    
+
     islamicCompliance: {
       enabled: true,
-      strictness: 'moderate',
+      strictness: "moderate",
       prayerTimeValidation: true,
       ribaDetection: false,
       halalBusinessValidation: false,
       islamicCalendarSupport: true,
       culturalEventAwareness: true,
-      professionalEthicsValidation: true
+      professionalEthicsValidation: true,
     },
 
     arabicProcessing: {
       enabled: true,
       rtlSupport: true,
-      dialectSupport: ['baghdadi', 'basri', 'moslawi', 'standard'],
+      dialectSupport: ["baghdadi", "basri", "moslawi", "standard"],
       transliterationSupport: true,
       professionalTerminologyMapping: true,
       culturalContextValidation: true,
       mixedLanguageSupport: true,
-      diacriticHandling: true
+      diacriticHandling: true,
     },
 
     securityRequirements: {
-      clearanceLevel: 'restricted',
+      clearanceLevel: "restricted",
       encryptionRequired: true,
       auditLogging: true,
       biometricValidation: true,
       ministryAuthentication: true,
       accessControlValidation: true,
-      dataClassification: 'confidential',
-      retentionPolicy: '7-years'
+      dataClassification: "confidential",
+      retentionPolicy: "7-years",
     },
 
-    auditLevel: 'comprehensive',
+    auditLevel: "comprehensive",
 
     defaults: {
-      name: 'Government SSO Authenticator',
+      name: "Government SSO Authenticator",
     },
 
-    inputs: ['main'],
-    outputs: ['main'],
+    inputs: ["main"],
+    outputs: ["main"],
 
     properties: [
       {
-        displayName: 'Operation / العملية',
-        name: 'operation',
-        type: 'options',
+        displayName: "Operation / العملية",
+        name: "operation",
+        type: "options",
         options: [
           {
-            name: 'Authenticate User / مصادقة المستخدم',
-            value: 'authenticate',
-            description: 'Perform user authentication with SSO'
+            name: "Authenticate User / مصادقة المستخدم",
+            value: "authenticate",
+            description: "Perform user authentication with SSO",
           },
           {
-            name: 'Validate Session / التحقق من الجلسة',
-            value: 'validate-session',
-            description: 'Validate existing session token'
+            name: "Validate Session / التحقق من الجلسة",
+            value: "validate-session",
+            description: "Validate existing session token",
           },
           {
-            name: 'Refresh Token / تجديد الرمز',
-            value: 'refresh-token',
-            description: 'Refresh authentication token'
+            name: "Refresh Token / تجديد الرمز",
+            value: "refresh-token",
+            description: "Refresh authentication token",
           },
           {
-            name: 'Check Permissions / فحص الصلاحيات',
-            value: 'check-permissions',
-            description: 'Check user permissions for specific operation'
+            name: "Check Permissions / فحص الصلاحيات",
+            value: "check-permissions",
+            description: "Check user permissions for specific operation",
           },
           {
-            name: 'Logout / تسجيل الخروج',
-            value: 'logout',
-            description: 'Securely logout and invalidate session'
+            name: "Logout / تسجيل الخروج",
+            value: "logout",
+            description: "Securely logout and invalidate session",
           },
           {
-            name: 'Biometric Verify / التحقق البيومتري',
-            value: 'biometric-verify',
-            description: 'Perform biometric verification'
+            name: "Biometric Verify / التحقق البيومتري",
+            value: "biometric-verify",
+            description: "Perform biometric verification",
           },
           {
-            name: 'Security Audit / التدقيق الأمني',
-            value: 'security-audit',
-            description: 'Generate security audit report'
-          }
+            name: "Security Audit / التدقيق الأمني",
+            value: "security-audit",
+            description: "Generate security audit report",
+          },
         ],
-        default: 'authenticate',
+        default: "authenticate",
         required: true,
       },
 
       // Authentication fields
       {
-        displayName: 'User ID / معرف المستخدم',
-        name: 'userId',
-        type: 'string',
+        displayName: "User ID / معرف المستخدم",
+        name: "userId",
+        type: "string",
         displayOptions: {
           show: {
-            operation: ['authenticate', 'check-permissions']
-          }
+            operation: ["authenticate", "check-permissions"],
+          },
         },
-        default: '',
-        placeholder: 'government.user.id',
-        description: 'Government employee ID or username',
+        default: "",
+        placeholder: "government.user.id",
+        description: "Government employee ID or username",
         required: true,
       },
 
       {
-        displayName: 'Password / كلمة المرور',
-        name: 'password',
-        type: 'password',
+        displayName: "Password / كلمة المرور",
+        name: "password",
+        type: "password",
         displayOptions: {
           show: {
-            operation: ['authenticate']
-          }
+            operation: ["authenticate"],
+          },
         },
-        default: '',
-        description: 'User password (will be encrypted)',
+        default: "",
+        description: "User password (will be encrypted)",
       },
 
       {
-        displayName: 'Ministry / الوزارة',
-        name: 'ministry',
-        type: 'options',
+        displayName: "Ministry / الوزارة",
+        name: "ministry",
+        type: "options",
         options: [
           {
-            name: 'Health / الصحة',
-            value: 'health'
+            name: "Health / الصحة",
+            value: "health",
           },
           {
-            name: 'Education / التربية',
-            value: 'education'
+            name: "Education / التربية",
+            value: "education",
           },
           {
-            name: 'Interior / الداخلية',
-            value: 'interior'
+            name: "Interior / الداخلية",
+            value: "interior",
           },
           {
-            name: 'Justice / العدل',
-            value: 'justice'
+            name: "Justice / العدل",
+            value: "justice",
           },
           {
-            name: 'Finance / المالية',
-            value: 'finance'
+            name: "Finance / المالية",
+            value: "finance",
           },
           {
-            name: 'Planning / التخطيط',
-            value: 'planning'
+            name: "Planning / التخطيط",
+            value: "planning",
           },
           {
-            name: 'Foreign Affairs / الخارجية',
-            value: 'foreign'
+            name: "Foreign Affairs / الخارجية",
+            value: "foreign",
           },
           {
-            name: 'Defense / الدفاع',
-            value: 'defense'
-          }
+            name: "Defense / الدفاع",
+            value: "defense",
+          },
         ],
-        default: 'health',
+        default: "health",
         required: true,
-        description: 'Government ministry for authentication',
+        description: "Government ministry for authentication",
       },
 
       {
-        displayName: 'Authentication Method / طريقة المصادقة',
-        name: 'authMethod',
-        type: 'options',
+        displayName: "Authentication Method / طريقة المصادقة",
+        name: "authMethod",
+        type: "options",
         options: [
           {
-            name: 'Password Only / كلمة المرور فقط',
-            value: 'password',
-            description: 'Basic password authentication'
+            name: "Password Only / كلمة المرور فقط",
+            value: "password",
+            description: "Basic password authentication",
           },
           {
-            name: 'Multi-Factor Auth / المصادقة متعددة العوامل',
-            value: 'mfa',
-            description: 'Password + SMS/Email verification'
+            name: "Multi-Factor Auth / المصادقة متعددة العوامل",
+            value: "mfa",
+            description: "Password + SMS/Email verification",
           },
           {
-            name: 'Biometric / البيومتري',
-            value: 'biometric',
-            description: 'Fingerprint, facial, or iris recognition'
+            name: "Biometric / البيومتري",
+            value: "biometric",
+            description: "Fingerprint, facial, or iris recognition",
           },
           {
-            name: 'Smart Card / البطاقة الذكية',
-            value: 'smart-card',
-            description: 'Government smart card authentication'
+            name: "Smart Card / البطاقة الذكية",
+            value: "smart-card",
+            description: "Government smart card authentication",
           },
           {
-            name: 'Combined / مجمع',
-            value: 'combined',
-            description: 'Password + MFA + Biometric'
-          }
+            name: "Combined / مجمع",
+            value: "combined",
+            description: "Password + MFA + Biometric",
+          },
         ],
-        default: 'mfa',
+        default: "mfa",
         required: true,
         displayOptions: {
           show: {
-            operation: ['authenticate']
-          }
+            operation: ["authenticate"],
+          },
         },
       },
 
       {
-        displayName: 'Security Clearance Required / مستوى التخليص الأمني المطلوب',
-        name: 'securityClearanceRequired',
-        type: 'options',
+        displayName:
+          "Security Clearance Required / مستوى التخليص الأمني المطلوب",
+        name: "securityClearanceRequired",
+        type: "options",
         options: [
           {
-            name: 'Public / عام',
-            value: 'public',
-            description: 'Public access level'
+            name: "Public / عام",
+            value: "public",
+            description: "Public access level",
           },
           {
-            name: 'Restricted / مقيد',
-            value: 'restricted',
-            description: 'Restricted access level'
+            name: "Restricted / مقيد",
+            value: "restricted",
+            description: "Restricted access level",
           },
           {
-            name: 'Confidential / سري',
-            value: 'confidential',
-            description: 'Confidential access level'
+            name: "Confidential / سري",
+            value: "confidential",
+            description: "Confidential access level",
           },
           {
-            name: 'Secret / سري للغاية',
-            value: 'secret',
-            description: 'Secret access level'
-          }
+            name: "Secret / سري للغاية",
+            value: "secret",
+            description: "Secret access level",
+          },
         ],
-        default: 'public',
+        default: "public",
         required: true,
       },
 
       {
-        displayName: 'MFA Token / رمز المصادقة متعددة العوامل',
-        name: 'mfaToken',
-        type: 'string',
+        displayName: "MFA Token / رمز المصادقة متعددة العوامل",
+        name: "mfaToken",
+        type: "string",
         displayOptions: {
           show: {
-            authMethod: ['mfa', 'combined']
-          }
+            authMethod: ["mfa", "combined"],
+          },
         },
-        default: '',
-        placeholder: '123456',
-        description: 'SMS or email verification code',
+        default: "",
+        placeholder: "123456",
+        description: "SMS or email verification code",
       },
 
       {
-        displayName: 'Biometric Data / البيانات البيومترية',
-        name: 'biometricData',
-        type: 'json',
+        displayName: "Biometric Data / البيانات البيومترية",
+        name: "biometricData",
+        type: "json",
         displayOptions: {
           show: {
-            authMethod: ['biometric', 'combined'],
-            operation: ['authenticate', 'biometric-verify']
-          }
+            authMethod: ["biometric", "combined"],
+            operation: ["authenticate", "biometric-verify"],
+          },
         },
-        default: '{}',
-        description: 'Base64 encoded biometric template data',
+        default: "{}",
+        description: "Base64 encoded biometric template data",
       },
 
       {
-        displayName: 'Session Token / رمز الجلسة',
-        name: 'sessionToken',
-        type: 'string',
+        displayName: "Session Token / رمز الجلسة",
+        name: "sessionToken",
+        type: "string",
         displayOptions: {
           show: {
-            operation: ['validate-session', 'refresh-token', 'logout', 'check-permissions']
-          }
+            operation: [
+              "validate-session",
+              "refresh-token",
+              "logout",
+              "check-permissions",
+            ],
+          },
         },
-        default: '',
-        description: 'Existing session token to validate or refresh',
+        default: "",
+        description: "Existing session token to validate or refresh",
         required: true,
       },
 
       {
-        displayName: 'Requested Permission / الصلاحية المطلوبة',
-        name: 'requestedPermission',
-        type: 'string',
+        displayName: "Requested Permission / الصلاحية المطلوبة",
+        name: "requestedPermission",
+        type: "string",
         displayOptions: {
           show: {
-            operation: ['check-permissions']
-          }
+            operation: ["check-permissions"],
+          },
         },
-        default: '',
-        placeholder: 'read:patient-records',
-        description: 'Specific permission to check',
+        default: "",
+        placeholder: "read:patient-records",
+        description: "Specific permission to check",
         required: true,
       },
 
       {
-        displayName: 'Resource / المورد',
-        name: 'resource',
-        type: 'string',
+        displayName: "Resource / المورد",
+        name: "resource",
+        type: "string",
         displayOptions: {
           show: {
-            operation: ['check-permissions']
-          }
+            operation: ["check-permissions"],
+          },
         },
-        default: '',
-        placeholder: 'patient-database',
-        description: 'Resource being accessed',
+        default: "",
+        placeholder: "patient-database",
+        description: "Resource being accessed",
       },
 
       {
-        displayName: 'Session Timeout (minutes) / انتهاء الجلسة (دقائق)',
-        name: 'sessionTimeout',
-        type: 'number',
+        displayName: "Session Timeout (minutes) / انتهاء الجلسة (دقائق)",
+        name: "sessionTimeout",
+        type: "number",
         default: 480, // 8 hours
         min: 15,
         max: 1440, // 24 hours
-        description: 'Session timeout in minutes',
+        description: "Session timeout in minutes",
       },
 
       {
-        displayName: 'Prayer Time Aware / وعي وقت الصلاة',
-        name: 'prayerTimeAware',
-        type: 'boolean',
+        displayName: "Prayer Time Aware / وعي وقت الصلاة",
+        name: "prayerTimeAware",
+        type: "boolean",
         default: true,
-        description: 'Extend session automatically during prayer times',
+        description: "Extend session automatically during prayer times",
       },
 
       {
-        displayName: 'Preferred Language / اللغة المفضلة',
-        name: 'preferredLanguage',
-        type: 'options',
+        displayName: "Preferred Language / اللغة المفضلة",
+        name: "preferredLanguage",
+        type: "options",
         options: [
           {
-            name: 'Arabic / العربية',
-            value: 'ar'
+            name: "Arabic / العربية",
+            value: "ar",
           },
           {
-            name: 'English / الإنجليزية',
-            value: 'en'
+            name: "English / الإنجليزية",
+            value: "en",
           },
           {
-            name: 'Iraqi Arabic / العربية العراقية',
-            value: 'ar-IQ'
-          }
+            name: "Iraqi Arabic / العربية العراقية",
+            value: "ar-IQ",
+          },
         ],
-        default: 'ar',
-        description: 'User interface language preference',
+        default: "ar",
+        description: "User interface language preference",
       },
 
       {
-        displayName: 'Region / المنطقة',
-        name: 'region',
-        type: 'options',
+        displayName: "Region / المنطقة",
+        name: "region",
+        type: "options",
         options: [
           {
-            name: 'Baghdad / بغداد',
-            value: 'baghdad'
+            name: "Baghdad / بغداد",
+            value: "baghdad",
           },
           {
-            name: 'Basra / البصرة',
-            value: 'basra'
+            name: "Basra / البصرة",
+            value: "basra",
           },
           {
-            name: 'Mosul / الموصل',
-            value: 'mosul'
+            name: "Mosul / الموصل",
+            value: "mosul",
           },
           {
-            name: 'Erbil / أربيل',
-            value: 'erbil'
+            name: "Erbil / أربيل",
+            value: "erbil",
           },
           {
-            name: 'Najaf / النجف',
-            value: 'najaf'
-          }
+            name: "Najaf / النجف",
+            value: "najaf",
+          },
         ],
-        default: 'baghdad',
-        description: 'Geographic region for prayer times and cultural settings',
+        default: "baghdad",
+        description: "Geographic region for prayer times and cultural settings",
       },
 
       {
-        displayName: 'Generate Audit Report / إنشاء تقرير التدقيق',
-        name: 'generateAuditReport',
-        type: 'boolean',
+        displayName: "Generate Audit Report / إنشاء تقرير التدقيق",
+        name: "generateAuditReport",
+        type: "boolean",
         default: true,
-        description: 'Generate comprehensive security audit report',
+        description: "Generate comprehensive security audit report",
       },
 
       {
-        displayName: 'Include Cultural Metrics / تضمين المقاييس الثقافية',
-        name: 'includeCulturalMetrics',
-        type: 'boolean',
+        displayName: "Include Cultural Metrics / تضمين المقاييس الثقافية",
+        name: "includeCulturalMetrics",
+        type: "boolean",
         default: true,
-        description: 'Include cultural compliance metrics in response',
+        description: "Include cultural compliance metrics in response",
       },
 
       {
-        displayName: 'Audit Date Range / نطاق تاريخ التدقيق',
-        name: 'auditDateRange',
-        type: 'dateTime',
+        displayName: "Audit Date Range / نطاق تاريخ التدقيق",
+        name: "auditDateRange",
+        type: "dateTime",
         displayOptions: {
           show: {
-            operation: ['security-audit']
-          }
+            operation: ["security-audit"],
+          },
         },
-        default: '',
-        description: 'Date range for security audit report',
+        default: "",
+        description: "Date range for security audit report",
       },
     ],
   };
@@ -811,12 +840,21 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     const returnData: INodeExecutionData[] = [];
 
     // Get node parameters
-    const operation = this.getNodeParameter('operation', 0) as string;
-    const ministry = this.getNodeParameter('ministry', 0) as string;
-    const preferredLanguage = this.getNodeParameter('preferredLanguage', 0) as string;
-    const region = this.getNodeParameter('region', 0) as string;
-    const prayerTimeAware = this.getNodeParameter('prayerTimeAware', 0) as boolean;
-    const generateAuditReport = this.getNodeParameter('generateAuditReport', 0) as boolean;
+    const operation = this.getNodeParameter("operation", 0) as string;
+    const ministry = this.getNodeParameter("ministry", 0) as string;
+    const preferredLanguage = this.getNodeParameter(
+      "preferredLanguage",
+      0,
+    ) as string;
+    const region = this.getNodeParameter("region", 0) as string;
+    const prayerTimeAware = this.getNodeParameter(
+      "prayerTimeAware",
+      0,
+    ) as boolean;
+    const generateAuditReport = this.getNodeParameter(
+      "generateAuditReport",
+      0,
+    ) as boolean;
 
     try {
       for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
@@ -824,31 +862,31 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
 
         // Execute operation based on type
         switch (operation) {
-          case 'authenticate':
+          case "authenticate":
             authResponse = await this.authenticateUser(itemIndex);
             break;
-          case 'validate-session':
+          case "validate-session":
             authResponse = await this.validateSession(itemIndex);
             break;
-          case 'refresh-token':
+          case "refresh-token":
             authResponse = await this.refreshToken(itemIndex);
             break;
-          case 'check-permissions':
+          case "check-permissions":
             authResponse = await this.checkPermissions(itemIndex);
             break;
-          case 'logout':
+          case "logout":
             authResponse = await this.logout(itemIndex);
             break;
-          case 'biometric-verify':
+          case "biometric-verify":
             authResponse = await this.verifyBiometric(itemIndex);
             break;
-          case 'security-audit':
+          case "security-audit":
             authResponse = await this.generateSecurityAudit(itemIndex);
             break;
           default:
             throw new NodeOperationError(
               this.getNode(),
-              `Unknown operation: ${operation}`
+              `Unknown operation: ${operation}`,
             );
         }
 
@@ -856,7 +894,7 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
         await this.logAuditEntry({
           action: `Government SSO ${operation} operation`,
           actionArabic: `عملية الدخول الموحد الحكومي ${operation}`,
-          severity: authResponse.success ? 'low' : 'high',
+          severity: authResponse.success ? "low" : "high",
           culturalCompliance: this.calculateCulturalCompliance(authResponse),
           islamicCompliance: authResponse.success,
           details: {
@@ -864,12 +902,14 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
             ministry,
             userId: authResponse.userProfile?.userId,
             success: authResponse.success,
-            authMethod: authResponse.userProfile ? 'authenticated' : 'unauthenticated',
+            authMethod: authResponse.userProfile
+              ? "authenticated"
+              : "unauthenticated",
             securityClearance: authResponse.securityClearance?.level,
             culturalPreferences: authResponse.culturalPreferences,
             warningsCount: authResponse.warnings?.length || 0,
-            auditEntriesCount: authResponse.auditEntries?.length || 0
-          }
+            auditEntriesCount: authResponse.auditEntries?.length || 0,
+          },
         });
 
         // Send cultural alerts for security warnings
@@ -877,7 +917,7 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
           for (const warning of authResponse.warnings) {
             await this.sendCulturalAlert(
               `Security warning: ${warning.message}`,
-              warning.severity as any
+              warning.severity as any,
             );
           }
         }
@@ -889,26 +929,25 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       }
 
       return [returnData];
-
     } catch (error) {
       // Handle execution error with security context
       await this.logAuditEntry({
-        action: 'Government SSO operation failed',
-        actionArabic: 'فشلت عملية الدخول الموحد الحكومي',
-        severity: 'critical',
+        action: "Government SSO operation failed",
+        actionArabic: "فشلت عملية الدخول الموحد الحكومي",
+        severity: "critical",
         culturalCompliance: 0,
         islamicCompliance: false,
         details: {
           operation,
           ministry,
           error: error.message,
-          securityRisk: 'authentication-failure'
-        }
+          securityRisk: "authentication-failure",
+        },
       });
 
       throw new NodeOperationError(
         this.getNode(),
-        `Government SSO operation failed: ${error.message}`
+        `Government SSO operation failed: ${error.message}`,
       );
     }
   }
@@ -916,16 +955,30 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
   /**
    * Authenticate user with comprehensive security validation
    */
-  private async authenticateUser(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const userId = this.getNodeParameter('userId', itemIndex) as string;
-    const password = this.getNodeParameter('password', itemIndex) as string;
-    const ministry = this.getNodeParameter('ministry', itemIndex) as string;
-    const authMethod = this.getNodeParameter('authMethod', itemIndex) as string;
-    const securityClearanceRequired = this.getNodeParameter('securityClearanceRequired', itemIndex) as string;
-    const sessionTimeout = this.getNodeParameter('sessionTimeout', itemIndex) as number;
-    const prayerTimeAware = this.getNodeParameter('prayerTimeAware', itemIndex) as boolean;
-    const preferredLanguage = this.getNodeParameter('preferredLanguage', itemIndex) as string;
-    const region = this.getNodeParameter('region', itemIndex) as string;
+  private async authenticateUser(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const userId = this.getNodeParameter("userId", itemIndex) as string;
+    const password = this.getNodeParameter("password", itemIndex) as string;
+    const ministry = this.getNodeParameter("ministry", itemIndex) as string;
+    const authMethod = this.getNodeParameter("authMethod", itemIndex) as string;
+    const securityClearanceRequired = this.getNodeParameter(
+      "securityClearanceRequired",
+      itemIndex,
+    ) as string;
+    const sessionTimeout = this.getNodeParameter(
+      "sessionTimeout",
+      itemIndex,
+    ) as number;
+    const prayerTimeAware = this.getNodeParameter(
+      "prayerTimeAware",
+      itemIndex,
+    ) as boolean;
+    const preferredLanguage = this.getNodeParameter(
+      "preferredLanguage",
+      itemIndex,
+    ) as string;
+    const region = this.getNodeParameter("region", itemIndex) as string;
 
     const authRequest: IGovernmentAuthRequest = {
       userId,
@@ -933,72 +986,97 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       ministry,
       requestedClearanceLevel: securityClearanceRequired,
       clientInfo: {
-        ipAddress: '192.168.1.100', // Would be actual client IP
-        userAgent: 'Government-Workflow-System/1.0',
+        ipAddress: "192.168.1.100", // Would be actual client IP
+        userAgent: "Government-Workflow-System/1.0",
         deviceFingerprint: this.generateDeviceFingerprint(),
         location: {
           latitude: 33.3152,
           longitude: 44.3661,
           accuracy: 100,
-          city: 'Baghdad',
-          country: 'Iraq',
-          region: 'Baghdad',
-          timezone: 'Asia/Baghdad'
-        }
+          city: "Baghdad",
+          country: "Iraq",
+          region: "Baghdad",
+          timezone: "Asia/Baghdad",
+        },
       },
       authMethod,
       culturalContext: {
         preferredLanguage: preferredLanguage as any,
         region: region as any,
-        dialect: 'standard',
+        dialect: "standard",
         islamicCalendarPreference: true,
         prayerTimeNotifications: prayerTimeAware,
         culturalEventReminders: true,
-        professionalTerminologyPreference: 'mixed'
-      }
+        professionalTerminologyPreference: "mixed",
+      },
     };
 
     // Add MFA token if provided
-    if (authMethod === 'mfa' || authMethod === 'combined') {
-      authRequest.mfaToken = this.getNodeParameter('mfaToken', itemIndex, '') as string;
+    if (authMethod === "mfa" || authMethod === "combined") {
+      authRequest.mfaToken = this.getNodeParameter(
+        "mfaToken",
+        itemIndex,
+        "",
+      ) as string;
     }
 
     // Add biometric data if provided
-    if (authMethod === 'biometric' || authMethod === 'combined') {
-      const biometricDataParam = this.getNodeParameter('biometricData', itemIndex, '{}') as string;
+    if (authMethod === "biometric" || authMethod === "combined") {
+      const biometricDataParam = this.getNodeParameter(
+        "biometricData",
+        itemIndex,
+        "{}",
+      ) as string;
       try {
-        const biometricData = typeof biometricDataParam === 'string' ? 
-          JSON.parse(biometricDataParam) : biometricDataParam;
+        const biometricData =
+          typeof biometricDataParam === "string"
+            ? JSON.parse(biometricDataParam)
+            : biometricDataParam;
         authRequest.biometricData = this.processBiometricData(biometricData);
       } catch (error) {
         throw new NodeOperationError(
           this.getNode(),
-          `Invalid biometric data format: ${error.message}`
+          `Invalid biometric data format: ${error.message}`,
         );
       }
     }
 
     // Perform authentication
-    return await this.performAuthentication(authRequest, sessionTimeout, prayerTimeAware);
+    return await this.performAuthentication(
+      authRequest,
+      sessionTimeout,
+      prayerTimeAware,
+    );
   }
 
   /**
    * Validate existing session token
    */
-  private async validateSession(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const sessionToken = this.getNodeParameter('sessionToken', itemIndex) as string;
-    const ministry = this.getNodeParameter('ministry', itemIndex) as string;
+  private async validateSession(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const sessionToken = this.getNodeParameter(
+      "sessionToken",
+      itemIndex,
+    ) as string;
+    const ministry = this.getNodeParameter("ministry", itemIndex) as string;
 
     // Validate session token
     const sessionInfo = await this.getSessionInfo(sessionToken);
-    
+
     if (!sessionInfo || sessionInfo.expiresAt < new Date()) {
-      return this.createFailureResponse('Invalid or expired session token', 'رمز جلسة غير صالح أو منتهي الصلاحية');
+      return this.createFailureResponse(
+        "Invalid or expired session token",
+        "رمز جلسة غير صالح أو منتهي الصلاحية",
+      );
     }
 
     // Check if session is from correct ministry
     if (sessionInfo.ministry !== ministry) {
-      return this.createFailureResponse('Session ministry mismatch', 'عدم تطابق وزارة الجلسة');
+      return this.createFailureResponse(
+        "Session ministry mismatch",
+        "عدم تطابق وزارة الجلسة",
+      );
     }
 
     // Update last activity
@@ -1007,8 +1085,13 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
 
     // Get user profile and permissions
     const userProfile = await this.getUserProfile(sessionInfo.sessionId);
-    const permissions = await this.getUserPermissions(userProfile.userId, ministry);
-    const securityClearance = await this.getSecurityClearance(userProfile.userId);
+    const permissions = await this.getUserPermissions(
+      userProfile.userId,
+      ministry,
+    );
+    const securityClearance = await this.getSecurityClearance(
+      userProfile.userId,
+    );
 
     return this.createSuccessResponse(
       sessionToken,
@@ -1017,29 +1100,43 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       permissions,
       securityClearance,
       sessionInfo,
-      'Session validated successfully',
-      'تم التحقق من الجلسة بنجاح'
+      "Session validated successfully",
+      "تم التحقق من الجلسة بنجاح",
     );
   }
 
   /**
    * Refresh authentication token
    */
-  private async refreshToken(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const sessionToken = this.getNodeParameter('sessionToken', itemIndex) as string;
-    const sessionTimeout = this.getNodeParameter('sessionTimeout', itemIndex) as number;
+  private async refreshToken(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const sessionToken = this.getNodeParameter(
+      "sessionToken",
+      itemIndex,
+    ) as string;
+    const sessionTimeout = this.getNodeParameter(
+      "sessionTimeout",
+      itemIndex,
+    ) as number;
 
     // Validate current token
     const sessionInfo = await this.getSessionInfo(sessionToken);
-    
+
     if (!sessionInfo) {
-      return this.createFailureResponse('Invalid session token for refresh', 'رمز جلسة غير صالح للتجديد');
+      return this.createFailureResponse(
+        "Invalid session token for refresh",
+        "رمز جلسة غير صالح للتجديد",
+      );
     }
 
     // Check if token is within refresh window (e.g., not more than 1 hour expired)
     const refreshWindow = 60 * 60 * 1000; // 1 hour
     if (sessionInfo.expiresAt.getTime() + refreshWindow < Date.now()) {
-      return this.createFailureResponse('Session token beyond refresh window', 'رمز الجلسة خارج نافذة التجديد');
+      return this.createFailureResponse(
+        "Session token beyond refresh window",
+        "رمز الجلسة خارج نافذة التجديد",
+      );
     }
 
     // Generate new tokens
@@ -1056,8 +1153,13 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
 
     // Get user information
     const userProfile = await this.getUserProfile(sessionInfo.sessionId);
-    const permissions = await this.getUserPermissions(userProfile.userId, sessionInfo.ministry);
-    const securityClearance = await this.getSecurityClearance(userProfile.userId);
+    const permissions = await this.getUserPermissions(
+      userProfile.userId,
+      sessionInfo.ministry,
+    );
+    const securityClearance = await this.getSecurityClearance(
+      userProfile.userId,
+    );
 
     return this.createSuccessResponse(
       newSessionToken,
@@ -1066,38 +1168,58 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       permissions,
       securityClearance,
       sessionInfo,
-      'Token refreshed successfully',
-      'تم تجديد الرمز بنجاح'
+      "Token refreshed successfully",
+      "تم تجديد الرمز بنجاح",
     );
   }
 
   /**
    * Check user permissions for specific operation
    */
-  private async checkPermissions(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const sessionToken = this.getNodeParameter('sessionToken', itemIndex) as string;
-    const requestedPermission = this.getNodeParameter('requestedPermission', itemIndex) as string;
-    const resource = this.getNodeParameter('resource', itemIndex, '') as string;
-    const ministry = this.getNodeParameter('ministry', itemIndex) as string;
+  private async checkPermissions(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const sessionToken = this.getNodeParameter(
+      "sessionToken",
+      itemIndex,
+    ) as string;
+    const requestedPermission = this.getNodeParameter(
+      "requestedPermission",
+      itemIndex,
+    ) as string;
+    const resource = this.getNodeParameter("resource", itemIndex, "") as string;
+    const ministry = this.getNodeParameter("ministry", itemIndex) as string;
 
     // Validate session
     const sessionInfo = await this.getSessionInfo(sessionToken);
     if (!sessionInfo || sessionInfo.expiresAt < new Date()) {
-      return this.createFailureResponse('Invalid session for permission check', 'جلسة غير صالحة لفحص الصلاحيات');
+      return this.createFailureResponse(
+        "Invalid session for permission check",
+        "جلسة غير صالحة لفحص الصلاحيات",
+      );
     }
 
     // Get user permissions
     const userProfile = await this.getUserProfile(sessionInfo.sessionId);
-    const permissions = await this.getUserPermissions(userProfile.userId, ministry);
-    const securityClearance = await this.getSecurityClearance(userProfile.userId);
+    const permissions = await this.getUserPermissions(
+      userProfile.userId,
+      ministry,
+    );
+    const securityClearance = await this.getSecurityClearance(
+      userProfile.userId,
+    );
 
     // Check specific permission
-    const hasPermission = this.checkSpecificPermission(permissions, requestedPermission, resource);
-    
+    const hasPermission = this.checkSpecificPermission(
+      permissions,
+      requestedPermission,
+      resource,
+    );
+
     // Check security clearance level
     const clearanceValid = this.validateClearanceLevel(
       securityClearance,
-      this.getNodeParameter('securityClearanceRequired', itemIndex) as string
+      this.getNodeParameter("securityClearanceRequired", itemIndex) as string,
     );
 
     const permissionGranted = hasPermission && clearanceValid;
@@ -1110,34 +1232,50 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       securityClearance,
       sessionInfo,
       culturalPreferences: this.getUserCulturalPreferences(userProfile),
-      warnings: permissionGranted ? [] : [{
-        id: `warning_${Date.now()}`,
-        type: 'suspicious-activity',
-        severity: 'medium',
-        message: `Permission denied for ${requestedPermission} on ${resource}`,
-        messageArabic: `تم رفض الصلاحية لـ ${requestedPermission} على ${resource}`,
-        timestamp: new Date(),
-        actionRequired: true,
-        autoResolved: false,
-        details: { requestedPermission, resource, hasPermission, clearanceValid }
-      }],
-      auditEntries: [{
-        auditId: `audit_${Date.now()}`,
-        timestamp: new Date(),
-        eventType: 'authorization',
-        outcome: permissionGranted ? 'success' : 'failure',
-        userId: userProfile.userId,
-        ministry,
-        ipAddress: sessionInfo.ipAddress,
-        userAgent: sessionInfo.userAgent,
-        authMethod: sessionInfo.authMethod,
-        riskScore: permissionGranted ? 10 : 70,
-        threatLevel: permissionGranted ? 'none' : 'medium',
-        culturalCompliance: 95,
-        islamicCompliance: true,
-        details: { requestedPermission, resource, hasPermission, clearanceValid },
-        investigationRequired: !permissionGranted
-      }]
+      warnings: permissionGranted
+        ? []
+        : [
+            {
+              id: `warning_${Date.now()}`,
+              type: "suspicious-activity",
+              severity: "medium",
+              message: `Permission denied for ${requestedPermission} on ${resource}`,
+              messageArabic: `تم رفض الصلاحية لـ ${requestedPermission} على ${resource}`,
+              timestamp: new Date(),
+              actionRequired: true,
+              autoResolved: false,
+              details: {
+                requestedPermission,
+                resource,
+                hasPermission,
+                clearanceValid,
+              },
+            },
+          ],
+      auditEntries: [
+        {
+          auditId: `audit_${Date.now()}`,
+          timestamp: new Date(),
+          eventType: "authorization",
+          outcome: permissionGranted ? "success" : "failure",
+          userId: userProfile.userId,
+          ministry,
+          ipAddress: sessionInfo.ipAddress,
+          userAgent: sessionInfo.userAgent,
+          authMethod: sessionInfo.authMethod,
+          riskScore: permissionGranted ? 10 : 70,
+          threatLevel: permissionGranted ? "none" : "medium",
+          culturalCompliance: 95,
+          islamicCompliance: true,
+          details: {
+            requestedPermission,
+            resource,
+            hasPermission,
+            clearanceValid,
+          },
+          investigationRequired: !permissionGranted,
+        },
+      ],
     };
   }
 
@@ -1145,13 +1283,19 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
    * Securely logout user and invalidate session
    */
   private async logout(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const sessionToken = this.getNodeParameter('sessionToken', itemIndex) as string;
+    const sessionToken = this.getNodeParameter(
+      "sessionToken",
+      itemIndex,
+    ) as string;
 
     // Get session info before invalidation
     const sessionInfo = await this.getSessionInfo(sessionToken);
-    
+
     if (!sessionInfo) {
-      return this.createFailureResponse('Invalid session token for logout', 'رمز جلسة غير صالح لتسجيل الخروج');
+      return this.createFailureResponse(
+        "Invalid session token for logout",
+        "رمز جلسة غير صالح لتسجيل الخروج",
+      );
     }
 
     // Get user profile for audit
@@ -1170,53 +1314,68 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       sessionInfo: { ...sessionInfo, expiresAt: new Date() }, // Mark as expired
       culturalPreferences: this.getUserCulturalPreferences(userProfile),
       warnings: [],
-      auditEntries: [{
-        auditId: `audit_logout_${Date.now()}`,
-        timestamp: new Date(),
-        eventType: 'session',
-        outcome: 'success',
-        userId: userProfile.userId,
-        ministry: sessionInfo.ministry,
-        ipAddress: sessionInfo.ipAddress,
-        userAgent: sessionInfo.userAgent,
-        authMethod: sessionInfo.authMethod,
-        riskScore: 5,
-        threatLevel: 'none',
-        culturalCompliance: 100,
-        islamicCompliance: true,
-        details: { operation: 'logout', sessionDuration: Date.now() - sessionInfo.createdAt.getTime() },
-        investigationRequired: false
-      }]
+      auditEntries: [
+        {
+          auditId: `audit_logout_${Date.now()}`,
+          timestamp: new Date(),
+          eventType: "session",
+          outcome: "success",
+          userId: userProfile.userId,
+          ministry: sessionInfo.ministry,
+          ipAddress: sessionInfo.ipAddress,
+          userAgent: sessionInfo.userAgent,
+          authMethod: sessionInfo.authMethod,
+          riskScore: 5,
+          threatLevel: "none",
+          culturalCompliance: 100,
+          islamicCompliance: true,
+          details: {
+            operation: "logout",
+            sessionDuration: Date.now() - sessionInfo.createdAt.getTime(),
+          },
+          investigationRequired: false,
+        },
+      ],
     };
   }
 
   /**
    * Verify biometric authentication
    */
-  private async verifyBiometric(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const biometricDataParam = this.getNodeParameter('biometricData', itemIndex) as string;
-    const userId = this.getNodeParameter('userId', itemIndex) as string;
-    const ministry = this.getNodeParameter('ministry', itemIndex) as string;
+  private async verifyBiometric(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const biometricDataParam = this.getNodeParameter(
+      "biometricData",
+      itemIndex,
+    ) as string;
+    const userId = this.getNodeParameter("userId", itemIndex) as string;
+    const ministry = this.getNodeParameter("ministry", itemIndex) as string;
 
     let biometricData: IBiometricData;
     try {
-      const parsedData = typeof biometricDataParam === 'string' ? 
-        JSON.parse(biometricDataParam) : biometricDataParam;
+      const parsedData =
+        typeof biometricDataParam === "string"
+          ? JSON.parse(biometricDataParam)
+          : biometricDataParam;
       biometricData = this.processBiometricData(parsedData);
     } catch (error) {
       return this.createFailureResponse(
         `Invalid biometric data: ${error.message}`,
-        `بيانات بيومترية غير صالحة: ${error.message}`
+        `بيانات بيومترية غير صالحة: ${error.message}`,
       );
     }
 
     // Perform biometric verification
-    const verificationResult = await this.performBiometricVerification(userId, biometricData);
-    
+    const verificationResult = await this.performBiometricVerification(
+      userId,
+      biometricData,
+    );
+
     if (!verificationResult.success) {
       return this.createFailureResponse(
         `Biometric verification failed: ${verificationResult.reason}`,
-        `فشل التحقق البيومتري: ${verificationResult.reasonArabic}`
+        `فشل التحقق البيومتري: ${verificationResult.reasonArabic}`,
       );
     }
 
@@ -1232,20 +1391,29 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       permissions,
       securityClearance,
       this.createTempSessionInfo(userId, ministry),
-      'Biometric verification successful',
-      'نجح التحقق البيومتري'
+      "Biometric verification successful",
+      "نجح التحقق البيومتري",
     );
   }
 
   /**
    * Generate security audit report
    */
-  private async generateSecurityAudit(itemIndex: number): Promise<IGovernmentAuthResponse> {
-    const ministry = this.getNodeParameter('ministry', itemIndex) as string;
-    const dateRange = this.getNodeParameter('auditDateRange', itemIndex, '') as string;
+  private async generateSecurityAudit(
+    itemIndex: number,
+  ): Promise<IGovernmentAuthResponse> {
+    const ministry = this.getNodeParameter("ministry", itemIndex) as string;
+    const dateRange = this.getNodeParameter(
+      "auditDateRange",
+      itemIndex,
+      "",
+    ) as string;
 
     // Generate comprehensive security audit
-    const auditReport = await this.createSecurityAuditReport(ministry, dateRange);
+    const auditReport = await this.createSecurityAuditReport(
+      ministry,
+      dateRange,
+    );
 
     return {
       authenticationId: `audit_${Date.now()}`,
@@ -1257,7 +1425,7 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       culturalPreferences: this.getDefaultCulturalPreferences(),
       warnings: auditReport.warnings,
       auditEntries: auditReport.auditEntries,
-      securityReport: auditReport
+      securityReport: auditReport,
     };
   }
 
@@ -1268,52 +1436,86 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
   private async performAuthentication(
     request: IGovernmentAuthRequest,
     sessionTimeout: number,
-    prayerTimeAware: boolean
+    prayerTimeAware: boolean,
   ): Promise<IGovernmentAuthResponse> {
     // Step 1: Basic credential validation
-    const credentialsValid = await this.validateCredentials(request.userId, request.password);
+    const credentialsValid = await this.validateCredentials(
+      request.userId,
+      request.password,
+    );
     if (!credentialsValid) {
-      return this.createFailureResponse('Invalid credentials', 'بيانات اعتماد غير صالحة');
+      return this.createFailureResponse(
+        "Invalid credentials",
+        "بيانات اعتماد غير صالحة",
+      );
     }
 
     // Step 2: Ministry access validation
-    const ministryAccess = await this.validateMinistryAccess(request.userId, request.ministry);
+    const ministryAccess = await this.validateMinistryAccess(
+      request.userId,
+      request.ministry,
+    );
     if (!ministryAccess) {
-      return this.createFailureResponse('No access to specified ministry', 'لا يوجد وصول للوزارة المحددة');
+      return this.createFailureResponse(
+        "No access to specified ministry",
+        "لا يوجد وصول للوزارة المحددة",
+      );
     }
 
     // Step 3: Security clearance check
     const securityClearance = await this.getSecurityClearance(request.userId);
-    const clearanceValid = this.validateClearanceLevel(securityClearance, request.requestedClearanceLevel);
+    const clearanceValid = this.validateClearanceLevel(
+      securityClearance,
+      request.requestedClearanceLevel,
+    );
     if (!clearanceValid) {
-      return this.createFailureResponse('Insufficient security clearance', 'تخليص أمني غير كافي');
+      return this.createFailureResponse(
+        "Insufficient security clearance",
+        "تخليص أمني غير كافي",
+      );
     }
 
     // Step 4: MFA validation if required
-    if (request.authMethod === 'mfa' || request.authMethod === 'combined') {
-      const mfaValid = await this.validateMFA(request.userId, request.mfaToken || '');
+    if (request.authMethod === "mfa" || request.authMethod === "combined") {
+      const mfaValid = await this.validateMFA(
+        request.userId,
+        request.mfaToken || "",
+      );
       if (!mfaValid) {
-        return this.createFailureResponse('Invalid MFA token', 'رمز المصادقة متعددة العوامل غير صالح');
+        return this.createFailureResponse(
+          "Invalid MFA token",
+          "رمز المصادقة متعددة العوامل غير صالح",
+        );
       }
     }
 
     // Step 5: Biometric validation if required
-    if (request.authMethod === 'biometric' || request.authMethod === 'combined') {
-      const biometricResult = await this.performBiometricVerification(request.userId, request.biometricData!);
+    if (
+      request.authMethod === "biometric" ||
+      request.authMethod === "combined"
+    ) {
+      const biometricResult = await this.performBiometricVerification(
+        request.userId,
+        request.biometricData!,
+      );
       if (!biometricResult.success) {
         return this.createFailureResponse(
           `Biometric verification failed: ${biometricResult.reason}`,
-          `فشل التحقق البيومتري: ${biometricResult.reasonArabic}`
+          `فشل التحقق البيومتري: ${biometricResult.reasonArabic}`,
         );
       }
     }
 
     // Step 6: Prayer time check if enabled
     if (prayerTimeAware) {
-      const isPrayerTime = await this.isPrayerTime(request.culturalContext.region);
+      const isPrayerTime = await this.isPrayerTime(
+        request.culturalContext.region,
+      );
       if (isPrayerTime) {
         // Allow authentication but note prayer time in session
-        const prayerTimes = await this.getPrayerTimes(request.culturalContext.region);
+        const prayerTimes = await this.getPrayerTimes(
+          request.culturalContext.region,
+        );
         // Could add prayer time info to warnings
       }
     }
@@ -1333,11 +1535,13 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       userAgent: request.clientInfo.userAgent,
       location: request.clientInfo.location,
       authMethod: request.authMethod,
-      mfaCompleted: request.authMethod === 'mfa' || request.authMethod === 'combined',
-      biometricCompleted: request.authMethod === 'biometric' || request.authMethod === 'combined',
-      sessionType: 'api',
+      mfaCompleted:
+        request.authMethod === "mfa" || request.authMethod === "combined",
+      biometricCompleted:
+        request.authMethod === "biometric" || request.authMethod === "combined",
+      sessionType: "api",
       ministry: request.ministry,
-      department: '', // Would be filled from user profile
+      department: "", // Would be filled from user profile
       securityLevel: request.requestedClearanceLevel,
       prayerTimeConfig: {
         enabled: prayerTimeAware,
@@ -1347,9 +1551,9 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
         notificationPreferences: {
           beforePrayer: 5,
           duringPrayer: true,
-          afterPrayer: false
-        }
-      }
+          afterPrayer: false,
+        },
+      },
     };
 
     // Step 9: Store session
@@ -1357,7 +1561,10 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
 
     // Step 10: Get user information
     const userProfile = await this.getUserProfile(request.userId);
-    const permissions = await this.getUserPermissions(request.userId, request.ministry);
+    const permissions = await this.getUserPermissions(
+      request.userId,
+      request.ministry,
+    );
 
     return this.createSuccessResponse(
       sessionToken,
@@ -1366,28 +1573,39 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       permissions,
       securityClearance,
       sessionInfo,
-      'Authentication successful',
-      'نجحت المصادقة'
+      "Authentication successful",
+      "نجحت المصادقة",
     );
   }
 
-  private async validateCredentials(userId: string, password?: string): Promise<boolean> {
+  private async validateCredentials(
+    userId: string,
+    password?: string,
+  ): Promise<boolean> {
     // In production, this would verify against government user database
     // For now, return true for demo purposes
     return userId.length > 0 && (password ? password.length >= 8 : true);
   }
 
-  private async validateMinistryAccess(userId: string, ministry: string): Promise<boolean> {
+  private async validateMinistryAccess(
+    userId: string,
+    ministry: string,
+  ): Promise<boolean> {
     // Check if user has access to the specified ministry
     const userProfile = await this.getUserProfile(userId);
-    return userProfile.ministry === ministry || userProfile.ministry === 'general';
+    return (
+      userProfile.ministry === ministry || userProfile.ministry === "general"
+    );
   }
 
-  private validateClearanceLevel(clearance: ISecurityClearance, requiredLevel: string): boolean {
-    const levels = ['public', 'restricted', 'confidential', 'secret'];
+  private validateClearanceLevel(
+    clearance: ISecurityClearance,
+    requiredLevel: string,
+  ): boolean {
+    const levels = ["public", "restricted", "confidential", "secret"];
     const userLevel = levels.indexOf(clearance.level);
     const requiredIdx = levels.indexOf(requiredLevel);
-    
+
     return userLevel >= requiredIdx && clearance.expiryDate > new Date();
   }
 
@@ -1397,16 +1615,21 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
   }
 
   private async performBiometricVerification(
-    userId: string, 
-    biometricData: IBiometricData
-  ): Promise<{ success: boolean; reason: string; reasonArabic: string; confidence: number }> {
+    userId: string,
+    biometricData: IBiometricData,
+  ): Promise<{
+    success: boolean;
+    reason: string;
+    reasonArabic: string;
+    confidence: number;
+  }> {
     // Validate biometric data quality
     if (biometricData.quality < 70) {
       return {
         success: false,
-        reason: 'Biometric quality too low',
-        reasonArabic: 'جودة البيانات البيومترية منخفضة جداً',
-        confidence: 0
+        reason: "Biometric quality too low",
+        reasonArabic: "جودة البيانات البيومترية منخفضة جداً",
+        confidence: 0,
       };
     }
 
@@ -1414,9 +1637,9 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     if (!biometricData.liveness) {
       return {
         success: false,
-        reason: 'Liveness detection failed',
-        reasonArabic: 'فشل اكتشاف الحيوية',
-        confidence: 0
+        reason: "Liveness detection failed",
+        reasonArabic: "فشل اكتشاف الحيوية",
+        confidence: 0,
       };
     }
 
@@ -1425,30 +1648,30 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     if (biometricData.confidence >= 85) {
       return {
         success: true,
-        reason: 'Biometric verification successful',
-        reasonArabic: 'نجح التحقق البيومتري',
-        confidence: biometricData.confidence
+        reason: "Biometric verification successful",
+        reasonArabic: "نجح التحقق البيومتري",
+        confidence: biometricData.confidence,
       };
     }
 
     return {
       success: false,
-      reason: 'Biometric match confidence too low',
-      reasonArabic: 'ثقة التطابق البيومتري منخفضة جداً',
-      confidence: biometricData.confidence
+      reason: "Biometric match confidence too low",
+      reasonArabic: "ثقة التطابق البيومتري منخفضة جداً",
+      confidence: biometricData.confidence,
     };
   }
 
   private processBiometricData(data: any): IBiometricData {
     return {
-      type: data.type || 'fingerprint',
-      data: data.data || '',
+      type: data.type || "fingerprint",
+      data: data.data || "",
       quality: data.quality || 85,
       confidence: data.confidence || 90,
-      deviceId: data.deviceId || 'unknown',
+      deviceId: data.deviceId || "unknown",
       timestamp: new Date(),
       liveness: data.liveness !== false,
-      template: data.template || data.data
+      template: data.template || data.data,
     };
   }
 
@@ -1472,139 +1695,166 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
   // Data Access Helper Methods
   // ================================
 
-  private async getUserProfile(userId: string): Promise<IGovernmentUserProfile> {
+  private async getUserProfile(
+    userId: string,
+  ): Promise<IGovernmentUserProfile> {
     // Mock user profile - in production, fetch from government user database
     return {
       userId,
       employeeId: `EMP_${userId}`,
-      fullName: 'Ahmad Mohammed',
-      fullNameArabic: 'أحمد محمد',
-      ministry: 'health',
-      department: 'Information Technology',
-      position: 'System Administrator',
-      positionArabic: 'مدير نظم',
+      fullName: "Ahmad Mohammed",
+      fullNameArabic: "أحمد محمد",
+      ministry: "health",
+      department: "Information Technology",
+      position: "System Administrator",
+      positionArabic: "مدير نظم",
       email: `${userId}@health.gov.iq`,
-      phoneNumber: '+964-770-123-4567',
-      securityClearanceLevel: 'restricted',
-      accountStatus: 'active',
+      phoneNumber: "+964-770-123-4567",
+      securityClearanceLevel: "restricted",
+      accountStatus: "active",
       lastLogin: new Date(Date.now() - 24 * 60 * 60 * 1000),
       passwordLastChanged: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       mfaEnabled: true,
       biometricEnabled: true,
-      preferredLanguage: 'ar',
+      preferredLanguage: "ar",
       emergencyContact: {
-        name: 'Sara Mohammed',
-        nameArabic: 'سارة محمد',
-        relationship: 'Wife',
-        phoneNumber: '+964-770-987-6543',
-        email: 'sara@example.com',
-        isPrimaryContact: true
-      }
+        name: "Sara Mohammed",
+        nameArabic: "سارة محمد",
+        relationship: "Wife",
+        phoneNumber: "+964-770-987-6543",
+        email: "sara@example.com",
+        isPrimaryContact: true,
+      },
     };
   }
 
-  private async getUserPermissions(userId: string, ministry: string): Promise<IUserPermissions> {
+  private async getUserPermissions(
+    userId: string,
+    ministry: string,
+  ): Promise<IUserPermissions> {
     // Mock permissions - in production, fetch from permission system
     return {
       ministry,
-      departments: ['Information Technology', 'Administration'],
-      roles: [{
-        roleId: 'role_admin_001',
-        roleName: 'System Administrator',
-        roleNameArabic: 'مدير نظم',
-        ministry,
-        permissions: ['read:all', 'write:config', 'admin:users'],
-        grantedBy: 'ministry_admin',
-        grantedDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-        isActive: true
-      }],
-      systemAccess: [{
-        systemName: 'Government Portal',
-        accessLevel: 'admin',
-        grantedPermissions: ['full-access'],
-        restrictions: [],
-        accessCount: 150
-      }],
-      dataClassifications: ['public', 'restricted'],
-      operationalPermissions: [{
-        operation: 'user-management',
-        operationArabic: 'إدارة المستخدمين',
-        scope: 'ministry',
-        dataClassification: 'restricted'
-      }],
+      departments: ["Information Technology", "Administration"],
+      roles: [
+        {
+          roleId: "role_admin_001",
+          roleName: "System Administrator",
+          roleNameArabic: "مدير نظم",
+          ministry,
+          permissions: ["read:all", "write:config", "admin:users"],
+          grantedBy: "ministry_admin",
+          grantedDate: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+          isActive: true,
+        },
+      ],
+      systemAccess: [
+        {
+          systemName: "Government Portal",
+          accessLevel: "admin",
+          grantedPermissions: ["full-access"],
+          restrictions: [],
+          accessCount: 150,
+        },
+      ],
+      dataClassifications: ["public", "restricted"],
+      operationalPermissions: [
+        {
+          operation: "user-management",
+          operationArabic: "إدارة المستخدمين",
+          scope: "ministry",
+          dataClassification: "restricted",
+        },
+      ],
       temporaryPermissions: [],
       restrictions: [],
-      culturalPermissions: [{
-        type: 'arabic-processing',
-        level: 'expert',
-        scope: ['translation', 'cultural-validation'],
-        culturalSensitivity: 95,
-        islamicCompliance: true,
-        professionalDomain: 'administrative'
-      }]
+      culturalPermissions: [
+        {
+          type: "arabic-processing",
+          level: "expert",
+          scope: ["translation", "cultural-validation"],
+          culturalSensitivity: 95,
+          islamicCompliance: true,
+          professionalDomain: "administrative",
+        },
+      ],
     };
   }
 
-  private async getSecurityClearance(userId: string): Promise<ISecurityClearance> {
+  private async getSecurityClearance(
+    userId: string,
+  ): Promise<ISecurityClearance> {
     // Mock security clearance - in production, fetch from security system
     return {
-      level: 'restricted',
-      grantedBy: 'security_office',
+      level: "restricted",
+      grantedBy: "security_office",
       grantedDate: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000),
       expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       lastReview: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000),
       nextReviewDue: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
-      clearanceScope: ['ministry-data', 'citizen-services'],
-      restrictions: ['no-export', 'audit-required'],
-      backgroundCheckStatus: 'valid',
-      polygraphRequired: false
+      clearanceScope: ["ministry-data", "citizen-services"],
+      restrictions: ["no-export", "audit-required"],
+      backgroundCheckStatus: "valid",
+      polygraphRequired: false,
     };
   }
 
-  private async getSessionInfo(sessionToken: string): Promise<ISessionInfo | null> {
+  private async getSessionInfo(
+    sessionToken: string,
+  ): Promise<ISessionInfo | null> {
     // Mock session lookup - in production, fetch from session store
-    if (!sessionToken || !sessionToken.startsWith('govt_session_')) {
+    if (!sessionToken || !sessionToken.startsWith("govt_session_")) {
       return null;
     }
 
     return {
-      sessionId: 'session_123',
+      sessionId: "session_123",
       createdAt: new Date(Date.now() - 60 * 60 * 1000),
       expiresAt: new Date(Date.now() + 7 * 60 * 60 * 1000),
       lastActivity: new Date(Date.now() - 5 * 60 * 1000),
-      ipAddress: '192.168.1.100',
-      userAgent: 'Government-Workflow-System/1.0',
-      authMethod: 'mfa',
+      ipAddress: "192.168.1.100",
+      userAgent: "Government-Workflow-System/1.0",
+      authMethod: "mfa",
       mfaCompleted: true,
       biometricCompleted: false,
-      sessionType: 'api',
-      ministry: 'health',
-      department: 'IT',
-      securityLevel: 'restricted',
+      sessionType: "api",
+      ministry: "health",
+      department: "IT",
+      securityLevel: "restricted",
       prayerTimeConfig: {
         enabled: true,
         pauseSessionDuringPrayer: false,
         extendSessionForPrayer: true,
-        prayerTimeRegion: 'baghdad',
+        prayerTimeRegion: "baghdad",
         notificationPreferences: {
           beforePrayer: 5,
           duringPrayer: true,
-          afterPrayer: false
-        }
-      }
+          afterPrayer: false,
+        },
+      },
     };
   }
 
-  private checkSpecificPermission(permissions: IUserPermissions, permission: string, resource: string): boolean {
+  private checkSpecificPermission(
+    permissions: IUserPermissions,
+    permission: string,
+    resource: string,
+  ): boolean {
     // Check if user has the specific permission
     for (const role of permissions.roles) {
-      if (role.permissions.includes(permission) || role.permissions.includes('full-access')) {
+      if (
+        role.permissions.includes(permission) ||
+        role.permissions.includes("full-access")
+      ) {
         return true;
       }
     }
 
     for (const opPerm of permissions.operationalPermissions) {
-      if (opPerm.operation === permission || permission.includes(opPerm.operation)) {
+      if (
+        opPerm.operation === permission ||
+        permission.includes(opPerm.operation)
+      ) {
         return true;
       }
     }
@@ -1612,33 +1862,37 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     return false;
   }
 
-  private getUserCulturalPreferences(userProfile: IGovernmentUserProfile): ICulturalAuthPreferences {
+  private getUserCulturalPreferences(
+    userProfile: IGovernmentUserProfile,
+  ): ICulturalAuthPreferences {
     return {
       language: userProfile.preferredLanguage,
-      rtlLayout: userProfile.preferredLanguage.startsWith('ar'),
-      arabicKeyboard: userProfile.preferredLanguage.startsWith('ar'),
+      rtlLayout: userProfile.preferredLanguage.startsWith("ar"),
+      arabicKeyboard: userProfile.preferredLanguage.startsWith("ar"),
       islamicCalendar: true,
       prayerTimeAlerts: true,
       culturalHolidays: true,
-      professionalTerminology: 'mixed',
-      timeFormat: '24-hour',
-      dateFormat: 'both'
+      professionalTerminology: "mixed",
+      timeFormat: "24-hour",
+      dateFormat: "both",
     };
   }
 
-  private calculateCulturalCompliance(response: IGovernmentAuthResponse): number {
+  private calculateCulturalCompliance(
+    response: IGovernmentAuthResponse,
+  ): number {
     let score = 100;
-    
+
     // Reduce score for warnings
     if (response.warnings) {
       score -= response.warnings.length * 5;
     }
-    
+
     // Cultural preferences alignment
     if (response.culturalPreferences?.islamicCalendar) {
       score += 5;
     }
-    
+
     if (response.culturalPreferences?.prayerTimeAlerts) {
       score += 5;
     }
@@ -1658,7 +1912,7 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     securityClearance: ISecurityClearance,
     sessionInfo: ISessionInfo,
     message: string,
-    messageArabic: string
+    messageArabic: string,
   ): IGovernmentAuthResponse {
     return {
       authenticationId: `auth_${Date.now()}`,
@@ -1671,27 +1925,32 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       sessionInfo,
       culturalPreferences: this.getUserCulturalPreferences(userProfile),
       warnings: [],
-      auditEntries: [{
-        auditId: `audit_${Date.now()}`,
-        timestamp: new Date(),
-        eventType: 'authentication',
-        outcome: 'success',
-        userId: userProfile.userId,
-        ministry: userProfile.ministry,
-        ipAddress: sessionInfo.ipAddress,
-        userAgent: sessionInfo.userAgent,
-        authMethod: sessionInfo.authMethod,
-        riskScore: 10,
-        threatLevel: 'none',
-        culturalCompliance: 95,
-        islamicCompliance: true,
-        details: { message, messageArabic },
-        investigationRequired: false
-      }]
+      auditEntries: [
+        {
+          auditId: `audit_${Date.now()}`,
+          timestamp: new Date(),
+          eventType: "authentication",
+          outcome: "success",
+          userId: userProfile.userId,
+          ministry: userProfile.ministry,
+          ipAddress: sessionInfo.ipAddress,
+          userAgent: sessionInfo.userAgent,
+          authMethod: sessionInfo.authMethod,
+          riskScore: 10,
+          threatLevel: "none",
+          culturalCompliance: 95,
+          islamicCompliance: true,
+          details: { message, messageArabic },
+          investigationRequired: false,
+        },
+      ],
     };
   }
 
-  private createFailureResponse(message: string, messageArabic: string): IGovernmentAuthResponse {
+  private createFailureResponse(
+    message: string,
+    messageArabic: string,
+  ): IGovernmentAuthResponse {
     return {
       authenticationId: `auth_fail_${Date.now()}`,
       success: false,
@@ -1700,69 +1959,73 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       securityClearance: this.createEmptySecurityClearance(),
       sessionInfo: this.createEmptySessionInfo(),
       culturalPreferences: this.getDefaultCulturalPreferences(),
-      warnings: [{
-        id: `warning_${Date.now()}`,
-        type: 'suspicious-activity',
-        severity: 'high',
-        message,
-        messageArabic,
-        timestamp: new Date(),
-        actionRequired: true,
-        autoResolved: false,
-        details: { authenticationFailed: true }
-      }],
-      auditEntries: [{
-        auditId: `audit_fail_${Date.now()}`,
-        timestamp: new Date(),
-        eventType: 'authentication',
-        outcome: 'failure',
-        userId: 'unknown',
-        ministry: 'unknown',
-        ipAddress: '0.0.0.0',
-        userAgent: 'unknown',
-        authMethod: 'unknown',
-        riskScore: 80,
-        threatLevel: 'high',
-        culturalCompliance: 0,
-        islamicCompliance: false,
-        details: { message, messageArabic },
-        investigationRequired: true
-      }]
+      warnings: [
+        {
+          id: `warning_${Date.now()}`,
+          type: "suspicious-activity",
+          severity: "high",
+          message,
+          messageArabic,
+          timestamp: new Date(),
+          actionRequired: true,
+          autoResolved: false,
+          details: { authenticationFailed: true },
+        },
+      ],
+      auditEntries: [
+        {
+          auditId: `audit_fail_${Date.now()}`,
+          timestamp: new Date(),
+          eventType: "authentication",
+          outcome: "failure",
+          userId: "unknown",
+          ministry: "unknown",
+          ipAddress: "0.0.0.0",
+          userAgent: "unknown",
+          authMethod: "unknown",
+          riskScore: 80,
+          threatLevel: "high",
+          culturalCompliance: 0,
+          islamicCompliance: false,
+          details: { message, messageArabic },
+          investigationRequired: true,
+        },
+      ],
     };
   }
 
   private createEmptyUserProfile(): IGovernmentUserProfile {
     return {
-      userId: '',
-      employeeId: '',
-      fullName: '',
-      fullNameArabic: '',
-      ministry: '',
-      department: '',
-      position: '',
-      positionArabic: '',
-      email: '',
-      phoneNumber: '',
-      securityClearanceLevel: 'public',
-      accountStatus: 'locked',
+      userId: "",
+      employeeId: "",
+      fullName: "",
+      fullNameArabic: "",
+      ministry: "",
+      department: "",
+      position: "",
+      positionArabic: "",
+      email: "",
+      phoneNumber: "",
+      securityClearanceLevel: "public",
+      accountStatus: "locked",
       lastLogin: new Date(0),
       passwordLastChanged: new Date(0),
       mfaEnabled: false,
       biometricEnabled: false,
-      preferredLanguage: 'ar',
+      preferredLanguage: "ar",
       emergencyContact: {
-        name: '',
-        nameArabic: '',
-        relationship: '',
-        phoneNumber: '',
-        isPrimaryContact: false
-      }
+        name: "",
+        nameArabic: "",
+        relationship: "",
+        phoneNumber: "",
+        isPrimaryContact: false,
+      },
     };
   }
 
   private createEmptyPermissions(): IUserPermissions {
     return {
-      ministry: '',
+      ministry: "",
       departments: [],
       roles: [],
       systemAccess: [],
@@ -1770,80 +2033,91 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
       operationalPermissions: [],
       temporaryPermissions: [],
       restrictions: [],
-      culturalPermissions: []
+      culturalPermissions: [],
     };
   }
 
   private createEmptySecurityClearance(): ISecurityClearance {
     return {
-      level: 'public',
-      grantedBy: '',
+      level: "public",
+      grantedBy: "",
       grantedDate: new Date(0),
       expiryDate: new Date(0),
       lastReview: new Date(0),
       nextReviewDue: new Date(0),
       clearanceScope: [],
       restrictions: [],
-      backgroundCheckStatus: 'revoked',
-      polygraphRequired: false
+      backgroundCheckStatus: "revoked",
+      polygraphRequired: false,
     };
   }
 
   private createEmptySessionInfo(): ISessionInfo {
     return {
-      sessionId: '',
+      sessionId: "",
       createdAt: new Date(0),
       expiresAt: new Date(0),
       lastActivity: new Date(0),
-      ipAddress: '0.0.0.0',
-      userAgent: '',
-      authMethod: '',
+      ipAddress: "0.0.0.0",
+      userAgent: "",
+      authMethod: "",
       mfaCompleted: false,
       biometricCompleted: false,
-      sessionType: 'api',
-      ministry: '',
-      department: '',
-      securityLevel: 'public',
+      sessionType: "api",
+      ministry: "",
+      department: "",
+      securityLevel: "public",
       prayerTimeConfig: {
         enabled: false,
         pauseSessionDuringPrayer: false,
         extendSessionForPrayer: false,
-        prayerTimeRegion: 'general',
+        prayerTimeRegion: "general",
         notificationPreferences: {
           beforePrayer: 0,
           duringPrayer: false,
-          afterPrayer: false
-        }
-      }
+          afterPrayer: false,
+        },
+      },
     };
   }
 
   private getDefaultCulturalPreferences(): ICulturalAuthPreferences {
     return {
-      language: 'ar',
+      language: "ar",
       rtlLayout: true,
       arabicKeyboard: true,
       islamicCalendar: true,
       prayerTimeAlerts: true,
       culturalHolidays: true,
-      professionalTerminology: 'mixed',
-      timeFormat: '24-hour',
-      dateFormat: 'both'
+      professionalTerminology: "mixed",
+      timeFormat: "24-hour",
+      dateFormat: "both",
     };
   }
 
   // Additional helper methods for session management, audit reporting, etc.
-  private async storeSession(token: string, sessionInfo: ISessionInfo): Promise<void> {
+  private async storeSession(
+    token: string,
+    sessionInfo: ISessionInfo,
+  ): Promise<void> {
     // Store session in government session database
-    console.log(`🔐 Storing session ${sessionInfo.sessionId} for ministry ${sessionInfo.ministry}`);
+    console.log(
+      `🔐 Storing session ${sessionInfo.sessionId} for ministry ${sessionInfo.ministry}`,
+    );
   }
 
-  private async updateSessionActivity(token: string, sessionInfo: ISessionInfo): Promise<void> {
+  private async updateSessionActivity(
+    token: string,
+    sessionInfo: ISessionInfo,
+  ): Promise<void> {
     // Update session last activity
     console.log(`🔄 Updated session activity for ${sessionInfo.sessionId}`);
   }
 
-  private async updateSession(token: string, sessionInfo: ISessionInfo): Promise<void> {
+  private async updateSession(
+    token: string,
+    sessionInfo: ISessionInfo,
+  ): Promise<void> {
     // Update entire session info
     console.log(`📝 Updated session ${sessionInfo.sessionId} with new token`);
   }
@@ -1858,132 +2132,140 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
     console.log(`🚪 Invalidated session ${sessionId}`);
   }
 
-  private createTempSessionInfo(userId: string, ministry: string): ISessionInfo {
+  private createTempSessionInfo(
+    userId: string,
+    ministry: string,
+  ): ISessionInfo {
     return {
       sessionId: `temp_${Date.now()}`,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
       lastActivity: new Date(),
-      ipAddress: '192.168.1.100',
-      userAgent: 'Biometric-Verification/1.0',
-      authMethod: 'biometric',
+      ipAddress: "192.168.1.100",
+      userAgent: "Biometric-Verification/1.0",
+      authMethod: "biometric",
       mfaCompleted: false,
       biometricCompleted: true,
-      sessionType: 'api',
+      sessionType: "api",
       ministry,
-      department: '',
-      securityLevel: 'public',
+      department: "",
+      securityLevel: "public",
       prayerTimeConfig: {
         enabled: false,
         pauseSessionDuringPrayer: false,
         extendSessionForPrayer: false,
-        prayerTimeRegion: 'general',
+        prayerTimeRegion: "general",
         notificationPreferences: {
           beforePrayer: 0,
           duringPrayer: false,
-          afterPrayer: false
-        }
-      }
+          afterPrayer: false,
+        },
+      },
     };
   }
 
   private createSystemUserProfile(): IGovernmentUserProfile {
     return {
-      userId: 'system',
-      employeeId: 'SYS_001',
-      fullName: 'System Administrator',
-      fullNameArabic: 'مدير النظام',
-      ministry: 'general',
-      department: 'Information Technology',
-      position: 'System',
-      positionArabic: 'نظام',
-      email: 'system@gov.iq',
-      phoneNumber: '',
-      securityClearanceLevel: 'secret',
-      accountStatus: 'active',
+      userId: "system",
+      employeeId: "SYS_001",
+      fullName: "System Administrator",
+      fullNameArabic: "مدير النظام",
+      ministry: "general",
+      department: "Information Technology",
+      position: "System",
+      positionArabic: "نظام",
+      email: "system@gov.iq",
+      phoneNumber: "",
+      securityClearanceLevel: "secret",
+      accountStatus: "active",
       lastLogin: new Date(),
       passwordLastChanged: new Date(),
       mfaEnabled: true,
       biometricEnabled: true,
-      preferredLanguage: 'ar',
+      preferredLanguage: "ar",
       emergencyContact: {
-        name: 'IT Support',
-        nameArabic: 'دعم تقني',
-        relationship: 'Department',
-        phoneNumber: '+964-1-123-4567',
-        isPrimaryContact: true
-      }
+        name: "IT Support",
+        nameArabic: "دعم تقني",
+        relationship: "Department",
+        phoneNumber: "+964-1-123-4567",
+        isPrimaryContact: true,
+      },
     };
   }
 
   private createSystemPermissions(): IUserPermissions {
     return {
-      ministry: 'general',
-      departments: ['All'],
-      roles: [{
-        roleId: 'system_admin',
-        roleName: 'System Administrator',
-        roleNameArabic: 'مدير النظام',
-        ministry: 'general',
-        permissions: ['full-access'],
-        grantedBy: 'system',
-        grantedDate: new Date(),
-        isActive: true
-      }],
+      ministry: "general",
+      departments: ["All"],
+      roles: [
+        {
+          roleId: "system_admin",
+          roleName: "System Administrator",
+          roleNameArabic: "مدير النظام",
+          ministry: "general",
+          permissions: ["full-access"],
+          grantedBy: "system",
+          grantedDate: new Date(),
+          isActive: true,
+        },
+      ],
       systemAccess: [],
-      dataClassifications: ['public', 'restricted', 'confidential', 'secret'],
+      dataClassifications: ["public", "restricted", "confidential", "secret"],
       operationalPermissions: [],
       temporaryPermissions: [],
       restrictions: [],
-      culturalPermissions: []
+      culturalPermissions: [],
     };
   }
 
   private createSystemSecurityClearance(): ISecurityClearance {
     return {
-      level: 'secret',
-      grantedBy: 'system',
+      level: "secret",
+      grantedBy: "system",
       grantedDate: new Date(),
       expiryDate: new Date(Date.now() + 10 * 365 * 24 * 60 * 60 * 1000),
       lastReview: new Date(),
       nextReviewDue: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-      clearanceScope: ['all-systems'],
+      clearanceScope: ["all-systems"],
       restrictions: [],
-      backgroundCheckStatus: 'valid',
-      polygraphRequired: false
+      backgroundCheckStatus: "valid",
+      polygraphRequired: false,
     };
   }
 
   private createSystemSessionInfo(): ISessionInfo {
     return {
-      sessionId: 'system_session',
+      sessionId: "system_session",
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       lastActivity: new Date(),
-      ipAddress: '127.0.0.1',
-      userAgent: 'System/1.0',
-      authMethod: 'system',
+      ipAddress: "127.0.0.1",
+      userAgent: "System/1.0",
+      authMethod: "system",
       mfaCompleted: true,
       biometricCompleted: true,
-      sessionType: 'api',
-      ministry: 'general',
-      department: 'IT',
-      securityLevel: 'secret',
+      sessionType: "api",
+      ministry: "general",
+      department: "IT",
+      securityLevel: "secret",
       prayerTimeConfig: {
         enabled: true,
         pauseSessionDuringPrayer: false,
         extendSessionForPrayer: false,
-        prayerTimeRegion: 'general',
+        prayerTimeRegion: "general",
         notificationPreferences: {
           beforePrayer: 0,
           duringPrayer: false,
-          afterPrayer: false
-        }
-      }
+          afterPrayer: false,
+        },
+      },
     };
   }
 
-  private async createSecurityAuditReport(ministry: string, dateRange: string): Promise<any> {
+  private async createSecurityAuditReport(
+    ministry: string,
+    dateRange: string,
+  ): Promise<any> {
     // Generate comprehensive security audit report
     return {
       reportId: `audit_${Date.now()}`,
@@ -1995,15 +2277,15 @@ export class GovernmentSSONode extends IraqiGovernmentNodeBase {
         successfulLogins: 1180,
         failedLogins: 70,
         suspiciousActivities: 15,
-        securityIncidents: 2
+        securityIncidents: 2,
       },
       warnings: [],
       auditEntries: [],
       recommendations: [
-        'Enable MFA for all users',
-        'Regular security clearance reviews',
-        'Enhanced biometric validation'
-      ]
+        "Enable MFA for all users",
+        "Regular security clearance reviews",
+        "Enhanced biometric validation",
+      ],
     };
   }
 }

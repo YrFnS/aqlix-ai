@@ -24,6 +24,7 @@ These repositories serve as **templates and component libraries** for:
 ## 🔧 Usage Strategy
 
 ### Component Extraction Workflow
+
 1. **Analyze** → Study relevant components and patterns
 2. **Extract** → Copy useful code patterns and adapt to React/Next.js
 3. **Adapt** → Modify for Iraqi-specific requirements
@@ -32,6 +33,7 @@ These repositories serve as **templates and component libraries** for:
 ### Key Focus Areas
 
 #### From Open WebUI:
+
 - Chat UI components → Adapt from Svelte to React
 - User management database models
 - File upload and management systems
@@ -39,6 +41,7 @@ These repositories serve as **templates and component libraries** for:
 - Authentication and session handling
 
 #### From Agent Zero:
+
 - Agent orchestration patterns → Integrate with PydanticAI
 - Memory management architecture
 - Tool framework and extensions
@@ -55,6 +58,7 @@ These repositories serve as **templates and component libraries** for:
 ## 🔗 Integration Points
 
 Extracted components will integrate with:
+
 - Our Iraqi-specific features (dialect, culture, professional domains)
 - Custom authentication and payment systems (ZainCash, FastPay)
 - Arabic RTL support and text processing

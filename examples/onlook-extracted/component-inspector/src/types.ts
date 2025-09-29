@@ -1,4 +1,4 @@
-import type { Node as BabelNode } from '@babel/types';
+import type { Node as BabelNode } from "@babel/types";
 
 /**
  * Core Component Analysis Types
@@ -20,7 +20,7 @@ export interface CulturalConfig {
     ministrySpecific?: MinistryType;
   };
   language: {
-    primary: 'ar-IQ' | 'ar' | 'en-US';
+    primary: "ar-IQ" | "ar" | "en-US";
     fallback: string;
     rtlOptimization: boolean;
   };
@@ -51,7 +51,7 @@ export interface PerformanceConfig {
 
 export interface AccessibilityConfig {
   standards: {
-    wcag: 'AA' | 'AAA';
+    wcag: "AA" | "AAA";
     iraqiGovernment: boolean;
     rtlCompliance: boolean;
   };
@@ -71,7 +71,7 @@ export interface SecurityConfig {
 export interface CachingConfig {
   enabled: boolean;
   ttl: number;
-  strategies: ('memory' | 'disk' | 'distributed')[];
+  strategies: ("memory" | "disk" | "distributed")[];
 }
 
 // Analysis Results Types
@@ -92,7 +92,7 @@ export interface ComponentInfo {
   name: string;
   path: string;
   type: ComponentType;
-  framework: 'react' | 'vue' | 'angular' | 'svelte';
+  framework: "react" | "vue" | "angular" | "svelte";
   size: {
     loc: number; // lines of code
     bundleSize: number;
@@ -131,7 +131,7 @@ export interface LanguageSupportReport {
   arabicSupport: number; // 0-100
   rtlCompliance: number; // 0-100
   fontOptimization: number; // 0-100
-  textDirection: 'ltr' | 'rtl' | 'auto';
+  textDirection: "ltr" | "rtl" | "auto";
   mixedContentHandling: boolean;
 }
 
@@ -155,7 +155,7 @@ export interface PerformanceMetrics {
 export interface RTLMetrics {
   renderTime: number;
   layoutShifts: number;
-  textDirection: 'ltr' | 'rtl' | 'auto';
+  textDirection: "ltr" | "rtl" | "auto";
   bidiCompliance: boolean;
   performanceImpact: number; // percentage
 }
@@ -186,7 +186,7 @@ export interface AccessibilityReport {
 }
 
 export interface WCAGCompliance {
-  level: 'A' | 'AA' | 'AAA';
+  level: "A" | "AA" | "AAA";
   score: number;
   violations: WCAGViolation[];
   passedRules: number;
@@ -231,8 +231,8 @@ export interface PatternMatch {
 export interface Recommendation {
   id: string;
   type: RecommendationType;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  category: 'performance' | 'accessibility' | 'cultural' | 'security';
+  priority: "low" | "medium" | "high" | "critical";
+  category: "performance" | "accessibility" | "cultural" | "security";
   title: string;
   description: string;
   implementation: string;
@@ -241,63 +241,63 @@ export interface Recommendation {
 
 // Supporting Types
 
-export type ComponentType = 
-  | 'functional'
-  | 'class'
-  | 'hook'
-  | 'provider'
-  | 'hoc'
-  | 'page'
-  | 'layout'
-  | 'widget';
+export type ComponentType =
+  | "functional"
+  | "class"
+  | "hook"
+  | "provider"
+  | "hoc"
+  | "page"
+  | "layout"
+  | "widget";
 
-export type MinistryType = 
-  | 'interior'
-  | 'education'
-  | 'health'
-  | 'finance'
-  | 'defense'
-  | 'justice'
-  | 'foreign'
-  | 'transport'
-  | 'communication';
+export type MinistryType =
+  | "interior"
+  | "education"
+  | "health"
+  | "finance"
+  | "defense"
+  | "justice"
+  | "foreign"
+  | "transport"
+  | "communication";
 
 export type PatternType =
-  | 'government-form'
-  | 'ministry-header'
-  | 'prayer-notice'
-  | 'arabic-content-block'
-  | 'citizen-portal'
-  | 'official-document'
-  | 'cultural-component';
+  | "government-form"
+  | "ministry-header"
+  | "prayer-notice"
+  | "arabic-content-block"
+  | "citizen-portal"
+  | "official-document"
+  | "cultural-component";
 
 export type MetricType =
-  | 'render-time'
-  | 'bundle-size'
-  | 'memory-usage'
-  | 'accessibility'
-  | 'cultural-compliance'
-  | 'rtl-performance';
+  | "render-time"
+  | "bundle-size"
+  | "memory-usage"
+  | "accessibility"
+  | "cultural-compliance"
+  | "rtl-performance";
 
 export type RecommendationType =
-  | 'optimization'
-  | 'compliance'
-  | 'accessibility'
-  | 'security'
-  | 'cultural'
-  | 'performance';
+  | "optimization"
+  | "compliance"
+  | "accessibility"
+  | "security"
+  | "cultural"
+  | "performance";
 
 export interface Dependency {
   name: string;
   version: string;
-  type: 'runtime' | 'dev' | 'peer';
+  type: "runtime" | "dev" | "peer";
   culturalRelevance?: boolean;
-  securityRisk?: 'low' | 'medium' | 'high';
+  securityRisk?: "low" | "medium" | "high";
 }
 
 export interface ComponentExport {
   name: string;
-  type: 'default' | 'named';
+  type: "default" | "named";
   signature?: string;
 }
 
@@ -310,7 +310,7 @@ export interface MinistryCompliance {
 
 export interface IslamicViolation {
   type: string;
-  severity: 'low' | 'medium' | 'high';
+  severity: "low" | "medium" | "high";
   description: string;
   location?: SourceLocation;
   recommendation: string;
@@ -318,7 +318,7 @@ export interface IslamicViolation {
 
 export interface AccessibilityViolation {
   rule: string;
-  impact: 'minor' | 'moderate' | 'serious' | 'critical';
+  impact: "minor" | "moderate" | "serious" | "critical";
   description: string;
   element?: string;
   recommendation: string;
@@ -326,7 +326,7 @@ export interface AccessibilityViolation {
 
 export interface WCAGViolation {
   rule: string;
-  level: 'A' | 'AA' | 'AAA';
+  level: "A" | "AA" | "AAA";
   principle: string;
   guideline: string;
   description: string;
@@ -336,7 +336,7 @@ export interface WCAGViolation {
 
 export interface AccessibilityRecommendation {
   type: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   description: string;
   implementation: string;
   testing: string;
@@ -360,14 +360,14 @@ export interface PrivacyComplianceReport {
 
 export interface GovernmentSecurityReport {
   score: number;
-  classification: 'public' | 'internal' | 'confidential' | 'secret';
+  classification: "public" | "internal" | "confidential" | "secret";
   complianceFramework: string[];
   securityControls: string[];
 }
 
 export interface SecurityVulnerability {
   type: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
   cve?: string;
   mitigation: string;
@@ -385,7 +385,7 @@ export interface ImpactAssessment {
   accessibility: number;
   cultural: number;
   security: number;
-  effort: 'low' | 'medium' | 'high';
+  effort: "low" | "medium" | "high";
   timeline: string;
 }
 
@@ -399,7 +399,7 @@ export interface ASTNode extends BabelNode {
 
 export interface CulturalContext {
   language: string;
-  direction: 'ltr' | 'rtl';
+  direction: "ltr" | "rtl";
   islamicCompliance: boolean;
   governmentRelevance: boolean;
 }
@@ -414,7 +414,7 @@ export interface DOMElementInfo {
 }
 
 export interface ComputedStyles {
-  direction: 'ltr' | 'rtl';
+  direction: "ltr" | "rtl";
   fontFamily: string;
   fontSize: string;
   color: string;
@@ -425,7 +425,7 @@ export interface ComputedStyles {
 export interface CulturalMetadata {
   language: string;
   script: string;
-  textDirection: 'ltr' | 'rtl';
+  textDirection: "ltr" | "rtl";
   culturalTags: string[];
 }
 
@@ -457,14 +457,14 @@ export interface CacheStats {
 
 // Event Types
 
-export type InspectorEvent = 
-  | 'analysis-started'
-  | 'analysis-completed'
-  | 'performance-issue'
-  | 'cultural-violation'
-  | 'accessibility-issue'
-  | 'pattern-detected'
-  | 'error';
+export type InspectorEvent =
+  | "analysis-started"
+  | "analysis-completed"
+  | "performance-issue"
+  | "cultural-violation"
+  | "accessibility-issue"
+  | "pattern-detected"
+  | "error";
 
 export interface EventPayload {
   type: InspectorEvent;

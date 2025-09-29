@@ -8,7 +8,7 @@
         "secondary_language": "english",
         "formal_level": "highest"
       },
-      
+
       "terminology": {
         "key_terms": {
           "court": {
@@ -37,7 +37,7 @@
             "context": "judicial authority"
           }
         },
-        
+
         "specialized_vocabulary": [
           "constitutional_law",
           "civil_procedure",
@@ -48,7 +48,7 @@
           "property_law",
           "evidence_law"
         ],
-        
+
         "cultural_legal_concepts": [
           "sharia_compliance",
           "customary_law",
@@ -57,7 +57,7 @@
           "community_responsibility"
         ]
       },
-      
+
       "content_guidelines": {
         "appropriate_topics": [
           "legal_procedures_explanation",
@@ -67,7 +67,7 @@
           "dispute_resolution_methods",
           "legal_research_techniques"
         ],
-        
+
         "restricted_topics": [
           "specific_legal_advice",
           "case_outcome_prediction",
@@ -75,7 +75,7 @@
           "judicial_criticism",
           "sectarian_legal_bias"
         ],
-        
+
         "representation_standards": {
           "professional_attire": "formal_business_conservative",
           "setting_requirements": "formal_office_courtroom",
@@ -83,7 +83,7 @@
           "documentation_style": "precise_formal"
         }
       },
-      
+
       "cultural_considerations": {
         "islamic_law_integration": true,
         "tribal_customs_awareness": true,
@@ -101,7 +101,7 @@
         "secondary_language": "english",
         "formal_level": "high"
       },
-      
+
       "terminology": {
         "key_terms": {
           "doctor": {
@@ -130,7 +130,7 @@
             "context": "medical assessment"
           }
         },
-        
+
         "specialized_vocabulary": [
           "clinical_examination",
           "medical_history",
@@ -141,7 +141,7 @@
           "pharmaceutical_care",
           "medical_ethics"
         ],
-        
+
         "cultural_medical_concepts": [
           "family_involvement_in_care",
           "gender_sensitive_treatment",
@@ -150,7 +150,7 @@
           "community_health_approaches"
         ]
       },
-      
+
       "content_guidelines": {
         "appropriate_topics": [
           "general_health_education",
@@ -160,7 +160,7 @@
           "medical_terminology_education",
           "health_promotion_activities"
         ],
-        
+
         "restricted_topics": [
           "specific_medical_diagnosis",
           "personalized_treatment_advice",
@@ -168,7 +168,7 @@
           "surgical_decision_making",
           "mental_health_assessment"
         ],
-        
+
         "representation_standards": {
           "professional_attire": "medical_scrubs_white_coat",
           "setting_requirements": "clinical_hospital_office",
@@ -176,7 +176,7 @@
           "privacy_considerations": "patient_confidentiality_strict"
         }
       },
-      
+
       "cultural_considerations": {
         "gender_separated_care_options": true,
         "family_decision_involvement": true,
@@ -195,7 +195,7 @@
         "secondary_language": "english",
         "formal_level": "moderate_to_high"
       },
-      
+
       "terminology": {
         "key_terms": {
           "teacher": {
@@ -224,7 +224,7 @@
             "context": "educational program"
           }
         },
-        
+
         "specialized_vocabulary": [
           "pedagogical_methods",
           "assessment_strategies",
@@ -235,7 +235,7 @@
           "educational_policy",
           "inclusive_education"
         ],
-        
+
         "cultural_educational_concepts": [
           "respect_for_knowledge",
           "teacher_student_relationship",
@@ -244,7 +244,7 @@
           "moral_education_integration"
         ]
       },
-      
+
       "content_guidelines": {
         "appropriate_topics": [
           "learning_methodology_explanation",
@@ -254,14 +254,14 @@
           "assessment_and_evaluation",
           "educational_technology_integration"
         ],
-        
+
         "age_appropriate_considerations": {
           "elementary": "simple_language_visual_aids",
           "secondary": "structured_content_practical_examples",
           "university": "academic_rigor_research_focus",
           "adult_education": "practical_application_respect_experience"
         },
-        
+
         "representation_standards": {
           "professional_attire": "business_casual_respectful",
           "setting_requirements": "classroom_library_academic",
@@ -269,7 +269,7 @@
           "content_delivery": "clear_structured_engaging"
         }
       },
-      
+
       "cultural_considerations": {
         "gender_mixed_classes_sensitivity": true,
         "religious_education_integration": true,
@@ -287,7 +287,7 @@
         "secondary_language": "english",
         "formal_level": "high"
       },
-      
+
       "terminology": {
         "key_terms": {
           "business": {
@@ -316,7 +316,7 @@
             "context": "business gain"
           }
         },
-        
+
         "specialized_vocabulary": [
           "strategic_planning",
           "market_analysis",
@@ -327,7 +327,7 @@
           "quality_management",
           "business_development"
         ],
-        
+
         "cultural_business_concepts": [
           "relationship_based_commerce",
           "trust_building_importance",
@@ -336,7 +336,7 @@
           "ethical_business_practices"
         ]
       },
-      
+
       "content_guidelines": {
         "appropriate_topics": [
           "business_strategy_development",
@@ -346,14 +346,14 @@
           "customer_relationship_management",
           "business_ethics_and_compliance"
         ],
-        
+
         "cultural_business_practices": {
           "meeting_etiquette": "formal_respectful_patient",
           "negotiation_style": "relationship_focused_gradual",
           "decision_making": "consultative_hierarchical",
           "networking": "trust_based_long_term"
         },
-        
+
         "representation_standards": {
           "professional_attire": "formal_business_conservative",
           "setting_requirements": "office_conference_room",
@@ -361,7 +361,7 @@
           "communication_style": "direct_but_respectful"
         }
       },
-      
+
       "cultural_considerations": {
         "islamic_banking_principles": true,
         "family_business_dynamics": true,
@@ -379,7 +379,7 @@
         "secondary_language": "english",
         "formal_level": "high"
       },
-      
+
       "terminology": {
         "key_terms": {
           "engineer": {
@@ -408,7 +408,7 @@
             "context": "fundamental systems"
           }
         },
-        
+
         "specialized_vocabulary": [
           "structural_analysis",
           "environmental_impact",
@@ -419,7 +419,7 @@
           "sustainable_development",
           "innovation_technology"
         ],
-        
+
         "cultural_engineering_concepts": [
           "traditional_building_methods",
           "climate_appropriate_design",
@@ -428,7 +428,7 @@
           "local_material_utilization"
         ]
       },
-      
+
       "content_guidelines": {
         "appropriate_topics": [
           "engineering_design_principles",
@@ -438,7 +438,7 @@
           "project_planning_and_management",
           "infrastructure_development"
         ],
-        
+
         "technical_considerations": {
           "local_climate_factors": true,
           "available_materials": true,
@@ -446,7 +446,7 @@
           "water_resource_management": true,
           "energy_efficiency": true
         },
-        
+
         "representation_standards": {
           "professional_attire": "business_casual_safety_gear",
           "setting_requirements": "office_construction_site_lab",
@@ -454,7 +454,7 @@
           "documentation_style": "detailed_accurate_standardized"
         }
       },
-      
+
       "cultural_considerations": {
         "traditional_architecture_respect": true,
         "environmental_stewardship": true,
@@ -472,7 +472,7 @@
         "secondary_language": "english",
         "formal_level": "moderate"
       },
-      
+
       "universal_principles": {
         "respect_and_courtesy": true,
         "professional_competence": true,
@@ -481,7 +481,7 @@
         "collaborative_approach": true,
         "continuous_learning": true
       },
-      
+
       "workplace_norms": {
         "hierarchy_respect": true,
         "team_collaboration": true,
@@ -490,7 +490,7 @@
         "communication_clarity": true,
         "problem_solving_focus": true
       },
-      
+
       "cultural_workplace_values": {
         "family_work_balance": true,
         "religious_observance_accommodation": true,
@@ -509,7 +509,7 @@
       "medical_education": "health_literacy_professional_training",
       "legal_business": "commercial_law_compliance"
     },
-    
+
     "shared_professional_values": [
       "integrity_and_honesty",
       "service_to_community",
@@ -518,7 +518,7 @@
       "ethical_decision_making",
       "respect_for_stakeholders"
     ],
-    
+
     "cultural_professional_integration": {
       "islamic_work_ethics": true,
       "community_service_orientation": true,

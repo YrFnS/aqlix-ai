@@ -29,7 +29,7 @@ interface ArabicFontProps {
 // Font Family Mappings
 const FONT_FAMILIES = {
   primary: 'var(--font-arabic-primary)',
-  heading: 'var(--font-arabic-heading)', 
+  heading: 'var(--font-arabic-heading)',
   body: 'var(--font-arabic-body)',
   mono: 'var(--font-arabic-mono)',
 };
@@ -66,7 +66,7 @@ export const useArabicFontLoading = () => {
             document.fonts.load('400 16px "IBM Plex Sans Arabic"'),
             document.fonts.load('400 16px "Cairo"'),
           ]);
-          
+
           setFontsLoaded(true);
         } else {
           // Fallback for browsers without Font Loading API
@@ -176,11 +176,7 @@ export const ArabicFont: React.FC<ArabicFontProps> = ({
   };
 
   return (
-    <Component 
-      className={buildClasses()} 
-      style={buildStyles()}
-      dir={isArabic ? 'rtl' : 'ltr'}
-    >
+    <Component className={buildClasses()} style={buildStyles()} dir={isArabic ? 'rtl' : 'ltr'}>
       {children}
     </Component>
   );
@@ -253,7 +249,7 @@ export const ProfessionalTitle: React.FC<ProfessionalTitleProps> = ({
   const Component = `h${level}` as keyof JSX.IntrinsicElements;
   const sizeMap: Record<number, ArabicFontSize> = {
     1: '3xl',
-    2: '2xl', 
+    2: '2xl',
     3: 'xl',
     4: 'lg',
     5: 'base',
@@ -286,7 +282,7 @@ export const IslamicText: React.FC<IslamicTextProps> = ({
   ...props
 }) => {
   const emphasisClass = emphasis ? 'cultural-emphasis' : '';
-  
+
   return (
     <ArabicFont
       {...props}
@@ -297,7 +293,7 @@ export const IslamicText: React.FC<IslamicTextProps> = ({
   );
 };
 
-// Dialect-Aware Text Component  
+// Dialect-Aware Text Component
 interface DialectTextProps extends ArabicTextProps {
   autoDetect?: boolean;
 }
@@ -327,10 +323,7 @@ export const DialectText: React.FC<DialectTextProps> = ({
   }, [autoDetect, children]);
 
   return (
-    <ArabicFont
-      {...props}
-      dialect={props.dialect || (autoDetect ? detectedDialect : undefined)}
-    >
+    <ArabicFont {...props} dialect={props.dialect || (autoDetect ? detectedDialect : undefined)}>
       {children}
     </ArabicFont>
   );
@@ -342,18 +335,37 @@ export const ArabicFontPreloader: React.FC = () => {
     // Preload critical Arabic fonts
     if ('fonts' in document) {
       const fontPromises = [
-        new FontFace('Noto Sans Arabic', 'url(https://fonts.gstatic.com/s/notosansarabic/v18/nwpxtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlhQ5l-b9w-6GOTSJqKE.woff2)', { weight: '400' }),
-        new FontFace('Amiri', 'url(https://fonts.gstatic.com/s/amiri/v27/J7aFnoNzCn9kJHdLRZNYUeYlSPDB.woff2)', { weight: '400' }),
-        new FontFace('IBM Plex Sans Arabic', 'url(https://fonts.gstatic.com/s/ibmplexsansarabic/v13/Qw3MZR9OHiCOp8wVzM6QOOHdRhwFam8jM5RFV6g_vvBWMjxiK6M.woff2)', { weight: '400' }),
-        new FontFace('Cairo', 'url(https://fonts.gstatic.com/s/cairo/v28/SLXGc1nY6HkvalKS6i6w5rJRYBYAhK3CnHO4n2k.woff2)', { weight: '400' }),
+        new FontFace(
+          'Noto Sans Arabic',
+          'url(https://fonts.gstatic.com/s/notosansarabic/v18/nwpxtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlhQ5l-b9w-6GOTSJqKE.woff2)',
+          { weight: '400' }
+        ),
+        new FontFace(
+          'Amiri',
+          'url(https://fonts.gstatic.com/s/amiri/v27/J7aFnoNzCn9kJHdLRZNYUeYlSPDB.woff2)',
+          { weight: '400' }
+        ),
+        new FontFace(
+          'IBM Plex Sans Arabic',
+          'url(https://fonts.gstatic.com/s/ibmplexsansarabic/v13/Qw3MZR9OHiCOp8wVzM6QOOHdRhwFam8jM5RFV6g_vvBWMjxiK6M.woff2)',
+          { weight: '400' }
+        ),
+        new FontFace(
+          'Cairo',
+          'url(https://fonts.gstatic.com/s/cairo/v28/SLXGc1nY6HkvalKS6i6w5rJRYBYAhK3CnHO4n2k.woff2)',
+          { weight: '400' }
+        ),
       ];
 
-      fontPromises.forEach(font => {
-        font.load().then(loadedFont => {
-          document.fonts.add(loadedFont);
-        }).catch(error => {
-          console.warn('Failed to preload Arabic font:', error);
-        });
+      fontPromises.forEach((font) => {
+        font
+          .load()
+          .then((loadedFont) => {
+            document.fonts.add(loadedFont);
+          })
+          .catch((error) => {
+            console.warn('Failed to preload Arabic font:', error);
+          });
       });
     }
   }, []);

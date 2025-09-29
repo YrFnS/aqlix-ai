@@ -132,7 +132,9 @@
       {
         "from": "assets/",
         "to": "assets/",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "mac": {
@@ -140,11 +142,17 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "assets/icon.icns",
@@ -157,11 +165,15 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.ico",
@@ -174,15 +186,21 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "assets/icon.png",
@@ -206,7 +224,11 @@
       "artifactName": "Iraqi-AI-Chat-Setup-${version}.${ext}",
       "deleteAppDataOnUninstall": false,
       "displayLanguageSelector": true,
-      "installerLanguages": ["ar", "en", "ku"],
+      "installerLanguages": [
+        "ar",
+        "en",
+        "ku"
+      ],
       "language": "ar"
     },
     "dmg": {
@@ -292,7 +314,9 @@
       "protocols": [
         {
           "name": "Iraqi AI Protocol",
-          "schemes": ["iraqi-ai"]
+          "schemes": [
+            "iraqi-ai"
+          ]
         }
       ],
       "osxSign": {
@@ -324,7 +348,10 @@
       },
       {
         "name": "@electron-forge/maker-zip",
-        "platforms": ["darwin", "linux"]
+        "platforms": [
+          "darwin",
+          "linux"
+        ]
       },
       {
         "name": "@electron-forge/maker-deb",
@@ -333,7 +360,10 @@
             "maintainer": "Iraqi Government <support@iraqi-ai.gov.iq>",
             "homepage": "https://iraqi-ai.gov.iq",
             "icon": "assets/icon.png",
-            "categories": ["Office", "Network"],
+            "categories": [
+              "Office",
+              "Network"
+            ],
             "priority": "optional",
             "section": "misc"
           }
@@ -345,7 +375,10 @@
           "options": {
             "license": "Proprietary",
             "homepage": "https://iraqi-ai.gov.iq",
-            "categories": ["Office", "Network"],
+            "categories": [
+              "Office",
+              "Network"
+            ],
             "icon": "assets/icon.png"
           }
         }
@@ -378,8 +411,14 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "roots": ["<rootDir>/src", "<rootDir>/test"],
-    "testMatch": ["**/__tests__/**/*.+(ts|tsx|js)", "**/*.(test|spec).+(ts|tsx|js)"],
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/test"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/*.(test|spec).+(ts|tsx|js)"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
@@ -389,7 +428,11 @@
       "!src/**/index.ts"
     ],
     "coverageDirectory": "coverage",
-    "coverageReporters": ["text", "lcov", "html"]
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -397,7 +440,10 @@
       "prettier"
     ],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "prettier"],
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
     "rules": {
       "prettier/prettier": "error",
       "@typescript-eslint/no-unused-vars": "error",

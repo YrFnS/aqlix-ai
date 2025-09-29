@@ -4,71 +4,68 @@
  * Enhanced for Iraqi government deployment with cultural intelligence
  */
 
-import { 
+import {
   IraqiCollaborationEngine,
   IraqiCollaborationConfig,
   MinistryType,
-  CollaborationParticipant
+  CollaborationParticipant,
 } from '../src/CollaborationEngine';
 
-import { 
-  RealTimeCollaborationServer,
-  ServerConfig 
-} from '../src/RealTimeCollaborationServer';
+import { RealTimeCollaborationServer, ServerConfig } from '../src/RealTimeCollaborationServer';
 
-import { 
+import {
   ArabicCollaborativeTextEngine,
-  ArabicTextConfig 
+  ArabicTextConfig,
 } from '../src/ArabicCollaborativeTextEngine';
 
 async function basicCollaborationExample() {
   console.log('🇮🇶 Iraqi AI Collaboration Engine - Basic Usage Example');
   console.log('=====================================================');
-  
+
   // 1. Setup collaboration configuration for Health Ministry
   const collaborationConfig: IraqiCollaborationConfig = {
     ministry: 'health' as MinistryType,
     teamStructure: 'hierarchical',
     collaborationMode: 'hybrid',
     maxParticipants: 15,
-    
+
     // Cultural and religious settings
     islamicWorkflowCompliance: true,
     arabicCollaboration: true,
     prayerTimeAware: true,
     culturalModeration: true,
     ramadanScheduleAware: true,
-    
+
     // Government and security
     governmentSecurity: true,
     auditTrail: true,
     securityLevel: 'confidential',
     crossMinistryCollaboration: false,
     citizenInteraction: true,
-    
+
     // Performance and technical
     syncLatencyTarget: 50, // 50ms target
     offlineSupport: true,
     mobileOptimized: true,
     rtlOptimized: true,
-    
+
     // Accessibility and compliance
     wcagCompliance: true,
     governmentAccessibility: true,
-    multiLanguageSupport: true
+    multiLanguageSupport: true,
   };
 
   // 2. Initialize collaboration engine
   console.log('\\n📋 Initializing Iraqi Collaboration Engine...');
   const collaborationEngine = new IraqiCollaborationEngine(collaborationConfig);
-  
+
   try {
     const initialized = await collaborationEngine.initialize();
     if (!initialized) {
       throw new Error('Failed to initialize collaboration engine');
     }
     console.log('✅ Collaboration engine initialized successfully');
-    
+
     // 3. Create sample participants (Health Ministry team)
     const healthMinistryParticipants: Partial<CollaborationParticipant>[] = [
       {
@@ -83,7 +80,7 @@ async function basicCollaborationExample() {
           hierarchy: 1,
           approvalAuthority: true,
           culturalWeight: 1.0,
-          ministrySpecific: true
+          ministrySpecific: true,
         },
         preferredLanguage: 'bilingual',
         permissions: {
@@ -94,8 +91,8 @@ async function basicCollaborationExample() {
           admin: true,
           audit: true,
           cultural: true,
-          security: true
-        }
+          security: true,
+        },
       },
       {
         id: 'deputy-health-001',
@@ -109,7 +106,7 @@ async function basicCollaborationExample() {
           hierarchy: 2,
           approvalAuthority: true,
           culturalWeight: 0.8,
-          ministrySpecific: true
+          ministrySpecific: true,
         },
         preferredLanguage: 'arabic',
         permissions: {
@@ -120,8 +117,8 @@ async function basicCollaborationExample() {
           admin: false,
           audit: true,
           cultural: true,
-          security: true
-        }
+          security: true,
+        },
       },
       {
         id: 'director-health-001',
@@ -135,7 +132,7 @@ async function basicCollaborationExample() {
           hierarchy: 3,
           approvalAuthority: true,
           culturalWeight: 0.6,
-          ministrySpecific: true
+          ministrySpecific: true,
         },
         preferredLanguage: 'bilingual',
         permissions: {
@@ -146,9 +143,9 @@ async function basicCollaborationExample() {
           admin: false,
           audit: false,
           cultural: true,
-          security: false
-        }
-      }
+          security: false,
+        },
+      },
     ];
 
     // 4. Create collaboration session
@@ -173,10 +170,10 @@ async function basicCollaborationExample() {
         ministryProtocol: true,
         officialCommunication: true,
         diplomaticLanguage: true,
-        confidentialityAware: true
+        confidentialityAware: true,
       },
       workflowRequired: true,
-      securityLevel: 'confidential'
+      securityLevel: 'confidential',
     });
 
     console.log(`✅ Session created: ${session.id}`);
@@ -195,7 +192,7 @@ async function basicCollaborationExample() {
       textEnglish: 'Social distancing should consider Islamic guidelines',
       type: 'cultural',
       priority: 'high',
-      culturalContext: true
+      culturalContext: true,
     });
 
     console.log(`✅ Arabic annotation created: ${annotationResult.id}`);
@@ -212,8 +209,9 @@ async function basicCollaborationExample() {
       {
         operation: 'insert',
         position: 0,
-        content: 'بسم الله الرحمن الرحيم\\n\\nسياسة الاستجابة الوطنية لجائحة كوفيد-19\\n\\nIn the name of Allah, the Most Gracious, the Most Merciful\\n\\nNational COVID-19 Response Policy\\n\\nThis policy document outlines our comprehensive approach...',
-        culturalValidation: true
+        content:
+          'بسم الله الرحمن الرحيم\\n\\nسياسة الاستجابة الوطنية لجائحة كوفيد-19\\n\\nIn the name of Allah, the Most Gracious, the Most Merciful\\n\\nNational COVID-19 Response Policy\\n\\nThis policy document outlines our comprehensive approach...',
+        culturalValidation: true,
       }
     );
 
@@ -232,15 +230,21 @@ async function basicCollaborationExample() {
       {
         urgentReview: true,
         culturalReview: true,
-        islamicReview: true
+        islamicReview: true,
       }
     );
 
     console.log(`✅ Workflow started: ${workflowResult.workflowId}`);
     console.log(`   📊 Status: ${workflowResult.status}`);
-    console.log(`   🎯 Cultural Review: ${workflowResult.culturalValidationResult ? 'Required' : 'Not Required'}`);
-    console.log(`   ✅ Islamic Review: ${workflowResult.islamicComplianceResult ? 'Required' : 'Not Required'}`);
-    console.log(`   ⏱️ Estimated Duration: ${Math.round(workflowResult.estimatedDuration / (1000 * 60))} minutes`);
+    console.log(
+      `   🎯 Cultural Review: ${workflowResult.culturalValidationResult ? 'Required' : 'Not Required'}`
+    );
+    console.log(
+      `   ✅ Islamic Review: ${workflowResult.islamicComplianceResult ? 'Required' : 'Not Required'}`
+    );
+    console.log(
+      `   ⏱️ Estimated Duration: ${Math.round(workflowResult.estimatedDuration / (1000 * 60))} minutes`
+    );
 
     // 8. Demonstrate prayer time handling
     console.log('\\n🕌 Testing prayer time awareness...');
@@ -259,7 +263,9 @@ async function basicCollaborationExample() {
     console.log(`   🚀 Active Sessions: ${metrics.activeSessions}`);
     console.log(`   👥 Total Participants: ${metrics.totalParticipants}`);
     console.log(`   ⚡ Average Sync Latency: ${metrics.syncLatency}ms`);
-    console.log(`   🎯 Cultural Compliance Rate: ${(metrics.culturalComplianceRate * 100).toFixed(1)}%`);
+    console.log(
+      `   🎯 Cultural Compliance Rate: ${(metrics.culturalComplianceRate * 100).toFixed(1)}%`
+    );
     console.log(`   📋 Total Operations: ${metrics.totalSessions}`);
     console.log(`   🕌 Prayer Pauses: ${metrics.prayerPauses}`);
     console.log(`   🔄 Workflow Completions: ${metrics.approvalWorkflows}`);
@@ -269,14 +275,15 @@ async function basicCollaborationExample() {
     const exportData = collaborationEngine.exportSessionData(session.id);
     console.log('✅ Session data exported successfully');
     console.log(`   📄 Audit Entries: ${exportData.auditLog.length}`);
-    console.log(`   🎯 Cultural Compliance Score: ${(exportData.culturalCompliance.overallScore * 100).toFixed(1)}%`);
+    console.log(
+      `   🎯 Cultural Compliance Score: ${(exportData.culturalCompliance.overallScore * 100).toFixed(1)}%`
+    );
     console.log(`   📊 Performance Data: Available`);
 
     // 11. Cleanup
     console.log('\\n🧹 Cleaning up collaboration session...');
     await collaborationEngine.endSession(session.id, 'minister-health-001', 'Example completed');
     console.log('✅ Session ended successfully');
-
   } catch (error) {
     console.error('❌ Error in collaboration example:', error.message);
   } finally {
@@ -296,29 +303,29 @@ async function realTimeServerExample() {
     maxConnections: 100,
     heartbeatInterval: 30000, // 30 seconds
     messageQueueSize: 1000,
-    
+
     // Cultural settings
     prayerTimeAware: true,
     islamicWorkflowCompliance: true,
     arabicRTLSupport: true,
     ramadanScheduleAware: true,
-    
+
     // Security settings
     encryptionEnabled: true,
     authenticationRequired: true,
     auditTrailEnabled: true,
     ministerialOversight: true,
-    
+
     // Performance settings
     latencyTarget: 30, // 30ms
     compressionEnabled: true,
     connectionPooling: true,
-    messageBuffering: true
+    messageBuffering: true,
   };
 
   // Initialize and start server
   const server = new RealTimeCollaborationServer(serverConfig);
-  
+
   try {
     await server.start();
     console.log(`✅ Real-time collaboration server started on port ${serverConfig.port}`);
@@ -326,7 +333,7 @@ async function realTimeServerExample() {
     console.log('   🕌 Prayer time awareness: Enabled');
     console.log('   🔤 Arabic RTL support: Enabled');
     console.log('   🔒 Government security: Enabled');
-    
+
     // Server metrics
     setTimeout(() => {
       const metrics = server.getMetrics();
@@ -340,14 +347,13 @@ async function realTimeServerExample() {
 
     // Simulate running for demo (in real app, this would run indefinitely)
     console.log('\\n⏳ Server running... (Press Ctrl+C to stop)');
-    
+
     // Graceful shutdown after demo
     setTimeout(async () => {
       console.log('\\n🛑 Shutting down server...');
       await server.shutdown();
       console.log('✅ Server shut down gracefully');
     }, 5000);
-
   } catch (error) {
     console.error('❌ Server error:', error.message);
   }
@@ -362,28 +368,28 @@ async function arabicTextEngineExample() {
     primaryDialect: 'iraqi',
     rtlProcessing: true,
     mixedDirectionSupport: true,
-    
+
     islamicContentValidation: true,
     culturalTermValidation: true,
     governmentTerminologyCheck: true,
     professionalLanguageRequired: true,
-    
+
     realTimeSync: true,
     conflictResolution: true,
     multiUserEditing: true,
     cursorSynchronization: true,
-    
+
     processingLatencyTarget: 20, // 20ms
     cachingEnabled: true,
     optimizedRendering: true,
-    
+
     contentFiltering: true,
     auditLogging: true,
-    encryptionEnabled: true
+    encryptionEnabled: true,
   };
 
   const textEngine = new ArabicCollaborativeTextEngine(textConfig);
-  
+
   console.log('✅ Arabic text engine initialized');
   console.log('   🔤 Iraqi dialect support enabled');
   console.log('   🔄 RTL processing enabled');
@@ -391,18 +397,23 @@ async function arabicTextEngineExample() {
   console.log('   ✅ Islamic compliance checking enabled');
 
   // Example Arabic text operation
-  const sampleArabicText = 'بسم الله الرحمن الرحيم - هذا مثال على النص العربي في نظام التعاون الحكومي العراقي';
-  
+  const sampleArabicText =
+    'بسم الله الرحمن الرحيم - هذا مثال على النص العربي في نظام التعاون الحكومي العراقي';
+
   const dialectAnalysis = await textEngine.analyzeDialect(sampleArabicText);
   console.log('\\n🔍 Dialect Analysis Results:');
   console.log(`   🎯 Primary Dialect: ${dialectAnalysis.primaryDialect}`);
   console.log(`   📊 Confidence: ${(dialectAnalysis.dialectConfidence * 100).toFixed(1)}%`);
-  console.log(`   📝 Standard Arabic: ${(dialectAnalysis.standardArabicPercentage * 100).toFixed(1)}%`);
+  console.log(
+    `   📝 Standard Arabic: ${(dialectAnalysis.standardArabicPercentage * 100).toFixed(1)}%`
+  );
 
   const culturalValidation = await textEngine.validateCulturalContent(sampleArabicText);
   console.log('\\n🎭 Cultural Validation Results:');
   console.log(`   🎯 Cultural Score: ${(culturalValidation.culturalScore * 100).toFixed(1)}%`);
-  console.log(`   ✅ Islamic Compliance: ${(culturalValidation.islamicCompliance * 100).toFixed(1)}%`);
+  console.log(
+    `   ✅ Islamic Compliance: ${(culturalValidation.islamicCompliance * 100).toFixed(1)}%`
+  );
   console.log(`   🚩 Flagged Terms: ${culturalValidation.flaggedTerms.length}`);
 
   const bidiProcessing = await textEngine.processBidirectionalText(sampleArabicText);
@@ -426,27 +437,22 @@ async function arabicTextEngineExample() {
 async function runAllExamples() {
   try {
     await basicCollaborationExample();
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     await realTimeServerExample();
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     await arabicTextEngineExample();
-    
+
     console.log('\\n🎉 All examples completed successfully!');
     console.log('🇮🇶 Iraqi AI Collaboration Engine ready for deployment');
-    
   } catch (error) {
     console.error('❌ Example execution failed:', error);
   }
 }
 
 // Export for use in other modules
-export {
-  basicCollaborationExample,
-  realTimeServerExample,
-  arabicTextEngineExample
-};
+export { basicCollaborationExample, realTimeServerExample, arabicTextEngineExample };
 
 // Run examples if this file is executed directly
 if (require.main === module) {

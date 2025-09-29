@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import React, { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
-  DialogFooter
-} from '@/components/ui/dialog';
-import { 
-  Loader2, 
-  Settings, 
-  CheckCircle2, 
-  XCircle, 
-  Zap, 
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Loader2,
+  Settings,
+  CheckCircle2,
+  XCircle,
+  Zap,
   Info,
-  RefreshCw
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { usePipedreamToolsData } from '@/hooks/react-query/agents/use-pipedream-tools';
-import type { PipedreamTool } from '@/hooks/react-query/agents/use-pipedream-tools';
-import { ToolsLoader } from '../mcp/tools-loader';
+  RefreshCw,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePipedreamToolsData } from "@/hooks/react-query/agents/use-pipedream-tools";
+import type { PipedreamTool } from "@/hooks/react-query/agents/use-pipedream-tools";
+import { ToolsLoader } from "../mcp/tools-loader";
 
 interface AgentPipedreamToolsManagerProps {
   agentId: string;
@@ -38,26 +38,34 @@ interface AgentPipedreamToolsManagerProps {
   onToolsUpdate?: (enabledTools: string[]) => void;
 }
 
-export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProps> = ({
+export const AgentPipedreamToolsManager: React.FC<
+  AgentPipedreamToolsManagerProps
+> = ({
   agentId,
   profileId,
   appName,
   profileName,
   open,
   onOpenChange,
-  onToolsUpdate
+  onToolsUpdate,
 }) => {
-  const { data, isLoading, error, isUpdating, refetch } = usePipedreamToolsData(agentId, profileId);
+  const { data, isLoading, error, isUpdating, refetch } = usePipedreamToolsData(
+    agentId,
+    profileId,
+  );
   const [localTools, setLocalTools] = useState<Record<string, boolean>>({});
   const [hasChanges, setHasChanges] = useState(false);
 
   // Initialize local state when data loads
   React.useEffect(() => {
     if (data?.tools) {
-      const toolsMap = data.tools.reduce((acc, tool) => {
-        acc[tool.name] = tool.enabled;
-        return acc;
-      }, {} as Record<string, boolean>);
+      const toolsMap = data.tools.reduce(
+        (acc, tool) => {
+          acc[tool.name] = tool.enabled;
+          return acc;
+        },
+        {} as Record<string, boolean>,
+      );
       setLocalTools(toolsMap);
       setHasChanges(false);
     }
@@ -70,32 +78,41 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
   const totalCount = data?.tools?.length || 0;
 
   const handleToolToggle = (toolName: string) => {
-    setLocalTools(prev => {
+    setLocalTools((prev) => {
       const newValue = !prev[toolName];
       const updated = { ...prev, [toolName]: newValue };
-      
+
       // Check if there are changes compared to server data
-      const serverTools = data?.tools?.reduce((acc, tool) => {
-        acc[tool.name] = tool.enabled;
-        return acc;
-      }, {} as Record<string, boolean>) || {};
-      
-      const hasChanges = Object.keys(updated).some(key => updated[key] !== serverTools[key]);
+      const serverTools =
+        data?.tools?.reduce(
+          (acc, tool) => {
+            acc[tool.name] = tool.enabled;
+            return acc;
+          },
+          {} as Record<string, boolean>,
+        ) || {};
+
+      const hasChanges = Object.keys(updated).some(
+        (key) => updated[key] !== serverTools[key],
+      );
       setHasChanges(hasChanges);
-      
+
       return updated;
     });
   };
 
   const handleSelectAll = () => {
     if (!data?.tools) return;
-    
-    const allEnabled = data.tools.every(tool => localTools[tool.name]);
-    const newState = data.tools.reduce((acc, tool) => {
-      acc[tool.name] = !allEnabled;
-      return acc;
-    }, {} as Record<string, boolean>);
-    
+
+    const allEnabled = data.tools.every((tool) => localTools[tool.name]);
+    const newState = data.tools.reduce(
+      (acc, tool) => {
+        acc[tool.name] = !allEnabled;
+        return acc;
+      },
+      {} as Record<string, boolean>,
+    );
+
     setLocalTools(newState);
     setHasChanges(true);
   };
@@ -114,10 +131,13 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
   const handleCancel = () => {
     // Reset to server state
     if (data?.tools) {
-      const serverState = data.tools.reduce((acc, tool) => {
-        acc[tool.name] = tool.enabled;
-        return acc;
-      }, {} as Record<string, boolean>);
+      const serverState = data.tools.reduce(
+        (acc, tool) => {
+          acc[tool.name] = tool.enabled;
+          return acc;
+        },
+        {} as Record<string, boolean>,
+      );
       setLocalTools(serverState);
       setHasChanges(false);
     }
@@ -136,14 +156,15 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
               Failed to load {appName} tools for {profileName}
             </DialogDescription>
           </DialogHeader>
-          
+
           <Alert variant="destructive">
             <XCircle className="h-4 w-4" />
             <AlertDescription>
-              {error?.message || 'An unexpected error occurred while loading tools.'}
+              {error?.message ||
+                "An unexpected error occurred while loading tools."}
             </AlertDescription>
           </Alert>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Close
@@ -167,7 +188,8 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
             Configure {appName} Tools
           </DialogTitle>
           <DialogDescription>
-            Choose which {appName} tools are available to your agent via the "{profileName}" profile
+            Choose which {appName} tools are available to your agent via the "
+            {profileName}" profile
           </DialogDescription>
         </DialogHeader>
 
@@ -203,25 +225,29 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
                     </p>
                   </div>
                 </div>
-                
+
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleSelectAll}
                   disabled={isUpdating}
                 >
-                  {data.tools.every(tool => localTools[tool.name]) ? 'Deselect All' : 'Select All'}
+                  {data.tools.every((tool) => localTools[tool.name])
+                    ? "Deselect All"
+                    : "Select All"}
                 </Button>
               </div>
 
               {/* Tools list */}
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {data.tools.map((tool) => (
-                  <Card 
+                  <Card
                     key={tool.name}
                     className={cn(
                       "transition-colors cursor-pointer",
-                      localTools[tool.name] ? "bg-muted/50 border-primary/20" : "hover:bg-muted/20"
+                      localTools[tool.name]
+                        ? "bg-muted/50 border-primary/20"
+                        : "hover:bg-muted/20",
                     )}
                     onClick={() => handleToolToggle(tool.name)}
                   >
@@ -265,21 +291,18 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
                 </Alert>
               )}
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 onClick={hasChanges ? handleCancel : () => onOpenChange(false)}
                 disabled={isUpdating}
               >
-                {hasChanges ? 'Cancel' : 'Close'}
+                {hasChanges ? "Cancel" : "Close"}
               </Button>
-              
+
               {hasChanges && (
-                <Button
-                  onClick={handleSave}
-                  disabled={isUpdating}
-                >
+                <Button onClick={handleSave} disabled={isUpdating}>
                   {isUpdating ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -299,4 +322,4 @@ export const AgentPipedreamToolsManager: React.FC<AgentPipedreamToolsManagerProp
       </DialogContent>
     </Dialog>
   );
-}; 
+};

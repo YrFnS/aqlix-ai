@@ -1,10 +1,10 @@
 /**
  * Iraqi Government Workflow Execution Framework
- * 
+ *
  * Comprehensive workflow automation framework for Iraqi government ministries with
  * cultural intelligence, Islamic compliance, Arabic processing, and enterprise security.
  * Built on n8n architecture with Iraqi-specific enhancements for government operations.
- * 
+ *
  * Key Features:
  * - Ministry-specific workflow templates and compliance
  * - Prayer time-aware scheduling and execution
@@ -16,31 +16,55 @@
  * - Enterprise integration with Iraqi government services
  */
 
-import { EventEmitter } from 'events';
-import { IraqiWorkflowExecute } from './core/IraqiWorkflowExecute';
-import { IslamicComplianceValidator } from './core/IslamicComplianceValidator';
-import { ArabicTextProcessor } from './core/ArabicTextProcessor';
-import { EnterpriseSecurityManager } from './core/EnterpriseSecurityManager';
-import { CulturalErrorRecovery } from './core/CulturalErrorRecovery';
+import { EventEmitter } from "events";
+import { IraqiWorkflowExecute } from "./core/IraqiWorkflowExecute";
+import { IslamicComplianceValidator } from "./core/IslamicComplianceValidator";
+import { ArabicTextProcessor } from "./core/ArabicTextProcessor";
+import { EnterpriseSecurityManager } from "./core/EnterpriseSecurityManager";
+import { CulturalErrorRecovery } from "./core/CulturalErrorRecovery";
 
 // ================================
 // Framework Core Interfaces
 // ================================
 
 export interface IIraqiWorkflowFramework {
-  executeWorkflow(workflow: IGovernmentWorkflow, context: IGovernmentContext): Promise<IWorkflowExecutionResult>;
-  createWorkflowTemplate(ministry: string, workflowType: string, config: IWorkflowConfig): Promise<IWorkflowTemplate>;
-  validateWorkflowCompliance(workflow: IGovernmentWorkflow, ministry: string): Promise<IComplianceValidationResult>;
-  scheduleWorkflow(workflow: IGovernmentWorkflow, schedule: IGovernmentSchedule): Promise<IScheduledWorkflow>;
+  executeWorkflow(
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
+  ): Promise<IWorkflowExecutionResult>;
+  createWorkflowTemplate(
+    ministry: string,
+    workflowType: string,
+    config: IWorkflowConfig,
+  ): Promise<IWorkflowTemplate>;
+  validateWorkflowCompliance(
+    workflow: IGovernmentWorkflow,
+    ministry: string,
+  ): Promise<IComplianceValidationResult>;
+  scheduleWorkflow(
+    workflow: IGovernmentWorkflow,
+    schedule: IGovernmentSchedule,
+  ): Promise<IScheduledWorkflow>;
   monitorWorkflowExecution(executionId: string): Promise<IExecutionMonitoring>;
-  generateGovernmentReport(executionId: string, format: 'arabic' | 'english' | 'bilingual'): Promise<IGovernmentReport>;
+  generateGovernmentReport(
+    executionId: string,
+    format: "arabic" | "english" | "bilingual",
+  ): Promise<IGovernmentReport>;
 }
 
 export interface IGovernmentWorkflow {
   id: string;
   name: string;
   nameArabic: string;
-  ministry: 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'foreign' | 'defense' | 'planning';
+  ministry:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "finance"
+    | "foreign"
+    | "defense"
+    | "planning";
   department?: string;
   version: string;
   description: string;
@@ -57,20 +81,30 @@ export interface IGovernmentWorkflow {
 
 export interface IGovernmentNode {
   id: string;
-  type: 'start' | 'end' | 'task' | 'decision' | 'service' | 'approval' | 'notification' | 'validation' | 'cultural-check' | 'prayer-pause';
+  type:
+    | "start"
+    | "end"
+    | "task"
+    | "decision"
+    | "service"
+    | "approval"
+    | "notification"
+    | "validation"
+    | "cultural-check"
+    | "prayer-pause";
   name: string;
   nameArabic: string;
   position: { x: number; y: number };
   parameters: INodeParameters;
   ministry: string;
-  securityLevel: 'public' | 'restricted' | 'confidential' | 'secret';
+  securityLevel: "public" | "restricted" | "confidential" | "secret";
   culturalValidation: boolean;
   islamicCompliance: boolean;
   arabicProcessing: boolean;
   executionTimeout: number;
   retryPolicy: IRetryPolicy;
   approvalRequired: boolean;
-  auditLevel: 'basic' | 'detailed' | 'comprehensive';
+  auditLevel: "basic" | "detailed" | "comprehensive";
 }
 
 export interface IGovernmentContext {
@@ -79,14 +113,14 @@ export interface IGovernmentContext {
   ministry: string;
   department?: string;
   userRole: string;
-  securityClearance: 'public' | 'restricted' | 'confidential' | 'secret';
-  language: 'ar' | 'en' | 'ar-IQ';
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'general';
+  securityClearance: "public" | "restricted" | "confidential" | "secret";
+  language: "ar" | "en" | "ar-IQ";
+  region: "baghdad" | "basra" | "mosul" | "erbil" | "najaf" | "general";
   timezone: string;
   culturalPreferences: ICulturalPreferences;
   sessionToken: string;
   workflowVersion: string;
-  executionMode: 'synchronous' | 'asynchronous' | 'prayer-aware' | 'priority';
+  executionMode: "synchronous" | "asynchronous" | "prayer-aware" | "priority";
   performanceRequirements: IPerformanceRequirements;
   complianceRequirements: IComplianceRequirements;
 }
@@ -94,7 +128,13 @@ export interface IGovernmentContext {
 export interface IWorkflowExecutionResult {
   executionId: string;
   workflowId: string;
-  status: 'completed' | 'failed' | 'paused' | 'waiting-approval' | 'prayer-paused' | 'cultural-review';
+  status:
+    | "completed"
+    | "failed"
+    | "paused"
+    | "waiting-approval"
+    | "prayer-paused"
+    | "cultural-review";
   startTime: Date;
   endTime?: Date;
   executionTime: number;
@@ -115,7 +155,13 @@ export interface IWorkflowTemplate {
   name: string;
   nameArabic: string;
   ministry: string;
-  category: 'citizen-services' | 'inter-ministry' | 'reporting' | 'approval' | 'monitoring' | 'compliance';
+  category:
+    | "citizen-services"
+    | "inter-ministry"
+    | "reporting"
+    | "approval"
+    | "monitoring"
+    | "compliance";
   template: IGovernmentWorkflow;
   usage: ITemplateUsage;
   compliance: ITemplateCompliance;
@@ -129,7 +175,7 @@ export interface IScheduledWorkflow {
   workflowId: string;
   schedule: IGovernmentSchedule;
   nextExecution: Date;
-  status: 'active' | 'paused' | 'prayer-paused' | 'suspended';
+  status: "active" | "paused" | "prayer-paused" | "suspended";
   executionHistory: IExecutionSummary[];
   culturalConsiderations: ICulturalConsideration[];
   performanceOptimization: IPerformanceOptimization;
@@ -139,7 +185,7 @@ export interface IGovernmentReport {
   reportId: string;
   executionId: string;
   ministry: string;
-  format: 'arabic' | 'english' | 'bilingual';
+  format: "arabic" | "english" | "bilingual";
   generatedAt: Date;
   summary: {
     english: string;
@@ -171,7 +217,13 @@ export interface INodeConnection {
 
 export interface IWorkflowTrigger {
   id: string;
-  type: 'manual' | 'scheduled' | 'webhook' | 'event' | 'prayer-time' | 'ministry-event';
+  type:
+    | "manual"
+    | "scheduled"
+    | "webhook"
+    | "event"
+    | "prayer-time"
+    | "ministry-event";
   name: string;
   nameArabic: string;
   configuration: ITriggerConfiguration;
@@ -250,7 +302,11 @@ export interface INodeParameters {
 export interface IRetryPolicy {
   enabled: boolean;
   maxAttempts: number;
-  backoffStrategy: 'linear' | 'exponential' | 'prayer-aware' | 'cultural-sensitive';
+  backoffStrategy:
+    | "linear"
+    | "exponential"
+    | "prayer-aware"
+    | "cultural-sensitive";
   culturalConsiderations: boolean;
   prayerTimeAwareness: boolean;
   islamicCompliance: boolean;
@@ -276,7 +332,12 @@ export interface IPerformanceRequirements {
 }
 
 export interface IGovernmentSchedule {
-  type: 'once' | 'recurring' | 'conditional' | 'prayer-aware' | 'ministry-calendar';
+  type:
+    | "once"
+    | "recurring"
+    | "conditional"
+    | "prayer-aware"
+    | "ministry-calendar";
   cronExpression?: string;
   prayerTimeConsideration: boolean;
   culturalCalendar: boolean;
@@ -305,13 +366,16 @@ export interface IExecutionMonitoring {
 // Main Framework Implementation
 // ================================
 
-export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkflowFramework {
+export class IraqiWorkflowFramework
+  extends EventEmitter
+  implements IIraqiWorkflowFramework
+{
   private readonly workflowExecutor: IraqiWorkflowExecute;
   private readonly complianceValidator: IslamicComplianceValidator;
   private readonly arabicProcessor: ArabicTextProcessor;
   private readonly securityManager: EnterpriseSecurityManager;
   private readonly errorRecovery: CulturalErrorRecovery;
-  
+
   private readonly workflowTemplates: Map<string, IWorkflowTemplate>;
   private readonly activeExecutions: Map<string, IExecutionMonitoring>;
   private readonly scheduledWorkflows: Map<string, IScheduledWorkflow>;
@@ -321,22 +385,24 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
 
   constructor(config: IFrameworkConfig = {}) {
     super();
-    
+
     // Initialize core components
-    this.complianceValidator = new IslamicComplianceValidator(config.complianceConfig);
+    this.complianceValidator = new IslamicComplianceValidator(
+      config.complianceConfig,
+    );
     this.arabicProcessor = new ArabicTextProcessor(config.arabicConfig);
     this.securityManager = new EnterpriseSecurityManager(config.securityConfig);
     this.errorRecovery = new CulturalErrorRecovery(
       this.complianceValidator,
       this.arabicProcessor,
-      config.recoveryConfig
+      config.recoveryConfig,
     );
     this.workflowExecutor = new IraqiWorkflowExecute(
       this.complianceValidator,
       this.arabicProcessor,
       this.securityManager,
       this.errorRecovery,
-      config.executorConfig
+      config.executorConfig,
     );
 
     // Initialize framework components
@@ -355,17 +421,17 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
    * Execute a government workflow with full cultural and compliance validation
    */
   async executeWorkflow(
-    workflow: IGovernmentWorkflow, 
-    context: IGovernmentContext
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
   ): Promise<IWorkflowExecutionResult> {
     const executionId = this.generateExecutionId();
     const startTime = Date.now();
 
-    this.emit('workflow:execution:started', { 
-      workflowId: workflow.id, 
-      executionId, 
+    this.emit("workflow:execution:started", {
+      workflowId: workflow.id,
+      executionId,
       ministry: workflow.ministry,
-      userId: context.userId 
+      userId: context.userId,
     });
 
     try {
@@ -376,19 +442,32 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       await this.validateSecurityClearance(workflow, context);
 
       // Cultural and Islamic compliance validation
-      const complianceResult = await this.validateWorkflowCompliance(workflow, context.ministry);
+      const complianceResult = await this.validateWorkflowCompliance(
+        workflow,
+        context.ministry,
+      );
       if (!complianceResult.isCompliant) {
-        throw new Error(`Workflow compliance validation failed: ${complianceResult.violations.join(', ')}`);
+        throw new Error(
+          `Workflow compliance validation failed: ${complianceResult.violations.join(", ")}`,
+        );
       }
 
       // Prayer time check
       const prayerTimeCheck = await this.checkPrayerTimeConstraints(context);
       if (prayerTimeCheck.shouldDelay) {
-        return await this.scheduleForAfterPrayer(workflow, context, prayerTimeCheck.nextAvailableTime);
+        return await this.scheduleForAfterPrayer(
+          workflow,
+          context,
+          prayerTimeCheck.nextAvailableTime,
+        );
       }
 
       // Initialize execution monitoring
-      const monitoring = this.initializeExecutionMonitoring(executionId, workflow.id, context);
+      const monitoring = this.initializeExecutionMonitoring(
+        executionId,
+        workflow.id,
+        context,
+      );
       this.activeExecutions.set(executionId, monitoring);
 
       // Execute workflow with cultural intelligence
@@ -398,44 +477,52 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
         monitoring: true,
         culturalValidation: true,
         islamicCompliance: true,
-        performanceTracking: true
+        performanceTracking: true,
       });
 
       // Post-execution validation and reporting
-      const finalResult = await this.finalizeExecution(executionResult, workflow, context);
+      const finalResult = await this.finalizeExecution(
+        executionResult,
+        workflow,
+        context,
+      );
 
       // Generate audit trail
-      await this.generateAuditTrail(executionId, workflow, context, finalResult);
+      await this.generateAuditTrail(
+        executionId,
+        workflow,
+        context,
+        finalResult,
+      );
 
       // Clean up active execution
       this.activeExecutions.delete(executionId);
 
-      this.emit('workflow:execution:completed', {
+      this.emit("workflow:execution:completed", {
         workflowId: workflow.id,
         executionId,
         ministry: workflow.ministry,
         success: finalResult.success,
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       });
 
       return finalResult;
-
     } catch (error) {
       // Handle execution failure with cultural recovery
       const failureResult = await this.handleExecutionFailure(
-        executionId, 
-        workflow, 
-        context, 
+        executionId,
+        workflow,
+        context,
         error as Error,
-        Date.now() - startTime
+        Date.now() - startTime,
       );
 
-      this.emit('workflow:execution:failed', {
+      this.emit("workflow:execution:failed", {
         workflowId: workflow.id,
         executionId,
         ministry: workflow.ministry,
         error: error.message,
-        executionTime: Date.now() - startTime
+        executionTime: Date.now() - startTime,
       });
 
       return failureResult;
@@ -446,9 +533,9 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
    * Create ministry-specific workflow template with cultural compliance
    */
   async createWorkflowTemplate(
-    ministry: string, 
-    workflowType: string, 
-    config: IWorkflowConfig
+    ministry: string,
+    workflowType: string,
+    config: IWorkflowConfig,
   ): Promise<IWorkflowTemplate> {
     const templateId = `template_${ministry}_${workflowType}_${Date.now()}`;
 
@@ -457,48 +544,75 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
 
     // Get ministry policies and cultural requirements
     const ministryPolicy = this.ministryPolicies.get(ministry);
-    const culturalRequirements = await this.getCulturalRequirements(ministry, workflowType);
+    const culturalRequirements = await this.getCulturalRequirements(
+      ministry,
+      workflowType,
+    );
 
     // Create base workflow structure
-    const baseWorkflow = await this.createBaseWorkflow(ministry, workflowType, config);
+    const baseWorkflow = await this.createBaseWorkflow(
+      ministry,
+      workflowType,
+      config,
+    );
 
     // Apply ministry-specific customizations
-    const customizedWorkflow = await this.applyMinistryCustomizations(baseWorkflow, ministryPolicy);
+    const customizedWorkflow = await this.applyMinistryCustomizations(
+      baseWorkflow,
+      ministryPolicy,
+    );
 
     // Add cultural and Islamic compliance nodes
-    const culturallyEnhancedWorkflow = await this.addCulturalNodes(customizedWorkflow, culturalRequirements);
+    const culturallyEnhancedWorkflow = await this.addCulturalNodes(
+      customizedWorkflow,
+      culturalRequirements,
+    );
 
     // Generate documentation
     const documentation = await this.generateTemplateDocumentation(
-      culturallyEnhancedWorkflow, 
-      ministry, 
-      workflowType
+      culturallyEnhancedWorkflow,
+      ministry,
+      workflowType,
     );
 
     // Create template
     const template: IWorkflowTemplate = {
       id: templateId,
       name: `${ministry} ${workflowType} Template`,
-      nameArabic: await this.arabicProcessor.translateToArabic(`${ministry} ${workflowType} Template`).then(r => r.text),
+      nameArabic: await this.arabicProcessor
+        .translateToArabic(`${ministry} ${workflowType} Template`)
+        .then((r) => r.text),
       ministry,
       category: this.determineWorkflowCategory(workflowType),
       template: culturallyEnhancedWorkflow,
-      usage: await this.generateUsageGuidelines(culturallyEnhancedWorkflow, ministry),
-      compliance: await this.generateComplianceGuidelines(culturallyEnhancedWorkflow, ministry),
+      usage: await this.generateUsageGuidelines(
+        culturallyEnhancedWorkflow,
+        ministry,
+      ),
+      compliance: await this.generateComplianceGuidelines(
+        culturallyEnhancedWorkflow,
+        ministry,
+      ),
       documentation,
-      examples: await this.generateTemplateExamples(culturallyEnhancedWorkflow, ministry),
-      culturalGuidelines: await this.generateCulturalGuidelines(culturallyEnhancedWorkflow, ministry)
+      examples: await this.generateTemplateExamples(
+        culturallyEnhancedWorkflow,
+        ministry,
+      ),
+      culturalGuidelines: await this.generateCulturalGuidelines(
+        culturallyEnhancedWorkflow,
+        ministry,
+      ),
     };
 
     // Store template
     this.workflowTemplates.set(templateId, template);
 
-    this.emit('template:created', {
+    this.emit("template:created", {
       templateId,
       ministry,
       workflowType,
       culturalCompliance: true,
-      islamicCompliance: true
+      islamicCompliance: true,
     });
 
     return template;
@@ -508,8 +622,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
    * Validate workflow compliance against ministry and cultural requirements
    */
   async validateWorkflowCompliance(
-    workflow: IGovernmentWorkflow, 
-    ministry: string
+    workflow: IGovernmentWorkflow,
+    ministry: string,
   ): Promise<IComplianceValidationResult> {
     const validationResult: IComplianceValidationResult = {
       isCompliant: true,
@@ -521,15 +635,16 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
         islamic: 100,
         cultural: 100,
         security: 100,
-        ministry: 100
+        ministry: 100,
       },
       validatedAt: new Date(),
-      validatedBy: 'IraqiWorkflowFramework'
+      validatedBy: "IraqiWorkflowFramework",
     };
 
     try {
       // Islamic compliance validation
-      const islamicValidation = await this.complianceValidator.validateWorkflow(workflow);
+      const islamicValidation =
+        await this.complianceValidator.validateWorkflow(workflow);
       if (!islamicValidation.isCompliant) {
         validationResult.isCompliant = false;
         validationResult.violations.push(...islamicValidation.violations);
@@ -537,7 +652,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       }
 
       // Cultural appropriateness validation
-      const culturalValidation = await this.culturalValidator.validateWorkflow(workflow);
+      const culturalValidation =
+        await this.culturalValidator.validateWorkflow(workflow);
       if (!culturalValidation.isAppropriate) {
         validationResult.isCompliant = false;
         validationResult.violations.push(...culturalValidation.violations);
@@ -545,7 +661,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       }
 
       // Security requirements validation
-      const securityValidation = await this.securityManager.validateWorkflow(workflow);
+      const securityValidation =
+        await this.securityManager.validateWorkflow(workflow);
       if (!securityValidation.isSecure) {
         validationResult.isCompliant = false;
         validationResult.violations.push(...securityValidation.violations);
@@ -553,7 +670,10 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       }
 
       // Ministry-specific policy validation
-      const ministryValidation = await this.validateMinistryPolicies(workflow, ministry);
+      const ministryValidation = await this.validateMinistryPolicies(
+        workflow,
+        ministry,
+      );
       if (!ministryValidation.isCompliant) {
         validationResult.isCompliant = false;
         validationResult.violations.push(...ministryValidation.violations);
@@ -562,17 +682,18 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
 
       // Calculate overall compliance score
       validationResult.scores.overall = Math.round(
-        (validationResult.scores.islamic + 
-         validationResult.scores.cultural + 
-         validationResult.scores.security + 
-         validationResult.scores.ministry) / 4
+        (validationResult.scores.islamic +
+          validationResult.scores.cultural +
+          validationResult.scores.security +
+          validationResult.scores.ministry) /
+          4,
       );
 
       // Generate recommendations
-      validationResult.recommendations = await this.generateComplianceRecommendations(validationResult);
+      validationResult.recommendations =
+        await this.generateComplianceRecommendations(validationResult);
 
       return validationResult;
-
     } catch (error) {
       validationResult.isCompliant = false;
       validationResult.violations.push(`Validation error: ${error.message}`);
@@ -585,8 +706,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
    * Schedule workflow execution with prayer time and cultural awareness
    */
   async scheduleWorkflow(
-    workflow: IGovernmentWorkflow, 
-    schedule: IGovernmentSchedule
+    workflow: IGovernmentWorkflow,
+    schedule: IGovernmentSchedule,
   ): Promise<IScheduledWorkflow> {
     const scheduledId = `scheduled_${workflow.id}_${Date.now()}`;
 
@@ -594,7 +715,10 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
     await this.validateSchedule(schedule, workflow.ministry);
 
     // Calculate next execution time with prayer time consideration
-    const nextExecution = await this.calculateNextExecution(schedule, workflow.ministry);
+    const nextExecution = await this.calculateNextExecution(
+      schedule,
+      workflow.ministry,
+    );
 
     // Create scheduled workflow
     const scheduledWorkflow: IScheduledWorkflow = {
@@ -602,10 +726,13 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       workflowId: workflow.id,
       schedule,
       nextExecution,
-      status: 'active',
+      status: "active",
       executionHistory: [],
-      culturalConsiderations: await this.getCulturalConsiderations(workflow, schedule),
-      performanceOptimization: await this.getPerformanceOptimization(workflow)
+      culturalConsiderations: await this.getCulturalConsiderations(
+        workflow,
+        schedule,
+      ),
+      performanceOptimization: await this.getPerformanceOptimization(workflow),
     };
 
     // Store scheduled workflow
@@ -614,12 +741,12 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
     // Set up execution timer
     this.scheduleExecution(scheduledWorkflow);
 
-    this.emit('workflow:scheduled', {
+    this.emit("workflow:scheduled", {
       scheduledId,
       workflowId: workflow.id,
       ministry: workflow.ministry,
       nextExecution,
-      culturallyAware: true
+      culturallyAware: true,
     });
 
     return scheduledWorkflow;
@@ -628,9 +755,11 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
   /**
    * Monitor active workflow execution with real-time updates
    */
-  async monitorWorkflowExecution(executionId: string): Promise<IExecutionMonitoring> {
+  async monitorWorkflowExecution(
+    executionId: string,
+  ): Promise<IExecutionMonitoring> {
     const monitoring = this.activeExecutions.get(executionId);
-    
+
     if (!monitoring) {
       throw new Error(`No active execution found for ID: ${executionId}`);
     }
@@ -646,8 +775,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
    * Generate comprehensive government report with Arabic support
    */
   async generateGovernmentReport(
-    executionId: string, 
-    format: 'arabic' | 'english' | 'bilingual'
+    executionId: string,
+    format: "arabic" | "english" | "bilingual",
   ): Promise<IGovernmentReport> {
     const execution = await this.getExecutionDetails(executionId);
     const reportId = `report_${executionId}_${Date.now()}`;
@@ -659,16 +788,21 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
     const executionDetails = await this.compileExecutionDetails(execution);
 
     // Perform compliance assessment
-    const complianceAssessment = await this.performComplianceAssessment(execution);
+    const complianceAssessment =
+      await this.performComplianceAssessment(execution);
 
     // Analyze cultural aspects
     const culturalAnalysis = await this.performCulturalAnalysis(execution);
 
     // Analyze performance
-    const performanceAnalysis = await this.performPerformanceAnalysis(execution);
+    const performanceAnalysis =
+      await this.performPerformanceAnalysis(execution);
 
     // Generate recommendations
-    const recommendations = await this.generateReportRecommendations(execution, format);
+    const recommendations = await this.generateReportRecommendations(
+      execution,
+      format,
+    );
 
     // Create report
     const report: IGovernmentReport = {
@@ -685,19 +819,19 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       recommendations,
       attachments: await this.generateReportAttachments(execution),
       approval: await this.initializeReportApproval(execution),
-      distribution: await this.calculateReportDistribution(execution)
+      distribution: await this.calculateReportDistribution(execution),
     };
 
     // Store report for audit purposes
     await this.storeGovernmentReport(report);
 
-    this.emit('report:generated', {
+    this.emit("report:generated", {
       reportId,
       executionId,
       ministry: execution.ministry,
       format,
       culturalCompliance: complianceAssessment.culturalCompliance,
-      islamicCompliance: complianceAssessment.islamicCompliance
+      islamicCompliance: complianceAssessment.islamicCompliance,
     });
 
     return report;
@@ -726,40 +860,40 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
 
   private setupEventHandlers(): void {
     // Workflow execution events
-    this.workflowExecutor.on('node:execution:started', (data) => {
-      this.emit('node:execution:started', data);
+    this.workflowExecutor.on("node:execution:started", (data) => {
+      this.emit("node:execution:started", data);
     });
 
-    this.workflowExecutor.on('node:execution:completed', (data) => {
-      this.emit('node:execution:completed', data);
+    this.workflowExecutor.on("node:execution:completed", (data) => {
+      this.emit("node:execution:completed", data);
     });
 
-    this.workflowExecutor.on('workflow:prayer:paused', (data) => {
-      this.emit('workflow:prayer:paused', data);
+    this.workflowExecutor.on("workflow:prayer:paused", (data) => {
+      this.emit("workflow:prayer:paused", data);
     });
 
     // Error recovery events
-    this.errorRecovery.on('recovery:started', (data) => {
-      this.emit('recovery:started', data);
+    this.errorRecovery.on("recovery:started", (data) => {
+      this.emit("recovery:started", data);
     });
 
-    this.errorRecovery.on('recovery:completed', (data) => {
-      this.emit('recovery:completed', data);
+    this.errorRecovery.on("recovery:completed", (data) => {
+      this.emit("recovery:completed", data);
     });
 
     // Compliance validation events
-    this.complianceValidator.on('compliance:violation', (data) => {
-      this.emit('compliance:violation', data);
+    this.complianceValidator.on("compliance:violation", (data) => {
+      this.emit("compliance:violation", data);
     });
 
     // Security events
-    this.securityManager.on('security:threat:detected', (data) => {
-      this.emit('security:threat:detected', data);
+    this.securityManager.on("security:threat:detected", (data) => {
+      this.emit("security:threat:detected", data);
     });
 
     // Cultural validation events
-    this.culturalValidator.on('cultural:sensitivity:alert', (data) => {
-      this.emit('cultural:sensitivity:alert', data);
+    this.culturalValidator.on("cultural:sensitivity:alert", (data) => {
+      this.emit("cultural:sensitivity:alert", data);
     });
   }
 
@@ -767,43 +901,65 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
     return `exec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private async validateExecutionPrerequisites(workflow: IGovernmentWorkflow, context: IGovernmentContext): Promise<void> {
+  private async validateExecutionPrerequisites(
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
+  ): Promise<void> {
     // Validate user permissions
-    if (!await this.securityManager.validateUserPermissions(context.userId, workflow.security.clearanceLevel)) {
-      throw new Error('Insufficient security clearance for workflow execution');
+    if (
+      !(await this.securityManager.validateUserPermissions(
+        context.userId,
+        workflow.security.clearanceLevel,
+      ))
+    ) {
+      throw new Error("Insufficient security clearance for workflow execution");
     }
 
     // Validate ministry access
     if (workflow.ministry !== context.ministry) {
-      throw new Error('Cross-ministry access not authorized');
+      throw new Error("Cross-ministry access not authorized");
     }
 
     // Validate workflow version compatibility
     if (workflow.version !== context.workflowVersion) {
-      throw new Error('Workflow version mismatch');
+      throw new Error("Workflow version mismatch");
     }
   }
 
-  private async validateSecurityClearance(workflow: IGovernmentWorkflow, context: IGovernmentContext): Promise<void> {
+  private async validateSecurityClearance(
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
+  ): Promise<void> {
     const clearanceValidation = await this.securityManager.validateClearance(
       context.securityClearance,
-      workflow.security.clearanceLevel
+      workflow.security.clearanceLevel,
     );
 
     if (!clearanceValidation.isValid) {
-      throw new Error(`Security clearance validation failed: ${clearanceValidation.reason}`);
+      throw new Error(
+        `Security clearance validation failed: ${clearanceValidation.reason}`,
+      );
     }
   }
 
-  private async checkPrayerTimeConstraints(context: IGovernmentContext): Promise<{shouldDelay: boolean, nextAvailableTime?: Date}> {
-    const prayerTimes = await this.complianceValidator.getPrayerTimes(context.region);
+  private async checkPrayerTimeConstraints(
+    context: IGovernmentContext,
+  ): Promise<{ shouldDelay: boolean; nextAvailableTime?: Date }> {
+    const prayerTimes = await this.complianceValidator.getPrayerTimes(
+      context.region,
+    );
     const currentTime = new Date();
 
     // Check if current time is during prayer
-    const isPrayerTime = await this.complianceValidator.isPrayerTime(currentTime, context.region);
-    
+    const isPrayerTime = await this.complianceValidator.isPrayerTime(
+      currentTime,
+      context.region,
+    );
+
     if (isPrayerTime && context.culturalPreferences.prayerTimeAlerts) {
-      const nextAvailableTime = new Date(currentTime.getTime() + 30 * 60 * 1000); // 30 minutes buffer
+      const nextAvailableTime = new Date(
+        currentTime.getTime() + 30 * 60 * 1000,
+      ); // 30 minutes buffer
       return { shouldDelay: true, nextAvailableTime };
     }
 
@@ -811,62 +967,98 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
   }
 
   private async scheduleForAfterPrayer(
-    workflow: IGovernmentWorkflow, 
-    context: IGovernmentContext, 
-    nextAvailableTime: Date
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
+    nextAvailableTime: Date,
   ): Promise<IWorkflowExecutionResult> {
     const executionId = this.generateExecutionId();
-    
+
     // Create prayer-paused execution result
     return {
       executionId,
       workflowId: workflow.id,
-      status: 'prayer-paused',
+      status: "prayer-paused",
       startTime: new Date(),
       executionTime: 0,
       success: false,
       outputs: {},
       errors: [],
-      culturalCompliance: { isCompliant: true, score: 100, violations: [], recommendations: [], islamicCompliance: true, culturalSensitivity: 100 },
-      islamicCompliance: { isCompliant: true, score: 100, violations: [], prayerTimeConflict: true, ribaDetected: false, halalCompliant: true },
-      securityValidation: { isValid: true, score: 100, violations: [], recommendations: [] },
-      performanceMetrics: { executionTime: 0, memoryUsage: 0, cpuUsage: 0, accuracy: 100, culturalValidationTime: 0, islamicValidationTime: 0 },
-      auditTrail: [{
-        timestamp: new Date(),
-        action: 'Workflow paused for prayer time',
-        actionArabic: 'تم إيقاف سير العمل مؤقتاً لوقت الصلاة',
-        userId: context.userId,
-        ministry: context.ministry,
-        severity: 'info',
-        culturalImpact: 'prayer-time-observance',
-        details: { nextAvailableTime: nextAvailableTime.toISOString() }
-      }],
-      recommendations: [{
-        type: 'cultural',
-        priority: 'high',
-        description: 'Workflow scheduled to resume after prayer time',
-        descriptionArabic: 'تم جدولة استئناف سير العمل بعد وقت الصلاة',
-        actionRequired: false,
-        estimatedBenefit: 'cultural-compliance'
-      }],
-      nextActions: [{
-        id: 'prayer-resume',
-        type: 'system',
-        description: 'Resume workflow execution after prayer',
-        descriptionArabic: 'استئناف تنفيذ سير العمل بعد الصلاة',
-        scheduledTime: nextAvailableTime,
-        priority: 'normal',
-        culturalValidation: true
-      }]
+      culturalCompliance: {
+        isCompliant: true,
+        score: 100,
+        violations: [],
+        recommendations: [],
+        islamicCompliance: true,
+        culturalSensitivity: 100,
+      },
+      islamicCompliance: {
+        isCompliant: true,
+        score: 100,
+        violations: [],
+        prayerTimeConflict: true,
+        ribaDetected: false,
+        halalCompliant: true,
+      },
+      securityValidation: {
+        isValid: true,
+        score: 100,
+        violations: [],
+        recommendations: [],
+      },
+      performanceMetrics: {
+        executionTime: 0,
+        memoryUsage: 0,
+        cpuUsage: 0,
+        accuracy: 100,
+        culturalValidationTime: 0,
+        islamicValidationTime: 0,
+      },
+      auditTrail: [
+        {
+          timestamp: new Date(),
+          action: "Workflow paused for prayer time",
+          actionArabic: "تم إيقاف سير العمل مؤقتاً لوقت الصلاة",
+          userId: context.userId,
+          ministry: context.ministry,
+          severity: "info",
+          culturalImpact: "prayer-time-observance",
+          details: { nextAvailableTime: nextAvailableTime.toISOString() },
+        },
+      ],
+      recommendations: [
+        {
+          type: "cultural",
+          priority: "high",
+          description: "Workflow scheduled to resume after prayer time",
+          descriptionArabic: "تم جدولة استئناف سير العمل بعد وقت الصلاة",
+          actionRequired: false,
+          estimatedBenefit: "cultural-compliance",
+        },
+      ],
+      nextActions: [
+        {
+          id: "prayer-resume",
+          type: "system",
+          description: "Resume workflow execution after prayer",
+          descriptionArabic: "استئناف تنفيذ سير العمل بعد الصلاة",
+          scheduledTime: nextAvailableTime,
+          priority: "normal",
+          culturalValidation: true,
+        },
+      ],
     };
   }
 
-  private initializeExecutionMonitoring(executionId: string, workflowId: string, context: IGovernmentContext): IExecutionMonitoring {
+  private initializeExecutionMonitoring(
+    executionId: string,
+    workflowId: string,
+    context: IGovernmentContext,
+  ): IExecutionMonitoring {
     return {
       executionId,
-      status: 'running',
+      status: "running",
       progress: 0,
-      currentNode: 'start',
+      currentNode: "start",
       estimatedCompletion: new Date(Date.now() + 300000), // 5 minutes default
       performanceMetrics: {
         executionTime: 0,
@@ -874,36 +1066,36 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
         cpuUsage: 0,
         accuracy: 100,
         culturalValidationTime: 0,
-        islamicValidationTime: 0
+        islamicValidationTime: 0,
       },
       culturalMetrics: {
         complianceScore: 100,
         sensitivityScore: 100,
         arabicProcessingAccuracy: 100,
-        dialectRecognitionAccuracy: 100
+        dialectRecognitionAccuracy: 100,
       },
       securityMetrics: {
-        threatLevel: 'low',
+        threatLevel: "low",
         accessViolations: 0,
-        encryptionStatus: 'active',
-        auditCompliance: 100
+        encryptionStatus: "active",
+        auditCompliance: 100,
       },
       errors: [],
       warnings: [],
-      logs: []
+      logs: [],
     };
   }
 
   private async finalizeExecution(
-    executionResult: any, 
-    workflow: IGovernmentWorkflow, 
-    context: IGovernmentContext
+    executionResult: any,
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
   ): Promise<IWorkflowExecutionResult> {
     // Convert executor result to framework result format
     const finalResult: IWorkflowExecutionResult = {
       executionId: executionResult.executionId,
       workflowId: workflow.id,
-      status: executionResult.success ? 'completed' : 'failed',
+      status: executionResult.success ? "completed" : "failed",
       startTime: executionResult.startTime,
       endTime: new Date(),
       executionTime: executionResult.executionTime,
@@ -915,18 +1107,25 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       securityValidation: executionResult.securityValidation,
       performanceMetrics: executionResult.performanceMetrics,
       auditTrail: executionResult.auditTrail || [],
-      recommendations: await this.generateExecutionRecommendations(executionResult, workflow),
-      nextActions: await this.generateNextActions(executionResult, workflow, context)
+      recommendations: await this.generateExecutionRecommendations(
+        executionResult,
+        workflow,
+      ),
+      nextActions: await this.generateNextActions(
+        executionResult,
+        workflow,
+        context,
+      ),
     };
 
     return finalResult;
   }
 
   private async generateAuditTrail(
-    executionId: string, 
-    workflow: IGovernmentWorkflow, 
-    context: IGovernmentContext, 
-    result: IWorkflowExecutionResult
+    executionId: string,
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
+    result: IWorkflowExecutionResult,
   ): Promise<void> {
     const auditEntry = {
       timestamp: new Date(),
@@ -934,16 +1133,18 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
       actionArabic: `تم تنفيذ سير العمل ${workflow.nameArabic}`,
       userId: context.userId,
       ministry: context.ministry,
-      severity: result.success ? 'info' : 'error',
-      culturalImpact: result.culturalCompliance.isCompliant ? 'compliant' : 'non-compliant',
+      severity: result.success ? "info" : "error",
+      culturalImpact: result.culturalCompliance.isCompliant
+        ? "compliant"
+        : "non-compliant",
       details: {
         executionId,
         workflowId: workflow.id,
         success: result.success,
         executionTime: result.executionTime,
         culturalScore: result.culturalCompliance.score,
-        islamicCompliance: result.islamicCompliance.isCompliant
-      }
+        islamicCompliance: result.islamicCompliance.isCompliant,
+      },
     };
 
     // Store in audit system
@@ -951,20 +1152,20 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
   }
 
   private async handleExecutionFailure(
-    executionId: string, 
-    workflow: IGovernmentWorkflow, 
-    context: IGovernmentContext, 
+    executionId: string,
+    workflow: IGovernmentWorkflow,
+    context: IGovernmentContext,
     error: Error,
-    executionTime: number
+    executionTime: number,
   ): Promise<IWorkflowExecutionResult> {
     // Attempt error recovery
     const recoveryResult = await this.errorRecovery.recoverFromError(
       {
         id: `error_${executionId}`,
-        type: 'execution',
-        severity: 'high',
+        type: "execution",
+        severity: "high",
         message: error.message,
-        code: 'WORKFLOW_EXECUTION_FAILED',
+        code: "WORKFLOW_EXECUTION_FAILED",
         timestamp: new Date(),
         executionId,
         culturalContext: {
@@ -975,8 +1176,8 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
           islamicCompliance: true,
           arabicProcessing: true,
           culturalValidation: true,
-          prayerTimeAwareness: true
-        }
+          prayerTimeAwareness: true,
+        },
       },
       {
         ministry: context.ministry as any,
@@ -990,73 +1191,101 @@ export class IraqiWorkflowFramework extends EventEmitter implements IIraqiWorkfl
           isPrayerTime: false,
           region: context.region,
           timezone: context.timezone,
-          allowWorkDuringPrayer: false
+          allowWorkDuringPrayer: false,
         },
         securityLevel: context.securityClearance,
         previousRecoveryAttempts: [],
         culturalPreferences: context.culturalPreferences,
-        recoveryPolicies: []
-      }
+        recoveryPolicies: [],
+      },
     );
 
     return {
       executionId,
       workflowId: workflow.id,
-      status: 'failed',
+      status: "failed",
       startTime: new Date(Date.now() - executionTime),
       endTime: new Date(),
       executionTime,
       success: false,
       outputs: {},
-      errors: [{
-        id: `error_${executionId}`,
-        nodeId: 'unknown',
-        message: error.message,
-        messageArabic: await this.arabicProcessor.translateToArabic(error.message).then(r => r.text),
-        type: 'execution',
-        severity: 'high',
-        timestamp: new Date(),
-        recoveryAttempted: true,
-        recoverySuccessful: recoveryResult.success
-      }],
+      errors: [
+        {
+          id: `error_${executionId}`,
+          nodeId: "unknown",
+          message: error.message,
+          messageArabic: await this.arabicProcessor
+            .translateToArabic(error.message)
+            .then((r) => r.text),
+          type: "execution",
+          severity: "high",
+          timestamp: new Date(),
+          recoveryAttempted: true,
+          recoverySuccessful: recoveryResult.success,
+        },
+      ],
       culturalCompliance: recoveryResult.culturalCompliance,
       islamicCompliance: recoveryResult.islamicCompliance,
-      securityValidation: { isValid: false, score: 0, violations: [error.message], recommendations: ['Review security configuration'] },
-      performanceMetrics: { executionTime, memoryUsage: 0, cpuUsage: 0, accuracy: 0, culturalValidationTime: 0, islamicValidationTime: 0 },
+      securityValidation: {
+        isValid: false,
+        score: 0,
+        violations: [error.message],
+        recommendations: ["Review security configuration"],
+      },
+      performanceMetrics: {
+        executionTime,
+        memoryUsage: 0,
+        cpuUsage: 0,
+        accuracy: 0,
+        culturalValidationTime: 0,
+        islamicValidationTime: 0,
+      },
       auditTrail: recoveryResult.auditTrail,
-      recommendations: recoveryResult.culturalRecommendations.map(r => ({
-        type: 'cultural' as const,
-        priority: 'high' as const,
+      recommendations: recoveryResult.culturalRecommendations.map((r) => ({
+        type: "cultural" as const,
+        priority: "high" as const,
         description: r,
         descriptionArabic: r,
         actionRequired: true,
-        estimatedBenefit: 'error-prevention'
+        estimatedBenefit: "error-prevention",
       })),
-      nextActions: [{
-        id: 'manual-review',
-        type: 'manual',
-        description: 'Manual review required for failed execution',
-        descriptionArabic: 'مراجعة يدوية مطلوبة للتنفيذ الفاشل',
-        scheduledTime: new Date(Date.now() + 3600000),
-        priority: 'high',
-        culturalValidation: true
-      }]
+      nextActions: [
+        {
+          id: "manual-review",
+          type: "manual",
+          description: "Manual review required for failed execution",
+          descriptionArabic: "مراجعة يدوية مطلوبة للتنفيذ الفاشل",
+          scheduledTime: new Date(Date.now() + 3600000),
+          priority: "high",
+          culturalValidation: true,
+        },
+      ],
     };
   }
 
   // Additional helper methods would continue here...
   // Due to length constraints, I'm showing the core structure and key methods
-  
-  private async validateMinistryWorkflowType(ministry: string, workflowType: string): Promise<void> {
+
+  private async validateMinistryWorkflowType(
+    ministry: string,
+    workflowType: string,
+  ): Promise<void> {
     // Implementation for ministry workflow type validation
   }
 
-  private async getCulturalRequirements(ministry: string, workflowType: string): Promise<ICulturalRequirements> {
+  private async getCulturalRequirements(
+    ministry: string,
+    workflowType: string,
+  ): Promise<ICulturalRequirements> {
     // Implementation for getting cultural requirements
     return {} as ICulturalRequirements;
   }
 
-  private async createBaseWorkflow(ministry: string, workflowType: string, config: IWorkflowConfig): Promise<IGovernmentWorkflow> {
+  private async createBaseWorkflow(
+    ministry: string,
+    workflowType: string,
+    config: IWorkflowConfig,
+  ): Promise<IGovernmentWorkflow> {
     // Implementation for creating base workflow
     return {} as IGovernmentWorkflow;
   }
@@ -1097,29 +1326,33 @@ interface IPerformanceMonitor {
 
 interface ICulturalValidator {
   initialize(): void;
-  validateWorkflow(workflow: IGovernmentWorkflow): Promise<{isAppropriate: boolean, violations: string[], score: number}>;
+  validateWorkflow(
+    workflow: IGovernmentWorkflow,
+  ): Promise<{ isAppropriate: boolean; violations: string[]; score: number }>;
 }
 
 class PerformanceMonitor implements IPerformanceMonitor {
   constructor(private config: any = {}) {}
-  
+
   initialize(): void {
-    console.log('🚀 Performance Monitor initialized');
+    console.log("🚀 Performance Monitor initialized");
   }
 }
 
 class CulturalValidator implements ICulturalValidator {
   constructor(private config: any = {}) {}
-  
+
   initialize(): void {
-    console.log('🎭 Cultural Validator initialized');
+    console.log("🎭 Cultural Validator initialized");
   }
 
-  async validateWorkflow(workflow: IGovernmentWorkflow): Promise<{isAppropriate: boolean, violations: string[], score: number}> {
+  async validateWorkflow(
+    workflow: IGovernmentWorkflow,
+  ): Promise<{ isAppropriate: boolean; violations: string[]; score: number }> {
     return {
       isAppropriate: true,
       violations: [],
-      score: 95
+      score: 95,
     };
   }
 }
@@ -1154,8 +1387,8 @@ interface IExecutionError {
 }
 
 interface IExecutionRecommendation {
-  type: 'cultural' | 'security' | 'performance' | 'compliance';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  type: "cultural" | "security" | "performance" | "compliance";
+  priority: "low" | "medium" | "high" | "critical";
   description: string;
   descriptionArabic: string;
   actionRequired: boolean;
@@ -1164,11 +1397,11 @@ interface IExecutionRecommendation {
 
 interface INextAction {
   id: string;
-  type: 'manual' | 'automated' | 'system';
+  type: "manual" | "automated" | "system";
   description: string;
   descriptionArabic: string;
   scheduledTime: Date;
-  priority: 'low' | 'normal' | 'high' | 'urgent';
+  priority: "low" | "normal" | "high" | "urgent";
   culturalValidation: boolean;
 }
 

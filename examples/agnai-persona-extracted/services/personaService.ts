@@ -1,7 +1,7 @@
 /**
  * Iraqi Persona Management Service
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Cultural personality traits implementation
  * - Islamic-compliant character behaviors
@@ -11,15 +11,15 @@
  * - Performance analytics tracking
  */
 
-import { 
-  IraqiPersona, 
-  PersonaTemplate, 
-  IraqiCulturalTraits, 
+import {
+  IraqiPersona,
+  PersonaTemplate,
+  IraqiCulturalTraits,
   PersonaResponsePattern,
   IraqiProfessionalDomain,
   IslamicComplianceLevel,
   PersonaAnalytics,
-  IRAQI_PERSONA_TEMPLATES
+  IRAQI_PERSONA_TEMPLATES,
 } from '../types/persona';
 
 // Cultural Compliance Validation Service
@@ -28,7 +28,7 @@ export class CulturalComplianceService {
    * Validates persona response against Islamic principles
    */
   static validateIslamicCompliance(
-    response: string, 
+    response: string,
     complianceLevel: IslamicComplianceLevel
   ): { isCompliant: boolean; score: number; issues: string[] } {
     const issues: string[] = [];
@@ -39,23 +39,20 @@ export class CulturalComplianceService {
       strict: [
         /\b(alcohol|wine|beer|gambling|casino|lottery)\b/gi,
         /\b(interest|riba|usury)\b/gi,
-        /\b(dating|boyfriend|girlfriend)\b/gi
+        /\b(dating|boyfriend|girlfriend)\b/gi,
       ],
-      moderate: [
-        /\b(gambling|casino)\b/gi,
-        /\b(usury|riba)\b/gi
-      ],
-      general: [
-        /\b(casino)\b/gi
-      ],
-      flexible: []
+      moderate: [/\b(gambling|casino)\b/gi, /\b(usury|riba)\b/gi],
+      general: [/\b(casino)\b/gi],
+      flexible: [],
     };
 
     const patterns = prohibitedPatterns[complianceLevel] || [];
-    
+
     patterns.forEach(pattern => {
       if (pattern.test(response)) {
-        issues.push(`Contains content not aligned with Islamic principles (${complianceLevel} level)`);
+        issues.push(
+          `Contains content not aligned with Islamic principles (${complianceLevel} level)`
+        );
         score -= 20;
       }
     });
@@ -64,7 +61,7 @@ export class CulturalComplianceService {
     const positivePatterns = [
       /\b(halal|blessed|inshallah|mashallah|alhamdulillah)\b/gi,
       /\b(peace|harmony|compassion|justice)\b/gi,
-      /\b(family|community|respect|wisdom)\b/gi
+      /\b(family|community|respect|wisdom)\b/gi,
     ];
 
     let positiveScore = 0;
@@ -79,7 +76,7 @@ export class CulturalComplianceService {
     return {
       isCompliant: score >= 70,
       score,
-      issues
+      issues,
     };
   }
 
@@ -87,7 +84,7 @@ export class CulturalComplianceService {
    * Validates cultural sensitivity
    */
   static validateCulturalSensitivity(
-    response: string, 
+    response: string,
     traits: IraqiCulturalTraits
   ): { isSensitive: boolean; score: number; suggestions: string[] } {
     const suggestions: string[] = [];
@@ -120,7 +117,7 @@ export class CulturalComplianceService {
     return {
       isSensitive: score >= 80,
       score,
-      suggestions
+      suggestions,
     };
   }
 }
@@ -129,40 +126,80 @@ export class CulturalComplianceService {
 export class ProfessionalExpertiseService {
   private static DOMAIN_KNOWLEDGE = {
     legal: [
-      'iraqi civil code', 'commercial law', 'court procedures', 'legal documentation',
-      'contract law', 'property law', 'family law', 'criminal law', 'administrative law'
+      'iraqi civil code',
+      'commercial law',
+      'court procedures',
+      'legal documentation',
+      'contract law',
+      'property law',
+      'family law',
+      'criminal law',
+      'administrative law',
     ],
     medical: [
-      'iraqi medical association', 'ministry of health', 'medical ethics', 'patient care',
-      'public health', 'clinical practice', 'medical diagnosis', 'treatment protocols'
+      'iraqi medical association',
+      'ministry of health',
+      'medical ethics',
+      'patient care',
+      'public health',
+      'clinical practice',
+      'medical diagnosis',
+      'treatment protocols',
     ],
     educational: [
-      'iraqi curriculum', 'educational methods', 'student assessment', 'learning psychology',
-      'educational technology', 'teaching strategies', 'educational administration'
+      'iraqi curriculum',
+      'educational methods',
+      'student assessment',
+      'learning psychology',
+      'educational technology',
+      'teaching strategies',
+      'educational administration',
     ],
     engineering: [
-      'iraqi building code', 'engineering standards', 'infrastructure development',
-      'project management', 'technical specifications', 'construction management'
+      'iraqi building code',
+      'engineering standards',
+      'infrastructure development',
+      'project management',
+      'technical specifications',
+      'construction management',
     ],
     business: [
-      'iraqi commercial law', 'business regulations', 'investment guidelines',
-      'trade practices', 'economic development', 'market analysis', 'financial planning'
+      'iraqi commercial law',
+      'business regulations',
+      'investment guidelines',
+      'trade practices',
+      'economic development',
+      'market analysis',
+      'financial planning',
     ],
     government: [
-      'public administration', 'government procedures', 'public policy', 'administrative law',
-      'civil service', 'public services', 'governmental regulations'
+      'public administration',
+      'government procedures',
+      'public policy',
+      'administrative law',
+      'civil service',
+      'public services',
+      'governmental regulations',
     ],
     religious: [
-      'islamic jurisprudence', 'quranic studies', 'hadith literature', 'islamic ethics',
-      'religious counseling', 'islamic history', 'comparative religion'
+      'islamic jurisprudence',
+      'quranic studies',
+      'hadith literature',
+      'islamic ethics',
+      'religious counseling',
+      'islamic history',
+      'comparative religion',
     ],
     cultural: [
-      'iraqi culture', 'cultural heritage', 'traditional arts', 'folklore',
-      'cultural events', 'cultural preservation', 'artistic expression'
+      'iraqi culture',
+      'cultural heritage',
+      'traditional arts',
+      'folklore',
+      'cultural events',
+      'cultural preservation',
+      'artistic expression',
     ],
-    general: [
-      'general knowledge', 'common questions', 'basic assistance', 'information retrieval'
-    ]
+    general: ['general knowledge', 'common questions', 'basic assistance', 'information retrieval'],
   };
 
   /**
@@ -175,32 +212,35 @@ export class ProfessionalExpertiseService {
   ): { isAccurate: boolean; confidence: number; domainAlignment: number } {
     const domainTerms = this.DOMAIN_KNOWLEDGE[domain] || [];
     const responseWords = response.toLowerCase().split(/\s+/);
-    
+
     let domainMatches = 0;
     let expertiseMatches = 0;
-    
+
     // Check domain-specific terminology usage
     domainTerms.forEach(term => {
       if (response.toLowerCase().includes(term)) {
         domainMatches++;
       }
     });
-    
+
     // Check expertise-specific terminology
     expertise.forEach(expertiseArea => {
       if (response.toLowerCase().includes(expertiseArea.toLowerCase())) {
         expertiseMatches++;
       }
     });
-    
+
     const domainAlignment = Math.min(100, (domainMatches / Math.max(1, domainTerms.length)) * 100);
-    const expertiseAlignment = Math.min(100, (expertiseMatches / Math.max(1, expertise.length)) * 100);
+    const expertiseAlignment = Math.min(
+      100,
+      (expertiseMatches / Math.max(1, expertise.length)) * 100
+    );
     const confidence = (domainAlignment + expertiseAlignment) / 2;
-    
+
     return {
       isAccurate: confidence >= 60,
       confidence,
-      domainAlignment
+      domainAlignment,
     };
   }
 }
@@ -251,16 +291,16 @@ export class ResponsePatternService {
       'as we say in Iraq',
       'according to our Iraqi traditions',
       'in our beloved Iraq',
-      'following our cultural values'
+      'following our cultural values',
     ];
-    
+
     const randomPhrase = culturalPhrases[Math.floor(Math.random() * culturalPhrases.length)];
     return response.replace(/\. ([A-Z])/g, `, ${randomPhrase}. $1`);
   }
 
   private static integrateIslamicPrinciples(response: string, useGreetings: boolean): string {
     let enhanced = response;
-    
+
     if (useGreetings) {
       enhanced = enhanced.replace(/god willing/gi, 'inshallah');
       enhanced = enhanced.replace(/thank god/gi, 'alhamdulillah');
@@ -280,9 +320,9 @@ export class ResponsePatternService {
       'As our elders taught us',
       'From our experience in Iraq',
       'Drawing from traditional wisdom',
-      'As they say in Arabic'
+      'As they say in Arabic',
     ];
-    
+
     const randomPhrase = wisdomPhrases[Math.floor(Math.random() * wisdomPhrases.length)];
     return `${randomPhrase}, ${response.charAt(0).toLowerCase() + response.slice(1)}`;
   }
@@ -306,17 +346,17 @@ export class PersonaMemoryService {
   ): void {
     const personaMemory = this.memoryStore.get(personaId) || new Map();
     const userMemory = personaMemory.get(userId) || {};
-    
+
     if (!userMemory.culturalPreferences) {
       userMemory.culturalPreferences = [];
     }
-    
+
     userMemory.culturalPreferences.push({
       ...preference,
       timestamp: new Date(),
-      confidence: 0.8
+      confidence: 0.8,
     });
-    
+
     personaMemory.set(userId, userMemory);
     this.memoryStore.set(personaId, personaMemory);
   }
@@ -327,7 +367,7 @@ export class PersonaMemoryService {
   getCulturalPreferences(personaId: string, userId: string): any[] {
     const personaMemory = this.memoryStore.get(personaId);
     if (!personaMemory) return [];
-    
+
     const userMemory = personaMemory.get(userId);
     return userMemory?.culturalPreferences || [];
   }
@@ -347,17 +387,17 @@ export class PersonaMemoryService {
   ): void {
     const personaMemory = this.memoryStore.get(personaId) || new Map();
     const userMemory = personaMemory.get(userId) || {};
-    
+
     if (!userMemory.professionalHistory) {
       userMemory.professionalHistory = [];
     }
-    
+
     userMemory.professionalHistory.push({
       ...context,
       timestamp: new Date(),
-      sessionId: this.generateSessionId()
+      sessionId: this.generateSessionId(),
     });
-    
+
     personaMemory.set(userId, userMemory);
     this.memoryStore.set(personaId, personaMemory);
   }
@@ -396,7 +436,7 @@ export class IraqiPersonaService {
         domain: template.domain,
         level: 'mid',
         specializations: template.suggestedKnowledge,
-        yearsExperience: 5
+        yearsExperience: 5,
       },
       description: template.description,
       arabicDescription: template.arabicDescription,
@@ -413,7 +453,7 @@ export class IraqiPersonaService {
         wisdomSharing: true,
         patientGuidance: true,
         moralGuidance: false,
-        ...template.defaultTraits
+        ...template.defaultTraits,
       },
       islamicCompliance: 'moderate',
       dialectPreference: 'general',
@@ -427,14 +467,14 @@ export class IraqiPersonaService {
         islamicPrinciples: false,
         historicalContext: false,
         modernAdaptation: true,
-        ...template.defaultPatterns
+        ...template.defaultPatterns,
       },
       memoryConfig: {
         retainPersonalDetails: true,
         culturalPreferences: true,
         professionalContext: true,
         conversationHistory: 'medium',
-        culturalSensitivity: true
+        culturalSensitivity: true,
       },
       systemPrompt: this.generateSystemPrompt(template),
       arabicSystemPrompt: this.generateArabicSystemPrompt(template),
@@ -451,12 +491,12 @@ export class IraqiPersonaService {
       tags: [template.domain, 'iraqi', 'professional'],
       createdAt: new Date(),
       updatedAt: new Date(),
-      ...customizations
+      ...customizations,
     };
 
     this.personas.set(persona.id, persona);
     this.initializeAnalytics(persona.id);
-    
+
     return persona;
   }
 
@@ -481,10 +521,10 @@ export class IraqiPersonaService {
 
     // Get user preferences for personalization
     const culturalPreferences = this.memoryService.getCulturalPreferences(personaId, userId);
-    
+
     // Generate base response (this would integrate with actual AI model)
     let baseResponse = this.generateBaseResponse(userMessage, persona, context);
-    
+
     // Apply persona patterns and cultural traits
     const enhancedResponse = ResponsePatternService.applyResponsePattern(
       baseResponse,
@@ -520,8 +560,8 @@ export class IraqiPersonaService {
       compliance: {
         islamic: compliance,
         cultural: culturalSensitivity,
-        professional: professionalValidation
-      }
+        professional: professionalValidation,
+      },
     };
   }
 
@@ -569,7 +609,7 @@ export class IraqiPersonaService {
       averageSessionLength: 0,
       topQuestionCategories: [],
       userSatisfactionRating: 0,
-      culturalComplianceScore: 100
+      culturalComplianceScore: 100,
     });
   }
 
@@ -613,7 +653,7 @@ export class IraqiPersonaService {
     const updatedPersona = {
       ...persona,
       ...updates,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     this.personas.set(personaId, updatedPersona);
@@ -637,5 +677,5 @@ export {
   ProfessionalExpertiseService,
   ResponsePatternService,
   PersonaMemoryService,
-  IraqiPersonaService
+  IraqiPersonaService,
 };

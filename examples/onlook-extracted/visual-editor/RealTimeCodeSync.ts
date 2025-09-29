@@ -2,7 +2,7 @@
  * Iraqi AI System - Real-Time Code Synchronization Engine
  * Bidirectional synchronization between visual editor and code with cultural intelligence
  * Enhanced from Onlook for Iraqi government deployment with Arabic awareness
- * 
+ *
  * Key Features:
  * - Real-time bidirectional code synchronization with Arabic RTL support
  * - Cultural validation during code generation and updates
@@ -12,9 +12,16 @@
  * - Government-grade security and audit trail
  */
 
-import { EventEmitter } from 'events';
-import { IraqiASTProcessor, type ArabicAwareASTConfig, type ASTModificationResult } from './ASTProcessor';
-import { CulturalInspector, type CulturalInspectionResult } from './CulturalInspector';
+import { EventEmitter } from "events";
+import {
+  IraqiASTProcessor,
+  type ArabicAwareASTConfig,
+  type ASTModificationResult,
+} from "./ASTProcessor";
+import {
+  CulturalInspector,
+  type CulturalInspectionResult,
+} from "./CulturalInspector";
 
 export interface RealTimeCodeSyncConfig {
   // Core synchronization settings
@@ -22,33 +29,33 @@ export interface RealTimeCodeSyncConfig {
   realTimeValidation: boolean;
   autoSave: boolean;
   syncInterval: number; // milliseconds
-  
+
   // Cultural intelligence settings
   culturalValidation: boolean;
   islamicCompliance: boolean;
   rtlCodeGeneration: boolean;
-  ministrySpecific?: 'health' | 'education' | 'interior' | 'justice';
-  
+  ministrySpecific?: "health" | "education" | "interior" | "justice";
+
   // Performance and security
   performanceOptimized: boolean;
   governmentSecurity: boolean;
   auditTrail: boolean;
   maxSyncLatency: number; // Target latency in ms
-  
+
   // Developer experience
-  conflictResolution: 'visual-first' | 'code-first' | 'manual';
+  conflictResolution: "visual-first" | "code-first" | "manual";
   showCulturalHints: boolean;
   arabicCodeComments: boolean;
 }
 
 export interface SynchronizationResult {
   success: boolean;
-  syncType: 'visual-to-code' | 'code-to-visual' | 'bidirectional';
+  syncType: "visual-to-code" | "code-to-visual" | "bidirectional";
   latency: number; // milliseconds
   changesApplied: number;
   culturalValidation: CulturalInspectionResult;
   conflicts: Array<{
-    type: 'cultural' | 'structural' | 'syntax';
+    type: "cultural" | "structural" | "syntax";
     description: string;
     resolution: string;
     autoResolved: boolean;
@@ -64,8 +71,8 @@ export interface SynchronizationResult {
 export interface CodeChange {
   id: string;
   timestamp: Date;
-  type: 'visual-edit' | 'code-edit' | 'cultural-fix' | 'ministry-compliance';
-  source: 'user' | 'system' | 'cultural-inspector';
+  type: "visual-edit" | "code-edit" | "cultural-fix" | "ministry-compliance";
+  source: "user" | "system" | "cultural-inspector";
   element?: HTMLElement;
   codeLocation: {
     file: string;
@@ -83,11 +90,15 @@ export interface CodeChange {
 export interface SyncConflict {
   id: string;
   timestamp: Date;
-  type: 'cultural-mismatch' | 'rtl-conflict' | 'ministry-violation' | 'security-issue';
+  type:
+    | "cultural-mismatch"
+    | "rtl-conflict"
+    | "ministry-violation"
+    | "security-issue";
   visualChange: string;
   codeChange: string;
   recommendedResolution: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   culturalContext: string;
   autoResolvable: boolean;
 }
@@ -99,7 +110,7 @@ export interface CulturalCodePattern {
   ministrySpecific?: string;
   islamicCompliant: boolean;
   arabicRTLAware: boolean;
-  securityLevel: 'public' | 'internal' | 'confidential';
+  securityLevel: "public" | "internal" | "confidential";
   autoApplicable: boolean;
 }
 
@@ -107,26 +118,26 @@ export class RealTimeCodeSync extends EventEmitter {
   private config: RealTimeCodeSyncConfig;
   private astProcessor: IraqiASTProcessor;
   private culturalInspector: CulturalInspector;
-  
+
   // Synchronization state
   private syncInProgress = false;
   private lastSyncTimestamp = 0;
   private pendingChanges: CodeChange[] = [];
   private activeConflicts: SyncConflict[] = [];
-  
+
   // Performance monitoring
   private performanceMetrics = {
     totalSyncs: 0,
     averageLatency: 0,
     culturalValidations: 0,
     conflictsResolved: 0,
-    autoFixesApplied: 0
+    autoFixesApplied: 0,
   };
-  
+
   // Cultural code patterns cache
   private culturalPatterns: Map<string, CulturalCodePattern> = new Map();
   private ministryTemplatesCache: Map<string, string> = new Map();
-  
+
   // Government audit trail
   private auditLog: Array<{
     timestamp: Date;
@@ -158,7 +169,7 @@ export class RealTimeCodeSync extends EventEmitter {
       arabicTypography: true,
       islamicDesignCompliance: this.config.islamicCompliance,
       ministrySpecific: this.config.ministrySpecific,
-      bilingualSupport: true
+      bilingualSupport: true,
     };
     this.astProcessor = new IraqiASTProcessor(astConfig);
 
@@ -170,7 +181,7 @@ export class RealTimeCodeSync extends EventEmitter {
       arabicTypography: true,
       governmentStandards: this.config.governmentSecurity,
       prayerTimeAware: true,
-      accessibilityLevel: 'government-standard'
+      accessibilityLevel: "government-standard",
     });
 
     // Setup performance optimization
@@ -189,7 +200,7 @@ export class RealTimeCodeSync extends EventEmitter {
       this.initializeAuditTrail();
     }
 
-    this.emit('sync-engine-initialized', { config: this.config });
+    this.emit("sync-engine-initialized", { config: this.config });
   }
 
   /**
@@ -198,7 +209,7 @@ export class RealTimeCodeSync extends EventEmitter {
   async startSynchronization(): Promise<boolean> {
     try {
       if (this.syncInProgress) {
-        throw new Error('Synchronization already in progress');
+        throw new Error("Synchronization already in progress");
       }
 
       // Start visual observer
@@ -218,16 +229,15 @@ export class RealTimeCodeSync extends EventEmitter {
 
       // Perform initial sync
       const initialSync = await this.performFullSync();
-      
+
       if (!initialSync.success) {
-        throw new Error('Initial synchronization failed');
+        throw new Error("Initial synchronization failed");
       }
 
-      this.emit('synchronization-started', { initialSync });
+      this.emit("synchronization-started", { initialSync });
       return true;
-
     } catch (error) {
-      this.emit('synchronization-error', { error: error.message });
+      this.emit("synchronization-error", { error: error.message });
       return false;
     }
   }
@@ -257,7 +267,7 @@ export class RealTimeCodeSync extends EventEmitter {
     this.pendingChanges = [];
     this.syncInProgress = false;
 
-    this.emit('synchronization-stopped');
+    this.emit("synchronization-stopped");
   }
 
   /**
@@ -274,7 +284,7 @@ export class RealTimeCodeSync extends EventEmitter {
       validateCulture?: boolean;
       enforceMinistryStandards?: boolean;
       autoFixViolations?: boolean;
-    } = {}
+    } = {},
   ): Promise<SynchronizationResult> {
     const startTime = performance.now();
 
@@ -287,20 +297,20 @@ export class RealTimeCodeSync extends EventEmitter {
       // Process each visual change
       for (const change of visualChanges) {
         const codeChange = await this.convertVisualChangeToCode(change);
-        
+
         if (codeChange) {
           // Apply cultural intelligence
           const enhancedCode = await this.applyCulturalIntelligence(
-            codeChange, 
-            options
+            codeChange,
+            options,
           );
-          
+
           // Check for conflicts
           const conflict = this.detectSyncConflicts(enhancedCode);
           if (conflict) {
             conflicts.push(conflict);
-            
-            if (this.config.conflictResolution !== 'manual') {
+
+            if (this.config.conflictResolution !== "manual") {
               await this.resolveConflictAutomatically(conflict);
             }
           }
@@ -309,7 +319,7 @@ export class RealTimeCodeSync extends EventEmitter {
           const applied = await this.applyCodeChange(enhancedCode);
           if (applied) {
             changesApplied++;
-            this.recordAuditEntry('visual-to-code-sync', enhancedCode);
+            this.recordAuditEntry("visual-to-code-sync", enhancedCode);
           }
         }
       }
@@ -318,7 +328,7 @@ export class RealTimeCodeSync extends EventEmitter {
       if (options.validateCulture !== false) {
         culturalValidation = await this.culturalInspector.inspectElement(
           document.body,
-          { deepInspection: true, autoFix: options.autoFixViolations }
+          { deepInspection: true, autoFix: options.autoFixViolations },
         );
       } else {
         culturalValidation = this.createDefaultValidationResult();
@@ -328,31 +338,30 @@ export class RealTimeCodeSync extends EventEmitter {
       const latency = endTime - startTime;
 
       // Update performance metrics
-      this.updatePerformanceMetrics('visual-to-code', latency);
+      this.updatePerformanceMetrics("visual-to-code", latency);
 
       const result: SynchronizationResult = {
         success: true,
-        syncType: 'visual-to-code',
+        syncType: "visual-to-code",
         latency,
         changesApplied,
         culturalValidation,
-        conflicts: conflicts.map(c => ({
+        conflicts: conflicts.map((c) => ({
           type: c.type as any,
           description: c.visualChange,
           resolution: c.recommendedResolution,
-          autoResolved: c.autoResolvable
+          autoResolved: c.autoResolvable,
         })),
         performanceMetrics: {
           astProcessingTime: latency * 0.3,
           validationTime: latency * 0.2,
           renderingTime: latency * 0.1,
-          totalTime: latency
-        }
+          totalTime: latency,
+        },
       };
 
-      this.emit('visual-to-code-sync-complete', result);
+      this.emit("visual-to-code-sync-complete", result);
       return result;
-
     } catch (error) {
       this.syncInProgress = false;
       throw new Error(`Visual to code sync failed: ${error.message}`);
@@ -375,7 +384,7 @@ export class RealTimeCodeSync extends EventEmitter {
       validateCulture?: boolean;
       enforceRTL?: boolean;
       applyIslamicCompliance?: boolean;
-    } = {}
+    } = {},
   ): Promise<SynchronizationResult> {
     const startTime = performance.now();
 
@@ -388,12 +397,10 @@ export class RealTimeCodeSync extends EventEmitter {
       for (const change of codeChanges) {
         // Convert AST changes to visual updates
         const visualUpdates = await this.convertCodeChangeToVisual(change);
-        
+
         // Apply cultural enhancements
-        const culturallyEnhancedUpdates = await this.applyCulturalEnhancementsToVisual(
-          visualUpdates,
-          options
-        );
+        const culturallyEnhancedUpdates =
+          await this.applyCulturalEnhancementsToVisual(visualUpdates, options);
 
         // Apply visual updates
         for (const update of culturallyEnhancedUpdates) {
@@ -403,22 +410,25 @@ export class RealTimeCodeSync extends EventEmitter {
           }
         }
 
-        this.recordAuditEntry('code-to-visual-sync', change);
+        this.recordAuditEntry("code-to-visual-sync", change);
       }
 
       // Perform cultural validation
-      const culturalValidation = options.validateCulture !== false
-        ? await this.culturalInspector.inspectElement(document.body, { deepInspection: true })
-        : this.createDefaultValidationResult();
+      const culturalValidation =
+        options.validateCulture !== false
+          ? await this.culturalInspector.inspectElement(document.body, {
+              deepInspection: true,
+            })
+          : this.createDefaultValidationResult();
 
       const endTime = performance.now();
       const latency = endTime - startTime;
 
-      this.updatePerformanceMetrics('code-to-visual', latency);
+      this.updatePerformanceMetrics("code-to-visual", latency);
 
       const result: SynchronizationResult = {
         success: true,
-        syncType: 'code-to-visual',
+        syncType: "code-to-visual",
         latency,
         changesApplied,
         culturalValidation,
@@ -427,13 +437,12 @@ export class RealTimeCodeSync extends EventEmitter {
           astProcessingTime: latency * 0.4,
           validationTime: latency * 0.3,
           renderingTime: latency * 0.2,
-          totalTime: latency
-        }
+          totalTime: latency,
+        },
       };
 
-      this.emit('code-to-visual-sync-complete', result);
+      this.emit("code-to-visual-sync-complete", result);
       return result;
-
     } catch (error) {
       throw new Error(`Code to visual sync failed: ${error.message}`);
     } finally {
@@ -450,28 +459,31 @@ export class RealTimeCodeSync extends EventEmitter {
     try {
       // Get current visual state
       const visualState = this.captureVisualState();
-      
+
       // Get current code state
       const codeState = await this.captureCodeState();
-      
+
       // Detect discrepancies
-      const discrepancies = this.detectSyncDiscrepancies(visualState, codeState);
-      
+      const discrepancies = this.detectSyncDiscrepancies(
+        visualState,
+        codeState,
+      );
+
       // Resolve discrepancies based on conflict resolution strategy
       const resolutionResults = await this.resolveDiscrepancies(discrepancies);
-      
+
       // Perform cultural validation
       const culturalValidation = await this.culturalInspector.inspectElement(
         document.body,
-        { deepInspection: true, autoFix: true }
+        { deepInspection: true, autoFix: true },
       );
-      
+
       const endTime = performance.now();
       const latency = endTime - startTime;
 
       const result: SynchronizationResult = {
         success: true,
-        syncType: 'bidirectional',
+        syncType: "bidirectional",
         latency,
         changesApplied: resolutionResults.changesApplied,
         culturalValidation,
@@ -480,13 +492,12 @@ export class RealTimeCodeSync extends EventEmitter {
           astProcessingTime: latency * 0.3,
           validationTime: latency * 0.3,
           renderingTime: latency * 0.2,
-          totalTime: latency
-        }
+          totalTime: latency,
+        },
       };
 
-      this.emit('full-sync-complete', result);
+      this.emit("full-sync-complete", result);
       return result;
-
     } catch (error) {
       throw new Error(`Full synchronization failed: ${error.message}`);
     }
@@ -497,12 +508,15 @@ export class RealTimeCodeSync extends EventEmitter {
    */
   private async applyCulturalIntelligence(
     codeChange: CodeChange,
-    options: any
+    options: any,
   ): Promise<CodeChange> {
     let enhancedCode = codeChange.newCode;
 
     // Apply Islamic design compliance
-    if (this.config.islamicCompliance && options.enforceMinistryStandards !== false) {
+    if (
+      this.config.islamicCompliance &&
+      options.enforceMinistryStandards !== false
+    ) {
       enhancedCode = this.applyIslamicDesignPrinciples(enhancedCode);
     }
 
@@ -514,8 +528,8 @@ export class RealTimeCodeSync extends EventEmitter {
     // Apply ministry-specific patterns
     if (this.config.ministrySpecific) {
       enhancedCode = await this.applyMinistryPatterns(
-        enhancedCode, 
-        this.config.ministrySpecific
+        enhancedCode,
+        this.config.ministrySpecific,
       );
     }
 
@@ -527,18 +541,23 @@ export class RealTimeCodeSync extends EventEmitter {
     return {
       ...codeChange,
       newCode: enhancedCode,
-      culturalImpact: this.calculateCulturalImpact(codeChange.newCode, enhancedCode)
+      culturalImpact: this.calculateCulturalImpact(
+        codeChange.newCode,
+        enhancedCode,
+      ),
     };
   }
 
   /**
    * Convert visual changes to code modifications
    */
-  private async convertVisualChangeToCode(visualChange: any): Promise<CodeChange | null> {
+  private async convertVisualChangeToCode(
+    visualChange: any,
+  ): Promise<CodeChange | null> {
     try {
       // Determine component and location from DOM element
       const componentInfo = this.extractComponentInfo(visualChange.element);
-      
+
       if (!componentInfo) {
         return null;
       }
@@ -546,32 +565,31 @@ export class RealTimeCodeSync extends EventEmitter {
       // Generate AST modification
       const astModification = await this.generateASTModification(
         visualChange,
-        componentInfo
+        componentInfo,
       );
 
       return {
         id: this.generateChangeId(),
         timestamp: new Date(),
-        type: 'visual-edit',
-        source: 'user',
+        type: "visual-edit",
+        source: "user",
         element: visualChange.element,
         codeLocation: {
           file: componentInfo.file,
           line: componentInfo.line,
           column: componentInfo.column,
-          component: componentInfo.component
+          component: componentInfo.component,
         },
         originalCode: astModification.original,
         newCode: astModification.modified,
         culturalImpact: 0,
         autoSynced: true,
-        needsValidation: this.config.culturalValidation
+        needsValidation: this.config.culturalValidation,
       };
-
     } catch (error) {
-      this.emit('conversion-error', { 
-        error: error.message, 
-        visualChange 
+      this.emit("conversion-error", {
+        error: error.message,
+        visualChange,
       });
       return null;
     }
@@ -585,22 +603,25 @@ export class RealTimeCodeSync extends EventEmitter {
 
     // Replace non-compliant colors
     const colorReplacements = {
-      'bg-red-': 'bg-blue-',
-      'border-red-': 'border-blue-',
-      'text-red-': 'text-blue-',
-      'bg-orange-': 'bg-emerald-',
-      'bg-pink-': 'bg-purple-'
+      "bg-red-": "bg-blue-",
+      "border-red-": "border-blue-",
+      "text-red-": "text-blue-",
+      "bg-orange-": "bg-emerald-",
+      "bg-pink-": "bg-purple-",
     };
 
     for (const [nonCompliant, compliant] of Object.entries(colorReplacements)) {
-      enhancedCode = enhancedCode.replace(new RegExp(nonCompliant, 'g'), compliant);
+      enhancedCode = enhancedCode.replace(
+        new RegExp(nonCompliant, "g"),
+        compliant,
+      );
     }
 
     // Add Islamic compliance attributes
-    if (enhancedCode.includes('<div') || enhancedCode.includes('<form')) {
+    if (enhancedCode.includes("<div") || enhancedCode.includes("<form")) {
       enhancedCode = enhancedCode.replace(
         /(<(?:div|form)[^>]*)/g,
-        '$1 data-islamic-compliant="true"'
+        '$1 data-islamic-compliant="true"',
       );
     }
 
@@ -614,32 +635,29 @@ export class RealTimeCodeSync extends EventEmitter {
     let rtlCode = code;
 
     // Add RTL direction attributes
-    if (rtlCode.includes('className=')) {
-      rtlCode = rtlCode.replace(
-        /className="([^"]*)"/g,
-        (match, classes) => {
-          if (!classes.includes('dir-rtl')) {
-            return `className="${classes} dir-rtl" dir="rtl"`;
-          }
-          return match;
+    if (rtlCode.includes("className=")) {
+      rtlCode = rtlCode.replace(/className="([^"]*)"/g, (match, classes) => {
+        if (!classes.includes("dir-rtl")) {
+          return `className="${classes} dir-rtl" dir="rtl"`;
         }
-      );
+        return match;
+      });
     }
 
     // Replace LTR layout classes with RTL equivalents
     const rtlReplacements = {
-      'text-left': 'text-right',
-      'justify-start': 'justify-end',
-      'flex-row': 'flex-row-reverse',
-      'space-x-': 'space-x-reverse space-x-',
-      'ml-': 'mr-',
-      'mr-': 'ml-',
-      'pl-': 'pr-',
-      'pr-': 'pl-'
+      "text-left": "text-right",
+      "justify-start": "justify-end",
+      "flex-row": "flex-row-reverse",
+      "space-x-": "space-x-reverse space-x-",
+      "ml-": "mr-",
+      "mr-": "ml-",
+      "pl-": "pr-",
+      "pr-": "pl-",
     };
 
     for (const [ltr, rtl] of Object.entries(rtlReplacements)) {
-      rtlCode = rtlCode.replace(new RegExp(ltr, 'g'), rtl);
+      rtlCode = rtlCode.replace(new RegExp(ltr, "g"), rtl);
     }
 
     return rtlCode;
@@ -649,38 +667,38 @@ export class RealTimeCodeSync extends EventEmitter {
    * Apply ministry-specific patterns
    */
   private async applyMinistryPatterns(
-    code: string, 
-    ministry: string
+    code: string,
+    ministry: string,
   ): Promise<string> {
     // Load ministry template from cache or generate
     const ministryTemplate = await this.getMinistryTemplate(ministry);
-    
+
     let enhancedCode = code;
 
     // Apply ministry colors
     const ministryColors = {
-      health: 'emerald',
-      education: 'blue',
-      interior: 'slate',
-      justice: 'purple'
+      health: "emerald",
+      education: "blue",
+      interior: "slate",
+      justice: "purple",
     };
 
-    const primaryColor = ministryColors[ministry] || 'blue';
+    const primaryColor = ministryColors[ministry] || "blue";
     enhancedCode = enhancedCode.replace(
       /bg-(?:blue|green|red|purple)-(\d+)/g,
-      `bg-${primaryColor}-$1`
+      `bg-${primaryColor}-$1`,
     );
 
     // Add ministry data attributes
     enhancedCode = enhancedCode.replace(
       /(<(?:div|section|header)[^>]*)/g,
-      `$1 data-ministry="${ministry}"`
+      `$1 data-ministry="${ministry}"`,
     );
 
     // Add ministry-specific classes
     enhancedCode = enhancedCode.replace(
       /className="([^"]*)"/g,
-      `className="$1 ministry-${ministry}"`
+      `className="$1 ministry-${ministry}"`,
     );
 
     return enhancedCode;
@@ -691,20 +709,17 @@ export class RealTimeCodeSync extends EventEmitter {
    */
   private addArabicComments(code: string, changeType: string): string {
     const comments = {
-      'visual-edit': '// تم التعديل من المحرر المرئي',
-      'cultural-fix': '// تم التصحيح للامتثال الثقافي',
-      'ministry-compliance': '// تم التطبيق حسب معايير الوزارة',
-      'code-edit': '// تم التعديل من المحرر النصي'
+      "visual-edit": "// تم التعديل من المحرر المرئي",
+      "cultural-fix": "// تم التصحيح للامتثال الثقافي",
+      "ministry-compliance": "// تم التطبيق حسب معايير الوزارة",
+      "code-edit": "// تم التعديل من المحرر النصي",
     };
 
-    const comment = comments[changeType] || '// تم التعديل';
-    
+    const comment = comments[changeType] || "// تم التعديل";
+
     // Add comment at the beginning of the component
-    if (code.includes('const ') && code.includes(' = ')) {
-      return code.replace(
-        /(const\s+\w+\s*=)/,
-        `${comment}\n$1`
-      );
+    if (code.includes("const ") && code.includes(" = ")) {
+      return code.replace(/(const\s+\w+\s*=)/, `${comment}\n$1`);
     }
 
     return `${comment}\n${code}`;
@@ -728,7 +743,7 @@ export class RealTimeCodeSync extends EventEmitter {
       attributes: true,
       attributeOldValue: true,
       characterData: true,
-      characterDataOldValue: true
+      characterDataOldValue: true,
     });
   }
 
@@ -736,8 +751,8 @@ export class RealTimeCodeSync extends EventEmitter {
    * Handle visual changes from DOM mutations
    */
   private handleVisualChanges(mutations: MutationRecord[]): void {
-    const significantChanges = mutations.filter(mutation => 
-      this.isSignificantChange(mutation)
+    const significantChanges = mutations.filter((mutation) =>
+      this.isSignificantChange(mutation),
     );
 
     if (significantChanges.length > 0) {
@@ -755,12 +770,13 @@ export class RealTimeCodeSync extends EventEmitter {
    * Queue visual changes for synchronization
    */
   private queueVisualChangesForSync(mutations: MutationRecord[]): void {
-    const changes = mutations.map(mutation => this.convertMutationToChange(mutation))
-                           .filter(change => change !== null);
+    const changes = mutations
+      .map((mutation) => this.convertMutationToChange(mutation))
+      .filter((change) => change !== null);
 
     if (changes.length > 0) {
       this.pendingChanges.push(...changes);
-      
+
       if (this.config.bidirectionalSync) {
         this.triggerPendingSync();
       }
@@ -773,19 +789,19 @@ export class RealTimeCodeSync extends EventEmitter {
   private setupPerformanceOptimizations(): void {
     // Implement virtual rendering for large DOMs
     this.setupVirtualRendering();
-    
+
     // Setup intelligent caching
     this.setupIntelligentCaching();
-    
+
     // Setup batch processing
     this.setupBatchProcessing();
   }
 
   private setupVirtualRendering(): void {
     // Only observe visible elements
-    if (this.visualObserver && 'IntersectionObserver' in window) {
+    if (this.visualObserver && "IntersectionObserver" in window) {
       const intersectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             this.visualObserver?.observe(entry.target);
           } else {
@@ -794,7 +810,7 @@ export class RealTimeCodeSync extends EventEmitter {
         });
       });
 
-      document.querySelectorAll('*').forEach(el => {
+      document.querySelectorAll("*").forEach((el) => {
         intersectionObserver.observe(el);
       });
     }
@@ -831,10 +847,10 @@ export class RealTimeCodeSync extends EventEmitter {
     this.auditLog.push({
       timestamp: new Date(),
       action,
-      user: 'current-user', // In production, get from auth context
+      user: "current-user", // In production, get from auth context
       details,
       culturalCompliance: details.culturalImpact > 0.7,
-      securityLevel: this.config.governmentSecurity ? 'government' : 'standard'
+      securityLevel: this.config.governmentSecurity ? "government" : "standard",
     });
 
     // Limit audit log size
@@ -842,7 +858,7 @@ export class RealTimeCodeSync extends EventEmitter {
       this.auditLog.splice(0, 100); // Remove oldest 100 entries
     }
 
-    this.emit('audit-entry-recorded', this.auditLog[this.auditLog.length - 1]);
+    this.emit("audit-entry-recorded", this.auditLog[this.auditLog.length - 1]);
   }
 
   /**
@@ -854,22 +870,28 @@ export class RealTimeCodeSync extends EventEmitter {
 
   private calculateCulturalImpact(original: string, enhanced: string): number {
     let impact = 0;
-    
+
     // RTL improvements
     if (enhanced.includes('dir="rtl"') && !original.includes('dir="rtl"')) {
       impact += 0.3;
     }
-    
+
     // Islamic compliance improvements
-    if (enhanced.includes('data-islamic-compliant') && !original.includes('data-islamic-compliant')) {
+    if (
+      enhanced.includes("data-islamic-compliant") &&
+      !original.includes("data-islamic-compliant")
+    ) {
       impact += 0.4;
     }
-    
+
     // Ministry compliance
-    if (enhanced.includes('data-ministry') && !original.includes('data-ministry')) {
+    if (
+      enhanced.includes("data-ministry") &&
+      !original.includes("data-ministry")
+    ) {
       impact += 0.3;
     }
-    
+
     return Math.min(1, impact);
   }
 
@@ -883,22 +905,24 @@ export class RealTimeCodeSync extends EventEmitter {
       ministryCompliance: { score: 0.8, requiredActions: [] },
       islamicCompliance: { score: 0.8, issues: [], blessings: [] },
       arabicSupport: { rtlScore: 0.8, typographyScore: 0.8, layoutScore: 0.8 },
-      accessibilityScore: { wcag: 0.8, government: 0.8, recommendations: [] }
+      accessibilityScore: { wcag: 0.8, government: 0.8, recommendations: [] },
     };
   }
 
   private updatePerformanceMetrics(syncType: string, latency: number): void {
     this.performanceMetrics.totalSyncs++;
-    this.performanceMetrics.averageLatency = 
-      (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalSyncs - 1) + latency) 
-      / this.performanceMetrics.totalSyncs;
+    this.performanceMetrics.averageLatency =
+      (this.performanceMetrics.averageLatency *
+        (this.performanceMetrics.totalSyncs - 1) +
+        latency) /
+      this.performanceMetrics.totalSyncs;
 
     // Emit performance warning if latency exceeds target
     if (latency > this.config.maxSyncLatency) {
-      this.emit('performance-warning', {
+      this.emit("performance-warning", {
         syncType,
         latency,
-        target: this.config.maxSyncLatency
+        target: this.config.maxSyncLatency,
       });
     }
   }
@@ -911,25 +935,25 @@ export class RealTimeCodeSync extends EventEmitter {
     const patterns: CulturalCodePattern[] = [
       {
         pattern: 'dir="rtl"',
-        description: 'RTL direction for Arabic content',
-        culturalSignificance: 'Essential for Arabic text display',
+        description: "RTL direction for Arabic content",
+        culturalSignificance: "Essential for Arabic text display",
         islamicCompliant: true,
         arabicRTLAware: true,
-        securityLevel: 'public',
-        autoApplicable: true
+        securityLevel: "public",
+        autoApplicable: true,
       },
       {
         pattern: 'data-islamic-compliant="true"',
-        description: 'Islamic design compliance marker',
-        culturalSignificance: 'Ensures design follows Islamic principles',
+        description: "Islamic design compliance marker",
+        culturalSignificance: "Ensures design follows Islamic principles",
         islamicCompliant: true,
         arabicRTLAware: false,
-        securityLevel: 'public',
-        autoApplicable: true
-      }
+        securityLevel: "public",
+        autoApplicable: true,
+      },
     ];
 
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       this.culturalPatterns.set(pattern.pattern, pattern);
     });
   }
@@ -940,7 +964,7 @@ export class RealTimeCodeSync extends EventEmitter {
 
   private startCodeObserver(): void {
     // In production, would setup file system watcher
-    this.emit('code-observer-started');
+    this.emit("code-observer-started");
   }
 
   private performScheduledSync(): void {
@@ -957,59 +981,62 @@ export class RealTimeCodeSync extends EventEmitter {
       this.pendingChanges = [];
 
       // Group changes by type for efficient processing
-      const visualChanges = changes.filter(c => c.type === 'visual-edit');
-      const codeChanges = changes.filter(c => c.type === 'code-edit');
+      const visualChanges = changes.filter((c) => c.type === "visual-edit");
+      const codeChanges = changes.filter((c) => c.type === "code-edit");
 
       // Process visual changes
       if (visualChanges.length > 0) {
         await this.syncVisualToCode(
-          visualChanges.map(c => ({ 
-            element: c.element!, 
-            property: 'className', 
-            oldValue: '', 
-            newValue: '' 
+          visualChanges.map((c) => ({
+            element: c.element!,
+            property: "className",
+            oldValue: "",
+            newValue: "",
           })),
-          { validateCulture: true, autoFixViolations: true }
+          { validateCulture: true, autoFixViolations: true },
         );
       }
 
       // Process code changes
       if (codeChanges.length > 0) {
         await this.syncCodeToVisual(
-          codeChanges.map(c => ({
+          codeChanges.map((c) => ({
             file: c.codeLocation.file,
             component: c.codeLocation.component,
             originalAST: {},
-            newAST: {}
+            newAST: {},
           })),
-          { validateCulture: true, enforceRTL: true }
+          { validateCulture: true, enforceRTL: true },
         );
       }
-
     } catch (error) {
-      this.emit('sync-error', { error: error.message });
+      this.emit("sync-error", { error: error.message });
     }
   }
 
   // Additional placeholder methods that would be fully implemented in production
   private extractComponentInfo(element: HTMLElement): any {
     return {
-      file: 'Component.tsx',
+      file: "Component.tsx",
       line: 1,
       column: 1,
-      component: 'Component'
+      component: "Component",
     };
   }
 
-  private async generateASTModification(visualChange: any, componentInfo: any): Promise<any> {
+  private async generateASTModification(
+    visualChange: any,
+    componentInfo: any,
+  ): Promise<any> {
     return {
-      original: 'const Component = () => <div>Original</div>',
-      modified: 'const Component = () => <div className="modified">Modified</div>'
+      original: "const Component = () => <div>Original</div>",
+      modified:
+        'const Component = () => <div className="modified">Modified</div>',
     };
   }
 
   private captureVisualState(): any {
-    return { elements: document.querySelectorAll('*').length };
+    return { elements: document.querySelectorAll("*").length };
   }
 
   private async captureCodeState(): Promise<any> {
@@ -1028,7 +1055,9 @@ export class RealTimeCodeSync extends EventEmitter {
     return null;
   }
 
-  private async resolveConflictAutomatically(conflict: SyncConflict): Promise<void> {
+  private async resolveConflictAutomatically(
+    conflict: SyncConflict,
+  ): Promise<void> {
     // Implement automatic conflict resolution
   }
 
@@ -1040,7 +1069,10 @@ export class RealTimeCodeSync extends EventEmitter {
     return [];
   }
 
-  private async applyCulturalEnhancementsToVisual(updates: any[], options: any): Promise<any[]> {
+  private async applyCulturalEnhancementsToVisual(
+    updates: any[],
+    options: any,
+  ): Promise<any[]> {
     return updates;
   }
 
@@ -1049,29 +1081,31 @@ export class RealTimeCodeSync extends EventEmitter {
   }
 
   private isSignificantChange(mutation: MutationRecord): boolean {
-    return mutation.type === 'attributes' || 
-           mutation.type === 'childList' ||
-           mutation.type === 'characterData';
+    return (
+      mutation.type === "attributes" ||
+      mutation.type === "childList" ||
+      mutation.type === "characterData"
+    );
   }
 
   private convertMutationToChange(mutation: MutationRecord): CodeChange | null {
     return {
       id: this.generateChangeId(),
       timestamp: new Date(),
-      type: 'visual-edit',
-      source: 'user',
+      type: "visual-edit",
+      source: "user",
       element: mutation.target as HTMLElement,
       codeLocation: {
-        file: 'Unknown.tsx',
+        file: "Unknown.tsx",
         line: 0,
         column: 0,
-        component: 'Unknown'
+        component: "Unknown",
       },
-      originalCode: '',
-      newCode: '',
+      originalCode: "",
+      newCode: "",
       culturalImpact: 0,
       autoSynced: false,
-      needsValidation: true
+      needsValidation: true,
     };
   }
 
@@ -1108,7 +1142,7 @@ export class RealTimeCodeSync extends EventEmitter {
 
   public updateConfiguration(newConfig: Partial<RealTimeCodeSyncConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    this.emit('configuration-updated', this.config);
+    this.emit("configuration-updated", this.config);
   }
 
   public getPerformanceMetrics(): any {
@@ -1129,7 +1163,7 @@ export class RealTimeCodeSync extends EventEmitter {
 
   public clearPendingChanges(): void {
     this.pendingChanges = [];
-    this.emit('pending-changes-cleared');
+    this.emit("pending-changes-cleared");
   }
 
   public exportSyncData(): any {
@@ -1138,7 +1172,7 @@ export class RealTimeCodeSync extends EventEmitter {
       performanceMetrics: this.performanceMetrics,
       pendingChanges: this.pendingChanges,
       activeConflicts: this.activeConflicts,
-      auditLog: this.auditLog.slice(-50) // Last 50 entries
+      auditLog: this.auditLog.slice(-50), // Last 50 entries
     };
   }
 

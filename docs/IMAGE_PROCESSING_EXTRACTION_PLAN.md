@@ -1,4 +1,5 @@
 # Image Processing Components Extraction Plan
+
 ## From open-webui, LibreChat, and autogen Repositories
 
 **Target**: Extract image generation and editing components for Iraqi AI Chat System MVP
@@ -9,9 +10,11 @@
 ## Repository Analysis Summary
 
 ### 1. **open-webui** - Most Comprehensive Image System
+
 **Best for**: Complete image workflow infrastructure, ComfyUI integration, admin controls
 
 **Key Components Identified**:
+
 - **Backend Image Router**: `backend/open_webui/routers/images.py` - Complete API routing system
 - **Frontend Image APIs**: `src/lib/apis/images/index.ts` - Client-side integration layer
 - **ComfyUI Integration**: `backend/open_webui/utils/images/comfyui.py` - Advanced workflow processing
@@ -19,16 +22,18 @@
 - **Image Generation Models**: Support for DALL-E, Stable Diffusion, OpenAI Image API
 - **Image Editing Tools**: Built-in editing capabilities with workflow support
 
-### 2. **LibreChat** - Professional Image Tools Integration  
+### 2. **LibreChat** - Professional Image Tools Integration
+
 **Best for**: DALL-E integration, OpenAI Image Tools, enterprise-grade image handling
 
 **Key Components Identified**:
+
 - **DALL-E 3 Integration**: `api/server/services/Endpoints/structured/DALLE3.js`
-- **OpenAI Image Tools**: `api/server/services/Endpoints/structured/OpenAIImageTools.js` 
+- **OpenAI Image Tools**: `api/server/services/Endpoints/structured/OpenAIImageTools.js`
 - **Stable Diffusion**: `api/server/services/Endpoints/structured/StableDiffusion.js`
 - **FluxAPI Integration**: `api/server/services/Endpoints/structured/FluxAPI.js`
 - **Image Processing Services**: `api/server/services/images/` (convert, encode, resize utilities)
-- **Frontend Components**: 
+- **Frontend Components**:
   - `client/src/components/Chat/Messages/Content/Image.tsx`
   - `client/src/components/Chat/Messages/Content/ImageGen.tsx`
   - `client/src/components/Chat/Messages/Content/OpenAIImageGen/`
@@ -36,11 +41,13 @@
 - **Vision Integration**: GPT-4V support for image analysis
 
 ### 3. **autogen** - Multimodal Agent Framework
+
 **Best for**: Agent-based image processing, multimodal conversations
 
 **Key Components Identified**:
+
 - **Multimodal Web Surfer**: `autogen/agentchat/contrib/web_surfer/_multimodal_web_surfer.py`
-- **Image Generation Tool**: `autogen/agentchat/contrib/stable_studio/tools/generate_image.py`  
+- **Image Generation Tool**: `autogen/agentchat/contrib/stable_studio/tools/generate_image.py`
 - **Image Message Handling**: `autogen/agentchat/contrib/gpt_assistant_agent.py`
 - **GPT-4V Integration**: Example implementations for vision capabilities
 - **Agent Architecture**: Multi-agent coordination for image tasks
@@ -50,9 +57,11 @@
 ## Extraction Priority Matrix
 
 ### **Phase 1: Core Infrastructure (Week 1-2)**
+
 **Target**: `examples/image-processing-extracted/`
 
 #### From open-webui (Primary Source)
+
 ```yaml
 backend_api:
   source: "backend/open_webui/routers/images.py"
@@ -61,10 +70,11 @@ backend_api:
   features: ["Complete API routing", "Multiple model support", "Error handling"]
 
 frontend_integration:
-  source: "src/lib/apis/images/index.ts" 
+  source: "src/lib/apis/images/index.ts"
   target: "examples/image-processing-extracted/frontend/image-api.ts"
   priority: "Critical"
-  features: ["TypeScript client", "Request/response handling", "Error management"]
+  features:
+    ["TypeScript client", "Request/response handling", "Error management"]
 
 admin_controls:
   source: "src/lib/components/admin/Settings/Images.svelte"
@@ -74,6 +84,7 @@ admin_controls:
 ```
 
 #### From LibreChat (Professional Integration)
+
 ```yaml
 dalle_integration:
   source: "api/server/services/Endpoints/structured/DALLE3.js"
@@ -95,9 +106,11 @@ image_utilities:
 ```
 
 ### **Phase 2: UI Components (Week 3)**
+
 **Target**: `examples/image-processing-extracted/components/`
 
 #### From LibreChat (React Components)
+
 ```yaml
 image_display:
   source: "client/src/components/Chat/Messages/Content/Image.tsx"
@@ -119,6 +132,7 @@ openai_image_gen:
 ```
 
 #### From open-webui (Svelte to React Conversion)
+
 ```yaml
 image_settings:
   source: "src/lib/components/admin/Settings/Images.svelte"
@@ -128,9 +142,11 @@ image_settings:
 ```
 
 ### **Phase 3: Advanced Features (Week 4)**
+
 **Target**: `examples/image-processing-extracted/advanced/`
 
 #### From autogen (Agent Integration)
+
 ```yaml
 multimodal_agents:
   source: "autogen/agentchat/contrib/web_surfer/_multimodal_web_surfer.py"
@@ -146,6 +162,7 @@ image_generation_tool:
 ```
 
 #### From open-webui (Advanced Features)
+
 ```yaml
 comfyui_integration:
   source: "backend/open_webui/utils/images/comfyui.py"
@@ -161,19 +178,21 @@ comfyui_integration:
 ### **Cultural Adaptation Requirements**
 
 #### 1. Arabic RTL Support
+
 ```typescript
 // Image prompt handling with Arabic support
 interface ImagePrompt {
   prompt: string;
-  promptAr?: string;  // Arabic version
+  promptAr?: string; // Arabic version
   negativePrompt?: string;
-  negativePromptAr?: string;  // Arabic negative prompt
+  negativePromptAr?: string; // Arabic negative prompt
   rtlLayout: boolean;
   culturalValidation: boolean;
 }
 ```
 
 #### 2. Islamic Compliance Integration
+
 ```python
 # Image generation with cultural validation
 class CulturalImageValidator:
@@ -182,7 +201,7 @@ class CulturalImageValidator:
         # Check for appropriate content
         # Ensure professional context
         pass
-    
+
     async def validate_generated_image(self, image_data: bytes) -> ValidationResult:
         # Content analysis for Islamic compliance
         # Professional appropriateness check
@@ -190,31 +209,34 @@ class CulturalImageValidator:
 ```
 
 #### 3. Professional Domain Integration
+
 ```typescript
 // Professional domain image contexts
 enum ProfessionalImageContext {
-  Legal = "legal",        // Iraqi legal documents, forms
-  Medical = "medical",    // Medical diagrams, charts  
+  Legal = "legal", // Iraqi legal documents, forms
+  Medical = "medical", // Medical diagrams, charts
   Educational = "educational", // Educational materials
-  Business = "business",  // Business presentations, charts
-  Engineering = "engineering"  // Technical diagrams
+  Business = "business", // Business presentations, charts
+  Engineering = "engineering", // Technical diagrams
 }
 ```
 
 ### **Agent Integration Points**
 
 #### 1. Cultural Validation Agent Integration
+
 ```yaml
 validation_workflow:
   - prompt_received
   - cultural_validation_agent_check
-  - islamic_compliance_verification  
+  - islamic_compliance_verification
   - professional_context_validation
   - generation_approved
   - post_generation_validation
 ```
 
 #### 2. Arabic RTL Processor Integration
+
 ```yaml
 rtl_workflow:
   - arabic_prompt_detected
@@ -225,6 +247,7 @@ rtl_workflow:
 ```
 
 #### 3. Professional Domain Expert Integration
+
 ```yaml
 domain_workflow:
   - domain_context_detected
@@ -239,24 +262,28 @@ domain_workflow:
 ## Implementation Roadmap
 
 ### **Week 1: Foundation Setup**
+
 - Extract core API routing from open-webui
 - Set up DALL-E 3 integration from LibreChat
 - Create basic image generation endpoint
 - Implement cultural validation hooks
 
-### **Week 2: Service Integration** 
+### **Week 2: Service Integration**
+
 - Extract OpenAI Image Tools from LibreChat
 - Implement image processing utilities
 - Set up admin configuration interface
 - Add Arabic prompt handling
 
 ### **Week 3: UI Development**
+
 - Convert React components from LibreChat
 - Implement RTL-first image display
 - Create Arabic-enabled generation interface
 - Add professional domain selectors
 
 ### **Week 4: Advanced Features**
+
 - Multi-agent coordination setup
 - Professional domain integration
 - Performance optimization
@@ -307,13 +334,15 @@ examples/image-processing-extracted/
 ## Success Metrics
 
 ### **MVP Completion Criteria**
+
 - **Image Generation**: Text-to-image with Arabic prompts ✅
-- **Image Editing**: Basic editing capabilities ✅  
+- **Image Editing**: Basic editing capabilities ✅
 - **Cultural Validation**: 95%+ Islamic compliance ✅
 - **RTL Support**: Proper Arabic text handling ✅
 - **Professional Domains**: Iraqi legal/medical/educational support ✅
 
 ### **Performance Targets**
+
 - **Generation Speed**: <30 seconds for standard images
 - **Cultural Validation**: <200ms response time
 - **Arabic Processing**: 99%+ RTL accuracy
@@ -321,6 +350,7 @@ examples/image-processing-extracted/
 - **Uptime**: 99.9% availability target
 
 ### **Quality Gates**
+
 - All extracted components pass cultural validation
 - Arabic text processing maintains 99%+ RTL accuracy
 - Professional domain contexts properly supported
@@ -332,12 +362,14 @@ examples/image-processing-extracted/
 ## Risk Mitigation
 
 ### **Technical Risks**
+
 - **GPU Dependency**: Defer ComfyUI to post-MVP, focus on API-based solutions
-- **API Rate Limits**: Implement intelligent caching and fallback strategies  
+- **API Rate Limits**: Implement intelligent caching and fallback strategies
 - **Cultural Compliance**: Extensive testing with Iraqi cultural validation agents
 - **Arabic Processing**: Thorough RTL and mixed-language testing
 
 ### **Integration Risks**
+
 - **Agent Coordination**: Gradual integration with existing 21 specialized agents
 - **Performance Impact**: Monitor and optimize cultural validation overhead
 - **Backward Compatibility**: Ensure extracted components work with existing system

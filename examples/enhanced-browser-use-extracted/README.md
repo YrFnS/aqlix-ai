@@ -9,6 +9,7 @@ This enhanced extraction combines the production-ready browser automation capabi
 ## 🏗️ Hybrid Architecture Strategy
 
 ### Phase 1: Core Infrastructure Extraction (Weeks 1-14)
+
 ```
 enhanced-browser-use-extracted/
 ├── agent/                     # Advanced Agent Framework (NEW + Iraqi integration)
@@ -57,12 +58,14 @@ enhanced-browser-use-extracted/
 ## 🚀 Phase 1 Implementation Timeline
 
 ### Week 1-2: Repository Setup & Analysis ✅ (Current Phase)
+
 - [x] Created enhanced-browser-use-extracted directory structure
 - [ ] Extract and analyze core dependencies (bubus, cdp-use, pydantic v2)
 - [ ] Establish development environment with async Python ≥3.11
 - [ ] Create integration mapping between new and existing systems
 
 ### Week 3-4: Advanced Agent Framework ✅ **COMPLETE - January 25, 2025**
+
 - ✅ Extract Agent class with event-driven architecture from browser-use repository
 - ✅ Create IraqiEnhancedAgent wrapper with cultural validation pipeline
 - ✅ Implement MessageManager with conversation history and cultural context
@@ -72,12 +75,14 @@ enhanced-browser-use-extracted/
 - **📋 Status**: Agent Framework extraction **COMPLETE** - Ready for MCP Integration
 
 ### Week 5-7: Advanced Agent Framework Completion
+
 - [ ] Integrate token cost tracking and telemetry systems with cultural metrics
 - [ ] Complete browser session integration with Iraqi portal support
 - [ ] Implement advanced action execution with cultural validation
 - [ ] Test agent framework with existing Iraqi portal workflows
 
 ### Week 8-11: MCP Server Integration
+
 - [ ] Extract full MCP server with 15+ tools
 - [ ] Implement JSON-RPC protocol compliance
 - [ ] Build agent-to-MCP bridge for our 22 Iraqi agents
@@ -85,6 +90,7 @@ enhanced-browser-use-extracted/
 - [ ] Create Iraqi-specific MCP tools
 
 ### Week 12-14: Multi-LLM Provider System & DOM Enhancement
+
 - [ ] Extract unified BaseChatModel interface
 - [ ] Implement provider-specific serialization
 - [ ] Build fallback strategies and cost tracking
@@ -93,6 +99,7 @@ enhanced-browser-use-extracted/
 ## 🎯 Hybrid Value Proposition
 
 ### What We're Extracting (34-37 weeks of new functionality):
+
 - ✅ **Intelligent Agent Framework**: Event-driven architecture with sophisticated reasoning
 - ✅ **MCP Integration**: Native Model Context Protocol for 22-agent coordination
 - ✅ **Production Monitoring**: 11 specialized watchdogs for enterprise reliability
@@ -100,6 +107,7 @@ enhanced-browser-use-extracted/
 - ✅ **Advanced DOM Processing**: Accessibility tree with cross-origin iframe support
 
 ### What We're Preserving (8-10 weeks of Iraqi expertise):
+
 - ✅ **Iraqi Portal Specialization**: Government workflow automation
 - ✅ **Arabic Dialect Processing**: Iraqi-specific text analysis and recognition
 - ✅ **Cultural Validation**: Islamic compliance and appropriateness checking
@@ -116,6 +124,7 @@ enhanced-browser-use-extracted/
 ## 🔗 Integration Points
 
 ### Priority Integration Areas:
+
 1. **Agent Intelligence + Iraqi Portals**: Merge sophisticated reasoning with government workflows
 2. **Advanced DOM + Arabic Processing**: Combine accessibility tree with dialect recognition
 3. **MCP Tools + Iraqi Agents**: Enable our 22 agents through standardized protocol
@@ -124,12 +133,14 @@ enhanced-browser-use-extracted/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Python ≥3.11 (async support required)
 - Node.js ≥18 (for MCP integration testing)
 - Playwright browsers installed
 - Access to Iraqi government portal test environments
 
 ### Development Setup
+
 ```bash
 # Navigate to extraction directory
 cd examples/enhanced-browser-use-extracted
@@ -145,6 +156,7 @@ cd examples/enhanced-browser-use-extracted
 ## 🤝 Contributing
 
 When working on the hybrid extraction:
+
 1. **Preserve Iraqi Functionality**: Ensure existing cultural features continue working
 2. **Test Integration Points**: Validate new + old systems work together
 3. **Document Cultural Decisions**: Explain Iraqi-specific integration choices

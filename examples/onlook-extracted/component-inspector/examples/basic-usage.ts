@@ -1,6 +1,6 @@
 /**
  * Component Inspector & Analyzer - Basic Usage Examples
- * 
+ *
  * Demonstrates comprehensive analysis capabilities for Iraqi government components
  * with cultural intelligence, performance optimization, and accessibility validation.
  */
@@ -13,8 +13,8 @@ import {
   AccessibilityTester,
   PatternDetector,
   IRAQI_GOVERNMENT_CONFIG,
-  MINISTRY_CONFIGS
-} from '../src';
+  MINISTRY_CONFIGS,
+} from "../src";
 
 import type {
   ComponentAnalysis,
@@ -22,39 +22,41 @@ import type {
   PerformanceMetrics,
   AccessibilityReport,
   PatternMatch,
-  MinistryType
-} from '../src';
+  MinistryType,
+} from "../src";
 
 /**
  * Example 1: Quick Setup for Iraqi Government Components
  */
 async function quickSetupExample() {
-  console.log('=== Quick Setup Example ===');
-  
+  console.log("=== Quick Setup Example ===");
+
   // Quick setup with ministry configuration
   const inspector = createIraqiComponentInspector({
-    ministry: 'interior',
+    ministry: "interior",
     customConfig: {
       performance: {
-        targets: { renderTime: 12, accessibility: 98 }
-      }
-    }
+        targets: { renderTime: 12, accessibility: 98 },
+      },
+    },
   });
 
   // Analyze a government form component
   const analysis = await inspector.analyzeComponent({
-    filePath: './components/CitizenIDForm.tsx',
-    culturalContext: 'iraqi-government',
-    targetMinistry: 'interior'
+    filePath: "./components/CitizenIDForm.tsx",
+    culturalContext: "iraqi-government",
+    targetMinistry: "interior",
   });
 
-  console.log('📊 Analysis Results:');
+  console.log("📊 Analysis Results:");
   console.log(`Cultural Compliance: ${analysis.cultural.score}%`);
-  console.log(`Islamic Compliance: ${analysis.cultural.islamicCompliance.score}%`);
+  console.log(
+    `Islamic Compliance: ${analysis.cultural.islamicCompliance.score}%`,
+  );
   console.log(`Performance Score: ${analysis.performance.renderTime}ms`);
   console.log(`Accessibility: ${analysis.accessibility.score}%`);
   console.log(`Detected Patterns: ${analysis.patterns.length}`);
-  
+
   // Display recommendations
   analysis.recommendations.forEach((rec, index) => {
     console.log(`${index + 1}. ${rec.title}: ${rec.description}`);
@@ -65,63 +67,63 @@ async function quickSetupExample() {
  * Example 2: Detailed Cultural Analysis
  */
 async function culturalAnalysisExample() {
-  console.log('\n=== Cultural Analysis Example ===');
-  
+  console.log("\n=== Cultural Analysis Example ===");
+
   const validator = new CulturalValidator({
     validation: {
       islamicCompliance: true,
       governmentStandards: true,
-      ministrySpecific: 'health'
+      ministrySpecific: "health",
     },
     language: {
-      primary: 'ar-IQ',
-      fallback: 'en-US',
-      rtlOptimization: true
+      primary: "ar-IQ",
+      fallback: "en-US",
+      rtlOptimization: true,
     },
     patterns: {
       detectGovernmentPatterns: true,
       enforceIslamicDesign: true,
-      validateCulturalContent: true
-    }
+      validateCulturalContent: true,
+    },
   });
 
   // Mock component data for demonstration
   const mockAST = null; // In real usage, would be parsed AST
   const mockDOM = {
-    tagName: 'form',
+    tagName: "form",
     attributes: {
-      class: 'government-form ministry-health',
-      'data-ministry': 'health',
-      dir: 'rtl',
-      lang: 'ar-IQ'
+      class: "government-form ministry-health",
+      "data-ministry": "health",
+      dir: "rtl",
+      lang: "ar-IQ",
     },
     styles: {
-      direction: 'rtl',
-      fontFamily: 'Noto Sans Arabic, Cairo, sans-serif',
-      backgroundColor: '#059669', // Health ministry green
-      color: '#ffffff'
+      direction: "rtl",
+      fontFamily: "Noto Sans Arabic, Cairo, sans-serif",
+      backgroundColor: "#059669", // Health ministry green
+      color: "#ffffff",
     },
     children: [],
     culturalMetadata: {
-      language: 'ar',
-      script: 'arab',
-      textDirection: 'rtl',
-      culturalTags: ['government-component', 'arabic-content']
+      language: "ar",
+      script: "arab",
+      textDirection: "rtl",
+      culturalTags: ["government-component", "arabic-content"],
     },
     accessibilityInfo: {
-      role: 'form',
-      ariaLabel: 'نموذج الخدمات الصحية',
+      role: "form",
+      ariaLabel: "نموذج الخدمات الصحية",
       tabIndex: 0,
-      focusable: true
-    }
+      focusable: true,
+    },
   };
 
   const compliance = await validator.analyze(mockAST, mockDOM, {
-    culturalContext: 'iraqi-healthcare',
-    targetMinistry: 'health'
+    culturalContext: "iraqi-healthcare",
+    targetMinistry: "health",
   });
 
-  console.log('🕌 Cultural Compliance Analysis:');
+  console.log("🕌 Cultural Compliance Analysis:");
   console.log(`Overall Score: ${compliance.score}%`);
   console.log(`Islamic Compliance: ${compliance.islamicCompliance.score}%`);
   console.log(`Government Standards: ${compliance.governmentStandards.score}%`);
@@ -131,12 +133,12 @@ async function culturalAnalysisExample() {
 
   // Display Islamic compliance details
   if (compliance.islamicCompliance.violations.length > 0) {
-    console.log('⚠️  Islamic Compliance Issues:');
-    compliance.islamicCompliance.violations.forEach(violation => {
+    console.log("⚠️  Islamic Compliance Issues:");
+    compliance.islamicCompliance.violations.forEach((violation) => {
       console.log(`  - ${violation.description} (${violation.severity})`);
     });
   } else {
-    console.log('✅ No Islamic compliance violations found');
+    console.log("✅ No Islamic compliance violations found");
   }
 }
 
@@ -144,111 +146,129 @@ async function culturalAnalysisExample() {
  * Example 3: Performance Analysis with RTL Optimization
  */
 async function performanceAnalysisExample() {
-  console.log('\n=== Performance Analysis Example ===');
-  
+  console.log("\n=== Performance Analysis Example ===");
+
   const profiler = new PerformanceProfiler({
     targets: {
       renderTime: 16,
-      bundleSize: '100kb',
-      accessibility: 95
+      bundleSize: "100kb",
+      accessibility: 95,
     },
     arabic: {
       fontOptimization: true,
       rtlProfiling: true,
-      mixedContentAnalysis: true
+      mixedContentAnalysis: true,
     },
     profiling: {
       enableRealTime: true,
       sampleRate: 0.1,
-      metricsCollection: ['render-time', 'rtl-performance', 'cultural-compliance']
-    }
+      metricsCollection: [
+        "render-time",
+        "rtl-performance",
+        "cultural-compliance",
+      ],
+    },
   });
 
   // Mock component info
   const componentInfo = {
-    name: 'ArabicDataTable',
-    path: './components/ArabicDataTable.tsx',
-    type: 'functional' as const,
-    framework: 'react' as const,
+    name: "ArabicDataTable",
+    path: "./components/ArabicDataTable.tsx",
+    type: "functional" as const,
+    framework: "react" as const,
     size: {
       loc: 250,
       bundleSize: 45000,
-      memoryFootprint: 120
+      memoryFootprint: 120,
     },
     dependencies: [
-      { name: 'react-i18next', version: '^13.0.0', type: 'runtime' as const, culturalRelevance: true },
-      { name: 'moment-hijri', version: '^2.1.2', type: 'runtime' as const, culturalRelevance: true }
+      {
+        name: "react-i18next",
+        version: "^13.0.0",
+        type: "runtime" as const,
+        culturalRelevance: true,
+      },
+      {
+        name: "moment-hijri",
+        version: "^2.1.2",
+        type: "runtime" as const,
+        culturalRelevance: true,
+      },
     ],
-    exports: [
-      { name: 'ArabicDataTable', type: 'default' as const }
-    ]
+    exports: [{ name: "ArabicDataTable", type: "default" as const }],
   };
 
   const mockDOM = {
-    tagName: 'div',
+    tagName: "div",
     attributes: {
-      class: 'data-table rtl-table arabic-content',
-      dir: 'rtl'
+      class: "data-table rtl-table arabic-content",
+      dir: "rtl",
     },
     styles: {
-      direction: 'rtl',
-      fontFamily: 'Noto Sans Arabic, Cairo',
-      fontSize: '14px',
-      lineHeight: '1.8'
+      direction: "rtl",
+      fontFamily: "Noto Sans Arabic, Cairo",
+      fontSize: "14px",
+      lineHeight: "1.8",
     },
     children: [
       {
-        tagName: 'table',
-        attributes: { class: 'arabic-table' },
+        tagName: "table",
+        attributes: { class: "arabic-table" },
         styles: {},
         children: [],
         culturalMetadata: {
-          language: 'ar',
-          script: 'arab',
-          textDirection: 'rtl',
-          culturalTags: ['arabic-content']
+          language: "ar",
+          script: "arab",
+          textDirection: "rtl",
+          culturalTags: ["arabic-content"],
         },
         accessibilityInfo: {
-          role: 'table',
+          role: "table",
           tabIndex: 0,
-          focusable: true
-        }
-      }
+          focusable: true,
+        },
+      },
     ],
     culturalMetadata: {
-      language: 'ar',
-      script: 'arab', 
-      textDirection: 'rtl',
-      culturalTags: ['arabic-content', 'rtl-layout']
+      language: "ar",
+      script: "arab",
+      textDirection: "rtl",
+      culturalTags: ["arabic-content", "rtl-layout"],
     },
     accessibilityInfo: {
-      role: 'region',
+      role: "region",
       tabIndex: 0,
-      focusable: true
-    }
+      focusable: true,
+    },
   };
 
   const metrics = await profiler.analyze(null, mockDOM, componentInfo);
 
-  console.log('⚡ Performance Analysis Results:');
+  console.log("⚡ Performance Analysis Results:");
   console.log(`Render Time: ${metrics.renderTime}ms`);
   console.log(`Bundle Size: ${Math.round(metrics.bundleSize / 1024)}KB`);
   console.log(`Memory Usage: ${metrics.memoryUsage}KB`);
-  
-  console.log('\n📱 RTL Performance Metrics:');
+
+  console.log("\n📱 RTL Performance Metrics:");
   console.log(`RTL Render Time: ${metrics.rtlMetrics.renderTime}ms`);
   console.log(`Layout Shifts: ${metrics.rtlMetrics.layoutShifts}`);
   console.log(`Text Direction: ${metrics.rtlMetrics.textDirection}`);
-  console.log(`BIDI Compliance: ${metrics.rtlMetrics.bidiCompliance ? '✅' : '❌'}`);
+  console.log(
+    `BIDI Compliance: ${metrics.rtlMetrics.bidiCompliance ? "✅" : "❌"}`,
+  );
   console.log(`Performance Impact: ${metrics.rtlMetrics.performanceImpact}%`);
 
-  console.log('\n🔤 Arabic Font Metrics:');
+  console.log("\n🔤 Arabic Font Metrics:");
   console.log(`Load Time: ${metrics.arabicFontMetrics.loadTime}ms`);
   console.log(`Render Quality: ${metrics.arabicFontMetrics.renderQuality}%`);
-  console.log(`Optimization Score: ${metrics.arabicFontMetrics.optimizationScore}%`);
-  console.log(`Supported Scripts: ${metrics.arabicFontMetrics.supportedScripts.join(', ')}`);
+  console.log(
+    `Optimization Score: ${metrics.arabicFontMetrics.optimizationScore}%`,
+  );
+  console.log(
+    `Supported Scripts: ${metrics.arabicFontMetrics.supportedScripts.join(", ")}`,
+  );
 
-  console.log('\n🌐 Web Vitals:');
+  console.log("\n🌐 Web Vitals:");
   console.log(`LCP: ${metrics.vitals.lcp}ms`);
   console.log(`FID: ${metrics.vitals.fid}ms`);
   console.log(`CLS: ${metrics.vitals.cls}`);
@@ -258,129 +278,145 @@ async function performanceAnalysisExample() {
  * Example 4: Accessibility Testing with WCAG 2.1 AA+
  */
 async function accessibilityTestingExample() {
-  console.log('\n=== Accessibility Testing Example ===');
-  
+  console.log("\n=== Accessibility Testing Example ===");
+
   const tester = new AccessibilityTester({
     standards: {
-      wcag: 'AAA', // Highest standard
+      wcag: "AAA", // Highest standard
       iraqiGovernment: true,
-      rtlCompliance: true
+      rtlCompliance: true,
     },
     testing: {
       automated: true,
       screenReaderTesting: true,
-      keyboardNavigation: true
-    }
+      keyboardNavigation: true,
+    },
   });
 
   // Mock government form DOM
   const mockDOM = {
-    tagName: 'form',
+    tagName: "form",
     attributes: {
-      role: 'form',
-      'aria-label': 'نموذج طلب الخدمة الحكومية',
-      'aria-labelledby': 'form-title',
-      lang: 'ar-IQ',
-      dir: 'rtl'
+      role: "form",
+      "aria-label": "نموذج طلب الخدمة الحكومية",
+      "aria-labelledby": "form-title",
+      lang: "ar-IQ",
+      dir: "rtl",
     },
     styles: {
-      direction: 'rtl',
-      fontFamily: 'Noto Sans Arabic',
-      color: '#1f2937',
-      backgroundColor: '#ffffff'
+      direction: "rtl",
+      fontFamily: "Noto Sans Arabic",
+      color: "#1f2937",
+      backgroundColor: "#ffffff",
     },
     children: [
       {
-        tagName: 'h1',
+        tagName: "h1",
         attributes: {
-          id: 'form-title',
-          lang: 'ar'
+          id: "form-title",
+          lang: "ar",
         },
         styles: {},
         children: [],
         culturalMetadata: {
-          language: 'ar',
-          script: 'arab',
-          textDirection: 'rtl',
-          culturalTags: ['arabic-content']
+          language: "ar",
+          script: "arab",
+          textDirection: "rtl",
+          culturalTags: ["arabic-content"],
         },
         accessibilityInfo: {
-          role: 'heading',
+          role: "heading",
           tabIndex: 0,
-          focusable: true
-        }
+          focusable: true,
+        },
       },
       {
-        tagName: 'input',
+        tagName: "input",
         attributes: {
-          type: 'text',
-          name: 'nationalId',
-          'aria-label': 'رقم الهوية الوطنية',
-          'aria-required': 'true',
-          dir: 'ltr' // National ID is LTR even in Arabic context
+          type: "text",
+          name: "nationalId",
+          "aria-label": "رقم الهوية الوطنية",
+          "aria-required": "true",
+          dir: "ltr", // National ID is LTR even in Arabic context
         },
         styles: {},
         children: [],
         culturalMetadata: {
-          language: 'ar',
-          script: 'latn', // Numbers use Latin script
-          textDirection: 'ltr',
-          culturalTags: ['government-field']
+          language: "ar",
+          script: "latn", // Numbers use Latin script
+          textDirection: "ltr",
+          culturalTags: ["government-field"],
         },
         accessibilityInfo: {
-          role: 'textbox',
-          ariaLabel: 'رقم الهوية الوطنية',
+          role: "textbox",
+          ariaLabel: "رقم الهوية الوطنية",
           tabIndex: 0,
-          focusable: true
-        }
-      }
+          focusable: true,
+        },
+      },
     ],
     culturalMetadata: {
-      language: 'ar',
-      script: 'arab',
-      textDirection: 'rtl',
-      culturalTags: ['government-form', 'arabic-content']
+      language: "ar",
+      script: "arab",
+      textDirection: "rtl",
+      culturalTags: ["government-form", "arabic-content"],
     },
     accessibilityInfo: {
-      role: 'form',
-      ariaLabel: 'نموذج طلب الخدمة الحكومية',
+      role: "form",
+      ariaLabel: "نموذج طلب الخدمة الحكومية",
       tabIndex: 0,
-      focusable: true
-    }
+      focusable: true,
+    },
   };
 
   const report = await tester.analyze(null, mockDOM, {
-    culturalContext: 'iraqi-government'
+    culturalContext: "iraqi-government",
   });
 
-  console.log('♿ Accessibility Analysis Results:');
+  console.log("♿ Accessibility Analysis Results:");
   console.log(`Overall Score: ${report.score}%`);
-  
-  console.log('\n📋 WCAG Compliance:');
+
+  console.log("\n📋 WCAG Compliance:");
   console.log(`Level: ${report.wcagCompliance.level}`);
   console.log(`Score: ${report.wcagCompliance.score}%`);
-  console.log(`Passed Rules: ${report.wcagCompliance.passedRules}/${report.wcagCompliance.totalRules}`);
+  console.log(
+    `Passed Rules: ${report.wcagCompliance.passedRules}/${report.wcagCompliance.totalRules}`,
+  );
 
-  console.log('\n🔄 RTL Accessibility:');
+  console.log("\n🔄 RTL Accessibility:");
   console.log(`Score: ${report.rtlAccessibility.score}%`);
-  console.log(`Keyboard Navigation: ${report.rtlAccessibility.keyboardNavigation ? '✅' : '❌'}`);
-  console.log(`Screen Reader Support: ${report.rtlAccessibility.screenReaderSupport ? '✅' : '❌'}`);
-  console.log(`Text Direction: ${report.rtlAccessibility.textDirection ? '✅' : '❌'}`);
+  console.log(
+    `Keyboard Navigation: ${report.rtlAccessibility.keyboardNavigation ? "✅" : "❌"}`,
+  );
+  console.log(
+    `Screen Reader Support: ${report.rtlAccessibility.screenReaderSupport ? "✅" : "❌"}`,
+  );
+  console.log(
+    `Text Direction: ${report.rtlAccessibility.textDirection ? "✅" : "❌"}`,
+  );
 
-  console.log('\n🏛️ Government Standards:');
+  console.log("\n🏛️ Government Standards:");
   console.log(`Score: ${report.governmentStandards.score}%`);
-  console.log(`Iraqi Standards: ${report.governmentStandards.iraqiStandards ? '✅' : '❌'}`);
-  console.log(`Digital Governance: ${report.governmentStandards.digitalGovernance ? '✅' : '❌'}`);
-  console.log(`Citizen Access: ${report.governmentStandards.citizenAccess ? '✅' : '❌'}`);
+  console.log(
+    `Iraqi Standards: ${report.governmentStandards.iraqiStandards ? "✅" : "❌"}`,
+  );
+  console.log(
+    `Digital Governance: ${report.governmentStandards.digitalGovernance ? "✅" : "❌"}`,
+  );
+  console.log(
+    `Citizen Access: ${report.governmentStandards.citizenAccess ? "✅" : "❌"}`,
+  );
 
   // Display violations if any
   if (report.violations.length > 0) {
-    console.log('\n⚠️  Accessibility Violations:');
+    console.log("\n⚠️  Accessibility Violations:");
     report.violations.forEach((violation, index) => {
-      console.log(`${index + 1}. ${violation.rule}: ${violation.description} (${violation.impact})`);
+      console.log(
+        `${index + 1}. ${violation.rule}: ${violation.description} (${violation.impact})`,
+      );
     });
   } else {
-    console.log('\n✅ No accessibility violations found');
+    console.log("\n✅ No accessibility violations found");
   }
 }
 
@@ -388,95 +424,111 @@ async function accessibilityTestingExample() {
  * Example 5: Pattern Detection for Government Components
  */
 async function patternDetectionExample() {
-  console.log('\n=== Pattern Detection Example ===');
-  
+  console.log("\n=== Pattern Detection Example ===");
+
   const detector = new PatternDetector({
     validation: {
       islamicCompliance: true,
-      governmentStandards: true
+      governmentStandards: true,
     },
     language: {
-      primary: 'ar-IQ',
-      rtlOptimization: true
+      primary: "ar-IQ",
+      rtlOptimization: true,
     },
     patterns: {
       detectGovernmentPatterns: true,
       enforceIslamicDesign: true,
-      validateCulturalContent: true
-    }
+      validateCulturalContent: true,
+    },
   });
 
   // Mock components with different government patterns
   const mockComponents = [
     {
-      name: 'GovernmentForm',
+      name: "GovernmentForm",
       dom: {
-        tagName: 'form',
+        tagName: "form",
         attributes: {
-          class: 'government-form ministry-interior',
-          'data-ministry': 'interior'
+          class: "government-form ministry-interior",
+          "data-ministry": "interior",
         },
         styles: {},
         children: [
           {
-            tagName: 'input',
-            attributes: { name: 'nationalId', type: 'text' },
+            tagName: "input",
+            attributes: { name: "nationalId", type: "text" },
             styles: {},
             children: [],
-            culturalMetadata: { language: 'ar', textDirection: 'ltr', culturalTags: ['government-field'] },
-            accessibilityInfo: { role: 'textbox', tabIndex: 0, focusable: true }
-          }
+            culturalMetadata: {
+              language: "ar",
+              textDirection: "ltr",
+              culturalTags: ["government-field"],
+            },
+            accessibilityInfo: {
+              role: "textbox",
+              tabIndex: 0,
+              focusable: true,
+            },
+          },
         ],
-        culturalMetadata: { language: 'ar', textDirection: 'rtl', culturalTags: ['government-form'] },
-        accessibilityInfo: { role: 'form', tabIndex: 0, focusable: true }
-      }
+        culturalMetadata: {
+          language: "ar",
+          textDirection: "rtl",
+          culturalTags: ["government-form"],
+        },
+        accessibilityInfo: { role: "form", tabIndex: 0, focusable: true },
+      },
     },
     {
-      name: 'PrayerTimeNotice',
+      name: "PrayerTimeNotice",
       dom: {
-        tagName: 'div',
+        tagName: "div",
         attributes: {
-          class: 'prayer-notice islamic-component',
-          id: 'prayer-times'
+          class: "prayer-notice islamic-component",
+          id: "prayer-times",
         },
         styles: {},
         children: [],
-        culturalMetadata: { language: 'ar', textDirection: 'rtl', culturalTags: ['islamic-component', 'prayer-times'] },
-        accessibilityInfo: { role: 'region', tabIndex: 0, focusable: true }
-      }
-    }
+        culturalMetadata: {
+          language: "ar",
+          textDirection: "rtl",
+          culturalTags: ["islamic-component", "prayer-times"],
+        },
+        accessibilityInfo: { role: "region", tabIndex: 0, focusable: true },
+      },
+    },
   ];
 
   const targetPatterns = [
-    'government-form',
-    'ministry-header',
-    'prayer-notice',
-    'arabic-content-block',
-    'citizen-portal'
+    "government-form",
+    "ministry-header",
+    "prayer-notice",
+    "arabic-content-block",
+    "citizen-portal",
   ];
 
   for (const component of mockComponents) {
     console.log(`\n🔍 Analyzing ${component.name}:`);
-    
+
     const patterns = await detector.detectPatterns(
       null, // AST
       component.dom,
-      targetPatterns
+      targetPatterns,
     );
 
     if (patterns.length > 0) {
-      patterns.forEach(pattern => {
+      patterns.forEach((pattern) => {
         console.log(`  ✅ Pattern: ${pattern.name}`);
         console.log(`     Confidence: ${pattern.confidence}%`);
         console.log(`     Compliance: ${pattern.compliance}%`);
         console.log(`     Cultural Relevance: ${pattern.culturalRelevance}%`);
-        
+
         if (pattern.suggestions.length > 0) {
-          console.log(`     Suggestions: ${pattern.suggestions.join(', ')}`);
+          console.log(`     Suggestions: ${pattern.suggestions.join(", ")}`);
         }
       });
     } else {
-      console.log('  ❌ No government patterns detected');
+      console.log("  ❌ No government patterns detected");
     }
   }
 }
@@ -485,40 +537,49 @@ async function patternDetectionExample() {
  * Example 6: Real-Time Monitoring Setup
  */
 async function realTimeMonitoringExample() {
-  console.log('\n=== Real-Time Monitoring Example ===');
-  
+  console.log("\n=== Real-Time Monitoring Example ===");
+
   const inspector = createIraqiComponentInspector({
-    ministry: 'health',
+    ministry: "health",
     customConfig: {
       performance: {
         profiling: {
           enableRealTime: true,
-          sampleRate: 0.05 // 5% sampling for efficiency
-        }
-      }
-    }
+          sampleRate: 0.05, // 5% sampling for efficiency
+        },
+      },
+    },
   });
 
   // Create monitor for critical health system component
   const monitor = inspector.createMonitor({
-    target: 'patient-dashboard',
-    metrics: ['render-time', 'rtl-performance', 'cultural-compliance', 'accessibility'],
+    target: "patient-dashboard",
+    metrics: [
+      "render-time",
+      "rtl-performance",
+      "cultural-compliance",
+      "accessibility",
+    ],
     culturalValidation: true,
-    interval: 2000 // Check every 2 seconds
+    interval: 2000, // Check every 2 seconds
   });
 
-  console.log('📊 Starting real-time monitoring...');
+  console.log("📊 Starting real-time monitoring...");
 
   // Set up event listeners
-  monitor.on('performance-issue', (issue) => {
+  monitor.on("performance-issue", (issue) => {
     console.log(`⚠️  Performance Issue Detected:`);
     console.log(`   Type: ${issue.type}`);
-    console.log(`   Value: ${issue.value}${issue.metric === 'renderTime' ? 'ms' : ''}`);
-    console.log(`   Threshold: ${issue.threshold}${issue.metric === 'renderTime' ? 'ms' : ''}`);
+    console.log(
+      `   Value: ${issue.value}${issue.metric === "renderTime" ? "ms" : ""}`,
+    );
+    console.log(
+      `   Threshold: ${issue.threshold}${issue.metric === "renderTime" ? "ms" : ""}`,
+    );
     console.log(`   Cultural Impact: ${issue.culturalImpact}%`);
   });
 
-  monitor.on('cultural-violation', (violation) => {
+  monitor.on("cultural-violation", (violation) => {
     console.log(`🕌 Cultural Violation Detected:`);
     console.log(`   Type: ${violation.type}`);
     console.log(`   Score: ${violation.score}%`);
@@ -526,12 +587,14 @@ async function realTimeMonitoringExample() {
   });
 
   // Simulate monitoring for demo purposes
-  console.log('Monitor is running. In a real application, this would continuously monitor the component.');
-  console.log('Stopping monitor after 5 seconds for demo...');
-  
+  console.log(
+    "Monitor is running. In a real application, this would continuously monitor the component.",
+  );
+  console.log("Stopping monitor after 5 seconds for demo...");
+
   setTimeout(() => {
     monitor.stop();
-    console.log('✅ Monitoring stopped');
+    console.log("✅ Monitoring stopped");
   }, 5000);
 }
 
@@ -539,21 +602,36 @@ async function realTimeMonitoringExample() {
  * Example 7: Ministry-Specific Configuration Comparison
  */
 async function ministryComparisonExample() {
-  console.log('\n=== Ministry Configuration Comparison ===');
-  
-  const ministries: MinistryType[] = ['interior', 'health', 'education', 'justice'];
-  
+  console.log("\n=== Ministry Configuration Comparison ===");
+
+  const ministries: MinistryType[] = [
+    "interior",
+    "health",
+    "education",
+    "justice",
+  ];
+
   for (const ministry of ministries) {
     console.log(`\n🏛️  ${ministry.toUpperCase()} MINISTRY CONFIGURATION:`);
-    
+
     const inspector = createIraqiComponentInspector({ ministry });
     const config = MINISTRY_CONFIGS[ministry];
-    
-    console.log(`   WCAG Level: ${config.accessibility?.standards?.wcag || 'AA'}`);
-    console.log(`   Render Time Target: ${config.performance?.targets?.renderTime || 16}ms`);
-    console.log(`   Accessibility Target: ${config.performance?.targets?.accessibility || 95}%`);
-    console.log(`   Security Level: ${config.security?.governmentCompliance ? 'Government-Grade' : 'Standard'}`);
-    console.log(`   Cultural Enforcement: ${config.cultural?.patterns?.enforceIslamicDesign ? 'Strict' : 'Standard'}`);
+
+    console.log(
+      `   WCAG Level: ${config.accessibility?.standards?.wcag || "AA"}`,
+    );
+    console.log(
+      `   Render Time Target: ${config.performance?.targets?.renderTime || 16}ms`,
+    );
+    console.log(
+      `   Accessibility Target: ${config.performance?.targets?.accessibility || 95}%`,
+    );
+    console.log(
+      `   Security Level: ${config.security?.governmentCompliance ? "Government-Grade" : "Standard"}`,
+    );
+    console.log(
+      `   Cultural Enforcement: ${config.cultural?.patterns?.enforceIslamicDesign ? "Strict" : "Standard"}`,
+    );
   }
 }
 
@@ -561,8 +639,8 @@ async function ministryComparisonExample() {
  * Main execution function
  */
 async function runAllExamples() {
-  console.log('🚀 Component Inspector & Analyzer - Iraqi Enhanced Examples\n');
-  console.log('========================================================\n');
+  console.log("🚀 Component Inspector & Analyzer - Iraqi Enhanced Examples\n");
+  console.log("========================================================\n");
 
   try {
     await quickSetupExample();
@@ -572,13 +650,14 @@ async function runAllExamples() {
     await patternDetectionExample();
     await realTimeMonitoringExample();
     await ministryComparisonExample();
-    
-    console.log('\n========================================================');
-    console.log('✅ All examples completed successfully!');
-    console.log('📊 Component Inspector & Analyzer is ready for Iraqi government integration.');
-    
+
+    console.log("\n========================================================");
+    console.log("✅ All examples completed successfully!");
+    console.log(
+      "📊 Component Inspector & Analyzer is ready for Iraqi government integration.",
+    );
   } catch (error) {
-    console.error('❌ Example execution failed:', error);
+    console.error("❌ Example execution failed:", error);
   }
 }
 
@@ -595,5 +674,5 @@ export {
   patternDetectionExample,
   realTimeMonitoringExample,
   ministryComparisonExample,
-  runAllExamples
+  runAllExamples,
 };

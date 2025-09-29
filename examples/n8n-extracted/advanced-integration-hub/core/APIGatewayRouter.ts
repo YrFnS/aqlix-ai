@@ -1,10 +1,10 @@
 /**
  * API Gateway Router
- * 
+ *
  * Enterprise-grade API gateway with intelligent routing, load balancing,
  * cultural intelligence, Islamic compliance, and government-grade security.
  * Handles all incoming requests with comprehensive validation and processing.
- * 
+ *
  * Key Features:
  * - Intelligent routing with ministry-specific load balancing
  * - Cultural intelligence routing with Arabic processing
@@ -16,9 +16,9 @@
  * - API versioning and backward compatibility management
  */
 
-import { EventEmitter } from 'events';
-import { Request, Response, NextFunction } from 'express';
-import { IIntegrationHubConfig } from './IntegrationHubManager';
+import { EventEmitter } from "events";
+import { Request, Response, NextFunction } from "express";
+import { IIntegrationHubConfig } from "./IntegrationHubManager";
 
 // ================================
 // API Gateway Interfaces
@@ -46,7 +46,12 @@ export interface ISSLConfig {
 }
 
 export interface IRoutingConfig {
-  strategy: 'round-robin' | 'least-connections' | 'weighted' | 'ministry-aware' | 'cultural-intelligent';
+  strategy:
+    | "round-robin"
+    | "least-connections"
+    | "weighted"
+    | "ministry-aware"
+    | "cultural-intelligent";
   healthChecks: boolean;
   failover: boolean;
   circuitBreaker: boolean;
@@ -56,7 +61,12 @@ export interface IRoutingConfig {
 }
 
 export interface ILoadBalancingConfig {
-  algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'ip-hash' | 'ministry-affinity';
+  algorithm:
+    | "round-robin"
+    | "least-connections"
+    | "weighted"
+    | "ip-hash"
+    | "ministry-affinity";
   healthCheckInterval: number;
   unhealthyThreshold: number;
   healthyThreshold: number;
@@ -65,7 +75,7 @@ export interface ILoadBalancingConfig {
 }
 
 export interface IAPIVersioningConfig {
-  strategy: 'header' | 'path' | 'query' | 'accept-header';
+  strategy: "header" | "path" | "query" | "accept-header";
   defaultVersion: string;
   supportedVersions: string[];
   deprecationWarnings: boolean;
@@ -82,7 +92,7 @@ export interface IGatewaySecurityConfig {
 }
 
 export interface IAuthenticationConfig {
-  methods: ('jwt' | 'oauth2' | 'api-key' | 'biometric' | 'ministry-sso')[];
+  methods: ("jwt" | "oauth2" | "api-key" | "biometric" | "ministry-sso")[];
   jwtSecret: string;
   tokenExpiration: number;
   refreshTokenExpiration: number;
@@ -114,7 +124,7 @@ export interface IMinistryRateLimitConfig {
   maxRequests: number;
   windowMs: number;
   burstCapacity: number;
-  priority: 'low' | 'normal' | 'high' | 'critical';
+  priority: "low" | "normal" | "high" | "critical";
 }
 
 export interface ICORSConfig {
@@ -156,7 +166,7 @@ export interface IGatewayPerformanceConfig {
 
 export interface ICacheConfig {
   enabled: boolean;
-  strategy: 'memory' | 'redis' | 'hybrid';
+  strategy: "memory" | "redis" | "hybrid";
   ttl: number;
   maxSize: number;
   culturalAware: boolean;
@@ -204,8 +214,8 @@ export interface IGatewayMonitoringConfig {
 }
 
 export interface ILoggingConfig {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  format: 'json' | 'text' | 'structured';
+  level: "debug" | "info" | "warn" | "error";
+  format: "json" | "text" | "structured";
   culturalLogging: boolean;
   auditLogging: boolean;
   retention: string;
@@ -237,9 +247,9 @@ export interface IAlertThresholds {
 }
 
 export interface IAlertChannel {
-  type: 'email' | 'sms' | 'webhook' | 'dashboard';
+  type: "email" | "sms" | "webhook" | "dashboard";
   endpoint: string;
-  severity: ('low' | 'medium' | 'high' | 'critical')[];
+  severity: ("low" | "medium" | "high" | "critical")[];
   ministry?: string;
 }
 
@@ -286,9 +296,9 @@ export interface IAPIRequest extends Request {
 }
 
 export interface ICulturalRequestContext {
-  language: 'ar' | 'en' | 'ar-IQ';
-  dialect: 'baghdadi' | 'basri' | 'moslawi' | 'standard';
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'general';
+  language: "ar" | "en" | "ar-IQ";
+  dialect: "baghdadi" | "basri" | "moslawi" | "standard";
+  region: "baghdad" | "basra" | "mosul" | "erbil" | "najaf" | "general";
   islamicCompliance: boolean;
   culturalValidation: boolean;
   prayerTimeAware: boolean;
@@ -299,7 +309,7 @@ export interface ICulturalRequestContext {
 export interface ISecurityRequestContext {
   userId: string;
   ministry: string;
-  clearanceLevel: 'public' | 'restricted' | 'confidential' | 'secret';
+  clearanceLevel: "public" | "restricted" | "confidential" | "secret";
   accessToken: string;
   biometricToken?: string;
   ipAddress: string;
@@ -324,7 +334,7 @@ export interface IRoutingContext {
   loadBalancingStrategy: string;
   retryAttempt: number;
   routingDecision: IRoutingDecision;
-  circuitBreakerState: 'closed' | 'open' | 'half-open';
+  circuitBreakerState: "closed" | "open" | "half-open";
 }
 
 export interface IRoutingDecision {
@@ -340,7 +350,7 @@ export interface IBackendService {
   id: string;
   ministry: string;
   endpoint: string;
-  healthStatus: 'healthy' | 'unhealthy' | 'degraded';
+  healthStatus: "healthy" | "unhealthy" | "degraded";
   responseTime: number;
   errorRate: number;
   capacity: number;
@@ -370,7 +380,7 @@ export interface IRequestValidation {
 export interface IRetryPolicy {
   enabled: boolean;
   maxAttempts: number;
-  backoffStrategy: 'linear' | 'exponential' | 'prayer-aware';
+  backoffStrategy: "linear" | "exponential" | "prayer-aware";
   culturalConsiderations: boolean;
   prayerTimeRespect: boolean;
 }
@@ -458,23 +468,23 @@ export class APIGatewayRouter extends EventEmitter {
   private readonly culturalProcessor: ICulturalProcessor;
   private readonly securityValidator: ISecurityValidator;
   private readonly routingEngine: IRoutingEngine;
-  
+
   private server: any;
   private isInitialized: boolean = false;
   private isRunning: boolean = false;
 
   constructor(hubConfig: IIntegrationHubConfig) {
     super();
-    
+
     this.hubConfig = hubConfig;
     this.config = this.buildGatewayConfig(hubConfig);
-    
+
     // Initialize collections
     this.backendServices = new Map();
     this.circuitBreakers = new Map();
     this.rateLimiters = new Map();
     this.healthCheckers = new Map();
-    
+
     // Initialize components
     this.performanceMonitor = new PerformanceMonitor(this.config.performance);
     this.culturalProcessor = new CulturalProcessor(this.config.cultural);
@@ -493,35 +503,34 @@ export class APIGatewayRouter extends EventEmitter {
     try {
       // Initialize core components
       await this.initializeComponents();
-      
+
       // Load backend services configuration
       await this.loadBackendServices();
-      
+
       // Initialize circuit breakers
       await this.initializeCircuitBreakers();
-      
+
       // Initialize rate limiters
       await this.initializeRateLimiters();
-      
+
       // Initialize health checkers
       await this.initializeHealthCheckers();
-      
+
       // Setup middleware pipeline
       await this.setupMiddlewarePipeline();
-      
+
       // Setup routing
       await this.setupRouting();
-      
+
       // Start health checks
       await this.startHealthChecks();
-      
+
       this.isInitialized = true;
-      this.emit('gateway:initialized');
-      
-      console.log('🌐 API Gateway initialized successfully');
-      
+      this.emit("gateway:initialized");
+
+      console.log("🌐 API Gateway initialized successfully");
     } catch (error) {
-      this.emit('gateway:initialization:failed', { error: error.message });
+      this.emit("gateway:initialization:failed", { error: error.message });
       throw new Error(`API Gateway initialization failed: ${error.message}`);
     }
   }
@@ -541,20 +550,21 @@ export class APIGatewayRouter extends EventEmitter {
     try {
       // Create and configure server
       this.server = await this.createServer();
-      
+
       // Start listening
       await this.startListening();
-      
+
       this.isRunning = true;
-      this.emit('gateway:started', { 
+      this.emit("gateway:started", {
         port: this.config.port,
-        host: this.config.host
+        host: this.config.host,
       });
-      
-      console.log(`🚀 API Gateway started on ${this.config.host}:${this.config.port}`);
-      
+
+      console.log(
+        `🚀 API Gateway started on ${this.config.host}:${this.config.port}`,
+      );
     } catch (error) {
-      this.emit('gateway:start:failed', { error: error.message });
+      this.emit("gateway:start:failed", { error: error.message });
       throw new Error(`API Gateway start failed: ${error.message}`);
     }
   }
@@ -570,23 +580,22 @@ export class APIGatewayRouter extends EventEmitter {
     try {
       // Stop accepting new connections
       await this.stopAcceptingConnections();
-      
+
       // Complete active requests
       await this.completeActiveRequests();
-      
+
       // Stop health checks
       await this.stopHealthChecks();
-      
+
       // Stop server
       await this.stopServer();
-      
+
       this.isRunning = false;
-      this.emit('gateway:stopped');
-      
-      console.log('🛑 API Gateway stopped gracefully');
-      
+      this.emit("gateway:stopped");
+
+      console.log("🛑 API Gateway stopped gracefully");
     } catch (error) {
-      this.emit('gateway:stop:failed', { error: error.message });
+      this.emit("gateway:stop:failed", { error: error.message });
       throw new Error(`API Gateway stop failed: ${error.message}`);
     }
   }
@@ -594,32 +603,34 @@ export class APIGatewayRouter extends EventEmitter {
   /**
    * Register a backend service for a ministry
    */
-  async registerBackendService(ministry: string, service: IBackendService): Promise<void> {
+  async registerBackendService(
+    ministry: string,
+    service: IBackendService,
+  ): Promise<void> {
     try {
       // Validate service configuration
       await this.validateServiceConfiguration(service);
-      
+
       // Add to backend services
       if (!this.backendServices.has(ministry)) {
         this.backendServices.set(ministry, []);
       }
-      
+
       const services = this.backendServices.get(ministry)!;
       services.push(service);
-      
+
       // Initialize circuit breaker for service
       await this.initializeServiceCircuitBreaker(service);
-      
+
       // Start health checking
       await this.startServiceHealthCheck(service);
-      
-      this.emit('service:registered', { ministry, service: service.id });
-      
+
+      this.emit("service:registered", { ministry, service: service.id });
     } catch (error) {
-      this.emit('service:registration:failed', { 
-        ministry, 
-        service: service.id, 
-        error: error.message 
+      this.emit("service:registration:failed", {
+        ministry,
+        service: service.id,
+        error: error.message,
       });
       throw error;
     }
@@ -628,34 +639,36 @@ export class APIGatewayRouter extends EventEmitter {
   /**
    * Unregister a backend service
    */
-  async unregisterBackendService(ministry: string, serviceId: string): Promise<void> {
+  async unregisterBackendService(
+    ministry: string,
+    serviceId: string,
+  ): Promise<void> {
     try {
       const services = this.backendServices.get(ministry);
       if (!services) {
         throw new Error(`No services found for ministry: ${ministry}`);
       }
 
-      const serviceIndex = services.findIndex(s => s.id === serviceId);
+      const serviceIndex = services.findIndex((s) => s.id === serviceId);
       if (serviceIndex === -1) {
         throw new Error(`Service not found: ${serviceId}`);
       }
 
       // Remove service
       services.splice(serviceIndex, 1);
-      
+
       // Clean up circuit breaker
       this.circuitBreakers.delete(serviceId);
-      
+
       // Stop health checking
       this.healthCheckers.delete(serviceId);
-      
-      this.emit('service:unregistered', { ministry, service: serviceId });
-      
+
+      this.emit("service:unregistered", { ministry, service: serviceId });
     } catch (error) {
-      this.emit('service:unregistration:failed', { 
-        ministry, 
-        service: serviceId, 
-        error: error.message 
+      this.emit("service:unregistration:failed", {
+        ministry,
+        service: serviceId,
+        error: error.message,
       });
       throw error;
     }
@@ -675,7 +688,7 @@ export class APIGatewayRouter extends EventEmitter {
       culturalRequests: this.culturalProcessor.getProcessedCount(),
       islamicCompliantRequests: this.culturalProcessor.getCompliantCount(),
       securityThreats: this.securityValidator.getThreatCount(),
-      activeConnections: this.getActiveConnectionCount()
+      activeConnections: this.getActiveConnectionCount(),
     };
   }
 
@@ -683,52 +696,55 @@ export class APIGatewayRouter extends EventEmitter {
   // Private Implementation Methods
   // ================================
 
-  private buildGatewayConfig(hubConfig: IIntegrationHubConfig): IAPIGatewayConfig {
+  private buildGatewayConfig(
+    hubConfig: IIntegrationHubConfig,
+  ): IAPIGatewayConfig {
     return {
       port: 8080,
-      host: '0.0.0.0',
+      host: "0.0.0.0",
       ssl: {
-        enabled: hubConfig.security.encryptionLevel !== 'standard',
-        requireClientCertificate: hubConfig.security.encryptionLevel === 'military-grade',
-        protocols: ['TLSv1.3', 'TLSv1.2'],
-        ciphers: ['ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES128-GCM-SHA256']
+        enabled: hubConfig.security.encryptionLevel !== "standard",
+        requireClientCertificate:
+          hubConfig.security.encryptionLevel === "military-grade",
+        protocols: ["TLSv1.3", "TLSv1.2"],
+        ciphers: ["ECDHE-RSA-AES256-GCM-SHA384", "ECDHE-RSA-AES128-GCM-SHA256"],
       },
       routing: {
-        strategy: 'ministry-aware',
+        strategy: "ministry-aware",
         healthChecks: true,
         failover: true,
         circuitBreaker: true,
         retryPolicy: {
           enabled: true,
           maxAttempts: 3,
-          backoffStrategy: 'prayer-aware',
+          backoffStrategy: "prayer-aware",
           culturalConsiderations: true,
-          prayerTimeRespect: hubConfig.culturalIntelligence.prayerTimeAwareness
+          prayerTimeRespect: hubConfig.culturalIntelligence.prayerTimeAwareness,
         },
         loadBalancing: {
-          algorithm: 'ministry-affinity',
+          algorithm: "ministry-affinity",
           healthCheckInterval: 30000,
           unhealthyThreshold: 3,
           healthyThreshold: 2,
           timeout: 5000,
-          maxRetries: 3
+          maxRetries: 3,
         },
         apiVersioning: {
-          strategy: 'header',
-          defaultVersion: 'v1',
-          supportedVersions: ['v1', 'v2'],
+          strategy: "header",
+          defaultVersion: "v1",
+          supportedVersions: ["v1", "v2"],
           deprecationWarnings: true,
-          backwardCompatibility: true
-        }
+          backwardCompatibility: true,
+        },
       },
       security: {
         authentication: {
-          methods: ['jwt', 'ministry-sso'],
-          jwtSecret: 'government-secret-key',
+          methods: ["jwt", "ministry-sso"],
+          jwtSecret: "government-secret-key",
           tokenExpiration: 3600,
           refreshTokenExpiration: 86400,
           biometricIntegration: hubConfig.security.biometricIntegration,
-          ministrySSO: true
+          ministrySSO: true,
         },
         authorization: {
           rbac: true,
@@ -736,7 +752,7 @@ export class APIGatewayRouter extends EventEmitter {
           ministryIsolation: true,
           crossMinistryValidation: true,
           temporalAccess: hubConfig.culturalIntelligence.prayerTimeAwareness,
-          geographicRestrictions: true
+          geographicRestrictions: true,
         },
         rateLimit: {
           enabled: true,
@@ -745,55 +761,82 @@ export class APIGatewayRouter extends EventEmitter {
           skipSuccessfulRequests: false,
           skipFailedRequests: false,
           ministry: [
-            { ministry: 'health', maxRequests: 2000, windowMs: 900000, burstCapacity: 500, priority: 'high' },
-            { ministry: 'education', maxRequests: 1500, windowMs: 900000, burstCapacity: 300, priority: 'normal' },
-            { ministry: 'interior', maxRequests: 3000, windowMs: 900000, burstCapacity: 1000, priority: 'critical' }
+            {
+              ministry: "health",
+              maxRequests: 2000,
+              windowMs: 900000,
+              burstCapacity: 500,
+              priority: "high",
+            },
+            {
+              ministry: "education",
+              maxRequests: 1500,
+              windowMs: 900000,
+              burstCapacity: 300,
+              priority: "normal",
+            },
+            {
+              ministry: "interior",
+              maxRequests: 3000,
+              windowMs: 900000,
+              burstCapacity: 1000,
+              priority: "critical",
+            },
           ],
-          prayerTimeAdjustment: hubConfig.culturalIntelligence.prayerTimeAwareness
+          prayerTimeAdjustment:
+            hubConfig.culturalIntelligence.prayerTimeAwareness,
         },
         cors: {
           enabled: true,
-          origins: ['https://*.gov.iq', 'https://*.ministry.iq'],
-          methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-          allowedHeaders: ['Content-Type', 'Authorization', 'X-Ministry', 'X-Cultural-Context'],
+          origins: ["https://*.gov.iq", "https://*.ministry.iq"],
+          methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+          allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "X-Ministry",
+            "X-Cultural-Context",
+          ],
           credentials: true,
           maxAge: 86400,
-          ministrySpecific: true
+          ministrySpecific: true,
         },
         encryption: {
-          tlsVersion: '1.3',
-          cipherSuites: ['TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256'],
-          keyExchange: ['X25519', 'secp256r1'],
+          tlsVersion: "1.3",
+          cipherSuites: [
+            "TLS_AES_256_GCM_SHA384",
+            "TLS_CHACHA20_POLY1305_SHA256",
+          ],
+          keyExchange: ["X25519", "secp256r1"],
           certificateValidation: true,
           hsts: true,
-          hstsMaxAge: 31536000
+          hstsMaxAge: 31536000,
         },
         firewall: {
           enabled: true,
-          whitelist: ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16'],
+          whitelist: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"],
           blacklist: [],
-          geoBlocking: ['CN', 'RU', 'KP'],
+          geoBlocking: ["CN", "RU", "KP"],
           ddosProtection: true,
           ipRateLimiting: true,
-          ministryNetworkValidation: true
-        }
+          ministryNetworkValidation: true,
+        },
       },
       performance: {
         compression: true,
         caching: {
           enabled: true,
-          strategy: 'hybrid',
+          strategy: "hybrid",
           ttl: 300,
           maxSize: 1000,
           culturalAware: true,
-          ministryIsolation: true
+          ministryIsolation: true,
         },
         connectionPooling: {
           maxConnections: 1000,
           idleTimeout: 30000,
           connectionTimeout: 5000,
           keepAlive: true,
-          ministryPools: true
+          ministryPools: true,
         },
         timeouts: {
           request: 30000,
@@ -801,36 +844,52 @@ export class APIGatewayRouter extends EventEmitter {
           keepAlive: 5000,
           culturalProcessing: 5000,
           islamicValidation: 2000,
-          securityValidation: 3000
+          securityValidation: 3000,
         },
         concurrency: {
           maxConcurrentRequests: 10000,
           queueSize: 5000,
           queueTimeout: 30000,
           ministryQuotas: [
-            { ministry: 'health', maxConcurrentRequests: 2000, queueSize: 1000, priority: 1 },
-            { ministry: 'education', maxConcurrentRequests: 1500, queueSize: 750, priority: 2 },
-            { ministry: 'interior', maxConcurrentRequests: 3000, queueSize: 1500, priority: 0 }
+            {
+              ministry: "health",
+              maxConcurrentRequests: 2000,
+              queueSize: 1000,
+              priority: 1,
+            },
+            {
+              ministry: "education",
+              maxConcurrentRequests: 1500,
+              queueSize: 750,
+              priority: 2,
+            },
+            {
+              ministry: "interior",
+              maxConcurrentRequests: 3000,
+              queueSize: 1500,
+              priority: 0,
+            },
           ],
-          prayerTimeThrottling: hubConfig.culturalIntelligence.prayerTimeAwareness
-        }
+          prayerTimeThrottling:
+            hubConfig.culturalIntelligence.prayerTimeAwareness,
+        },
       },
       monitoring: {
         metrics: true,
         logging: {
-          level: 'info',
-          format: 'json',
+          level: "info",
+          format: "json",
           culturalLogging: true,
           auditLogging: true,
-          retention: '7y',
-          compression: true
+          retention: "7y",
+          compression: true,
         },
         tracing: {
           enabled: true,
           samplingRate: 0.1,
           culturalTracing: true,
           ministryTracing: true,
-          performanceTracing: true
+          performanceTracing: true,
         },
         alerting: {
           enabled: true,
@@ -839,14 +898,18 @@ export class APIGatewayRouter extends EventEmitter {
             responseTime: 1000,
             throughput: 100,
             culturalViolations: 0.01,
-            securityThreats: 0.001
+            securityThreats: 0.001,
           },
           channels: [
-            { type: 'webhook', endpoint: '/alerts', severity: ['high', 'critical'] },
-            { type: 'email', endpoint: 'admin@gov.iq', severity: ['critical'] }
+            {
+              type: "webhook",
+              endpoint: "/alerts",
+              severity: ["high", "critical"],
+            },
+            { type: "email", endpoint: "admin@gov.iq", severity: ["critical"] },
           ],
           culturalAlerts: true,
-          securityAlerts: true
+          securityAlerts: true,
         },
         healthChecks: {
           enabled: true,
@@ -854,19 +917,21 @@ export class APIGatewayRouter extends EventEmitter {
           timeout: 5000,
           endpoints: [],
           culturalHealthChecks: true,
-          ministryHealthChecks: true
-        }
+          ministryHealthChecks: true,
+        },
       },
       cultural: {
         arabicProcessing: hubConfig.culturalIntelligence.arabicSupport,
-        islamicCompliance: hubConfig.culturalIntelligence.islamicCompliance !== 'lenient',
+        islamicCompliance:
+          hubConfig.culturalIntelligence.islamicCompliance !== "lenient",
         prayerTimeAwareness: hubConfig.culturalIntelligence.prayerTimeAwareness,
         dialectSupport: hubConfig.culturalIntelligence.dialectSupport,
         culturalValidation: hubConfig.culturalIntelligence.culturalValidation,
         ministrySpecificRules: true,
-        professionalTerminology: hubConfig.culturalIntelligence.professionalTerminology,
-        rtlSupport: hubConfig.culturalIntelligence.rtlLayoutSupport
-      }
+        professionalTerminology:
+          hubConfig.culturalIntelligence.professionalTerminology,
+        rtlSupport: hubConfig.culturalIntelligence.rtlLayoutSupport,
+      },
     };
   }
 
@@ -880,62 +945,72 @@ export class APIGatewayRouter extends EventEmitter {
   private async loadBackendServices(): Promise<void> {
     // Load backend services from configuration
     // This would typically load from a configuration file or database
-    console.log('📋 Loading backend services configuration');
+    console.log("📋 Loading backend services configuration");
   }
 
   private async initializeCircuitBreakers(): Promise<void> {
     // Initialize circuit breakers for each service
-    console.log('⚡ Initializing circuit breakers');
+    console.log("⚡ Initializing circuit breakers");
   }
 
   private async initializeRateLimiters(): Promise<void> {
     // Initialize rate limiters for ministries
-    console.log('🚦 Initializing rate limiters');
+    console.log("🚦 Initializing rate limiters");
   }
 
   private async initializeHealthCheckers(): Promise<void> {
     // Initialize health checkers for services
-    console.log('💚 Initializing health checkers');
+    console.log("💚 Initializing health checkers");
   }
 
   private async setupMiddlewarePipeline(): Promise<void> {
     // Setup Express middleware pipeline
-    console.log('🔧 Setting up middleware pipeline');
+    console.log("🔧 Setting up middleware pipeline");
   }
 
   private async setupRouting(): Promise<void> {
     // Setup API routing configuration
-    console.log('🗺️ Setting up API routing');
+    console.log("🗺️ Setting up API routing");
   }
 
   private async startHealthChecks(): Promise<void> {
     // Start periodic health checks
-    console.log('🏥 Starting health checks');
+    console.log("🏥 Starting health checks");
   }
 
   private async createServer(): Promise<any> {
     // Create Express server with SSL if configured
-    console.log('🏗️ Creating API Gateway server');
+    console.log("🏗️ Creating API Gateway server");
     return {}; // Mock implementation
   }
 
   private async startListening(): Promise<void> {
     // Start server listening on configured port
-    console.log(`👂 Starting to listen on ${this.config.host}:${this.config.port}`);
+    console.log(
+      `👂 Starting to listen on ${this.config.host}:${this.config.port}`,
+    );
   }
 
-  private async validateServiceConfiguration(service: IBackendService): Promise<void> {
+  private async validateServiceConfiguration(
+    service: IBackendService,
+  ): Promise<void> {
     if (!service.id || !service.ministry || !service.endpoint) {
-      throw new Error('Invalid service configuration: id, ministry, and endpoint required');
+      throw new Error(
+        "Invalid service configuration: id, ministry, and endpoint required",
+      );
     }
   }
 
-  private async initializeServiceCircuitBreaker(service: IBackendService): Promise<void> {
+  private async initializeServiceCircuitBreaker(
+    service: IBackendService,
+  ): Promise<void> {
     // Initialize circuit breaker for the service
     console.log(`⚡ Initializing circuit breaker for service ${service.id}`);
   }
 
-  private async startServiceHealthCheck(service: IBackendService): Promise<void> {
+  private async startServiceHealthCheck(
+    service: IBackendService,
+  ): Promise<void> {
     // Start health checking for the service
     console.log(`💚 Starting health check for service ${service.id}`);
   }
@@ -951,7 +1026,7 @@ export class APIGatewayRouter extends EventEmitter {
   private getHealthyServiceCount(): number {
     let healthy = 0;
     for (const services of this.backendServices.values()) {
-      healthy += services.filter(s => s.healthStatus === 'healthy').length;
+      healthy += services.filter((s) => s.healthStatus === "healthy").length;
     }
     return healthy;
   }
@@ -963,19 +1038,19 @@ export class APIGatewayRouter extends EventEmitter {
 
   // Additional helper methods for shutdown process
   private async stopAcceptingConnections(): Promise<void> {
-    console.log('🚫 Stopping accepting new connections');
+    console.log("🚫 Stopping accepting new connections");
   }
 
   private async completeActiveRequests(): Promise<void> {
-    console.log('⏳ Completing active requests');
+    console.log("⏳ Completing active requests");
   }
 
   private async stopHealthChecks(): Promise<void> {
-    console.log('🛑 Stopping health checks');
+    console.log("🛑 Stopping health checks");
   }
 
   private async stopServer(): Promise<void> {
-    console.log('🛑 Stopping server');
+    console.log("🛑 Stopping server");
   }
 }
 
@@ -997,7 +1072,7 @@ export interface IGatewayStatistics {
 }
 
 export interface ICircuitBreaker {
-  state: 'closed' | 'open' | 'half-open';
+  state: "closed" | "open" | "half-open";
   failureCount: number;
   lastFailureTime: Date;
 }
@@ -1010,7 +1085,7 @@ export interface IRateLimiter {
 
 export interface IHealthChecker {
   lastCheck: Date;
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: "healthy" | "unhealthy" | "degraded";
   responseTime: number;
 }
 
@@ -1020,43 +1095,57 @@ export interface IHealthChecker {
 
 class PerformanceMonitor {
   constructor(private config: IGatewayPerformanceConfig) {}
-  
+
   async initialize(): Promise<void> {
-    console.log('📊 Performance Monitor initialized');
+    console.log("📊 Performance Monitor initialized");
   }
-  
-  getRequestCount(): number { return 1000; }
-  getAverageResponseTime(): number { return 150; }
-  getErrorRate(): number { return 0.02; }
-  getThroughput(): number { return 100; }
+
+  getRequestCount(): number {
+    return 1000;
+  }
+  getAverageResponseTime(): number {
+    return 150;
+  }
+  getErrorRate(): number {
+    return 0.02;
+  }
+  getThroughput(): number {
+    return 100;
+  }
 }
 
 class CulturalProcessor {
   constructor(private config: IGatewayCulturalConfig) {}
-  
+
   async initialize(): Promise<void> {
-    console.log('🕌 Cultural Processor initialized');
+    console.log("🕌 Cultural Processor initialized");
   }
-  
-  getProcessedCount(): number { return 800; }
-  getCompliantCount(): number { return 790; }
+
+  getProcessedCount(): number {
+    return 800;
+  }
+  getCompliantCount(): number {
+    return 790;
+  }
 }
 
 class SecurityValidator {
   constructor(private config: IGatewaySecurityConfig) {}
-  
+
   async initialize(): Promise<void> {
-    console.log('🔒 Security Validator initialized');
+    console.log("🔒 Security Validator initialized");
   }
-  
-  getThreatCount(): number { return 5; }
+
+  getThreatCount(): number {
+    return 5;
+  }
 }
 
 class RoutingEngine {
   constructor(private config: IRoutingConfig) {}
-  
+
   async initialize(): Promise<void> {
-    console.log('🗺️ Routing Engine initialized');
+    console.log("🗺️ Routing Engine initialized");
   }
 }
 
@@ -1068,5 +1157,5 @@ export type {
   IAPIResponse,
   IBackendService,
   ICulturalRequestContext,
-  ISecurityRequestContext
+  ISecurityRequestContext,
 };

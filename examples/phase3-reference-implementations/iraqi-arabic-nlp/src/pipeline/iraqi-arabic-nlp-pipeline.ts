@@ -1,9 +1,9 @@
 /**
  * Iraqi Arabic NLP Pipeline
- * 
+ *
  * Specialized Arabic language processing with Iraqi dialect recognition
  * and cultural context understanding
- * 
+ *
  * Features:
  * - Iraqi dialect detection (90%+ accuracy for Iraqi Arabic)
  * - Cultural context extraction (88%+ accuracy)
@@ -23,10 +23,10 @@ import {
   ArabicNLPConfig,
   ArabicNLPMetrics,
   ProcessingWarning,
-  IraqiDialectType
-} from '../types/arabic-nlp-types.js';
+  IraqiDialectType,
+} from "../types/arabic-nlp-types.js";
 
-import { IraqiCulturalContext } from '@iraqi-ai/types';
+import { IraqiCulturalContext } from "@iraqi-ai/types";
 
 /**
  * Iraqi Arabic NLP Pipeline
@@ -46,13 +46,13 @@ export class IraqiArabicNLPPipeline {
     this.config = {
       dialectDetectionThreshold: 85,
       culturalContextThreshold: 70,
-      semanticAnalysisDepth: 'standard',
+      semanticAnalysisDepth: "standard",
       responseGenerationEnabled: true,
       cachingEnabled: true,
-      performanceMode: 'balanced',
+      performanceMode: "balanced",
       culturalValidationEnabled: true,
-      logLevel: 'info',
-      ...config
+      logLevel: "info",
+      ...config,
     };
 
     this.metrics = this.initializeMetrics();
@@ -73,33 +73,38 @@ export class IraqiArabicNLPPipeline {
     try {
       return await this.dialectAnalyzer.analyzeDialect(text);
     } finally {
-      this.updateProcessingMetrics('dialect-analysis', startTime);
+      this.updateProcessingMetrics("dialect-analysis", startTime);
     }
   }
 
   /**
    * Extract cultural context from Arabic text
    */
-  async extractCulturalContext(text: string): Promise<CulturalContextExtraction> {
+  async extractCulturalContext(
+    text: string,
+  ): Promise<CulturalContextExtraction> {
     const startTime = Date.now();
 
     try {
       return await this.culturalExtractor.extractContext(text);
     } finally {
-      this.updateProcessingMetrics('cultural-extraction', startTime);
+      this.updateProcessingMetrics("cultural-extraction", startTime);
     }
   }
 
   /**
    * Analyze semantics with cultural awareness
    */
-  async analyzeSemanticsWithCulture(text: string, context: IraqiCulturalContext): Promise<SemanticAnalysisResult> {
+  async analyzeSemanticsWithCulture(
+    text: string,
+    context: IraqiCulturalContext,
+  ): Promise<SemanticAnalysisResult> {
     const startTime = Date.now();
 
     try {
       return await this.semanticAnalyzer.analyzeSemantics(text, context);
     } finally {
-      this.updateProcessingMetrics('semantic-analysis', startTime);
+      this.updateProcessingMetrics("semantic-analysis", startTime);
     }
   }
 
@@ -107,16 +112,24 @@ export class IraqiArabicNLPPipeline {
    * Generate culturally appropriate responses
    */
   async generateCulturalResponse(
-    analysis: SemanticAnalysisResult, 
-    responseType: 'informational' | 'supportive' | 'instructional' | 'social' | 'professional'
+    analysis: SemanticAnalysisResult,
+    responseType:
+      | "informational"
+      | "supportive"
+      | "instructional"
+      | "social"
+      | "professional",
   ): Promise<string> {
     const startTime = Date.now();
 
     try {
-      const response = await this.responseGenerator.generateResponse(analysis, responseType);
+      const response = await this.responseGenerator.generateResponse(
+        analysis,
+        responseType,
+      );
       return response.generatedResponse.text;
     } finally {
-      this.updateProcessingMetrics('response-generation', startTime);
+      this.updateProcessingMetrics("response-generation", startTime);
     }
   }
 
@@ -132,7 +145,7 @@ export class IraqiArabicNLPPipeline {
         const cacheKey = this.generateCacheKey(request);
         const cached = this.processingCache.get(cacheKey);
         if (cached) {
-          this.updateProcessingMetrics('cached', startTime);
+          this.updateProcessingMetrics("cached", startTime);
           return cached;
         }
       }
@@ -140,55 +153,72 @@ export class IraqiArabicNLPPipeline {
       const warnings: ProcessingWarning[] = [];
 
       // Step 1: Language Detection
-      const languageDetection = await this.languageDetector.detectLanguage(request.text);
-      
+      const languageDetection = await this.languageDetector.detectLanguage(
+        request.text,
+      );
+
       // Step 2: Iraqi Dialect Analysis
-      const dialectAnalysis = await this.dialectAnalyzer.analyzeDialect(request.text);
-      
+      const dialectAnalysis = await this.dialectAnalyzer.analyzeDialect(
+        request.text,
+      );
+
       // Add warning if dialect confidence is low
-      if (dialectAnalysis.dialectConfidence < this.config.dialectDetectionThreshold) {
+      if (
+        dialectAnalysis.dialectConfidence <
+        this.config.dialectDetectionThreshold
+      ) {
         warnings.push({
-          warningType: 'dialect-uncertainty',
+          warningType: "dialect-uncertainty",
           message: `Dialect detection confidence (${dialectAnalysis.dialectConfidence}%) below threshold (${this.config.dialectDetectionThreshold}%)`,
-          severity: 'warning',
-          suggestion: 'Consider providing more context or using more distinctive Iraqi dialect features',
-          affectedComponents: ['dialect-analysis', 'cultural-context']
+          severity: "warning",
+          suggestion:
+            "Consider providing more context or using more distinctive Iraqi dialect features",
+          affectedComponents: ["dialect-analysis", "cultural-context"],
         });
       }
 
       // Step 3: Cultural Context Extraction
       const culturalContext = await this.culturalExtractor.extractContext(
         request.text,
-        request.culturalContext
+        request.culturalContext,
       );
 
       // Add warning if cultural relevance is low
-      if (culturalContext.overallCulturalRelevance < this.config.culturalContextThreshold) {
+      if (
+        culturalContext.overallCulturalRelevance <
+        this.config.culturalContextThreshold
+      ) {
         warnings.push({
-          warningType: 'cultural-ambiguity',
+          warningType: "cultural-ambiguity",
           message: `Cultural relevance (${culturalContext.overallCulturalRelevance}%) below threshold (${this.config.culturalContextThreshold}%)`,
-          severity: 'info',
-          suggestion: 'Text may not contain significant cultural markers',
-          affectedComponents: ['cultural-context', 'response-generation']
+          severity: "info",
+          suggestion: "Text may not contain significant cultural markers",
+          affectedComponents: ["cultural-context", "response-generation"],
         });
       }
 
       // Step 4: Semantic Analysis (if requested)
       let semanticAnalysis: SemanticAnalysisResult | undefined;
-      if (request.processingMode === 'full' || request.processingMode === 'semantic-analysis') {
+      if (
+        request.processingMode === "full" ||
+        request.processingMode === "semantic-analysis"
+      ) {
         semanticAnalysis = await this.semanticAnalyzer.analyzeSemantics(
           request.text,
-          request.culturalContext || this.createDefaultCulturalContext()
+          request.culturalContext || this.createDefaultCulturalContext(),
         );
       }
 
       // Step 5: Response Generation (if requested)
       let responseGeneration: ResponseGenerationResult | undefined;
-      if (request.processingMode === 'full' || request.processingMode === 'response-generation') {
+      if (
+        request.processingMode === "full" ||
+        request.processingMode === "response-generation"
+      ) {
         if (semanticAnalysis) {
           responseGeneration = await this.responseGenerator.generateResponse(
             semanticAnalysis,
-            'informational' // Default response type
+            "informational", // Default response type
           );
         }
       }
@@ -198,7 +228,7 @@ export class IraqiArabicNLPPipeline {
         languageDetection,
         dialectAnalysis,
         culturalContext,
-        semanticAnalysis
+        semanticAnalysis,
       );
 
       // Create response
@@ -211,7 +241,7 @@ export class IraqiArabicNLPPipeline {
         semanticAnalysis: semanticAnalysis!,
         responseGeneration,
         confidence,
-        warnings
+        warnings,
       };
 
       // Cache the response if enabled
@@ -221,13 +251,12 @@ export class IraqiArabicNLPPipeline {
       }
 
       // Update metrics
-      this.updateProcessingMetrics('success', startTime);
+      this.updateProcessingMetrics("success", startTime);
 
       return response;
-
     } catch (error) {
-      this.updateProcessingMetrics('error', startTime);
-      
+      this.updateProcessingMetrics("error", startTime);
+
       return {
         success: false,
         processingTime: Date.now() - startTime,
@@ -237,7 +266,8 @@ export class IraqiArabicNLPPipeline {
         semanticAnalysis: this.createEmptySemanticAnalysis(),
         confidence: 0,
         warnings: [],
-        error: error instanceof Error ? error.message : 'Unknown processing error'
+        error:
+          error instanceof Error ? error.message : "Unknown processing error",
       };
     }
   }
@@ -267,12 +297,13 @@ export class IraqiArabicNLPPipeline {
     languageDetection: LanguageDetectionResult,
     dialectAnalysis: IraqiDialectAnalysis,
     culturalContext: CulturalContextExtraction,
-    semanticAnalysis?: SemanticAnalysisResult
+    semanticAnalysis?: SemanticAnalysisResult,
   ): number {
-    let totalConfidence = languageDetection.confidence * 0.25 +
-                         dialectAnalysis.dialectConfidence * 0.35 +
-                         culturalContext.overallCulturalRelevance * 0.25;
-    
+    let totalConfidence =
+      languageDetection.confidence * 0.25 +
+      dialectAnalysis.dialectConfidence * 0.35 +
+      culturalContext.overallCulturalRelevance * 0.25;
+
     if (semanticAnalysis) {
       totalConfidence += semanticAnalysis.overallSemanticScore * 0.15;
     } else {
@@ -284,11 +315,13 @@ export class IraqiArabicNLPPipeline {
 
   private generateCacheKey(request: ArabicNLPRequest): string {
     const textHash = this.simpleHash(request.text);
-    const configHash = this.simpleHash(JSON.stringify({
-      language: request.language,
-      processingMode: request.processingMode,
-      userPreferences: request.userPreferences
-    }));
+    const configHash = this.simpleHash(
+      JSON.stringify({
+        language: request.language,
+        processingMode: request.processingMode,
+        userPreferences: request.userPreferences,
+      }),
+    );
     return `${request.processingMode}-${request.language}-${textHash}-${configHash}`;
   }
 
@@ -296,7 +329,7 @@ export class IraqiArabicNLPPipeline {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(16);
@@ -304,34 +337,34 @@ export class IraqiArabicNLPPipeline {
 
   private createDefaultCulturalContext(): IraqiCulturalContext {
     return {
-      language: 'ar-IQ',
-      culturalSensitivity: 'high',
+      language: "ar-IQ",
+      culturalSensitivity: "high",
       islamicCompliance: true,
       politicalNeutrality: true,
-      professionalContext: 'cultural',
-      securityLevel: 'standard'
+      professionalContext: "cultural",
+      securityLevel: "standard",
     };
   }
 
   private createEmptyLanguageDetection(): LanguageDetectionResult {
     return {
-      primaryLanguage: 'unknown',
+      primaryLanguage: "unknown",
       confidence: 0,
-      textDirection: 'rtl',
-      scriptType: 'arabic'
+      textDirection: "rtl",
+      scriptType: "arabic",
     };
   }
 
   private createEmptyDialectAnalysis(): IraqiDialectAnalysis {
     return {
       overallDialectScore: 0,
-      detectedDialect: 'mixed-iraqi',
+      detectedDialect: "mixed-iraqi",
       dialectConfidence: 0,
       dialectFeatures: [],
       regionalVariations: [],
       dialectPatterns: [],
       culturalMarkers: [],
-      modernInfluences: []
+      modernInfluences: [],
     };
   }
 
@@ -342,18 +375,18 @@ export class IraqiArabicNLPPipeline {
       iraqiCulturalReferences: [],
       socialContextIndicators: [],
       emotionalTone: {
-        primaryTone: 'neutral',
+        primaryTone: "neutral",
         emotionalIntensity: 0,
         specificEmotions: [],
-        culturalEmotionalContext: '',
-        appropriateResponseTone: 'respectful'
+        culturalEmotionalContext: "",
+        appropriateResponseTone: "respectful",
       },
       culturalSensitivity: {
-        sensitivityLevel: 'neutral',
+        sensitivityLevel: "neutral",
         sensitivityAreas: [],
         responseRequirements: [],
-        cautionFlags: []
-      }
+        cautionFlags: [],
+      },
     };
   }
 
@@ -362,36 +395,36 @@ export class IraqiArabicNLPPipeline {
       overallSemanticScore: 0,
       intentDetection: {
         primaryIntent: {
-          intent: 'unknown',
-          category: 'information',
+          intent: "unknown",
+          category: "information",
           confidence: 0,
-          culturalContext: '',
-          expectedResponseType: 'informational'
+          culturalContext: "",
+          expectedResponseType: "informational",
         },
         secondaryIntents: [],
         intentConfidence: 0,
-        culturallyInfluencedIntents: []
+        culturallyInfluencedIntents: [],
       },
       entityExtraction: {
         entities: [],
         culturalEntities: [],
         professionalEntities: [],
         temporalEntities: [],
-        locationEntities: []
+        locationEntities: [],
       },
       conceptualAnalysis: {
         mainConcepts: [],
         conceptRelationships: [],
-        abstractionLevel: 'concrete',
-        culturalConceptAlignment: 0
+        abstractionLevel: "concrete",
+        culturalConceptAlignment: 0,
       },
       culturalSemantics: {
         culturallyLoadedTerms: [],
         implicitCulturalMeanings: [],
         culturalAssumptions: [],
-        crossCulturalConsiderations: []
+        crossCulturalConsiderations: [],
       },
-      disambiguationResults: []
+      disambiguationResults: [],
     };
   }
 
@@ -406,22 +439,33 @@ export class IraqiArabicNLPPipeline {
       semanticAnalysisAccuracy: 0,
       responseGenerationSuccess: 0,
       userSatisfactionScore: 0,
-      culturalValidationPassRate: 0
+      culturalValidationPassRate: 0,
     };
   }
 
-  private updateProcessingMetrics(outcome: 'success' | 'error' | 'cached' | 'dialect-analysis' | 'cultural-extraction' | 'semantic-analysis' | 'response-generation', startTime: number): void {
+  private updateProcessingMetrics(
+    outcome:
+      | "success"
+      | "error"
+      | "cached"
+      | "dialect-analysis"
+      | "cultural-extraction"
+      | "semantic-analysis"
+      | "response-generation",
+    startTime: number,
+  ): void {
     this.metrics.totalProcessingRequests++;
-    
-    if (outcome === 'success') {
+
+    if (outcome === "success") {
       this.metrics.successfulProcessing++;
-    } else if (outcome === 'error') {
+    } else if (outcome === "error") {
       this.metrics.failedProcessing++;
     }
 
     // Update average processing time
     const processingTime = Date.now() - startTime;
-    this.metrics.averageProcessingTime = (this.metrics.averageProcessingTime + processingTime) / 2;
+    this.metrics.averageProcessingTime =
+      (this.metrics.averageProcessingTime + processingTime) / 2;
   }
 }
 
@@ -438,46 +482,48 @@ class ArabicLanguageDetector {
 
   async detectLanguage(text: string): Promise<LanguageDetectionResult> {
     // Arabic script detection patterns
-    const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const arabicPattern =
+      /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const latinPattern = /[A-Za-z]/;
-    
+
     const hasArabic = arabicPattern.test(text);
     const hasLatin = latinPattern.test(text);
-    
-    let primaryLanguage: 'ar' | 'en' | 'mixed' | 'unknown';
+
+    let primaryLanguage: "ar" | "en" | "mixed" | "unknown";
     let confidence: number;
-    let textDirection: 'rtl' | 'ltr' | 'mixed';
-    let scriptType: 'arabic' | 'latin' | 'mixed' | 'other';
+    let textDirection: "rtl" | "ltr" | "mixed";
+    let scriptType: "arabic" | "latin" | "mixed" | "other";
 
     if (hasArabic && hasLatin) {
-      primaryLanguage = 'mixed';
+      primaryLanguage = "mixed";
       confidence = 85;
-      textDirection = 'mixed';
-      scriptType = 'mixed';
+      textDirection = "mixed";
+      scriptType = "mixed";
     } else if (hasArabic) {
-      primaryLanguage = 'ar';
+      primaryLanguage = "ar";
       confidence = 95;
-      textDirection = 'rtl';
-      scriptType = 'arabic';
+      textDirection = "rtl";
+      scriptType = "arabic";
     } else if (hasLatin) {
-      primaryLanguage = 'en';
+      primaryLanguage = "en";
       confidence = 90;
-      textDirection = 'ltr';
-      scriptType = 'latin';
+      textDirection = "ltr";
+      scriptType = "latin";
     } else {
-      primaryLanguage = 'unknown';
+      primaryLanguage = "unknown";
       confidence = 0;
-      textDirection = 'rtl'; // Default for Iraqi context
-      scriptType = 'other';
+      textDirection = "rtl"; // Default for Iraqi context
+      scriptType = "other";
     }
 
     // Detect mixed language segments
-    const mixedLanguageSegments = hasArabic && hasLatin ? 
-      await this.detectMixedSegments(text) : undefined;
+    const mixedLanguageSegments =
+      hasArabic && hasLatin ? await this.detectMixedSegments(text) : undefined;
 
     // Attempt dialect detection if Arabic is present
-    const detectedDialect = hasArabic ? 
-      await this.detectIraqiDialectHints(text) : undefined;
+    const detectedDialect = hasArabic
+      ? await this.detectIraqiDialectHints(text)
+      : undefined;
 
     return {
       primaryLanguage,
@@ -485,7 +531,7 @@ class ArabicLanguageDetector {
       detectedDialect,
       mixedLanguageSegments,
       textDirection,
-      scriptType
+      scriptType,
     };
   }
 
@@ -493,7 +539,7 @@ class ArabicLanguageDetector {
     // Simplified mixed segment detection
     const segments: Array<{
       text: string;
-      language: 'ar' | 'en' | 'other';
+      language: "ar" | "en" | "other";
       startIndex: number;
       endIndex: number;
       confidence: number;
@@ -507,13 +553,13 @@ class ArabicLanguageDetector {
     for (const word of words) {
       const arabicPattern = /[\u0600-\u06FF]/;
       const isArabic = arabicPattern.test(word);
-      
+
       segments.push({
         text: word,
-        language: isArabic ? 'ar' : 'en',
+        language: isArabic ? "ar" : "en",
         startIndex: currentIndex,
         endIndex: currentIndex + word.length,
-        confidence: isArabic ? 90 : 85
+        confidence: isArabic ? 90 : 85,
       });
 
       currentIndex += word.length + 1; // +1 for space
@@ -522,14 +568,16 @@ class ArabicLanguageDetector {
     return segments;
   }
 
-  private async detectIraqiDialectHints(text: string): Promise<IraqiDialectType | undefined> {
+  private async detectIraqiDialectHints(
+    text: string,
+  ): Promise<IraqiDialectType | undefined> {
     // Common Iraqi dialect indicators
     const dialectIndicators = {
-      'baghdadi': ['شلونك', 'شكو ماكو', 'مال', 'وين رايح', 'جان'],
-      'basrawi': ['شلون الصحة', 'والله', 'يبه', 'مو'],
-      'moslawi': ['كيف الحال', 'شني', 'بس', 'تره'],
-      'southern-iraqi': ['شلون', 'ويل', 'گول', 'تعال هنا'],
-      'northern-iraqi': ['چي', 'پ', 'گ', 'ڤ']
+      baghdadi: ["شلونك", "شكو ماكو", "مال", "وين رايح", "جان"],
+      basrawi: ["شلون الصحة", "والله", "يبه", "مو"],
+      moslawi: ["كيف الحال", "شني", "بس", "تره"],
+      "southern-iraqi": ["شلون", "ويل", "گول", "تعال هنا"],
+      "northern-iraqi": ["چي", "پ", "گ", "ڤ"],
     };
 
     for (const [dialect, indicators] of Object.entries(dialectIndicators)) {
@@ -540,8 +588,8 @@ class ArabicLanguageDetector {
       }
     }
 
-    return hasIraqiFeatures(text) ? 'mixed-iraqi' : undefined;
-    
+    return hasIraqiFeatures(text) ? "mixed-iraqi" : undefined;
+
     function hasIraqiFeatures(text: string): boolean {
       // Check for general Iraqi features like specific letters or patterns
       const iraqiFeatures = /[پچگڤژ]/; // Iraqi-specific letters
@@ -574,20 +622,20 @@ class IraqiDialectAnalyzer {
       dialectFeatures,
       regionalVariations,
       dialectPatterns,
-      culturalMarkers
+      culturalMarkers,
     );
 
     // Determine most likely Iraqi dialect
     const detectedDialect = this.determineDialectType(
       dialectFeatures,
       regionalVariations,
-      dialectPatterns
+      dialectPatterns,
     );
 
     // Calculate confidence based on feature strength
     const dialectConfidence = Math.min(
       100,
-      overallDialectScore + (dialectFeatures.length * 5)
+      overallDialectScore + dialectFeatures.length * 5,
     );
 
     return {
@@ -598,7 +646,7 @@ class IraqiDialectAnalyzer {
       regionalVariations,
       dialectPatterns,
       culturalMarkers,
-      modernInfluences
+      modernInfluences,
     };
   }
 
@@ -606,64 +654,68 @@ class IraqiDialectAnalyzer {
     // Simplified feature extraction
     return [
       {
-        featureType: 'lexical' as const,
-        feature: 'Iraqi greeting patterns',
-        iraqiVariant: 'شلونك',
-        msaEquivalent: 'كيف حالك',
+        featureType: "lexical" as const,
+        feature: "Iraqi greeting patterns",
+        iraqiVariant: "شلونك",
+        msaEquivalent: "كيف حالك",
         confidence: 85,
-        frequency: 'very-common' as const,
-        regionalSpecificity: ['baghdadi', 'mixed-iraqi'] as IraqiDialectType[]
-      }
+        frequency: "very-common" as const,
+        regionalSpecificity: ["baghdadi", "mixed-iraqi"] as IraqiDialectType[],
+      },
     ];
   }
 
   private async identifyRegionalVariations(text: string) {
     return [
       {
-        region: 'baghdadi' as IraqiDialectType,
-        specificFeatures: ['شلونك', 'شكو ماكو'],
+        region: "baghdadi" as IraqiDialectType,
+        specificFeatures: ["شلونك", "شكو ماكو"],
         confidence: 80,
-        culturalContext: 'Baghdad urban dialect',
-        historicalInfluence: ['Ottoman influence', 'Urban development']
-      }
+        culturalContext: "Baghdad urban dialect",
+        historicalInfluence: ["Ottoman influence", "Urban development"],
+      },
     ];
   }
 
   private async identifyDialectPatterns(text: string) {
     return [
       {
-        pattern: 'Greeting pattern',
-        patternType: 'idiom' as const,
-        iraqiExample: 'شلونك؟ شكو ماكو؟',
-        standardArabicEquivalent: 'كيف حالك؟ ما الأخبار؟',
-        culturalSignificance: 'Common Iraqi greeting showing care and interest',
-        usageContext: 'informal' as const
-      }
+        pattern: "Greeting pattern",
+        patternType: "idiom" as const,
+        iraqiExample: "شلونك؟ شكو ماكو؟",
+        standardArabicEquivalent: "كيف حالك؟ ما الأخبار؟",
+        culturalSignificance: "Common Iraqi greeting showing care and interest",
+        usageContext: "informal" as const,
+      },
     ];
   }
 
   private async extractCulturalMarkers(text: string) {
     return [
       {
-        marker: 'Hospitality expression',
-        culturalCategory: 'hospitality' as const,
-        culturalMeaning: 'Expression of Iraqi hospitality values',
+        marker: "Hospitality expression",
+        culturalCategory: "hospitality" as const,
+        culturalMeaning: "Expression of Iraqi hospitality values",
         appropriatenessLevel: 95,
-        contextualUsage: ['family gatherings', 'friend meetings', 'casual encounters'],
-        modernRelevance: 'highly-relevant' as const
-      }
+        contextualUsage: [
+          "family gatherings",
+          "friend meetings",
+          "casual encounters",
+        ],
+        modernRelevance: "highly-relevant" as const,
+      },
     ];
   }
 
   private async identifyModernInfluences(text: string) {
     return [
       {
-        influence: 'Social media language',
-        influenceType: 'technology' as const,
-        impact: 'medium' as const,
+        influence: "Social media language",
+        influenceType: "technology" as const,
+        impact: "medium" as const,
         generationalDifference: true,
-        adaptationLevel: 'partially-integrated' as const
-      }
+        adaptationLevel: "partially-integrated" as const,
+      },
     ];
   }
 
@@ -671,27 +723,28 @@ class IraqiDialectAnalyzer {
     features: any[],
     variations: any[],
     patterns: any[],
-    markers: any[]
+    markers: any[],
   ): number {
     // Simplified scoring algorithm
-    return Math.min(100, 
-      (features.length * 15) + 
-      (variations.length * 10) + 
-      (patterns.length * 10) + 
-      (markers.length * 8)
+    return Math.min(
+      100,
+      features.length * 15 +
+        variations.length * 10 +
+        patterns.length * 10 +
+        markers.length * 8,
     );
   }
 
   private determineDialectType(
     features: any[],
     variations: any[],
-    patterns: any[]
+    patterns: any[],
   ): IraqiDialectType {
     // Simplified dialect determination
-    if (variations.some(v => v.region === 'baghdadi')) {
-      return 'baghdadi';
+    if (variations.some((v) => v.region === "baghdadi")) {
+      return "baghdadi";
     }
-    return 'mixed-iraqi';
+    return "mixed-iraqi";
   }
 }
 
@@ -706,21 +759,27 @@ class CulturalContextExtractor {
     this.config = config;
   }
 
-  async extractContext(text: string, providedContext?: IraqiCulturalContext): Promise<CulturalContextExtraction> {
+  async extractContext(
+    text: string,
+    providedContext?: IraqiCulturalContext,
+  ): Promise<CulturalContextExtraction> {
     const islamicReferences = await this.extractIslamicReferences(text);
-    const iraqiCulturalReferences = await this.extractIraqiCulturalReferences(text);
-    const socialContextIndicators = await this.extractSocialContextIndicators(text);
+    const iraqiCulturalReferences =
+      await this.extractIraqiCulturalReferences(text);
+    const socialContextIndicators =
+      await this.extractSocialContextIndicators(text);
     const professionalContext = await this.extractProfessionalContext(text);
     const emotionalTone = await this.analyzeEmotionalTone(text);
     const culturalSensitivity = await this.assessCulturalSensitivity(text);
 
     // Calculate overall cultural relevance
-    const overallCulturalRelevance = Math.min(100,
-      (islamicReferences.length * 10) +
-      (iraqiCulturalReferences.length * 15) +
-      (socialContextIndicators.length * 8) +
-      (professionalContext ? 20 : 0) +
-      emotionalTone.emotionalIntensity * 0.5
+    const overallCulturalRelevance = Math.min(
+      100,
+      islamicReferences.length * 10 +
+        iraqiCulturalReferences.length * 15 +
+        socialContextIndicators.length * 8 +
+        (professionalContext ? 20 : 0) +
+        emotionalTone.emotionalIntensity * 0.5,
     );
 
     return {
@@ -730,30 +789,55 @@ class CulturalContextExtractor {
       socialContextIndicators,
       professionalContext,
       emotionalTone,
-      culturalSensitivity
+      culturalSensitivity,
     };
   }
 
   private async extractIslamicReferences(text: string) {
     // Simplified Islamic reference extraction
     const commonReferences = [
-      { pattern: 'بسم الله', type: 'religious-expression', meaning: 'In the name of Allah' },
-      { pattern: 'إن شاء الله', type: 'religious-expression', meaning: 'God willing' },
-      { pattern: 'الحمد لله', type: 'religious-expression', meaning: 'Praise be to Allah' },
-      { pattern: 'السلام عليكم', type: 'islamic-greeting', meaning: 'Peace be upon you' }
+      {
+        pattern: "بسم الله",
+        type: "religious-expression",
+        meaning: "In the name of Allah",
+      },
+      {
+        pattern: "إن شاء الله",
+        type: "religious-expression",
+        meaning: "God willing",
+      },
+      {
+        pattern: "الحمد لله",
+        type: "religious-expression",
+        meaning: "Praise be to Allah",
+      },
+      {
+        pattern: "السلام عليكم",
+        type: "islamic-greeting",
+        meaning: "Peace be upon you",
+      },
     ];
 
     return commonReferences
-      .filter(ref => text.includes(ref.pattern))
-      .map(ref => ({
+      .filter((ref) => text.includes(ref.pattern))
+      .map((ref) => ({
         reference: ref.pattern,
-        referenceType: ref.type as 'quran' | 'hadith' | 'islamic-greeting' | 'religious-expression' | 'islamic-value' | 'prayer-related',
+        referenceType: ref.type as
+          | "quran"
+          | "hadith"
+          | "islamic-greeting"
+          | "religious-expression"
+          | "islamic-value"
+          | "prayer-related",
         arabicText: ref.pattern,
         transliteration: this.getTransliteration(ref.pattern),
         meaning: ref.meaning,
         contextualAppropriateNess: 95,
-        religousSignificance: 'high' as const,
-        usageGuidelines: ['Use with respect and understanding', 'Appropriate in most contexts']
+        religousSignificance: "high" as const,
+        usageGuidelines: [
+          "Use with respect and understanding",
+          "Appropriate in most contexts",
+        ],
       }));
   }
 
@@ -761,26 +845,29 @@ class CulturalContextExtractor {
     // Simplified Iraqi cultural reference extraction
     return [
       {
-        reference: 'Iraqi cultural expression detected',
-        referenceType: 'traditional' as const,
-        culturalMeaning: 'Expression of Iraqi cultural values',
-        regionalAssociation: ['mixed-iraqi'] as IraqiDialectType[],
-        generationalRelevance: 'all-generations' as const,
+        reference: "Iraqi cultural expression detected",
+        referenceType: "traditional" as const,
+        culturalMeaning: "Expression of Iraqi cultural values",
+        regionalAssociation: ["mixed-iraqi"] as IraqiDialectType[],
+        generationalRelevance: "all-generations" as const,
         appropriatenessScore: 90,
-        contextualNotes: ['Respectful usage', 'Context-appropriate']
-      }
+        contextualNotes: ["Respectful usage", "Context-appropriate"],
+      },
     ];
   }
 
   private async extractSocialContextIndicators(text: string) {
     return [
       {
-        indicator: 'Formal greeting pattern detected',
-        contextType: 'formal' as const,
-        socialImplication: 'Respectful formal interaction expected',
+        indicator: "Formal greeting pattern detected",
+        contextType: "formal" as const,
+        socialImplication: "Respectful formal interaction expected",
         appropriateness: 95,
-        responseGuidelines: ['Respond with equal formality', 'Show respect and consideration']
-      }
+        responseGuidelines: [
+          "Respond with equal formality",
+          "Show respect and consideration",
+        ],
+      },
     ];
   }
 
@@ -792,53 +879,57 @@ class CulturalContextExtractor {
   private async analyzeEmotionalTone(text: string) {
     // Simplified emotional tone analysis
     return {
-      primaryTone: 'positive' as const,
+      primaryTone: "positive" as const,
       emotionalIntensity: 70,
       specificEmotions: [
         {
-          emotion: 'respect' as const,
+          emotion: "respect" as const,
           intensity: 80,
-          culturalExpression: 'Iraqi respectful communication',
-          responseGuidance: 'Respond with equal respect and consideration'
-        }
+          culturalExpression: "Iraqi respectful communication",
+          responseGuidance: "Respond with equal respect and consideration",
+        },
       ],
-      culturalEmotionalContext: 'Iraqi cultural context with respectful tone',
-      appropriateResponseTone: 'respectful' as const
+      culturalEmotionalContext: "Iraqi cultural context with respectful tone",
+      appropriateResponseTone: "respectful" as const,
     };
   }
 
   private async assessCulturalSensitivity(text: string) {
     return {
-      sensitivityLevel: 'medium' as const,
+      sensitivityLevel: "medium" as const,
       sensitivityAreas: [
         {
-          area: 'religious' as const,
+          area: "religious" as const,
           sensitivityScore: 80,
-          specificConcerns: ['Islamic references present'],
-          handlingGuidelines: ['Respect religious context', 'Respond appropriately to Islamic expressions']
-        }
+          specificConcerns: ["Islamic references present"],
+          handlingGuidelines: [
+            "Respect religious context",
+            "Respond appropriately to Islamic expressions",
+          ],
+        },
       ],
       responseRequirements: [
         {
-          requirement: 'Maintain religious respect',
-          priority: 'high' as const,
-          consequence: 'Cultural appropriateness maintained',
-          implementation: 'Use respectful language and acknowledge Islamic expressions'
-        }
+          requirement: "Maintain religious respect",
+          priority: "high" as const,
+          consequence: "Cultural appropriateness maintained",
+          implementation:
+            "Use respectful language and acknowledge Islamic expressions",
+        },
       ],
-      cautionFlags: []
+      cautionFlags: [],
     };
   }
 
   private getTransliteration(arabicText: string): string {
     // Simplified transliteration mapping
     const transliterationMap: { [key: string]: string } = {
-      'بسم الله': 'Bismillah',
-      'إن شاء الله': 'Insha\'Allah',
-      'الحمد لله': 'Alhamdulillah',
-      'السلام عليكم': 'Assalamu alaikum'
+      "بسم الله": "Bismillah",
+      "إن شاء الله": "Insha'Allah",
+      "الحمد لله": "Alhamdulillah",
+      "السلام عليكم": "Assalamu alaikum",
     };
-    
+
     return transliterationMap[arabicText] || arabicText;
   }
 }
@@ -854,21 +945,27 @@ class CulturalSemanticAnalyzer {
     this.config = config;
   }
 
-  async analyzeSemantics(text: string, context: IraqiCulturalContext): Promise<SemanticAnalysisResult> {
+  async analyzeSemantics(
+    text: string,
+    context: IraqiCulturalContext,
+  ): Promise<SemanticAnalysisResult> {
     // Simplified semantic analysis implementation
     const intentDetection = await this.detectIntent(text, context);
     const entityExtraction = await this.extractEntities(text);
     const conceptualAnalysis = await this.analyzeConceptualStructure(text);
-    const culturalSemantics = await this.analyzeCulturalSemantics(text, context);
+    const culturalSemantics = await this.analyzeCulturalSemantics(
+      text,
+      context,
+    );
     const disambiguationResults = await this.disambiguateTerms(text, context);
 
     // Calculate overall semantic score
     const overallSemanticScore = Math.round(
-      (intentDetection.intentConfidence * 0.3) +
-      (entityExtraction.entities.length * 10) +
-      (conceptualAnalysis.culturalConceptAlignment * 0.2) +
-      (culturalSemantics.culturallyLoadedTerms.length * 5) +
-      (disambiguationResults.length * 5)
+      intentDetection.intentConfidence * 0.3 +
+        entityExtraction.entities.length * 10 +
+        conceptualAnalysis.culturalConceptAlignment * 0.2 +
+        culturalSemantics.culturallyLoadedTerms.length * 5 +
+        disambiguationResults.length * 5,
     );
 
     return {
@@ -877,7 +974,7 @@ class CulturalSemanticAnalyzer {
       entityExtraction,
       conceptualAnalysis,
       culturalSemantics,
-      disambiguationResults
+      disambiguationResults,
     };
   }
 
@@ -885,15 +982,15 @@ class CulturalSemanticAnalyzer {
     // Simplified intent detection
     return {
       primaryIntent: {
-        intent: 'greeting',
-        category: 'social' as const,
+        intent: "greeting",
+        category: "social" as const,
         confidence: 85,
-        culturalContext: 'Iraqi social greeting',
-        expectedResponseType: 'social' as const
+        culturalContext: "Iraqi social greeting",
+        expectedResponseType: "social" as const,
       },
       secondaryIntents: [],
       intentConfidence: 85,
-      culturallyInfluencedIntents: []
+      culturallyInfluencedIntents: [],
     };
   }
 
@@ -903,7 +1000,7 @@ class CulturalSemanticAnalyzer {
       culturalEntities: [],
       professionalEntities: [],
       temporalEntities: [],
-      locationEntities: []
+      locationEntities: [],
     };
   }
 
@@ -911,17 +1008,20 @@ class CulturalSemanticAnalyzer {
     return {
       mainConcepts: [],
       conceptRelationships: [],
-      abstractionLevel: 'concrete' as const,
-      culturalConceptAlignment: 80
+      abstractionLevel: "concrete" as const,
+      culturalConceptAlignment: 80,
     };
   }
 
-  private async analyzeCulturalSemantics(text: string, context: IraqiCulturalContext) {
+  private async analyzeCulturalSemantics(
+    text: string,
+    context: IraqiCulturalContext,
+  ) {
     return {
       culturallyLoadedTerms: [],
       implicitCulturalMeanings: [],
       culturalAssumptions: [],
-      crossCulturalConsiderations: []
+      crossCulturalConsiderations: [],
     };
   }
 
@@ -943,26 +1043,31 @@ class CulturalResponseGenerator {
 
   async generateResponse(
     analysis: SemanticAnalysisResult,
-    responseType: 'informational' | 'supportive' | 'instructional' | 'social' | 'professional'
+    responseType:
+      | "informational"
+      | "supportive"
+      | "instructional"
+      | "social"
+      | "professional",
   ): Promise<ResponseGenerationResult> {
     // Simplified response generation
     const generatedResponse = {
-      text: 'وعليكم السلام ورحمة الله وبركاته، أهلاً وسهلاً بك', // Example response
-      language: 'ar-IQ' as const,
-      dialect: 'mixed-iraqi' as IraqiDialectType,
-      formalityLevel: 'formal' as const,
+      text: "وعليكم السلام ورحمة الله وبركاته، أهلاً وسهلاً بك", // Example response
+      language: "ar-IQ" as const,
+      dialect: "mixed-iraqi" as IraqiDialectType,
+      formalityLevel: "formal" as const,
       culturalAppropriateness: 95,
       islamicCompliance: 98,
-      responseType
+      responseType,
     };
 
     const alternativeResponses = [
       {
-        text: 'السلام عليكم، أهلاً وسهلاً',
-        variant: 'less-formal' as const,
+        text: "السلام عليكم، أهلاً وسهلاً",
+        variant: "less-formal" as const,
         appropriatenessScore: 90,
-        usageContext: 'Informal greeting response'
-      }
+        usageContext: "Informal greeting response",
+      },
     ];
 
     const culturalValidation = {
@@ -970,7 +1075,7 @@ class CulturalResponseGenerator {
       islamicComplianceCheck: 98,
       culturalSensitivityCheck: 96,
       validationIssues: [],
-      improvementSuggestions: []
+      improvementSuggestions: [],
     };
 
     const qualityMetrics = {
@@ -978,7 +1083,7 @@ class CulturalResponseGenerator {
       culturalRelevance: 95,
       professionalSuitability: 88,
       userSatisfactionPrediction: 90,
-      overallQuality: 91
+      overallQuality: 91,
     };
 
     return {
@@ -986,7 +1091,7 @@ class CulturalResponseGenerator {
       generatedResponse,
       alternativeResponses,
       culturalValidation,
-      qualityMetrics
+      qualityMetrics,
     };
   }
 }

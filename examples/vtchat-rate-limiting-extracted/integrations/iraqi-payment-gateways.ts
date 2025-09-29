@@ -1,7 +1,7 @@
 /**
  * Iraqi Payment Gateway Integration for Rate Limiting
  * Enhanced integration for ZainCash, FastPay, and NassWallet
- * 
+ *
  * Features:
  * - Subscription tier management
  * - Payment verification for quota upgrades
@@ -40,16 +40,21 @@ export interface IraqiPaymentGatewayConfig {
 export interface PaymentSubscription {
   userId: string;
   subscriptionId: string;
-  tier: 'trial' | 'basic' | 'premium' | 'organization';
-  paymentGateway: 'zaincash' | 'fastpay' | 'nasswallet';
+  tier: "trial" | "basic" | "premium" | "organization";
+  paymentGateway: "zaincash" | "fastpay" | "nasswallet";
   amountIQD: number;
-  currency: 'IQD';
-  status: 'pending' | 'active' | 'expired' | 'cancelled' | 'failed';
-  billingCycle: 'monthly' | 'yearly';
+  currency: "IQD";
+  status: "pending" | "active" | "expired" | "cancelled" | "failed";
+  billingCycle: "monthly" | "yearly";
   nextBillingDate: Date;
   createdAt: Date;
   updatedAt: Date;
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "engineering";
   quotaConfigId: string;
 }
 
@@ -57,12 +62,12 @@ export interface PaymentTransactionRecord {
   transactionId: string;
   userId: string;
   subscriptionId?: string;
-  gateway: 'zaincash' | 'fastpay' | 'nasswallet';
-  type: 'subscription' | 'overage' | 'upgrade' | 'professional_bonus';
+  gateway: "zaincash" | "fastpay" | "nasswallet";
+  type: "subscription" | "overage" | "upgrade" | "professional_bonus";
   amountIQD: number;
   feeIQD: number;
   netAmountIQD: number;
-  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  status: "pending" | "completed" | "failed" | "refunded";
   gatewayTransactionId: string;
   gatewayResponse?: any;
   createdAt: Date;
@@ -84,9 +89,9 @@ export class IraqiPaymentGatewayIntegration {
    */
   async createSubscriptionPayment(
     userId: string,
-    tier: PaymentSubscription['tier'],
-    paymentGateway: PaymentSubscription['paymentGateway'],
-    professionalDomain?: PaymentSubscription['professionalDomain']
+    tier: PaymentSubscription["tier"],
+    paymentGateway: PaymentSubscription["paymentGateway"],
+    professionalDomain?: PaymentSubscription["professionalDomain"],
   ): Promise<{
     subscriptionId: string;
     paymentUrl: string;
@@ -97,19 +102,19 @@ export class IraqiPaymentGatewayIntegration {
       userId,
       tier,
       paymentGateway,
-      professionalDomain
+      professionalDomain,
     );
 
     let paymentUrl: string;
-    
+
     switch (paymentGateway) {
-      case 'zaincash':
+      case "zaincash":
         paymentUrl = await this.createZainCashPayment(subscription);
         break;
-      case 'fastpay':
+      case "fastpay":
         paymentUrl = await this.createFastPayPayment(subscription);
         break;
-      case 'nasswallet':
+      case "nasswallet":
         paymentUrl = await this.createNassWalletPayment(subscription);
         break;
       default:
@@ -129,7 +134,7 @@ export class IraqiPaymentGatewayIntegration {
    */
   async verifyAndActivateSubscription(
     subscriptionId: string,
-    gatewayTransactionId: string
+    gatewayTransactionId: string,
   ): Promise<{
     success: boolean;
     subscription?: PaymentSubscription;
@@ -145,23 +150,24 @@ export class IraqiPaymentGatewayIntegration {
       const verified = await this.verifyPaymentWithGateway(
         subscription.paymentGateway,
         gatewayTransactionId,
-        subscription.amountIQD
+        subscription.amountIQD,
       );
 
       if (!verified) {
-        await this.updateSubscriptionStatus(subscriptionId, 'failed');
+        await this.updateSubscriptionStatus(subscriptionId, "failed");
         return { success: false };
       }
 
       // Activate subscription
-      const updatedSubscription = await this.activateSubscription(subscriptionId);
-      
+      const updatedSubscription =
+        await this.activateSubscription(subscriptionId);
+
       // Apply quota configuration
       const quotaConfigId = await this.applyQuotaConfiguration(
         subscription.userId,
         subscription.tier,
         subscription.professionalDomain,
-        subscription.paymentGateway
+        subscription.paymentGateway,
       );
 
       return {
@@ -170,7 +176,7 @@ export class IraqiPaymentGatewayIntegration {
         quotaConfigId,
       };
     } catch (error) {
-      console.error('Error verifying subscription payment:', error);
+      console.error("Error verifying subscription payment:", error);
       return { success: false };
     }
   }
@@ -182,7 +188,7 @@ export class IraqiPaymentGatewayIntegration {
     userId: string,
     overageAmount: number,
     requestType: string,
-    paymentGateway: 'zaincash' | 'fastpay' | 'nasswallet'
+    paymentGateway: "zaincash" | "fastpay" | "nasswallet",
   ): Promise<{
     transactionId: string;
     paymentUrl: string;
@@ -196,12 +202,12 @@ export class IraqiPaymentGatewayIntegration {
       transactionId: this.generateTransactionId(),
       userId,
       gateway: paymentGateway,
-      type: 'overage',
+      type: "overage",
       amountIQD: overageAmount,
       feeIQD: feeAmount,
       netAmountIQD: totalAmount,
-      status: 'pending',
-      gatewayTransactionId: '',
+      status: "pending",
+      gatewayTransactionId: "",
       createdAt: new Date(),
     };
 
@@ -211,13 +217,13 @@ export class IraqiPaymentGatewayIntegration {
     // Create payment URL based on gateway
     let paymentUrl: string;
     switch (paymentGateway) {
-      case 'zaincash':
+      case "zaincash":
         paymentUrl = await this.createZainCashOveragePayment(transaction);
         break;
-      case 'fastpay':
+      case "fastpay":
         paymentUrl = await this.createFastPayOveragePayment(transaction);
         break;
-      case 'nasswallet':
+      case "nasswallet":
         paymentUrl = await this.createNassWalletOveragePayment(transaction);
         break;
       default:
@@ -235,9 +241,9 @@ export class IraqiPaymentGatewayIntegration {
    * Handle webhook notifications from payment gateways
    */
   async handlePaymentWebhook(
-    gateway: 'zaincash' | 'fastpay' | 'nasswallet',
+    gateway: "zaincash" | "fastpay" | "nasswallet",
     payload: any,
-    signature?: string
+    signature?: string,
   ): Promise<{
     success: boolean;
     transactionId?: string;
@@ -245,32 +251,40 @@ export class IraqiPaymentGatewayIntegration {
   }> {
     try {
       // Verify webhook signature
-      const isValid = await this.verifyWebhookSignature(gateway, payload, signature);
+      const isValid = await this.verifyWebhookSignature(
+        gateway,
+        payload,
+        signature,
+      );
       if (!isValid) {
-        console.error('Invalid webhook signature');
+        console.error("Invalid webhook signature");
         return { success: false };
       }
 
       // Parse gateway-specific payload
-      const { transactionId, gatewayTransactionId, status, amount } = 
+      const { transactionId, gatewayTransactionId, status, amount } =
         await this.parseWebhookPayload(gateway, payload);
 
       if (!transactionId) {
-        console.error('Missing transaction ID in webhook');
+        console.error("Missing transaction ID in webhook");
         return { success: false };
       }
 
       // Update transaction status
-      await this.updateTransactionStatus(transactionId, status, gatewayTransactionId);
+      await this.updateTransactionStatus(
+        transactionId,
+        status,
+        gatewayTransactionId,
+      );
 
       // Handle subscription activation if applicable
       let subscriptionActivated = false;
-      if (status === 'completed') {
+      if (status === "completed") {
         const transaction = await this.getTransactionRecord(transactionId);
         if (transaction?.subscriptionId) {
           await this.verifyAndActivateSubscription(
             transaction.subscriptionId,
-            gatewayTransactionId
+            gatewayTransactionId,
           );
           subscriptionActivated = true;
         }
@@ -282,7 +296,7 @@ export class IraqiPaymentGatewayIntegration {
         subscriptionActivated,
       };
     } catch (error) {
-      console.error('Error handling payment webhook:', error);
+      console.error("Error handling payment webhook:", error);
       return { success: false };
     }
   }
@@ -290,7 +304,10 @@ export class IraqiPaymentGatewayIntegration {
   /**
    * Get subscription pricing for different tiers
    */
-  getSubscriptionPricing(): Record<PaymentSubscription['tier'], { monthly: number; yearly: number }> {
+  getSubscriptionPricing(): Record<
+    PaymentSubscription["tier"],
+    { monthly: number; yearly: number }
+  > {
     return {
       trial: { monthly: 0, yearly: 0 },
       basic: { monthly: 35000, yearly: 350000 }, // 35K IQD monthly, 350K yearly (2 months free)
@@ -304,23 +321,25 @@ export class IraqiPaymentGatewayIntegration {
    */
   getProfessionalDomainMultipliers(): Record<string, number> {
     return {
-      legal: 1.5,         // 50% premium for legal
-      medical: 1.8,       // 80% premium for medical
-      educational: 1.2,   // 20% premium for educational (discounted)
-      business: 1.4,      // 40% premium for business
-      engineering: 1.6,   // 60% premium for engineering
+      legal: 1.5, // 50% premium for legal
+      medical: 1.8, // 80% premium for medical
+      educational: 1.2, // 20% premium for educational (discounted)
+      business: 1.4, // 40% premium for business
+      engineering: 1.6, // 60% premium for engineering
     };
   }
 
   // Private methods for gateway-specific implementations
 
-  private async createZainCashPayment(subscription: PaymentSubscription): Promise<string> {
+  private async createZainCashPayment(
+    subscription: PaymentSubscription,
+  ): Promise<string> {
     const { zaincash } = this.config;
-    
+
     const paymentData = {
       amount: subscription.amountIQD,
-      serviceType: 'Iraqi AI Chat Subscription',
-      msisdn: '', // Will be provided by user
+      serviceType: "Iraqi AI Chat Subscription",
+      msisdn: "", // Will be provided by user
       merchantId: zaincash.merchantId,
       orderId: subscription.subscriptionId,
       redirectUrl: `${process.env.FRONTEND_URL}/payment/success`,
@@ -329,17 +348,19 @@ export class IraqiPaymentGatewayIntegration {
 
     // Create JWT token with ZainCash secret
     const token = this.createJWTToken(paymentData, zaincash.secretKey);
-    
+
     return `${zaincash.baseUrl}/transaction/init?token=${token}`;
   }
 
-  private async createFastPayPayment(subscription: PaymentSubscription): Promise<string> {
+  private async createFastPayPayment(
+    subscription: PaymentSubscription,
+  ): Promise<string> {
     const { fastpay } = this.config;
-    
+
     const paymentData = {
       merchant_code: fastpay.merchantCode,
       amount: subscription.amountIQD,
-      currency: 'IQD',
+      currency: "IQD",
       order_id: subscription.subscriptionId,
       description: `Iraqi AI Chat ${subscription.tier} subscription`,
       return_url: `${process.env.FRONTEND_URL}/payment/success`,
@@ -347,19 +368,22 @@ export class IraqiPaymentGatewayIntegration {
     };
 
     // Create signature
-    const signature = this.createFastPaySignature(paymentData, fastpay.privateKey);
-    
+    const signature = this.createFastPaySignature(
+      paymentData,
+      fastpay.privateKey,
+    );
+
     const response = await fetch(`${fastpay.baseUrl}/api/v1/payment/create`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${fastpay.apiKey}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${fastpay.apiKey}`,
       },
       body: JSON.stringify({ ...paymentData, signature }),
     });
 
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(`FastPay payment creation failed: ${result.error}`);
     }
@@ -367,13 +391,15 @@ export class IraqiPaymentGatewayIntegration {
     return result.payment_url;
   }
 
-  private async createNassWalletPayment(subscription: PaymentSubscription): Promise<string> {
+  private async createNassWalletPayment(
+    subscription: PaymentSubscription,
+  ): Promise<string> {
     const { nasswallet } = this.config;
-    
+
     const paymentData = {
       store_id: nasswallet.storeId,
       amount: subscription.amountIQD,
-      currency: 'IQD',
+      currency: "IQD",
       transaction_id: subscription.subscriptionId,
       description: `Iraqi AI Chat ${subscription.tier} subscription`,
       callback_url: nasswallet.callbackUrl,
@@ -382,17 +408,17 @@ export class IraqiPaymentGatewayIntegration {
     };
 
     const response = await fetch(`${nasswallet.baseUrl}/api/payment/create`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${nasswallet.authToken}`,
-        'X-API-Key': nasswallet.apiKey,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${nasswallet.authToken}`,
+        "X-API-Key": nasswallet.apiKey,
       },
       body: JSON.stringify(paymentData),
     });
 
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(`NassWallet payment creation failed: ${result.message}`);
     }
@@ -402,23 +428,25 @@ export class IraqiPaymentGatewayIntegration {
 
   private async createSubscriptionRecord(
     userId: string,
-    tier: PaymentSubscription['tier'],
-    paymentGateway: PaymentSubscription['paymentGateway'],
-    professionalDomain?: PaymentSubscription['professionalDomain']
+    tier: PaymentSubscription["tier"],
+    paymentGateway: PaymentSubscription["paymentGateway"],
+    professionalDomain?: PaymentSubscription["professionalDomain"],
   ): Promise<PaymentSubscription> {
     const pricing = this.getSubscriptionPricing();
     const domainMultipliers = this.getProfessionalDomainMultipliers();
-    
+
     let baseAmount = pricing[tier].monthly;
-    
+
     // Apply professional domain multiplier
     if (professionalDomain) {
-      baseAmount = Math.round(baseAmount * domainMultipliers[professionalDomain]);
+      baseAmount = Math.round(
+        baseAmount * domainMultipliers[professionalDomain],
+      );
     }
 
     // Apply payment gateway fee
     const feeRate = this.config[paymentGateway].transactionFee;
-    const totalAmount = Math.round(baseAmount + (baseAmount * feeRate));
+    const totalAmount = Math.round(baseAmount + baseAmount * feeRate);
 
     const subscription: PaymentSubscription = {
       userId,
@@ -426,9 +454,9 @@ export class IraqiPaymentGatewayIntegration {
       tier,
       paymentGateway,
       amountIQD: totalAmount,
-      currency: 'IQD',
-      status: 'pending',
-      billingCycle: 'monthly',
+      currency: "IQD",
+      status: "pending",
+      billingCycle: "monthly",
       nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -440,69 +468,73 @@ export class IraqiPaymentGatewayIntegration {
     await this.redis.set(
       `subscription:${subscription.subscriptionId}`,
       JSON.stringify(subscription),
-      'EX',
-      86400 * 30 // Expire after 30 days if not activated
+      "EX",
+      86400 * 30, // Expire after 30 days if not activated
     );
 
     return subscription;
   }
 
-  private async getSubscription(subscriptionId: string): Promise<PaymentSubscription | null> {
+  private async getSubscription(
+    subscriptionId: string,
+  ): Promise<PaymentSubscription | null> {
     try {
       const data = await this.redis.get(`subscription:${subscriptionId}`);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error('Error fetching subscription:', error);
+      console.error("Error fetching subscription:", error);
       return null;
     }
   }
 
   private async updateSubscriptionStatus(
     subscriptionId: string,
-    status: PaymentSubscription['status']
+    status: PaymentSubscription["status"],
   ): Promise<void> {
     try {
       const subscription = await this.getSubscription(subscriptionId);
       if (subscription) {
         subscription.status = status;
         subscription.updatedAt = new Date();
-        
+
         await this.redis.set(
           `subscription:${subscriptionId}`,
           JSON.stringify(subscription),
-          'EX',
-          86400 * 365 // Store for 1 year after activation
+          "EX",
+          86400 * 365, // Store for 1 year after activation
         );
       }
     } catch (error) {
-      console.error('Error updating subscription status:', error);
+      console.error("Error updating subscription status:", error);
       throw error;
     }
   }
 
-  private async activateSubscription(subscriptionId: string): Promise<PaymentSubscription> {
+  private async activateSubscription(
+    subscriptionId: string,
+  ): Promise<PaymentSubscription> {
     const subscription = await this.getSubscription(subscriptionId);
     if (!subscription) {
-      throw new Error('Subscription not found');
+      throw new Error("Subscription not found");
     }
 
-    subscription.status = 'active';
+    subscription.status = "active";
     subscription.updatedAt = new Date();
 
     // Store active subscription
     await this.redis.set(
       `subscription:${subscriptionId}`,
       JSON.stringify(subscription),
-      'EX',
-      86400 * 365
+      "EX",
+      86400 * 365,
     );
 
     // Create user subscription mapping
     await this.redis.set(
       `user_subscription:${subscription.userId}`,
       subscriptionId,
-      'EX',
-      86400 * 365
+      "EX",
+      86400 * 365,
     );
 
     return subscription;
@@ -510,12 +542,12 @@ export class IraqiPaymentGatewayIntegration {
 
   private async applyQuotaConfiguration(
     userId: string,
-    tier: PaymentSubscription['tier'],
-    professionalDomain?: PaymentSubscription['professionalDomain'],
-    paymentGateway?: PaymentSubscription['paymentGateway']
+    tier: PaymentSubscription["tier"],
+    professionalDomain?: PaymentSubscription["professionalDomain"],
+    paymentGateway?: PaymentSubscription["paymentGateway"],
   ): Promise<string> {
     const quotaConfigId = `iraqi-${tier}`;
-    
+
     // This would integrate with the quota service
     // For now, we'll store the configuration mapping
     await this.redis.set(
@@ -527,8 +559,8 @@ export class IraqiPaymentGatewayIntegration {
         paymentGateway,
         activatedAt: new Date().toISOString(),
       }),
-      'EX',
-      86400 * 365
+      "EX",
+      86400 * 365,
     );
 
     return quotaConfigId;
@@ -545,26 +577,30 @@ export class IraqiPaymentGatewayIntegration {
   private createJWTToken(payload: any, secret: string): string {
     // Implementation would use a proper JWT library
     // This is a placeholder
-    const header = { alg: 'HS256', typ: 'JWT' };
-    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
-    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
-    
+    const header = { alg: "HS256", typ: "JWT" };
+    const encodedHeader = Buffer.from(JSON.stringify(header)).toString(
+      "base64url",
+    );
+    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString(
+      "base64url",
+    );
+
     // In real implementation, use proper HMAC signing
-    const signature = 'placeholder_signature';
-    
+    const signature = "placeholder_signature";
+
     return `${encodedHeader}.${encodedPayload}.${signature}`;
   }
 
   private createFastPaySignature(data: any, privateKey: string): string {
     // Implementation would use proper cryptographic signing
     // This is a placeholder
-    return 'placeholder_signature';
+    return "placeholder_signature";
   }
 
   private async verifyWebhookSignature(
     gateway: string,
     payload: any,
-    signature?: string
+    signature?: string,
   ): Promise<boolean> {
     // Implementation would verify the webhook signature based on gateway
     // This is a placeholder that always returns true for demo
@@ -573,7 +609,7 @@ export class IraqiPaymentGatewayIntegration {
 
   private async parseWebhookPayload(
     gateway: string,
-    payload: any
+    payload: any,
   ): Promise<{
     transactionId: string;
     gatewayTransactionId: string;
@@ -585,7 +621,7 @@ export class IraqiPaymentGatewayIntegration {
     return {
       transactionId: payload.order_id || payload.transaction_id,
       gatewayTransactionId: payload.id || payload.txn_id,
-      status: payload.status === 'success' ? 'completed' : 'failed',
+      status: payload.status === "success" ? "completed" : "failed",
       amount: payload.amount,
     };
   }
@@ -593,28 +629,32 @@ export class IraqiPaymentGatewayIntegration {
   private async verifyPaymentWithGateway(
     gateway: string,
     gatewayTransactionId: string,
-    expectedAmount: number
+    expectedAmount: number,
   ): Promise<boolean> {
     // Implementation would verify payment with the respective gateway API
     // This is a placeholder that always returns true for demo
     return true;
   }
 
-  private async storeTransactionRecord(transaction: PaymentTransactionRecord): Promise<void> {
+  private async storeTransactionRecord(
+    transaction: PaymentTransactionRecord,
+  ): Promise<void> {
     await this.redis.set(
       `transaction:${transaction.transactionId}`,
       JSON.stringify(transaction),
-      'EX',
-      86400 * 90 // Store for 90 days
+      "EX",
+      86400 * 90, // Store for 90 days
     );
   }
 
-  private async getTransactionRecord(transactionId: string): Promise<PaymentTransactionRecord | null> {
+  private async getTransactionRecord(
+    transactionId: string,
+  ): Promise<PaymentTransactionRecord | null> {
     try {
       const data = await this.redis.get(`transaction:${transactionId}`);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error('Error fetching transaction record:', error);
+      console.error("Error fetching transaction record:", error);
       return null;
     }
   }
@@ -622,30 +662,36 @@ export class IraqiPaymentGatewayIntegration {
   private async updateTransactionStatus(
     transactionId: string,
     status: string,
-    gatewayTransactionId: string
+    gatewayTransactionId: string,
   ): Promise<void> {
     const transaction = await this.getTransactionRecord(transactionId);
     if (transaction) {
       transaction.status = status as any;
       transaction.gatewayTransactionId = gatewayTransactionId;
-      if (status === 'completed') {
+      if (status === "completed") {
         transaction.completedAt = new Date();
       }
-      
+
       await this.storeTransactionRecord(transaction);
     }
   }
 
   // Placeholder methods for overage payments
-  private async createZainCashOveragePayment(transaction: PaymentTransactionRecord): Promise<string> {
+  private async createZainCashOveragePayment(
+    transaction: PaymentTransactionRecord,
+  ): Promise<string> {
     return `${this.config.zaincash.baseUrl}/overage?txn=${transaction.transactionId}`;
   }
 
-  private async createFastPayOveragePayment(transaction: PaymentTransactionRecord): Promise<string> {
+  private async createFastPayOveragePayment(
+    transaction: PaymentTransactionRecord,
+  ): Promise<string> {
     return `${this.config.fastpay.baseUrl}/overage?txn=${transaction.transactionId}`;
   }
 
-  private async createNassWalletOveragePayment(transaction: PaymentTransactionRecord): Promise<string> {
+  private async createNassWalletOveragePayment(
+    transaction: PaymentTransactionRecord,
+  ): Promise<string> {
     return `${this.config.nasswallet.baseUrl}/overage?txn=${transaction.transactionId}`;
   }
 }

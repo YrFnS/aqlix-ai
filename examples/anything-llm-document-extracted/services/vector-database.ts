@@ -1,7 +1,7 @@
 /**
  * Iraqi Enhanced Vector Database Service
  * Extracted and enhanced from anything-llm with Iraqi cultural context
- * 
+ *
  * Features:
  * - Multi-database support (Pinecone, Weaviate, ChromaDB, Qdrant)
  * - Arabic text embeddings with cultural context
@@ -11,12 +11,12 @@
  * - Cultural similarity scoring
  */
 
-import Redis from 'ioredis';
-import { PineconeClient } from '@pinecone-database/pinecone';
-import weaviate from 'weaviate-ts-client';
-import { ChromaClient } from 'chromadb';
-import { QdrantClient } from '@qdrant/js-client-rest';
-import OpenAI from 'openai';
+import Redis from "ioredis";
+import { PineconeClient } from "@pinecone-database/pinecone";
+import weaviate from "weaviate-ts-client";
+import { ChromaClient } from "chromadb";
+import { QdrantClient } from "@qdrant/js-client-rest";
+import OpenAI from "openai";
 
 export interface IraqiDocumentEmbedding {
   id: string;
@@ -30,9 +30,14 @@ export interface IraqiDocumentEmbedding {
     processedAt: string;
     userId: string;
     workspaceId: string;
-    
+
     // Iraqi-specific metadata
-    professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
+    professionalDomain?:
+      | "legal"
+      | "medical"
+      | "educational"
+      | "business"
+      | "engineering";
     culturalCompliance: {
       islamicCompliance: number; // 0-100%
       politicalNeutrality: number;
@@ -42,16 +47,16 @@ export interface IraqiDocumentEmbedding {
     arabicContent: {
       hasArabicText: boolean;
       arabicRatio: number; // 0-1
-      dialect: 'baghdad' | 'basra' | 'mosul' | 'general' | 'standard';
+      dialect: "baghdad" | "basra" | "mosul" | "general" | "standard";
       rtlProcessed: boolean;
     };
-    
+
     // Professional metadata
     legalMetadata?: {
       caseType: string;
       courtLevel: string;
       lawCategory: string;
-      urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
+      urgencyLevel: "low" | "medium" | "high" | "critical";
     };
     medicalMetadata?: {
       specialty: string;
@@ -101,7 +106,7 @@ export interface VectorSearchResult {
   contentAr?: string;
   score: number;
   culturalScore?: number;
-  metadata: IraqiDocumentEmbedding['metadata'];
+  metadata: IraqiDocumentEmbedding["metadata"];
 }
 
 export class IraqiVectorDatabaseService {
@@ -111,15 +116,15 @@ export class IraqiVectorDatabaseService {
   private weaviate?: any;
   private chroma?: ChromaClient;
   private qdrant?: QdrantClient;
-  private activeProvider: 'pinecone' | 'weaviate' | 'chroma' | 'qdrant';
+  private activeProvider: "pinecone" | "weaviate" | "chroma" | "qdrant";
 
   constructor(
     redisUrl: string,
     openaiApiKey: string,
     vectorConfig: {
-      provider: 'pinecone' | 'weaviate' | 'chroma' | 'qdrant';
+      provider: "pinecone" | "weaviate" | "chroma" | "qdrant";
       config: any;
-    }
+    },
   ) {
     this.redis = new Redis(redisUrl);
     this.openai = new OpenAI({ apiKey: openaiApiKey });
@@ -130,28 +135,28 @@ export class IraqiVectorDatabaseService {
 
   private async initializeVectorDatabase(config: any): Promise<void> {
     switch (config.provider) {
-      case 'pinecone':
+      case "pinecone":
         this.pinecone = new PineconeClient();
         await this.pinecone.init({
           environment: config.config.environment,
           apiKey: config.config.apiKey,
         });
         break;
-      
-      case 'weaviate':
+
+      case "weaviate":
         this.weaviate = weaviate.client({
-          scheme: config.config.scheme || 'http',
+          scheme: config.config.scheme || "http",
           host: config.config.host,
         });
         break;
-      
-      case 'chroma':
+
+      case "chroma":
         this.chroma = new ChromaClient({
           path: config.config.path,
         });
         break;
-      
-      case 'qdrant':
+
+      case "qdrant":
         this.qdrant = new QdrantClient({
           url: config.config.url,
           apiKey: config.config.apiKey,
@@ -170,38 +175,38 @@ export class IraqiVectorDatabaseService {
       professionalDomain?: string;
       culturalTags?: string[];
       islamicContext?: string;
-    }
+    },
   ): Promise<number[]> {
     try {
       // Combine content with cultural context for better embeddings
       let enhancedContent = content;
-      
+
       if (contentAr) {
         enhancedContent += `\n[Arabic]: ${contentAr}`;
       }
-      
+
       if (culturalContext?.professionalDomain) {
         enhancedContent += `\n[Domain]: ${culturalContext.professionalDomain}`;
       }
-      
+
       if (culturalContext?.islamicContext) {
         enhancedContent += `\n[Islamic Context]: ${culturalContext.islamicContext}`;
       }
-      
+
       if (culturalContext?.culturalTags?.length) {
-        enhancedContent += `\n[Cultural Tags]: ${culturalContext.culturalTags.join(', ')}`;
+        enhancedContent += `\n[Cultural Tags]: ${culturalContext.culturalTags.join(", ")}`;
       }
 
       const response = await this.openai.embeddings.create({
-        model: 'text-embedding-3-large',
+        model: "text-embedding-3-large",
         input: enhancedContent,
         dimensions: 1536,
       });
 
       return response.data[0].embedding;
     } catch (error) {
-      console.error('Error generating embeddings:', error);
-      throw new Error('Failed to generate embeddings');
+      console.error("Error generating embeddings:", error);
+      throw new Error("Failed to generate embeddings");
     }
   }
 
@@ -210,19 +215,19 @@ export class IraqiVectorDatabaseService {
    */
   async storeEmbedding(embedding: IraqiDocumentEmbedding): Promise<void> {
     const cacheKey = `embedding:${embedding.id}`;
-    
+
     try {
       switch (this.activeProvider) {
-        case 'pinecone':
+        case "pinecone":
           await this.storePineconeEmbedding(embedding);
           break;
-        case 'weaviate':
+        case "weaviate":
           await this.storeWeaviateEmbedding(embedding);
           break;
-        case 'chroma':
+        case "chroma":
           await this.storeChromaEmbedding(embedding);
           break;
-        case 'qdrant':
+        case "qdrant":
           await this.storeQdrantEmbedding(embedding);
           break;
       }
@@ -234,12 +239,12 @@ export class IraqiVectorDatabaseService {
         JSON.stringify({
           metadata: embedding.metadata,
           storedAt: new Date().toISOString(),
-        })
+        }),
       );
 
       console.log(`Stored embedding ${embedding.id} in ${this.activeProvider}`);
     } catch (error) {
-      console.error('Error storing embedding:', error);
+      console.error("Error storing embedding:", error);
       throw error;
     }
   }
@@ -247,7 +252,9 @@ export class IraqiVectorDatabaseService {
   /**
    * Search embeddings with Iraqi cultural context
    */
-  async searchEmbeddings(query: VectorSearchQuery): Promise<VectorSearchResult[]> {
+  async searchEmbeddings(
+    query: VectorSearchQuery,
+  ): Promise<VectorSearchResult[]> {
     try {
       // Generate query embedding
       const queryEmbedding = await this.generateEmbeddings(
@@ -255,26 +262,30 @@ export class IraqiVectorDatabaseService {
         query.queryAr,
         {
           professionalDomain: query.professionalDomain,
-          culturalTags: query.culturalFilters ? 
-            Object.keys(query.culturalFilters).filter(key => 
-              query.culturalFilters![key as keyof typeof query.culturalFilters]
-            ) : undefined,
-        }
+          culturalTags: query.culturalFilters
+            ? Object.keys(query.culturalFilters).filter(
+                (key) =>
+                  query.culturalFilters![
+                    key as keyof typeof query.culturalFilters
+                  ],
+              )
+            : undefined,
+        },
       );
 
       let results: VectorSearchResult[] = [];
 
       switch (this.activeProvider) {
-        case 'pinecone':
+        case "pinecone":
           results = await this.searchPinecone(queryEmbedding, query);
           break;
-        case 'weaviate':
+        case "weaviate":
           results = await this.searchWeaviate(queryEmbedding, query);
           break;
-        case 'chroma':
+        case "chroma":
           results = await this.searchChroma(queryEmbedding, query);
           break;
-        case 'qdrant':
+        case "qdrant":
           results = await this.searchQdrant(queryEmbedding, query);
           break;
       }
@@ -284,14 +295,14 @@ export class IraqiVectorDatabaseService {
 
       // Sort by combined cultural and semantic score
       results.sort((a, b) => {
-        const scoreA = (a.score * 0.7) + ((a.culturalScore || 0) * 0.3);
-        const scoreB = (b.score * 0.7) + ((b.culturalScore || 0) * 0.3);
+        const scoreA = a.score * 0.7 + (a.culturalScore || 0) * 0.3;
+        const scoreB = b.score * 0.7 + (b.culturalScore || 0) * 0.3;
         return scoreB - scoreA;
       });
 
       return results.slice(0, query.limit || 20);
     } catch (error) {
-      console.error('Error searching embeddings:', error);
+      console.error("Error searching embeddings:", error);
       throw error;
     }
   }
@@ -301,39 +312,50 @@ export class IraqiVectorDatabaseService {
    */
   private async applyCulturalFiltering(
     results: VectorSearchResult[],
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): Promise<VectorSearchResult[]> {
     return results
-      .filter(result => {
+      .filter((result) => {
         const { culturalFilters } = query;
         if (!culturalFilters) return true;
 
         const { culturalCompliance, arabicContent } = result.metadata;
 
         // Apply cultural filters
-        if (culturalFilters.minIslamicCompliance && 
-            culturalCompliance.islamicCompliance < culturalFilters.minIslamicCompliance) {
+        if (
+          culturalFilters.minIslamicCompliance &&
+          culturalCompliance.islamicCompliance <
+            culturalFilters.minIslamicCompliance
+        ) {
           return false;
         }
 
-        if (culturalFilters.minPoliticalNeutrality && 
-            culturalCompliance.politicalNeutrality < culturalFilters.minPoliticalNeutrality) {
+        if (
+          culturalFilters.minPoliticalNeutrality &&
+          culturalCompliance.politicalNeutrality <
+            culturalFilters.minPoliticalNeutrality
+        ) {
           return false;
         }
 
-        if (culturalFilters.requireArabicContent && !arabicContent.hasArabicText) {
+        if (
+          culturalFilters.requireArabicContent &&
+          !arabicContent.hasArabicText
+        ) {
           return false;
         }
 
-        if (culturalFilters.dialectPreference && 
-            arabicContent.dialect !== culturalFilters.dialectPreference &&
-            arabicContent.dialect !== 'general') {
+        if (
+          culturalFilters.dialectPreference &&
+          arabicContent.dialect !== culturalFilters.dialectPreference &&
+          arabicContent.dialect !== "general"
+        ) {
           return false;
         }
 
         return true;
       })
-      .map(result => {
+      .map((result) => {
         // Calculate cultural score
         const culturalScore = this.calculateCulturalScore(result, query);
         return {
@@ -348,7 +370,7 @@ export class IraqiVectorDatabaseService {
    */
   private calculateCulturalScore(
     result: VectorSearchResult,
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): number {
     let score = 0;
     const { metadata } = result;
@@ -357,18 +379,23 @@ export class IraqiVectorDatabaseService {
     score += metadata.culturalCompliance.overallScore * 0.3;
 
     // Professional domain match
-    if (query.professionalDomain && 
-        metadata.professionalDomain === query.professionalDomain) {
+    if (
+      query.professionalDomain &&
+      metadata.professionalDomain === query.professionalDomain
+    ) {
       score += 25;
     }
 
     // Arabic content preference
     if (query.queryAr && metadata.arabicContent.hasArabicText) {
       score += 20;
-      
+
       // Dialect preference bonus
-      if (query.culturalFilters?.dialectPreference &&
-          metadata.arabicContent.dialect === query.culturalFilters.dialectPreference) {
+      if (
+        query.culturalFilters?.dialectPreference &&
+        metadata.arabicContent.dialect ===
+          query.culturalFilters.dialectPreference
+      ) {
         score += 10;
       }
     }
@@ -382,27 +409,33 @@ export class IraqiVectorDatabaseService {
   }
 
   // Provider-specific implementation methods
-  private async storePineconeEmbedding(embedding: IraqiDocumentEmbedding): Promise<void> {
-    if (!this.pinecone) throw new Error('Pinecone not initialized');
-    
-    const index = this.pinecone.Index('iraqi-documents');
+  private async storePineconeEmbedding(
+    embedding: IraqiDocumentEmbedding,
+  ): Promise<void> {
+    if (!this.pinecone) throw new Error("Pinecone not initialized");
+
+    const index = this.pinecone.Index("iraqi-documents");
     await index.upsert({
       upsertRequest: {
-        vectors: [{
-          id: embedding.id,
-          values: embedding.embedding,
-          metadata: embedding.metadata as any,
-        }],
+        vectors: [
+          {
+            id: embedding.id,
+            values: embedding.embedding,
+            metadata: embedding.metadata as any,
+          },
+        ],
       },
     });
   }
 
-  private async storeWeaviateEmbedding(embedding: IraqiDocumentEmbedding): Promise<void> {
-    if (!this.weaviate) throw new Error('Weaviate not initialized');
-    
+  private async storeWeaviateEmbedding(
+    embedding: IraqiDocumentEmbedding,
+  ): Promise<void> {
+    if (!this.weaviate) throw new Error("Weaviate not initialized");
+
     await this.weaviate.data
       .creator()
-      .withClassName('IraqiDocument')
+      .withClassName("IraqiDocument")
       .withId(embedding.id)
       .withVector(embedding.embedding)
       .withProperties({
@@ -413,13 +446,15 @@ export class IraqiVectorDatabaseService {
       .do();
   }
 
-  private async storeChromaEmbedding(embedding: IraqiDocumentEmbedding): Promise<void> {
-    if (!this.chroma) throw new Error('ChromaDB not initialized');
-    
+  private async storeChromaEmbedding(
+    embedding: IraqiDocumentEmbedding,
+  ): Promise<void> {
+    if (!this.chroma) throw new Error("ChromaDB not initialized");
+
     const collection = await this.chroma.getOrCreateCollection({
-      name: 'iraqi-documents',
+      name: "iraqi-documents",
     });
-    
+
     await collection.add({
       ids: [embedding.id],
       embeddings: [embedding.embedding],
@@ -428,58 +463,66 @@ export class IraqiVectorDatabaseService {
     });
   }
 
-  private async storeQdrantEmbedding(embedding: IraqiDocumentEmbedding): Promise<void> {
-    if (!this.qdrant) throw new Error('Qdrant not initialized');
-    
-    await this.qdrant.upsert('iraqi-documents', {
+  private async storeQdrantEmbedding(
+    embedding: IraqiDocumentEmbedding,
+  ): Promise<void> {
+    if (!this.qdrant) throw new Error("Qdrant not initialized");
+
+    await this.qdrant.upsert("iraqi-documents", {
       wait: true,
-      points: [{
-        id: embedding.id,
-        vector: embedding.embedding,
-        payload: {
-          content: embedding.content,
-          contentAr: embedding.contentAr,
-          ...embedding.metadata,
+      points: [
+        {
+          id: embedding.id,
+          vector: embedding.embedding,
+          payload: {
+            content: embedding.content,
+            contentAr: embedding.contentAr,
+            ...embedding.metadata,
+          },
         },
-      }],
+      ],
     });
   }
 
   private async searchPinecone(
     queryEmbedding: number[],
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): Promise<VectorSearchResult[]> {
-    if (!this.pinecone) throw new Error('Pinecone not initialized');
-    
-    const index = this.pinecone.Index('iraqi-documents');
+    if (!this.pinecone) throw new Error("Pinecone not initialized");
+
+    const index = this.pinecone.Index("iraqi-documents");
     const response = await index.query({
       queryRequest: {
         vector: queryEmbedding,
         topK: query.limit || 20,
         includeMetadata: true,
-        filter: query.workspaceId ? { workspaceId: query.workspaceId } : undefined,
+        filter: query.workspaceId
+          ? { workspaceId: query.workspaceId }
+          : undefined,
       },
     });
 
-    return response.matches?.map(match => ({
-      id: match.id,
-      content: match.metadata?.content as string,
-      contentAr: match.metadata?.contentAr as string,
-      score: match.score || 0,
-      metadata: match.metadata as any,
-    })) || [];
+    return (
+      response.matches?.map((match) => ({
+        id: match.id,
+        content: match.metadata?.content as string,
+        contentAr: match.metadata?.contentAr as string,
+        score: match.score || 0,
+        metadata: match.metadata as any,
+      })) || []
+    );
   }
 
   private async searchWeaviate(
     queryEmbedding: number[],
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): Promise<VectorSearchResult[]> {
-    if (!this.weaviate) throw new Error('Weaviate not initialized');
-    
+    if (!this.weaviate) throw new Error("Weaviate not initialized");
+
     const response = await this.weaviate.graphql
       .get()
-      .withClassName('IraqiDocument')
-      .withFields('content contentAr _additional { certainty }')
+      .withClassName("IraqiDocument")
+      .withFields("content contentAr _additional { certainty }")
       .withNearVector({ vector: queryEmbedding })
       .withLimit(query.limit || 20)
       .do();
@@ -495,14 +538,14 @@ export class IraqiVectorDatabaseService {
 
   private async searchChroma(
     queryEmbedding: number[],
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): Promise<VectorSearchResult[]> {
-    if (!this.chroma) throw new Error('ChromaDB not initialized');
-    
+    if (!this.chroma) throw new Error("ChromaDB not initialized");
+
     const collection = await this.chroma.getCollection({
-      name: 'iraqi-documents',
+      name: "iraqi-documents",
     });
-    
+
     const response = await collection.query({
       queryEmbeddings: [queryEmbedding],
       nResults: query.limit || 20,
@@ -510,7 +553,7 @@ export class IraqiVectorDatabaseService {
 
     return response.ids[0].map((id, index) => ({
       id,
-      content: response.documents?.[0]?.[index] || '',
+      content: response.documents?.[0]?.[index] || "",
       contentAr: response.metadatas?.[0]?.[index]?.contentAr as string,
       score: 1 - (response.distances?.[0]?.[index] || 0),
       metadata: response.metadatas?.[0]?.[index] as any,
@@ -519,17 +562,17 @@ export class IraqiVectorDatabaseService {
 
   private async searchQdrant(
     queryEmbedding: number[],
-    query: VectorSearchQuery
+    query: VectorSearchQuery,
   ): Promise<VectorSearchResult[]> {
-    if (!this.qdrant) throw new Error('Qdrant not initialized');
-    
-    const response = await this.qdrant.search('iraqi-documents', {
+    if (!this.qdrant) throw new Error("Qdrant not initialized");
+
+    const response = await this.qdrant.search("iraqi-documents", {
       vector: queryEmbedding,
       limit: query.limit || 20,
       with_payload: true,
     });
 
-    return response.map(hit => ({
+    return response.map((hit) => ({
       id: hit.id as string,
       content: hit.payload?.content as string,
       contentAr: hit.payload?.contentAr as string,
@@ -543,35 +586,35 @@ export class IraqiVectorDatabaseService {
    */
   async deleteEmbedding(embeddingId: string): Promise<void> {
     const cacheKey = `embedding:${embeddingId}`;
-    
+
     try {
       switch (this.activeProvider) {
-        case 'pinecone':
+        case "pinecone":
           if (this.pinecone) {
-            const index = this.pinecone.Index('iraqi-documents');
+            const index = this.pinecone.Index("iraqi-documents");
             await index.delete1({ ids: [embeddingId] });
           }
           break;
-        case 'weaviate':
+        case "weaviate":
           if (this.weaviate) {
             await this.weaviate.data
               .deleter()
-              .withClassName('IraqiDocument')
+              .withClassName("IraqiDocument")
               .withId(embeddingId)
               .do();
           }
           break;
-        case 'chroma':
+        case "chroma":
           if (this.chroma) {
             const collection = await this.chroma.getCollection({
-              name: 'iraqi-documents',
+              name: "iraqi-documents",
             });
             await collection.delete({ ids: [embeddingId] });
           }
           break;
-        case 'qdrant':
+        case "qdrant":
           if (this.qdrant) {
-            await this.qdrant.delete('iraqi-documents', {
+            await this.qdrant.delete("iraqi-documents", {
               wait: true,
               points: [embeddingId],
             });
@@ -580,9 +623,11 @@ export class IraqiVectorDatabaseService {
       }
 
       await this.redis.del(cacheKey);
-      console.log(`Deleted embedding ${embeddingId} from ${this.activeProvider}`);
+      console.log(
+        `Deleted embedding ${embeddingId} from ${this.activeProvider}`,
+      );
     } catch (error) {
-      console.error('Error deleting embedding:', error);
+      console.error("Error deleting embedding:", error);
       throw error;
     }
   }
@@ -597,9 +642,9 @@ export class IraqiVectorDatabaseService {
     arabicContentRatio: number;
   }> {
     try {
-      const cacheKey = 'vector:stats';
+      const cacheKey = "vector:stats";
       const cached = await this.redis.get(cacheKey);
-      
+
       if (cached) {
         return JSON.parse(cached);
       }
@@ -616,7 +661,7 @@ export class IraqiVectorDatabaseService {
       await this.redis.setex(cacheKey, 300, JSON.stringify(stats));
       return stats;
     } catch (error) {
-      console.error('Error getting collection stats:', error);
+      console.error("Error getting collection stats:", error);
       throw error;
     }
   }

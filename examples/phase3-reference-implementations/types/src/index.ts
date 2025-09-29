@@ -1,21 +1,30 @@
 // @iraqi-ai/types - Shared TypeScript types for Iraqi AI Chat System
 // Unified type definitions ensuring consistency across all Iraqi AI components
 
-import { z } from 'zod';
+import { z } from "zod";
 
 // Base Cultural Context Types
 export interface IraqiCulturalContext {
   user_context: {
-    cultural_background: 'iraqi' | 'arab' | 'middle_eastern' | 'international';
-    religious_affiliation: 'muslim' | 'christian' | 'other' | 'prefer_not_to_say';
-    language_preference: 'arabic' | 'english' | 'mixed';
-    regional_dialect?: 'baghdadi' | 'basri' | 'mosuli' | 'southern' | 'northern';
+    cultural_background: "iraqi" | "arab" | "middle_eastern" | "international";
+    religious_affiliation:
+      | "muslim"
+      | "christian"
+      | "other"
+      | "prefer_not_to_say";
+    language_preference: "arabic" | "english" | "mixed";
+    regional_dialect?:
+      | "baghdadi"
+      | "basri"
+      | "mosuli"
+      | "southern"
+      | "northern";
   };
   interaction_context: {
-    formality_level: 'very_formal' | 'formal' | 'semi_formal' | 'casual';
+    formality_level: "very_formal" | "formal" | "semi_formal" | "casual";
     professional_domain?: IraqiProfessionalDomain;
-    communication_style: 'direct' | 'indirect' | 'diplomatic';
-    sensitivity_level: 'standard' | 'high' | 'maximum';
+    communication_style: "direct" | "indirect" | "diplomatic";
+    sensitivity_level: "standard" | "high" | "maximum";
   };
   temporal_context: {
     prayer_time_awareness?: boolean;
@@ -26,25 +35,25 @@ export interface IraqiCulturalContext {
 }
 
 // Professional Domain Types
-export type IraqiProfessionalDomain = 
-  | 'legal'
-  | 'medical'
-  | 'educational'
-  | 'engineering'
-  | 'business'
-  | 'religious'
-  | 'governmental'
-  | 'media'
-  | 'arts'
-  | 'agriculture';
+export type IraqiProfessionalDomain =
+  | "legal"
+  | "medical"
+  | "educational"
+  | "engineering"
+  | "business"
+  | "religious"
+  | "governmental"
+  | "media"
+  | "arts"
+  | "agriculture";
 
 // Islamic Compliance Types
-export type IslamicComplianceLevel = 
-  | 'halal'        // Permissible
-  | 'haram'        // Forbidden
-  | 'makruh'       // Disliked
-  | 'mustahabb'    // Recommended
-  | 'mubah';       // Neutral
+export type IslamicComplianceLevel =
+  | "halal" // Permissible
+  | "haram" // Forbidden
+  | "makruh" // Disliked
+  | "mustahabb" // Recommended
+  | "mubah"; // Neutral
 
 export interface IslamicComplianceResult {
   compliance_level: IslamicComplianceLevel;
@@ -56,25 +65,25 @@ export interface IslamicComplianceResult {
 }
 
 // Language and Dialect Types
-export type ArabicDialect = 
-  | 'iraqi'
-  | 'levantine'
-  | 'gulf'
-  | 'egyptian'
-  | 'maghrebi'
-  | 'standard_arabic';
+export type ArabicDialect =
+  | "iraqi"
+  | "levantine"
+  | "gulf"
+  | "egyptian"
+  | "maghrebi"
+  | "standard_arabic";
 
 export interface ArabicProcessingResult {
   detected_dialect: ArabicDialect;
   confidence_score: number;
   cultural_context_indicators: string[];
   linguistic_features: {
-    formality_level: 'formal' | 'informal' | 'mixed';
-    emotional_tone: 'positive' | 'negative' | 'neutral' | 'mixed';
+    formality_level: "formal" | "informal" | "mixed";
+    emotional_tone: "positive" | "negative" | "neutral" | "mixed";
     discourse_markers: string[];
   };
   rtl_requirements: {
-    text_direction: 'rtl' | 'ltr' | 'mixed';
+    text_direction: "rtl" | "ltr" | "mixed";
     alignment_suggestions: string[];
     font_recommendations: string[];
   };
@@ -84,12 +93,15 @@ export interface ArabicProcessingResult {
 export interface CulturalDecisionRequest {
   content: string;
   context: IraqiCulturalContext;
-  decision_type: 'content_approval' | 'cultural_adaptation' | 'professional_validation';
-  urgency_level: 'low' | 'medium' | 'high' | 'critical';
+  decision_type:
+    | "content_approval"
+    | "cultural_adaptation"
+    | "professional_validation";
+  urgency_level: "low" | "medium" | "high" | "critical";
 }
 
 export interface CulturalDecisionResponse {
-  decision: 'approved' | 'rejected' | 'requires_modification';
+  decision: "approved" | "rejected" | "requires_modification";
   confidence_score: number;
   cultural_appropriateness_score: number;
   islamic_compliance: IslamicComplianceResult;
@@ -105,10 +117,15 @@ export interface IraqiAgentMessage {
   id: string;
   sender_agent_id: string;
   recipient_agent_id?: string;
-  message_type: 'request' | 'response' | 'notification' | 'cultural_validation' | 'arabic_processing';
+  message_type:
+    | "request"
+    | "response"
+    | "notification"
+    | "cultural_validation"
+    | "arabic_processing";
   content: string;
   cultural_context: IraqiCulturalContext;
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: "low" | "medium" | "high" | "critical";
   timestamp: Date;
   metadata?: Record<string, unknown>;
 }
@@ -155,7 +172,7 @@ export interface IraqiSystemMetrics {
 }
 
 // Payment Integration Types (Iraqi Specific)
-export type IraqiPaymentProvider = 'zain_cash' | 'fast_pay' | 'nass_wallet';
+export type IraqiPaymentProvider = "zain_cash" | "fast_pay" | "nass_wallet";
 
 export interface IraqiPaymentConfiguration {
   provider: IraqiPaymentProvider;
@@ -177,16 +194,41 @@ export interface IraqiPaymentConfiguration {
 // Validation Schemas using Zod
 export const IraqiCulturalContextSchema = z.object({
   user_context: z.object({
-    cultural_background: z.enum(['iraqi', 'arab', 'middle_eastern', 'international']),
-    religious_affiliation: z.enum(['muslim', 'christian', 'other', 'prefer_not_to_say']),
-    language_preference: z.enum(['arabic', 'english', 'mixed']),
-    regional_dialect: z.enum(['baghdadi', 'basri', 'mosuli', 'southern', 'northern']).optional(),
+    cultural_background: z.enum([
+      "iraqi",
+      "arab",
+      "middle_eastern",
+      "international",
+    ]),
+    religious_affiliation: z.enum([
+      "muslim",
+      "christian",
+      "other",
+      "prefer_not_to_say",
+    ]),
+    language_preference: z.enum(["arabic", "english", "mixed"]),
+    regional_dialect: z
+      .enum(["baghdadi", "basri", "mosuli", "southern", "northern"])
+      .optional(),
   }),
   interaction_context: z.object({
-    formality_level: z.enum(['very_formal', 'formal', 'semi_formal', 'casual']),
-    professional_domain: z.enum(['legal', 'medical', 'educational', 'engineering', 'business', 'religious', 'governmental', 'media', 'arts', 'agriculture']).optional(),
-    communication_style: z.enum(['direct', 'indirect', 'diplomatic']),
-    sensitivity_level: z.enum(['standard', 'high', 'maximum']),
+    formality_level: z.enum(["very_formal", "formal", "semi_formal", "casual"]),
+    professional_domain: z
+      .enum([
+        "legal",
+        "medical",
+        "educational",
+        "engineering",
+        "business",
+        "religious",
+        "governmental",
+        "media",
+        "arts",
+        "agriculture",
+      ])
+      .optional(),
+    communication_style: z.enum(["direct", "indirect", "diplomatic"]),
+    sensitivity_level: z.enum(["standard", "high", "maximum"]),
   }),
   temporal_context: z.object({
     prayer_time_awareness: z.boolean().optional(),
@@ -199,8 +241,12 @@ export const IraqiCulturalContextSchema = z.object({
 export const CulturalDecisionRequestSchema = z.object({
   content: z.string().min(1),
   context: IraqiCulturalContextSchema,
-  decision_type: z.enum(['content_approval', 'cultural_adaptation', 'professional_validation']),
-  urgency_level: z.enum(['low', 'medium', 'high', 'critical']),
+  decision_type: z.enum([
+    "content_approval",
+    "cultural_adaptation",
+    "professional_validation",
+  ]),
+  urgency_level: z.enum(["low", "medium", "high", "critical"]),
 });
 
 // Error Types
@@ -209,10 +255,10 @@ export class IraqiAIError extends Error {
     message: string,
     public code: string,
     public cultural_context?: IraqiCulturalContext,
-    public details?: Record<string, unknown>
+    public details?: Record<string, unknown>,
   ) {
     super(message);
-    this.name = 'IraqiAIError';
+    this.name = "IraqiAIError";
   }
 }
 
@@ -220,10 +266,12 @@ export class CulturalComplianceError extends IraqiAIError {
   constructor(
     message: string,
     public compliance_violations: string[],
-    cultural_context?: IraqiCulturalContext
+    cultural_context?: IraqiCulturalContext,
   ) {
-    super(message, 'CULTURAL_COMPLIANCE_ERROR', cultural_context, { compliance_violations });
-    this.name = 'CulturalComplianceError';
+    super(message, "CULTURAL_COMPLIANCE_ERROR", cultural_context, {
+      compliance_violations,
+    });
+    this.name = "CulturalComplianceError";
   }
 }
 
@@ -231,18 +279,20 @@ export class ArabicProcessingError extends IraqiAIError {
   constructor(
     message: string,
     public processing_stage: string,
-    cultural_context?: IraqiCulturalContext
+    cultural_context?: IraqiCulturalContext,
   ) {
-    super(message, 'ARABIC_PROCESSING_ERROR', cultural_context, { processing_stage });
-    this.name = 'ArabicProcessingError';
+    super(message, "ARABIC_PROCESSING_ERROR", cultural_context, {
+      processing_stage,
+    });
+    this.name = "ArabicProcessingError";
   }
 }
 
 // Export all types and schemas
-export * from './types/agent-types';
-export * from './types/cultural-types';
-export * from './types/arabic-types';
-export * from './types/professional-types';
+export * from "./types/agent-types";
+export * from "./types/cultural-types";
+export * from "./types/arabic-types";
+export * from "./types/professional-types";
 
 // Re-export zod for consistent validation across packages
-export { z } from 'zod';
+export { z } from "zod";

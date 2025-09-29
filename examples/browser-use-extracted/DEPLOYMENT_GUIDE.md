@@ -11,19 +11,22 @@ This guide covers production deployment of the Browser-use system with Iraqi gov
 ### Infrastructure Requirements
 
 **Minimum Requirements:**
+
 - **CPU**: 4 cores (8 cores recommended)
-- **RAM**: 8GB (16GB recommended) 
+- **RAM**: 8GB (16GB recommended)
 - **Storage**: 50GB SSD (100GB recommended)
 - **Network**: Stable internet with low latency to Iraq
 - **OS**: Ubuntu 20.04+ or CentOS 8+
 
 **Browser Requirements:**
+
 - Chrome/Chromium 120+
 - Firefox 119+
 - Arabic font support
 - RTL layout support
 
 **Security Requirements:**
+
 - SSL/TLS certificates
 - VPN access (if needed for Iraqi portals)
 - Secure credential storage
@@ -103,7 +106,7 @@ CMD ["python3", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "800
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   browser-automation:
@@ -231,7 +234,7 @@ http {
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
-            
+
             # Timeouts for long-running automations
             proxy_connect_timeout 60s;
             proxy_send_timeout 300s;
@@ -290,56 +293,56 @@ spec:
         runAsUser: 1001
         fsGroup: 1001
       containers:
-      - name: browser-automation
-        image: iraqi-ai/browser-automation:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: ENVIRONMENT
-          value: "production"
-        - name: REDIS_URL
-          value: "redis://redis-service:6379"
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: postgres-secret
-              key: database-url
-        - name: OPENAI_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: llm-secrets
-              key: openai-api-key
-        resources:
-          requests:
-            memory: "2Gi"
-            cpu: "1000m"
-          limits:
-            memory: "4Gi"
-            cpu: "2000m"
-        volumeMounts:
-        - name: downloads
-          mountPath: /app/downloads
-        - name: config
-          mountPath: /app/config
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: browser-automation
+          image: iraqi-ai/browser-automation:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: ENVIRONMENT
+              value: "production"
+            - name: REDIS_URL
+              value: "redis://redis-service:6379"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: database-url
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-secrets
+                  key: openai-api-key
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          volumeMounts:
+            - name: downloads
+              mountPath: /app/downloads
+            - name: config
+              mountPath: /app/config
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
       volumes:
-      - name: downloads
-        persistentVolumeClaim:
-          claimName: downloads-pvc
-      - name: config
-        configMap:
-          name: browser-automation-config
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: downloads-pvc
+        - name: config
+          configMap:
+            name: browser-automation-config
 ```
 
 ```yaml
@@ -353,9 +356,9 @@ spec:
   selector:
     app: browser-automation
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 8000
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
   type: ClusterIP
 ```
 
@@ -373,20 +376,20 @@ metadata:
     nginx.ingress.kubernetes.io/rate-limit-window: "1m"
 spec:
   tls:
-  - hosts:
-    - automation.iraqi-ai.com
-    secretName: automation-tls
+    - hosts:
+        - automation.iraqi-ai.com
+      secretName: automation-tls
   rules:
-  - host: automation.iraqi-ai.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: browser-automation-service
-            port:
-              number: 80
+    - host: automation.iraqi-ai.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: browser-automation-service
+                port:
+                  number: 80
 ```
 
 ## 🔧 Environment Configuration
@@ -455,44 +458,44 @@ class Settings(BaseSettings):
     environment: str = "development"
     debug: bool = False
     log_level: str = "INFO"
-    
+
     # Database settings
     database_url: str
     redis_url: str
-    
+
     # LLM Provider settings
     openai_api_key: Optional[str] = None
     anthropic_api_key: Optional[str] = None
     google_api_key: Optional[str] = None
-    
+
     # Browser settings
     default_browser: str = "chrome"
     headless_mode: bool = True
     browser_timeout: int = 90000
     max_concurrent_browsers: int = 3
-    
+
     # Iraqi portal settings
     iraqi_portal_timeout: int = 90000
     government_hours_check: bool = True
     cultural_validation: bool = True
     arabic_support: bool = True
     rtl_layout: bool = True
-    
+
     # Security settings
     secret_key: str
     encrypt_sensitive_data: bool = True
     audit_all_interactions: bool = True
-    
+
     # Performance settings
     enable_caching: bool = True
     cache_ttl: int = 3600
     max_workers: int = 4
-    
+
     # File paths
     download_path: str = "/app/downloads"
     screenshot_path: str = "/app/screenshots"
     log_path: str = "/app/logs"
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = False
@@ -537,7 +540,7 @@ portal_response_time = Histogram(
 class MetricsCollector:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-    
+
     def record_automation_request(self, automation_type: str, status: str, portal: str):
         """Record automation request metrics"""
         automation_requests_total.labels(
@@ -545,18 +548,18 @@ class MetricsCollector:
             status=status,
             portal=portal
         ).inc()
-    
+
     def record_automation_duration(self, automation_type: str, portal: str, duration: float):
         """Record automation duration"""
         automation_duration_seconds.labels(
             automation_type=automation_type,
             portal=portal
         ).observe(duration)
-    
+
     def update_active_sessions(self, count: int):
         """Update active browser sessions count"""
         active_browser_sessions.set(count)
-    
+
     def record_portal_response_time(self, portal_name: str, response_time: float):
         """Record portal response time"""
         portal_response_time.labels(portal_name=portal_name).observe(response_time)
@@ -577,7 +580,7 @@ from pythonjsonlogger import jsonlogger
 
 def configure_logging():
     """Configure structured logging for production"""
-    
+
     # Configure structlog
     structlog.configure(
         processors=[
@@ -596,23 +599,23 @@ def configure_logging():
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=True,
     )
-    
+
     # Configure standard logging
     formatter = jsonlogger.JsonFormatter(
         '%(asctime)s %(name)s %(levelname)s %(message)s'
     )
-    
+
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
-    
+
     root_logger = logging.getLogger()
     root_logger.addHandler(handler)
     root_logger.setLevel(logging.INFO)
-    
+
     # Configure Iraqi-specific loggers
     iraqi_logger = logging.getLogger('iraqi_portal')
     iraqi_logger.setLevel(logging.INFO)
-    
+
     automation_logger = logging.getLogger('browser_automation')
     automation_logger.setLevel(logging.INFO)
 
@@ -646,28 +649,28 @@ class SecurityConfig:
     def __init__(self):
         self.encryption_key = os.getenv('ENCRYPTION_KEY', Fernet.generate_key())
         self.cipher = Fernet(self.encryption_key)
-    
+
     def encrypt_sensitive_data(self, data: str) -> bytes:
         """Encrypt sensitive data like credentials"""
         return self.cipher.encrypt(data.encode())
-    
+
     def decrypt_sensitive_data(self, encrypted_data: bytes) -> str:
         """Decrypt sensitive data"""
         return self.cipher.decrypt(encrypted_data).decode()
-    
+
     def validate_iraqi_data_privacy(self, data: dict) -> bool:
         """Validate data privacy compliance for Iraqi context"""
         # Implement Iraqi data privacy validation
         sensitive_fields = ['national_id', 'passport_number', 'phone_number']
-        
+
         for field in sensitive_fields:
             if field in data:
                 # Ensure data is properly encrypted
                 if not self._is_encrypted(data[field]):
                     return False
-        
+
         return True
-    
+
     def _is_encrypted(self, data: str) -> bool:
         """Check if data is encrypted"""
         try:
@@ -691,7 +694,7 @@ BLOCKED_HOSTS = [
 # Rate limiting configuration
 RATE_LIMITS = {
     'passport_renewal': '10/hour',
-    'university_application': '5/hour', 
+    'university_application': '5/hour',
     'status_check': '20/hour',
     'general_automation': '50/hour'
 }
@@ -710,7 +713,7 @@ class CredentialManager:
         self.use_aws_secrets = os.getenv('USE_AWS_SECRETS', 'false').lower() == 'true'
         if self.use_aws_secrets:
             self.secrets_client = boto3.client('secretsmanager')
-    
+
     async def get_llm_credentials(self) -> Dict[str, str]:
         """Get LLM provider credentials securely"""
         if self.use_aws_secrets:
@@ -721,7 +724,7 @@ class CredentialManager:
                 'anthropic_api_key': os.getenv('ANTHROPIC_API_KEY'),
                 'google_api_key': os.getenv('GOOGLE_API_KEY')
             }
-    
+
     async def get_database_credentials(self) -> Dict[str, str]:
         """Get database credentials securely"""
         if self.use_aws_secrets:
@@ -731,7 +734,7 @@ class CredentialManager:
                 'database_url': os.getenv('DATABASE_URL'),
                 'redis_url': os.getenv('REDIS_URL')
             }
-    
+
     async def _get_aws_secrets(self, secret_name: str) -> Dict[str, str]:
         """Get secrets from AWS Secrets Manager"""
         try:
@@ -774,28 +777,28 @@ fi
 # Deploy to Kubernetes
 if command -v kubectl &> /dev/null; then
     echo "☸️ Deploying to Kubernetes..."
-    
+
     # Create namespace if it doesn't exist
     kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
-    
+
     # Apply Kubernetes manifests
     kubectl apply -f k8s/ -n $NAMESPACE
-    
+
     # Wait for deployment to be ready
     echo "⏳ Waiting for deployment to be ready..."
     kubectl rollout status deployment/browser-automation -n $NAMESPACE
-    
+
     echo "✅ Deployment completed successfully!"
-    
+
     # Show deployment status
     kubectl get pods -n $NAMESPACE
     kubectl get services -n $NAMESPACE
-    
+
 else
     # Docker Compose deployment
     echo "🐳 Deploying with Docker Compose..."
     docker-compose -f docker-compose.yml up -d
-    
+
     echo "✅ Deployment completed successfully!"
     docker-compose ps
 fi
@@ -931,24 +934,24 @@ def get_optimized_browser_config() -> BrowserConfig:
         # Browser settings
         browser_type=BrowserType.CHROME,
         mode=BrowserMode.HEADLESS,
-        
+
         # Performance optimizations
         viewport_width=1366,  # Common Iraqi screen resolution
         viewport_height=768,
         timeout=90000,  # Extended for Iraqi network conditions
-        
+
         # Iraqi-specific optimizations
         arabic_support=True,
         rtl_layout=True,
         iraqi_portals=True,
         network_optimization=True,
-        
+
         # Memory and resource optimization
         extensions=[
             "ublock-origin",  # Block ads for faster loading
             "arabic-fonts"    # Arabic font support
         ],
-        
+
         # Arguments for performance
         args=[
             "--no-sandbox",
@@ -971,13 +974,13 @@ def get_optimized_browser_config() -> BrowserConfig:
 ```sql
 -- init.sql - Database optimization for Iraqi portal automation
 -- Performance indexes
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_automation_requests_portal_date 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_automation_requests_portal_date
 ON automation_requests(portal_name, created_at);
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_automation_results_status 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_automation_results_status
 ON automation_results(status, created_at);
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_user_sessions_active 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_user_sessions_active
 ON user_sessions(is_active, last_activity);
 
 -- Partitioning for large tables
@@ -985,14 +988,14 @@ CREATE TABLE automation_logs_2024 PARTITION OF automation_logs
 FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
 
 -- Iraqi-specific optimizations
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_applications_national_id 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_applications_national_id
 ON applications(national_id) WHERE national_id IS NOT NULL;
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_applications_passport_number 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_applications_passport_number
 ON applications(passport_number) WHERE passport_number IS NOT NULL;
 
 -- Text search for Arabic content
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_arabic_content 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_documents_arabic_content
 ON documents USING gin(to_tsvector('arabic', content));
 ```
 

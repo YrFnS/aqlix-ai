@@ -49,4 +49,4 @@ export interface ProfileConnectionsResponse {
   success: boolean;
   connections: any[];
   count: number;
-} 
+}

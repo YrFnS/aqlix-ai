@@ -1,7 +1,7 @@
 /**
  * Iraqi AI User Management Component
  * Advanced user management with Iraqi professional roles and cultural compliance
- * 
+ *
  * Features:
  * - Arabic-first user interface
  * - Iraqi professional role management (lawyer, doctor, teacher, etc.)
@@ -40,7 +40,7 @@ import {
   Building2,
   GraduationCap,
   Briefcase,
-  Activity
+  Activity,
 } from 'lucide-react';
 
 import {
@@ -50,7 +50,7 @@ import {
   ComplianceLevel,
   FilterOptions,
   SortOptions,
-  PaginatedResponse
+  PaginatedResponse,
 } from '../types/admin';
 import { useUserManagement } from '../hooks/useUserManagement';
 import LoadingSpinner from './LoadingSpinner';
@@ -81,13 +81,13 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
     professionalRole: undefined,
     complianceLevel: undefined,
     status: undefined,
-    governorate: undefined
+    governorate: undefined,
   });
 
   // Sorting
   const [sort, setSort] = useState<SortOptions>({
     field: 'createdAt',
-    direction: 'desc'
+    direction: 'desc',
   });
 
   // Pagination
@@ -108,7 +108,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
     assignRole,
     bulkUpdateUsers,
     exportUsers,
-    refreshUsers
+    refreshUsers,
   } = useUserManagement();
 
   // Translations
@@ -206,7 +206,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
       next: 'التالي',
       previous: 'السابق',
       clearFilters: 'مسح المرشحات',
-      applyFilters: 'تطبيق المرشحات'
+      applyFilters: 'تطبيق المرشحات',
     },
     en: {
       userManagement: 'User Management',
@@ -301,8 +301,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
       next: 'Next',
       previous: 'Previous',
       clearFilters: 'Clear Filters',
-      applyFilters: 'Apply Filters'
-    }
+      applyFilters: 'Apply Filters',
+    },
   };
 
   const translations = t[language];
@@ -329,10 +329,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
 
   // Handle user selection
   const handleSelectUser = (userId: string) => {
-    setSelectedUsers(prev => 
-      prev.includes(userId) 
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+    setSelectedUsers(prev =>
+      prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]
     );
   };
 
@@ -378,7 +376,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
     }
   };
 
-  const handleStatusChange = async (userId: string, status: 'active' | 'inactive' | 'suspended') => {
+  const handleStatusChange = async (
+    userId: string,
+    status: 'active' | 'inactive' | 'suspended'
+  ) => {
     try {
       if (status === 'active') {
         await activateUser(userId);
@@ -398,14 +399,16 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
     const statusConfig = {
       active: { color: 'bg-green-100 text-green-800', icon: CheckCircle },
       inactive: { color: 'bg-gray-100 text-gray-800', icon: XCircle },
-      suspended: { color: 'bg-red-100 text-red-800', icon: AlertTriangle }
+      suspended: { color: 'bg-red-100 text-red-800', icon: AlertTriangle },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig];
     const Icon = config?.icon || XCircle;
 
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config?.color || 'bg-gray-100 text-gray-800'}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config?.color || 'bg-gray-100 text-gray-800'}`}
+      >
         <Icon className="h-3 w-3 mr-1" />
         {translations[status as keyof typeof translations] || status}
       </span>
@@ -419,11 +422,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
     else if (score >= 85) color = 'text-yellow-600';
     else if (score >= 70) color = 'text-orange-600';
 
-    return (
-      <span className={`font-medium ${color}`}>
-        {score}%
-      </span>
-    );
+    return <span className={`font-medium ${color}`}>{score}%</span>;
   };
 
   // Render user row
@@ -437,7 +436,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
         />
       </td>
-      
+
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
           <div className="h-10 w-10 flex-shrink-0">
@@ -446,13 +445,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
             </div>
           </div>
           <div className={`${isRTL ? 'mr-4' : 'ml-4'}`}>
-            <div className="text-sm font-medium text-gray-900">
-              {user.name}
-            </div>
+            <div className="text-sm font-medium text-gray-900">{user.name}</div>
             {user.arabicName && (
-              <div className="text-sm text-gray-500 font-arabic">
-                {user.arabicName}
-              </div>
+              <div className="text-sm text-gray-500 font-arabic">{user.arabicName}</div>
             )}
           </div>
         </div>
@@ -468,20 +463,22 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
       <td className="px-6 py-4 whitespace-nowrap">
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
           <Briefcase className="h-3 w-3 mr-1" />
-          {user.professionalRole ? translations[user.professionalRole as keyof typeof translations] : '-'}
+          {user.professionalRole
+            ? translations[user.professionalRole as keyof typeof translations]
+            : '-'}
         </span>
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-900">{user.organizationId}</div>
-        {user.departmentId && (
-          <div className="text-sm text-gray-500">{user.departmentId}</div>
-        )}
+        {user.departmentId && <div className="text-sm text-gray-500">{user.departmentId}</div>}
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-900">
-          {user.governorateCode ? translations[user.governorateCode as keyof typeof translations] : '-'}
+          {user.governorateCode
+            ? translations[user.governorateCode as keyof typeof translations]
+            : '-'}
         </div>
       </td>
 
@@ -491,15 +488,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
 
       <td className="px-6 py-4 whitespace-nowrap">
         {renderComplianceScore(
-          user.complianceStatus === 'full_compliance' ? 95 :
-          user.complianceStatus === 'standard_compliance' ? 85 :
-          user.complianceStatus === 'basic_compliance' ? 70 : 50
+          user.complianceStatus === 'full_compliance'
+            ? 95
+            : user.complianceStatus === 'standard_compliance'
+              ? 85
+              : user.complianceStatus === 'basic_compliance'
+                ? 70
+                : 50
         )}
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        <div>{new Date(user.lastActivity).toLocaleDateString(language === 'ar' ? 'ar-IQ' : 'en-US')}</div>
-        <div className="text-xs">{new Date(user.lastActivity).toLocaleTimeString(language === 'ar' ? 'ar-IQ' : 'en-US')}</div>
+        <div>
+          {new Date(user.lastActivity).toLocaleDateString(language === 'ar' ? 'ar-IQ' : 'en-US')}
+        </div>
+        <div className="text-xs">
+          {new Date(user.lastActivity).toLocaleTimeString(language === 'ar' ? 'ar-IQ' : 'en-US')}
+        </div>
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -536,8 +541,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               }
             }}
             className={`p-1 rounded-full hover:bg-opacity-50 ${
-              user.isActive 
-                ? 'text-orange-600 hover:bg-orange-50' 
+              user.isActive
+                ? 'text-orange-600 hover:bg-orange-50'
                 : 'text-green-600 hover:bg-green-50'
             }`}
             title={user.isActive ? translations.deactivate : translations.activate}
@@ -571,10 +576,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
         <div>
           <h2 className="text-lg font-medium text-gray-900">{translations.userManagement}</h2>
           <p className="text-sm text-gray-500 mt-1">
-            {translations.showingResults} {users?.length || 0} {translations.of} {totalCount} {translations.users}
+            {translations.showingResults} {users?.length || 0} {translations.of} {totalCount}{' '}
+            {translations.users}
           </p>
         </div>
-        
+
         <div className="flex items-center space-x-3 mt-4 sm:mt-0">
           <button
             onClick={() => setShowExportDialog(true)}
@@ -605,7 +611,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
             type="text"
             placeholder={translations.searchUsers}
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
           />
         </div>
@@ -643,7 +649,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </label>
               <select
                 value={filters.role || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, role: e.target.value as AdminRole || undefined }))}
+                onChange={e =>
+                  setFilters(prev => ({
+                    ...prev,
+                    role: (e.target.value as AdminRole) || undefined,
+                  }))
+                }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Roles</option>
@@ -663,7 +674,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </label>
               <select
                 value={filters.professionalRole || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, professionalRole: e.target.value as IraqiProfessionalRole || undefined }))}
+                onChange={e =>
+                  setFilters(prev => ({
+                    ...prev,
+                    professionalRole: (e.target.value as IraqiProfessionalRole) || undefined,
+                  }))
+                }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Professions</option>
@@ -684,7 +700,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </label>
               <select
                 value={filters.complianceLevel || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, complianceLevel: e.target.value as ComplianceLevel || undefined }))}
+                onChange={e =>
+                  setFilters(prev => ({
+                    ...prev,
+                    complianceLevel: (e.target.value as ComplianceLevel) || undefined,
+                  }))
+                }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Levels</option>
@@ -702,7 +723,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </label>
               <select
                 value={filters.status || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value as any || undefined }))}
+                onChange={e =>
+                  setFilters(prev => ({ ...prev, status: (e.target.value as any) || undefined }))
+                }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Status</option>
@@ -719,7 +742,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </label>
               <select
                 value={filters.governorate || ''}
-                onChange={(e) => setFilters(prev => ({ ...prev, governorate: e.target.value || undefined }))}
+                onChange={e =>
+                  setFilters(prev => ({ ...prev, governorate: e.target.value || undefined }))
+                }
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">All Governorates</option>
@@ -746,7 +771,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
                   professionalRole: undefined,
                   complianceLevel: undefined,
                   status: undefined,
-                  governorate: undefined
+                  governorate: undefined,
                 });
                 setSearchTerm('');
               }}
@@ -754,7 +779,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
             >
               {translations.clearFilters}
             </button>
-            
+
             <button
               onClick={() => setShowFilters(false)}
               className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
@@ -774,7 +799,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
                 {selectedUsers.length} {translations.selected}
               </span>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <BulkActions
                 selectedUserIds={selectedUsers}
@@ -800,52 +825,50 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.name}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.email} / {translations.role}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.professionalRole}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.organization}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.governorate}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.status}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.complianceScore}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.lastActivity}
                 </th>
-                
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.createdAt}
                 </th>
-                
+
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   {translations.actions}
                 </th>
               </tr>
             </thead>
-            
-            <tbody className="bg-white divide-y divide-gray-200">
-              {users?.map(renderUserRow)}
-            </tbody>
+
+            <tbody className="bg-white divide-y divide-gray-200">{users?.map(renderUserRow)}</tbody>
           </table>
         </div>
 
@@ -870,7 +893,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
             >
               {translations.previous}
             </button>
-            
+
             <button
               onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={currentPage * pageSize >= totalCount}
@@ -879,18 +902,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               {translations.next}
             </button>
           </div>
-          
+
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                {translations.showingResults} <span className="font-medium">{((currentPage - 1) * pageSize) + 1}</span> {translations.of} <span className="font-medium">{Math.min(currentPage * pageSize, totalCount)}</span> {translations.of} <span className="font-medium">{totalCount}</span> {translations.users}
+                {translations.showingResults}{' '}
+                <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span>{' '}
+                {translations.of}{' '}
+                <span className="font-medium">{Math.min(currentPage * pageSize, totalCount)}</span>{' '}
+                {translations.of} <span className="font-medium">{totalCount}</span>{' '}
+                {translations.users}
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <select
                 value={pageSize}
-                onChange={(e) => {
+                onChange={e => {
                   setPageSize(Number(e.target.value));
                   setCurrentPage(1);
                 }}
@@ -903,9 +931,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
               </select>
               <span className="text-sm text-gray-700">{translations.rowsPerPage}</span>
             </div>
-            
+
             <div>
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <nav
+                className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                aria-label="Pagination"
+              >
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
@@ -913,9 +944,9 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
                 >
                   {translations.previous}
                 </button>
-                
+
                 {/* Page numbers would go here */}
-                
+
                 <button
                   onClick={() => setCurrentPage(prev => prev + 1)}
                   disabled={currentPage * pageSize >= totalCount}
@@ -942,9 +973,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ language, isRTL }) => {
         >
           <UserForm
             user={editingUser}
-            onSave={editingUser ? 
-              (updates) => handleUpdateUser(editingUser.id, updates) :
-              handleCreateUser
+            onSave={
+              editingUser ? updates => handleUpdateUser(editingUser.id, updates) : handleCreateUser
             }
             onCancel={() => {
               setShowUserForm(false);

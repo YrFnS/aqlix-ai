@@ -1,8 +1,8 @@
-import { Input } from '@/components/ui/input';
-import { SubmitButton } from '../ui/submit-button';
-import { Label } from '../ui/label';
-import { GetAccountResponse } from '@usebasejump/shared';
-import { editPersonalAccountName } from '@/lib/actions/personal-account';
+import { Input } from "@/components/ui/input";
+import { SubmitButton } from "../ui/submit-button";
+import { Label } from "../ui/label";
+import { GetAccountResponse } from "@usebasejump/shared";
+import { editPersonalAccountName } from "@/lib/actions/personal-account";
 
 type Props = {
   account: GetAccountResponse;

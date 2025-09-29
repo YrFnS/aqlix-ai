@@ -1,10 +1,17 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Globe, Loader2, AlertTriangle } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React from "react";
+import { Globe, Loader2, AlertTriangle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PublishDialogData {
   templateId: string;
@@ -22,7 +29,7 @@ export const PublishDialog = ({
   publishDialog,
   templatesActioningId,
   onClose,
-  onPublish
+  onPublish,
 }: PublishDialogProps) => {
   return (
     <Dialog open={!!publishDialog} onOpenChange={onClose}>
@@ -30,14 +37,18 @@ export const PublishDialog = ({
         <DialogHeader>
           <DialogTitle>Publish Template to Marketplace</DialogTitle>
           <DialogDescription>
-            Make "{publishDialog?.templateName}" available for the community to discover and install.
+            Make "{publishDialog?.templateName}" available for the community to
+            discover and install.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              <strong>Important:</strong> Any personal information, API keys, credentials, or data from custom MCP servers included in this template will be publicly visible. Please ensure your template does not contain sensitive information before publishing.
+              <strong>Important:</strong> Any personal information, API keys,
+              credentials, or data from custom MCP servers included in this
+              template will be publicly visible. Please ensure your template
+              does not contain sensitive information before publishing.
             </AlertDescription>
           </Alert>
         </div>
@@ -49,10 +60,7 @@ export const PublishDialog = ({
           >
             Cancel
           </Button>
-          <Button
-            onClick={onPublish}
-            disabled={!!templatesActioningId}
-          >
+          <Button onClick={onPublish} disabled={!!templatesActioningId}>
             {templatesActioningId ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -69,4 +77,4 @@ export const PublishDialog = ({
       </DialogContent>
     </Dialog>
   );
-}; 
+};

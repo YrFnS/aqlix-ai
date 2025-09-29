@@ -1,9 +1,9 @@
 /**
  * Iraqi Payment Gateway Integration
- * 
+ *
  * Provides secure integration with major Iraqi payment gateways including
  * ZainCash, FastPay, and NassWallet with Islamic financial compliance.
- * 
+ *
  * Features:
  * - Multi-gateway support with intelligent routing
  * - Islamic financial compliance validation
@@ -34,13 +34,13 @@ export interface PaymentGatewayConfig {
     minAmount: number; // 1000 IQD
     maxAmount: number; // 2000000 IQD
   };
-  defaultGateway: 'zainCash' | 'fastPay' | 'nassWallet';
-  fallbackOrder: ('zainCash' | 'fastPay' | 'nassWallet')[];
+  defaultGateway: "zainCash" | "fastPay" | "nassWallet";
+  fallbackOrder: ("zainCash" | "fastPay" | "nassWallet")[];
 }
 
 export interface PaymentRequest {
   amount: number; // In Iraqi Dinar (IQD)
-  currency: 'IQD';
+  currency: "IQD";
   description: string;
   customerPhone: string; // Iraqi mobile format
   customerName: string;
@@ -53,9 +53,9 @@ export interface PaymentResponse {
   success: boolean;
   transactionId: string;
   paymentUrl?: string;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  status: "pending" | "completed" | "failed" | "cancelled";
   amount: number;
-  currency: 'IQD';
+  currency: "IQD";
   gateway: string;
   timestamp: Date;
   errors?: string[];
@@ -71,7 +71,7 @@ export interface PaymentValidationResult {
 
 /**
  * Iraqi Payment Gateway Integration System
- * 
+ *
  * Manages secure payment processing across Iraqi financial institutions
  * with full Islamic compliance validation.
  */
@@ -84,25 +84,38 @@ export class IraqiPaymentGateway {
   // Islamic finance principles for payment validation
   private readonly islamicFinanceRules: IslamicFinanceRules = {
     prohibited: [
-      'ربا', 'فوائد', 'قمار', 'ميسر', 'غرر',
-      'usury', 'interest', 'gambling', 'speculation'
+      "ربا",
+      "فوائد",
+      "قمار",
+      "ميسر",
+      "غرر",
+      "usury",
+      "interest",
+      "gambling",
+      "speculation",
     ],
     required: [
-      'موافقة', 'شفافية', 'عدالة', 'أمانة',
-      'consent', 'transparency', 'fairness', 'trust'
+      "موافقة",
+      "شفافية",
+      "عدالة",
+      "أمانة",
+      "consent",
+      "transparency",
+      "fairness",
+      "trust",
     ],
     complianceFactors: {
       transparency: 0.3,
       fairness: 0.25,
       consent: 0.25,
-      trust: 0.2
-    }
+      trust: 0.2,
+    },
   };
 
   constructor(config: PaymentGatewayConfig) {
     this.config = config;
     this.fraudDetector = new FraudDetector();
-    console.info('Iraqi Payment Gateway initialized with Islamic compliance');
+    console.info("Iraqi Payment Gateway initialized with Islamic compliance");
   }
 
   /**
@@ -114,30 +127,30 @@ export class IraqiPaymentGateway {
     if (!validation.isValid || !validation.islamicCompliant) {
       return {
         success: false,
-        transactionId: '',
-        status: 'failed',
+        transactionId: "",
+        status: "failed",
         amount: request.amount,
-        currency: 'IQD',
-        gateway: 'validation_failed',
+        currency: "IQD",
+        gateway: "validation_failed",
         timestamp: new Date(),
-        errors: validation.issues
+        errors: validation.issues,
       };
     }
 
     // Select optimal gateway
     const gateway = await this.selectOptimalGateway(request);
-    
+
     try {
       // Process with selected gateway
       const result = await this.processWithGateway(request, gateway);
-      
+
       // Log transaction for monitoring
       this.logTransaction(request, result);
-      
+
       return result;
     } catch (error) {
       console.error(`Payment processing failed with ${gateway}:`, error);
-      
+
       // Try fallback gateways
       return await this.processWithFallback(request);
     }
@@ -146,20 +159,22 @@ export class IraqiPaymentGateway {
   /**
    * Validate payment for Islamic compliance
    */
-  private async validatePayment(request: PaymentRequest): Promise<PaymentValidationResult> {
+  private async validatePayment(
+    request: PaymentRequest,
+  ): Promise<PaymentValidationResult> {
     const issues: string[] = [];
     const recommendations: string[] = [];
     let securityScore = 100;
 
     // Amount validation
     if (request.amount <= 0) {
-      issues.push('Invalid payment amount');
+      issues.push("Invalid payment amount");
       securityScore -= 30;
     }
 
     // Currency validation
-    if (request.currency !== 'IQD') {
-      issues.push('Only Iraqi Dinar (IQD) is supported');
+    if (request.currency !== "IQD") {
+      issues.push("Only Iraqi Dinar (IQD) is supported");
       securityScore -= 20;
     }
 
@@ -173,16 +188,16 @@ export class IraqiPaymentGateway {
     // Fraud detection
     const fraudRisk = await this.fraudDetector.assessRisk(request);
     if (fraudRisk.score > 0.7) {
-      issues.push('High fraud risk detected');
+      issues.push("High fraud risk detected");
       securityScore -= 40;
-      recommendations.push('Additional verification required');
+      recommendations.push("Additional verification required");
     }
 
     // Phone number validation (Iraqi format)
     if (!this.validateIraqiPhone(request.customerPhone)) {
-      issues.push('Invalid Iraqi phone number format');
+      issues.push("Invalid Iraqi phone number format");
       securityScore -= 10;
-      recommendations.push('Use format: +964XXXXXXXXX');
+      recommendations.push("Use format: +964XXXXXXXXX");
     }
 
     return {
@@ -190,7 +205,7 @@ export class IraqiPaymentGateway {
       islamicCompliant: islamicCompliance.compliant,
       securityScore: Math.max(0, securityScore),
       issues,
-      recommendations
+      recommendations,
     };
   }
 
@@ -216,16 +231,20 @@ export class IraqiPaymentGateway {
 
     // Validate transaction purpose
     if (this.containsGamblingTerms(combinedText)) {
-      violations.push('Transaction appears to involve gambling (prohibited in Islam)');
+      violations.push(
+        "Transaction appears to involve gambling (prohibited in Islam)",
+      );
     }
 
     if (this.containsInterestTerms(combinedText)) {
-      violations.push('Transaction appears to involve interest/usury (prohibited in Islam)');
+      violations.push(
+        "Transaction appears to involve interest/usury (prohibited in Islam)",
+      );
     }
 
     return {
       compliant: violations.length === 0,
-      violations
+      violations,
     };
   }
 
@@ -239,32 +258,38 @@ export class IraqiPaymentGateway {
     const availableGateways: { name: string; score: number }[] = [];
 
     // ZainCash evaluation
-    if (this.config.zainCash.enabled && 
-        amount >= this.config.zainCash.minAmount && 
-        amount <= this.config.zainCash.maxAmount) {
-      const status = await this.checkGatewayHealth('zainCash');
-      availableGateways.push({ name: 'zainCash', score: status.score });
+    if (
+      this.config.zainCash.enabled &&
+      amount >= this.config.zainCash.minAmount &&
+      amount <= this.config.zainCash.maxAmount
+    ) {
+      const status = await this.checkGatewayHealth("zainCash");
+      availableGateways.push({ name: "zainCash", score: status.score });
     }
 
     // FastPay evaluation
-    if (this.config.fastPay.enabled && 
-        amount >= this.config.fastPay.minAmount && 
-        amount <= this.config.fastPay.maxAmount) {
-      const status = await this.checkGatewayHealth('fastPay');
-      availableGateways.push({ name: 'fastPay', score: status.score });
+    if (
+      this.config.fastPay.enabled &&
+      amount >= this.config.fastPay.minAmount &&
+      amount <= this.config.fastPay.maxAmount
+    ) {
+      const status = await this.checkGatewayHealth("fastPay");
+      availableGateways.push({ name: "fastPay", score: status.score });
     }
 
     // NassWallet evaluation
-    if (this.config.nassWallet.enabled && 
-        amount >= this.config.nassWallet.minAmount && 
-        amount <= this.config.nassWallet.maxAmount) {
-      const status = await this.checkGatewayHealth('nassWallet');
-      availableGateways.push({ name: 'nassWallet', score: status.score });
+    if (
+      this.config.nassWallet.enabled &&
+      amount >= this.config.nassWallet.minAmount &&
+      amount <= this.config.nassWallet.maxAmount
+    ) {
+      const status = await this.checkGatewayHealth("nassWallet");
+      availableGateways.push({ name: "nassWallet", score: status.score });
     }
 
     // Select best available gateway
     if (availableGateways.length === 0) {
-      throw new Error('No available payment gateways for this amount');
+      throw new Error("No available payment gateways for this amount");
     }
 
     // Sort by score and return best
@@ -276,17 +301,17 @@ export class IraqiPaymentGateway {
    * Process payment with specific gateway
    */
   private async processWithGateway(
-    request: PaymentRequest, 
-    gateway: string
+    request: PaymentRequest,
+    gateway: string,
   ): Promise<PaymentResponse> {
     this.transactionCount++;
 
     switch (gateway) {
-      case 'zainCash':
+      case "zainCash":
         return await this.processZainCash(request);
-      case 'fastPay':
+      case "fastPay":
         return await this.processFastPay(request);
-      case 'nassWallet':
+      case "nassWallet":
         return await this.processNassWallet(request);
       default:
         throw new Error(`Unsupported gateway: ${gateway}`);
@@ -296,16 +321,18 @@ export class IraqiPaymentGateway {
   /**
    * ZainCash payment processing
    */
-  private async processZainCash(request: PaymentRequest): Promise<PaymentResponse> {
+  private async processZainCash(
+    request: PaymentRequest,
+  ): Promise<PaymentResponse> {
     // ZainCash API integration
     const payload = {
       amount: request.amount,
-      currency: 'IQD',
+      currency: "IQD",
       orderId: request.orderId,
       description: request.description,
       customerPhone: request.customerPhone,
       returnUrl: request.returnUrl,
-      merchantId: this.config.zainCash.merchantId
+      merchantId: this.config.zainCash.merchantId,
     };
 
     // Simulate API call (replace with actual ZainCash API)
@@ -315,28 +342,30 @@ export class IraqiPaymentGateway {
       success: response.success,
       transactionId: response.transactionId || `zc_${Date.now()}`,
       paymentUrl: response.paymentUrl,
-      status: response.status || 'pending',
+      status: response.status || "pending",
       amount: request.amount,
-      currency: 'IQD',
-      gateway: 'zainCash',
+      currency: "IQD",
+      gateway: "zainCash",
       timestamp: new Date(),
-      errors: response.errors
+      errors: response.errors,
     };
   }
 
   /**
    * FastPay payment processing
    */
-  private async processFastPay(request: PaymentRequest): Promise<PaymentResponse> {
+  private async processFastPay(
+    request: PaymentRequest,
+  ): Promise<PaymentResponse> {
     // FastPay API integration
     const payload = {
       amount: request.amount,
-      currency: 'IQD',
+      currency: "IQD",
       orderId: request.orderId,
       description: request.description,
       customerPhone: request.customerPhone,
       returnUrl: request.returnUrl,
-      merchantId: this.config.fastPay.merchantId
+      merchantId: this.config.fastPay.merchantId,
     };
 
     // Simulate API call (replace with actual FastPay API)
@@ -346,28 +375,30 @@ export class IraqiPaymentGateway {
       success: response.success,
       transactionId: response.transactionId || `fp_${Date.now()}`,
       paymentUrl: response.paymentUrl,
-      status: response.status || 'pending',
+      status: response.status || "pending",
       amount: request.amount,
-      currency: 'IQD',
-      gateway: 'fastPay',
+      currency: "IQD",
+      gateway: "fastPay",
       timestamp: new Date(),
-      errors: response.errors
+      errors: response.errors,
     };
   }
 
   /**
    * NassWallet payment processing
    */
-  private async processNassWallet(request: PaymentRequest): Promise<PaymentResponse> {
+  private async processNassWallet(
+    request: PaymentRequest,
+  ): Promise<PaymentResponse> {
     // NassWallet API integration
     const payload = {
       amount: request.amount,
-      currency: 'IQD',
+      currency: "IQD",
       orderId: request.orderId,
       description: request.description,
       customerPhone: request.customerPhone,
       returnUrl: request.returnUrl,
-      merchantId: this.config.nassWallet.merchantId
+      merchantId: this.config.nassWallet.merchantId,
     };
 
     // Simulate API call (replace with actual NassWallet API)
@@ -377,19 +408,21 @@ export class IraqiPaymentGateway {
       success: response.success,
       transactionId: response.transactionId || `nw_${Date.now()}`,
       paymentUrl: response.paymentUrl,
-      status: response.status || 'pending',
+      status: response.status || "pending",
       amount: request.amount,
-      currency: 'IQD',
-      gateway: 'nassWallet',
+      currency: "IQD",
+      gateway: "nassWallet",
       timestamp: new Date(),
-      errors: response.errors
+      errors: response.errors,
     };
   }
 
   /**
    * Process with fallback gateways
    */
-  private async processWithFallback(request: PaymentRequest): Promise<PaymentResponse> {
+  private async processWithFallback(
+    request: PaymentRequest,
+  ): Promise<PaymentResponse> {
     for (const gateway of this.config.fallbackOrder) {
       try {
         const result = await this.processWithGateway(request, gateway);
@@ -403,20 +436,22 @@ export class IraqiPaymentGateway {
 
     return {
       success: false,
-      transactionId: '',
-      status: 'failed',
+      transactionId: "",
+      status: "failed",
       amount: request.amount,
-      currency: 'IQD',
-      gateway: 'all_failed',
+      currency: "IQD",
+      gateway: "all_failed",
       timestamp: new Date(),
-      errors: ['All payment gateways failed']
+      errors: ["All payment gateways failed"],
     };
   }
 
   /**
    * Check gateway health and performance
    */
-  private async checkGatewayHealth(gateway: string): Promise<{ score: number }> {
+  private async checkGatewayHealth(
+    gateway: string,
+  ): Promise<{ score: number }> {
     // Simulate health check (implement actual health monitoring)
     const baseScore = 85;
     const randomVariance = Math.random() * 30 - 15; // -15 to +15
@@ -438,45 +473,75 @@ export class IraqiPaymentGateway {
    * Check for gambling-related terms
    */
   private containsGamblingTerms(text: string): boolean {
-    const gamblingTerms = ['قمار', 'ميسر', 'رهان', 'يانصيب', 'gambling', 'betting', 'lottery', 'casino'];
-    return gamblingTerms.some(term => text.includes(term));
+    const gamblingTerms = [
+      "قمار",
+      "ميسر",
+      "رهان",
+      "يانصيب",
+      "gambling",
+      "betting",
+      "lottery",
+      "casino",
+    ];
+    return gamblingTerms.some((term) => text.includes(term));
   }
 
   /**
    * Check for interest/usury terms
    */
   private containsInterestTerms(text: string): boolean {
-    const interestTerms = ['ربا', 'فوائد', 'interest', 'usury', 'loan interest'];
-    return interestTerms.some(term => text.includes(term));
+    const interestTerms = [
+      "ربا",
+      "فوائد",
+      "interest",
+      "usury",
+      "loan interest",
+    ];
+    return interestTerms.some((term) => text.includes(term));
   }
 
   /**
    * Log transaction for monitoring
    */
-  private logTransaction(request: PaymentRequest, response: PaymentResponse): void {
-    console.info('Payment transaction logged:', {
+  private logTransaction(
+    request: PaymentRequest,
+    response: PaymentResponse,
+  ): void {
+    console.info("Payment transaction logged:", {
       orderId: request.orderId,
       amount: request.amount,
       gateway: response.gateway,
       status: response.status,
-      timestamp: response.timestamp
+      timestamp: response.timestamp,
     });
   }
 
   // Placeholder API methods (replace with actual implementations)
   private async callZainCashAPI(payload: any): Promise<any> {
     // Replace with actual ZainCash API integration
-    return { success: true, transactionId: `zc_${Date.now()}`, status: 'pending' };
+    return {
+      success: true,
+      transactionId: `zc_${Date.now()}`,
+      status: "pending",
+    };
   }
 
   private async callFastPayAPI(payload: any): Promise<any> {
     // Replace with actual FastPay API integration
-    return { success: true, transactionId: `fp_${Date.now()}`, status: 'pending' };
+    return {
+      success: true,
+      transactionId: `fp_${Date.now()}`,
+      status: "pending",
+    };
   }
 
   private async callNassWalletAPI(payload: any): Promise<any> {
     // Replace with actual NassWallet API integration
-    return { success: true, transactionId: `nw_${Date.now()}`, status: 'pending' };
+    return {
+      success: true,
+      transactionId: `nw_${Date.now()}`,
+      status: "pending",
+    };
   }
 
   /**
@@ -488,10 +553,10 @@ export class IraqiPaymentGateway {
       enabledGateways: {
         zainCash: this.config.zainCash.enabled,
         fastPay: this.config.fastPay.enabled,
-        nassWallet: this.config.nassWallet.enabled
+        nassWallet: this.config.nassWallet.enabled,
       },
       defaultGateway: this.config.defaultGateway,
-      islamicCompliance: true
+      islamicCompliance: true,
     };
   }
 }
@@ -509,7 +574,9 @@ interface IslamicFinanceRules {
 }
 
 class FraudDetector {
-  async assessRisk(request: PaymentRequest): Promise<{ score: number; factors: string[] }> {
+  async assessRisk(
+    request: PaymentRequest,
+  ): Promise<{ score: number; factors: string[] }> {
     // Implement fraud detection logic
     return { score: Math.random() * 0.3, factors: [] }; // Low risk simulation
   }

@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server';
-import { Table, TableRow, TableBody, TableCell } from '../ui/table';
-import { Badge } from '../ui/badge';
-import TeamMemberOptions from './team-member-options';
+import { createClient } from "@/lib/supabase/server";
+import { Table, TableRow, TableBody, TableCell } from "../ui/table";
+import { Badge } from "../ui/badge";
+import TeamMemberOptions from "./team-member-options";
 
 type Props = {
   accountId: string;
@@ -10,7 +10,7 @@ type Props = {
 export default async function ManageTeamMembers({ accountId }: Props) {
   const supabaseClient = await createClient();
 
-  const { data: members } = await supabaseClient.rpc('get_account_members', {
+  const { data: members } = await supabaseClient.rpc("get_account_members", {
     account_id: accountId,
   });
 
@@ -35,16 +35,16 @@ export default async function ManageTeamMembers({ accountId }: Props) {
                   </span>
                   <Badge
                     variant={
-                      member.account_role === 'owner' ? 'default' : 'outline'
+                      member.account_role === "owner" ? "default" : "outline"
                     }
                     className={
-                      member.account_role === 'owner'
-                        ? 'bg-primary hover:bg-primary/90'
-                        : 'text-foreground/70 border-subtle dark:border-white/10'
+                      member.account_role === "owner"
+                        ? "bg-primary hover:bg-primary/90"
+                        : "text-foreground/70 border-subtle dark:border-white/10"
                     }
                   >
                     {member.is_primary_owner
-                      ? 'Primary Owner'
+                      ? "Primary Owner"
                       : member.account_role}
                   </Badge>
                 </div>

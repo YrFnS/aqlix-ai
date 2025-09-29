@@ -9,6 +9,7 @@ This extraction provides the foundational infrastructure to replace Open WebUI w
 ### 🎯 Extracted Components
 
 #### ✅ Database Models (9 models)
+
 - **User Model**: Enhanced with Arabic preferences, cultural settings, and professional domains
 - **Message Model**: RTL support, cultural validation, Iraqi dialect detection
 - **File Model**: Arabic content processing, security scanning, Iraqi document classification
@@ -20,6 +21,7 @@ This extraction provides the foundational infrastructure to replace Open WebUI w
 - **Vertex Builds Model**: Workflow execution tracking with Arabic error handling
 
 #### ✅ FastAPI System (13+ routers)
+
 - **Chat Router**: Arabic conversation handling, RTL processing, cultural validation
 - **Users Router**: Iraqi user management with professional domain settings
 - **Files Router**: Arabic document processing, cultural content validation
@@ -31,6 +33,7 @@ This extraction provides the foundational infrastructure to replace Open WebUI w
 - Plus additional routers for MCP, projects, monitor, voice mode, and validation
 
 #### ✅ React Frontend Components
+
 - **ContentBlockDisplay**: RTL-aware content rendering with cultural validation indicators
 - **ContentDisplay**: Multi-format content display with Arabic typography support
 - **Button Component**: RTL support, Arabic fonts, cultural styling, professional domain variants
@@ -38,12 +41,14 @@ This extraction provides the foundational infrastructure to replace Open WebUI w
 - **Dialog Component**: Modal system with RTL support, cultural themes, Islamic compliance notices
 
 #### ✅ Configuration & Setup
+
 - **Main Application**: FastAPI app setup with Iraqi middleware (cultural validation, RTL processing, security)
 - **PyProject Configuration**: Complete dependency management with Arabic processing, Islamic tools, Iraqi payment SDKs
 
 ## 🚀 Iraqi AI Integration Strategy
 
 ### Phase 1: Core Infrastructure Replacement (4-6 weeks)
+
 Replace Open WebUI's models/, routers/, and main.py with Langflow's robust architecture:
 
 ```bash
@@ -54,6 +59,7 @@ cp langflow-extracted/config/main.py apps/api/src/main.py
 ```
 
 ### Phase 2: Cultural Enhancement Integration (8-12 weeks)
+
 Integrate extracted components with existing cultural validation middleware:
 
 ```python
@@ -67,6 +73,7 @@ app.add_middleware(CulturalValidationMiddleware)
 ```
 
 ### Phase 3: Professional Domain Integration (6-8 weeks)
+
 Leverage Langflow's workflow system for Iraqi professional domains:
 
 ```python
@@ -80,6 +87,7 @@ legal_workflow = Flow(
 ```
 
 ### Phase 4: Payment & Arabic Processing (4-6 weeks)
+
 Integrate payment gateways and enhanced Arabic processing:
 
 ```python
@@ -94,35 +102,43 @@ payment_providers = {
 ```
 
 ### Phase 5: Frontend RTL Enhancement (5-7 weeks)
+
 Deploy RTL-enhanced React components:
 
 ```tsx
 // Arabic-first UI components
-import { ArabicButton, CulturalInput, RTLDialog } from './langflow-extracted/components';
+import {
+  ArabicButton,
+  CulturalInput,
+  RTLDialog,
+} from "./langflow-extracted/components";
 
-<ArabicInput 
+<ArabicInput
   placeholder="اكتب رسالتك هنا"
   culturalMode={true}
   professionalDomain="legal"
   showValidation={true}
-/>
+/>;
 ```
 
 ## 🏗️ Architecture Benefits
 
 ### 1. Enterprise-Ready Database Layer
+
 - **Robust Models**: SQLModel-based with proper relationships and constraints
 - **Migration Support**: Alembic integration for schema evolution
 - **Performance**: Optimized queries with proper indexing
 - **Security**: Built-in validation and sanitization
 
 ### 2. Scalable API Architecture
+
 - **Modular Routers**: Clean separation of concerns
 - **Async Support**: Full async/await throughout
 - **Error Handling**: Comprehensive error management
 - **Documentation**: Auto-generated OpenAPI specs
 
 ### 3. Production-Ready Frontend
+
 - **Accessibility**: WCAG compliant with screen reader support
 - **Performance**: Optimized rendering with virtual scrolling
 - **Responsive**: Mobile-first design approach
@@ -131,6 +147,7 @@ import { ArabicButton, CulturalInput, RTLDialog } from './langflow-extracted/com
 ### 4. Enhanced Cultural Integration Points
 
 #### Islamic Compliance Features
+
 ```python
 # Cultural validation integration points
 cultural_validator = IslamicComplianceValidator()
@@ -139,6 +156,7 @@ prayer_time_scheduler = PrayerTimeScheduler()
 ```
 
 #### RTL Text Processing
+
 ```python
 # Arabic text processing pipeline
 arabic_processor = ArabicTextProcessor()
@@ -147,6 +165,7 @@ font_optimizer = ArabicFontOptimizer()
 ```
 
 #### Professional Domain Support
+
 ```python
 # Iraqi professional domain handlers
 legal_processor = IraqiLegalDocumentProcessor()
@@ -157,16 +176,19 @@ educational_tool = IraqiEducationalTool()
 ## 📊 Development Value Assessment
 
 ### Immediate Value (0-3 months)
+
 - **Database Infrastructure**: 8-10 weeks saved vs building from scratch
 - **API Architecture**: 6-8 weeks of robust FastAPI setup
 - **Authentication System**: 3-4 weeks of secure user management
 
 ### Medium-term Value (3-9 months)
+
 - **Workflow System**: 12-16 weeks of AI workflow management
 - **File Processing**: 4-6 weeks of document handling infrastructure
 - **Real-time Features**: 6-8 weeks of chat and streaming capabilities
 
 ### Long-term Value (9+ months)
+
 - **Scalability Foundation**: Enterprise-ready architecture from day one
 - **Maintainability**: Clean, documented codebase structure
 - **Extensibility**: Plugin system for additional Iraqi features
@@ -174,24 +196,28 @@ educational_tool = IraqiEducationalTool()
 ## 🔧 Integration Checklist
 
 ### ✅ Database Migration
+
 - [ ] Replace Open WebUI models with Langflow models
 - [ ] Add Iraqi-specific fields (language preferences, cultural settings, payment providers)
 - [ ] Create migration scripts for existing data
 - [ ] Test cultural validation in database layer
 
 ### ✅ API Enhancement
+
 - [ ] Replace basic Open WebUI routers with Langflow's robust system
 - [ ] Integrate cultural validation middleware
 - [ ] Add Iraqi payment gateway endpoints
 - [ ] Implement professional domain routing
 
 ### ✅ Frontend Upgrade
+
 - [ ] Deploy RTL-enhanced React components
 - [ ] Integrate Arabic typography and fonts
 - [ ] Add cultural compliance indicators
 - [ ] Implement professional domain styling
 
 ### ✅ Configuration Setup
+
 - [ ] Update pyproject.toml with Iraqi dependencies
 - [ ] Configure cultural validation services
 - [ ] Set up Arabic text processing pipeline
@@ -200,18 +226,21 @@ educational_tool = IraqiEducationalTool()
 ## 🌟 Cultural Enhancement Highlights
 
 ### Islamic Compliance Integration
+
 - **Content Validation**: Real-time Islamic compliance checking
 - **Prayer Time Integration**: Automatic scheduling and reminders
 - **Halal Business Logic**: Ensuring all operations meet Islamic standards
 - **Cultural Sensitivity**: Appropriate language and imagery guidelines
 
 ### Arabic Language Excellence
+
 - **RTL Layout Engine**: Complete right-to-left text processing
 - **Typography System**: Optimized Arabic font rendering
 - **Dialect Recognition**: Iraqi Arabic detection and processing
 - **Bilingual Interface**: Seamless Arabic-English code-switching
 
 ### Professional Domain Expertise
+
 - **Iraqi Legal System**: Civil law integration and document processing
 - **Medical Standards**: Iraqi Medical Council compliance
 - **Educational Framework**: Ministry of Education curriculum alignment

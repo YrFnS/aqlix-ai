@@ -9,7 +9,9 @@
 ### Core Agent Categories & Integration
 
 #### Context-Managed Agents (13 Total)
+
 **Pattern**: Agents with persistent context access for decision consistency
+
 ```yaml
 cultural_business_agents:
   - iraqi-cultural-validator: Cultural decision consistency
@@ -34,7 +36,9 @@ workflow_management_agents:
 ```
 
 #### Specialized Tool Agents (9 Total)
+
 **Pattern**: Immediate processing without context overhead
+
 ```yaml
 language_processing:
   - arabic-rtl-processor: RTL text processing
@@ -59,14 +63,15 @@ service_coordination:
 ### 7-Chain Coordination System
 
 #### Chain Dependencies & Parallel Processing
+
 ```yaml
 parallel_chains:
-  - ui_enhancement + cultural_validation  # Can run simultaneously
-  - feature_development + security_audit  # Parallel development tracks
+  - ui_enhancement + cultural_validation # Can run simultaneously
+  - feature_development + security_audit # Parallel development tracks
 
 sequential_dependencies:
-  - security_audit → payment_integration  # Security must complete first
-  - cultural_validation → ui_enhancement  # Cultural requirements drive UI
+  - security_audit → payment_integration # Security must complete first
+  - cultural_validation → ui_enhancement # Cultural requirements drive UI
 
 cross_chain_validators:
   - iraqi-cultural-validator: Validates across 6 chains
@@ -75,6 +80,7 @@ cross_chain_validators:
 ```
 
 #### Auto-Trigger Intelligence
+
 ```python
 # Keyword-based chain activation
 CHAIN_TRIGGERS = {
@@ -102,6 +108,7 @@ def calculate_chain_activation_score(user_input, context):
 ## 🏗️ Enhanced Browser-Use Integration Patterns
 
 ### Multi-Component Registry System
+
 ```python
 # Registry-based architecture for modularity
 INTEGRATION_REGISTRIES = {
@@ -111,21 +118,21 @@ INTEGRATION_REGISTRIES = {
         'banking_portal_adapter': 'Iraqi banking system integration',
         'educational_system_bridge': 'Iraqi educational portal support'
     },
-    
+
     'watchdog_monitoring': {
         'comprehensive_suite': '11 specialized watchdogs',
         'professional_focused': 'Professional portal specific monitoring',
         'banking_security': 'Financial transaction monitoring',
         'cultural_compliance': 'Islamic and cultural validation'
     },
-    
+
     'dom_processing': {
         'base_processor': 'Standard DOM processing',
         'iraqi_enhanced': 'Cultural validation + RTL processing',
         'accessibility_focused': 'WCAG 2.1 AA + Arabic screen readers',
         'professional_optimized': 'Iraqi professional form processing'
     },
-    
+
     'llm_providers': {
         'openai_cultural': 'OpenAI with Iraqi cultural context',
         'anthropic_cultural': 'Claude with Islamic compliance',
@@ -136,6 +143,7 @@ INTEGRATION_REGISTRIES = {
 ```
 
 ### Performance Optimization Patterns
+
 ```python
 # Proven performance patterns from Enhanced Browser-Use
 PERFORMANCE_PATTERNS = {
@@ -144,19 +152,19 @@ PERFORMANCE_PATTERNS = {
         'method': 'Intelligent context caching and reduction',
         'cache_strategy': 'Cultural decision memoization'
     },
-    
+
     'agent_coordination': {
         'improvement': '40-70%',
         'method': 'Parallel agent execution with dependency management',
         'coordination_overhead': '<5%'
     },
-    
+
     'dom_processing': {
         'improvement': '40%',
         'method': 'Accessibility tree integration + viewport optimization',
         'arabic_processing': '99%+ RTL accuracy'
     },
-    
+
     'llm_provider_switching': {
         'improvement': '30-50%',
         'method': 'Lazy loading + intelligent fallback',
@@ -170,6 +178,7 @@ PERFORMANCE_PATTERNS = {
 ## 🔐 Security Integration Patterns
 
 ### Iraqi Regulatory Compliance Framework
+
 ```python
 # Multi-layer security with Iraqi compliance
 SECURITY_INTEGRATION_LAYERS = {
@@ -179,14 +188,14 @@ SECURITY_INTEGRATION_LAYERS = {
         'cultural_considerations': 'Islamic business ethics',
         'threat_detection': 'Iraqi-specific threat patterns'
     },
-    
+
     'payment_security': {
         'agent': 'payment-security-guardian',
         'gateway_compliance': ['ZainCash', 'FastPay', 'NassWallet'],
         'fraud_detection': 'Iraqi transaction patterns',
         'islamic_compliance': 'Riba-free transaction validation'
     },
-    
+
     'data_protection': {
         'privacy_level': 'Iraqi data protection standards',
         'cultural_sensitivity': 'Family and personal data protection',
@@ -196,6 +205,7 @@ SECURITY_INTEGRATION_LAYERS = {
 ```
 
 ### Cultural Security Validation
+
 ```python
 # Security patterns with cultural awareness
 CULTURAL_SECURITY_PATTERNS = {
@@ -204,13 +214,13 @@ CULTURAL_SECURITY_PATTERNS = {
         'political_neutrality': 'Sectarian content filtering',
         'family_safety': 'Child-appropriate content validation'
     },
-    
+
     'authentication_cultural': {
         'professional_id_integration': 'Iraqi civil ID and passport',
         'cultural_honorifics': 'Respectful user addressing',
         'gender_considerations': 'Appropriate cross-gender interactions'
     },
-    
+
     'access_control_patterns': {
         'role_based': 'Iraqi professional hierarchy respect',
         'family_based': 'Elder permission systems',
@@ -224,13 +234,14 @@ CULTURAL_SECURITY_PATTERNS = {
 ## 🎨 UI/UX Integration Patterns
 
 ### RTL-First Design System
+
 ```css
 /* Production-tested RTL patterns */
 .iraqi-rtl-system {
   /* Base RTL container */
   direction: rtl;
   text-align: right;
-  font-family: 'Noto Sans Arabic', 'Cairo', system-ui;
+  font-family: "Noto Sans Arabic", "Cairo", system-ui;
 }
 
 /* Mixed content handling (Arabic + English) */
@@ -255,19 +266,20 @@ CULTURAL_SECURITY_PATTERNS = {
 .arabic-form textarea {
   text-align: right;
   direction: rtl;
-  font-family: 'Noto Sans Arabic', system-ui;
+  font-family: "Noto Sans Arabic", system-ui;
 }
 
 /* Cultural color schemes */
 .iraqi-cultural-colors {
-  --primary: #1B4332;      /* Iraqi flag green */
-  --secondary: #8B0000;     /* Cultural red */
-  --accent: #DAA520;        /* Arabic gold */
-  --neutral: #F5F5F5;       /* Clean background */
+  --primary: #1b4332; /* Iraqi flag green */
+  --secondary: #8b0000; /* Cultural red */
+  --accent: #daa520; /* Arabic gold */
+  --neutral: #f5f5f5; /* Clean background */
 }
 ```
 
 ### Accessibility Integration (WCAG 2.1 AA + Arabic)
+
 ```python
 # Accessibility patterns with Arabic screen reader support
 ACCESSIBILITY_PATTERNS = {
@@ -276,13 +288,13 @@ ACCESSIBILITY_PATTERNS = {
         'rtl_navigation': 'Right-to-left screen reader flow',
         'cultural_context': 'Respectful content announcement'
     },
-    
+
     'keyboard_navigation': {
         'rtl_tab_order': 'Right-to-left tab sequence',
         'arabic_keyboard_support': 'Iraqi Arabic keyboard layouts',
         'cultural_shortcuts': 'Culturally appropriate key combinations'
     },
-    
+
     'visual_accessibility': {
         'contrast_compliance': 'WCAG 2.1 AA contrast ratios',
         'arabic_font_scaling': 'Arabic text scaling optimization',
@@ -296,6 +308,7 @@ ACCESSIBILITY_PATTERNS = {
 ## 📊 Success Metrics & Validation Patterns
 
 ### Cultural Compliance Metrics
+
 ```python
 # Quantified cultural integration success
 CULTURAL_METRICS = {
@@ -304,13 +317,13 @@ CULTURAL_METRICS = {
         'measurement': 'Automated validation + human review',
         'validation_agent': 'iraqi-cultural-validator'
     },
-    
+
     'arabic_rtl_accuracy': {
         'target': '99%+',
         'measurement': 'RTL rendering + dialect recognition',
         'validation_agent': 'arabic-rtl-processor'
     },
-    
+
     'professional_appropriateness': {
         'target': '90%+',
         'domains': ['legal', 'medical', 'educational'],
@@ -320,6 +333,7 @@ CULTURAL_METRICS = {
 ```
 
 ### Technical Performance Metrics
+
 ```python
 # Proven performance benchmarks
 PERFORMANCE_BENCHMARKS = {
@@ -328,14 +342,14 @@ PERFORMANCE_BENCHMARKS = {
         'technical_analysis': '<300ms',
         'workflow_coordination': '<100ms'
     },
-    
+
     'system_integration_success': {
         'target': '95%+',
         'payment_gateways': '95%+ success rate',
         'browser_automation': '98%+ reliability',
         'agent_coordination': '90%+ efficiency'
     },
-    
+
     'extraction_achievements': {
         'browser_use_integration': '98% complete',
         'agent_architecture': '100% documented',
@@ -349,6 +363,7 @@ PERFORMANCE_BENCHMARKS = {
 ## 🔄 Context Management Integration
 
 ### Persistent Knowledge Base Patterns
+
 ```python
 # Context optimization with cultural awareness
 CONTEXT_MANAGEMENT_PATTERNS = {
@@ -357,13 +372,13 @@ CONTEXT_MANAGEMENT_PATTERNS = {
         'reuse_rate': '80%+ decision consistency',
         'update_trigger': 'Cultural pattern changes'
     },
-    
+
     'technical_solutions': {
         'pattern_recognition': 'Successful solution caching',
         'performance_optimization': '35% context efficiency gain',
         'integration_patterns': 'Cross-agent solution sharing'
     },
-    
+
     'workflow_orchestration': {
         'chain_optimization': 'Intelligent agent sequencing',
         'context_sharing': 'Cross-chain context preservation',
@@ -377,6 +392,7 @@ CONTEXT_MANAGEMENT_PATTERNS = {
 ## 🌐 MCP Server Integration Patterns
 
 **Proven Patterns**:
+
 ```yaml
 sequential_workflow:
   step_1: "Analyze Iraqi cultural context"
@@ -386,21 +402,27 @@ sequential_workflow:
 ```
 
 ### Context7 Integration
+
 **Usage Patterns**:
+
 - Official documentation lookups for frameworks
 - Iraqi professional portal patterns
 - Arabic language processing best practices
 - Cultural compliance standards research
 
 ### Magic Integration
+
 **UI Generation Patterns**:
+
 - RTL-first component generation
 - Iraqi cultural design system integration
 - Arabic typography and layout optimization
 - Accessible form generation with cultural considerations
 
 ### Playwright Integration
+
 **Browser Automation Patterns**:
+
 - Iraqi professional portal automation
 - Arabic text input validation
 - RTL interface testing
@@ -408,4 +430,4 @@ sequential_workflow:
 
 ---
 
-*Updated December 2025 - All integration patterns validated through Enhanced Browser-Use Extraction project*
+_Updated December 2025 - All integration patterns validated through Enhanced Browser-Use Extraction project_

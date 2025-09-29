@@ -312,7 +312,7 @@ token = auth_response.json()["session_token"]
 
 ```python
 # Create government portal task
-task_response = requests.post("/api/v1/iraqi/tasks", 
+task_response = requests.post("/api/v1/iraqi/tasks",
     json={
         "task_type": "government_portal",
         "title": "Passport Renewal Application",

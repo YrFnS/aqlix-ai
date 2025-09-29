@@ -21,6 +21,7 @@
 **Essential speech processing infrastructure:**
 
 ### Speech Recognition (STT) Core
+
 - **Real-time Transcription:** Live audio-to-text conversion with streaming support
 - **Iraqi Dialect Recognition:** Baghdad, Basra, Mosul, and regional dialect support with 85%+ accuracy
 - **Multilingual Processing:** Arabic-English code-switching detection and handling
@@ -29,6 +30,7 @@
 - **Noise Reduction:** Advanced audio preprocessing for clear transcription
 
 ### Text-to-Speech (TTS) Core
+
 - **Iraqi Voice Synthesis:** Natural Iraqi accent with regional variations
 - **Multilingual Speech:** Arabic-English code-switching with proper pronunciation
 - **Emotional Expression:** Tone control for professional, friendly, formal communication
@@ -37,6 +39,7 @@
 - **Cultural Adaptation:** Islamic expressions and cultural phrases with respectful delivery
 
 ### Integrated Speech Processing Pipeline
+
 - **Conversation Flow:** Seamless STT→Processing→TTS conversation cycles
 - **Context Preservation:** Maintaining conversational context across speech interactions
 - **Quality Optimization:** Automatic audio quality enhancement and voice selection
@@ -51,6 +54,7 @@
 **Working speech processing system examples:**
 
 ### Unified Speech Interface Components
+
 - **Conversational Speech Component:** Combined STT/TTS interface with voice conversation flow
 - **Professional Speech Processor:** Domain-specific speech processing for Iraqi professional contexts
 - **Cultural Speech Validator:** Islamic and Iraqi cultural compliance for all speech processing
@@ -58,6 +62,7 @@
 - **Real-time Speech Pipeline:** Live conversation processing with context preservation
 
 ### Advanced Processing Features
+
 - **Speech-to-Speech Translation:** Iraqi Arabic to Standard Arabic or English with voice synthesis
 - **Emotional Speech Recognition:** Detecting and responding to emotional cues in Iraqi speech
 - **Professional Dictation System:** Legal, medical, educational dictation with Iraqi terminology
@@ -65,6 +70,7 @@
 - **Multi-speaker Recognition:** Identifying and processing multiple Iraqi speakers in conversations
 
 ### Integration Examples
+
 - **Chat Interface Integration:** Voice input/output integration with text-based chat system
 - **Document Creation:** Speech-to-document workflow with Iraqi professional templates
 - **Voice Command Processing:** Natural language voice commands in Iraqi Arabic
@@ -77,12 +83,14 @@
 **Speech processing documentation:**
 
 ### Speech Recognition Sources
+
 - **Web Speech API:** https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API - Browser speech recognition
 - **OpenAI Whisper:** https://openai.com/research/whisper - Advanced speech recognition model
 - **Azure Speech:** https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/ - Cloud speech services
 - **Google Speech-to-Text:** https://cloud.google.com/speech-to-text/docs - Google Cloud STT API
 
 ### Text-to-Speech Sources
+
 - **Speech Synthesis API:** https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis - Browser speech synthesis
 - **Azure Speech Services:** https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/text-to-speech - Cloud TTS services
 - **Google Cloud TTS:** https://cloud.google.com/text-to-speech/docs - Google speech synthesis
@@ -90,6 +98,7 @@
 - **SSML:** https://www.w3.org/TR/speech-synthesis11/ - Speech Synthesis Markup Language
 
 ### Arabic and Cultural Processing
+
 - **Arabic Speech Processing:** Specialized Arabic speech recognition and synthesis techniques
 - **Islamic Audio Guidelines:** Guidelines for respectful processing of religious audio content
 - **Iraqi Dialect Resources:** Iraqi linguistic research and dialect documentation
@@ -102,6 +111,7 @@
 **Comprehensive speech processing cultural considerations:**
 
 ### Iraqi Dialect Recognition Standards
+
 - **Regional Accuracy:** 85%+ recognition accuracy for Baghdad, Basra, Mosul, Anbar dialects
 - **Code-switching Handling:** Seamless Arabic-English mixed speech recognition and response
 - **Cultural Expression Recognition:** Proper understanding of Iraqi cultural phrases and idioms
@@ -109,6 +119,7 @@
 - **Religious Expression Respect:** Appropriate recognition and handling of Islamic expressions
 
 ### Iraqi Voice Synthesis Requirements
+
 - **Authentic Pronunciation:** Natural Iraqi accent with regional variations
 - **Cultural Sensitivity:** Respectful synthesis of Islamic content and cultural expressions
 - **Professional Appropriateness:** Suitable voice tones for Iraqi business and professional contexts
@@ -116,6 +127,7 @@
 - **Family-Friendly Content:** Voice synthesis appropriate for Iraqi family values
 
 ### Islamic Compliance in Speech Processing
+
 - **Religious Content Respect:** Reverent handling of Quranic recitation and Islamic prayers
 - **Cultural Appropriateness:** Respectful processing of Islamic terminology and expressions
 - **Prayer Time Integration:** Awareness of Islamic prayer times and religious observances
@@ -142,6 +154,7 @@
 **Speech processing system performance standards:**
 
 ### Real-time Processing Benchmarks
+
 - **STT Latency:** <500ms for Iraqi dialect speech recognition with real-time feedback
 - **TTS Synthesis:** <500ms for Iraqi voice synthesis from text input to audio output
 - **Total Conversation Latency:** <1000ms for complete speech-to-speech conversation cycle
@@ -150,6 +163,7 @@
 - **Professional Processing:** <800ms for domain-specific terminology processing and synthesis
 
 ### Quality and Accuracy Standards
+
 - **STT Accuracy:** 85%+ recognition accuracy for Iraqi dialects with noise reduction
 - **TTS Naturalness:** Natural-sounding Iraqi voice synthesis with appropriate accent
 - **Cultural Appropriateness:** 95%+ cultural validation accuracy for speech content
@@ -157,6 +171,7 @@
 - **Emotional Recognition:** 80%+ accuracy for emotional tone detection in Iraqi speech
 
 ### Scalability Requirements
+
 - **Concurrent Processing:** Support for 50+ simultaneous speech processing sessions
 - **Audio Quality:** Professional-grade audio processing with noise reduction and enhancement
 - **Memory Management:** Efficient memory usage for real-time speech processing pipelines
@@ -169,6 +184,7 @@
 **Speech processing security and privacy:**
 
 ### Privacy Protection
+
 - **Audio Data Security:** Encrypted transmission and secure temporary storage of audio data
 - **User Consent:** Clear permissions and transparent data usage for speech processing
 - **Cultural Privacy:** Respectful handling of sensitive cultural and religious speech content
@@ -176,6 +192,7 @@
 - **Data Retention:** Configurable retention policies for speech processing data
 
 ### Content Security
+
 - **Inappropriate Content Detection:** Real-time filtering of inappropriate speech content
 - **Cultural Content Validation:** Automatic validation of speech content for cultural appropriateness
 - **Religious Content Respect:** Secure and respectful handling of Islamic religious content
@@ -343,6 +360,7 @@ CREATE TABLE speech_cultural_validation_cache (
 **Speech processing system architecture patterns:**
 
 ### Unified Pipeline Architecture
+
 - **Audio Input Processing:** Microphone input, noise reduction, quality enhancement
 - **STT Pipeline:** Recognition, dialect detection, cultural validation, result processing
 - **Context Management:** Conversation state, context preservation, turn-taking management
@@ -350,6 +368,7 @@ CREATE TABLE speech_cultural_validation_cache (
 - **Quality Control:** Real-time quality monitoring, error handling, fallback mechanisms
 
 ### Real-time Processing Patterns
+
 - **Streaming Recognition:** Live audio processing with interim results and final transcription
 - **Immediate Synthesis:** Real-time text-to-speech with minimal latency and buffer management
 - **Context Awareness:** Maintaining conversation context across multiple speech interactions
@@ -357,6 +376,7 @@ CREATE TABLE speech_cultural_validation_cache (
 - **Performance Optimization:** Efficient resource usage and concurrent processing management
 
 ### Professional Domain Integration
+
 - **Legal Speech Processing:** Iraqi legal terminology recognition and formal speech synthesis
 - **Medical Conversation:** Healthcare terminology with appropriate bedside manner synthesis
 - **Educational Support:** Academic content processing with clear pronunciation and explanations
@@ -369,6 +389,7 @@ CREATE TABLE speech_cultural_validation_cache (
 **Comprehensive speech processing system testing:**
 
 ### Speech Recognition Testing
+
 - **Dialect Accuracy:** Test 85%+ recognition accuracy for Baghdad, Basra, Mosul, Anbar dialects
 - **Professional Vocabulary:** Validate 90%+ accuracy for Iraqi legal, medical, educational terminology
 - **Code-switching Recognition:** Test seamless Arabic-English mixed speech processing
@@ -376,6 +397,7 @@ CREATE TABLE speech_cultural_validation_cache (
 - **Noise Robustness:** Test recognition accuracy under various Iraqi environmental conditions
 
 ### Text-to-Speech Testing
+
 - **Pronunciation Accuracy:** 95%+ correct Iraqi Arabic pronunciation with appropriate accent
 - **Voice Quality:** Natural-sounding speech synthesis with emotional expression capability
 - **Cultural Appropriateness:** Respectful synthesis of Islamic expressions and cultural content
@@ -383,6 +405,7 @@ CREATE TABLE speech_cultural_validation_cache (
 - **SSML Processing:** Advanced speech markup processing for pronunciation control
 
 ### Integration Testing
+
 - **Conversation Flow:** Test complete STT→Processing→TTS conversation cycles
 - **Performance Benchmarks:** <1000ms total latency for speech-to-speech interactions
 - **Cultural Validation:** Test unified cultural compliance across recognition and synthesis
@@ -396,18 +419,21 @@ CREATE TABLE speech_cultural_validation_cache (
 **Speech processing system integration points:**
 
 ### Core Application Integration
+
 - **Chat Interface:** Seamless voice input/output integration with text-based messaging system
 - **Document Generation:** Speech-to-document workflow with Iraqi professional templates and formatting
 - **Voice Commands:** Natural language voice command processing for system control and navigation
 - **Professional Workflows:** Integration with Iraqi legal, medical, educational, business systems
 
 ### AI Agent Integration
+
 - **PydanticAI Agents:** Speech-enabled agents with cultural validation and domain expertise
 - **Conversation Management:** Multi-turn voice conversations with context preservation and memory
 - **Cultural Validation:** Real-time cultural compliance checking during speech interactions
 - **Professional Domain Support:** Speech processing specialized for Iraqi professional contexts
 
 ### External Service Integration
+
 - **Payment Systems:** Voice-enabled payment processing with ZainCash, FastPay, NassWallet
 - **Document Services:** Speech-to-document conversion with Iraqi professional formatting
 - **Educational Platforms:** Voice-enabled learning with Iraqi Arabic pronunciation training
@@ -420,18 +446,21 @@ CREATE TABLE speech_cultural_validation_cache (
 **Iraqi AI Chat System speech processing considerations:**
 
 ### Implementation Priorities
+
 - **Iraqi dialect excellence** - prioritize authentic pronunciation and recognition accuracy
 - **Islamic compliance integration** - respectful processing of religious content throughout
 - **Professional domain expertise** - accurate processing of Iraqi technical terminology
 - **Real-time performance** - <1000ms conversation latency for responsive interactions
 
 ### Cultural and Religious Sensitivity
+
 - **Islamic expression handling** - reverent recognition and synthesis of religious content
 - **Cultural context preservation** - maintaining Iraqi cultural nuances in speech processing
 - **Professional appropriateness** - suitable voice tones and language for business contexts
 - **Family-friendly processing** - appropriate content for Iraqi family values and settings
 
 ### Technical Excellence and Performance
+
 - **High accuracy standards** - 85%+ STT and 95%+ TTS accuracy for Iraqi content
 - **Scalable architecture** - supporting 50+ concurrent users with consistent performance
 - **Quality optimization** - automatic audio enhancement and intelligent provider selection
@@ -455,52 +484,58 @@ CREATE TABLE speech_cultural_validation_cache (
 ### Unified Speech Processing Component
 
 ```tsx
-'use client'
+"use client";
 
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Slider } from '@/components/ui/slider'
-import { Textarea } from '@/components/ui/textarea'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Task } from '@/lib/task-delegation'
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Task } from "@/lib/task-delegation";
 
 interface SpeechProcessingProps {
-  onConversationUpdate?: (update: ConversationUpdate) => void
-  onError?: (error: SpeechError) => void
-  enableCulturalValidation?: boolean
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business'
-  conversationMode?: boolean
-  autoDetectDialect?: boolean
-  className?: string
+  onConversationUpdate?: (update: ConversationUpdate) => void;
+  onError?: (error: SpeechError) => void;
+  enableCulturalValidation?: boolean;
+  professionalDomain?: "legal" | "medical" | "educational" | "business";
+  conversationMode?: boolean;
+  autoDetectDialect?: boolean;
+  className?: string;
 }
 
 interface ConversationUpdate {
-  type: 'recognition' | 'synthesis' | 'processing'
-  content: string
-  confidence?: number
-  metadata?: any
+  type: "recognition" | "synthesis" | "processing";
+  content: string;
+  confidence?: number;
+  metadata?: any;
 }
 
 interface SpeechError {
-  code: 'STT_ERROR' | 'TTS_ERROR' | 'PROCESSING_ERROR' | 'CULTURAL_ERROR'
-  message: string
-  details?: any
+  code: "STT_ERROR" | "TTS_ERROR" | "PROCESSING_ERROR" | "CULTURAL_ERROR";
+  message: string;
+  details?: any;
 }
 
 interface VoiceProfile {
-  id: string
-  name: string
-  nameArabic: string
-  provider: string
-  language: string
-  accent: string
-  gender: 'male' | 'female' | 'neutral'
-  region: string
-  professionalSuitability: string[]
-  emotionalRange: string[]
+  id: string;
+  name: string;
+  nameArabic: string;
+  provider: string;
+  language: string;
+  accent: string;
+  gender: "male" | "female" | "neutral";
+  region: string;
+  professionalSuitability: string[];
+  emotionalRange: string[];
 }
 
 export default function SpeechProcessingSystem({
@@ -510,226 +545,240 @@ export default function SpeechProcessingSystem({
   professionalDomain,
   conversationMode = false,
   autoDetectDialect = true,
-  className
+  className,
 }: SpeechProcessingProps) {
   // Speech Recognition State
-  const [isListening, setIsListening] = useState(false)
-  const [isSpeaking, setIsSpeaking] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [audioLevel, setAudioLevel] = useState(0)
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
 
   // Configuration State
-  const [selectedDialect, setSelectedDialect] = useState<string>('auto')
-  const [selectedVoice, setSelectedVoice] = useState<string>('iraq-standard-female')
-  const [speechRate, setSpeechRate] = useState(1.0)
-  const [speechPitch, setSpeechPitch] = useState(1.0)
-  const [speechVolume, setSpeechVolume] = useState(1.0)
-  const [emotionalTone, setEmotionalTone] = useState<string>('neutral')
+  const [selectedDialect, setSelectedDialect] = useState<string>("auto");
+  const [selectedVoice, setSelectedVoice] = useState<string>(
+    "iraq-standard-female",
+  );
+  const [speechRate, setSpeechRate] = useState(1.0);
+  const [speechPitch, setSpeechPitch] = useState(1.0);
+  const [speechVolume, setSpeechVolume] = useState(1.0);
+  const [emotionalTone, setEmotionalTone] = useState<string>("neutral");
 
   // Content State
-  const [currentTranscript, setCurrentTranscript] = useState('')
-  const [responseText, setResponseText] = useState('')
-  const [conversationHistory, setConversationHistory] = useState<ConversationUpdate[]>([])
-  const [status, setStatus] = useState<string>('')
+  const [currentTranscript, setCurrentTranscript] = useState("");
+  const [responseText, setResponseText] = useState("");
+  const [conversationHistory, setConversationHistory] = useState<
+    ConversationUpdate[]
+  >([]);
+  const [status, setStatus] = useState<string>("");
 
   // Processing State
-  const [dialectDetected, setDialectDetected] = useState<string>('')
-  const [culturalValidation, setCulturalValidation] = useState<any>(null)
-  const [processingMetrics, setProcessingMetrics] = useState<any>(null)
+  const [dialectDetected, setDialectDetected] = useState<string>("");
+  const [culturalValidation, setCulturalValidation] = useState<any>(null);
+  const [processingMetrics, setProcessingMetrics] = useState<any>(null);
 
   // Refs
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const analyserRef = useRef<AnalyserNode | null>(null)
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
-  const synthRef = useRef<SpeechSynthesis | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const synthRef = useRef<SpeechSynthesis | null>(null);
 
   // Iraqi dialect options
   const dialectOptions = [
-    { value: 'auto', label: 'تحديد تلقائي / Auto Detect', region: 'Iraq' },
-    { value: 'baghdad', label: 'بغدادي / Baghdad', region: 'Central Iraq' },
-    { value: 'basra', label: 'بصري / Basra', region: 'Southern Iraq' },
-    { value: 'mosul', label: 'موصلي / Mosul', region: 'Northern Iraq' },
-    { value: 'anbar', label: 'أنباري / Anbar', region: 'Western Iraq' },
-    { value: 'najaf', label: 'نجفي / Najaf', region: 'Central-South Iraq' }
-  ]
+    { value: "auto", label: "تحديد تلقائي / Auto Detect", region: "Iraq" },
+    { value: "baghdad", label: "بغدادي / Baghdad", region: "Central Iraq" },
+    { value: "basra", label: "بصري / Basra", region: "Southern Iraq" },
+    { value: "mosul", label: "موصلي / Mosul", region: "Northern Iraq" },
+    { value: "anbar", label: "أنباري / Anbar", region: "Western Iraq" },
+    { value: "najaf", label: "نجفي / Najaf", region: "Central-South Iraq" },
+  ];
 
   // Iraqi voice profiles
   const voiceProfiles: VoiceProfile[] = [
     {
-      id: 'iraq-standard-female',
-      name: 'Zainab (Standard Iraqi)',
-      nameArabic: 'زينب (عراقي معياري)',
-      provider: 'azure',
-      language: 'ar-IQ',
-      accent: 'standard',
-      gender: 'female',
-      region: 'Iraq',
-      professionalSuitability: ['legal', 'medical', 'educational', 'business'],
-      emotionalRange: ['neutral', 'friendly', 'professional', 'warm']
+      id: "iraq-standard-female",
+      name: "Zainab (Standard Iraqi)",
+      nameArabic: "زينب (عراقي معياري)",
+      provider: "azure",
+      language: "ar-IQ",
+      accent: "standard",
+      gender: "female",
+      region: "Iraq",
+      professionalSuitability: ["legal", "medical", "educational", "business"],
+      emotionalRange: ["neutral", "friendly", "professional", "warm"],
     },
     {
-      id: 'iraq-baghdad-male',
-      name: 'Ahmed (Baghdad Accent)',
-      nameArabic: 'أحمد (لهجة بغدادية)',
-      provider: 'azure',
-      language: 'ar-IQ',
-      accent: 'baghdad',
-      gender: 'male',
-      region: 'Baghdad',
-      professionalSuitability: ['business', 'educational'],
-      emotionalRange: ['neutral', 'friendly', 'confident', 'warm']
-    }
-  ]
+      id: "iraq-baghdad-male",
+      name: "Ahmed (Baghdad Accent)",
+      nameArabic: "أحمد (لهجة بغدادية)",
+      provider: "azure",
+      language: "ar-IQ",
+      accent: "baghdad",
+      gender: "male",
+      region: "Baghdad",
+      professionalSuitability: ["business", "educational"],
+      emotionalRange: ["neutral", "friendly", "confident", "warm"],
+    },
+  ];
 
   // Emotional tone options
   const emotionalTones = [
-    { value: 'neutral', label: 'محايد / Neutral' },
-    { value: 'friendly', label: 'ودود / Friendly' },
-    { value: 'professional', label: 'مهني / Professional' },
-    { value: 'warm', label: 'دافئ / Warm' },
-    { value: 'formal', label: 'رسمي / Formal' }
-  ]
+    { value: "neutral", label: "محايد / Neutral" },
+    { value: "friendly", label: "ودود / Friendly" },
+    { value: "professional", label: "مهني / Professional" },
+    { value: "warm", label: "دافئ / Warm" },
+    { value: "formal", label: "رسمي / Formal" },
+  ];
 
   // Initialize speech systems
   useEffect(() => {
     const initializeSpeechSystems = async () => {
       try {
         // Initialize Speech Recognition
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-          const recognition = new SpeechRecognition()
+        if (
+          "webkitSpeechRecognition" in window ||
+          "SpeechRecognition" in window
+        ) {
+          const SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
+          const recognition = new SpeechRecognition();
 
-          recognition.continuous = conversationMode
-          recognition.interimResults = true
-          recognition.lang = 'ar-IQ'
-          recognition.maxAlternatives = 3
+          recognition.continuous = conversationMode;
+          recognition.interimResults = true;
+          recognition.lang = "ar-IQ";
+          recognition.maxAlternatives = 3;
 
-          recognition.onresult = handleSpeechRecognitionResult
-          recognition.onerror = handleSpeechRecognitionError
-          recognition.onend = handleSpeechRecognitionEnd
+          recognition.onresult = handleSpeechRecognitionResult;
+          recognition.onerror = handleSpeechRecognitionError;
+          recognition.onend = handleSpeechRecognitionEnd;
 
-          recognitionRef.current = recognition
+          recognitionRef.current = recognition;
         }
 
         // Initialize Speech Synthesis
-        if ('speechSynthesis' in window) {
-          synthRef.current = window.speechSynthesis
+        if ("speechSynthesis" in window) {
+          synthRef.current = window.speechSynthesis;
         }
 
         // Initialize Audio Context for visualization
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
-
+        audioContextRef.current = new (window.AudioContext ||
+          window.webkitAudioContext)();
       } catch (error) {
-        console.error('Speech system initialization error:', error)
+        console.error("Speech system initialization error:", error);
         const speechError: SpeechError = {
-          code: 'PROCESSING_ERROR',
-          message: 'Failed to initialize speech systems',
-          details: error
-        }
-        onError?.(speechError)
+          code: "PROCESSING_ERROR",
+          message: "Failed to initialize speech systems",
+          details: error,
+        };
+        onError?.(speechError);
       }
-    }
+    };
 
-    initializeSpeechSystems()
+    initializeSpeechSystems();
 
     return () => {
       if (audioContextRef.current) {
-        audioContextRef.current.close()
+        audioContextRef.current.close();
       }
-    }
-  }, [conversationMode])
+    };
+  }, [conversationMode]);
 
   // Handle speech recognition result
-  const handleSpeechRecognitionResult = useCallback(async (event: SpeechRecognitionEvent) => {
-    const lastResult = event.results[event.results.length - 1]
-    const transcript = lastResult[0].transcript
-    const confidence = lastResult[0].confidence
+  const handleSpeechRecognitionResult = useCallback(
+    async (event: SpeechRecognitionEvent) => {
+      const lastResult = event.results[event.results.length - 1];
+      const transcript = lastResult[0].transcript;
+      const confidence = lastResult[0].confidence;
 
-    setCurrentTranscript(transcript)
+      setCurrentTranscript(transcript);
 
-    if (lastResult.isFinal) {
-      setIsProcessing(true)
-      setStatus('معالجة النص المنطوق... / Processing recognized speech...')
+      if (lastResult.isFinal) {
+        setIsProcessing(true);
+        setStatus("معالجة النص المنطوق... / Processing recognized speech...");
 
-      try {
-        // Process the recognized speech
-        const processedResult = await processSpeechInput(transcript, confidence)
+        try {
+          // Process the recognized speech
+          const processedResult = await processSpeechInput(
+            transcript,
+            confidence,
+          );
 
-        // Add to conversation history
-        const update: ConversationUpdate = {
-          type: 'recognition',
-          content: transcript,
-          confidence,
-          metadata: processedResult
+          // Add to conversation history
+          const update: ConversationUpdate = {
+            type: "recognition",
+            content: transcript,
+            confidence,
+            metadata: processedResult,
+          };
+
+          setConversationHistory((prev) => [...prev, update]);
+          onConversationUpdate?.(update);
+
+          // Generate response if in conversation mode
+          if (conversationMode && processedResult.shouldRespond) {
+            await generateSpeechResponse(processedResult.responseContent);
+          }
+        } catch (error) {
+          console.error("Speech processing error:", error);
+          const speechError: SpeechError = {
+            code: "PROCESSING_ERROR",
+            message: "Failed to process recognized speech",
+            details: error,
+          };
+          onError?.(speechError);
+        } finally {
+          setIsProcessing(false);
         }
-
-        setConversationHistory(prev => [...prev, update])
-        onConversationUpdate?.(update)
-
-        // Generate response if in conversation mode
-        if (conversationMode && processedResult.shouldRespond) {
-          await generateSpeechResponse(processedResult.responseContent)
-        }
-
-      } catch (error) {
-        console.error('Speech processing error:', error)
-        const speechError: SpeechError = {
-          code: 'PROCESSING_ERROR',
-          message: 'Failed to process recognized speech',
-          details: error
-        }
-        onError?.(speechError)
-      } finally {
-        setIsProcessing(false)
       }
-    }
-  }, [conversationMode, onConversationUpdate, onError])
+    },
+    [conversationMode, onConversationUpdate, onError],
+  );
 
   // Handle speech recognition error
-  const handleSpeechRecognitionError = useCallback((event: SpeechRecognitionErrorEvent) => {
-    const speechError: SpeechError = {
-      code: 'STT_ERROR',
-      message: `Speech recognition error: ${event.error}`,
-      details: event
-    }
-    onError?.(speechError)
-    setStatus('خطأ في التعرف على الصوت / Speech recognition error')
-    setIsListening(false)
-  }, [onError])
+  const handleSpeechRecognitionError = useCallback(
+    (event: SpeechRecognitionErrorEvent) => {
+      const speechError: SpeechError = {
+        code: "STT_ERROR",
+        message: `Speech recognition error: ${event.error}`,
+        details: event,
+      };
+      onError?.(speechError);
+      setStatus("خطأ في التعرف على الصوت / Speech recognition error");
+      setIsListening(false);
+    },
+    [onError],
+  );
 
   // Handle speech recognition end
   const handleSpeechRecognitionEnd = useCallback(() => {
-    setIsListening(false)
+    setIsListening(false);
     if (conversationMode && !isProcessing) {
-      setStatus('في انتظار الكلام... / Waiting for speech...')
+      setStatus("في انتظار الكلام... / Waiting for speech...");
     } else {
-      setStatus('توقف التعرف على الصوت / Speech recognition stopped')
+      setStatus("توقف التعرف على الصوت / Speech recognition stopped");
     }
-  }, [conversationMode, isProcessing])
+  }, [conversationMode, isProcessing]);
 
   // Process speech input with cultural validation and dialect detection
-  const processSpeechInput = useCallback(async (
-    transcript: string,
-    confidence: number
-  ): Promise<any> => {
-    const startTime = performance.now()
+  const processSpeechInput = useCallback(
+    async (transcript: string, confidence: number): Promise<any> => {
+      const startTime = performance.now();
 
-    try {
-      const processingTasks = []
+      try {
+        const processingTasks = [];
 
-      // Dialect detection if enabled
-      if (autoDetectDialect) {
-        processingTasks.push(
-          new Task({
-            subagent_type: 'arabic-rtl-processor',
-            description: 'Detect Iraqi dialect in speech',
-            prompt: `Analyze this Iraqi Arabic speech for dialect detection:
+        // Dialect detection if enabled
+        if (autoDetectDialect) {
+          processingTasks.push(
+            new Task({
+              subagent_type: "arabic-rtl-processor",
+              description: "Detect Iraqi dialect in speech",
+              prompt: `Analyze this Iraqi Arabic speech for dialect detection:
 
             Transcript: "${transcript}"
             Confidence: ${confidence}
             Selected Dialect: ${selectedDialect}
-            Professional Domain: ${professionalDomain || 'general'}
+            Professional Domain: ${professionalDomain || "general"}
 
             Requirements:
             - Detect specific Iraqi dialect (Baghdad, Basra, Mosul, etc.)
@@ -737,21 +786,21 @@ export default function SpeechProcessingSystem({
             - Provide confidence score for dialect detection
             - Note any mixed dialect usage
 
-            Return dialect analysis with confidence metrics.`
-          }).execute()
-        )
-      }
+            Return dialect analysis with confidence metrics.`,
+            }).execute(),
+          );
+        }
 
-      // Cultural validation if enabled
-      if (enableCulturalValidation) {
-        processingTasks.push(
-          new Task({
-            subagent_type: 'iraqi-cultural-validator',
-            description: 'Validate speech content for cultural compliance',
-            prompt: `Validate this Iraqi speech for cultural and Islamic compliance:
+        // Cultural validation if enabled
+        if (enableCulturalValidation) {
+          processingTasks.push(
+            new Task({
+              subagent_type: "iraqi-cultural-validator",
+              description: "Validate speech content for cultural compliance",
+              prompt: `Validate this Iraqi speech for cultural and Islamic compliance:
 
             Transcript: "${transcript}"
-            Professional Domain: ${professionalDomain || 'general'}
+            Professional Domain: ${professionalDomain || "general"}
 
             Validation Requirements:
             - Check for Islamic expressions and religious content
@@ -760,18 +809,18 @@ export default function SpeechProcessingSystem({
             - Assess professional domain suitability
             - Determine appropriate response tone
 
-            Return cultural validation with response guidance.`
-          }).execute()
-        )
-      }
+            Return cultural validation with response guidance.`,
+            }).execute(),
+          );
+        }
 
-      // Professional domain processing
-      if (professionalDomain) {
-        processingTasks.push(
-          new Task({
-            subagent_type: 'iraqi-professional-domain-expert',
-            description: 'Process professional terminology in speech',
-            prompt: `Process professional terminology in this Iraqi speech:
+        // Professional domain processing
+        if (professionalDomain) {
+          processingTasks.push(
+            new Task({
+              subagent_type: "iraqi-professional-domain-expert",
+              description: "Process professional terminology in speech",
+              prompt: `Process professional terminology in this Iraqi speech:
 
             Transcript: "${transcript}"
             Professional Domain: ${professionalDomain}
@@ -782,146 +831,182 @@ export default function SpeechProcessingSystem({
             - Provide context-appropriate response suggestions
             - Assess complexity level
 
-            Return professional analysis with response recommendations.`
-          }).execute()
-        )
+            Return professional analysis with response recommendations.`,
+            }).execute(),
+          );
+        }
+
+        const results = await Promise.all(processingTasks);
+        const processingTime = performance.now() - startTime;
+
+        // Compile processing results
+        const processedResult = {
+          dialectInfo: results[0]?.dialectInfo || null,
+          culturalValidation: results[1]?.culturalValidation || null,
+          professionalAnalysis: results[2]?.professionalAnalysis || null,
+          processingTime,
+          shouldRespond:
+            conversationMode && results[1]?.shouldRespond !== false,
+          responseContent:
+            results[1]?.suggestedResponse ||
+            results[2]?.suggestedResponse ||
+            "شكراً لك / Thank you",
+        };
+
+        // Update state with processing results
+        if (processedResult.dialectInfo) {
+          setDialectDetected(processedResult.dialectInfo.detected || "");
+        }
+        if (processedResult.culturalValidation) {
+          setCulturalValidation(processedResult.culturalValidation);
+        }
+        setProcessingMetrics({ processingTime, confidence });
+
+        setStatus(
+          `اكتمل التحليل - ${Math.round(processingTime)}ms / Analysis complete - ${Math.round(processingTime)}ms`,
+        );
+
+        return processedResult;
+      } catch (error) {
+        console.error("Speech input processing error:", error);
+        throw error;
       }
-
-      const results = await Promise.all(processingTasks)
-      const processingTime = performance.now() - startTime
-
-      // Compile processing results
-      const processedResult = {
-        dialectInfo: results[0]?.dialectInfo || null,
-        culturalValidation: results[1]?.culturalValidation || null,
-        professionalAnalysis: results[2]?.professionalAnalysis || null,
-        processingTime,
-        shouldRespond: conversationMode && results[1]?.shouldRespond !== false,
-        responseContent: results[1]?.suggestedResponse || results[2]?.suggestedResponse || 'شكراً لك / Thank you'
-      }
-
-      // Update state with processing results
-      if (processedResult.dialectInfo) {
-        setDialectDetected(processedResult.dialectInfo.detected || '')
-      }
-      if (processedResult.culturalValidation) {
-        setCulturalValidation(processedResult.culturalValidation)
-      }
-      setProcessingMetrics({ processingTime, confidence })
-
-      setStatus(`اكتمل التحليل - ${Math.round(processingTime)}ms / Analysis complete - ${Math.round(processingTime)}ms`)
-
-      return processedResult
-    } catch (error) {
-      console.error('Speech input processing error:', error)
-      throw error
-    }
-  }, [autoDetectDialect, enableCulturalValidation, professionalDomain, selectedDialect, conversationMode])
+    },
+    [
+      autoDetectDialect,
+      enableCulturalValidation,
+      professionalDomain,
+      selectedDialect,
+      conversationMode,
+    ],
+  );
 
   // Generate speech response
-  const generateSpeechResponse = useCallback(async (responseText: string) => {
-    if (!synthRef.current || !responseText.trim()) return
+  const generateSpeechResponse = useCallback(
+    async (responseText: string) => {
+      if (!synthRef.current || !responseText.trim()) return;
 
-    try {
-      setIsSpeaking(true)
-      setStatus('تحضير الرد الصوتي... / Preparing speech response...')
+      try {
+        setIsSpeaking(true);
+        setStatus("تحضير الرد الصوتي... / Preparing speech response...");
 
-      // Preprocess response text for TTS
-      const preprocessedText = await preprocessTextForTTS(responseText)
+        // Preprocess response text for TTS
+        const preprocessedText = await preprocessTextForTTS(responseText);
 
-      // Create speech utterance
-      const utterance = new SpeechSynthesisUtterance(preprocessedText.processedText)
+        // Create speech utterance
+        const utterance = new SpeechSynthesisUtterance(
+          preprocessedText.processedText,
+        );
 
-      // Configure voice
-      const voices = synthRef.current.getVoices()
-      const selectedProfile = voiceProfiles.find(p => p.id === selectedVoice)
+        // Configure voice
+        const voices = synthRef.current.getVoices();
+        const selectedProfile = voiceProfiles.find(
+          (p) => p.id === selectedVoice,
+        );
 
-      let voice = voices.find(v =>
-        v.lang === selectedProfile?.language ||
-        v.lang.startsWith('ar') ||
-        v.name.toLowerCase().includes('arabic')
-      ) || voices[0]
+        let voice =
+          voices.find(
+            (v) =>
+              v.lang === selectedProfile?.language ||
+              v.lang.startsWith("ar") ||
+              v.name.toLowerCase().includes("arabic"),
+          ) || voices[0];
 
-      utterance.voice = voice
-      utterance.rate = speechRate
-      utterance.pitch = speechPitch
-      utterance.volume = speechVolume
-      utterance.lang = selectedProfile?.language || 'ar-IQ'
+        utterance.voice = voice;
+        utterance.rate = speechRate;
+        utterance.pitch = speechPitch;
+        utterance.volume = speechVolume;
+        utterance.lang = selectedProfile?.language || "ar-IQ";
 
-      // Event handlers
-      utterance.onstart = () => {
-        setStatus(`يتكلم باستخدام ${selectedProfile?.nameArabic || 'الصوت الافتراضي'} / Speaking with ${selectedProfile?.name || 'default voice'}`)
-      }
+        // Event handlers
+        utterance.onstart = () => {
+          setStatus(
+            `يتكلم باستخدام ${selectedProfile?.nameArabic || "الصوت الافتراضي"} / Speaking with ${selectedProfile?.name || "default voice"}`,
+          );
+        };
 
-      utterance.onend = () => {
-        setIsSpeaking(false)
-        setStatus('انتهى الرد الصوتي / Speech response completed')
+        utterance.onend = () => {
+          setIsSpeaking(false);
+          setStatus("انتهى الرد الصوتي / Speech response completed");
 
-        // Continue listening if in conversation mode
-        if (conversationMode && recognitionRef.current) {
-          setTimeout(() => {
-            startListening()
-          }, 500)
-        }
-      }
+          // Continue listening if in conversation mode
+          if (conversationMode && recognitionRef.current) {
+            setTimeout(() => {
+              startListening();
+            }, 500);
+          }
+        };
 
-      utterance.onerror = (event) => {
-        setIsSpeaking(false)
+        utterance.onerror = (event) => {
+          setIsSpeaking(false);
+          const speechError: SpeechError = {
+            code: "TTS_ERROR",
+            message: `Speech synthesis error: ${event.error}`,
+            details: event,
+          };
+          onError?.(speechError);
+          setStatus("خطأ في تخليق الصوت / Speech synthesis error");
+        };
+
+        // Add to conversation history
+        const update: ConversationUpdate = {
+          type: "synthesis",
+          content: responseText,
+          metadata: {
+            voice: selectedProfile?.name,
+            emotionalTone,
+            processingTime: preprocessedText.processingTime,
+          },
+        };
+
+        setConversationHistory((prev) => [...prev, update]);
+        onConversationUpdate?.(update);
+
+        // Start synthesis
+        synthRef.current.speak(utterance);
+        setResponseText(responseText);
+      } catch (error) {
+        console.error("Speech response generation error:", error);
+        setIsSpeaking(false);
         const speechError: SpeechError = {
-          code: 'TTS_ERROR',
-          message: `Speech synthesis error: ${event.error}`,
-          details: event
-        }
-        onError?.(speechError)
-        setStatus('خطأ في تخليق الصوت / Speech synthesis error')
+          code: "TTS_ERROR",
+          message: "Failed to generate speech response",
+          details: error,
+        };
+        onError?.(speechError);
       }
-
-      // Add to conversation history
-      const update: ConversationUpdate = {
-        type: 'synthesis',
-        content: responseText,
-        metadata: {
-          voice: selectedProfile?.name,
-          emotionalTone,
-          processingTime: preprocessedText.processingTime
-        }
-      }
-
-      setConversationHistory(prev => [...prev, update])
-      onConversationUpdate?.(update)
-
-      // Start synthesis
-      synthRef.current.speak(utterance)
-      setResponseText(responseText)
-
-    } catch (error) {
-      console.error('Speech response generation error:', error)
-      setIsSpeaking(false)
-      const speechError: SpeechError = {
-        code: 'TTS_ERROR',
-        message: 'Failed to generate speech response',
-        details: error
-      }
-      onError?.(speechError)
-    }
-  }, [selectedVoice, speechRate, speechPitch, speechVolume, emotionalTone, conversationMode, onConversationUpdate, onError])
+    },
+    [
+      selectedVoice,
+      speechRate,
+      speechPitch,
+      speechVolume,
+      emotionalTone,
+      conversationMode,
+      onConversationUpdate,
+      onError,
+    ],
+  );
 
   // Preprocess text for TTS
-  const preprocessTextForTTS = useCallback(async (text: string): Promise<{
-    processedText: string
-    processingTime: number
-  }> => {
-    const startTime = performance.now()
+  const preprocessTextForTTS = useCallback(
+    async (
+      text: string,
+    ): Promise<{
+      processedText: string;
+      processingTime: number;
+    }> => {
+      const startTime = performance.now();
 
-    try {
-      const task = new Task({
-        subagent_type: 'iraqi-cultural-validator',
-        description: 'Preprocess text for Iraqi TTS cultural compliance',
-        prompt: `Preprocess this text for Iraqi Arabic text-to-speech synthesis:
+      try {
+        const task = new Task({
+          subagent_type: "iraqi-cultural-validator",
+          description: "Preprocess text for Iraqi TTS cultural compliance",
+          prompt: `Preprocess this text for Iraqi Arabic text-to-speech synthesis:
 
         Text: "${text}"
-        Voice Profile: ${voiceProfiles.find(p => p.id === selectedVoice)?.name || 'Standard Iraqi'}
-        Professional Domain: ${professionalDomain || 'general'}
+        Voice Profile: ${voiceProfiles.find((p) => p.id === selectedVoice)?.name || "Standard Iraqi"}
+        Professional Domain: ${professionalDomain || "general"}
         Emotional Tone: ${emotionalTone}
 
         Processing Requirements:
@@ -930,82 +1015,86 @@ export default function SpeechProcessingSystem({
         - Optimize for Iraqi accent pronunciation
         - Generate natural-sounding Iraqi speech text
 
-        Return culturally-appropriate text optimized for TTS.`
-      })
+        Return culturally-appropriate text optimized for TTS.`,
+        });
 
-      const result = await task.execute()
-      const processingTime = performance.now() - startTime
+        const result = await task.execute();
+        const processingTime = performance.now() - startTime;
 
-      return {
-        processedText: result.processedText || text,
-        processingTime
+        return {
+          processedText: result.processedText || text,
+          processingTime,
+        };
+      } catch (error) {
+        console.error("TTS preprocessing error:", error);
+        return {
+          processedText: text,
+          processingTime: performance.now() - startTime,
+        };
       }
-    } catch (error) {
-      console.error('TTS preprocessing error:', error)
-      return {
-        processedText: text,
-        processingTime: performance.now() - startTime
-      }
-    }
-  }, [selectedVoice, professionalDomain, emotionalTone])
+    },
+    [selectedVoice, professionalDomain, emotionalTone],
+  );
 
   // Start listening
   const startListening = useCallback(async () => {
     if (!recognitionRef.current) {
       const speechError: SpeechError = {
-        code: 'STT_ERROR',
-        message: 'Speech recognition not supported',
-        details: null
-      }
-      onError?.(speechError)
-      return
+        code: "STT_ERROR",
+        message: "Speech recognition not supported",
+        details: null,
+      };
+      onError?.(speechError);
+      return;
     }
 
     try {
       // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true })
+      await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      setIsListening(true)
-      setCurrentTranscript('')
-      setStatus('جاري بدء التعرف على الصوت... / Starting speech recognition...')
+      setIsListening(true);
+      setCurrentTranscript("");
+      setStatus(
+        "جاري بدء التعرف على الصوت... / Starting speech recognition...",
+      );
 
-      recognitionRef.current.start()
+      recognitionRef.current.start();
     } catch (error) {
       const speechError: SpeechError = {
-        code: 'STT_ERROR',
-        message: 'Microphone permission denied',
-        details: error
-      }
-      onError?.(speechError)
-      setStatus('تم رفض إذن الميكروفون / Microphone permission denied')
+        code: "STT_ERROR",
+        message: "Microphone permission denied",
+        details: error,
+      };
+      onError?.(speechError);
+      setStatus("تم رفض إذن الميكروفون / Microphone permission denied");
     }
-  }, [onError])
+  }, [onError]);
 
   // Stop listening
   const stopListening = useCallback(() => {
     if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop()
+      recognitionRef.current.stop();
     }
-  }, [isListening])
+  }, [isListening]);
 
   // Stop speaking
   const stopSpeaking = useCallback(() => {
     if (synthRef.current && isSpeaking) {
-      synthRef.current.cancel()
-      setIsSpeaking(false)
-      setStatus('تم إيقاف الكلام / Speech stopped')
+      synthRef.current.cancel();
+      setIsSpeaking(false);
+      setStatus("تم إيقاف الكلام / Speech stopped");
     }
-  }, [isSpeaking])
+  }, [isSpeaking]);
 
   // Format time display
   const formatTime = useCallback((seconds: number): string => {
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }, [])
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }, []);
 
   return (
-    <div className={`speech-processing-system ${className || ''}`}>
+    <div className={`speech-processing-system ${className || ""}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -1032,7 +1121,10 @@ export default function SpeechProcessingSystem({
                 <label className="block text-sm font-medium">
                   اللهجة / Dialect
                 </label>
-                <Select value={selectedDialect} onValueChange={setSelectedDialect}>
+                <Select
+                  value={selectedDialect}
+                  onValueChange={setSelectedDialect}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="اختر اللهجة / Select Dialect" />
                   </SelectTrigger>
@@ -1061,18 +1153,24 @@ export default function SpeechProcessingSystem({
                     <SelectValue placeholder="اختر الصوت / Select Voice" />
                   </SelectTrigger>
                   <SelectContent>
-                    {voiceProfiles.filter(profile =>
-                      !professionalDomain || profile.professionalSuitability.includes(professionalDomain)
-                    ).map((profile) => (
-                      <SelectItem key={profile.id} value={profile.id}>
-                        <div className="flex flex-col">
-                          <span>{profile.nameArabic}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {profile.name} • {profile.region}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {voiceProfiles
+                      .filter(
+                        (profile) =>
+                          !professionalDomain ||
+                          profile.professionalSuitability.includes(
+                            professionalDomain,
+                          ),
+                      )
+                      .map((profile) => (
+                        <SelectItem key={profile.id} value={profile.id}>
+                          <div className="flex flex-col">
+                            <span>{profile.nameArabic}</span>
+                            <span className="text-xs text-muted-foreground">
+                              {profile.name} • {profile.region}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -1147,9 +1245,10 @@ export default function SpeechProcessingSystem({
               <Button
                 onClick={isListening ? stopListening : startListening}
                 disabled={isProcessing || isSpeaking}
-                className={`flex-1 ${isListening
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : 'bg-green-600 hover:bg-green-700'
+                className={`flex-1 ${
+                  isListening
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-green-600 hover:bg-green-700"
                 }`}
               >
                 {isListening ? (
@@ -1158,7 +1257,7 @@ export default function SpeechProcessingSystem({
                     جاري الاستماع... / Listening...
                   </>
                 ) : (
-                  'بدء الاستماع / Start Listening'
+                  "بدء الاستماع / Start Listening"
                 )}
               </Button>
 
@@ -1202,8 +1301,14 @@ export default function SpeechProcessingSystem({
                       </p>
                       {processingMetrics && (
                         <div className="flex justify-between items-center mt-2 text-xs text-green-600">
-                          <span>الثقة / Confidence: {Math.round(processingMetrics.confidence * 100)}%</span>
-                          <span>وقت المعالجة / Processing: {Math.round(processingMetrics.processingTime)}ms</span>
+                          <span>
+                            الثقة / Confidence:{" "}
+                            {Math.round(processingMetrics.confidence * 100)}%
+                          </span>
+                          <span>
+                            وقت المعالجة / Processing:{" "}
+                            {Math.round(processingMetrics.processingTime)}ms
+                          </span>
                         </div>
                       )}
                     </div>
@@ -1212,7 +1317,9 @@ export default function SpeechProcessingSystem({
 
                 {responseText && (
                   <div className="space-y-2">
-                    <h4 className="text-sm font-medium">النص المنطوق / Synthesized Speech</h4>
+                    <h4 className="text-sm font-medium">
+                      النص المنطوق / Synthesized Speech
+                    </h4>
                     <div className="p-4 bg-blue-50 rounded-md border">
                       <p className="text-right font-arabic" dir="rtl">
                         {responseText}
@@ -1236,10 +1343,18 @@ export default function SpeechProcessingSystem({
                   التحقق الثقافي / Cultural Validation
                 </h4>
                 <div className="text-sm text-yellow-800 space-y-1">
-                  <p><strong>الحالة / Status:</strong> {culturalValidation.status}</p>
-                  <p><strong>النقاط الثقافية / Cultural Score:</strong> {Math.round(culturalValidation.score * 100)}%</p>
+                  <p>
+                    <strong>الحالة / Status:</strong>{" "}
+                    {culturalValidation.status}
+                  </p>
+                  <p>
+                    <strong>النقاط الثقافية / Cultural Score:</strong>{" "}
+                    {Math.round(culturalValidation.score * 100)}%
+                  </p>
                   {culturalValidation.islamicContent && (
-                    <p><strong>محتوى إسلامي / Islamic Content:</strong> ✓</p>
+                    <p>
+                      <strong>محتوى إسلامي / Islamic Content:</strong> ✓
+                    </p>
                   )}
                 </div>
               </div>
@@ -1248,20 +1363,25 @@ export default function SpeechProcessingSystem({
             {/* Conversation History */}
             {conversationHistory.length > 0 && (
               <div className="space-y-3">
-                <h4 className="text-sm font-medium">سجل المحادثة / Conversation History</h4>
+                <h4 className="text-sm font-medium">
+                  سجل المحادثة / Conversation History
+                </h4>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {conversationHistory.slice(-5).map((item, index) => (
                     <div
                       key={index}
                       className={`p-3 rounded-md text-sm ${
-                        item.type === 'recognition'
-                          ? 'bg-green-50 border-l-4 border-green-500'
-                          : 'bg-blue-50 border-l-4 border-blue-500'
+                        item.type === "recognition"
+                          ? "bg-green-50 border-l-4 border-green-500"
+                          : "bg-blue-50 border-l-4 border-blue-500"
                       }`}
                     >
                       <div className="flex justify-between items-start mb-1">
                         <span className="font-medium">
-                          {item.type === 'recognition' ? '🎤 مستمع' : '🔊 متكلم'} / {item.type === 'recognition' ? 'User' : 'Assistant'}
+                          {item.type === "recognition"
+                            ? "🎤 مستمع"
+                            : "🔊 متكلم"}{" "}
+                          / {item.type === "recognition" ? "User" : "Assistant"}
                         </span>
                         {item.confidence && (
                           <span className="text-xs text-muted-foreground">
@@ -1281,7 +1401,7 @@ export default function SpeechProcessingSystem({
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 ```
 

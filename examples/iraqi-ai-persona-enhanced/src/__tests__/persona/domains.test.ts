@@ -76,4 +76,4 @@ describe('Domain Expertise Tests', () => {
     console.log('✅ Domain Tests: 100% Professional Ethics Compliance (No sensitive content simulated)');
   });
 });
-```
+```;

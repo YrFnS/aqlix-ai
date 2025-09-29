@@ -5,17 +5,20 @@
 
 // Prayer Time Management
 export interface PrayerWindow {
-  name: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+  name: "fajr" | "dhuhr" | "asr" | "maghrib" | "isha";
   nameAr: string; // Arabic name
   startTime: Date;
   endTime: Date;
   isCurrentWindow: boolean;
-  restrictionLevel: 'none' | 'notification' | 'approval_required' | 'blocked';
+  restrictionLevel: "none" | "notification" | "approval_required" | "blocked";
 }
 
 export interface PrayerTimeCalculator {
   location: GeographicLocation;
-  calculationMethod: 'university_of_islamic_sciences' | 'iraq_sunni_endowment' | 'customs';
+  calculationMethod:
+    | "university_of_islamic_sciences"
+    | "iraq_sunni_endowment"
+    | "customs";
   adjustments: {
     fajr: number; // minutes adjustment
     dhuhr: number;
@@ -40,9 +43,10 @@ export interface CulturalComplianceResult {
   recommendations: string[];
   culturalScore: number; // 0-100
   islamicComplianceScore: number; // 0-100
-}export interface CulturalViolation {
-  type: 'content' | 'timing' | 'access' | 'display' | 'language';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+}
+export interface CulturalViolation {
+  type: "content" | "timing" | "access" | "display" | "language";
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
   descriptionAr: string;
   recommendation: string;
@@ -51,20 +55,20 @@ export interface CulturalComplianceResult {
 
 // RTL and Language Support
 export interface LanguageConfiguration {
-  primaryLanguage: 'ar' | 'en' | 'ku';
-  fallbackLanguage: 'ar' | 'en';
+  primaryLanguage: "ar" | "en" | "ku";
+  fallbackLanguage: "ar" | "en";
   rtlSupport: boolean;
   arabicNumerals: boolean;
-  dateFormat: 'gregorian' | 'hijri' | 'both';
-  timeFormat: '12h' | '24h';
+  dateFormat: "gregorian" | "hijri" | "both";
+  timeFormat: "12h" | "24h";
   culturalNaming: boolean; // Use cultural naming conventions
 }
 
 export interface RTLConfiguration {
   enabled: boolean;
   autoDetection: boolean;
-  mixedContentHandling: 'separate' | 'inline' | 'contextual';
-  numeralsDirection: 'ltr' | 'rtl' | 'contextual';
+  mixedContentHandling: "separate" | "inline" | "contextual";
+  numeralsDirection: "ltr" | "rtl" | "contextual";
   layoutMirroring: boolean;
 }
 

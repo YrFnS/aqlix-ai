@@ -1,31 +1,39 @@
 /**
  * Iraqi Workflow Execute - Advanced n8n Extraction
- * 
+ *
  * Production-ready workflow execution engine with comprehensive Iraqi cultural intelligence,
  * Islamic compliance validation, and Arabic text processing capabilities.
- * 
+ *
  * Based on n8n's enterprise-grade WorkflowExecute architecture with enhancements for:
  * - Islamic compliance validation (95%+ accuracy)
  * - Arabic RTL processing (99%+ accuracy)
  * - Prayer time awareness
  * - Ministry-specific security
  * - Cultural intelligence integration
- * 
+ *
  * @author Iraqi AI Integration Team
  * @version 2.0.0
  * @license Enterprise Iraqi Government License
  */
 
-import { EventEmitter } from 'events';
-import { IslamicComplianceValidator } from './IslamicComplianceValidator';
-import { ArabicTextProcessor } from './ArabicTextProcessor';
-import { EnterpriseSecurityManager } from './EnterpriseSecurityManager';
+import { EventEmitter } from "events";
+import { IslamicComplianceValidator } from "./IslamicComplianceValidator";
+import { ArabicTextProcessor } from "./ArabicTextProcessor";
+import { EnterpriseSecurityManager } from "./EnterpriseSecurityManager";
 
 // Core workflow execution interfaces
 export interface IWorkflowExecutionData {
   id: string;
   workflowId: string;
-  mode: 'integrated' | 'cli' | 'error' | 'internal' | 'manual' | 'retry' | 'trigger' | 'webhook';
+  mode:
+    | "integrated"
+    | "cli"
+    | "error"
+    | "internal"
+    | "manual"
+    | "retry"
+    | "trigger"
+    | "webhook";
   startedAt: Date;
   stoppedAt?: Date;
   finished: boolean;
@@ -76,17 +84,46 @@ export interface INode {
   waitBetweenTries?: number;
   alwaysOutputData?: boolean;
   executeOnce?: boolean;
-  onError?: 'stopWorkflow' | 'continueRegularOutput' | 'continueErrorOutput';
+  onError?: "stopWorkflow" | "continueRegularOutput" | "continueErrorOutput";
   culturalContext?: ICulturalNodeContext;
 }
 
 export interface ICulturalNodeContext {
-  ministry: 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'transport' | 'agriculture' | 'labor' | 'general';
-  language: 'ar' | 'ar-IQ' | 'en' | 'mixed';
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'karbala' | 'general';
-  professionalDomain: 'legal' | 'medical' | 'educational' | 'governmental' | 'engineering' | 'financial' | 'religious' | 'cultural';
-  securityLevel: 'public' | 'restricted' | 'confidential' | 'secret' | 'top-secret';
-  islamicCompliance: 'required' | 'preferred' | 'optional';
+  ministry:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "finance"
+    | "transport"
+    | "agriculture"
+    | "labor"
+    | "general";
+  language: "ar" | "ar-IQ" | "en" | "mixed";
+  region:
+    | "baghdad"
+    | "basra"
+    | "mosul"
+    | "erbil"
+    | "najaf"
+    | "karbala"
+    | "general";
+  professionalDomain:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "governmental"
+    | "engineering"
+    | "financial"
+    | "religious"
+    | "cultural";
+  securityLevel:
+    | "public"
+    | "restricted"
+    | "confidential"
+    | "secret"
+    | "top-secret";
+  islamicCompliance: "required" | "preferred" | "optional";
   prayerTimeAware: boolean;
 }
 
@@ -100,7 +137,7 @@ export interface ITaskData {
   };
   startTime: number;
   executionTime: number;
-  executionStatus?: 'success' | 'error' | 'running' | 'waiting';
+  executionStatus?: "success" | "error" | "running" | "waiting";
   source: Array<{
     previousNode: string;
     previousNodeOutput?: number;
@@ -127,13 +164,15 @@ export interface INodeExecutionData {
   binary?: {
     [key: string]: IBinaryData;
   };
-  pairedItem?: {
-    item: number;
-    input?: number;
-  } | Array<{
-    item: number;
-    input?: number;
-  }>;
+  pairedItem?:
+    | {
+        item: number;
+        input?: number;
+      }
+    | Array<{
+        item: number;
+        input?: number;
+      }>;
   culturalMetadata?: ICulturalDataMetadata;
 }
 
@@ -150,9 +189,9 @@ export interface IBinaryData {
 
 export interface ICulturalDataMetadata {
   hasArabicText: boolean;
-  textDirection: 'rtl' | 'ltr' | 'mixed';
-  dialect: 'baghdadi' | 'basri' | 'moslawi' | 'standard' | 'mixed';
-  culturalSensitivity: 'high' | 'medium' | 'low';
+  textDirection: "rtl" | "ltr" | "mixed";
+  dialect: "baghdadi" | "basri" | "moslawi" | "standard" | "mixed";
+  culturalSensitivity: "high" | "medium" | "low";
   professionalTerminology: boolean;
   islamicReferences: boolean;
   needsValidation: boolean;
@@ -220,7 +259,7 @@ export interface IIslamicComplianceResult {
   ribaDetected: boolean;
   halalCompliant: boolean;
   validatedAt: Date;
-  complianceLevel: 'strict' | 'moderate' | 'lenient';
+  complianceLevel: "strict" | "moderate" | "lenient";
   details: {
     financialCompliance: number;
     ethicalCompliance: number;
@@ -269,7 +308,11 @@ export interface ExecutionError extends Error {
 export interface IWorkflowExecuteAdditionalData {
   credentialsHelper: any;
   encryptionKey: string;
-  executeWorkflow: (workflowInfo: any, additionalData: IWorkflowExecuteAdditionalData, options?: any) => Promise<any>;
+  executeWorkflow: (
+    workflowInfo: any,
+    additionalData: IWorkflowExecuteAdditionalData,
+    options?: any,
+  ) => Promise<any>;
   restApiUrl: string;
   instanceBaseUrl: string;
   formWaitingBaseUrl: string;
@@ -296,15 +339,15 @@ export interface IWorkflowSettings {
   };
   timezone?: string;
   saveManualExecutions?: boolean;
-  saveDataErrorExecution?: 'all' | 'none';
-  saveDataSuccessExecution?: 'all' | 'none';
+  saveDataErrorExecution?: "all" | "none";
+  saveDataSuccessExecution?: "all" | "none";
   executionTimeout?: number;
   maxTimeout?: number;
   callerPolicy?: string;
   callerIds?: string;
   culturalValidation?: {
     enabled: boolean;
-    level: 'strict' | 'moderate' | 'lenient';
+    level: "strict" | "moderate" | "lenient";
     islamicCompliance: boolean;
     arabicTextProcessing: boolean;
     ministrySpecific: boolean;
@@ -332,28 +375,36 @@ export interface IWorkflowExecuteOptions {
 
 /**
  * Iraqi Workflow Execute Engine
- * 
+ *
  * Advanced workflow execution engine with comprehensive cultural intelligence,
  * Islamic compliance validation, and Arabic text processing capabilities.
  */
 export class IraqiWorkflowExecute extends EventEmitter {
   private workflow: any;
   private additionalData: IWorkflowExecuteAdditionalData;
-  private mode: 'integrated' | 'cli' | 'error' | 'internal' | 'manual' | 'retry' | 'trigger' | 'webhook';
+  private mode:
+    | "integrated"
+    | "cli"
+    | "error"
+    | "internal"
+    | "manual"
+    | "retry"
+    | "trigger"
+    | "webhook";
   private options: IWorkflowExecuteOptions;
-  
+
   // Cultural intelligence components
   private islamicValidator: IslamicComplianceValidator;
   private arabicProcessor: ArabicTextProcessor;
   private securityManager: EnterpriseSecurityManager;
-  
+
   // Execution state
   private executionData: IExecutionData;
   private runExecutionData: any;
   private isExecutionCanceled: boolean = false;
   private currentExecutionId: string;
   private culturalMetrics: ICulturalExecutionMetrics;
-  
+
   // Performance monitoring
   private executionStartTime: number;
   private nodeExecutionTimes: Map<string, number> = new Map();
@@ -362,40 +413,48 @@ export class IraqiWorkflowExecute extends EventEmitter {
   constructor(
     workflow: any,
     additionalData: IWorkflowExecuteAdditionalData,
-    mode: 'integrated' | 'cli' | 'error' | 'internal' | 'manual' | 'retry' | 'trigger' | 'webhook' = 'integrated',
-    options: IWorkflowExecuteOptions = {}
+    mode:
+      | "integrated"
+      | "cli"
+      | "error"
+      | "internal"
+      | "manual"
+      | "retry"
+      | "trigger"
+      | "webhook" = "integrated",
+    options: IWorkflowExecuteOptions = {},
   ) {
     super();
-    
+
     this.workflow = workflow;
     this.additionalData = additionalData;
     this.mode = mode;
     this.options = options;
-    
+
     // Initialize cultural intelligence components
     this.islamicValidator = new IslamicComplianceValidator({
       strictMode: true,
       ministryCompliance: true,
-      prayerTimeAwareness: true
+      prayerTimeAwareness: true,
     });
-    
+
     this.arabicProcessor = new ArabicTextProcessor({
       dialectRecognition: true,
       rtlProcessing: true,
-      professionalTerminology: true
+      professionalTerminology: true,
     });
-    
+
     this.securityManager = new EnterpriseSecurityManager({
       governmentGrade: true,
       ministryPermissions: options.ministryPermissions || [],
-      auditLogging: true
+      auditLogging: true,
     });
-    
+
     // Initialize execution state
     this.currentExecutionId = this.generateExecutionId();
     this.abortController = new AbortController();
     this.initializeCulturalMetrics();
-    
+
     // Set up event handlers
     this.setupEventHandlers();
   }
@@ -406,30 +465,30 @@ export class IraqiWorkflowExecute extends EventEmitter {
   async execute(): Promise<IWorkflowExecutionData> {
     this.executionStartTime = Date.now();
     this.culturalMetrics.executionStartTime = new Date();
-    
+
     try {
-      this.emit('executionStarted', {
+      this.emit("executionStarted", {
         executionId: this.currentExecutionId,
         workflowId: this.workflow.id,
         culturalContext: this.options.culturalContext,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Pre-execution cultural validation
       await this.performPreExecutionValidation();
-      
+
       // Initialize execution data
       this.initializeExecutionData();
-      
+
       // Execute workflow nodes with cultural intelligence
       const executionResult = await this.executeNodes();
-      
+
       // Post-execution cultural validation
       await this.performPostExecutionValidation(executionResult);
-      
+
       // Finalize execution metrics
       this.finalizeCulturalMetrics();
-      
+
       const workflowExecutionData: IWorkflowExecutionData = {
         id: this.currentExecutionId,
         workflowId: this.workflow.id,
@@ -440,23 +499,22 @@ export class IraqiWorkflowExecute extends EventEmitter {
         data: {
           resultData: {
             runData: executionResult.runData,
-            executionData: this.executionData
+            executionData: this.executionData,
           },
-          executionData: this.executionData
+          executionData: this.executionData,
         },
         culturalMetrics: this.culturalMetrics,
-        islamicCompliance: await this.getOverallIslamicCompliance()
+        islamicCompliance: await this.getOverallIslamicCompliance(),
       };
 
-      this.emit('executionCompleted', {
+      this.emit("executionCompleted", {
         executionId: this.currentExecutionId,
         success: true,
         culturalMetrics: this.culturalMetrics,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return workflowExecutionData;
-
     } catch (error) {
       await this.handleExecutionError(error as ExecutionError);
       throw error;
@@ -470,42 +528,49 @@ export class IraqiWorkflowExecute extends EventEmitter {
     try {
       // Validate workflow for cultural appropriateness
       if (this.options.validateCultural) {
-        const culturalValidation = await this.validateWorkflowCulturalCompliance();
+        const culturalValidation =
+          await this.validateWorkflowCulturalCompliance();
         if (!culturalValidation.isValid) {
-          throw new Error(`Cultural validation failed: ${culturalValidation.violations.join(', ')}`);
+          throw new Error(
+            `Cultural validation failed: ${culturalValidation.violations.join(", ")}`,
+          );
         }
       }
 
       // Validate Islamic compliance
       if (this.options.validateIslamic) {
-        const islamicValidation = await this.islamicValidator.validateWorkflow(this.workflow, {
-          ministry: this.options.culturalContext?.ministry || 'general',
-          strictMode: true,
-          prayerTimeAware: true
-        });
-        
+        const islamicValidation = await this.islamicValidator.validateWorkflow(
+          this.workflow,
+          {
+            ministry: this.options.culturalContext?.ministry || "general",
+            strictMode: true,
+            prayerTimeAware: true,
+          },
+        );
+
         if (!islamicValidation.isCompliant) {
-          throw new Error(`Islamic compliance validation failed: ${islamicValidation.violations.join(', ')}`);
+          throw new Error(
+            `Islamic compliance validation failed: ${islamicValidation.violations.join(", ")}`,
+          );
         }
       }
 
       // Validate security permissions
       await this.securityManager.validateWorkflowPermissions(
         this.workflow,
-        this.options.culturalContext?.userId || 'anonymous',
-        this.options.ministryPermissions || []
+        this.options.culturalContext?.userId || "anonymous",
+        this.options.ministryPermissions || [],
       );
 
       // Check prayer time conflicts
       if (this.options.culturalContext?.prayerTimeAware) {
         await this.checkPrayerTimeConflicts();
       }
-
     } catch (error) {
-      this.emit('preExecutionValidationFailed', {
+      this.emit("preExecutionValidationFailed", {
         executionId: this.currentExecutionId,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw error;
     }
@@ -517,64 +582,73 @@ export class IraqiWorkflowExecute extends EventEmitter {
   private async executeNodes(): Promise<{ runData: IRunData }> {
     const runData: IRunData = {};
     const nodeExecutionStack = [...this.executionData.nodeExecutionStack];
-    
+
     while (nodeExecutionStack.length > 0 && !this.isExecutionCanceled) {
       const executionItem = nodeExecutionStack.shift()!;
       const node = executionItem.node;
-      
+
       try {
         // Pre-node cultural validation
         await this.performPreNodeValidation(node);
-        
+
         // Execute node with timeout and cultural context
         const nodeStartTime = Date.now();
-        const nodeResult = await this.executeNode(node, executionItem.data, executionItem.source);
+        const nodeResult = await this.executeNode(
+          node,
+          executionItem.data,
+          executionItem.source,
+        );
         const nodeExecutionTime = Date.now() - nodeStartTime;
-        
+
         // Store execution time
         this.nodeExecutionTimes.set(node.id, nodeExecutionTime);
-        
+
         // Post-node cultural validation
         await this.performPostNodeValidation(node, nodeResult);
-        
+
         // Store node execution result
         if (!runData[node.name]) {
           runData[node.name] = [];
         }
-        
+
         runData[node.name].push({
           hints: {},
           startTime: nodeStartTime,
           executionTime: nodeExecutionTime,
-          executionStatus: 'success',
+          executionStatus: "success",
           source: executionItem.source,
           data: nodeResult,
-          culturalValidation: await this.getCulturalValidationForNode(node, nodeResult),
-          islamicCompliance: await this.getIslamicComplianceForNode(node, nodeResult)
+          culturalValidation: await this.getCulturalValidationForNode(
+            node,
+            nodeResult,
+          ),
+          islamicCompliance: await this.getIslamicComplianceForNode(
+            node,
+            nodeResult,
+          ),
         });
 
         // Update cultural metrics
         this.updateCulturalMetrics(node, nodeResult);
-        
+
         // Prepare next nodes for execution
         const nextNodes = await this.getNextNodes(node, nodeResult);
         nodeExecutionStack.push(...nextNodes);
-
       } catch (error) {
         await this.handleNodeExecutionError(node, error as ExecutionError);
-        
+
         // Store error result
         if (!runData[node.name]) {
           runData[node.name] = [];
         }
-        
+
         runData[node.name].push({
           hints: {},
           startTime: Date.now(),
           executionTime: 0,
-          executionStatus: 'error',
+          executionStatus: "error",
           source: executionItem.source,
-          error: error as ExecutionError
+          error: error as ExecutionError,
         });
 
         // Determine if workflow should continue
@@ -591,22 +665,34 @@ export class IraqiWorkflowExecute extends EventEmitter {
    * Execute individual node with cultural context
    */
   private async executeNode(
-    node: INode, 
-    inputData: ITaskDataConnections, 
-    source: Array<{ previousNode: string; previousNodeOutput?: number; previousNodeRun?: number }> | null
+    node: INode,
+    inputData: ITaskDataConnections,
+    source: Array<{
+      previousNode: string;
+      previousNodeOutput?: number;
+      previousNodeRun?: number;
+    }> | null,
   ): Promise<ITaskDataConnections> {
-    
     // Create execution timeout
     const timeout = this.getNodeTimeout(node);
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error(`Node execution timeout after ${timeout}ms`)), timeout);
+      setTimeout(
+        () => reject(new Error(`Node execution timeout after ${timeout}ms`)),
+        timeout,
+      );
     });
 
     // Execute node with cultural context
-    const executionPromise = this.executeNodeWithCulturalContext(node, inputData);
+    const executionPromise = this.executeNodeWithCulturalContext(
+      node,
+      inputData,
+    );
 
     try {
-      return await Promise.race([executionPromise, timeoutPromise]) as ITaskDataConnections;
+      return (await Promise.race([
+        executionPromise,
+        timeoutPromise,
+      ])) as ITaskDataConnections;
     } catch (error) {
       // Enhance error with cultural context
       const culturalError = error as ExecutionError;
@@ -621,31 +707,38 @@ export class IraqiWorkflowExecute extends EventEmitter {
    * Execute node with cultural context and intelligence
    */
   private async executeNodeWithCulturalContext(
-    node: INode, 
-    inputData: ITaskDataConnections
+    node: INode,
+    inputData: ITaskDataConnections,
   ): Promise<ITaskDataConnections> {
-    
     // Process Arabic text in input data
     if (this.options.processArabicText && this.hasArabicContent(inputData)) {
       inputData = await this.arabicProcessor.processNodeInputData(inputData, {
-        dialect: this.options.culturalContext?.region || 'general',
-        professionalDomain: node.culturalContext?.professionalDomain || 'general',
-        preserveFormatting: true
+        dialect: this.options.culturalContext?.region || "general",
+        professionalDomain:
+          node.culturalContext?.professionalDomain || "general",
+        preserveFormatting: true,
       });
     }
 
     // Apply cultural transformations
-    const culturallyEnhancedData = await this.applyCulturalTransformations(node, inputData);
+    const culturallyEnhancedData = await this.applyCulturalTransformations(
+      node,
+      inputData,
+    );
 
     // Execute core node logic (this would integrate with actual n8n node execution)
-    const outputData = await this.executeCoreNodeLogic(node, culturallyEnhancedData);
+    const outputData = await this.executeCoreNodeLogic(
+      node,
+      culturallyEnhancedData,
+    );
 
     // Process Arabic text in output data
     if (this.options.processArabicText && this.hasArabicContent(outputData)) {
       return await this.arabicProcessor.processNodeOutputData(outputData, {
-        dialect: this.options.culturalContext?.region || 'general',
-        professionalDomain: node.culturalContext?.professionalDomain || 'general',
-        ensureRTL: true
+        dialect: this.options.culturalContext?.region || "general",
+        professionalDomain:
+          node.culturalContext?.professionalDomain || "general",
+        ensureRTL: true,
       });
     }
 
@@ -656,43 +749,57 @@ export class IraqiWorkflowExecute extends EventEmitter {
    * Core node execution logic (would integrate with actual n8n nodes)
    */
   private async executeCoreNodeLogic(
-    node: INode, 
-    inputData: ITaskDataConnections
+    node: INode,
+    inputData: ITaskDataConnections,
   ): Promise<ITaskDataConnections> {
-    
     // This is a simplified implementation - in real usage this would
     // integrate with n8n's actual node execution system
-    
+
     const outputData: ITaskDataConnections = {
       main: [],
       culturalContext: {
-        ministry: this.options.culturalContext?.ministry || 'general',
-        language: this.options.culturalContext?.language || 'ar',
-        region: this.options.culturalContext?.region || 'baghdad',
-        userId: this.options.culturalContext?.userId || 'system',
-        sessionId: this.options.culturalContext?.sessionId || this.currentExecutionId,
+        ministry: this.options.culturalContext?.ministry || "general",
+        language: this.options.culturalContext?.language || "ar",
+        region: this.options.culturalContext?.region || "baghdad",
+        userId: this.options.culturalContext?.userId || "system",
+        sessionId:
+          this.options.culturalContext?.sessionId || this.currentExecutionId,
         requestId: this.currentExecutionId,
         timestamp: new Date(),
-        timezone: 'Asia/Baghdad',
-        prayerTimes: this.options.culturalContext?.prayerTimes || await this.getPrayerTimes(),
+        timezone: "Asia/Baghdad",
+        prayerTimes:
+          this.options.culturalContext?.prayerTimes ||
+          (await this.getPrayerTimes()),
         culturalValidationEnabled: this.options.validateCultural || false,
-        islamicComplianceRequired: this.options.validateIslamic || false
-      }
+        islamicComplianceRequired: this.options.validateIslamic || false,
+      },
     };
 
     // Process based on node type
     switch (node.type) {
-      case 'iraqi-government-service':
-        outputData.main = await this.executeGovernmentServiceNode(node, inputData);
+      case "iraqi-government-service":
+        outputData.main = await this.executeGovernmentServiceNode(
+          node,
+          inputData,
+        );
         break;
-      case 'arabic-text-processor':
-        outputData.main = await this.executeArabicTextProcessorNode(node, inputData);
+      case "arabic-text-processor":
+        outputData.main = await this.executeArabicTextProcessorNode(
+          node,
+          inputData,
+        );
         break;
-      case 'islamic-compliance-validator':
-        outputData.main = await this.executeIslamicComplianceNode(node, inputData);
+      case "islamic-compliance-validator":
+        outputData.main = await this.executeIslamicComplianceNode(
+          node,
+          inputData,
+        );
         break;
-      case 'ministry-integration':
-        outputData.main = await this.executeMinistryIntegrationNode(node, inputData);
+      case "ministry-integration":
+        outputData.main = await this.executeMinistryIntegrationNode(
+          node,
+          inputData,
+        );
         break;
       default:
         // Default node execution with cultural awareness
@@ -708,13 +815,13 @@ export class IraqiWorkflowExecute extends EventEmitter {
   private async getPrayerTimes(): Promise<IPrayerTimes> {
     // This would integrate with a prayer times API or calculation library
     return {
-      fajr: '05:30',
-      dhuhr: '12:15',
-      asr: '15:45',
-      maghrib: '18:30',
-      isha: '20:00',
-      timezone: 'Asia/Baghdad',
-      date: new Date().toISOString().split('T')[0]
+      fajr: "05:30",
+      dhuhr: "12:15",
+      asr: "15:45",
+      maghrib: "18:30",
+      isha: "20:00",
+      timezone: "Asia/Baghdad",
+      date: new Date().toISOString().split("T")[0],
     };
   }
 
@@ -726,37 +833,44 @@ export class IraqiWorkflowExecute extends EventEmitter {
       return;
     }
 
-    const prayerTimes = this.options.culturalContext.prayerTimes || await this.getPrayerTimes();
+    const prayerTimes =
+      this.options.culturalContext.prayerTimes || (await this.getPrayerTimes());
     const currentTime = new Date();
-    const timeFormat = new Intl.DateTimeFormat('en-GB', {
+    const timeFormat = new Intl.DateTimeFormat("en-GB", {
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'Asia/Baghdad'
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Baghdad",
     }).format(currentTime);
 
     // Check if current time conflicts with prayer times
-    const prayerTimesList = [prayerTimes.fajr, prayerTimes.dhuhr, prayerTimes.asr, prayerTimes.maghrib, prayerTimes.isha];
-    
+    const prayerTimesList = [
+      prayerTimes.fajr,
+      prayerTimes.dhuhr,
+      prayerTimes.asr,
+      prayerTimes.maghrib,
+      prayerTimes.isha,
+    ];
+
     for (const prayerTime of prayerTimesList) {
-      const [prayerHour, prayerMinute] = prayerTime.split(':').map(Number);
-      const [currentHour, currentMinute] = timeFormat.split(':').map(Number);
-      
+      const [prayerHour, prayerMinute] = prayerTime.split(":").map(Number);
+      const [currentHour, currentMinute] = timeFormat.split(":").map(Number);
+
       // Allow 15-minute buffer around prayer times
       const prayerTimeMinutes = prayerHour * 60 + prayerMinute;
       const currentTimeMinutes = currentHour * 60 + currentMinute;
-      
+
       if (Math.abs(currentTimeMinutes - prayerTimeMinutes) <= 15) {
         this.culturalMetrics.prayerTimeConflicts++;
-        
-        this.emit('prayerTimeConflict', {
+
+        this.emit("prayerTimeConflict", {
           executionId: this.currentExecutionId,
           prayerTime: prayerTime,
           currentTime: timeFormat,
-          action: 'workflow_paused',
-          timestamp: new Date()
+          action: "workflow_paused",
+          timestamp: new Date(),
         });
-        
+
         // Pause execution for prayer time
         await this.pauseForPrayerTime(prayerTime);
       }
@@ -768,20 +882,20 @@ export class IraqiWorkflowExecute extends EventEmitter {
    */
   private async pauseForPrayerTime(prayerTime: string): Promise<void> {
     const pauseDuration = 20 * 60 * 1000; // 20 minutes pause
-    
-    this.emit('executionPaused', {
+
+    this.emit("executionPaused", {
       executionId: this.currentExecutionId,
       reason: `Prayer time (${prayerTime})`,
       pauseDuration: pauseDuration,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
-    await new Promise(resolve => setTimeout(resolve, pauseDuration));
-    
-    this.emit('executionResumed', {
+    await new Promise((resolve) => setTimeout(resolve, pauseDuration));
+
+    this.emit("executionResumed", {
       executionId: this.currentExecutionId,
       reason: `Prayer time completed`,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
@@ -801,24 +915,30 @@ export class IraqiWorkflowExecute extends EventEmitter {
       securityValidations: 0,
       executionStartTime: new Date(),
       executionEndTime: undefined,
-      totalExecutionTime: undefined
+      totalExecutionTime: undefined,
     };
   }
 
   /**
    * Update cultural metrics for node execution
    */
-  private updateCulturalMetrics(node: INode, result: ITaskDataConnections): void {
+  private updateCulturalMetrics(
+    node: INode,
+    result: ITaskDataConnections,
+  ): void {
     this.culturalMetrics.totalNodes++;
-    
+
     if (node.parameters?.culturalValidation) {
       this.culturalMetrics.culturallyValidatedNodes++;
     }
-    
-    if (node.parameters?.arabicTextProcessing || this.hasArabicContent(result)) {
+
+    if (
+      node.parameters?.arabicTextProcessing ||
+      this.hasArabicContent(result)
+    ) {
       this.culturalMetrics.arabicTextProcessingNodes++;
     }
-    
+
     if (node.parameters?.islamicCompliance) {
       this.culturalMetrics.islamicComplianceChecks++;
     }
@@ -829,20 +949,28 @@ export class IraqiWorkflowExecute extends EventEmitter {
    */
   private finalizeCulturalMetrics(): void {
     this.culturalMetrics.executionEndTime = new Date();
-    this.culturalMetrics.totalExecutionTime = this.culturalMetrics.executionEndTime.getTime() - 
-                                             this.culturalMetrics.executionStartTime.getTime();
-    
+    this.culturalMetrics.totalExecutionTime =
+      this.culturalMetrics.executionEndTime.getTime() -
+      this.culturalMetrics.executionStartTime.getTime();
+
     // Calculate averages and scores
     if (this.culturalMetrics.totalNodes > 0) {
-      this.culturalMetrics.culturalComplianceScore = 
-        (this.culturalMetrics.culturallyValidatedNodes / this.culturalMetrics.totalNodes) * 100;
-      
-      this.culturalMetrics.islamicComplianceScore = 
-        (this.culturalMetrics.islamicComplianceChecks / this.culturalMetrics.totalNodes) * 100;
+      this.culturalMetrics.culturalComplianceScore =
+        (this.culturalMetrics.culturallyValidatedNodes /
+          this.culturalMetrics.totalNodes) *
+        100;
+
+      this.culturalMetrics.islamicComplianceScore =
+        (this.culturalMetrics.islamicComplianceChecks /
+          this.culturalMetrics.totalNodes) *
+        100;
     }
-    
-    const totalValidationTime = Array.from(this.nodeExecutionTimes.values()).reduce((sum, time) => sum + time, 0);
-    this.culturalMetrics.averageValidationTime = totalValidationTime / this.culturalMetrics.totalNodes;
+
+    const totalValidationTime = Array.from(
+      this.nodeExecutionTimes.values(),
+    ).reduce((sum, time) => sum + time, 0);
+    this.culturalMetrics.averageValidationTime =
+      totalValidationTime / this.culturalMetrics.totalNodes;
   }
 
   // Utility methods
@@ -851,7 +979,11 @@ export class IraqiWorkflowExecute extends EventEmitter {
   }
 
   private getNodeTimeout(node: INode): number {
-    return node.parameters?.timeout || this.additionalData.executionTimeoutTimestamp || 300000; // 5 minutes default
+    return (
+      node.parameters?.timeout ||
+      this.additionalData.executionTimeoutTimestamp ||
+      300000
+    ); // 5 minutes default
   }
 
   private hasArabicContent(data: ITaskDataConnections): boolean {
@@ -866,37 +998,47 @@ export class IraqiWorkflowExecute extends EventEmitter {
       metadata: {},
       waitingExecution: {},
       waitingExecutionSource: {},
-      culturalContext: this.options.culturalContext
+      culturalContext: this.options.culturalContext,
     };
   }
 
-  private buildInitialExecutionStack(): Array<{ node: INode; data: ITaskDataConnections; source: any }> {
+  private buildInitialExecutionStack(): Array<{
+    node: INode;
+    data: ITaskDataConnections;
+    source: any;
+  }> {
     // Build initial execution stack from workflow start nodes
-    const startNodes = this.workflow.nodes.filter((node: INode) => this.isStartNode(node));
-    
+    const startNodes = this.workflow.nodes.filter((node: INode) =>
+      this.isStartNode(node),
+    );
+
     return startNodes.map((node: INode) => ({
       node,
       data: { main: [[]] },
-      source: null
+      source: null,
     }));
   }
 
   private isStartNode(node: INode): boolean {
     // Implementation would determine if node is a start node
-    return node.type === 'start' || node.type === 'trigger' || node.type === 'webhook';
+    return (
+      node.type === "start" ||
+      node.type === "trigger" ||
+      node.type === "webhook"
+    );
   }
 
   private setupEventHandlers(): void {
-    this.on('error', (error) => {
-      console.error('Iraqi Workflow Execution Error:', error);
+    this.on("error", (error) => {
+      console.error("Iraqi Workflow Execution Error:", error);
     });
 
-    this.on('executionPaused', (event) => {
-      console.log('Workflow execution paused:', event);
+    this.on("executionPaused", (event) => {
+      console.log("Workflow execution paused:", event);
     });
 
-    this.on('executionResumed', (event) => {
-      console.log('Workflow execution resumed:', event);
+    this.on("executionResumed", (event) => {
+      console.log("Workflow execution resumed:", event);
     });
   }
 
@@ -909,13 +1051,13 @@ export class IraqiWorkflowExecute extends EventEmitter {
       violations: [],
       recommendations: [],
       validatedAt: new Date(),
-      validatedBy: 'iraqi-cultural-validator',
+      validatedBy: "iraqi-cultural-validator",
       details: {
         culturalAppropriateness: 95,
         linguisticAccuracy: 98,
         professionalCompliance: 92,
-        securityCompliance: 97
-      }
+        securityCompliance: 97,
+      },
     };
   }
 
@@ -923,7 +1065,10 @@ export class IraqiWorkflowExecute extends EventEmitter {
     // Pre-node validation implementation
   }
 
-  private async performPostNodeValidation(node: INode, result: ITaskDataConnections): Promise<void> {
+  private async performPostNodeValidation(
+    node: INode,
+    result: ITaskDataConnections,
+  ): Promise<void> {
     // Post-node validation implementation
   }
 
@@ -931,7 +1076,10 @@ export class IraqiWorkflowExecute extends EventEmitter {
     // Post-execution validation implementation
   }
 
-  private async getCulturalValidationForNode(node: INode, result: ITaskDataConnections): Promise<ICulturalValidationResult> {
+  private async getCulturalValidationForNode(
+    node: INode,
+    result: ITaskDataConnections,
+  ): Promise<ICulturalValidationResult> {
     // Get cultural validation for specific node
     return {
       isValid: true,
@@ -939,17 +1087,20 @@ export class IraqiWorkflowExecute extends EventEmitter {
       violations: [],
       recommendations: [],
       validatedAt: new Date(),
-      validatedBy: 'node-validator',
+      validatedBy: "node-validator",
       details: {
         culturalAppropriateness: 95,
         linguisticAccuracy: 98,
         professionalCompliance: 92,
-        securityCompliance: 97
-      }
+        securityCompliance: 97,
+      },
     };
   }
 
-  private async getIslamicComplianceForNode(node: INode, result: ITaskDataConnections): Promise<IIslamicComplianceResult> {
+  private async getIslamicComplianceForNode(
+    node: INode,
+    result: ITaskDataConnections,
+  ): Promise<IIslamicComplianceResult> {
     // Get Islamic compliance for specific node
     return {
       isCompliant: true,
@@ -959,13 +1110,13 @@ export class IraqiWorkflowExecute extends EventEmitter {
       ribaDetected: false,
       halalCompliant: true,
       validatedAt: new Date(),
-      complianceLevel: 'strict',
+      complianceLevel: "strict",
       details: {
         financialCompliance: 100,
         ethicalCompliance: 98,
         ritualCompliance: 96,
-        socialCompliance: 99
-      }
+        socialCompliance: 99,
+      },
     };
   }
 
@@ -979,22 +1130,28 @@ export class IraqiWorkflowExecute extends EventEmitter {
       ribaDetected: false,
       halalCompliant: true,
       validatedAt: new Date(),
-      complianceLevel: 'strict',
+      complianceLevel: "strict",
       details: {
         financialCompliance: 100,
         ethicalCompliance: 98,
         ritualCompliance: 96,
-        socialCompliance: 99
-      }
+        socialCompliance: 99,
+      },
     };
   }
 
-  private async applyCulturalTransformations(node: INode, data: ITaskDataConnections): Promise<ITaskDataConnections> {
+  private async applyCulturalTransformations(
+    node: INode,
+    data: ITaskDataConnections,
+  ): Promise<ITaskDataConnections> {
     // Apply cultural transformations to data
     return data;
   }
 
-  private async getNextNodes(node: INode, result: ITaskDataConnections): Promise<Array<{ node: INode; data: ITaskDataConnections; source: any }>> {
+  private async getNextNodes(
+    node: INode,
+    result: ITaskDataConnections,
+  ): Promise<Array<{ node: INode; data: ITaskDataConnections; source: any }>> {
     // Get next nodes in execution sequence
     return [];
   }
@@ -1004,42 +1161,60 @@ export class IraqiWorkflowExecute extends EventEmitter {
   }
 
   private async handleExecutionError(error: ExecutionError): Promise<void> {
-    this.emit('executionFailed', {
+    this.emit("executionFailed", {
       executionId: this.currentExecutionId,
       error: error.message,
       culturalContext: error.culturalContext,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
-  private async handleNodeExecutionError(node: INode, error: ExecutionError): Promise<void> {
-    this.emit('nodeExecutionFailed', {
+  private async handleNodeExecutionError(
+    node: INode,
+    error: ExecutionError,
+  ): Promise<void> {
+    this.emit("nodeExecutionFailed", {
       executionId: this.currentExecutionId,
       nodeId: node.id,
       nodeName: node.name,
       error: error.message,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
   // Placeholder node execution methods
-  private async executeGovernmentServiceNode(node: INode, inputData: ITaskDataConnections): Promise<INodeExecutionData[][]> {
+  private async executeGovernmentServiceNode(
+    node: INode,
+    inputData: ITaskDataConnections,
+  ): Promise<INodeExecutionData[][]> {
     return [[]];
   }
 
-  private async executeArabicTextProcessorNode(node: INode, inputData: ITaskDataConnections): Promise<INodeExecutionData[][]> {
+  private async executeArabicTextProcessorNode(
+    node: INode,
+    inputData: ITaskDataConnections,
+  ): Promise<INodeExecutionData[][]> {
     return [[]];
   }
 
-  private async executeIslamicComplianceNode(node: INode, inputData: ITaskDataConnections): Promise<INodeExecutionData[][]> {
+  private async executeIslamicComplianceNode(
+    node: INode,
+    inputData: ITaskDataConnections,
+  ): Promise<INodeExecutionData[][]> {
     return [[]];
   }
 
-  private async executeMinistryIntegrationNode(node: INode, inputData: ITaskDataConnections): Promise<INodeExecutionData[][]> {
+  private async executeMinistryIntegrationNode(
+    node: INode,
+    inputData: ITaskDataConnections,
+  ): Promise<INodeExecutionData[][]> {
     return [[]];
   }
 
-  private async executeDefaultNode(node: INode, inputData: ITaskDataConnections): Promise<INodeExecutionData[][]> {
+  private async executeDefaultNode(
+    node: INode,
+    inputData: ITaskDataConnections,
+  ): Promise<INodeExecutionData[][]> {
     return [[]];
   }
 }

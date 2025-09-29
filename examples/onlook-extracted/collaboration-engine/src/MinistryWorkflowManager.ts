@@ -2,7 +2,7 @@
  * Iraqi AI System - Ministry Workflow Manager
  * Government approval workflows with Islamic compliance and cultural intelligence
  * Enhanced for Iraqi government deployment with department-specific processes
- * 
+ *
  * Key Features:
  * - Hierarchical approval systems reflecting Iraqi government structure
  * - Ministry-specific processes with department-tailored workflows
@@ -15,10 +15,30 @@
 import { EventEmitter } from 'events';
 
 export type MinistryType = 'health' | 'education' | 'interior' | 'justice';
-export type WorkflowType = 'document-review' | 'policy-approval' | 'citizen-service' | 'inter-ministry' | 'emergency' | 'budget-approval' | 'personnel' | 'procurement';
-export type ApprovalStage = 'draft' | 'initial-review' | 'department-review' | 'ministry-review' | 'final-approval' | 'published' | 'archived';
+export type WorkflowType =
+  | 'document-review'
+  | 'policy-approval'
+  | 'citizen-service'
+  | 'inter-ministry'
+  | 'emergency'
+  | 'budget-approval'
+  | 'personnel'
+  | 'procurement';
+export type ApprovalStage =
+  | 'draft'
+  | 'initial-review'
+  | 'department-review'
+  | 'ministry-review'
+  | 'final-approval'
+  | 'published'
+  | 'archived';
 export type PriorityLevel = 'routine' | 'important' | 'urgent' | 'critical' | 'emergency';
-export type SecurityClassification = 'public' | 'internal' | 'confidential' | 'secret' | 'top-secret';
+export type SecurityClassification =
+  | 'public'
+  | 'internal'
+  | 'confidential'
+  | 'secret'
+  | 'top-secret';
 
 export interface WorkflowConfig {
   // Core settings
@@ -29,20 +49,20 @@ export interface WorkflowConfig {
   crossMinistry: boolean;
   citizenService: boolean;
   securityLevel: SecurityClassification;
-  
+
   // Performance settings
   maxConcurrentWorkflows: number;
   workflowTimeoutDays: number;
   autoEscalationEnabled: boolean;
   parallelApprovals: boolean;
-  
+
   // Cultural settings
   shuraConsultation: boolean;
   prayerTimeRespect: boolean;
   ramadanScheduleAware: boolean;
   islamicHolidayAware: boolean;
   culturalSensitivityRequired: boolean;
-  
+
   // Ministry-specific settings
   departmentStructure: DepartmentStructure;
   officialProtocolRequired: boolean;
@@ -58,29 +78,29 @@ export interface WorkflowInput {
   descriptionArabic: string;
   type: WorkflowType;
   priority: PriorityLevel;
-  
+
   // Security and classification
   securityClassification: SecurityClassification;
   citizenFacing: boolean;
   interMinistryInvolved: boolean;
-  
+
   // Participants and approvers
   initiatorId: string;
   customApprovers?: WorkflowParticipant[];
   requiredDepartments?: string[];
   externalStakeholders?: ExternalStakeholder[];
-  
+
   // Content and attachments
   documents: WorkflowDocument[];
   attachments: WorkflowAttachment[];
   relatedWorkflows?: string[];
-  
+
   // Timeline and deadlines
   requestedCompletionDate?: Date;
   legalDeadline?: Date;
   urgentJustification?: string;
   urgentJustificationArabic?: string;
-  
+
   // Cultural and Islamic considerations
   culturalValidationRequired?: boolean;
   islamicComplianceReview?: boolean;
@@ -93,18 +113,18 @@ export interface WorkflowResult {
   status: WorkflowStatus;
   workflowState: WorkflowState;
   approvalChain: ApprovalChain;
-  
+
   // Performance metrics
   estimatedDuration: number; // milliseconds
   actualDuration?: number;
   processingLatency: number;
   bottlenecks: WorkflowBottleneck[];
-  
+
   // Cultural compliance
   culturalValidationResult: CulturalValidationResult;
   islamicComplianceResult: IslamicComplianceResult;
   shuraConsultationResult?: ShuraConsultationResult;
-  
+
   // Audit and tracking
   auditTrail: WorkflowAuditEntry[];
   performanceMetrics: WorkflowPerformanceMetrics;
@@ -116,18 +136,18 @@ export interface WorkflowState {
   completedStages: ApprovalStage[];
   pendingApprovals: PendingApproval[];
   blockedBy: WorkflowBlockage[];
-  
+
   // Progress tracking
   overallProgress: number; // 0-1
   stageProgress: number; // 0-1
   estimatedCompletion: Date;
   criticalPath: string[];
-  
+
   // Cultural and religious considerations
   prayerTimePauses: Date[];
   ramadanScheduleAdjustments: Date[];
   culturalEventPauses: CulturalEventPause[];
-  
+
   // Escalation and alerts
   escalationLevel: number; // 0-5
   alertsGenerated: WorkflowAlert[];
@@ -139,12 +159,12 @@ export interface ApprovalChain {
   parallelApprovals: ParallelApprovalGroup[];
   conditionalApprovals: ConditionalApproval[];
   emergencyBypass: EmergencyBypass[];
-  
+
   // Cultural elements
   shuraConsultation?: ShuraConsultationStage;
   religiousAdvisoryReview?: ReligiousAdvisoryStage;
   culturalSensitivityReview?: CulturalSensitivityStage;
-  
+
   // Ministry-specific elements
   ministerialReview: MinisterialReviewStage;
   departmentCoordination: DepartmentCoordinationStage[];
@@ -158,25 +178,25 @@ export interface WorkflowParticipant {
   nameArabic: string;
   title: string;
   titleArabic: string;
-  
+
   // Organizational context
   ministry: MinistryType;
   department: string;
   division?: string;
   hierarchyLevel: number; // 1-10, 1 = highest
-  
+
   // Approval authority
   approvalAuthority: ApprovalAuthority;
   delegationRights: DelegationRights;
   securityClearance: SecurityClassification;
   culturalAuthority: CulturalAuthority;
-  
+
   // Availability and scheduling
   workSchedule: WorkSchedule;
   prayerSchedule: PrayerSchedule;
   vacationSchedule: Date[];
   emergencyContact: boolean;
-  
+
   // Performance and metrics
   averageApprovalTime: number; // hours
   approvalQuality: number; // 0-1
@@ -188,30 +208,30 @@ export interface ApprovalStageDefinition {
   stageName: string;
   stageNameArabic: string;
   stageType: 'individual' | 'committee' | 'department' | 'ministry' | 'inter-ministry';
-  
+
   // Participants and requirements
   requiredApprovers: string[];
   optionalReviewers: string[];
   minimumApprovals: number;
   consensusRequired: boolean;
-  
+
   // Timeline and deadlines
   standardDuration: number; // hours
   maximumDuration: number; // hours
   escalationTrigger: number; // hours
   urgentDuration: number; // hours
-  
+
   // Cultural and religious considerations
   prayerTimeRespect: boolean;
   ramadanAdjustments: boolean;
   islamicHolidayAware: boolean;
   culturalSensitivityRequired: boolean;
-  
+
   // Conditions and requirements
   prerequisites: StagePrerequisite[];
   conditionalRequirements: ConditionalRequirement[];
   bypassConditions: BypassCondition[];
-  
+
   // Validation and compliance
   culturalValidationRequired: boolean;
   islamicComplianceRequired: boolean;
@@ -224,25 +244,25 @@ export interface PendingApproval {
   approverName: string;
   approverNameArabic: string;
   stage: string;
-  
+
   // Timeline
   requestedAt: Date;
   deadline: Date;
   estimatedCompletion: Date;
   prayerTimeExtensions: number; // hours
-  
+
   // Priority and context
   priority: PriorityLevel;
   urgencyJustification?: string;
   culturalContext: CulturalContext;
   islamicContext: IslamicContext;
-  
+
   // Requirements and validation
   culturalReview: boolean;
   islamicReview: boolean;
   technicalReview: boolean;
   legalReview: boolean;
-  
+
   // Status and progress
   remindersSent: number;
   escalated: boolean;
@@ -251,25 +271,34 @@ export interface PendingApproval {
 }
 
 export interface WorkflowBlockage {
-  type: 'approval-pending' | 'document-missing' | 'cultural-issue' | 'islamic-issue' | 'technical-issue' | 'legal-issue' | 'resource-unavailable' | 'prayer-time' | 'cultural-event';
+  type:
+    | 'approval-pending'
+    | 'document-missing'
+    | 'cultural-issue'
+    | 'islamic-issue'
+    | 'technical-issue'
+    | 'legal-issue'
+    | 'resource-unavailable'
+    | 'prayer-time'
+    | 'cultural-event';
   description: string;
   descriptionArabic: string;
   blockedBy: string;
   blockedAt: Date;
-  
+
   // Resolution
   resolutionRequired: string;
   resolutionRequiredArabic: string;
   estimatedResolutionTime: number; // hours
   autoResolvable: boolean;
   escalationRequired: boolean;
-  
+
   // Cultural and religious context
   culturalSensitivity: boolean;
   islamicConsideration: boolean;
   prayerTimeRelated: boolean;
   ramadanRelated: boolean;
-  
+
   // Impact assessment
   impactLevel: 'low' | 'medium' | 'high' | 'critical';
   affectedStakeholders: string[];
@@ -280,19 +309,19 @@ export interface WorkflowBlockage {
 export interface CulturalValidationResult {
   valid: boolean;
   score: number; // 0-1
-  
+
   // Validation areas
   languageAppropriate: boolean;
   culturalSensitivity: boolean;
   religiousRespect: boolean;
   socialNorms: boolean;
-  
+
   // Ministry-specific validation
   officialProtocol: boolean;
   diplomaticLanguage: boolean;
   citizenAppropriate: boolean;
   professionalStandards: boolean;
-  
+
   // Issues and recommendations
   issues: CulturalIssue[];
   recommendations: CulturalRecommendation[];
@@ -303,19 +332,19 @@ export interface CulturalValidationResult {
 export interface IslamicComplianceResult {
   compliant: boolean;
   score: number; // 0-1
-  
+
   // Compliance areas
   contentHalal: boolean;
   respectfulLanguage: boolean;
   appropriateTiming: boolean;
   familyFriendly: boolean;
-  
+
   // Religious considerations
   prayerTimeRespect: boolean;
   ramadanSensitive: boolean;
   islamicHolidayAware: boolean;
   religiousTerminology: boolean;
-  
+
   // Issues and guidance
   violations: IslamicViolation[];
   blessings: IslamicBlessing[];
@@ -326,24 +355,24 @@ export interface IslamicComplianceResult {
 export interface ShuraConsultationResult {
   conducted: boolean;
   participants: ShuraParticipant[];
-  
+
   // Consultation process
   consultationDate: Date;
   duration: number; // minutes
   consensusReached: boolean;
   majorityDecision: boolean;
-  
+
   // Decisions and recommendations
   decision: 'approve' | 'reject' | 'modify' | 'defer';
   decisionReasoning: string;
   decisionReasoningArabic: string;
   modifications: ShuraModification[];
-  
+
   // Islamic principles applied
   islamicPrinciples: IslamicPrinciple[];
   scholarlyReferences: ScholarlyReference[];
   communityWelfare: CommunityWelfareAssessment;
-  
+
   // Follow-up actions
   followUpRequired: boolean;
   implementationGuidance: string;
@@ -492,16 +521,16 @@ interface WorkflowComplianceMetrics {
   auditReadinessScore: number;
 }
 
-export type WorkflowStatus = 
-  | 'draft' 
-  | 'submitted' 
-  | 'in-review' 
-  | 'pending-approval' 
-  | 'approved' 
-  | 'rejected' 
-  | 'escalated' 
-  | 'completed' 
-  | 'archived' 
+export type WorkflowStatus =
+  | 'draft'
+  | 'submitted'
+  | 'in-review'
+  | 'pending-approval'
+  | 'approved'
+  | 'rejected'
+  | 'escalated'
+  | 'completed'
+  | 'archived'
   | 'suspended';
 
 // Additional interfaces would continue...
@@ -534,22 +563,22 @@ interface StakeholderNotification {
 
 export class MinistryWorkflowManager extends EventEmitter {
   private config: WorkflowConfig;
-  
+
   // Workflow storage and management
   private activeWorkflows: Map<string, WorkflowResult> = new Map();
   private workflowTemplates: Map<WorkflowType, any> = new Map();
   private approvalChainTemplates: Map<MinistryType, any> = new Map();
-  
+
   // Participant and organizational data
   private participants: Map<string, WorkflowParticipant> = new Map();
   private departments: Map<string, Department> = new Map();
   private hierarchyStructure: Map<MinistryType, HierarchyLevel[]> = new Map();
-  
+
   // Cultural and Islamic validation
   private culturalValidators: Map<string, any> = new Map();
   private islamicAdvisors: Map<string, any> = new Map();
   private shuraCouncils: Map<MinistryType, any> = new Map();
-  
+
   // Performance and monitoring
   private performanceMetrics = {
     totalWorkflows: 0,
@@ -557,12 +586,12 @@ export class MinistryWorkflowManager extends EventEmitter {
     culturalValidationRate: 0,
     islamicComplianceRate: 0,
     escalationRate: 0,
-    citizenSatisfactionRate: 0
+    citizenSatisfactionRate: 0,
   };
-  
+
   // Audit and compliance
   private auditLog: WorkflowAuditEntry[] = [];
-  
+
   constructor(config: WorkflowConfig) {
     super();
     this.config = config;
@@ -577,19 +606,19 @@ export class MinistryWorkflowManager extends EventEmitter {
     this.loadMinistryTemplates();
     this.loadApprovalChainTemplates();
     this.loadDepartmentStructures();
-    
+
     // Setup cultural and Islamic validation
     this.setupCulturalValidation();
     this.setupIslamicCompliance();
-    
+
     // Initialize Shura consultation if enabled
     if (this.config.shuraConsultation) {
       this.setupShuraConsultation();
     }
-    
+
     // Setup performance monitoring
     this.setupPerformanceMonitoring();
-    
+
     this.emit('workflow-manager-initialized', { config: this.config });
   }
 
@@ -602,22 +631,21 @@ export class MinistryWorkflowManager extends EventEmitter {
       await this.loadParticipants();
       await this.loadDepartmentData();
       await this.loadHierarchyStructures();
-      
+
       // Setup validation services
       await this.initializeCulturalValidators();
       await this.initializeIslamicAdvisors();
-      
+
       // Setup Shura councils if required
       if (this.config.shuraConsultation) {
         await this.initializeShuraCouncils();
       }
-      
+
       // Setup ministry-specific protocols
       await this.setupMinistryProtocols();
-      
+
       this.emit('workflow-manager-ready');
       return true;
-
     } catch (error) {
       this.emit('workflow-manager-error', { error: error.message });
       return false;
@@ -629,34 +657,34 @@ export class MinistryWorkflowManager extends EventEmitter {
    */
   async createWorkflow(input: WorkflowInput): Promise<WorkflowResult> {
     const startTime = performance.now();
-    
+
     try {
       const workflowId = this.generateWorkflowId();
-      
+
       // Validate input
       this.validateWorkflowInput(input);
-      
+
       // Create approval chain
       const approvalChain = await this.createApprovalChain(input);
-      
+
       // Initialize workflow state
       const workflowState = this.initializeWorkflowState(input, approvalChain);
-      
+
       // Perform cultural validation
       const culturalValidation = await this.validateCulturally(input);
-      
+
       // Perform Islamic compliance validation
       const islamicCompliance = await this.validateIslamically(input);
-      
+
       // Setup Shura consultation if required
       let shuraConsultation: ShuraConsultationResult | undefined;
       if (input.shuraConsultationRequired || this.requiresShuraConsultation(input)) {
         shuraConsultation = await this.setupShuraConsultationProcess(input);
       }
-      
+
       // Calculate estimated duration
       const estimatedDuration = this.calculateEstimatedDuration(approvalChain, input.priority);
-      
+
       // Create workflow result
       const workflowResult: WorkflowResult = {
         workflowId,
@@ -671,30 +699,29 @@ export class MinistryWorkflowManager extends EventEmitter {
         shuraConsultationResult: shuraConsultation,
         auditTrail: [],
         performanceMetrics: this.initializePerformanceMetrics(),
-        complianceMetrics: this.initializeComplianceMetrics()
+        complianceMetrics: this.initializeComplianceMetrics(),
       };
-      
+
       // Store workflow
       this.activeWorkflows.set(workflowId, workflowResult);
-      
+
       // Start workflow processing
       await this.startWorkflowProcessing(workflowResult);
-      
+
       // Record audit entry
       this.recordAuditEntry(workflowResult, 'workflow-created', {
         initiatorId: input.initiatorId,
         type: input.type,
         priority: input.priority,
         culturalValidation: culturalValidation.valid,
-        islamicCompliance: islamicCompliance.compliant
+        islamicCompliance: islamicCompliance.compliant,
       });
-      
+
       // Update performance metrics
       this.updatePerformanceMetrics('create', performance.now() - startTime);
-      
+
       this.emit('workflow-created', workflowResult);
       return workflowResult;
-
     } catch (error) {
       this.emit('workflow-creation-error', { input, error: error.message });
       throw new Error(`Failed to create workflow: ${error.message}`);
@@ -729,20 +756,23 @@ export class MinistryWorkflowManager extends EventEmitter {
         citizenFacing: approvalConfig.culturalContext.citizenFacing || false,
         interMinistryInvolved: approvalConfig.culturalContext.interMinistryInvolved || false,
         initiatorId: approvalConfig.initiatorId,
-        documents: [{
-          id: approvalConfig.document.id,
-          title: approvalConfig.document.title,
-          titleArabic: approvalConfig.document.titleArabic || '',
-          type: 'collaboration-document',
-          version: approvalConfig.document.version || '1.0',
-          status: 'review',
-          culturallyValidated: approvalConfig.document.culturallyValidated || false,
-          islamicCompliant: approvalConfig.document.islamicCompliant || false
-        }],
+        documents: [
+          {
+            id: approvalConfig.document.id,
+            title: approvalConfig.document.title,
+            titleArabic: approvalConfig.document.titleArabic || '',
+            type: 'collaboration-document',
+            version: approvalConfig.document.version || '1.0',
+            status: 'review',
+            culturallyValidated: approvalConfig.document.culturallyValidated || false,
+            islamicCompliant: approvalConfig.document.islamicCompliant || false,
+          },
+        ],
         attachments: approvalConfig.document.attachments || [],
         culturalValidationRequired: approvalConfig.culturalReview !== false,
         islamicComplianceReview: approvalConfig.islamicReview !== false,
-        shuraConsultationRequired: this.config.shuraConsultation && approvalConfig.culturalContext.islamicContext
+        shuraConsultationRequired:
+          this.config.shuraConsultation && approvalConfig.culturalContext.islamicContext,
       };
 
       // Create workflow
@@ -752,7 +782,6 @@ export class MinistryWorkflowManager extends EventEmitter {
       workflowResult.workflowState.criticalPath.push(approvalConfig.sessionId);
 
       return workflowResult;
-
     } catch (error) {
       throw new Error(`Failed to start approval workflow: ${error.message}`);
     }
@@ -805,14 +834,13 @@ export class MinistryWorkflowManager extends EventEmitter {
           action: decision.action,
           comments: decision.comments,
           culturalConcerns: decision.culturalConcerns,
-          islamicConcerns: decision.islamicConcerns
+          islamicConcerns: decision.islamicConcerns,
         });
 
         this.emit('approval-processed', { workflowId, approverId, decision });
       }
 
       return processed;
-
     } catch (error) {
       this.emit('approval-processing-error', { workflowId, error: error.message });
       return false;
@@ -831,8 +859,12 @@ export class MinistryWorkflowManager extends EventEmitter {
    */
   getWorkflowsByMinistry(ministry: MinistryType): WorkflowResult[] {
     return Array.from(this.activeWorkflows.values())
-      .filter(workflow => workflow.workflowState.criticalPath.includes(ministry))
-      .sort((a, b) => b.workflowState.estimatedCompletion.getTime() - a.workflowState.estimatedCompletion.getTime());
+      .filter((workflow) => workflow.workflowState.criticalPath.includes(ministry))
+      .sort(
+        (a, b) =>
+          b.workflowState.estimatedCompletion.getTime() -
+          a.workflowState.estimatedCompletion.getTime()
+      );
   }
 
   /**
@@ -843,8 +875,9 @@ export class MinistryWorkflowManager extends EventEmitter {
 
     for (const workflow of this.activeWorkflows.values()) {
       if (workflow.status === 'pending-approval' || workflow.status === 'in-review') {
-        const userApprovals = workflow.workflowState.pendingApprovals
-          .filter(approval => approval.approverId === userId);
+        const userApprovals = workflow.workflowState.pendingApprovals.filter(
+          (approval) => approval.approverId === userId
+        );
         pendingApprovals.push(...userApprovals);
       }
     }
@@ -862,7 +895,7 @@ export class MinistryWorkflowManager extends EventEmitter {
       averageApprovalTime: this.calculateAverageApprovalTime(),
       bottleneckAnalysis: this.analyzeBottlenecks(),
       culturalComplianceRate: this.calculateCulturalComplianceRate(),
-      islamicComplianceRate: this.calculateIslamicComplianceRate()
+      islamicComplianceRate: this.calculateIslamicComplianceRate(),
     };
   }
 
@@ -870,26 +903,26 @@ export class MinistryWorkflowManager extends EventEmitter {
    * Export workflow data for audit
    */
   exportWorkflowData(workflowId?: string): any {
-    const workflows = workflowId 
-      ? [this.activeWorkflows.get(workflowId)].filter(w => w !== undefined)
+    const workflows = workflowId
+      ? [this.activeWorkflows.get(workflowId)].filter((w) => w !== undefined)
       : Array.from(this.activeWorkflows.values());
 
     return {
-      workflows: workflows.map(workflow => ({
+      workflows: workflows.map((workflow) => ({
         ...workflow,
         // Include detailed audit information
         detailedAuditTrail: workflow.auditTrail,
         culturalValidationDetails: workflow.culturalValidationResult,
         islamicComplianceDetails: workflow.islamicComplianceResult,
-        shuraConsultationDetails: workflow.shuraConsultationResult
+        shuraConsultationDetails: workflow.shuraConsultationResult,
       })),
       metadata: {
         exportedAt: new Date(),
         totalWorkflows: workflows.length,
         performanceMetrics: this.getPerformanceMetrics(),
-        complianceMetrics: this.calculateComplianceMetrics()
+        complianceMetrics: this.calculateComplianceMetrics(),
       },
-      auditLog: this.auditLog.slice(-200) // Last 200 entries
+      auditLog: this.auditLog.slice(-200), // Last 200 entries
     };
   }
 
@@ -944,11 +977,14 @@ export class MinistryWorkflowManager extends EventEmitter {
       conditionalApprovals: [],
       emergencyBypass: [],
       ministerialReview: {} as MinisterialReviewStage,
-      departmentCoordination: []
+      departmentCoordination: [],
     };
   }
 
-  private initializeWorkflowState(input: WorkflowInput, approvalChain: ApprovalChain): WorkflowState {
+  private initializeWorkflowState(
+    input: WorkflowInput,
+    approvalChain: ApprovalChain
+  ): WorkflowState {
     return {
       currentStage: 'draft',
       completedStages: [],
@@ -963,7 +999,7 @@ export class MinistryWorkflowManager extends EventEmitter {
       culturalEventPauses: [],
       escalationLevel: 0,
       alertsGenerated: [],
-      stakeholderNotifications: []
+      stakeholderNotifications: [],
     };
   }
 
@@ -982,7 +1018,7 @@ export class MinistryWorkflowManager extends EventEmitter {
       issues: [],
       recommendations: [],
       autoFixes: [],
-      manualReview: []
+      manualReview: [],
     };
   }
 
@@ -1001,18 +1037,22 @@ export class MinistryWorkflowManager extends EventEmitter {
       violations: [],
       blessings: [],
       scholarlyGuidance: [],
-      communityBenefit: []
+      communityBenefit: [],
     };
   }
 
   private requiresShuraConsultation(input: WorkflowInput): boolean {
-    return input.type === 'policy-approval' || 
-           input.priority === 'critical' || 
-           input.interMinistryInvolved ||
-           input.citizenFacing;
+    return (
+      input.type === 'policy-approval' ||
+      input.priority === 'critical' ||
+      input.interMinistryInvolved ||
+      input.citizenFacing
+    );
   }
 
-  private async setupShuraConsultationProcess(input: WorkflowInput): Promise<ShuraConsultationResult> {
+  private async setupShuraConsultationProcess(
+    input: WorkflowInput
+  ): Promise<ShuraConsultationResult> {
     return {
       conducted: false,
       participants: [],
@@ -1030,17 +1070,20 @@ export class MinistryWorkflowManager extends EventEmitter {
       followUpRequired: false,
       implementationGuidance: '',
       implementationGuidanceArabic: '',
-      monitoringRequired: false
+      monitoringRequired: false,
     };
   }
 
-  private calculateEstimatedDuration(approvalChain: ApprovalChain, priority: PriorityLevel): number {
+  private calculateEstimatedDuration(
+    approvalChain: ApprovalChain,
+    priority: PriorityLevel
+  ): number {
     const baseDuration = {
-      'routine': 7 * 24 * 60 * 60 * 1000, // 7 days
-      'important': 5 * 24 * 60 * 60 * 1000, // 5 days
-      'urgent': 3 * 24 * 60 * 60 * 1000, // 3 days
-      'critical': 1 * 24 * 60 * 60 * 1000, // 1 day
-      'emergency': 4 * 60 * 60 * 1000 // 4 hours
+      routine: 7 * 24 * 60 * 60 * 1000, // 7 days
+      important: 5 * 24 * 60 * 60 * 1000, // 5 days
+      urgent: 3 * 24 * 60 * 60 * 1000, // 3 days
+      critical: 1 * 24 * 60 * 60 * 1000, // 1 day
+      emergency: 4 * 60 * 60 * 1000, // 4 hours
     };
     return baseDuration[priority];
   }
@@ -1070,12 +1113,12 @@ export class MinistryWorkflowManager extends EventEmitter {
       details,
       culturallyAppropriate: details.culturalValidation ?? true,
       islamicCompliant: details.islamicCompliance ?? true,
-      governmentProtocolFollowed: true
+      governmentProtocolFollowed: true,
     };
-    
+
     this.auditLog.push(entry);
     workflow.auditTrail.push(entry);
-    
+
     if (this.auditLog.length > 10000) {
       this.auditLog.splice(0, 1000);
     }
@@ -1083,9 +1126,11 @@ export class MinistryWorkflowManager extends EventEmitter {
   private updatePerformanceMetrics(operation: string, latency: number): void {
     this.performanceMetrics.totalWorkflows++;
     if (operation === 'create') {
-      this.performanceMetrics.averageProcessingTime = 
-        (this.performanceMetrics.averageProcessingTime * (this.performanceMetrics.totalWorkflows - 1) + latency) 
-        / this.performanceMetrics.totalWorkflows;
+      this.performanceMetrics.averageProcessingTime =
+        (this.performanceMetrics.averageProcessingTime *
+          (this.performanceMetrics.totalWorkflows - 1) +
+          latency) /
+        this.performanceMetrics.totalWorkflows;
     }
   }
   private initializePerformanceMetrics(): WorkflowPerformanceMetrics {
@@ -1096,7 +1141,7 @@ export class MinistryWorkflowManager extends EventEmitter {
       escalationCount: 0,
       culturalValidationTime: 0,
       islamicValidationTime: 0,
-      participantEfficiency: {}
+      participantEfficiency: {},
     };
   }
   private initializeComplianceMetrics(): WorkflowComplianceMetrics {
@@ -1105,23 +1150,44 @@ export class MinistryWorkflowManager extends EventEmitter {
       islamicComplianceScore: 0.95,
       governmentProtocolScore: 1.0,
       citizenServiceScore: 0.85,
-      auditReadinessScore: 1.0
+      auditReadinessScore: 1.0,
     };
   }
-  private async validateApproverPermissions(workflow: WorkflowResult, approverId: string): Promise<void> {}
-  private async processApprovalDecision(workflow: WorkflowResult, approverId: string, decision: any): Promise<boolean> {
+  private async validateApproverPermissions(
+    workflow: WorkflowResult,
+    approverId: string
+  ): Promise<void> {}
+  private async processApprovalDecision(
+    workflow: WorkflowResult,
+    approverId: string,
+    decision: any
+  ): Promise<boolean> {
     return true;
   }
-  private async updateWorkflowState(workflow: WorkflowResult, action: string, approverId: string): Promise<void> {}
+  private async updateWorkflowState(
+    workflow: WorkflowResult,
+    action: string,
+    approverId: string
+  ): Promise<void> {}
   private async checkWorkflowCompletion(workflow: WorkflowResult): Promise<boolean> {
     return false;
   }
   private async finalizeWorkflow(workflow: WorkflowResult): Promise<void> {}
-  private calculateAverageApprovalTime(): number { return 0; }
-  private analyzeBottlenecks(): any { return {}; }
-  private calculateCulturalComplianceRate(): number { return 0.9; }
-  private calculateIslamicComplianceRate(): number { return 0.95; }
-  private calculateComplianceMetrics(): any { return {}; }
+  private calculateAverageApprovalTime(): number {
+    return 0;
+  }
+  private analyzeBottlenecks(): any {
+    return {};
+  }
+  private calculateCulturalComplianceRate(): number {
+    return 0.9;
+  }
+  private calculateIslamicComplianceRate(): number {
+    return 0.95;
+  }
+  private calculateComplianceMetrics(): any {
+    return {};
+  }
   private async saveWorkflowData(workflow: WorkflowResult): Promise<void> {}
 }
 

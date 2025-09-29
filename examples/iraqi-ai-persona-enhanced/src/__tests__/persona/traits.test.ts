@@ -73,4 +73,4 @@ describe('Cultural Traits & Islamic Compliance Tests', () => {
     });
   });
 });
-```
+```;

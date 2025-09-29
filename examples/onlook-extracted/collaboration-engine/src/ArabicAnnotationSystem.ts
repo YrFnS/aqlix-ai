@@ -2,7 +2,7 @@
  * Iraqi AI System - Arabic Annotation System
  * RTL-first comment and annotation engine with Islamic cultural validation
  * Enhanced for Iraqi government deployment with ministry-specific context
- * 
+ *
  * Key Features:
  * - Real-time Arabic text annotation with proper RTL rendering
  * - Islamic content moderation with cultural appropriateness checking
@@ -14,7 +14,14 @@
 
 import { EventEmitter } from 'events';
 
-export type AnnotationType = 'comment' | 'suggestion' | 'concern' | 'cultural' | 'islamic' | 'approval' | 'question';
+export type AnnotationType =
+  | 'comment'
+  | 'suggestion'
+  | 'concern'
+  | 'cultural'
+  | 'islamic'
+  | 'approval'
+  | 'question';
 export type AnnotationPriority = 'low' | 'medium' | 'high' | 'urgent' | 'critical';
 export type MinistryType = 'health' | 'education' | 'interior' | 'justice';
 export type CulturalSeverity = 'info' | 'warning' | 'violation' | 'critical';
@@ -27,19 +34,19 @@ export interface AnnotationConfig {
   culturalModeration: boolean;
   bilingualSupport: boolean;
   governmentCompliance: boolean;
-  
+
   // Performance settings
   maxAnnotationsPerDocument: number;
   annotationCacheSize: number;
   rtlRenderingOptimized: boolean;
   arabicFontPreloading: boolean;
-  
+
   // Cultural settings
   islamicTerminologyValidation: boolean;
   arabicGrammarChecking: boolean;
   culturalSensitivityFilter: boolean;
   religiousSensitivityLevel: 'low' | 'medium' | 'high' | 'strict';
-  
+
   // Ministry-specific settings
   officialLanguageRequired: boolean;
   formalAddressingRequired: boolean;
@@ -51,29 +58,29 @@ export interface AnnotationInput {
   // Target and author
   targetElement: string;
   authorId: string;
-  
+
   // Content
   textArabic?: string;
   textEnglish?: string;
   type: AnnotationType;
   priority: AnnotationPriority;
-  
+
   // Context
   ministry: MinistryType;
   culturalValidation?: boolean;
   islamicCompliance?: boolean;
   rtlSupported?: boolean;
-  
+
   // Metadata
   tags?: string[];
   tagsArabic?: string[];
   category?: string;
   categoryArabic?: string;
-  
+
   // Attachments and references
   attachments?: AnnotationAttachment[];
   references?: AnnotationReference[];
-  
+
   // Workflow
   requiresApproval?: boolean;
   approverId?: string;
@@ -86,13 +93,13 @@ export interface AnnotationResult {
   authorId: string;
   authorName: string;
   authorNameArabic: string;
-  
+
   // Content with validation
   content: AnnotationContent;
   culturalValidation: CulturalValidationResult;
   islamicValidation: IslamicValidationResult;
   arabicValidation: ArabicValidationResult;
-  
+
   // Metadata
   type: AnnotationType;
   priority: AnnotationPriority;
@@ -101,33 +108,33 @@ export interface AnnotationResult {
   categoryArabic: string;
   tags: string[];
   tagsArabic: string[];
-  
+
   // Status and workflow
   status: 'active' | 'resolved' | 'dismissed' | 'escalated' | 'pending-approval';
   workflowState: AnnotationWorkflowState;
-  
+
   // Cultural compliance
   culturallyValidated: boolean;
   islamicCompliant: boolean;
   ministryProtocolCompliant: boolean;
   citizenAppropriate: boolean;
-  
+
   // Timestamps and audit
   createdAt: Date;
   updatedAt: Date;
   resolvedAt?: Date;
   auditTrail: AnnotationAuditEntry[];
-  
+
   // Performance metrics
   renderingLatency: number;
   validationLatency: number;
   culturalScore: number;
-  
+
   // Interactive features
   replies: AnnotationReply[];
   reactions: AnnotationReaction[];
   collaborators: string[];
-  
+
   // Visual positioning
   position: AnnotationPosition;
   styling: AnnotationStyling;
@@ -138,17 +145,17 @@ export interface AnnotationContent {
   textEnglish: string;
   originalText: string;
   translatedText?: string;
-  
+
   // Formatting
   formattedHtml: string;
   formattedArabic: string;
   rtlFormatted: boolean;
-  
+
   // Rich content
   mentions: AnnotationMention[];
   hashtags: string[];
   hashtagsArabic: string[];
-  
+
   // Media
   images: AnnotationImage[];
   audioClips: AnnotationAudio[];
@@ -160,19 +167,19 @@ export interface CulturalValidationResult {
   score: number; // 0-1, higher is better
   issues: CulturalIssue[];
   recommendations: CulturalRecommendation[];
-  
+
   // Specific validations
   languageAppropriate: boolean;
   formalityLevel: 'too-casual' | 'appropriate' | 'too-formal';
   respectfulTone: boolean;
   culturalSensitivity: boolean;
-  
+
   // Ministry-specific validation
   ministryCompliant: boolean;
   officialProtocol: boolean;
   citizenFriendly: boolean;
   diplomaticLanguage: boolean;
-  
+
   // Islamic considerations
   islamicTerminology: boolean;
   religiousRespect: boolean;
@@ -185,19 +192,19 @@ export interface IslamicValidationResult {
   score: number; // 0-1, higher is better
   violations: IslamicViolation[];
   blessings: IslamicBlessing[];
-  
+
   // Content validation
   contentHalal: boolean;
   languageRespectful: boolean;
   topicAppropriate: boolean;
   imageModest: boolean;
-  
+
   // Religious sensitivity
   prayerTimeAware: boolean;
   ramadanSensitive: boolean;
   islamicHolidayAware: boolean;
   religiousTerminologyCorrect: boolean;
-  
+
   // Community guidelines
   familyFriendly: boolean;
   respectfulToElders: boolean;
@@ -208,25 +215,25 @@ export interface IslamicValidationResult {
 export interface ArabicValidationResult {
   valid: boolean;
   score: number; // 0-1, higher is better
-  
+
   // Grammar and language
   grammarCorrect: boolean;
   spellingCorrect: boolean;
   dialectAppropriate: boolean;
   formalityAppropriate: boolean;
-  
+
   // Technical validation
   rtlFormatted: boolean;
   fontAppropriate: boolean;
   typographyCorrect: boolean;
   layoutCompatible: boolean;
-  
+
   // Cultural language use
   respectfulLanguage: boolean;
   professionalTone: boolean;
   culturalNuances: boolean;
   localIdioms: boolean;
-  
+
   // Corrections and suggestions
   grammarSuggestions: ArabicSuggestion[];
   spellingCorrections: ArabicCorrection[];
@@ -432,18 +439,18 @@ export interface AnnotationDocument {
 
 export class ArabicAnnotationSystem extends EventEmitter {
   private config: AnnotationConfig;
-  
+
   // Annotation storage and indexing
   private annotations: Map<string, AnnotationResult> = new Map();
   private annotationsByTarget: Map<string, string[]> = new Map();
   private annotationsByAuthor: Map<string, string[]> = new Map();
   private annotationsByMinistry: Map<MinistryType, string[]> = new Map();
-  
+
   // Cultural validation caches
   private culturalValidationCache: Map<string, CulturalValidationResult> = new Map();
   private islamicValidationCache: Map<string, IslamicValidationResult> = new Map();
   private arabicValidationCache: Map<string, ArabicValidationResult> = new Map();
-  
+
   // Performance monitoring
   private performanceMetrics = {
     totalAnnotations: 0,
@@ -452,19 +459,19 @@ export class ArabicAnnotationSystem extends EventEmitter {
     culturalValidationHitRate: 0,
     islamicValidationHitRate: 0,
     arabicValidationHitRate: 0,
-    rtlRenderingOptimizations: 0
+    rtlRenderingOptimizations: 0,
   };
-  
+
   // Ministry-specific patterns and templates
   private ministryTemplates: Map<MinistryType, any> = new Map();
   private culturalPatterns: Map<string, any> = new Map();
   private islamicGuidelines: Map<string, any> = new Map();
   private arabicStyleGuides: Map<string, any> = new Map();
-  
+
   // Real-time features
   private activeAnnotations: Set<string> = new Set();
   private collaborativeEditing: Map<string, string[]> = new Map(); // annotationId -> editorIds
-  
+
   // Audit trail
   private auditLog: AnnotationAuditEntry[] = [];
 
@@ -480,25 +487,25 @@ export class ArabicAnnotationSystem extends EventEmitter {
   private initializeAnnotationSystem(): void {
     // Load ministry-specific templates
     this.loadMinistryTemplates();
-    
+
     // Load cultural patterns and guidelines
     this.loadCulturalPatterns();
     this.loadIslamicGuidelines();
     this.loadArabicStyleGuides();
-    
+
     // Setup performance optimization
     if (this.config.rtlRenderingOptimized) {
       this.setupRTLOptimizations();
     }
-    
+
     // Setup Arabic font preloading
     if (this.config.arabicFontPreloading) {
       this.preloadArabicFonts();
     }
-    
+
     // Initialize validation caches
     this.initializeValidationCaches();
-    
+
     this.emit('annotation-system-initialized', { config: this.config });
   }
 
@@ -509,19 +516,18 @@ export class ArabicAnnotationSystem extends EventEmitter {
     try {
       // Setup cultural validation services
       await this.initializeCulturalValidation();
-      
+
       // Setup Islamic compliance services
       await this.initializeIslamicValidation();
-      
+
       // Setup Arabic language services
       await this.initializeArabicValidation();
-      
+
       // Setup ministry-specific protocols
       await this.setupMinistryProtocols();
-      
+
       this.emit('annotation-system-ready');
       return true;
-
     } catch (error) {
       this.emit('annotation-system-error', { error: error.message });
       return false;
@@ -533,42 +539,39 @@ export class ArabicAnnotationSystem extends EventEmitter {
    */
   async createAnnotation(input: AnnotationInput): Promise<AnnotationResult> {
     const startTime = performance.now();
-    
+
     try {
       const annotationId = this.generateAnnotationId();
-      
+
       // Validate input
       this.validateAnnotationInput(input);
-      
+
       // Prepare content
       const content = await this.prepareAnnotationContent(input);
-      
+
       // Perform cultural validation
       const culturalValidation = await this.validateCulturally(
         content,
         input.ministry,
         input.culturalValidation !== false
       );
-      
+
       // Perform Islamic validation
       const islamicValidation = await this.validateIslamically(
         content,
         input.islamicCompliance !== false
       );
-      
+
       // Perform Arabic validation
-      const arabicValidation = await this.validateArabic(
-        content,
-        input.rtlSupported !== false
-      );
-      
+      const arabicValidation = await this.validateArabic(content, input.rtlSupported !== false);
+
       // Calculate positioning and styling
       const position = await this.calculateAnnotationPosition(input.targetElement);
       const styling = this.generateAnnotationStyling(input.ministry, culturalValidation);
-      
+
       // Create workflow state
       const workflowState = this.createWorkflowState(input);
-      
+
       // Generate annotation result
       const annotation: AnnotationResult = {
         id: annotationId,
@@ -603,31 +606,30 @@ export class ArabicAnnotationSystem extends EventEmitter {
         reactions: [],
         collaborators: [input.authorId],
         position,
-        styling
+        styling,
       };
-      
+
       // Apply auto-fixes if enabled
-      if (culturalValidation.issues.some(i => i.autoFixable)) {
+      if (culturalValidation.issues.some((i) => i.autoFixable)) {
         await this.applyAutoFixes(annotation, culturalValidation.issues);
       }
-      
+
       // Store annotation
       this.storeAnnotation(annotation);
-      
+
       // Record audit entry
       this.recordAuditEntry(annotation, 'created', {
         authorId: input.authorId,
         ministry: input.ministry,
         culturallyValidated: annotation.culturallyValidated,
-        islamicCompliant: annotation.islamicCompliant
+        islamicCompliant: annotation.islamicCompliant,
       });
-      
+
       // Update performance metrics
       this.updatePerformanceMetrics('create', performance.now() - startTime);
-      
+
       this.emit('annotation-created', annotation);
       return annotation;
-
     } catch (error) {
       this.emit('annotation-creation-error', { input, error: error.message });
       throw new Error(`Failed to create annotation: ${error.message}`);
@@ -652,10 +654,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       await this.validateUpdatePermissions(annotation, updaterId);
 
       // Apply updates
-      const updatedContent = await this.updateAnnotationContent(
-        annotation.content,
-        updates
-      );
+      const updatedContent = await this.updateAnnotationContent(annotation.content, updates);
 
       // Re-validate if content changed
       let culturalValidation = annotation.culturalValidation;
@@ -685,7 +684,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
         updatedAt: new Date(),
         culturallyValidated: culturalValidation.valid,
         islamicCompliant: islamicValidation.compliant,
-        culturalScore: culturalValidation.score
+        culturalScore: culturalValidation.score,
       };
 
       // Store updated annotation
@@ -695,12 +694,11 @@ export class ArabicAnnotationSystem extends EventEmitter {
       this.recordAuditEntry(updatedAnnotation, 'updated', {
         updaterId,
         changes: Object.keys(updates),
-        culturallyValidated: updatedAnnotation.culturallyValidated
+        culturallyValidated: updatedAnnotation.culturallyValidated,
       });
 
       this.emit('annotation-updated', updatedAnnotation);
       return updatedAnnotation;
-
     } catch (error) {
       this.emit('annotation-update-error', { annotationId, error: error.message });
       throw new Error(`Failed to update annotation: ${error.message}`);
@@ -732,7 +730,9 @@ export class ArabicAnnotationSystem extends EventEmitter {
       );
 
       if (!culturalValidation.valid) {
-        throw new Error(`Reply failed cultural validation: ${culturalValidation.issues.map(i => i.description).join(', ')}`);
+        throw new Error(
+          `Reply failed cultural validation: ${culturalValidation.issues.map((i) => i.description).join(', ')}`
+        );
       }
 
       // Create reply
@@ -745,7 +745,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
         contentArabic: replyContent.contentArabic || '',
         timestamp: new Date(),
         culturallyValidated: culturalValidation.valid,
-        islamicCompliant: culturalValidation.islamicCompliant || false
+        islamicCompliant: culturalValidation.islamicCompliant || false,
       };
 
       // Add reply to annotation
@@ -764,12 +764,11 @@ export class ArabicAnnotationSystem extends EventEmitter {
       this.recordAuditEntry(annotation, 'reply-added', {
         replyId: reply.id,
         authorId: replyContent.authorId,
-        culturallyValidated: reply.culturallyValidated
+        culturallyValidated: reply.culturallyValidated,
       });
 
       this.emit('annotation-reply-added', { annotation, reply });
       return reply;
-
     } catch (error) {
       this.emit('annotation-reply-error', { annotationId, error: error.message });
       throw new Error(`Failed to add reply: ${error.message}`);
@@ -815,12 +814,11 @@ export class ArabicAnnotationSystem extends EventEmitter {
         resolverId,
         status: resolution.status,
         reason: resolution.reason,
-        reasonArabic: resolution.reasonArabic
+        reasonArabic: resolution.reasonArabic,
       });
 
       this.emit('annotation-resolved', { annotation, resolution });
       return true;
-
     } catch (error) {
       this.emit('annotation-resolution-error', { annotationId, error: error.message });
       return false;
@@ -833,7 +831,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
   getAnnotationsByTarget(targetElement: string): AnnotationResult[] {
     const annotationIds = this.annotationsByTarget.get(targetElement) || [];
     return annotationIds
-      .map(id => this.annotations.get(id))
+      .map((id) => this.annotations.get(id))
       .filter((annotation): annotation is AnnotationResult => annotation !== undefined)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
@@ -844,7 +842,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
   getAnnotationsByMinistry(ministry: MinistryType): AnnotationResult[] {
     const annotationIds = this.annotationsByMinistry.get(ministry) || [];
     return annotationIds
-      .map(id => this.annotations.get(id))
+      .map((id) => this.annotations.get(id))
       .filter((annotation): annotation is AnnotationResult => annotation !== undefined)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
@@ -868,48 +866,48 @@ export class ArabicAnnotationSystem extends EventEmitter {
 
     // Apply filters
     if (query.text) {
-      results = results.filter(a => 
-        a.content.textEnglish.toLowerCase().includes(query.text!.toLowerCase()) ||
-        a.content.textArabic.includes(query.text!)
+      results = results.filter(
+        (a) =>
+          a.content.textEnglish.toLowerCase().includes(query.text!.toLowerCase()) ||
+          a.content.textArabic.includes(query.text!)
       );
     }
 
     if (query.textArabic) {
-      results = results.filter(a => a.content.textArabic.includes(query.textArabic!));
+      results = results.filter((a) => a.content.textArabic.includes(query.textArabic!));
     }
 
     if (query.ministry) {
-      results = results.filter(a => a.ministry === query.ministry);
+      results = results.filter((a) => a.ministry === query.ministry);
     }
 
     if (query.author) {
-      results = results.filter(a => a.authorId === query.author);
+      results = results.filter((a) => a.authorId === query.author);
     }
 
     if (query.type) {
-      results = results.filter(a => a.type === query.type);
+      results = results.filter((a) => a.type === query.type);
     }
 
     if (query.priority) {
-      results = results.filter(a => a.priority === query.priority);
+      results = results.filter((a) => a.priority === query.priority);
     }
 
     if (query.status) {
-      results = results.filter(a => a.status === query.status);
+      results = results.filter((a) => a.status === query.status);
     }
 
     if (query.culturallyValidated !== undefined) {
-      results = results.filter(a => a.culturallyValidated === query.culturallyValidated);
+      results = results.filter((a) => a.culturallyValidated === query.culturallyValidated);
     }
 
     if (query.islamicCompliant !== undefined) {
-      results = results.filter(a => a.islamicCompliant === query.islamicCompliant);
+      results = results.filter((a) => a.islamicCompliant === query.islamicCompliant);
     }
 
     if (query.dateRange) {
-      results = results.filter(a => 
-        a.createdAt >= query.dateRange!.start && 
-        a.createdAt <= query.dateRange!.end
+      results = results.filter(
+        (a) => a.createdAt >= query.dateRange!.start && a.createdAt <= query.dateRange!.end
       );
     }
 
@@ -931,12 +929,12 @@ export class ArabicAnnotationSystem extends EventEmitter {
         averageCulturalScore: 0,
         complianceRate: 0,
         violationsByType: {},
-        improvementOpportunities: []
+        improvementOpportunities: [],
       };
     }
 
-    const culturallyValidated = annotations.filter(a => a.culturallyValidated).length;
-    const islamicCompliant = annotations.filter(a => a.islamicCompliant).length;
+    const culturallyValidated = annotations.filter((a) => a.culturallyValidated).length;
+    const islamicCompliant = annotations.filter((a) => a.islamicCompliant).length;
     const averageCulturalScore = annotations.reduce((sum, a) => sum + a.culturalScore, 0) / total;
 
     return {
@@ -947,7 +945,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       complianceRate: culturallyValidated / total,
       islamicComplianceRate: islamicCompliant / total,
       violationsByType: this.analyzeViolationsByType(annotations),
-      improvementOpportunities: this.identifyImprovementOpportunities(annotations)
+      improvementOpportunities: this.identifyImprovementOpportunities(annotations),
     };
   }
 
@@ -955,23 +953,25 @@ export class ArabicAnnotationSystem extends EventEmitter {
    * Export annotations for audit or analysis
    */
   exportAnnotations(filters?: any): any {
-    const annotations = filters ? this.searchAnnotations(filters) : Array.from(this.annotations.values());
-    
+    const annotations = filters
+      ? this.searchAnnotations(filters)
+      : Array.from(this.annotations.values());
+
     return {
-      annotations: annotations.map(annotation => ({
+      annotations: annotations.map((annotation) => ({
         ...annotation,
         // Include cultural validation details for audit
         culturalValidationDetails: annotation.culturalValidation,
         islamicValidationDetails: annotation.islamicValidation,
-        arabicValidationDetails: annotation.arabicValidation
+        arabicValidationDetails: annotation.arabicValidation,
       })),
       metadata: {
         exportedAt: new Date(),
         totalCount: annotations.length,
         culturalComplianceStats: this.getCulturalComplianceStats(),
-        performanceMetrics: this.performanceMetrics
+        performanceMetrics: this.performanceMetrics,
       },
-      auditLog: this.auditLog.slice(-100) // Last 100 entries
+      auditLog: this.auditLog.slice(-100), // Last 100 entries
     };
   }
 
@@ -1022,7 +1022,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
     if (!input.targetElement || !input.authorId) {
       throw new Error('Target element and author ID are required');
     }
-    
+
     if (!input.textArabic && !input.textEnglish) {
       throw new Error('Either Arabic or English text is required');
     }
@@ -1041,7 +1041,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       hashtagsArabic: input.tagsArabic || [],
       images: [],
       audioClips: [],
-      documents: []
+      documents: [],
     };
   }
 
@@ -1079,7 +1079,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       islamicTerminology: true,
       religiousRespect: true,
       halalContent: true,
-      prayerTimeRespectful: true
+      prayerTimeRespectful: true,
     };
 
     // Cache result
@@ -1120,7 +1120,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       familyFriendly: true,
       respectfulToElders: true,
       genderAppropriate: true,
-      modestyCompliant: true
+      modestyCompliant: true,
     };
 
     // Cache result
@@ -1162,7 +1162,7 @@ export class ArabicAnnotationSystem extends EventEmitter {
       localIdioms: true,
       grammarSuggestions: [],
       spellingCorrections: [],
-      styleRecommendations: []
+      styleRecommendations: [],
     };
 
     // Cache result
@@ -1184,20 +1184,35 @@ export class ArabicAnnotationSystem extends EventEmitter {
   private async setupMinistryProtocols(): Promise<void> {}
   private async calculateAnnotationPosition(targetElement: string): Promise<AnnotationPosition> {
     return {
-      x: 0, y: 0, width: 200, height: 100,
-      anchor: 'top-right', rtlAdjusted: true, responsive: true
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 100,
+      anchor: 'top-right',
+      rtlAdjusted: true,
+      responsive: true,
     };
   }
-  private generateAnnotationStyling(ministry: MinistryType, validation: CulturalValidationResult): AnnotationStyling {
+  private generateAnnotationStyling(
+    ministry: MinistryType,
+    validation: CulturalValidationResult
+  ): AnnotationStyling {
     const colors = {
-      health: '#059669', education: '#2563eb',
-      interior: '#374151', justice: '#7c3aed'
+      health: '#059669',
+      education: '#2563eb',
+      interior: '#374151',
+      justice: '#7c3aed',
     };
     return {
-      backgroundColor: '#ffffff', borderColor: colors[ministry],
-      textColor: '#1f2937', arabicFont: 'Noto Sans Arabic',
-      englishFont: 'Inter', fontSize: 14, rtlDirection: true,
-      ministryTheme: true, culturallyAppropriate: validation.valid
+      backgroundColor: '#ffffff',
+      borderColor: colors[ministry],
+      textColor: '#1f2937',
+      arabicFont: 'Noto Sans Arabic',
+      englishFont: 'Inter',
+      fontSize: 14,
+      rtlDirection: true,
+      ministryTheme: true,
+      culturallyAppropriate: validation.valid,
     };
   }
   private createWorkflowState(input: AnnotationInput): AnnotationWorkflowState {
@@ -1205,26 +1220,37 @@ export class ArabicAnnotationSystem extends EventEmitter {
       stage: 'created',
       ministryReview: this.config.ministryContext !== undefined,
       culturalReview: this.config.culturalModeration,
-      islamicReview: this.config.islamicContentValidation
+      islamicReview: this.config.islamicContentValidation,
     };
   }
-  private async getAuthorName(authorId: string): Promise<string> { return 'Author'; }
-  private async getAuthorNameArabic(authorId: string): Promise<string> { return 'المؤلف'; }
-  private getDefaultCategory(type: AnnotationType): string { return type; }
-  private getDefaultCategoryArabic(type: AnnotationType): string { return 'تعليق'; }
-  private async applyAutoFixes(annotation: AnnotationResult, issues: CulturalIssue[]): Promise<void> {}
+  private async getAuthorName(authorId: string): Promise<string> {
+    return 'Author';
+  }
+  private async getAuthorNameArabic(authorId: string): Promise<string> {
+    return 'المؤلف';
+  }
+  private getDefaultCategory(type: AnnotationType): string {
+    return type;
+  }
+  private getDefaultCategoryArabic(type: AnnotationType): string {
+    return 'تعليق';
+  }
+  private async applyAutoFixes(
+    annotation: AnnotationResult,
+    issues: CulturalIssue[]
+  ): Promise<void> {}
   private storeAnnotation(annotation: AnnotationResult): void {
     this.annotations.set(annotation.id, annotation);
-    
+
     // Update indexes
     const targetAnnotations = this.annotationsByTarget.get(annotation.targetElement) || [];
     targetAnnotations.push(annotation.id);
     this.annotationsByTarget.set(annotation.targetElement, targetAnnotations);
-    
+
     const authorAnnotations = this.annotationsByAuthor.get(annotation.authorId) || [];
     authorAnnotations.push(annotation.id);
     this.annotationsByAuthor.set(annotation.authorId, authorAnnotations);
-    
+
     const ministryAnnotations = this.annotationsByMinistry.get(annotation.ministry) || [];
     ministryAnnotations.push(annotation.id);
     this.annotationsByMinistry.set(annotation.ministry, ministryAnnotations);
@@ -1237,12 +1263,12 @@ export class ArabicAnnotationSystem extends EventEmitter {
       details,
       culturallyValid: annotation.culturallyValidated,
       islamicCompliant: annotation.islamicCompliant,
-      ministryProtocolFollowed: annotation.ministryProtocolCompliant
+      ministryProtocolFollowed: annotation.ministryProtocolCompliant,
     };
-    
+
     this.auditLog.push(entry);
     annotation.auditTrail.push(entry);
-    
+
     // Limit audit log size
     if (this.auditLog.length > 10000) {
       this.auditLog.splice(0, 1000);
@@ -1251,55 +1277,109 @@ export class ArabicAnnotationSystem extends EventEmitter {
   private updatePerformanceMetrics(operation: string, latency: number): void {
     this.performanceMetrics.totalAnnotations++;
     if (operation === 'create') {
-      this.performanceMetrics.averageCreationLatency = 
-        (this.performanceMetrics.averageCreationLatency * (this.performanceMetrics.totalAnnotations - 1) + latency) 
-        / this.performanceMetrics.totalAnnotations;
+      this.performanceMetrics.averageCreationLatency =
+        (this.performanceMetrics.averageCreationLatency *
+          (this.performanceMetrics.totalAnnotations - 1) +
+          latency) /
+        this.performanceMetrics.totalAnnotations;
     }
   }
-  private async validateUpdatePermissions(annotation: AnnotationResult, updaterId: string): Promise<void> {}
-  private async updateAnnotationContent(current: AnnotationContent, updates: Partial<AnnotationInput>): Promise<AnnotationContent> {
+  private async validateUpdatePermissions(
+    annotation: AnnotationResult,
+    updaterId: string
+  ): Promise<void> {}
+  private async updateAnnotationContent(
+    current: AnnotationContent,
+    updates: Partial<AnnotationInput>
+  ): Promise<AnnotationContent> {
     return {
       ...current,
       textArabic: updates.textArabic || current.textArabic,
-      textEnglish: updates.textEnglish || current.textEnglish
+      textEnglish: updates.textEnglish || current.textEnglish,
     };
   }
-  private async validateReplyContent(content: string, contentArabic: string, ministry: MinistryType): Promise<any> {
+  private async validateReplyContent(
+    content: string,
+    contentArabic: string,
+    ministry: MinistryType
+  ): Promise<any> {
     return { valid: true, islamicCompliant: true };
   }
-  private async validateResolutionPermissions(annotation: AnnotationResult, resolverId: string): Promise<void> {}
-  private formatAsHTML(english: string, arabic: string): string { return `<p>${english}</p><p dir="rtl">${arabic}</p>`; }
-  private formatArabicText(arabic: string): string { return arabic; }
+  private async validateResolutionPermissions(
+    annotation: AnnotationResult,
+    resolverId: string
+  ): Promise<void> {}
+  private formatAsHTML(english: string, arabic: string): string {
+    return `<p>${english}</p><p dir="rtl">${arabic}</p>`;
+  }
+  private formatArabicText(arabic: string): string {
+    return arabic;
+  }
   private createDefaultCulturalValidation(): CulturalValidationResult {
     return {
-      valid: true, score: 0.8, issues: [], recommendations: [],
-      languageAppropriate: true, formalityLevel: 'appropriate', respectfulTone: true,
-      culturalSensitivity: true, ministryCompliant: true, officialProtocol: true,
-      citizenFriendly: true, diplomaticLanguage: true, islamicTerminology: true,
-      religiousRespect: true, halalContent: true, prayerTimeRespectful: true
+      valid: true,
+      score: 0.8,
+      issues: [],
+      recommendations: [],
+      languageAppropriate: true,
+      formalityLevel: 'appropriate',
+      respectfulTone: true,
+      culturalSensitivity: true,
+      ministryCompliant: true,
+      officialProtocol: true,
+      citizenFriendly: true,
+      diplomaticLanguage: true,
+      islamicTerminology: true,
+      religiousRespect: true,
+      halalContent: true,
+      prayerTimeRespectful: true,
     };
   }
   private createDefaultIslamicValidation(): IslamicValidationResult {
     return {
-      compliant: true, score: 0.8, violations: [], blessings: [],
-      contentHalal: true, languageRespectful: true, topicAppropriate: true,
-      imageModest: true, prayerTimeAware: true, ramadanSensitive: true,
-      islamicHolidayAware: true, religiousTerminologyCorrect: true,
-      familyFriendly: true, respectfulToElders: true, genderAppropriate: true,
-      modestyCompliant: true
+      compliant: true,
+      score: 0.8,
+      violations: [],
+      blessings: [],
+      contentHalal: true,
+      languageRespectful: true,
+      topicAppropriate: true,
+      imageModest: true,
+      prayerTimeAware: true,
+      ramadanSensitive: true,
+      islamicHolidayAware: true,
+      religiousTerminologyCorrect: true,
+      familyFriendly: true,
+      respectfulToElders: true,
+      genderAppropriate: true,
+      modestyCompliant: true,
     };
   }
   private createDefaultArabicValidation(): ArabicValidationResult {
     return {
-      valid: true, score: 0.8, grammarCorrect: true, spellingCorrect: true,
-      dialectAppropriate: true, formalityAppropriate: true, rtlFormatted: true,
-      fontAppropriate: true, typographyCorrect: true, layoutCompatible: true,
-      respectfulLanguage: true, professionalTone: true, culturalNuances: true,
-      localIdioms: true, grammarSuggestions: [], spellingCorrections: [],
-      styleRecommendations: []
+      valid: true,
+      score: 0.8,
+      grammarCorrect: true,
+      spellingCorrect: true,
+      dialectAppropriate: true,
+      formalityAppropriate: true,
+      rtlFormatted: true,
+      fontAppropriate: true,
+      typographyCorrect: true,
+      layoutCompatible: true,
+      respectfulLanguage: true,
+      professionalTone: true,
+      culturalNuances: true,
+      localIdioms: true,
+      grammarSuggestions: [],
+      spellingCorrections: [],
+      styleRecommendations: [],
     };
   }
-  private getCulturalValidationCacheKey(content: AnnotationContent, ministry: MinistryType): string {
+  private getCulturalValidationCacheKey(
+    content: AnnotationContent,
+    ministry: MinistryType
+  ): string {
     return `cultural-${ministry}-${content.textEnglish.substring(0, 50)}-${content.textArabic.substring(0, 50)}`;
   }
   private getIslamicValidationCacheKey(content: AnnotationContent): string {
@@ -1308,6 +1388,10 @@ export class ArabicAnnotationSystem extends EventEmitter {
   private getArabicValidationCacheKey(content: AnnotationContent): string {
     return `arabic-${content.textArabic.substring(0, 50)}`;
   }
-  private analyzeViolationsByType(annotations: AnnotationResult[]): any { return {}; }
-  private identifyImprovementOpportunities(annotations: AnnotationResult[]): any[] { return []; }
+  private analyzeViolationsByType(annotations: AnnotationResult[]): any {
+    return {};
+  }
+  private identifyImprovementOpportunities(annotations: AnnotationResult[]): any[] {
+    return [];
+  }
 }

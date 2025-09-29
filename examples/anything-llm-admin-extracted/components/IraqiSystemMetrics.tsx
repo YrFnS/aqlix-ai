@@ -1,7 +1,7 @@
 /**
  * Iraqi System Metrics and Analytics Dashboard
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Real-time Iraqi-specific system metrics
  * - Professional domain analytics
@@ -20,7 +20,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   LineChart,
   Line,
@@ -36,7 +42,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from 'recharts';
 import {
   Users,
@@ -58,14 +64,9 @@ import {
   Star,
   AlertTriangle,
   CheckCircle,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
-import {
-  SystemMetrics,
-  ProfessionalDomain,
-  UserRole,
-  IraqiOrganization
-} from '../types/admin';
+import { SystemMetrics, ProfessionalDomain, UserRole, IraqiOrganization } from '../types/admin';
 
 interface IraqiSystemMetricsProps {
   className?: string;
@@ -75,27 +76,36 @@ interface IraqiSystemMetricsProps {
 
 interface ExtendedSystemMetrics extends SystemMetrics {
   // Geographic data
-  cityUsage: Record<string, {
-    users: number;
-    conversations: number;
-    growth: number;
-  }>;
-  
+  cityUsage: Record<
+    string,
+    {
+      users: number;
+      conversations: number;
+      growth: number;
+    }
+  >;
+
   // Payment analytics
-  paymentGateways: Record<'zaincash' | 'fastpay' | 'nasswallet' | 'bank_transfer', {
-    transactions: number;
-    successRate: number;
-    averageAmount: number;
-    growth: number;
-  }>;
-  
+  paymentGateways: Record<
+    'zaincash' | 'fastpay' | 'nasswallet' | 'bank_transfer',
+    {
+      transactions: number;
+      successRate: number;
+      averageAmount: number;
+      growth: number;
+    }
+  >;
+
   // Network performance by Iraqi ISPs
-  ispPerformance: Record<string, {
-    avgLatency: number;
-    throughput: number;
-    uptime: number;
-  }>;
-  
+  ispPerformance: Record<
+    string,
+    {
+      avgLatency: number;
+      throughput: number;
+      uptime: number;
+    }
+  >;
+
   // Content analytics
   contentMetrics: {
     totalMessages: number;
@@ -105,7 +115,7 @@ interface ExtendedSystemMetrics extends SystemMetrics {
     dialectDistribution: Record<string, number>;
     professionalContentRatio: number;
   };
-  
+
   // Cultural compliance trends
   complianceTrends: {
     timestamp: string;
@@ -117,18 +127,18 @@ interface ExtendedSystemMetrics extends SystemMetrics {
 
 // Iraqi cities with Arabic names
 const IRAQI_CITIES = {
-  'Baghdad': 'بغداد',
-  'Basra': 'البصرة',
-  'Erbil': 'أربيل',
-  'Mosul': 'الموصل',
-  'Najaf': 'النجف',
-  'Karbala': 'كربلاء',
-  'Sulaymaniyah': 'السليمانية',
-  'Duhok': 'دهوك',
-  'Ramadi': 'الرمادي',
-  'Fallujah': 'الفلوجة',
-  'Tikrit': 'تكريت',
-  'Samarra': 'سامراء'
+  Baghdad: 'بغداد',
+  Basra: 'البصرة',
+  Erbil: 'أربيل',
+  Mosul: 'الموصل',
+  Najaf: 'النجف',
+  Karbala: 'كربلاء',
+  Sulaymaniyah: 'السليمانية',
+  Duhok: 'دهوك',
+  Ramadi: 'الرمادي',
+  Fallujah: 'الفلوجة',
+  Tikrit: 'تكريت',
+  Samarra: 'سامراء',
 };
 
 // Color schemes for charts
@@ -138,7 +148,7 @@ const CHART_COLORS = {
   accent: '#f59e0b',
   warning: '#ef4444',
   info: '#6366f1',
-  success: '#22c55e'
+  success: '#22c55e',
 };
 
 const DOMAIN_COLORS: Record<ProfessionalDomain, string> = {
@@ -148,13 +158,13 @@ const DOMAIN_COLORS: Record<ProfessionalDomain, string> = {
   business: '#f59e0b',
   engineering: '#6b7280',
   government: '#06b6d4',
-  general: '#64748b'
+  general: '#64748b',
 };
 
 export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
   className,
   showArabicLabels = false,
-  refreshInterval = 60000 // 1 minute
+  refreshInterval = 60000, // 1 minute
 }) => {
   const [metrics, setMetrics] = useState<ExtendedSystemMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -166,10 +176,10 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
   const loadMetrics = async () => {
     try {
       setLoading(true);
-      
+
       const response = await fetch(`/api/admin/metrics/system?range=${timeRange}`);
       const data = await response.json();
-      
+
       setMetrics(data);
       setLastUpdated(new Date());
     } catch (error) {
@@ -182,7 +192,7 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
   // Auto-refresh metrics
   useEffect(() => {
     loadMetrics();
-    
+
     const interval = setInterval(loadMetrics, refreshInterval);
     return () => clearInterval(interval);
   }, [timeRange, refreshInterval]);
@@ -239,10 +249,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
             {showArabicLabels ? 'مقاييس النظام العراقي' : 'Iraqi System Metrics'}
           </h1>
           <p className="text-gray-600 mt-1">
-            {showArabicLabels 
+            {showArabicLabels
               ? `آخر تحديث: ${lastUpdated.toLocaleString('ar-IQ')}`
-              : `Last updated: ${lastUpdated.toLocaleString()}`
-            }
+              : `Last updated: ${lastUpdated.toLocaleString()}`}
           </p>
         </div>
         <div className="flex gap-2">
@@ -334,7 +343,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
               <Clock className="w-5 h-5 text-gray-600" />
-              <div className={getHealthColor(metrics.averageResponseTime, { good: 200, warning: 500 })}>
+              <div
+                className={getHealthColor(metrics.averageResponseTime, { good: 200, warning: 500 })}
+              >
                 <Zap className="w-4 h-4" />
               </div>
             </div>
@@ -353,7 +364,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
           <TabsTrigger value="geographic">{showArabicLabels ? 'جغرافي' : 'Geographic'}</TabsTrigger>
           <TabsTrigger value="domains">{showArabicLabels ? 'المجالات' : 'Domains'}</TabsTrigger>
           <TabsTrigger value="payments">{showArabicLabels ? 'المدفوعات' : 'Payments'}</TabsTrigger>
-          <TabsTrigger value="performance">{showArabicLabels ? 'الأداء' : 'Performance'}</TabsTrigger>
+          <TabsTrigger value="performance">
+            {showArabicLabels ? 'الأداء' : 'Performance'}
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -433,25 +446,37 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
                     <span className="text-sm font-medium">
                       {showArabicLabels ? 'قاعدة البيانات' : 'Database'}
                     </span>
-                    <Badge className={metrics.databaseHealth === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}>
+                    <Badge
+                      className={
+                        metrics.databaseHealth === 'healthy'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }
+                    >
                       {metrics.databaseHealth}
                     </Badge>
                   </div>
                   <Progress value={metrics.databaseHealth === 'healthy' ? 100 : 50} />
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
                       {showArabicLabels ? 'التخزين المؤقت' : 'Cache'}
                     </span>
-                    <Badge className={metrics.cacheHealth === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                    <Badge
+                      className={
+                        metrics.cacheHealth === 'healthy'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }
+                    >
                       {metrics.cacheHealth}
                     </Badge>
                   </div>
                   <Progress value={metrics.cacheHealth === 'healthy' ? 100 : 75} />
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
@@ -474,22 +499,36 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
             {/* City Usage Chart */}
             <Card>
               <CardHeader>
-                <CardTitle>{showArabicLabels ? 'الاستخدام حسب المدينة' : 'Usage by City'}</CardTitle>
+                <CardTitle>
+                  {showArabicLabels ? 'الاستخدام حسب المدينة' : 'Usage by City'}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={Object.entries(metrics.cityUsage).map(([city, data]) => ({
-                    city: showArabicLabels ? IRAQI_CITIES[city as keyof typeof IRAQI_CITIES] || city : city,
-                    users: data.users,
-                    conversations: data.conversations
-                  }))}>
+                  <BarChart
+                    data={Object.entries(metrics.cityUsage).map(([city, data]) => ({
+                      city: showArabicLabels
+                        ? IRAQI_CITIES[city as keyof typeof IRAQI_CITIES] || city
+                        : city,
+                      users: data.users,
+                      conversations: data.conversations,
+                    }))}
+                  >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="city" angle={-45} textAnchor="end" height={100} />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="users" fill={CHART_COLORS.primary} name={showArabicLabels ? 'المستخدمون' : 'Users'} />
-                    <Bar dataKey="conversations" fill={CHART_COLORS.secondary} name={showArabicLabels ? 'المحادثات' : 'Conversations'} />
+                    <Bar
+                      dataKey="users"
+                      fill={CHART_COLORS.primary}
+                      name={showArabicLabels ? 'المستخدمون' : 'Users'}
+                    />
+                    <Bar
+                      dataKey="conversations"
+                      fill={CHART_COLORS.secondary}
+                      name={showArabicLabels ? 'المحادثات' : 'Conversations'}
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -498,7 +537,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
             {/* ISP Performance */}
             <Card>
               <CardHeader>
-                <CardTitle>{showArabicLabels ? 'أداء مزودي الإنترنت' : 'ISP Performance'}</CardTitle>
+                <CardTitle>
+                  {showArabicLabels ? 'أداء مزودي الإنترنت' : 'ISP Performance'}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -506,7 +547,13 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
                     <div key={isp} className="p-3 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium">{isp}</span>
-                        <Badge className={performance.uptime > 99 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        <Badge
+                          className={
+                            performance.uptime > 99
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }
+                        >
                           {performance.uptime}% {showArabicLabels ? 'وقت التشغيل' : 'uptime'}
                         </Badge>
                       </div>
@@ -538,17 +585,23 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
             {/* Domain Usage Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle>{showArabicLabels ? 'توزيع المجالات المهنية' : 'Professional Domain Distribution'}</CardTitle>
+                <CardTitle>
+                  {showArabicLabels ? 'توزيع المجالات المهنية' : 'Professional Domain Distribution'}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie
-                      data={Object.entries(metrics.professionalDomainUsage).map(([domain, data]) => ({
-                        name: showArabicLabels ? getDomainArabicName(domain as ProfessionalDomain) : domain,
-                        value: data.users,
-                        fill: DOMAIN_COLORS[domain as ProfessionalDomain]
-                      }))}
+                      data={Object.entries(metrics.professionalDomainUsage).map(
+                        ([domain, data]) => ({
+                          name: showArabicLabels
+                            ? getDomainArabicName(domain as ProfessionalDomain)
+                            : domain,
+                          value: data.users,
+                          fill: DOMAIN_COLORS[domain as ProfessionalDomain],
+                        })
+                      )}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -558,7 +611,10 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
                       label
                     >
                       {Object.entries(metrics.professionalDomainUsage).map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={DOMAIN_COLORS[entry[0] as ProfessionalDomain]} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={DOMAIN_COLORS[entry[0] as ProfessionalDomain]}
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -570,7 +626,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
             {/* Domain Performance Metrics */}
             <Card>
               <CardHeader>
-                <CardTitle>{showArabicLabels ? 'أداء المجالات المهنية' : 'Domain Performance'}</CardTitle>
+                <CardTitle>
+                  {showArabicLabels ? 'أداء المجالات المهنية' : 'Domain Performance'}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -578,9 +636,17 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
                     <div key={domain} className="p-3 border rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium capitalize">
-                          {showArabicLabels ? getDomainArabicName(domain as ProfessionalDomain) : domain}
+                          {showArabicLabels
+                            ? getDomainArabicName(domain as ProfessionalDomain)
+                            : domain}
                         </span>
-                        <Badge className={data.complianceRate > 90 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                        <Badge
+                          className={
+                            data.complianceRate > 90
+                              ? 'bg-green-100 text-green-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }
+                        >
                           {data.complianceRate}% {showArabicLabels ? 'امتثال' : 'compliance'}
                         </Badge>
                       </div>
@@ -595,7 +661,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
                           <span className="text-gray-600">
                             {showArabicLabels ? 'المحادثات:' : 'Conversations:'}
                           </span>
-                          <span className="ml-1 font-medium">{formatNumber(data.conversations)}</span>
+                          <span className="ml-1 font-medium">
+                            {formatNumber(data.conversations)}
+                          </span>
                         </div>
                         <div>
                           <span className="text-gray-600">
@@ -634,22 +702,30 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
 
           <Card>
             <CardHeader>
-              <CardTitle>{showArabicLabels ? 'أداء بوابات الدفع' : 'Payment Gateway Performance'}</CardTitle>
+              <CardTitle>
+                {showArabicLabels ? 'أداء بوابات الدفع' : 'Payment Gateway Performance'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={Object.entries(metrics.paymentGateways).map(([gateway, data]) => ({
-                  gateway: gateway.toUpperCase(),
-                  successRate: data.successRate,
-                  transactions: data.transactions,
-                  avgAmount: data.averageAmount
-                }))}>
+                <BarChart
+                  data={Object.entries(metrics.paymentGateways).map(([gateway, data]) => ({
+                    gateway: gateway.toUpperCase(),
+                    successRate: data.successRate,
+                    transactions: data.transactions,
+                    avgAmount: data.averageAmount,
+                  }))}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="gateway" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="successRate" fill={CHART_COLORS.success} name={showArabicLabels ? 'معدل النجاح' : 'Success Rate'} />
+                  <Bar
+                    dataKey="successRate"
+                    fill={CHART_COLORS.success}
+                    name={showArabicLabels ? 'معدل النجاح' : 'Success Rate'}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -663,7 +739,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <Server className="w-5 h-5 text-blue-600" />
-                  <div className={getHealthColor(metrics.systemUptime, { good: 99.5, warning: 99 })}>
+                  <div
+                    className={getHealthColor(metrics.systemUptime, { good: 99.5, warning: 99 })}
+                  >
                     <CheckCircle className="w-4 h-4" />
                   </div>
                 </div>
@@ -678,7 +756,12 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <Zap className="w-5 h-5 text-yellow-600" />
-                  <div className={getHealthColor(1000 - metrics.averageResponseTime, { good: 800, warning: 500 })}>
+                  <div
+                    className={getHealthColor(1000 - metrics.averageResponseTime, {
+                      good: 800,
+                      warning: 500,
+                    })}
+                  >
                     <Activity className="w-4 h-4" />
                   </div>
                 </div>
@@ -693,7 +776,9 @@ export const IraqiSystemMetrics: React.FC<IraqiSystemMetricsProps> = ({
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <Database className="w-5 h-5 text-purple-600" />
-                  <div className={getHealthColor(100 - metrics.errorRate, { good: 99, warning: 95 })}>
+                  <div
+                    className={getHealthColor(100 - metrics.errorRate, { good: 99, warning: 95 })}
+                  >
                     <Shield className="w-4 h-4" />
                   </div>
                 </div>
@@ -732,7 +817,7 @@ const getDomainArabicName = (domain: ProfessionalDomain): string => {
     business: 'تجاري',
     engineering: 'هندسي',
     government: 'حكومي',
-    general: 'عام'
+    general: 'عام',
   };
   return arabicNames[domain] || domain;
 };

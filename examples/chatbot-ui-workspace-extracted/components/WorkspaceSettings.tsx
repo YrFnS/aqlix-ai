@@ -4,29 +4,44 @@
  * Supports Arabic RTL, Islamic compliance, and Iraqi professional requirements
  */
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Globe, Users, FileText, Zap, AlertTriangle, Check, X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Shield,
+  Globe,
+  Users,
+  FileText,
+  Zap,
+  AlertTriangle,
+  Check,
+  X,
+} from "lucide-react";
 
 // ====================== Types ======================
 
 interface IraqiCulturalSettings {
   enableIslamicCompliance: boolean;
-  strictnessLevel: 'basic' | 'standard' | 'strict';
+  strictnessLevel: "basic" | "standard" | "strict";
   prayerTimeReminders: boolean;
   halalContentFilter: boolean;
   politicalNeutralityMode: boolean;
   sectarianContentFilter: boolean;
-  culturalSensitivityLevel: 'low' | 'medium' | 'high' | 'maximum';
+  culturalSensitivityLevel: "low" | "medium" | "high" | "maximum";
 }
 
 interface WorkspaceSettings {
@@ -35,21 +50,27 @@ interface WorkspaceSettings {
   nameAr: string;
   description: string;
   descriptionAr: string;
-  type: 'personal' | 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-  visibility: 'private' | 'organization' | 'public';
-  
+  type:
+    | "personal"
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "engineering";
+  visibility: "private" | "organization" | "public";
+
   // Iraqi-specific settings
   culturalSettings: IraqiCulturalSettings;
   arabicSupport: boolean;
-  dialectPreference: 'baghdad' | 'basra' | 'mosul' | 'general';
+  dialectPreference: "baghdad" | "basra" | "mosul" | "general";
   rtlLayout: boolean;
-  
+
   // Professional settings
   professionalLicenseNumber?: string;
   organizationRegistration?: string;
   complianceRequirements: string[];
   specializations: string[];
-  
+
   // Access settings
   maxMembers: number;
   allowGuestAccess: boolean;
@@ -66,8 +87,8 @@ interface WorkspaceSettingsProps {
   onSave: (settings: WorkspaceSettings) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
-  userRole: 'owner' | 'admin' | 'editor' | 'viewer';
-  locale: 'ar' | 'en';
+  userRole: "owner" | "admin" | "editor" | "viewer";
+  locale: "ar" | "en";
 }
 
 // ====================== Main Component ======================
@@ -79,95 +100,99 @@ export default function WorkspaceSettings({
   onCancel,
   isLoading = false,
   userRole,
-  locale = 'ar'
+  locale = "ar",
 }: WorkspaceSettingsProps) {
   const [settings, setSettings] = useState<WorkspaceSettings>(initialSettings);
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
   const [hasChanges, setHasChanges] = useState(false);
-  const [culturalComplianceScore, setCulturalComplianceScore] = useState<number>(0);
+  const [culturalComplianceScore, setCulturalComplianceScore] =
+    useState<number>(0);
   const [isValidating, setIsValidating] = useState(false);
 
-  const isRTL = locale === 'ar';
-  const canEdit = userRole === 'owner' || userRole === 'admin';
+  const isRTL = locale === "ar";
+  const canEdit = userRole === "owner" || userRole === "admin";
 
   // Text content based on locale
   const text = {
     ar: {
-      title: 'إعدادات مساحة العمل',
-      basicInfo: 'المعلومات الأساسية',
-      culturalCompliance: 'الامتثال الثقافي',
-      professionalSettings: 'الإعدادات المهنية',
-      accessPermissions: 'أذونات الوصول',
-      fileManagement: 'إدارة الملفات',
-      workspaceName: 'اسم مساحة العمل',
-      workspaceNameAr: 'اسم مساحة العمل بالعربية',
-      description: 'الوصف',
-      descriptionAr: 'الوصف بالعربية',
-      workspaceType: 'نوع مساحة العمل',
-      visibility: 'مستوى الرؤية',
-      dialectPreference: 'تفضيل اللهجة',
-      islamicCompliance: 'الامتثال الإسلامي',
-      strictnessLevel: 'مستوى الصرامة',
-      prayerReminders: 'تذكيرات الصلاة',
-      halalFilter: 'مرشح المحتوى الحلال',
-      politicalNeutrality: 'الحياد السياسي',
-      sectarianFilter: 'مرشح المحتوى الطائفي',
-      culturalSensitivity: 'الحساسية الثقافية',
-      licenseNumber: 'رقم الرخصة المهنية',
-      orgRegistration: 'تسجيل المنظمة',
-      specializations: 'التخصصات',
-      maxMembers: 'الحد الأقصى للأعضاء',
-      guestAccess: 'وصول الضيوف',
-      fileUploads: 'تحميل الملفات',
-      maxFileSize: 'الحد الأقصى لحجم الملف (ميجابايت)',
-      allowedTypes: 'أنواع الملفات المسموحة',
-      save: 'حفظ',
-      cancel: 'إلغاء',
-      saving: 'جاري الحفظ...',
-      validating: 'جاري التحقق من الصحة...',
-      complianceScore: 'نقاط الامتثال الثقافي',
-      unsavedChanges: 'لديك تغييرات غير محفوظة',
-      validationRequired: 'التحقق من الصحة مطلوب للإعدادات المهنية',
-      professionalVerification: 'التحقق المهني مطلوب لهذا النوع من مساحة العمل'
+      title: "إعدادات مساحة العمل",
+      basicInfo: "المعلومات الأساسية",
+      culturalCompliance: "الامتثال الثقافي",
+      professionalSettings: "الإعدادات المهنية",
+      accessPermissions: "أذونات الوصول",
+      fileManagement: "إدارة الملفات",
+      workspaceName: "اسم مساحة العمل",
+      workspaceNameAr: "اسم مساحة العمل بالعربية",
+      description: "الوصف",
+      descriptionAr: "الوصف بالعربية",
+      workspaceType: "نوع مساحة العمل",
+      visibility: "مستوى الرؤية",
+      dialectPreference: "تفضيل اللهجة",
+      islamicCompliance: "الامتثال الإسلامي",
+      strictnessLevel: "مستوى الصرامة",
+      prayerReminders: "تذكيرات الصلاة",
+      halalFilter: "مرشح المحتوى الحلال",
+      politicalNeutrality: "الحياد السياسي",
+      sectarianFilter: "مرشح المحتوى الطائفي",
+      culturalSensitivity: "الحساسية الثقافية",
+      licenseNumber: "رقم الرخصة المهنية",
+      orgRegistration: "تسجيل المنظمة",
+      specializations: "التخصصات",
+      maxMembers: "الحد الأقصى للأعضاء",
+      guestAccess: "وصول الضيوف",
+      fileUploads: "تحميل الملفات",
+      maxFileSize: "الحد الأقصى لحجم الملف (ميجابايت)",
+      allowedTypes: "أنواع الملفات المسموحة",
+      save: "حفظ",
+      cancel: "إلغاء",
+      saving: "جاري الحفظ...",
+      validating: "جاري التحقق من الصحة...",
+      complianceScore: "نقاط الامتثال الثقافي",
+      unsavedChanges: "لديك تغييرات غير محفوظة",
+      validationRequired: "التحقق من الصحة مطلوب للإعدادات المهنية",
+      professionalVerification: "التحقق المهني مطلوب لهذا النوع من مساحة العمل",
     },
     en: {
-      title: 'Workspace Settings',
-      basicInfo: 'Basic Information',
-      culturalCompliance: 'Cultural Compliance',
-      professionalSettings: 'Professional Settings',
-      accessPermissions: 'Access Permissions',
-      fileManagement: 'File Management',
-      workspaceName: 'Workspace Name',
-      workspaceNameAr: 'Workspace Name (Arabic)',
-      description: 'Description',
-      descriptionAr: 'Description (Arabic)',
-      workspaceType: 'Workspace Type',
-      visibility: 'Visibility',
-      dialectPreference: 'Dialect Preference',
-      islamicCompliance: 'Islamic Compliance',
-      strictnessLevel: 'Strictness Level',
-      prayerReminders: 'Prayer Reminders',
-      halalFilter: 'Halal Content Filter',
-      politicalNeutrality: 'Political Neutrality',
-      sectarianFilter: 'Sectarian Content Filter',
-      culturalSensitivity: 'Cultural Sensitivity',
-      licenseNumber: 'Professional License Number',
-      orgRegistration: 'Organization Registration',
-      specializations: 'Specializations',
-      maxMembers: 'Maximum Members',
-      guestAccess: 'Guest Access',
-      fileUploads: 'File Uploads',
-      maxFileSize: 'Maximum File Size (MB)',
-      allowedTypes: 'Allowed File Types',
-      save: 'Save',
-      cancel: 'Cancel',
-      saving: 'Saving...',
-      validating: 'Validating...',
-      complianceScore: 'Cultural Compliance Score',
-      unsavedChanges: 'You have unsaved changes',
-      validationRequired: 'Validation required for professional settings',
-      professionalVerification: 'Professional verification required for this workspace type'
-    }
+      title: "Workspace Settings",
+      basicInfo: "Basic Information",
+      culturalCompliance: "Cultural Compliance",
+      professionalSettings: "Professional Settings",
+      accessPermissions: "Access Permissions",
+      fileManagement: "File Management",
+      workspaceName: "Workspace Name",
+      workspaceNameAr: "Workspace Name (Arabic)",
+      description: "Description",
+      descriptionAr: "Description (Arabic)",
+      workspaceType: "Workspace Type",
+      visibility: "Visibility",
+      dialectPreference: "Dialect Preference",
+      islamicCompliance: "Islamic Compliance",
+      strictnessLevel: "Strictness Level",
+      prayerReminders: "Prayer Reminders",
+      halalFilter: "Halal Content Filter",
+      politicalNeutrality: "Political Neutrality",
+      sectarianFilter: "Sectarian Content Filter",
+      culturalSensitivity: "Cultural Sensitivity",
+      licenseNumber: "Professional License Number",
+      orgRegistration: "Organization Registration",
+      specializations: "Specializations",
+      maxMembers: "Maximum Members",
+      guestAccess: "Guest Access",
+      fileUploads: "File Uploads",
+      maxFileSize: "Maximum File Size (MB)",
+      allowedTypes: "Allowed File Types",
+      save: "Save",
+      cancel: "Cancel",
+      saving: "Saving...",
+      validating: "Validating...",
+      complianceScore: "Cultural Compliance Score",
+      unsavedChanges: "You have unsaved changes",
+      validationRequired: "Validation required for professional settings",
+      professionalVerification:
+        "Professional verification required for this workspace type",
+    },
   };
 
   const t = text[locale];
@@ -175,7 +200,8 @@ export default function WorkspaceSettings({
   // ====================== Effects ======================
 
   useEffect(() => {
-    const hasChangesCheck = JSON.stringify(settings) !== JSON.stringify(initialSettings);
+    const hasChangesCheck =
+      JSON.stringify(settings) !== JSON.stringify(initialSettings);
     setHasChanges(hasChangesCheck);
   }, [settings, initialSettings]);
 
@@ -190,15 +216,15 @@ export default function WorkspaceSettings({
   const handleSettingChange = (key: string, value: any) => {
     if (!canEdit) return;
 
-    setSettings(prev => {
-      if (key.includes('.')) {
-        const [parent, child] = key.split('.');
+    setSettings((prev) => {
+      if (key.includes(".")) {
+        const [parent, child] = key.split(".");
         return {
           ...prev,
           [parent]: {
             ...prev[parent as keyof WorkspaceSettings],
-            [child]: value
-          }
+            [child]: value,
+          },
         };
       }
       return { ...prev, [key]: value };
@@ -206,7 +232,7 @@ export default function WorkspaceSettings({
 
     // Clear validation error if field is fixed
     if (validationErrors[key]) {
-      setValidationErrors(prev => {
+      setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[key];
         return newErrors;
@@ -220,7 +246,7 @@ export default function WorkspaceSettings({
 
     // Base score for enabling compliance
     if (culturalSettings.enableIslamicCompliance) score += 30;
-    
+
     // Strictness level scoring
     const strictnessScores = { basic: 10, standard: 20, strict: 30 };
     score += strictnessScores[culturalSettings.strictnessLevel];
@@ -236,7 +262,7 @@ export default function WorkspaceSettings({
     score += sensitivityScores[culturalSettings.culturalSensitivityLevel];
 
     // Professional domain bonus
-    if (settings.type === 'legal' || settings.type === 'medical') score += 10;
+    if (settings.type === "legal" || settings.type === "medical") score += 10;
 
     setCulturalComplianceScore(Math.min(score, 100));
   };
@@ -247,28 +273,44 @@ export default function WorkspaceSettings({
 
     // Basic validation
     if (!settings.name.trim()) {
-      errors.name = locale === 'ar' ? 'اسم مساحة العمل مطلوب' : 'Workspace name is required';
+      errors.name =
+        locale === "ar"
+          ? "اسم مساحة العمل مطلوب"
+          : "Workspace name is required";
     }
 
     if (!settings.nameAr.trim() && settings.arabicSupport) {
-      errors.nameAr = locale === 'ar' ? 'الاسم العربي مطلوب' : 'Arabic name is required';
+      errors.nameAr =
+        locale === "ar" ? "الاسم العربي مطلوب" : "Arabic name is required";
     }
 
     // Professional domain validation
-    if (settings.type === 'legal' || settings.type === 'medical') {
+    if (settings.type === "legal" || settings.type === "medical") {
       if (!settings.professionalLicenseNumber) {
-        errors.professionalLicenseNumber = locale === 'ar' ? 'رقم الرخصة المهنية مطلوب' : 'Professional license number is required';
+        errors.professionalLicenseNumber =
+          locale === "ar"
+            ? "رقم الرخصة المهنية مطلوب"
+            : "Professional license number is required";
       }
     }
 
     // Cultural compliance validation
-    if (settings.culturalSettings.enableIslamicCompliance && culturalComplianceScore < 60) {
-      errors.culturalCompliance = locale === 'ar' ? 'نقاط الامتثال الثقافي منخفضة جداً' : 'Cultural compliance score is too low';
+    if (
+      settings.culturalSettings.enableIslamicCompliance &&
+      culturalComplianceScore < 60
+    ) {
+      errors.culturalCompliance =
+        locale === "ar"
+          ? "نقاط الامتثال الثقافي منخفضة جداً"
+          : "Cultural compliance score is too low";
     }
 
     // File size validation
     if (settings.maxFileSize > 1000) {
-      errors.maxFileSize = locale === 'ar' ? 'الحد الأقصى لحجم الملف كبير جداً' : 'Maximum file size is too large';
+      errors.maxFileSize =
+        locale === "ar"
+          ? "الحد الأقصى لحجم الملف كبير جداً"
+          : "Maximum file size is too large";
     }
 
     setValidationErrors(errors);
@@ -284,7 +326,7 @@ export default function WorkspaceSettings({
       await onSave(settings);
       setHasChanges(false);
     } catch (error) {
-      console.error('Failed to save settings:', error);
+      console.error("Failed to save settings:", error);
     }
   };
 
@@ -299,26 +341,29 @@ export default function WorkspaceSettings({
 
   const renderCulturalComplianceScore = () => {
     const getScoreColor = (score: number) => {
-      if (score >= 80) return 'text-green-600';
-      if (score >= 60) return 'text-yellow-600';
-      return 'text-red-600';
+      if (score >= 80) return "text-green-600";
+      if (score >= 60) return "text-yellow-600";
+      return "text-red-600";
     };
 
     const getScoreIcon = (score: number) => {
       if (score >= 80) return <Check className="h-4 w-4 text-green-600" />;
-      if (score >= 60) return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+      if (score >= 60)
+        return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
       return <X className="h-4 w-4 text-red-600" />;
     };
 
     return (
-      <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+      <div
+        className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
+      >
         {getScoreIcon(culturalComplianceScore)}
-        <span className={`font-semibold ${getScoreColor(culturalComplianceScore)}`}>
+        <span
+          className={`font-semibold ${getScoreColor(culturalComplianceScore)}`}
+        >
           {culturalComplianceScore}/100
         </span>
-        <span className="text-sm text-gray-600">
-          {t.complianceScore}
-        </span>
+        <span className="text-sm text-gray-600">{t.complianceScore}</span>
       </div>
     );
   };
@@ -326,38 +371,54 @@ export default function WorkspaceSettings({
   const renderBasicInfo = () => (
     <Card>
       <CardHeader>
-        <CardTitle className={isRTL ? 'text-right font-arabic' : ''}>{t.basicInfo}</CardTitle>
+        <CardTitle className={isRTL ? "text-right font-arabic" : ""}>
+          {t.basicInfo}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="name" className={isRTL ? 'text-right font-arabic' : ''}>{t.workspaceName}</Label>
+            <Label
+              htmlFor="name"
+              className={isRTL ? "text-right font-arabic" : ""}
+            >
+              {t.workspaceName}
+            </Label>
             <Input
               id="name"
               value={settings.name}
-              onChange={(e) => handleSettingChange('name', e.target.value)}
+              onChange={(e) => handleSettingChange("name", e.target.value)}
               disabled={!canEdit}
-              className={isRTL ? 'text-right font-arabic' : ''}
+              className={isRTL ? "text-right font-arabic" : ""}
             />
             {validationErrors.name && (
-              <p className={`text-red-600 text-sm mt-1 ${isRTL ? 'text-right font-arabic' : ''}`}>
+              <p
+                className={`text-red-600 text-sm mt-1 ${isRTL ? "text-right font-arabic" : ""}`}
+              >
                 {validationErrors.name}
               </p>
             )}
           </div>
 
           <div>
-            <Label htmlFor="nameAr" className={isRTL ? 'text-right font-arabic' : ''}>{t.workspaceNameAr}</Label>
+            <Label
+              htmlFor="nameAr"
+              className={isRTL ? "text-right font-arabic" : ""}
+            >
+              {t.workspaceNameAr}
+            </Label>
             <Input
               id="nameAr"
               value={settings.nameAr}
-              onChange={(e) => handleSettingChange('nameAr', e.target.value)}
+              onChange={(e) => handleSettingChange("nameAr", e.target.value)}
               disabled={!canEdit}
               className="text-right font-arabic"
               dir="rtl"
             />
             {validationErrors.nameAr && (
-              <p className={`text-red-600 text-sm mt-1 ${isRTL ? 'text-right font-arabic' : ''}`}>
+              <p
+                className={`text-red-600 text-sm mt-1 ${isRTL ? "text-right font-arabic" : ""}`}
+              >
                 {validationErrors.nameAr}
               </p>
             )}
@@ -366,22 +427,36 @@ export default function WorkspaceSettings({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="description" className={isRTL ? 'text-right font-arabic' : ''}>{t.description}</Label>
+            <Label
+              htmlFor="description"
+              className={isRTL ? "text-right font-arabic" : ""}
+            >
+              {t.description}
+            </Label>
             <Textarea
               id="description"
               value={settings.description}
-              onChange={(e) => handleSettingChange('description', e.target.value)}
+              onChange={(e) =>
+                handleSettingChange("description", e.target.value)
+              }
               disabled={!canEdit}
-              className={isRTL ? 'text-right font-arabic' : ''}
+              className={isRTL ? "text-right font-arabic" : ""}
             />
           </div>
 
           <div>
-            <Label htmlFor="descriptionAr" className={isRTL ? 'text-right font-arabic' : ''}>{t.descriptionAr}</Label>
+            <Label
+              htmlFor="descriptionAr"
+              className={isRTL ? "text-right font-arabic" : ""}
+            >
+              {t.descriptionAr}
+            </Label>
             <Textarea
               id="descriptionAr"
               value={settings.descriptionAr}
-              onChange={(e) => handleSettingChange('descriptionAr', e.target.value)}
+              onChange={(e) =>
+                handleSettingChange("descriptionAr", e.target.value)
+              }
               disabled={!canEdit}
               className="text-right font-arabic"
               dir="rtl"
@@ -391,84 +466,94 @@ export default function WorkspaceSettings({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.workspaceType}</Label>
-            <Select 
-              value={settings.type} 
-              onValueChange={(value) => handleSettingChange('type', value)}
+            <Label className={isRTL ? "text-right font-arabic" : ""}>
+              {t.workspaceType}
+            </Label>
+            <Select
+              value={settings.type}
+              onValueChange={(value) => handleSettingChange("type", value)}
               disabled={!canEdit}
             >
-              <SelectTrigger className={isRTL ? 'text-right font-arabic' : ''}>
+              <SelectTrigger className={isRTL ? "text-right font-arabic" : ""}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="personal">
-                  {locale === 'ar' ? 'شخصي' : 'Personal'}
+                  {locale === "ar" ? "شخصي" : "Personal"}
                 </SelectItem>
                 <SelectItem value="legal">
-                  {locale === 'ar' ? 'قانوني' : 'Legal'}
+                  {locale === "ar" ? "قانوني" : "Legal"}
                 </SelectItem>
                 <SelectItem value="medical">
-                  {locale === 'ar' ? 'طبي' : 'Medical'}
+                  {locale === "ar" ? "طبي" : "Medical"}
                 </SelectItem>
                 <SelectItem value="educational">
-                  {locale === 'ar' ? 'تعليمي' : 'Educational'}
+                  {locale === "ar" ? "تعليمي" : "Educational"}
                 </SelectItem>
                 <SelectItem value="business">
-                  {locale === 'ar' ? 'تجاري' : 'Business'}
+                  {locale === "ar" ? "تجاري" : "Business"}
                 </SelectItem>
                 <SelectItem value="engineering">
-                  {locale === 'ar' ? 'هندسي' : 'Engineering'}
+                  {locale === "ar" ? "هندسي" : "Engineering"}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.visibility}</Label>
-            <Select 
-              value={settings.visibility} 
-              onValueChange={(value) => handleSettingChange('visibility', value)}
+            <Label className={isRTL ? "text-right font-arabic" : ""}>
+              {t.visibility}
+            </Label>
+            <Select
+              value={settings.visibility}
+              onValueChange={(value) =>
+                handleSettingChange("visibility", value)
+              }
               disabled={!canEdit}
             >
-              <SelectTrigger className={isRTL ? 'text-right font-arabic' : ''}>
+              <SelectTrigger className={isRTL ? "text-right font-arabic" : ""}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="private">
-                  {locale === 'ar' ? 'خاص' : 'Private'}
+                  {locale === "ar" ? "خاص" : "Private"}
                 </SelectItem>
                 <SelectItem value="organization">
-                  {locale === 'ar' ? 'منظمة' : 'Organization'}
+                  {locale === "ar" ? "منظمة" : "Organization"}
                 </SelectItem>
                 <SelectItem value="public">
-                  {locale === 'ar' ? 'عام' : 'Public'}
+                  {locale === "ar" ? "عام" : "Public"}
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.dialectPreference}</Label>
-            <Select 
-              value={settings.dialectPreference} 
-              onValueChange={(value) => handleSettingChange('dialectPreference', value)}
+            <Label className={isRTL ? "text-right font-arabic" : ""}>
+              {t.dialectPreference}
+            </Label>
+            <Select
+              value={settings.dialectPreference}
+              onValueChange={(value) =>
+                handleSettingChange("dialectPreference", value)
+              }
               disabled={!canEdit}
             >
-              <SelectTrigger className={isRTL ? 'text-right font-arabic' : ''}>
+              <SelectTrigger className={isRTL ? "text-right font-arabic" : ""}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="general">
-                  {locale === 'ar' ? 'عام' : 'General'}
+                  {locale === "ar" ? "عام" : "General"}
                 </SelectItem>
                 <SelectItem value="baghdad">
-                  {locale === 'ar' ? 'بغداد' : 'Baghdad'}
+                  {locale === "ar" ? "بغداد" : "Baghdad"}
                 </SelectItem>
                 <SelectItem value="basra">
-                  {locale === 'ar' ? 'البصرة' : 'Basra'}
+                  {locale === "ar" ? "البصرة" : "Basra"}
                 </SelectItem>
                 <SelectItem value="mosul">
-                  {locale === 'ar' ? 'الموصل' : 'Mosul'}
+                  {locale === "ar" ? "الموصل" : "Mosul"}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -481,25 +566,43 @@ export default function WorkspaceSettings({
   const renderCulturalCompliance = () => (
     <Card>
       <CardHeader>
-        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse text-right font-arabic' : ''}`}>
+        <div
+          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+        >
+          <CardTitle
+            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse text-right font-arabic" : ""}`}
+          >
             <Shield className="h-5 w-5" />
             {t.culturalCompliance}
           </CardTitle>
-          {settings.culturalSettings.enableIslamicCompliance && renderCulturalComplianceScore()}
+          {settings.culturalSettings.enableIslamicCompliance &&
+            renderCulturalComplianceScore()}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <div className={isRTL ? 'text-right' : ''}>
-            <Label className={`font-medium ${isRTL ? 'font-arabic' : ''}`}>{t.islamicCompliance}</Label>
-            <p className={`text-sm text-gray-600 ${isRTL ? 'font-arabic' : ''}`}>
-              {locale === 'ar' ? 'تفعيل مرشحات المحتوى الإسلامية' : 'Enable Islamic content filters'}
+        <div
+          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+        >
+          <div className={isRTL ? "text-right" : ""}>
+            <Label className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
+              {t.islamicCompliance}
+            </Label>
+            <p
+              className={`text-sm text-gray-600 ${isRTL ? "font-arabic" : ""}`}
+            >
+              {locale === "ar"
+                ? "تفعيل مرشحات المحتوى الإسلامية"
+                : "Enable Islamic content filters"}
             </p>
           </div>
           <Switch
             checked={settings.culturalSettings.enableIslamicCompliance}
-            onCheckedChange={(checked) => handleSettingChange('culturalSettings.enableIslamicCompliance', checked)}
+            onCheckedChange={(checked) =>
+              handleSettingChange(
+                "culturalSettings.enableIslamicCompliance",
+                checked,
+              )
+            }
             disabled={!canEdit}
           />
         </div>
@@ -507,89 +610,140 @@ export default function WorkspaceSettings({
         {settings.culturalSettings.enableIslamicCompliance && (
           <>
             <div>
-              <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.strictnessLevel}</Label>
-              <Select 
-                value={settings.culturalSettings.strictnessLevel} 
-                onValueChange={(value) => handleSettingChange('culturalSettings.strictnessLevel', value)}
+              <Label className={isRTL ? "text-right font-arabic" : ""}>
+                {t.strictnessLevel}
+              </Label>
+              <Select
+                value={settings.culturalSettings.strictnessLevel}
+                onValueChange={(value) =>
+                  handleSettingChange("culturalSettings.strictnessLevel", value)
+                }
                 disabled={!canEdit}
               >
-                <SelectTrigger className={isRTL ? 'text-right font-arabic' : ''}>
+                <SelectTrigger
+                  className={isRTL ? "text-right font-arabic" : ""}
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="basic">
-                    {locale === 'ar' ? 'أساسي' : 'Basic'}
+                    {locale === "ar" ? "أساسي" : "Basic"}
                   </SelectItem>
                   <SelectItem value="standard">
-                    {locale === 'ar' ? 'معياري' : 'Standard'}
+                    {locale === "ar" ? "معياري" : "Standard"}
                   </SelectItem>
                   <SelectItem value="strict">
-                    {locale === 'ar' ? 'صارم' : 'Strict'}
+                    {locale === "ar" ? "صارم" : "Strict"}
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <Label className={isRTL ? 'font-arabic' : ''}>{t.prayerReminders}</Label>
+              <div
+                className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+              >
+                <Label className={isRTL ? "font-arabic" : ""}>
+                  {t.prayerReminders}
+                </Label>
                 <Switch
                   checked={settings.culturalSettings.prayerTimeReminders}
-                  onCheckedChange={(checked) => handleSettingChange('culturalSettings.prayerTimeReminders', checked)}
+                  onCheckedChange={(checked) =>
+                    handleSettingChange(
+                      "culturalSettings.prayerTimeReminders",
+                      checked,
+                    )
+                  }
                   disabled={!canEdit}
                 />
               </div>
 
-              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <Label className={isRTL ? 'font-arabic' : ''}>{t.halalFilter}</Label>
+              <div
+                className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+              >
+                <Label className={isRTL ? "font-arabic" : ""}>
+                  {t.halalFilter}
+                </Label>
                 <Switch
                   checked={settings.culturalSettings.halalContentFilter}
-                  onCheckedChange={(checked) => handleSettingChange('culturalSettings.halalContentFilter', checked)}
+                  onCheckedChange={(checked) =>
+                    handleSettingChange(
+                      "culturalSettings.halalContentFilter",
+                      checked,
+                    )
+                  }
                   disabled={!canEdit}
                 />
               </div>
 
-              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <Label className={isRTL ? 'font-arabic' : ''}>{t.politicalNeutrality}</Label>
+              <div
+                className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+              >
+                <Label className={isRTL ? "font-arabic" : ""}>
+                  {t.politicalNeutrality}
+                </Label>
                 <Switch
                   checked={settings.culturalSettings.politicalNeutralityMode}
-                  onCheckedChange={(checked) => handleSettingChange('culturalSettings.politicalNeutralityMode', checked)}
+                  onCheckedChange={(checked) =>
+                    handleSettingChange(
+                      "culturalSettings.politicalNeutralityMode",
+                      checked,
+                    )
+                  }
                   disabled={!canEdit}
                 />
               </div>
 
-              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <Label className={isRTL ? 'font-arabic' : ''}>{t.sectarianFilter}</Label>
+              <div
+                className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+              >
+                <Label className={isRTL ? "font-arabic" : ""}>
+                  {t.sectarianFilter}
+                </Label>
                 <Switch
                   checked={settings.culturalSettings.sectarianContentFilter}
-                  onCheckedChange={(checked) => handleSettingChange('culturalSettings.sectarianContentFilter', checked)}
+                  onCheckedChange={(checked) =>
+                    handleSettingChange(
+                      "culturalSettings.sectarianContentFilter",
+                      checked,
+                    )
+                  }
                   disabled={!canEdit}
                 />
               </div>
             </div>
 
             <div>
-              <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.culturalSensitivity}</Label>
-              <Select 
-                value={settings.culturalSettings.culturalSensitivityLevel} 
-                onValueChange={(value) => handleSettingChange('culturalSettings.culturalSensitivityLevel', value)}
+              <Label className={isRTL ? "text-right font-arabic" : ""}>
+                {t.culturalSensitivity}
+              </Label>
+              <Select
+                value={settings.culturalSettings.culturalSensitivityLevel}
+                onValueChange={(value) =>
+                  handleSettingChange(
+                    "culturalSettings.culturalSensitivityLevel",
+                    value,
+                  )
+                }
                 disabled={!canEdit}
               >
-                <SelectTrigger className={isRTL ? 'text-right font-arabic' : ''}>
+                <SelectTrigger
+                  className={isRTL ? "text-right font-arabic" : ""}
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="low">
-                    {locale === 'ar' ? 'منخفض' : 'Low'}
+                    {locale === "ar" ? "منخفض" : "Low"}
                   </SelectItem>
                   <SelectItem value="medium">
-                    {locale === 'ar' ? 'متوسط' : 'Medium'}
+                    {locale === "ar" ? "متوسط" : "Medium"}
                   </SelectItem>
                   <SelectItem value="high">
-                    {locale === 'ar' ? 'عالي' : 'High'}
+                    {locale === "ar" ? "عالي" : "High"}
                   </SelectItem>
                   <SelectItem value="maximum">
-                    {locale === 'ar' ? 'أقصى' : 'Maximum'}
+                    {locale === "ar" ? "أقصى" : "Maximum"}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -598,7 +752,9 @@ export default function WorkspaceSettings({
             {validationErrors.culturalCompliance && (
               <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription className={isRTL ? 'text-right font-arabic' : ''}>
+                <AlertDescription
+                  className={isRTL ? "text-right font-arabic" : ""}
+                >
                   {validationErrors.culturalCompliance}
                 </AlertDescription>
               </Alert>
@@ -610,12 +766,15 @@ export default function WorkspaceSettings({
   );
 
   const renderProfessionalSettings = () => {
-    const requiresProfessionalInfo = settings.type === 'legal' || settings.type === 'medical';
+    const requiresProfessionalInfo =
+      settings.type === "legal" || settings.type === "medical";
 
     return (
       <Card>
         <CardHeader>
-          <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse text-right font-arabic' : ''}`}>
+          <CardTitle
+            className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse text-right font-arabic" : ""}`}
+          >
             <FileText className="h-5 w-5" />
             {t.professionalSettings}
           </CardTitle>
@@ -624,7 +783,9 @@ export default function WorkspaceSettings({
           {requiresProfessionalInfo && (
             <Alert>
               <Shield className="h-4 w-4" />
-              <AlertDescription className={isRTL ? 'text-right font-arabic' : ''}>
+              <AlertDescription
+                className={isRTL ? "text-right font-arabic" : ""}
+              >
                 {t.professionalVerification}
               </AlertDescription>
             </Alert>
@@ -632,51 +793,85 @@ export default function WorkspaceSettings({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="licenseNumber" className={isRTL ? 'text-right font-arabic' : ''}>
+              <Label
+                htmlFor="licenseNumber"
+                className={isRTL ? "text-right font-arabic" : ""}
+              >
                 {t.licenseNumber}
               </Label>
               <Input
                 id="licenseNumber"
-                value={settings.professionalLicenseNumber || ''}
-                onChange={(e) => handleSettingChange('professionalLicenseNumber', e.target.value)}
+                value={settings.professionalLicenseNumber || ""}
+                onChange={(e) =>
+                  handleSettingChange(
+                    "professionalLicenseNumber",
+                    e.target.value,
+                  )
+                }
                 disabled={!canEdit}
-                className={isRTL ? 'text-right font-arabic' : ''}
-                placeholder={requiresProfessionalInfo ? (locale === 'ar' ? 'مطلوب' : 'Required') : ''}
+                className={isRTL ? "text-right font-arabic" : ""}
+                placeholder={
+                  requiresProfessionalInfo
+                    ? locale === "ar"
+                      ? "مطلوب"
+                      : "Required"
+                    : ""
+                }
               />
               {validationErrors.professionalLicenseNumber && (
-                <p className={`text-red-600 text-sm mt-1 ${isRTL ? 'text-right font-arabic' : ''}`}>
+                <p
+                  className={`text-red-600 text-sm mt-1 ${isRTL ? "text-right font-arabic" : ""}`}
+                >
                   {validationErrors.professionalLicenseNumber}
                 </p>
               )}
             </div>
 
             <div>
-              <Label htmlFor="orgRegistration" className={isRTL ? 'text-right font-arabic' : ''}>
+              <Label
+                htmlFor="orgRegistration"
+                className={isRTL ? "text-right font-arabic" : ""}
+              >
                 {t.orgRegistration}
               </Label>
               <Input
                 id="orgRegistration"
-                value={settings.organizationRegistration || ''}
-                onChange={(e) => handleSettingChange('organizationRegistration', e.target.value)}
+                value={settings.organizationRegistration || ""}
+                onChange={(e) =>
+                  handleSettingChange(
+                    "organizationRegistration",
+                    e.target.value,
+                  )
+                }
                 disabled={!canEdit}
-                className={isRTL ? 'text-right font-arabic' : ''}
+                className={isRTL ? "text-right font-arabic" : ""}
               />
             </div>
           </div>
 
           <div>
-            <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.specializations}</Label>
-            <div className={`flex flex-wrap gap-2 mt-2 ${isRTL ? 'justify-end' : ''}`}>
+            <Label className={isRTL ? "text-right font-arabic" : ""}>
+              {t.specializations}
+            </Label>
+            <div
+              className={`flex flex-wrap gap-2 mt-2 ${isRTL ? "justify-end" : ""}`}
+            >
               {settings.specializations.map((spec, index) => (
-                <Badge key={index} variant="secondary" className={isRTL ? 'font-arabic' : ''}>
+                <Badge
+                  key={index}
+                  variant="secondary"
+                  className={isRTL ? "font-arabic" : ""}
+                >
                   {spec}
                   {canEdit && (
                     <button
                       onClick={() => {
-                        const newSpecs = settings.specializations.filter((_, i) => i !== index);
-                        handleSettingChange('specializations', newSpecs);
+                        const newSpecs = settings.specializations.filter(
+                          (_, i) => i !== index,
+                        );
+                        handleSettingChange("specializations", newSpecs);
                       }}
-                      className={`ml-1 text-red-600 hover:text-red-800 ${isRTL ? 'mr-1 ml-0' : ''}`}
+                      className={`ml-1 text-red-600 hover:text-red-800 ${isRTL ? "mr-1 ml-0" : ""}`}
                     >
                       ×
                     </button>
@@ -693,7 +888,9 @@ export default function WorkspaceSettings({
   const renderAccessPermissions = () => (
     <Card>
       <CardHeader>
-        <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse text-right font-arabic' : ''}`}>
+        <CardTitle
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse text-right font-arabic" : ""}`}
+        >
           <Users className="h-5 w-5" />
           {t.accessPermissions}
         </CardTitle>
@@ -701,24 +898,37 @@ export default function WorkspaceSettings({
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="maxMembers" className={isRTL ? 'text-right font-arabic' : ''}>{t.maxMembers}</Label>
+            <Label
+              htmlFor="maxMembers"
+              className={isRTL ? "text-right font-arabic" : ""}
+            >
+              {t.maxMembers}
+            </Label>
             <Input
               id="maxMembers"
               type="number"
               value={settings.maxMembers}
-              onChange={(e) => handleSettingChange('maxMembers', parseInt(e.target.value))}
+              onChange={(e) =>
+                handleSettingChange("maxMembers", parseInt(e.target.value))
+              }
               disabled={!canEdit}
               min="1"
               max="1000"
-              className={isRTL ? 'text-right font-arabic' : ''}
+              className={isRTL ? "text-right font-arabic" : ""}
             />
           </div>
 
-          <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <Label className={isRTL ? 'font-arabic' : ''}>{t.guestAccess}</Label>
+          <div
+            className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+          >
+            <Label className={isRTL ? "font-arabic" : ""}>
+              {t.guestAccess}
+            </Label>
             <Switch
               checked={settings.allowGuestAccess}
-              onCheckedChange={(checked) => handleSettingChange('allowGuestAccess', checked)}
+              onCheckedChange={(checked) =>
+                handleSettingChange("allowGuestAccess", checked)
+              }
               disabled={!canEdit}
             />
           </div>
@@ -730,22 +940,34 @@ export default function WorkspaceSettings({
   const renderFileManagement = () => (
     <Card>
       <CardHeader>
-        <CardTitle className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse text-right font-arabic' : ''}`}>
+        <CardTitle
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse text-right font-arabic" : ""}`}
+        >
           <FileText className="h-5 w-5" />
           {t.fileManagement}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <div className={isRTL ? 'text-right' : ''}>
-            <Label className={`font-medium ${isRTL ? 'font-arabic' : ''}`}>{t.fileUploads}</Label>
-            <p className={`text-sm text-gray-600 ${isRTL ? 'font-arabic' : ''}`}>
-              {locale === 'ar' ? 'السماح بتحميل الملفات في هذه المساحة' : 'Allow file uploads in this workspace'}
+        <div
+          className={`flex items-center justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+        >
+          <div className={isRTL ? "text-right" : ""}>
+            <Label className={`font-medium ${isRTL ? "font-arabic" : ""}`}>
+              {t.fileUploads}
+            </Label>
+            <p
+              className={`text-sm text-gray-600 ${isRTL ? "font-arabic" : ""}`}
+            >
+              {locale === "ar"
+                ? "السماح بتحميل الملفات في هذه المساحة"
+                : "Allow file uploads in this workspace"}
             </p>
           </div>
           <Switch
             checked={settings.fileUploadEnabled}
-            onCheckedChange={(checked) => handleSettingChange('fileUploadEnabled', checked)}
+            onCheckedChange={(checked) =>
+              handleSettingChange("fileUploadEnabled", checked)
+            }
             disabled={!canEdit}
           />
         </div>
@@ -753,29 +975,46 @@ export default function WorkspaceSettings({
         {settings.fileUploadEnabled && (
           <>
             <div>
-              <Label htmlFor="maxFileSize" className={isRTL ? 'text-right font-arabic' : ''}>{t.maxFileSize}</Label>
+              <Label
+                htmlFor="maxFileSize"
+                className={isRTL ? "text-right font-arabic" : ""}
+              >
+                {t.maxFileSize}
+              </Label>
               <Input
                 id="maxFileSize"
                 type="number"
                 value={settings.maxFileSize}
-                onChange={(e) => handleSettingChange('maxFileSize', parseInt(e.target.value))}
+                onChange={(e) =>
+                  handleSettingChange("maxFileSize", parseInt(e.target.value))
+                }
                 disabled={!canEdit}
                 min="1"
                 max="1000"
-                className={isRTL ? 'text-right font-arabic' : ''}
+                className={isRTL ? "text-right font-arabic" : ""}
               />
               {validationErrors.maxFileSize && (
-                <p className={`text-red-600 text-sm mt-1 ${isRTL ? 'text-right font-arabic' : ''}`}>
+                <p
+                  className={`text-red-600 text-sm mt-1 ${isRTL ? "text-right font-arabic" : ""}`}
+                >
                   {validationErrors.maxFileSize}
                 </p>
               )}
             </div>
 
             <div>
-              <Label className={isRTL ? 'text-right font-arabic' : ''}>{t.allowedTypes}</Label>
-              <div className={`flex flex-wrap gap-2 mt-2 ${isRTL ? 'justify-end' : ''}`}>
+              <Label className={isRTL ? "text-right font-arabic" : ""}>
+                {t.allowedTypes}
+              </Label>
+              <div
+                className={`flex flex-wrap gap-2 mt-2 ${isRTL ? "justify-end" : ""}`}
+              >
                 {settings.allowedFileTypes.map((type, index) => (
-                  <Badge key={index} variant="outline" className={isRTL ? 'font-arabic' : ''}>
+                  <Badge
+                    key={index}
+                    variant="outline"
+                    className={isRTL ? "font-arabic" : ""}
+                  >
                     {type}
                   </Badge>
                 ))}
@@ -790,9 +1029,16 @@ export default function WorkspaceSettings({
   // ====================== Main Render ======================
 
   return (
-    <div className={`max-w-4xl mx-auto p-6 ${isRTL ? 'font-arabic' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className={`flex items-center justify-between mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <h1 className={`text-3xl font-bold ${isRTL ? 'font-arabic' : ''}`}>{t.title}</h1>
+    <div
+      className={`max-w-4xl mx-auto p-6 ${isRTL ? "font-arabic" : ""}`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      <div
+        className={`flex items-center justify-between mb-6 ${isRTL ? "flex-row-reverse" : ""}`}
+      >
+        <h1 className={`text-3xl font-bold ${isRTL ? "font-arabic" : ""}`}>
+          {t.title}
+        </h1>
         {hasChanges && (
           <Badge variant="outline" className="text-orange-600">
             {t.unsavedChanges}
@@ -801,10 +1047,14 @@ export default function WorkspaceSettings({
       </div>
 
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className={`grid w-full grid-cols-5 ${isRTL ? 'font-arabic' : ''}`}>
+        <TabsList
+          className={`grid w-full grid-cols-5 ${isRTL ? "font-arabic" : ""}`}
+        >
           <TabsTrigger value="basic">{t.basicInfo}</TabsTrigger>
           <TabsTrigger value="cultural">{t.culturalCompliance}</TabsTrigger>
-          <TabsTrigger value="professional">{t.professionalSettings}</TabsTrigger>
+          <TabsTrigger value="professional">
+            {t.professionalSettings}
+          </TabsTrigger>
           <TabsTrigger value="access">{t.accessPermissions}</TabsTrigger>
           <TabsTrigger value="files">{t.fileManagement}</TabsTrigger>
         </TabsList>
@@ -831,11 +1081,11 @@ export default function WorkspaceSettings({
       </Tabs>
 
       {/* Action Buttons */}
-      <div className={`flex gap-4 mt-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+      <div className={`flex gap-4 mt-6 ${isRTL ? "flex-row-reverse" : ""}`}>
         <Button
           onClick={handleSave}
           disabled={!canEdit || !hasChanges || isLoading || isValidating}
-          className={isRTL ? 'font-arabic' : ''}
+          className={isRTL ? "font-arabic" : ""}
         >
           {isLoading ? (
             <>
@@ -856,7 +1106,7 @@ export default function WorkspaceSettings({
           variant="outline"
           onClick={handleCancel}
           disabled={isLoading}
-          className={isRTL ? 'font-arabic' : ''}
+          className={isRTL ? "font-arabic" : ""}
         >
           {t.cancel}
         </Button>
@@ -866,7 +1116,7 @@ export default function WorkspaceSettings({
       {Object.keys(validationErrors).length > 0 && (
         <Alert variant="destructive" className="mt-4">
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription className={isRTL ? 'text-right font-arabic' : ''}>
+          <AlertDescription className={isRTL ? "text-right font-arabic" : ""}>
             {t.validationRequired}
           </AlertDescription>
         </Alert>

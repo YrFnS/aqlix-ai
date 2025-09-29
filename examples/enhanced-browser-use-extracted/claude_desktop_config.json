@@ -2,10 +2,7 @@
   "mcpServers": {
     "iraqi-browser-use": {
       "command": "python",
-      "args": [
-        "-m", 
-        "enhanced_browser_use_extracted.mcp"
-      ],
+      "args": ["-m", "enhanced_browser_use_extracted.mcp"],
       "env": {
         "IRAQI_CULTURAL_COMPLIANCE": "true",
         "IRAQI_ISLAMIC_VALUES": "true",
@@ -15,10 +12,7 @@
     },
     "iraqi-browser-use-dev": {
       "command": "python",
-      "args": [
-        "-m", 
-        "enhanced_browser_use_extracted.mcp.server"
-      ],
+      "args": ["-m", "enhanced_browser_use_extracted.mcp.server"],
       "env": {
         "IRAQI_CULTURAL_COMPLIANCE": "true",
         "IRAQI_ISLAMIC_VALUES": "true",
@@ -36,7 +30,7 @@
       "",
       "Available tools:",
       "• iraqi_portal_navigate - Navigate Iraqi government/banking portals",
-      "• arabic_form_fill - Fill Arabic forms with RTL support", 
+      "• arabic_form_fill - Fill Arabic forms with RTL support",
       "• cultural_validate - Validate content for Iraqi cultural appropriateness",
       "• browser_navigate - Enhanced navigation with cultural validation",
       "• browser_click - Click with cultural pre-validation",
@@ -56,7 +50,7 @@
     "cultural_features": [
       "• Automatic cultural validation for all Iraqi content",
       "• Islamic compliance checking with 95%+ accuracy",
-      "• Arabic RTL text processing with dialect preservation", 
+      "• Arabic RTL text processing with dialect preservation",
       "• Iraqi government portal automation (ministries, courts, banks)",
       "• Professional domain expertise (legal, medical, educational)",
       "• Payment gateway integration (ZainCash, FastPay, NassWallet)",
@@ -66,7 +60,7 @@
     "iraqi_portals": [
       "Government: *.gov.iq, *.iraq.gov.iq",
       "Banking: *.rafidain-bank.gov.iq, *.rasheed-bank.gov.iq, *.cbi.iq",
-      "Education: *.mohesr.gov.iq, *.moedu.gov.iq", 
+      "Education: *.mohesr.gov.iq, *.moedu.gov.iq",
       "Payment: *.zaincash.iq, *.fastpay.iq, *.nasswallet.com",
       "Telecommunications: Iraqi telecom providers",
       "Healthcare: Ministry of Health portals"

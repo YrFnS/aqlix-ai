@@ -15,7 +15,7 @@ This package provides comprehensive Arabic localization components extracted fro
 ### Key Features
 
 - **🇮🇶 Iraqi-First Design**: Built specifically for Iraqi cultural context and professional domains
-- **📚 Comprehensive Arabic Support**: Full RTL layout with Iraqi dialect recognition (85% accuracy)  
+- **📚 Comprehensive Arabic Support**: Full RTL layout with Iraqi dialect recognition (85% accuracy)
 - **🕌 Islamic Compliance**: 95% Islamic compliance with prayer time awareness and halal content validation
 - **🏛️ Professional Integration**: Support for 10+ Iraqi professional domains (legal, medical, educational, etc.)
 - **♿ Accessibility Compliant**: WCAG 2.1 AA compliance with Arabic screen reader support
@@ -39,7 +39,7 @@ import '@iraqi-ai/lobe-chat-arabic-extracted/styles';
 
 function App() {
   return (
-    <RTLProvider 
+    <RTLProvider
       initialConfig={{
         locale: 'ar-IQ',
         dialectPreference: 'baghdad',
@@ -47,7 +47,7 @@ function App() {
           islamicCompliance: true,
           professionalContext: true,
           governmentStandards: true,
-        }
+        },
       }}
     >
       {/* Your app content */}
@@ -67,7 +67,7 @@ function WelcomeMessage() {
       <ArabicHeading dialect="baghdad" domain="government">
         مرحباً بكم في النظام الذكي العراقي
       </ArabicHeading>
-      
+
       <ArabicBody size="lg" cultural="formal">
         نظام محادثة ذكية مصمم خصيصاً للمستخدمين العراقيين
       </ArabicBody>
@@ -94,12 +94,12 @@ function ProfessionalInterface() {
           formalLanguage: true,
           titleRespect: true,
           governmentProtocol: true,
-        }
+        },
       }}
       location={{
         city: 'Baghdad',
         governorate: 'Baghdad',
-        timezone: 'Asia/Baghdad'
+        timezone: 'Asia/Baghdad',
       }}
     >
       <CulturalGreeting formal={true} includeIslamic={true} />
@@ -123,7 +123,7 @@ Comprehensive RTL layout management with cultural settings.
     culturalAdaptation: {
       islamicCompliance: true,
       professionalContext: true,
-    }
+    },
   }}
   persistSettings={true}
 >
@@ -136,13 +136,7 @@ Comprehensive RTL layout management with cultural settings.
 Typography system with Iraqi dialect support and professional fonts.
 
 ```tsx
-<ArabicFont 
-  size="xl" 
-  weight={600} 
-  dialect="baghdad" 
-  domain="legal"
-  cultural="formal"
->
+<ArabicFont size="xl" weight={600} dialect="baghdad" domain="legal" cultural="formal">
   المحكمة العليا العراقية
 </ArabicFont>
 ```
@@ -162,7 +156,7 @@ Cultural interface adaptation with Islamic compliance.
     professionalStandards: {
       formalLanguage: true,
       titleRespect: true,
-    }
+    },
   }}
 >
   <ProfessionalInterface />
@@ -174,10 +168,7 @@ Cultural interface adaptation with Islamic compliance.
 Intelligent mixed Arabic-English content handling.
 
 ```tsx
-<MixedContent 
-  content="مرحباً في الـ React application الجديد" 
-  className="mixed-text"
-/>
+<MixedContent content="مرحباً في الـ React application الجديد" className="mixed-text" />
 ```
 
 ## Localization Support
@@ -185,7 +176,7 @@ Intelligent mixed Arabic-English content handling.
 ### Iraqi Arabic Dialects
 
 - **Baghdad**: `dialectPreference: 'baghdad'` - شلونك، شكو ماكو
-- **Basra**: `dialectPreference: 'basra'` - شلونكم، هسة  
+- **Basra**: `dialectPreference: 'basra'` - شلونكم، هسة
 - **Mosul**: `dialectPreference: 'mosul'` - شلون حالك، كيفك
 - **Kurdish-Arabic**: `dialectPreference: 'kurdish'` - سڵاو، چون
 - **Standard Arabic**: `dialectPreference: 'standard'` - Formal contexts
@@ -242,7 +233,7 @@ Intelligent mixed Arabic-English content handling.
 ## Accessibility (WCAG 2.1 AA)
 
 - **Arabic Screen Readers**: Full compatibility with Arabic screen readers
-- **RTL Keyboard Navigation**: Proper RTL keyboard navigation patterns  
+- **RTL Keyboard Navigation**: Proper RTL keyboard navigation patterns
 - **Color Contrast**: Minimum 4.5:1 contrast ratios
 - **Focus Management**: Visible focus indicators for RTL layouts
 - **Form Accessibility**: Proper Arabic form labeling and validation
@@ -250,9 +241,9 @@ Intelligent mixed Arabic-English content handling.
 ```tsx
 // Accessible Arabic forms
 <label htmlFor="name" className="font-arabic">الاسم الكامل</label>
-<input 
+<input
   id="name"
-  dir="rtl" 
+  dir="rtl"
   lang="ar-IQ"
   placeholder="أدخل اسمك الكامل"
   aria-describedby="name-help"
@@ -273,7 +264,7 @@ Intelligent mixed Arabic-English content handling.
 // Preload critical Arabic fonts
 import { ArabicFontPreloader } from '@iraqi-ai/lobe-chat-arabic-extracted';
 
-<ArabicFontPreloader /> // Preloads Noto Sans Arabic, Amiri, etc.
+<ArabicFontPreloader />; // Preloads Noto Sans Arabic, Amiri, etc.
 ```
 
 ## Testing
@@ -376,7 +367,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 - Iraqi dialect recognition improvements
 - Professional terminology expansion
-- Islamic compliance enhancements  
+- Islamic compliance enhancements
 - Government protocol compliance
 - Accessibility improvements
 
@@ -401,4 +392,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Built with ❤️ for the Iraqi AI community**
 
-*Part of the Iraqi AI Chat System - visit [iraqi-ai.org](https://iraqi-ai.org) for more information*
+_Part of the Iraqi AI Chat System - visit [iraqi-ai.org](https://iraqi-ai.org) for more information_

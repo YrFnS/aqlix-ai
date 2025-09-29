@@ -1,7 +1,7 @@
 /**
  * Production-Grade Rate Limiting System
  * Extracted from vtchat - Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Redis-based distributed rate limiting
  * - Sliding window algorithm
@@ -11,7 +11,7 @@
  * - Arabic-specific rate limiting for translation requests
  */
 
-import { Redis } from 'ioredis';
+import { Redis } from "ioredis";
 
 export interface RateLimitConfig {
   windowMs: number;
@@ -23,9 +23,9 @@ export interface RateLimitConfig {
 }
 
 export interface IraqiRateLimitConfig extends RateLimitConfig {
-  guestLimit: number;        // For anonymous users
-  registeredLimit: number;   // For registered users  
-  premiumLimit: number;      // For premium Iraqi users
+  guestLimit: number; // For anonymous users
+  registeredLimit: number; // For registered users
+  premiumLimit: number; // For premium Iraqi users
   organizationLimit: number; // For Iraqi organizations
   arabicTranslationLimit: number; // For Arabic translation requests
   culturalValidationLimit: number; // For cultural compliance checks
@@ -41,11 +41,11 @@ export interface RateLimitResult {
 }
 
 export interface UserTier {
-  type: 'guest' | 'registered' | 'premium' | 'organization';
+  type: "guest" | "registered" | "premium" | "organization";
   isProfessional: boolean;
-  domain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-  paymentGateway?: 'zaincash' | 'fastpay' | 'nasswallet';
-  subscriptionStatus: 'active' | 'expired' | 'trial' | 'none';
+  domain?: "legal" | "medical" | "educational" | "business" | "engineering";
+  paymentGateway?: "zaincash" | "fastpay" | "nasswallet";
+  subscriptionStatus: "active" | "expired" | "trial" | "none";
 }
 
 export class IraqiRateLimitService {
@@ -76,8 +76,12 @@ export class IraqiRateLimitService {
   async checkRateLimit(
     identifier: string,
     userTier: UserTier,
-    requestType: 'chat' | 'translation' | 'cultural_validation' | 'api' = 'chat',
-    config?: Partial<IraqiRateLimitConfig>
+    requestType:
+      | "chat"
+      | "translation"
+      | "cultural_validation"
+      | "api" = "chat",
+    config?: Partial<IraqiRateLimitConfig>,
   ): Promise<RateLimitResult> {
     const finalConfig = { ...this.defaultConfig, ...config };
     const limit = this.calculateUserLimit(userTier, requestType, finalConfig);
@@ -88,31 +92,31 @@ export class IraqiRateLimitService {
       // Sliding window rate limiting with Redis
       const now = Date.now();
       const pipeline = this.redis.pipeline();
-      
+
       // Remove expired entries
-      pipeline.zremrangebyscore(key, '-inf', now - window);
-      
+      pipeline.zremrangebyscore(key, "-inf", now - window);
+
       // Count current requests in window
       pipeline.zcard(key);
-      
+
       // Add current request
       pipeline.zadd(key, now, `${now}-${Math.random()}`);
-      
+
       // Set expiry
       pipeline.expire(key, Math.ceil(window / 1000));
 
       const results = await pipeline.exec();
-      
+
       if (!results) {
-        throw new Error('Redis pipeline execution failed');
+        throw new Error("Redis pipeline execution failed");
       }
 
       const currentCount = results[1][1] as number;
-      
+
       if (currentCount >= limit) {
         // Remove the request we just added since we're over limit
         await this.redis.zrem(key, `${now}-${Math.random()}`);
-        
+
         if (finalConfig.onLimitReached) {
           finalConfig.onLimitReached(key, currentCount);
         }
@@ -138,9 +142,8 @@ export class IraqiRateLimitService {
         remaining,
         resetTime,
       };
-
     } catch (error) {
-      console.error('Rate limiting error:', error);
+      console.error("Rate limiting error:", error);
       // Fail open - allow request if Redis is down
       return {
         success: true,
@@ -157,22 +160,22 @@ export class IraqiRateLimitService {
   private calculateUserLimit(
     userTier: UserTier,
     requestType: string,
-    config: IraqiRateLimitConfig
+    config: IraqiRateLimitConfig,
   ): number {
     let baseLimit: number;
 
     // Base limit by user tier
     switch (userTier.type) {
-      case 'guest':
+      case "guest":
         baseLimit = config.guestLimit;
         break;
-      case 'registered':
+      case "registered":
         baseLimit = config.registeredLimit;
         break;
-      case 'premium':
+      case "premium":
         baseLimit = config.premiumLimit;
         break;
-      case 'organization':
+      case "organization":
         baseLimit = config.organizationLimit;
         break;
       default:
@@ -181,10 +184,10 @@ export class IraqiRateLimitService {
 
     // Request type specific limits
     switch (requestType) {
-      case 'translation':
+      case "translation":
         baseLimit = Math.min(baseLimit, config.arabicTranslationLimit);
         break;
-      case 'cultural_validation':
+      case "cultural_validation":
         baseLimit = Math.min(baseLimit, config.culturalValidationLimit);
         break;
     }
@@ -195,14 +198,15 @@ export class IraqiRateLimitService {
     }
 
     // Active subscription bonus
-    if (userTier.subscriptionStatus === 'active' && userTier.paymentGateway) {
+    if (userTier.subscriptionStatus === "active" && userTier.paymentGateway) {
       // Bonus for active Iraqi payment gateway subscribers
-      const paymentBonusMultiplier = {
-        zaincash: 1.5,
-        fastpay: 1.3,
-        nasswallet: 1.4,
-      }[userTier.paymentGateway] || 1.0;
-      
+      const paymentBonusMultiplier =
+        {
+          zaincash: 1.5,
+          fastpay: 1.3,
+          nasswallet: 1.4,
+        }[userTier.paymentGateway] || 1.0;
+
       baseLimit = Math.floor(baseLimit * paymentBonusMultiplier);
     }
 
@@ -223,10 +227,10 @@ export class IraqiRateLimitService {
 
     try {
       // Clean expired and count current
-      await this.redis.zremrangebyscore(key, '-inf', now - window);
+      await this.redis.zremrangebyscore(key, "-inf", now - window);
       const currentUsage = await this.redis.zcard(key);
       const resetTime = new Date(now + window);
-      
+
       // Calculate percentage (assuming premium tier for estimation)
       const estimatedLimit = this.defaultConfig.premiumLimit;
       const percentUsed = Math.min(100, (currentUsage / estimatedLimit) * 100);
@@ -237,7 +241,7 @@ export class IraqiRateLimitService {
         percentUsed,
       };
     } catch (error) {
-      console.error('Error fetching user usage:', error);
+      console.error("Error fetching user usage:", error);
       return {
         currentUsage: 0,
         resetTime: new Date(),
@@ -254,8 +258,8 @@ export class IraqiRateLimitService {
     try {
       await this.redis.del(key);
     } catch (error) {
-      console.error('Error resetting user limit:', error);
-      throw new Error('Failed to reset user rate limit');
+      console.error("Error resetting user limit:", error);
+      throw new Error("Failed to reset user rate limit");
     }
   }
 
@@ -268,21 +272,25 @@ export class IraqiRateLimitService {
     averageUsage: number;
   }> {
     try {
-      const pattern = 'rate_limit:*';
+      const pattern = "rate_limit:*";
       const keys = await this.redis.keys(pattern);
-      
+
       if (keys.length === 0) {
         return { activeUsers: 0, totalRequests: 0, averageUsage: 0 };
       }
 
       const pipeline = this.redis.pipeline();
-      keys.forEach(key => pipeline.zcard(key));
-      
+      keys.forEach((key) => pipeline.zcard(key));
+
       const results = await pipeline.exec();
-      const requestCounts = results?.map(result => result[1] as number) || [];
-      
-      const totalRequests = requestCounts.reduce((sum, count) => sum + count, 0);
-      const averageUsage = requestCounts.length > 0 ? totalRequests / requestCounts.length : 0;
+      const requestCounts = results?.map((result) => result[1] as number) || [];
+
+      const totalRequests = requestCounts.reduce(
+        (sum, count) => sum + count,
+        0,
+      );
+      const averageUsage =
+        requestCounts.length > 0 ? totalRequests / requestCounts.length : 0;
 
       return {
         activeUsers: keys.length,
@@ -290,7 +298,7 @@ export class IraqiRateLimitService {
         averageUsage: Math.round(averageUsage * 100) / 100,
       };
     } catch (error) {
-      console.error('Error fetching system stats:', error);
+      console.error("Error fetching system stats:", error);
       return { activeUsers: 0, totalRequests: 0, averageUsage: 0 };
     }
   }
@@ -300,8 +308,8 @@ export class IraqiRateLimitService {
    */
   async checkProfessionalDomainLimit(
     identifier: string,
-    domain: 'legal' | 'medical' | 'educational' | 'business' | 'engineering',
-    userTier: UserTier
+    domain: "legal" | "medical" | "educational" | "business" | "engineering",
+    userTier: UserTier,
   ): Promise<RateLimitResult> {
     const professionalConfig: Partial<IraqiRateLimitConfig> = {
       windowMs: 60 * 60 * 1000, // 1 hour window for professional use
@@ -309,7 +317,7 @@ export class IraqiRateLimitService {
       professionalDomainMultiplier: 3.0, // Higher limits for professional use
     };
 
-    return this.checkRateLimit(identifier, userTier, 'api', professionalConfig);
+    return this.checkRateLimit(identifier, userTier, "api", professionalConfig);
   }
 
   /**
@@ -318,18 +326,25 @@ export class IraqiRateLimitService {
   async checkArabicTranslationLimit(
     identifier: string,
     userTier: UserTier,
-    textLength: number
+    textLength: number,
   ): Promise<RateLimitResult> {
     // Adjust limit based on text length
     const lengthMultiplier = Math.min(1.0, 1000 / Math.max(textLength, 100));
-    
+
     const translationConfig: Partial<IraqiRateLimitConfig> = {
-      arabicTranslationLimit: Math.floor(this.defaultConfig.arabicTranslationLimit * lengthMultiplier),
+      arabicTranslationLimit: Math.floor(
+        this.defaultConfig.arabicTranslationLimit * lengthMultiplier,
+      ),
       keyGenerator: (id: string) => `rate_limit:translation:${id}`,
       windowMs: 5 * 60 * 1000, // 5 minute window for translations
     };
 
-    return this.checkRateLimit(identifier, userTier, 'translation', translationConfig);
+    return this.checkRateLimit(
+      identifier,
+      userTier,
+      "translation",
+      translationConfig,
+    );
   }
 }
 
@@ -337,12 +352,12 @@ export class IraqiRateLimitService {
 export const IRAQI_RATE_LIMIT_CONFIG: IraqiRateLimitConfig = {
   windowMs: 60 * 1000,
   maxRequests: 60,
-  guestLimit: 10,                    // Conservative for guests
-  registeredLimit: 100,              // Standard for registered users
-  premiumLimit: 500,                 // Premium Iraqi subscribers
-  organizationLimit: 2000,           // Iraqi organizations/enterprises
-  arabicTranslationLimit: 50,        // Arabic processing is resource-intensive
-  culturalValidationLimit: 100,      // Cultural validation requests
+  guestLimit: 10, // Conservative for guests
+  registeredLimit: 100, // Standard for registered users
+  premiumLimit: 500, // Premium Iraqi subscribers
+  organizationLimit: 2000, // Iraqi organizations/enterprises
+  arabicTranslationLimit: 50, // Arabic processing is resource-intensive
+  culturalValidationLimit: 100, // Cultural validation requests
   professionalDomainMultiplier: 2.5, // Boost for Iraqi professionals
   keyGenerator: (identifier: string) => `iraqi_ai:rate_limit:${identifier}`,
   skipSuccessfulRequests: false,

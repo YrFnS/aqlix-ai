@@ -4,24 +4,34 @@
  * Supports legal, medical, educational, business, and engineering workspaces
  */
 
-import { Redis } from 'ioredis';
-import { z } from 'zod';
+import { Redis } from "ioredis";
+import { z } from "zod";
 
 // ====================== Types & Interfaces ======================
 
-export type ProfessionalDomain = 'personal' | 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-export type WorkspaceVisibility = 'private' | 'organization' | 'public';
-export type IraqiDialect = 'baghdad' | 'basra' | 'mosul' | 'general';
-export type WorkspaceStatus = 'active' | 'suspended' | 'archived' | 'pending_approval';
+export type ProfessionalDomain =
+  | "personal"
+  | "legal"
+  | "medical"
+  | "educational"
+  | "business"
+  | "engineering";
+export type WorkspaceVisibility = "private" | "organization" | "public";
+export type IraqiDialect = "baghdad" | "basra" | "mosul" | "general";
+export type WorkspaceStatus =
+  | "active"
+  | "suspended"
+  | "archived"
+  | "pending_approval";
 
 export interface IraqiCulturalSettings {
   enableIslamicCompliance: boolean;
-  strictnessLevel: 'basic' | 'standard' | 'strict';
+  strictnessLevel: "basic" | "standard" | "strict";
   prayerTimeReminders: boolean;
   halalContentFilter: boolean;
   politicalNeutralityMode: boolean;
   sectarianContentFilter: boolean;
-  culturalSensitivityLevel: 'low' | 'medium' | 'high' | 'maximum';
+  culturalSensitivityLevel: "low" | "medium" | "high" | "maximum";
 }
 
 export interface IraqiWorkspace {
@@ -34,32 +44,32 @@ export interface IraqiWorkspace {
   ownerId: string;
   organizationId?: string;
   visibility: WorkspaceVisibility;
-  
+
   // Iraqi-specific settings
   culturalSettings: IraqiCulturalSettings;
   arabicSupport: boolean;
   dialectPreference: IraqiDialect;
   rtlLayout: boolean;
-  
+
   // Professional domain settings
   professionalLicenseNumber?: string;
   organizationRegistration?: string;
   complianceRequirements: string[];
   specializations: string[];
-  
+
   // Workspace configuration
   maxMembers: number;
   allowGuestAccess: boolean;
   fileUploadEnabled: boolean;
   maxFileSize: number; // In MB
   allowedFileTypes: string[];
-  
+
   // Timestamps and status
   status: WorkspaceStatus;
   createdAt: Date;
   updatedAt: Date;
   lastAccessedAt: Date;
-  
+
   // Usage statistics
   totalMessages: number;
   totalFiles: number;
@@ -71,13 +81,13 @@ export interface WorkspaceMember {
   id: string;
   workspaceId: string;
   userId: string;
-  role: 'owner' | 'admin' | 'editor' | 'viewer' | 'guest';
+  role: "owner" | "admin" | "editor" | "viewer" | "guest";
   permissions: string[];
   invitedBy: string;
   joinedAt: Date;
   lastActiveAt: Date;
   culturalComplianceLevel: number; // 0-100
-  arabicProficiency: 'none' | 'basic' | 'intermediate' | 'advanced' | 'native';
+  arabicProficiency: "none" | "basic" | "intermediate" | "advanced" | "native";
 }
 
 export interface WorkspaceInvitation {
@@ -86,7 +96,7 @@ export interface WorkspaceInvitation {
   inviterUserId: string;
   inviteeEmail: string;
   role: string;
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  status: "pending" | "accepted" | "declined" | "expired";
   culturalOnboardingRequired: boolean;
   expiresAt: Date;
   createdAt: Date;
@@ -96,12 +106,12 @@ export interface WorkspaceInvitation {
 
 const IraqiCulturalSettingsSchema = z.object({
   enableIslamicCompliance: z.boolean(),
-  strictnessLevel: z.enum(['basic', 'standard', 'strict']),
+  strictnessLevel: z.enum(["basic", "standard", "strict"]),
   prayerTimeReminders: z.boolean(),
   halalContentFilter: z.boolean(),
   politicalNeutralityMode: z.boolean(),
   sectarianContentFilter: z.boolean(),
-  culturalSensitivityLevel: z.enum(['low', 'medium', 'high', 'maximum'])
+  culturalSensitivityLevel: z.enum(["low", "medium", "high", "maximum"]),
 });
 
 const WorkspaceCreateSchema = z.object({
@@ -109,15 +119,22 @@ const WorkspaceCreateSchema = z.object({
   nameAr: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   descriptionAr: z.string().max(500).optional(),
-  type: z.enum(['personal', 'legal', 'medical', 'educational', 'business', 'engineering']),
-  visibility: z.enum(['private', 'organization', 'public']),
+  type: z.enum([
+    "personal",
+    "legal",
+    "medical",
+    "educational",
+    "business",
+    "engineering",
+  ]),
+  visibility: z.enum(["private", "organization", "public"]),
   culturalSettings: IraqiCulturalSettingsSchema,
   arabicSupport: z.boolean(),
-  dialectPreference: z.enum(['baghdad', 'basra', 'mosul', 'general']),
+  dialectPreference: z.enum(["baghdad", "basra", "mosul", "general"]),
   professionalLicenseNumber: z.string().optional(),
   organizationRegistration: z.string().optional(),
   complianceRequirements: z.array(z.string()),
-  specializations: z.array(z.string())
+  specializations: z.array(z.string()),
 });
 
 // ====================== Iraqi Workspace Manager Service ======================
@@ -131,7 +148,7 @@ export class IraqiWorkspaceManager {
     medical: 10,
     educational: 15,
     business: 20,
-    engineering: 15
+    engineering: 15,
   };
 
   constructor(redisUrl: string) {
@@ -140,16 +157,23 @@ export class IraqiWorkspaceManager {
 
   // ====================== Workspace Creation ======================
 
-  async createWorkspace(ownerId: string, workspaceData: z.infer<typeof WorkspaceCreateSchema>): Promise<IraqiWorkspace> {
+  async createWorkspace(
+    ownerId: string,
+    workspaceData: z.infer<typeof WorkspaceCreateSchema>,
+  ): Promise<IraqiWorkspace> {
     // Validate input data
     const validatedData = WorkspaceCreateSchema.parse(workspaceData);
-    
+
     // Check workspace limits
     const userWorkspaces = await this.getUserWorkspaces(ownerId);
-    const typeCount = userWorkspaces.filter(w => w.type === validatedData.type).length;
-    
+    const typeCount = userWorkspaces.filter(
+      (w) => w.type === validatedData.type,
+    ).length;
+
     if (typeCount >= this.MAX_WORKSPACES_PER_USER[validatedData.type]) {
-      throw new Error(`Maximum ${validatedData.type} workspaces (${this.MAX_WORKSPACES_PER_USER[validatedData.type]}) reached`);
+      throw new Error(
+        `Maximum ${validatedData.type} workspaces (${this.MAX_WORKSPACES_PER_USER[validatedData.type]}) reached`,
+      );
     }
 
     // Generate workspace ID
@@ -165,52 +189,56 @@ export class IraqiWorkspaceManager {
       type: validatedData.type,
       ownerId,
       visibility: validatedData.visibility,
-      
+
       // Iraqi-specific settings
       culturalSettings: validatedData.culturalSettings,
       arabicSupport: validatedData.arabicSupport,
       dialectPreference: validatedData.dialectPreference,
       rtlLayout: validatedData.arabicSupport,
-      
+
       // Professional settings
       professionalLicenseNumber: validatedData.professionalLicenseNumber,
       organizationRegistration: validatedData.organizationRegistration,
       complianceRequirements: validatedData.complianceRequirements,
       specializations: validatedData.specializations,
-      
+
       // Default configuration
       maxMembers: this.getDefaultMaxMembers(validatedData.type),
-      allowGuestAccess: validatedData.type === 'business' || validatedData.type === 'educational',
+      allowGuestAccess:
+        validatedData.type === "business" ||
+        validatedData.type === "educational",
       fileUploadEnabled: true,
       maxFileSize: this.getDefaultMaxFileSize(validatedData.type),
       allowedFileTypes: this.getDefaultAllowedFileTypes(validatedData.type),
-      
+
       // Status and timestamps
-      status: this.requiresApproval(validatedData.type) ? 'pending_approval' : 'active',
+      status: this.requiresApproval(validatedData.type)
+        ? "pending_approval"
+        : "active",
       createdAt: new Date(),
       updatedAt: new Date(),
       lastAccessedAt: new Date(),
-      
+
       // Usage stats
       totalMessages: 0,
       totalFiles: 0,
       storageUsed: 0,
-      activeMembers: 1
+      activeMembers: 1,
     };
 
     // Store workspace in database (simulate with Redis)
     await this.redis.hset(`workspace:${workspaceId}`, workspace);
-    
+
     // Add to user's workspace list
     await this.redis.sadd(`user:${ownerId}:workspaces`, workspaceId);
-    
+
     // Add owner as workspace member
     await this.addMember(workspaceId, {
       userId: ownerId,
-      role: 'owner',
-      permissions: ['all'],
+      role: "owner",
+      permissions: ["all"],
       culturalComplianceLevel: 100,
-      arabicProficiency: 'native'
+      arabicProficiency: "native",
     });
 
     // Cache the workspace
@@ -240,26 +268,29 @@ export class IraqiWorkspaceManager {
     }
 
     const workspace = this.deserializeWorkspace(workspaceData);
-    
+
     // Update cache
     await this.cacheWorkspace(workspace);
-    
+
     return workspace;
   }
 
   async getUserWorkspaces(userId: string): Promise<IraqiWorkspace[]> {
     const workspaceIds = await this.redis.smembers(`user:${userId}:workspaces`);
     const workspaces = await Promise.all(
-      workspaceIds.map(id => this.getWorkspace(id))
+      workspaceIds.map((id) => this.getWorkspace(id)),
     );
-    
+
     return workspaces.filter(Boolean) as IraqiWorkspace[];
   }
 
-  async getWorkspacesByType(type: ProfessionalDomain, userId?: string): Promise<IraqiWorkspace[]> {
+  async getWorkspacesByType(
+    type: ProfessionalDomain,
+    userId?: string,
+  ): Promise<IraqiWorkspace[]> {
     if (userId) {
       const userWorkspaces = await this.getUserWorkspaces(userId);
-      return userWorkspaces.filter(w => w.type === type);
+      return userWorkspaces.filter((w) => w.type === type);
     }
 
     // Get all public workspaces of this type
@@ -269,30 +300,36 @@ export class IraqiWorkspaceManager {
       keys.map(async (key) => {
         const data = await this.redis.hgetall(key);
         return this.deserializeWorkspace(data);
-      })
+      }),
     );
-    
-    return workspaces.filter(w => w.type === type && w.visibility === 'public');
+
+    return workspaces.filter(
+      (w) => w.type === type && w.visibility === "public",
+    );
   }
 
   // ====================== Workspace Management ======================
 
-  async updateWorkspace(workspaceId: string, updates: Partial<IraqiWorkspace>, userId: string): Promise<IraqiWorkspace> {
+  async updateWorkspace(
+    workspaceId: string,
+    updates: Partial<IraqiWorkspace>,
+    userId: string,
+  ): Promise<IraqiWorkspace> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) {
-      throw new Error('Workspace not found');
+      throw new Error("Workspace not found");
     }
 
     // Check permissions
-    if (!await this.canUserEditWorkspace(userId, workspaceId)) {
-      throw new Error('Insufficient permissions to edit workspace');
+    if (!(await this.canUserEditWorkspace(userId, workspaceId))) {
+      throw new Error("Insufficient permissions to edit workspace");
     }
 
     // Apply updates
     const updatedWorkspace: IraqiWorkspace = {
       ...workspace,
       ...updates,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Validate cultural settings if updated
@@ -303,7 +340,7 @@ export class IraqiWorkspaceManager {
 
     // Store updates
     await this.redis.hset(`workspace:${workspaceId}`, updatedWorkspace);
-    
+
     // Update cache
     await this.cacheWorkspace(updatedWorkspace);
 
@@ -313,29 +350,29 @@ export class IraqiWorkspaceManager {
   async deleteWorkspace(workspaceId: string, userId: string): Promise<boolean> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) {
-      throw new Error('Workspace not found');
+      throw new Error("Workspace not found");
     }
 
     // Only owner can delete workspace
     if (workspace.ownerId !== userId) {
-      throw new Error('Only workspace owner can delete workspace');
+      throw new Error("Only workspace owner can delete workspace");
     }
 
     // Remove all members
     const members = await this.getWorkspaceMembers(workspaceId);
     await Promise.all(
-      members.map(member => this.removeMember(workspaceId, member.userId))
+      members.map((member) => this.removeMember(workspaceId, member.userId)),
     );
 
     // Delete workspace files (simulate)
     await this.redis.del(`workspace:${workspaceId}:files`);
-    
+
     // Delete workspace data
     await this.redis.del(`workspace:${workspaceId}`);
-    
+
     // Remove from user's workspace list
     await this.redis.srem(`user:${userId}:workspaces`, workspaceId);
-    
+
     // Clear cache
     await this.redis.del(`cache:workspace:${workspaceId}`);
 
@@ -344,16 +381,19 @@ export class IraqiWorkspaceManager {
 
   // ====================== Member Management ======================
 
-  async addMember(workspaceId: string, memberData: {
-    userId: string;
-    role: string;
-    permissions: string[];
-    culturalComplianceLevel: number;
-    arabicProficiency: string;
-  }): Promise<WorkspaceMember> {
+  async addMember(
+    workspaceId: string,
+    memberData: {
+      userId: string;
+      role: string;
+      permissions: string[];
+      culturalComplianceLevel: number;
+      arabicProficiency: string;
+    },
+  ): Promise<WorkspaceMember> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) {
-      throw new Error('Workspace not found');
+      throw new Error("Workspace not found");
     }
 
     const member: WorkspaceMember = {
@@ -366,17 +406,20 @@ export class IraqiWorkspaceManager {
       joinedAt: new Date(),
       lastActiveAt: new Date(),
       culturalComplianceLevel: memberData.culturalComplianceLevel,
-      arabicProficiency: memberData.arabicProficiency as any
+      arabicProficiency: memberData.arabicProficiency as any,
     };
 
     // Store member
-    await this.redis.hset(`workspace:${workspaceId}:member:${memberData.userId}`, member);
-    
+    await this.redis.hset(
+      `workspace:${workspaceId}:member:${memberData.userId}`,
+      member,
+    );
+
     // Add to user's workspace list
     await this.redis.sadd(`user:${memberData.userId}:workspaces`, workspaceId);
-    
+
     // Update workspace member count
-    await this.redis.hincrby(`workspace:${workspaceId}`, 'activeMembers', 1);
+    await this.redis.hincrby(`workspace:${workspaceId}`, "activeMembers", 1);
 
     return member;
   }
@@ -384,12 +427,12 @@ export class IraqiWorkspaceManager {
   async getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]> {
     const pattern = `workspace:${workspaceId}:member:*`;
     const keys = await this.redis.keys(pattern);
-    
+
     const members = await Promise.all(
       keys.map(async (key) => {
         const data = await this.redis.hgetall(key);
         return this.deserializeMember(data);
-      })
+      }),
     );
 
     return members;
@@ -398,19 +441,22 @@ export class IraqiWorkspaceManager {
   async removeMember(workspaceId: string, userId: string): Promise<boolean> {
     // Remove member data
     await this.redis.del(`workspace:${workspaceId}:member:${userId}`);
-    
+
     // Remove from user's workspace list
     await this.redis.srem(`user:${userId}:workspaces`, workspaceId);
-    
+
     // Update workspace member count
-    await this.redis.hincrby(`workspace:${workspaceId}`, 'activeMembers', -1);
+    await this.redis.hincrby(`workspace:${workspaceId}`, "activeMembers", -1);
 
     return true;
   }
 
   // ====================== Permission Management ======================
 
-  async canUserAccessWorkspace(userId: string, workspaceId: string): Promise<boolean> {
+  async canUserAccessWorkspace(
+    userId: string,
+    workspaceId: string,
+  ): Promise<boolean> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) return false;
 
@@ -418,18 +464,23 @@ export class IraqiWorkspaceManager {
     if (workspace.ownerId === userId) return true;
 
     // Check if user is a member
-    const memberExists = await this.redis.exists(`workspace:${workspaceId}:member:${userId}`);
+    const memberExists = await this.redis.exists(
+      `workspace:${workspaceId}:member:${userId}`,
+    );
     if (memberExists) return true;
 
     // Check if workspace allows guest access
-    if (workspace.allowGuestAccess && workspace.visibility === 'public') {
+    if (workspace.allowGuestAccess && workspace.visibility === "public") {
       return true;
     }
 
     return false;
   }
 
-  async canUserEditWorkspace(userId: string, workspaceId: string): Promise<boolean> {
+  async canUserEditWorkspace(
+    userId: string,
+    workspaceId: string,
+  ): Promise<boolean> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) return false;
 
@@ -437,49 +488,67 @@ export class IraqiWorkspaceManager {
     if (workspace.ownerId === userId) return true;
 
     // Check member permissions
-    const memberData = await this.redis.hgetall(`workspace:${workspaceId}:member:${userId}`);
+    const memberData = await this.redis.hgetall(
+      `workspace:${workspaceId}:member:${userId}`,
+    );
     if (!memberData) return false;
 
     const member = this.deserializeMember(memberData);
-    return member.role === 'admin' || member.role === 'editor';
+    return member.role === "admin" || member.role === "editor";
   }
 
   // ====================== Cultural Compliance ======================
 
-  private async validateWorkspaceCulturalCompliance(workspace: IraqiWorkspace): Promise<void> {
+  private async validateWorkspaceCulturalCompliance(
+    workspace: IraqiWorkspace,
+  ): Promise<void> {
     const { culturalSettings } = workspace;
-    
+
     // Validate Islamic compliance
     if (culturalSettings.enableIslamicCompliance) {
       // Check workspace name for inappropriate content
-      if (await this.containsInappropriateContent(workspace.name, 'ar')) {
-        throw new Error('Workspace name contains culturally inappropriate content');
+      if (await this.containsInappropriateContent(workspace.name, "ar")) {
+        throw new Error(
+          "Workspace name contains culturally inappropriate content",
+        );
       }
-      
-      if (workspace.nameAr && await this.containsInappropriateContent(workspace.nameAr, 'ar')) {
-        throw new Error('Arabic workspace name contains culturally inappropriate content');
+
+      if (
+        workspace.nameAr &&
+        (await this.containsInappropriateContent(workspace.nameAr, "ar"))
+      ) {
+        throw new Error(
+          "Arabic workspace name contains culturally inappropriate content",
+        );
       }
     }
 
     // Validate professional domain compliance
-    if (workspace.type === 'legal' || workspace.type === 'medical') {
+    if (workspace.type === "legal" || workspace.type === "medical") {
       if (!workspace.professionalLicenseNumber) {
-        throw new Error(`${workspace.type} workspaces require professional license number`);
+        throw new Error(
+          `${workspace.type} workspaces require professional license number`,
+        );
       }
     }
   }
 
-  private async containsInappropriateContent(text: string, language: 'ar' | 'en'): Promise<boolean> {
+  private async containsInappropriateContent(
+    text: string,
+    language: "ar" | "en",
+  ): Promise<boolean> {
     // Simulate cultural validation service call
     // In real implementation, this would call the iraqi-cultural-validator agent
-    
+
     const inappropriateKeywords = {
-      ar: ['محتوى غير مناسب', 'كلمات مسيئة'],
-      en: ['inappropriate', 'offensive']
+      ar: ["محتوى غير مناسب", "كلمات مسيئة"],
+      en: ["inappropriate", "offensive"],
     };
 
     const keywords = inappropriateKeywords[language];
-    return keywords.some(keyword => text.toLowerCase().includes(keyword.toLowerCase()));
+    return keywords.some((keyword) =>
+      text.toLowerCase().includes(keyword.toLowerCase()),
+    );
   }
 
   // ====================== Default Configuration Helpers ======================
@@ -491,7 +560,7 @@ export class IraqiWorkspaceManager {
       medical: 20,
       educational: 100,
       business: 50,
-      engineering: 30
+      engineering: 30,
     };
     return defaults[type];
   }
@@ -499,30 +568,30 @@ export class IraqiWorkspaceManager {
   private getDefaultMaxFileSize(type: ProfessionalDomain): number {
     const defaults = {
       personal: 50, // 50 MB
-      legal: 500,   // 500 MB (large legal documents)
+      legal: 500, // 500 MB (large legal documents)
       medical: 200, // 200 MB (medical images)
       educational: 100, // 100 MB
-      business: 200,    // 200 MB
-      engineering: 1000 // 1 GB (CAD files)
+      business: 200, // 200 MB
+      engineering: 1000, // 1 GB (CAD files)
     };
     return defaults[type];
   }
 
   private getDefaultAllowedFileTypes(type: ProfessionalDomain): string[] {
-    const common = ['pdf', 'doc', 'docx', 'txt', 'rtf'];
+    const common = ["pdf", "doc", "docx", "txt", "rtf"];
     const typeSpecific = {
-      personal: [...common, 'jpg', 'png', 'gif'],
-      legal: [...common, 'html', 'xml'],
-      medical: [...common, 'dcm', 'nii', 'jpg', 'png', 'tiff'],
-      educational: [...common, 'ppt', 'pptx', 'xls', 'xlsx', 'mp4', 'mp3'],
-      business: [...common, 'xls', 'xlsx', 'ppt', 'pptx', 'csv'],
-      engineering: [...common, 'dwg', 'dxf', 'step', 'iges', 'stl', 'obj']
+      personal: [...common, "jpg", "png", "gif"],
+      legal: [...common, "html", "xml"],
+      medical: [...common, "dcm", "nii", "jpg", "png", "tiff"],
+      educational: [...common, "ppt", "pptx", "xls", "xlsx", "mp4", "mp3"],
+      business: [...common, "xls", "xlsx", "ppt", "pptx", "csv"],
+      engineering: [...common, "dwg", "dxf", "step", "iges", "stl", "obj"],
     };
     return typeSpecific[type];
   }
 
   private requiresApproval(type: ProfessionalDomain): boolean {
-    return type === 'legal' || type === 'medical';
+    return type === "legal" || type === "medical";
   }
 
   // ====================== Utility Methods ======================
@@ -531,39 +600,44 @@ export class IraqiWorkspaceManager {
     await this.redis.setex(
       `cache:workspace:${workspace.id}`,
       this.CACHE_TTL,
-      JSON.stringify(workspace)
+      JSON.stringify(workspace),
     );
   }
 
   private deserializeWorkspace(data: any): IraqiWorkspace {
     return {
       ...data,
-      culturalSettings: typeof data.culturalSettings === 'string' 
-        ? JSON.parse(data.culturalSettings) 
-        : data.culturalSettings,
-      complianceRequirements: typeof data.complianceRequirements === 'string'
-        ? JSON.parse(data.complianceRequirements)
-        : data.complianceRequirements,
-      specializations: typeof data.specializations === 'string'
-        ? JSON.parse(data.specializations)
-        : data.specializations,
-      allowedFileTypes: typeof data.allowedFileTypes === 'string'
-        ? JSON.parse(data.allowedFileTypes)
-        : data.allowedFileTypes,
+      culturalSettings:
+        typeof data.culturalSettings === "string"
+          ? JSON.parse(data.culturalSettings)
+          : data.culturalSettings,
+      complianceRequirements:
+        typeof data.complianceRequirements === "string"
+          ? JSON.parse(data.complianceRequirements)
+          : data.complianceRequirements,
+      specializations:
+        typeof data.specializations === "string"
+          ? JSON.parse(data.specializations)
+          : data.specializations,
+      allowedFileTypes:
+        typeof data.allowedFileTypes === "string"
+          ? JSON.parse(data.allowedFileTypes)
+          : data.allowedFileTypes,
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt),
-      lastAccessedAt: new Date(data.lastAccessedAt)
+      lastAccessedAt: new Date(data.lastAccessedAt),
     };
   }
 
   private deserializeMember(data: any): WorkspaceMember {
     return {
       ...data,
-      permissions: typeof data.permissions === 'string'
-        ? JSON.parse(data.permissions)
-        : data.permissions,
+      permissions:
+        typeof data.permissions === "string"
+          ? JSON.parse(data.permissions)
+          : data.permissions,
       joinedAt: new Date(data.joinedAt),
-      lastActiveAt: new Date(data.lastActiveAt)
+      lastActiveAt: new Date(data.lastActiveAt),
     };
   }
 
@@ -580,7 +654,7 @@ export class IraqiWorkspaceManager {
   }> {
     const workspace = await this.getWorkspace(workspaceId);
     if (!workspace) {
-      throw new Error('Workspace not found');
+      throw new Error("Workspace not found");
     }
 
     // Get basic stats from workspace
@@ -588,45 +662,54 @@ export class IraqiWorkspaceManager {
       totalMessages: workspace.totalMessages,
       totalFiles: workspace.totalFiles,
       storageUsed: workspace.storageUsed,
-      activeMembers: workspace.activeMembers
+      activeMembers: workspace.activeMembers,
     };
 
     // Calculate cultural compliance score
-    const culturalComplianceScore = await this.calculateCulturalComplianceScore(workspaceId);
-    
+    const culturalComplianceScore =
+      await this.calculateCulturalComplianceScore(workspaceId);
+
     // Calculate Arabic usage percentage
-    const arabicUsagePercentage = await this.calculateArabicUsagePercentage(workspaceId);
-    
+    const arabicUsagePercentage =
+      await this.calculateArabicUsagePercentage(workspaceId);
+
     // Get professional domain activity
-    const professionalDomainActivity = await this.getProfessionalDomainActivity(workspaceId);
+    const professionalDomainActivity =
+      await this.getProfessionalDomainActivity(workspaceId);
 
     return {
       ...basicStats,
       culturalComplianceScore,
       arabicUsagePercentage,
-      professionalDomainActivity
+      professionalDomainActivity,
     };
   }
 
-  private async calculateCulturalComplianceScore(workspaceId: string): Promise<number> {
+  private async calculateCulturalComplianceScore(
+    workspaceId: string,
+  ): Promise<number> {
     // Simulate cultural compliance calculation
     // In real implementation, this would aggregate compliance scores from messages
     return Math.floor(Math.random() * 20) + 80; // 80-100
   }
 
-  private async calculateArabicUsagePercentage(workspaceId: string): Promise<number> {
+  private async calculateArabicUsagePercentage(
+    workspaceId: string,
+  ): Promise<number> {
     // Simulate Arabic usage calculation
     // In real implementation, this would analyze message languages
     return Math.floor(Math.random() * 60) + 30; // 30-90
   }
 
-  private async getProfessionalDomainActivity(workspaceId: string): Promise<Record<string, number>> {
+  private async getProfessionalDomainActivity(
+    workspaceId: string,
+  ): Promise<Record<string, number>> {
     // Simulate professional domain activity
     return {
       consultation: 45,
       documentation: 30,
       collaboration: 20,
-      training: 5
+      training: 5,
     };
   }
 }

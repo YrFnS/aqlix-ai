@@ -1,7 +1,7 @@
 /**
  * Configurable Quota Management System
  * Extracted from vtchat - Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Dynamic quota configuration
  * - Professional domain-specific limits
@@ -10,7 +10,7 @@
  * - Cultural and Arabic processing quotas
  */
 
-import { Redis } from 'ioredis';
+import { Redis } from "ioredis";
 
 export interface QuotaLimits {
   requests: {
@@ -27,9 +27,9 @@ export interface QuotaLimits {
     total: number;
   };
   storage: {
-    documents: number;    // MB
-    images: number;       // MB
-    total: number;        // MB
+    documents: number; // MB
+    images: number; // MB
+    total: number; // MB
   };
   concurrent: {
     sessions: number;
@@ -40,12 +40,12 @@ export interface QuotaLimits {
 export interface IraqiQuotaConfig {
   id: string;
   name: string;
-  tier: 'trial' | 'basic' | 'premium' | 'organization' | 'enterprise';
-  
+  tier: "trial" | "basic" | "premium" | "organization" | "enterprise";
+
   // Time-based limits
   daily: QuotaLimits;
   monthly: QuotaLimits;
-  
+
   // Iraqi-specific configurations
   professionalDomains: {
     legal: Partial<QuotaLimits>;
@@ -54,22 +54,22 @@ export interface IraqiQuotaConfig {
     business: Partial<QuotaLimits>;
     engineering: Partial<QuotaLimits>;
   };
-  
+
   // Payment gateway specific bonuses
   paymentGatewayBonuses: {
-    zaincash: number;     // Multiplier bonus
+    zaincash: number; // Multiplier bonus
     fastpay: number;
     nasswallet: number;
   };
-  
+
   // Arabic processing specific limits
   arabicProcessing: {
-    dialectRecognition: number;    // Requests per day
-    rtlProcessing: number;         // Requests per day
-    culturalValidation: number;    // Requests per day
-    mixedLanguage: number;         // Requests per day
+    dialectRecognition: number; // Requests per day
+    rtlProcessing: number; // Requests per day
+    culturalValidation: number; // Requests per day
+    mixedLanguage: number; // Requests per day
   };
-  
+
   // Feature flags
   features: {
     advancedChat: boolean;
@@ -79,23 +79,23 @@ export interface IraqiQuotaConfig {
     prioritySupport: boolean;
     customIntegrations: boolean;
   };
-  
+
   // Pricing in Iraqi Dinar
   pricing: {
-    monthlyFee: number;            // IQD
+    monthlyFee: number; // IQD
     overage: {
-      perRequest: number;          // IQD per request over limit
-      perToken: number;            // IQD per 1K tokens over limit
-      perMBStorage: number;        // IQD per MB storage over limit
+      perRequest: number; // IQD per request over limit
+      perToken: number; // IQD per 1K tokens over limit
+      perMBStorage: number; // IQD per MB storage over limit
     };
   };
-  
+
   // Auto-scaling configuration
   autoScaling: {
     enabled: boolean;
-    maxMultiplier: number;         // Maximum auto-scale multiplier
-    costMultiplier: number;        // Cost multiplier for auto-scaled usage
-    warningThreshold: number;      // Threshold to warn before auto-scaling
+    maxMultiplier: number; // Maximum auto-scale multiplier
+    costMultiplier: number; // Cost multiplier for auto-scaled usage
+    warningThreshold: number; // Threshold to warn before auto-scaling
   };
 }
 
@@ -149,7 +149,7 @@ export class IraqiQuotaConfigService {
       }
       return null;
     } catch (error) {
-      console.error('Error fetching quota config:', error);
+      console.error("Error fetching quota config:", error);
       return null;
     }
   }
@@ -162,15 +162,15 @@ export class IraqiQuotaConfigService {
       await this.redis.set(
         `quota_config:${config.id}`,
         JSON.stringify(config),
-        'EX',
-        86400 * 365 // Expire after 1 year
+        "EX",
+        86400 * 365, // Expire after 1 year
       );
-      
+
       // Update cache
       this.configCache.set(config.id, config);
     } catch (error) {
-      console.error('Error setting quota config:', error);
-      throw new Error('Failed to save quota configuration');
+      console.error("Error setting quota config:", error);
+      throw new Error("Failed to save quota configuration");
     }
   }
 
@@ -200,14 +200,14 @@ export class IraqiQuotaConfigService {
         remainingQuota,
         percentageUsed,
         resetTimes: {
-          daily: this.getNextResetTime('daily'),
-          monthly: this.getNextResetTime('monthly'),
+          daily: this.getNextResetTime("daily"),
+          monthly: this.getNextResetTime("monthly"),
         },
         autoScaled: await this.isAutoScaled(userId),
         warningsTriggered: await this.getTriggeredWarnings(userId),
       };
     } catch (error) {
-      console.error('Error fetching user quota status:', error);
+      console.error("Error fetching user quota status:", error);
       return null;
     }
   }
@@ -218,8 +218,13 @@ export class IraqiQuotaConfigService {
   async assignQuotaToUser(
     userId: string,
     configId: string,
-    paymentGateway?: 'zaincash' | 'fastpay' | 'nasswallet',
-    professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering'
+    paymentGateway?: "zaincash" | "fastpay" | "nasswallet",
+    professionalDomain?:
+      | "legal"
+      | "medical"
+      | "educational"
+      | "business"
+      | "engineering",
   ): Promise<void> {
     try {
       const userQuotaData = {
@@ -232,19 +237,19 @@ export class IraqiQuotaConfigService {
       await this.redis.set(
         `user_quota:${userId}`,
         configId,
-        'EX',
-        86400 * 365 // Expire after 1 year
+        "EX",
+        86400 * 365, // Expire after 1 year
       );
 
       await this.redis.set(
         `user_quota_details:${userId}`,
         JSON.stringify(userQuotaData),
-        'EX',
-        86400 * 365
+        "EX",
+        86400 * 365,
       );
     } catch (error) {
-      console.error('Error assigning quota to user:', error);
-      throw new Error('Failed to assign quota configuration');
+      console.error("Error assigning quota to user:", error);
+      throw new Error("Failed to assign quota configuration");
     }
   }
 
@@ -253,9 +258,9 @@ export class IraqiQuotaConfigService {
    */
   async checkQuotaAllowance(
     userId: string,
-    requestType: keyof QuotaLimits['requests'],
+    requestType: keyof QuotaLimits["requests"],
     tokensRequired: number = 0,
-    storageRequired: number = 0
+    storageRequired: number = 0,
   ): Promise<{
     allowed: boolean;
     reason?: string;
@@ -268,7 +273,7 @@ export class IraqiQuotaConfigService {
     if (!status) {
       return {
         allowed: false,
-        reason: 'No quota configuration found',
+        reason: "No quota configuration found",
         remainingRequests: 0,
         remainingTokens: 0,
         remainingStorage: 0,
@@ -280,7 +285,7 @@ export class IraqiQuotaConfigService {
     if (!config) {
       return {
         allowed: false,
-        reason: 'Invalid quota configuration',
+        reason: "Invalid quota configuration",
         remainingRequests: 0,
         remainingTokens: 0,
         remainingStorage: 0,
@@ -288,15 +293,17 @@ export class IraqiQuotaConfigService {
       };
     }
 
-    const dailyRemaining = status.remainingQuota.daily.requests?.[requestType] || 0;
-    const monthlyRemaining = status.remainingQuota.monthly.requests?.[requestType] || 0;
+    const dailyRemaining =
+      status.remainingQuota.daily.requests?.[requestType] || 0;
+    const monthlyRemaining =
+      status.remainingQuota.monthly.requests?.[requestType] || 0;
     const remainingTokens = Math.min(
       status.remainingQuota.daily.tokens?.total || 0,
-      status.remainingQuota.monthly.tokens?.total || 0
+      status.remainingQuota.monthly.tokens?.total || 0,
     );
     const remainingStorage = Math.min(
       status.remainingQuota.daily.storage?.total || 0,
-      status.remainingQuota.monthly.storage?.total || 0
+      status.remainingQuota.monthly.storage?.total || 0,
     );
 
     // Check limits
@@ -307,15 +314,16 @@ export class IraqiQuotaConfigService {
     const allowed = requestsOk && tokensOk && storageOk;
 
     // Check auto-scaling availability
-    const autoScaleAvailable = config.autoScaling.enabled && 
-      !status.autoScaled && 
+    const autoScaleAvailable =
+      config.autoScaling.enabled &&
+      !status.autoScaled &&
       status.percentageUsed.daily < config.autoScaling.warningThreshold;
 
     let reason: string | undefined;
     if (!allowed) {
-      if (!requestsOk) reason = 'Request quota exceeded';
-      else if (!tokensOk) reason = 'Token quota exceeded';
-      else if (!storageOk) reason = 'Storage quota exceeded';
+      if (!requestsOk) reason = "Request quota exceeded";
+      else if (!tokensOk) reason = "Token quota exceeded";
+      else if (!storageOk) reason = "Storage quota exceeded";
     }
 
     return {
@@ -333,7 +341,7 @@ export class IraqiQuotaConfigService {
    */
   async applyProfessionalDomainBonus(
     userId: string,
-    domain: 'legal' | 'medical' | 'educational' | 'business' | 'engineering'
+    domain: "legal" | "medical" | "educational" | "business" | "engineering",
   ): Promise<void> {
     try {
       const details = await this.redis.get(`user_quota_details:${userId}`);
@@ -341,17 +349,17 @@ export class IraqiQuotaConfigService {
         const parsed = JSON.parse(details);
         parsed.professionalDomain = domain;
         parsed.domainBonusApplied = new Date().toISOString();
-        
+
         await this.redis.set(
           `user_quota_details:${userId}`,
           JSON.stringify(parsed),
-          'EX',
-          86400 * 365
+          "EX",
+          86400 * 365,
         );
       }
     } catch (error) {
-      console.error('Error applying professional domain bonus:', error);
-      throw new Error('Failed to apply professional domain bonus');
+      console.error("Error applying professional domain bonus:", error);
+      throw new Error("Failed to apply professional domain bonus");
     }
   }
 
@@ -363,12 +371,12 @@ export class IraqiQuotaConfigService {
       await this.redis.set(
         `autoscale:${userId}`,
         new Date().toISOString(),
-        'EX',
-        86400 // Auto-scaling enabled for 24 hours
+        "EX",
+        86400, // Auto-scaling enabled for 24 hours
       );
     } catch (error) {
-      console.error('Error enabling auto-scaling:', error);
-      throw new Error('Failed to enable auto-scaling');
+      console.error("Error enabling auto-scaling:", error);
+      throw new Error("Failed to enable auto-scaling");
     }
   }
 
@@ -377,17 +385,17 @@ export class IraqiQuotaConfigService {
    */
   async getAllQuotaConfigs(): Promise<IraqiQuotaConfig[]> {
     try {
-      const keys = await this.redis.keys('quota_config:*');
+      const keys = await this.redis.keys("quota_config:*");
       if (keys.length === 0) {
         return [];
       }
 
       const configs = await this.redis.mget(...keys);
       return configs
-        .filter(config => config !== null)
-        .map(config => JSON.parse(config!) as IraqiQuotaConfig);
+        .filter((config) => config !== null)
+        .map((config) => JSON.parse(config!) as IraqiQuotaConfig);
     } catch (error) {
-      console.error('Error fetching all quota configs:', error);
+      console.error("Error fetching all quota configs:", error);
       return [];
     }
   }
@@ -396,9 +404,9 @@ export class IraqiQuotaConfigService {
     daily: Partial<QuotaLimits>;
     monthly: Partial<QuotaLimits>;
   }> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const month = new Date().toISOString().slice(0, 7);
-    
+
     const dailyUsageKey = `usage:daily:${userId}:${today}`;
     const monthlyUsageKey = `usage:monthly:${userId}:${month}`;
 
@@ -413,41 +421,41 @@ export class IraqiQuotaConfigService {
         monthly: this.parseUsageData(monthlyUsage),
       };
     } catch (error) {
-      console.error('Error fetching current usage:', error);
+      console.error("Error fetching current usage:", error);
       return { daily: {}, monthly: {} };
     }
   }
 
   private parseUsageData(usage: Record<string, string>): Partial<QuotaLimits> {
     const parsed: Partial<QuotaLimits> = {};
-    
+
     // Parse requests
     if (usage.chat || usage.translation || usage.cultural_validation) {
       parsed.requests = {
-        chat: parseInt(usage.chat || '0', 10),
-        translation: parseInt(usage.translation || '0', 10),
-        cultural_validation: parseInt(usage.cultural_validation || '0', 10),
-        image_generation: parseInt(usage.image_generation || '0', 10),
-        document_processing: parseInt(usage.document_processing || '0', 10),
-        professional_query: parseInt(usage.professional_query || '0', 10),
+        chat: parseInt(usage.chat || "0", 10),
+        translation: parseInt(usage.translation || "0", 10),
+        cultural_validation: parseInt(usage.cultural_validation || "0", 10),
+        image_generation: parseInt(usage.image_generation || "0", 10),
+        document_processing: parseInt(usage.document_processing || "0", 10),
+        professional_query: parseInt(usage.professional_query || "0", 10),
       };
     }
-    
+
     // Parse tokens
     if (usage.tokens_input || usage.tokens_output) {
       parsed.tokens = {
-        input: parseInt(usage.tokens_input || '0', 10),
-        output: parseInt(usage.tokens_output || '0', 10),
-        total: parseInt(usage.tokens_total || '0', 10),
+        input: parseInt(usage.tokens_input || "0", 10),
+        output: parseInt(usage.tokens_output || "0", 10),
+        total: parseInt(usage.tokens_total || "0", 10),
       };
     }
-    
+
     // Parse storage
     if (usage.storage_documents || usage.storage_images) {
       parsed.storage = {
-        documents: parseInt(usage.storage_documents || '0', 10),
-        images: parseInt(usage.storage_images || '0', 10),
-        total: parseInt(usage.storage_total || '0', 10),
+        documents: parseInt(usage.storage_documents || "0", 10),
+        images: parseInt(usage.storage_images || "0", 10),
+        total: parseInt(usage.storage_total || "0", 10),
       };
     }
 
@@ -456,7 +464,7 @@ export class IraqiQuotaConfigService {
 
   private calculateRemainingQuota(
     config: IraqiQuotaConfig,
-    usage: { daily: Partial<QuotaLimits>; monthly: Partial<QuotaLimits> }
+    usage: { daily: Partial<QuotaLimits>; monthly: Partial<QuotaLimits> },
   ): { daily: Partial<QuotaLimits>; monthly: Partial<QuotaLimits> } {
     return {
       daily: this.subtractUsage(config.daily, usage.daily),
@@ -464,17 +472,39 @@ export class IraqiQuotaConfigService {
     };
   }
 
-  private subtractUsage(limit: QuotaLimits, usage: Partial<QuotaLimits>): Partial<QuotaLimits> {
+  private subtractUsage(
+    limit: QuotaLimits,
+    usage: Partial<QuotaLimits>,
+  ): Partial<QuotaLimits> {
     const result: Partial<QuotaLimits> = {};
 
     if (limit.requests && usage.requests) {
       result.requests = {
         chat: Math.max(0, limit.requests.chat - (usage.requests.chat || 0)),
-        translation: Math.max(0, limit.requests.translation - (usage.requests.translation || 0)),
-        cultural_validation: Math.max(0, limit.requests.cultural_validation - (usage.requests.cultural_validation || 0)),
-        image_generation: Math.max(0, limit.requests.image_generation - (usage.requests.image_generation || 0)),
-        document_processing: Math.max(0, limit.requests.document_processing - (usage.requests.document_processing || 0)),
-        professional_query: Math.max(0, limit.requests.professional_query - (usage.requests.professional_query || 0)),
+        translation: Math.max(
+          0,
+          limit.requests.translation - (usage.requests.translation || 0),
+        ),
+        cultural_validation: Math.max(
+          0,
+          limit.requests.cultural_validation -
+            (usage.requests.cultural_validation || 0),
+        ),
+        image_generation: Math.max(
+          0,
+          limit.requests.image_generation -
+            (usage.requests.image_generation || 0),
+        ),
+        document_processing: Math.max(
+          0,
+          limit.requests.document_processing -
+            (usage.requests.document_processing || 0),
+        ),
+        professional_query: Math.max(
+          0,
+          limit.requests.professional_query -
+            (usage.requests.professional_query || 0),
+        ),
       };
     }
 
@@ -488,7 +518,10 @@ export class IraqiQuotaConfigService {
 
     if (limit.storage && usage.storage) {
       result.storage = {
-        documents: Math.max(0, limit.storage.documents - (usage.storage.documents || 0)),
+        documents: Math.max(
+          0,
+          limit.storage.documents - (usage.storage.documents || 0),
+        ),
         images: Math.max(0, limit.storage.images - (usage.storage.images || 0)),
         total: Math.max(0, limit.storage.total - (usage.storage.total || 0)),
       };
@@ -499,7 +532,7 @@ export class IraqiQuotaConfigService {
 
   private calculatePercentageUsed(
     config: IraqiQuotaConfig,
-    usage: { daily: Partial<QuotaLimits>; monthly: Partial<QuotaLimits> }
+    usage: { daily: Partial<QuotaLimits>; monthly: Partial<QuotaLimits> },
   ): { daily: number; monthly: number } {
     const dailyTotal = this.getTotalRequests(config.daily);
     const monthlyTotal = this.getTotalRequests(config.monthly);
@@ -514,13 +547,16 @@ export class IraqiQuotaConfigService {
 
   private getTotalRequests(limits: Partial<QuotaLimits>): number {
     if (!limits.requests) return 0;
-    return Object.values(limits.requests).reduce((sum, val) => sum + (val || 0), 0);
+    return Object.values(limits.requests).reduce(
+      (sum, val) => sum + (val || 0),
+      0,
+    );
   }
 
-  private getNextResetTime(period: 'daily' | 'monthly'): Date {
+  private getNextResetTime(period: "daily" | "monthly"): Date {
     const now = new Date();
-    
-    if (period === 'daily') {
+
+    if (period === "daily") {
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
       tomorrow.setHours(0, 0, 0, 0);
@@ -558,7 +594,7 @@ export class IraqiQuotaConfigService {
 
   private async loadDefaultConfigs(): Promise<void> {
     const defaultConfigs = this.getDefaultConfigs();
-    
+
     for (const config of defaultConfigs) {
       try {
         const exists = await this.redis.exists(`quota_config:${config.id}`);
@@ -575,9 +611,9 @@ export class IraqiQuotaConfigService {
     return [
       // Trial tier configuration
       {
-        id: 'iraqi-trial',
-        name: 'Iraqi AI Chat - Trial',
-        tier: 'trial',
+        id: "iraqi-trial",
+        name: "Iraqi AI Chat - Trial",
+        tier: "trial",
         daily: {
           requests: {
             chat: 50,
@@ -633,9 +669,9 @@ export class IraqiQuotaConfigService {
         pricing: {
           monthlyFee: 0, // Free trial
           overage: {
-            perRequest: 100,      // 100 IQD per overage request
-            perToken: 0.1,        // 0.1 IQD per 1K tokens
-            perMBStorage: 50,     // 50 IQD per MB
+            perRequest: 100, // 100 IQD per overage request
+            perToken: 0.1, // 0.1 IQD per 1K tokens
+            perMBStorage: 50, // 50 IQD per MB
           },
         },
         autoScaling: {
@@ -645,12 +681,12 @@ export class IraqiQuotaConfigService {
           warningThreshold: 0.8,
         },
       },
-      
+
       // Premium tier configuration
       {
-        id: 'iraqi-premium',
-        name: 'Iraqi AI Chat - Premium',
-        tier: 'premium',
+        id: "iraqi-premium",
+        name: "Iraqi AI Chat - Premium",
+        tier: "premium",
         daily: {
           requests: {
             chat: 1000,
@@ -706,9 +742,9 @@ export class IraqiQuotaConfigService {
         pricing: {
           monthlyFee: 75000, // 75,000 IQD (~$57 USD)
           overage: {
-            perRequest: 50,       // 50 IQD per overage request
-            perToken: 0.05,       // 0.05 IQD per 1K tokens
-            perMBStorage: 25,     // 25 IQD per MB
+            perRequest: 50, // 50 IQD per overage request
+            perToken: 0.05, // 0.05 IQD per 1K tokens
+            perMBStorage: 25, // 25 IQD per MB
           },
         },
         autoScaling: {

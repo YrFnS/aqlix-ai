@@ -1,6 +1,6 @@
 /**
  * Logger - Advanced logging system for Component Inspector
- * 
+ *
  * Provides structured logging with:
  * - Contextual information for Iraqi cultural analysis
  * - Performance metrics tracking
@@ -11,20 +11,20 @@
 export class Logger {
   private context: string;
   private config: any;
-  private logLevel: 'debug' | 'info' | 'warn' | 'error';
+  private logLevel: "debug" | "info" | "warn" | "error";
 
   constructor(context: string, config?: any) {
     this.context = context;
     this.config = config || {};
-    this.logLevel = this.config.logLevel || 'info';
+    this.logLevel = this.config.logLevel || "info";
   }
 
   /**
    * Debug level logging
    */
   debug(message: string, metadata?: any): void {
-    if (this.shouldLog('debug')) {
-      this.log('debug', message, metadata);
+    if (this.shouldLog("debug")) {
+      this.log("debug", message, metadata);
     }
   }
 
@@ -32,8 +32,8 @@ export class Logger {
    * Info level logging
    */
   info(message: string, metadata?: any): void {
-    if (this.shouldLog('info')) {
-      this.log('info', message, metadata);
+    if (this.shouldLog("info")) {
+      this.log("info", message, metadata);
     }
   }
 
@@ -41,8 +41,8 @@ export class Logger {
    * Warning level logging
    */
   warn(message: string, metadata?: any): void {
-    if (this.shouldLog('warn')) {
-      this.log('warn', message, metadata);
+    if (this.shouldLog("warn")) {
+      this.log("warn", message, metadata);
     }
   }
 
@@ -50,26 +50,30 @@ export class Logger {
    * Error level logging
    */
   error(message: string, metadata?: any): void {
-    if (this.shouldLog('error')) {
-      this.log('error', message, metadata);
+    if (this.shouldLog("error")) {
+      this.log("error", message, metadata);
     }
   }
 
   /**
    * Log cultural compliance events
    */
-  cultural(level: 'info' | 'warn' | 'error', message: string, metadata?: {
-    component?: string;
-    ministry?: string;
-    culturalScore?: number;
-    islamicCompliance?: number;
-    violations?: any[];
-  }): void {
+  cultural(
+    level: "info" | "warn" | "error",
+    message: string,
+    metadata?: {
+      component?: string;
+      ministry?: string;
+      culturalScore?: number;
+      islamicCompliance?: number;
+      violations?: any[];
+    },
+  ): void {
     const culturalMetadata = {
       ...metadata,
-      category: 'cultural-compliance',
+      category: "cultural-compliance",
       timestamp: new Date().toISOString(),
-      context: this.context
+      context: this.context,
     };
 
     this.log(level, `[CULTURAL] ${message}`, culturalMetadata);
@@ -78,18 +82,22 @@ export class Logger {
   /**
    * Log performance events
    */
-  performance(level: 'info' | 'warn', message: string, metadata?: {
-    component?: string;
-    renderTime?: number;
-    bundleSize?: number;
-    memoryUsage?: number;
-    rtlImpact?: number;
-  }): void {
+  performance(
+    level: "info" | "warn",
+    message: string,
+    metadata?: {
+      component?: string;
+      renderTime?: number;
+      bundleSize?: number;
+      memoryUsage?: number;
+      rtlImpact?: number;
+    },
+  ): void {
     const performanceMetadata = {
       ...metadata,
-      category: 'performance',
+      category: "performance",
       timestamp: new Date().toISOString(),
-      context: this.context
+      context: this.context,
     };
 
     this.log(level, `[PERFORMANCE] ${message}`, performanceMetadata);
@@ -98,17 +106,21 @@ export class Logger {
   /**
    * Log accessibility events
    */
-  accessibility(level: 'info' | 'warn' | 'error', message: string, metadata?: {
-    component?: string;
-    wcagScore?: number;
-    rtlAccessibility?: number;
-    violations?: any[];
-  }): void {
+  accessibility(
+    level: "info" | "warn" | "error",
+    message: string,
+    metadata?: {
+      component?: string;
+      wcagScore?: number;
+      rtlAccessibility?: number;
+      violations?: any[];
+    },
+  ): void {
     const accessibilityMetadata = {
       ...metadata,
-      category: 'accessibility',
+      category: "accessibility",
       timestamp: new Date().toISOString(),
-      context: this.context
+      context: this.context,
     };
 
     this.log(level, `[A11Y] ${message}`, accessibilityMetadata);
@@ -117,18 +129,22 @@ export class Logger {
   /**
    * Log security events
    */
-  security(level: 'warn' | 'error', message: string, metadata?: {
-    component?: string;
-    vulnerabilities?: any[];
-    securityScore?: number;
-    riskLevel?: string;
-  }): void {
+  security(
+    level: "warn" | "error",
+    message: string,
+    metadata?: {
+      component?: string;
+      vulnerabilities?: any[];
+      securityScore?: number;
+      riskLevel?: string;
+    },
+  ): void {
     const securityMetadata = {
       ...metadata,
-      category: 'security',
+      category: "security",
       timestamp: new Date().toISOString(),
       context: this.context,
-      urgent: level === 'error'
+      urgent: level === "error",
     };
 
     this.log(level, `[SECURITY] ${message}`, securityMetadata);
@@ -148,30 +164,30 @@ export class Logger {
    */
   time(label: string): { end: () => void } {
     const startTime = performance.now();
-    
+
     return {
       end: () => {
         const duration = performance.now() - startTime;
-        this.performance('info', `${label} completed`, {
+        this.performance("info", `${label} completed`, {
           duration: Math.round(duration * 100) / 100, // Round to 2 decimal places
-          label
+          label,
         });
-      }
+      },
     };
   }
 
   /**
    * Set log level
    */
-  setLevel(level: 'debug' | 'info' | 'warn' | 'error'): void {
+  setLevel(level: "debug" | "info" | "warn" | "error"): void {
     this.logLevel = level;
   }
 
-  private shouldLog(level: 'debug' | 'info' | 'warn' | 'error'): boolean {
-    const levels = ['debug', 'info', 'warn', 'error'];
+  private shouldLog(level: "debug" | "info" | "warn" | "error"): boolean {
+    const levels = ["debug", "info", "warn", "error"];
     const currentLevelIndex = levels.indexOf(this.logLevel);
     const messageLevelIndex = levels.indexOf(level);
-    
+
     return messageLevelIndex >= currentLevelIndex;
   }
 
@@ -181,22 +197,22 @@ export class Logger {
       level: level.toUpperCase(),
       context: this.context,
       message,
-      ...metadata
+      ...metadata,
     };
 
     // In a real implementation, this would send to a logging service
     // For now, we'll use console with appropriate formatting
     switch (level) {
-      case 'debug':
+      case "debug":
         console.debug(this.formatLogEntry(logEntry));
         break;
-      case 'info':
+      case "info":
         console.info(this.formatLogEntry(logEntry));
         break;
-      case 'warn':
+      case "warn":
         console.warn(this.formatLogEntry(logEntry));
         break;
-      case 'error':
+      case "error":
         console.error(this.formatLogEntry(logEntry));
         break;
     }
@@ -204,13 +220,13 @@ export class Logger {
 
   private formatLogEntry(entry: any): string {
     const { timestamp, level, context, message, ...metadata } = entry;
-    
+
     let formatted = `[${timestamp}] ${level} [${context}] ${message}`;
-    
+
     if (Object.keys(metadata).length > 0) {
       formatted += ` ${JSON.stringify(metadata, null, 2)}`;
     }
-    
+
     return formatted;
   }
 }

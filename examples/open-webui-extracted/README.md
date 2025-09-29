@@ -8,6 +8,7 @@
 ## 📋 Extracted Components
 
 ### Database Models (`models/`)
+
 - **`users.py`** - User management with Iraqi profession and cultural settings
 - **`chats.py`** - Chat conversations with Arabic RTL and cultural context
 - **`files.py`** - File management with Arabic document processing metadata
@@ -17,12 +18,14 @@
 **Iraqi Enhancements**: Professional domains, dialect preferences, cultural validation metadata
 
 ### API Routers (`routers/`)
+
 - **`users.py`** - User registration, authentication, and profile management with Iraqi phone validation
 
 **Compatibility**: 90% direct reuse  
 **Iraqi Enhancements**: Cultural validation middleware, Arabic error messages, professional domain access control
 
 ### Middleware (`middleware/`)
+
 - **`auth.py`** - JWT authentication with Iraqi cultural context and professional permissions
 - **`cultural_validation.py`** - Islamic compliance and Iraqi cultural appropriateness validation
 
@@ -30,18 +33,21 @@
 **Iraqi Enhancements**: Cultural context in JWT tokens, Iraqi phone validation, professional domain permissions
 
 ### Database Infrastructure (`internal/`)
+
 - **`db.py`** - PostgreSQL setup with Arabic text support and cultural configurations
 
 **Compatibility**: 95% direct reuse  
 **Iraqi Enhancements**: Baghdad timezone, Arabic text indexing, cultural metadata fields
 
 ### Utilities (`utils/`)
+
 - **`iraqi_helpers.py`** - Comprehensive Iraqi cultural functions
 
 **Compatibility**: 100% new (Iraqi-specific)  
 **Features**: Dialect detection, business hours, payment validation, regional data, professional terminology
 
 ### Main Application (`main.py`)
+
 - **`main.py`** - FastAPI application with Iraqi middleware stack
 
 **Compatibility**: 90% Open WebUI patterns  
@@ -50,6 +56,7 @@
 ## 🎯 Implementation Strategy
 
 ### Immediate Use (95% Compatible)
+
 ```python
 # Database models can be used almost directly
 from examples.open_webui_extracted.models.users import UserModel
@@ -57,6 +64,7 @@ from examples.open_webui_extracted.models.users import UserModel
 ```
 
 ### Adaptation Required (90% Compatible)
+
 ```python
 # Routers need cultural validation integration
 from examples.open_webui_extracted.routers.users import router
@@ -64,6 +72,7 @@ from examples.open_webui_extracted.routers.users import router
 ```
 
 ### Heavy Customization (70% Patterns)
+
 ```python
 # Authentication needs Iraqi phone validation
 from examples.open_webui_extracted.middleware.auth import create_access_token
@@ -73,14 +82,16 @@ from examples.open_webui_extracted.middleware.auth import create_access_token
 ## 📊 Iraqi Cultural Enhancements Added
 
 ### Professional Domains
+
 - Legal (قانوني) - Iraqi law and judicial procedures
-- Medical (طبي) - Healthcare system and medical practices  
+- Medical (طبي) - Healthcare system and medical practices
 - Educational (تعليمي) - Education system and curricula
 - Engineering (هندسي) - Engineering and construction
 - Business (تجاري) - Business and commerce
 - Government (حكومي) - Government services and procedures
 
 ### Dialect Support
+
 - Iraqi (عراقي) - General Iraqi dialect
 - Baghdadi (بغدادي) - Baghdad-specific dialect
 - Basrawi (بصراوي) - Basra-specific dialect
@@ -88,6 +99,7 @@ from examples.open_webui_extracted.middleware.auth import create_access_token
 - Formal Arabic (عربي فصيح) - Standard Arabic
 
 ### Cultural Validation
+
 - Islamic compliance checking
 - Sectarian neutrality enforcement
 - Political sensitivity detection
@@ -95,6 +107,7 @@ from examples.open_webui_extracted.middleware.auth import create_access_token
 - Regional cultural awareness
 
 ### Business Context
+
 - Baghdad timezone (Asia/Baghdad)
 - Iraqi business hours (Sunday-Thursday)
 - Prayer time awareness
@@ -102,14 +115,16 @@ from examples.open_webui_extracted.middleware.auth import create_access_token
 - Friday holy day recognition
 
 ### Payment Systems
+
 - ZainCash (1000 IQD minimum)
-- FastPay (500 IQD minimum)  
+- FastPay (500 IQD minimum)
 - NassWallet (1000 IQD minimum)
 - Credit card (USD support)
 
 ## 🔧 Usage Examples
 
 ### User Model with Iraqi Features
+
 ```python
 # Reference: examples/open-webui-extracted/models/users.py
 class IraqiUser(BaseModel):
@@ -117,7 +132,7 @@ class IraqiUser(BaseModel):
     id: str
     email: str
     name: str
-    
+
     # Iraqi enhancements
     profession: IraqiProfession = IraqiProfession.OTHER
     dialect_preference: IraqiDialect = IraqiDialect.IRAQI
@@ -127,6 +142,7 @@ class IraqiUser(BaseModel):
 ```
 
 ### Authentication with Cultural Context
+
 ```python
 # Reference: examples/open-webui-extracted/middleware/auth.py
 def create_iraqi_access_token(user: UserModel) -> str:
@@ -134,7 +150,7 @@ def create_iraqi_access_token(user: UserModel) -> str:
         # Open WebUI standard fields
         "sub": user.id,
         "email": user.email,
-        
+
         # Iraqi cultural context
         "profession": user.profession.value,
         "dialect": user.dialect_preference.value,
@@ -147,6 +163,7 @@ def create_iraqi_access_token(user: UserModel) -> str:
 ```
 
 ### Cultural Validation Middleware
+
 ```python
 # Reference: examples/open-webui-extracted/middleware/cultural_validation.py
 async def validate_content_cultural(content: str, context: CulturalContext):
@@ -164,17 +181,20 @@ async def validate_content_cultural(content: str, context: CulturalContext):
 ### ⚠️ **IMPORTANT: Base Infrastructure to be Replaced with Langflow**
 
 **Keep Only Cultural Components**:
+
 - ✅ `middleware/cultural_validation.py` - Islamic compliance logic
 - ✅ `utils/iraqi_helpers.py` - Iraqi-specific functions
 - ✅ Cultural enhancements in models (profession, dialect, regional settings)
 
 **Replace Infrastructure with Langflow**:
+
 - 🔄 `models/` → Langflow enterprise models (8 models → 8 enterprise models)
 - 🔄 `routers/users.py` → Langflow complete API system (1 router → 13 routers)
 - 🔄 `main.py` → Langflow enterprise FastAPI architecture
 - 🔄 `internal/db.py` → Langflow database infrastructure
 
 **Langflow Advantages**:
+
 - **13 complete routers** vs our 1 basic router
 - **Enterprise-grade architecture** vs basic FastAPI patterns
 - **Complete React frontend** vs no frontend
@@ -182,6 +202,7 @@ async def validate_content_cultural(content: str, context: CulturalContext):
 - **27-38 weeks value** vs 15-20 weeks value
 
 ### Next Steps:
+
 1. **Extract Langflow complete system** - Foundation replacement
 2. **Migrate cultural enhancements** - Apply Iraqi features to Langflow base
 3. **Test cultural compatibility** - Ensure Islamic compliance preserved

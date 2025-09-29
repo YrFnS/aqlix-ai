@@ -9,6 +9,6 @@ export class IraqiMemoryManager {
   }
 
   loadCulturalContext(personaId: string): string {
-    return this.memory.get(personaId) || 'Standard Iraqi context'; // Islamic-compliant
+    return this.memory.get(personaId) || "Standard Iraqi context"; // Islamic-compliant
   }
 }

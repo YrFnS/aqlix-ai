@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { AlertTriangle, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { AlertTriangle, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface BillingErrorAlertProps {
   message?: string;

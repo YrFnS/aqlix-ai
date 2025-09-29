@@ -1,13 +1,13 @@
 /**
  * Iraqi AG-UI Foundation - Complete AI-Frontend Interaction System
- * 
+ *
  * Comprehensive export module for Iraqi-enhanced AG-UI protocol implementation
  * Combines event system, type definitions, and orchestration for production-ready
  * AI-frontend interaction with Iraqi cultural sovereignty and Islamic compliance
- * 
+ *
  * Based on: AG-UI TypeScript SDK
  * Enhanced with: Cultural validation, Arabic RTL, Professional domain expertise
- * 
+ *
  * Performance Standards:
  * - Event processing: <50ms per event
  * - Cultural validation: <200ms per message
@@ -22,8 +22,8 @@ export {
   IraqiEventType,
   IraqiEventBus,
   iraqiEventBus,
-  IraqiEventUtils
-} from './iraqi-event-system';
+  IraqiEventUtils,
+} from "./iraqi-event-system";
 
 // Enhanced AG-UI Type System Exports
 export {
@@ -42,7 +42,7 @@ export {
   IraqiToolSchema,
   IraqiRunAgentInputSchema,
   IraqiStateSchema,
-  
+
   // Type definitions
   type IraqiToolCall,
   type IraqiFunctionCall,
@@ -57,40 +57,40 @@ export {
   type IraqiRunAgentInput,
   type IraqiState,
   type IraqiRole,
-  
+
   // Error handling
   IraqiAGUIError,
-  
+
   // Cultural interfaces
   type CulturalValidationResult,
   type ArabicProcessingResult,
   type ProfessionalDomainContext,
   type IraqiAGUIPerformanceMetrics,
   type IraqiAGUIConfiguration,
-  DEFAULT_IRAQI_AGUI_CONFIG
-} from './iraqi-ag-ui-types';
+  DEFAULT_IRAQI_AGUI_CONFIG,
+} from "./iraqi-ag-ui-types";
 
 // Enhanced AG-UI Orchestrator Exports
 export {
   // Main orchestrator class
   IraqiAGUIOrchestrator,
   default as IraqiAGUIOrchestrator,
-  
+
   // Interaction state management
   IraqiInteractionState,
   type IraqiEventProcessingContext,
-  
+
   // Service interfaces
   type ICulturalValidationService,
   type IArabicProcessingService,
   type IProfessionalDomainService,
-  
+
   // Factory functions
   createIraqiAGUIOrchestrator,
-  
+
   // Performance utilities
-  validatePerformanceTargets
-} from './iraqi-ag-ui-orchestrator';
+  validatePerformanceTargets,
+} from "./iraqi-ag-ui-orchestrator";
 
 // Event Type Exports
 export type {
@@ -120,8 +120,8 @@ export type {
   RTLLayoutAdjustmentEvent,
   ArabicFontRenderingEvent,
   MixedContentProcessingEvent,
-  DialectRecognitionResultEvent
-} from './iraqi-event-system';
+  DialectRecognitionResultEvent,
+} from "./iraqi-event-system";
 
 // Event Schema Exports
 export {
@@ -151,21 +151,21 @@ export {
   RTLLayoutAdjustmentEventSchema,
   ArabicFontRenderingEventSchema,
   MixedContentProcessingEventSchema,
-  DialectRecognitionResultEventSchema
-} from './iraqi-event-system';
+  DialectRecognitionResultEventSchema,
+} from "./iraqi-event-system";
 
 /**
  * Event-driven Iraqi AI Chat Integration
- * 
+ *
  * Provides real-time event streaming with cultural compliance
  * for the Iraqi AI Chat System.
  */
 export class IraqiEventDrivenChat {
   private eventBus: IraqiEventBus;
   private culturalValidator: any; // Import from cultural layer
-  private arabicProcessor: any;   // Import from cultural layer
-  private paymentGateway: any;    // Import from cultural layer
-  private agentCoordinator: any;  // Import from cultural layer
+  private arabicProcessor: any; // Import from cultural layer
+  private paymentGateway: any; // Import from cultural layer
+  private agentCoordinator: any; // Import from cultural layer
 
   constructor(
     eventBus: IraqiEventBus = iraqiEventBus,
@@ -174,14 +174,14 @@ export class IraqiEventDrivenChat {
       arabicProcessor?: any;
       paymentGateway?: any;
       agentCoordinator?: any;
-    }
+    },
   ) {
     this.eventBus = eventBus;
     this.culturalValidator = options?.culturalValidator;
     this.arabicProcessor = options?.arabicProcessor;
     this.paymentGateway = options?.paymentGateway;
     this.agentCoordinator = options?.agentCoordinator;
-    
+
     this.setupEventHandlers();
   }
 
@@ -190,85 +190,101 @@ export class IraqiEventDrivenChat {
    */
   private setupEventHandlers(): void {
     // Cultural validation events
-    this.eventBus.on(IraqiEventType.CULTURAL_VALIDATION_START, async (event) => {
-      if (this.culturalValidator && 'culturalValidationStart' in event) {
-        const validationEvent = event as CulturalValidationStartEvent;
-        try {
-          const result = await this.culturalValidator.validateContent(
-            validationEvent.content,
-            {
-              strictMode: validationEvent.strictMode,
-              professionalDomain: validationEvent.professionalDomain
-            }
-          );
+    this.eventBus.on(
+      IraqiEventType.CULTURAL_VALIDATION_START,
+      async (event) => {
+        if (this.culturalValidator && "culturalValidationStart" in event) {
+          const validationEvent = event as CulturalValidationStartEvent;
+          try {
+            const result = await this.culturalValidator.validateContent(
+              validationEvent.content,
+              {
+                strictMode: validationEvent.strictMode,
+                professionalDomain: validationEvent.professionalDomain,
+              },
+            );
 
-          this.eventBus.emit({
-            type: IraqiEventType.CULTURAL_VALIDATION_RESULT,
-            validationId: validationEvent.validationId,
-            score: result.score,
-            approved: result.approved,
-            issues: result.issues,
-            recommendations: result.recommendations,
-            categories: result.categories,
-            timestamp: Date.now()
-          });
-        } catch (error) {
-          console.error('Cultural validation error:', error);
+            this.eventBus.emit({
+              type: IraqiEventType.CULTURAL_VALIDATION_RESULT,
+              validationId: validationEvent.validationId,
+              score: result.score,
+              approved: result.approved,
+              issues: result.issues,
+              recommendations: result.recommendations,
+              categories: result.categories,
+              timestamp: Date.now(),
+            });
+          } catch (error) {
+            console.error("Cultural validation error:", error);
+          }
         }
-      }
-    });
+      },
+    );
 
     // Arabic text processing events
-    this.eventBus.on(IraqiEventType.ARABIC_TEXT_PROCESSING_START, async (event) => {
-      if (this.arabicProcessor && 'arabicTextProcessingStart' in event) {
-        const processingEvent = event as ArabicTextProcessingStartEvent;
-        try {
-          let result;
-          switch (processingEvent.processingType) {
-            case 'rtl_layout':
-              result = await this.arabicProcessor.processRTLLayout(processingEvent.text);
-              break;
-            case 'dialect_detection':
-              result = await this.arabicProcessor.detectDialect(processingEvent.text);
-              break;
-            case 'mixed_content':
-              result = await this.arabicProcessor.processMixedContent(processingEvent.text);
-              break;
-            case 'font_rendering':
-              result = await this.arabicProcessor.optimizeFontRendering(processingEvent.text);
-              break;
-            default:
-              result = await this.arabicProcessor.processText(processingEvent.text);
-          }
+    this.eventBus.on(
+      IraqiEventType.ARABIC_TEXT_PROCESSING_START,
+      async (event) => {
+        if (this.arabicProcessor && "arabicTextProcessingStart" in event) {
+          const processingEvent = event as ArabicTextProcessingStartEvent;
+          try {
+            let result;
+            switch (processingEvent.processingType) {
+              case "rtl_layout":
+                result = await this.arabicProcessor.processRTLLayout(
+                  processingEvent.text,
+                );
+                break;
+              case "dialect_detection":
+                result = await this.arabicProcessor.detectDialect(
+                  processingEvent.text,
+                );
+                break;
+              case "mixed_content":
+                result = await this.arabicProcessor.processMixedContent(
+                  processingEvent.text,
+                );
+                break;
+              case "font_rendering":
+                result = await this.arabicProcessor.optimizeFontRendering(
+                  processingEvent.text,
+                );
+                break;
+              default:
+                result = await this.arabicProcessor.processText(
+                  processingEvent.text,
+                );
+            }
 
-          this.eventBus.emit({
-            type: IraqiEventType.ARABIC_TEXT_PROCESSING_RESULT,
-            processingId: processingEvent.processingId,
-            processedText: result.processedText,
-            direction: result.direction,
-            dialectFeatures: result.dialectFeatures,
-            mixedContent: result.mixedContent,
-            confidence: result.confidence,
-            timestamp: Date.now()
-          });
-        } catch (error) {
-          console.error('Arabic text processing error:', error);
+            this.eventBus.emit({
+              type: IraqiEventType.ARABIC_TEXT_PROCESSING_RESULT,
+              processingId: processingEvent.processingId,
+              processedText: result.processedText,
+              direction: result.direction,
+              dialectFeatures: result.dialectFeatures,
+              mixedContent: result.mixedContent,
+              confidence: result.confidence,
+              timestamp: Date.now(),
+            });
+          } catch (error) {
+            console.error("Arabic text processing error:", error);
+          }
         }
-      }
-    });
+      },
+    );
 
     // Payment processing events
     this.eventBus.on(IraqiEventType.PAYMENT_PROCESSING_START, async (event) => {
-      if (this.paymentGateway && 'paymentProcessingStart' in event) {
+      if (this.paymentGateway && "paymentProcessingStart" in event) {
         const paymentEvent = event as PaymentProcessingStartEvent;
         try {
           const result = await this.paymentGateway.processPayment({
             amount: paymentEvent.amount,
             currency: paymentEvent.currency,
             orderId: paymentEvent.transactionId,
-            description: 'Iraqi AI Chat System Payment',
-            customerPhone: '', // To be provided by client
-            customerName: ''   // To be provided by client
+            description: "Iraqi AI Chat System Payment",
+            customerPhone: "", // To be provided by client
+            customerName: "", // To be provided by client
           });
 
           this.eventBus.emit({
@@ -279,23 +295,23 @@ export class IraqiEventDrivenChat {
             paymentUrl: result.paymentUrl,
             status: result.status,
             islamicCompliant: true, // Validated by payment gateway
-            timestamp: Date.now()
+            timestamp: Date.now(),
           });
         } catch (error) {
-          console.error('Payment processing error:', error);
+          console.error("Payment processing error:", error);
         }
       }
     });
 
     // Agent coordination events
     this.eventBus.on(IraqiEventType.AGENT_COORDINATION_START, async (event) => {
-      if (this.agentCoordinator && 'agentCoordinationStart' in event) {
+      if (this.agentCoordinator && "agentCoordinationStart" in event) {
         const coordinationEvent = event as AgentCoordinationStartEvent;
         try {
           const result = await this.agentCoordinator.routeRequest({
             taskId: coordinationEvent.coordinationId,
             requestType: coordinationEvent.requestType,
-            content: '', // To be provided by client
+            content: "", // To be provided by client
             priority: coordinationEvent.priority,
             culturalValidation: coordinationEvent.culturalValidation,
             islamicCompliance: true,
@@ -304,8 +320,8 @@ export class IraqiEventDrivenChat {
               minCulturalScore: 85,
               minIslamicScore: 90,
               maxResponseTime: 5000,
-              requiresMultiAgent: coordinationEvent.requiresMultiAgent
-            }
+              requiresMultiAgent: coordinationEvent.requiresMultiAgent,
+            },
           });
 
           if (Array.isArray(result)) {
@@ -313,10 +329,10 @@ export class IraqiEventDrivenChat {
             this.eventBus.emit({
               type: IraqiEventType.MULTI_AGENT_WORKFLOW_START,
               workflowId: coordinationEvent.coordinationId,
-              pattern: 'multi-agent',
-              agentSequence: result.map(r => r.agentId),
+              pattern: "multi-agent",
+              agentSequence: result.map((r) => r.agentId),
               culturalCheckpoints: [0, result.length - 1],
-              timestamp: Date.now()
+              timestamp: Date.now(),
             });
           } else {
             // Single agent routing
@@ -327,14 +343,14 @@ export class IraqiEventDrivenChat {
               agentCapabilities: {
                 culturalExpertise: result.culturalScore,
                 islamicCompliance: result.islamicScore,
-                arabicProficiency: 85 // Default value
+                arabicProficiency: 85, // Default value
               },
-              routingReason: 'Best match for request requirements',
-              timestamp: Date.now()
+              routingReason: "Best match for request requirements",
+              timestamp: Date.now(),
             });
           }
         } catch (error) {
-          console.error('Agent coordination error:', error);
+          console.error("Agent coordination error:", error);
         }
       }
     });
@@ -350,7 +366,7 @@ export class IraqiEventDrivenChat {
       culturalValidation?: boolean;
       arabicProcessing?: boolean;
       professionalDomain?: string;
-    }
+    },
   ): Promise<void> {
     // Start message event
     this.eventBus.emit({
@@ -360,25 +376,29 @@ export class IraqiEventDrivenChat {
       culturalValidation: options?.culturalValidation,
       arabicContent: this.isArabicText(content),
       direction: this.getTextDirection(content),
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // Cultural validation if requested
     if (options?.culturalValidation) {
-      this.eventBus.emit(IraqiEventUtils.createCulturalValidationEvent(
-        `validation_${messageId}`,
-        content,
-        { professionalDomain: options.professionalDomain }
-      ));
+      this.eventBus.emit(
+        IraqiEventUtils.createCulturalValidationEvent(
+          `validation_${messageId}`,
+          content,
+          { professionalDomain: options.professionalDomain },
+        ),
+      );
     }
 
     // Arabic processing if needed
     if (options?.arabicProcessing && this.isArabicText(content)) {
-      this.eventBus.emit(IraqiEventUtils.createArabicProcessingEvent(
-        `arabic_${messageId}`,
-        content,
-        "mixed_content"
-      ));
+      this.eventBus.emit(
+        IraqiEventUtils.createArabicProcessingEvent(
+          `arabic_${messageId}`,
+          content,
+          "mixed_content",
+        ),
+      );
     }
 
     // Send content
@@ -389,7 +409,7 @@ export class IraqiEventDrivenChat {
       isArabic: this.isArabicText(content),
       dialectFeatures: this.getDialectFeatures(content),
       culturallyValidated: options?.culturalValidation || false,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
 
     // End message event
@@ -398,7 +418,7 @@ export class IraqiEventDrivenChat {
       messageId,
       finalCulturalScore: 85, // Default score
       islamicCompliant: true, // Default compliance
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -408,13 +428,14 @@ export class IraqiEventDrivenChat {
   async processPayment(
     transactionId: string,
     amount: number,
-    gateway?: "zainCash" | "fastPay" | "nassWallet"
+    gateway?: "zainCash" | "fastPay" | "nassWallet",
   ): Promise<void> {
-    this.eventBus.emit(IraqiEventUtils.createPaymentEvent(
-      transactionId,
-      amount,
-      { gateway, islamicCompliant: true }
-    ));
+    this.eventBus.emit(
+      IraqiEventUtils.createPaymentEvent(transactionId, amount, {
+        gateway,
+        islamicCompliant: true,
+      }),
+    );
   }
 
   /**
@@ -423,7 +444,7 @@ export class IraqiEventDrivenChat {
   async coordinateAgents(
     coordinationId: string,
     requestType: string,
-    priority: "low" | "medium" | "high" | "critical" = "medium"
+    priority: "low" | "medium" | "high" | "critical" = "medium",
   ): Promise<void> {
     this.eventBus.emit({
       type: IraqiEventType.AGENT_COORDINATION_START,
@@ -431,14 +452,15 @@ export class IraqiEventDrivenChat {
       requestType,
       priority,
       culturalValidation: true,
-      requiresMultiAgent: requestType.includes('comprehensive'),
-      timestamp: Date.now()
+      requiresMultiAgent: requestType.includes("comprehensive"),
+      timestamp: Date.now(),
     });
   }
 
   // Utility methods
   private isArabicText(text: string): boolean {
-    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const arabicRegex =
+      /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     return arabicRegex.test(text);
   }
 
@@ -450,8 +472,17 @@ export class IraqiEventDrivenChat {
   }
 
   private getDialectFeatures(text: string): string[] {
-    const iraqiFeatures = ['چ', 'گ', 'ژ', 'پ', 'تشلون', 'شلونك', 'فلوس', 'هواي'];
-    return iraqiFeatures.filter(feature => text.includes(feature));
+    const iraqiFeatures = [
+      "چ",
+      "گ",
+      "ژ",
+      "پ",
+      "تشلون",
+      "شلونك",
+      "فلوس",
+      "هواي",
+    ];
+    return iraqiFeatures.filter((feature) => text.includes(feature));
   }
 
   /**
@@ -465,14 +496,14 @@ export class IraqiEventDrivenChat {
     const history = this.eventBus.getEventHistory();
     const eventsByType: Record<string, number> = {};
 
-    history.forEach(event => {
+    history.forEach((event) => {
       eventsByType[event.type] = (eventsByType[event.type] || 0) + 1;
     });
 
     return {
       totalEvents: history.length,
       eventsByType,
-      activeListeners: this.eventBus.getListenerCount()
+      activeListeners: this.eventBus.getListenerCount(),
     };
   }
 }
@@ -490,7 +521,7 @@ export function createIraqiEventDrivenChat(options?: {
 }
 
 // Convenience exports for common use cases
-export type IraqiAGUIEvent = 
+export type IraqiAGUIEvent =
   | IraqiTextMessageStartEvent
   | IraqiTextMessageContentEvent
   | IraqiTextMessageEndEvent
@@ -525,7 +556,7 @@ export function setupIraqiAGUI(config?: {
     enableArabicProcessing?: boolean;
   };
   professional?: {
-    defaultDomain?: 'legal' | 'medical' | 'educational' | 'business';
+    defaultDomain?: "legal" | "medical" | "educational" | "business";
     enableDomainValidation?: boolean;
   };
   performance?: {
@@ -548,36 +579,39 @@ export function setupIraqiAGUI(config?: {
       strictMode: config?.cultural?.strictIslamicCompliance || false,
       minimumScores: {
         cultural: config?.cultural?.minimumCulturalScore || 85,
-        islamic: 90
-      }
+        islamic: 90,
+      },
     },
     language: {
       ...DEFAULT_IRAQI_AGUI_CONFIG.language,
-      enableArabicProcessing: config?.cultural?.enableArabicProcessing !== false
+      enableArabicProcessing:
+        config?.cultural?.enableArabicProcessing !== false,
     },
     professional: {
       ...DEFAULT_IRAQI_AGUI_CONFIG.professional,
-      enableDomainValidation: config?.professional?.enableDomainValidation !== false
+      enableDomainValidation:
+        config?.professional?.enableDomainValidation !== false,
     },
     performance: {
       ...DEFAULT_IRAQI_AGUI_CONFIG.performance,
       timeoutSettings: {
         ...DEFAULT_IRAQI_AGUI_CONFIG.performance.timeoutSettings,
-        totalResponse: config?.performance?.maxResponseTime || 500
-      }
-    }
+        totalResponse: config?.performance?.maxResponseTime || 500,
+      },
+    },
   };
 
   return {
     config: enhancedConfig,
-    createOrchestrator: (services) => createIraqiAGUIOrchestrator(enhancedConfig, services),
-    createEventChat: (options) => createIraqiEventDrivenChat(options)
+    createOrchestrator: (services) =>
+      createIraqiAGUIOrchestrator(enhancedConfig, services),
+    createEventChat: (options) => createIraqiEventDrivenChat(options),
   };
 }
 
 // Version information
-export const IRAQI_AGUI_VERSION = '1.0.0';
-export const COMPATIBILITY_VERSION = 'AG-UI 0.9.x';
+export const IRAQI_AGUI_VERSION = "1.0.0";
+export const COMPATIBILITY_VERSION = "AG-UI 0.9.x";
 
 // Feature flags for progressive enhancement
 export const IRAQI_AGUI_FEATURES = {
@@ -588,7 +622,7 @@ export const IRAQI_AGUI_FEATURES = {
   PERFORMANCE_MONITORING: true,
   REAL_TIME_EVENTS: true,
   MULTI_AGENT_COORDINATION: true,
-  QUALITY_GATES: true
+  QUALITY_GATES: true,
 } as const;
 
 export type IraqiAGUIFeatureFlags = typeof IRAQI_AGUI_FEATURES;

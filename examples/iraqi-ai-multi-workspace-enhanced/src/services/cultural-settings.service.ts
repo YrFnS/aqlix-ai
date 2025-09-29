@@ -1,7 +1,7 @@
 /**
  * Iraqi Workspace Cultural Settings Service
  * Comprehensive cultural compliance and Islamic values integration for workspaces
- * 
+ *
  * Features:
  * - Dynamic cultural compliance scoring and validation
  * - Islamic values integration with professional domains
@@ -19,27 +19,35 @@ import {
   ProfessionalDomain,
   IraqiGovernorate,
   getDomainConfig,
-} from '../config/professional-domains.js';
+} from "../config/professional-domains.js";
 import {
   IraqiWorkspace,
   IraqiCulturalSettings,
   IraqiDialect,
   CulturalComplianceScore,
   CulturalValidationResult,
-} from '../types/workspace.types.js';
+} from "../types/workspace.types.js";
 
-export type CulturalStrictnessLevel = 'basic' | 'standard' | 'strict' | 'maximum';
-export type CulturalSensitivityLevel = 'low' | 'medium' | 'high' | 'maximum';
-export type ComplianceValidationLevel = 'lenient' | 'standard' | 'strict' | 'absolute';
+export type CulturalStrictnessLevel =
+  | "basic"
+  | "standard"
+  | "strict"
+  | "maximum";
+export type CulturalSensitivityLevel = "low" | "medium" | "high" | "maximum";
+export type ComplianceValidationLevel =
+  | "lenient"
+  | "standard"
+  | "strict"
+  | "absolute";
 
 export interface IslamicHoliday {
   id: string;
   name: string;
   nameAr: string;
-  type: 'major' | 'minor' | 'commemoration' | 'cultural';
+  type: "major" | "minor" | "commemoration" | "cultural";
   date: Date;
   duration: number; // days
-  observanceLevel: 'mandatory' | 'recommended' | 'optional';
+  observanceLevel: "mandatory" | "recommended" | "optional";
   workspaceImpact: {
     modifiedSchedule: boolean;
     reducedHours: boolean;
@@ -47,11 +55,16 @@ export interface IslamicHoliday {
     contentRestrictions: boolean;
   };
   culturalPractices: string[];
-  governorateVariations: Partial<Record<IraqiGovernorate, {
-    localName?: string;
-    additionalPractices?: string[];
-    observanceLevel?: 'mandatory' | 'recommended' | 'optional';
-  }>>;
+  governorateVariations: Partial<
+    Record<
+      IraqiGovernorate,
+      {
+        localName?: string;
+        additionalPractices?: string[];
+        observanceLevel?: "mandatory" | "recommended" | "optional";
+      }
+    >
+  >;
 }
 
 export interface PrayerTimeSettings {
@@ -60,10 +73,10 @@ export interface PrayerTimeSettings {
   notificationMinutes: number; // minutes before prayer
   workspacePause: boolean; // pause activities during prayer
   flexibleTiming: boolean; // allow time adjustments
-  madhab: 'hanafi' | 'shafii' | 'maliki' | 'hanbali'; // Islamic school of thought
+  madhab: "hanafi" | "shafii" | "maliki" | "hanbali"; // Islamic school of thought
   governorate: IraqiGovernorate;
   customAdjustments: {
-    fajr: number;    // minutes adjustment
+    fajr: number; // minutes adjustment
     dhuhr: number;
     asr: number;
     maghrib: number;
@@ -80,28 +93,32 @@ export interface HalalContentFilter {
   enabled: boolean;
   strictnessLevel: CulturalStrictnessLevel;
   categories: {
-    financial: { // Riba, gambling, etc.
+    financial: {
+      // Riba, gambling, etc.
       enabled: boolean;
       blockInterest: boolean;
       blockGambling: boolean;
       blockSpeculation: boolean;
       islamicAlternatives: boolean;
     };
-    dietary: { // Food content
+    dietary: {
+      // Food content
       enabled: boolean;
       blockPork: boolean;
       blockAlcohol: boolean;
       requireHalalCertification: boolean;
       halalDatabaseIntegration: boolean;
     };
-    social: { // Social interactions
+    social: {
+      // Social interactions
       enabled: boolean;
       blockInappropriateContent: boolean;
       enforceModesty: boolean;
       genderSeparation: boolean;
       familyFriendly: boolean;
     };
-    commercial: { // Business practices
+    commercial: {
+      // Business practices
       enabled: boolean;
       ethicalBusiness: boolean;
       fairTrade: boolean;
@@ -115,7 +132,7 @@ export interface HalalContentFilter {
     exceptions: string[];
     contextualAnalysis: boolean;
   };
-  violationResponse: 'block' | 'warn' | 'replace' | 'review';
+  violationResponse: "block" | "warn" | "replace" | "review";
 }
 
 export interface PoliticalNeutralitySettings {
@@ -134,7 +151,7 @@ export interface PoliticalNeutralitySettings {
     historicalDiscussion: boolean;
     legalProcedures: boolean;
   };
-  moderationLevel: 'automatic' | 'human_review' | 'hybrid';
+  moderationLevel: "automatic" | "human_review" | "hybrid";
   escalationProtocol: {
     reviewerRoles: string[];
     timeoutPeriod: number; // hours
@@ -144,7 +161,7 @@ export interface PoliticalNeutralitySettings {
 
 export interface CulturalAdaptationRules {
   communicationStyle: {
-    formalityLevel: 'very_formal' | 'formal' | 'respectful' | 'casual';
+    formalityLevel: "very_formal" | "formal" | "respectful" | "casual";
     honorificsUsage: boolean;
     culturalGreetings: boolean;
     respectfulLanguage: boolean;
@@ -171,7 +188,7 @@ export interface CulturalAdaptationRules {
 
 export interface GovernmentComplianceSettings {
   enabled: boolean;
-  complianceLevel: 'basic' | 'enhanced' | 'strict' | 'maximum';
+  complianceLevel: "basic" | "enhanced" | "strict" | "maximum";
   regulatoryFrameworks: {
     dataProtection: boolean;
     professionalStandards: boolean;
@@ -184,11 +201,16 @@ export interface GovernmentComplianceSettings {
     violationReporting: boolean;
     auditTrails: boolean;
   };
-  governorateSpecific: Partial<Record<IraqiGovernorate, {
-    additionalRequirements: string[];
-    localRegulations: string[];
-    culturalConsiderations: string[];
-  }>>;
+  governorateSpecific: Partial<
+    Record<
+      IraqiGovernorate,
+      {
+        additionalRequirements: string[];
+        localRegulations: string[];
+        culturalConsiderations: string[];
+      }
+    >
+  >;
 }
 
 export interface CulturalValidationEngine {
@@ -228,7 +250,8 @@ export interface CulturalValidationEngine {
 
 export class IraqiCulturalSettingsService {
   private islamicHolidays: Map<string, IslamicHoliday> = new Map();
-  private culturalValidationCache: Map<string, CulturalValidationResult> = new Map();
+  private culturalValidationCache: Map<string, CulturalValidationResult> =
+    new Map();
 
   constructor() {
     this.initializeIslamicHolidays();
@@ -240,99 +263,136 @@ export class IraqiCulturalSettingsService {
   private initializeIslamicHolidays(): void {
     const holidays: IslamicHoliday[] = [
       {
-        id: 'eid_al_fitr',
-        name: 'Eid al-Fitr',
-        nameAr: 'عيد الفطر',
-        type: 'major',
-        date: new Date('2025-03-30'), // Example date - should be calculated
+        id: "eid_al_fitr",
+        name: "Eid al-Fitr",
+        nameAr: "عيد الفطر",
+        type: "major",
+        date: new Date("2025-03-30"), // Example date - should be calculated
         duration: 3,
-        observanceLevel: 'mandatory',
+        observanceLevel: "mandatory",
         workspaceImpact: {
           modifiedSchedule: true,
           reducedHours: true,
           specialObservance: true,
           contentRestrictions: false,
         },
-        culturalPractices: ['family_gatherings', 'charity_giving', 'special_prayers', 'traditional_foods'],
+        culturalPractices: [
+          "family_gatherings",
+          "charity_giving",
+          "special_prayers",
+          "traditional_foods",
+        ],
         governorateVariations: {
-          najaf: { additionalPractices: ['shrine_visits'], observanceLevel: 'mandatory' },
-          karbala: { additionalPractices: ['shrine_visits'], observanceLevel: 'mandatory' },
+          najaf: {
+            additionalPractices: ["shrine_visits"],
+            observanceLevel: "mandatory",
+          },
+          karbala: {
+            additionalPractices: ["shrine_visits"],
+            observanceLevel: "mandatory",
+          },
         },
       },
       {
-        id: 'eid_al_adha',
-        name: 'Eid al-Adha',
-        nameAr: 'عيد الأضحى',
-        type: 'major',
-        date: new Date('2025-06-07'), // Example date
+        id: "eid_al_adha",
+        name: "Eid al-Adha",
+        nameAr: "عيد الأضحى",
+        type: "major",
+        date: new Date("2025-06-07"), // Example date
         duration: 4,
-        observanceLevel: 'mandatory',
+        observanceLevel: "mandatory",
         workspaceImpact: {
           modifiedSchedule: true,
           reducedHours: true,
           specialObservance: true,
           contentRestrictions: false,
         },
-        culturalPractices: ['sacrifice_rituals', 'family_gatherings', 'charity_distribution', 'pilgrimage_commemoration'],
+        culturalPractices: [
+          "sacrifice_rituals",
+          "family_gatherings",
+          "charity_distribution",
+          "pilgrimage_commemoration",
+        ],
         governorateVariations: {},
       },
       {
-        id: 'ramadan',
-        name: 'Ramadan',
-        nameAr: 'رمضان',
-        type: 'major',
-        date: new Date('2025-03-01'), // Example start date
+        id: "ramadan",
+        name: "Ramadan",
+        nameAr: "رمضان",
+        type: "major",
+        date: new Date("2025-03-01"), // Example start date
         duration: 30,
-        observanceLevel: 'mandatory',
+        observanceLevel: "mandatory",
         workspaceImpact: {
           modifiedSchedule: true,
           reducedHours: true,
           specialObservance: true,
           contentRestrictions: true,
         },
-        culturalPractices: ['fasting', 'night_prayers', 'quran_reading', 'charity_increase', 'family_iftar'],
+        culturalPractices: [
+          "fasting",
+          "night_prayers",
+          "quran_reading",
+          "charity_increase",
+          "family_iftar",
+        ],
         governorateVariations: {},
       },
       {
-        id: 'ashura',
-        name: 'Day of Ashura',
-        nameAr: 'يوم عاشوراء',
-        type: 'major',
-        date: new Date('2025-07-07'), // Example date
+        id: "ashura",
+        name: "Day of Ashura",
+        nameAr: "يوم عاشوراء",
+        type: "major",
+        date: new Date("2025-07-07"), // Example date
         duration: 1,
-        observanceLevel: 'mandatory',
+        observanceLevel: "mandatory",
         workspaceImpact: {
           modifiedSchedule: true,
           reducedHours: true,
           specialObservance: true,
           contentRestrictions: true,
         },
-        culturalPractices: ['commemoration', 'special_prayers', 'charity', 'reflection'],
+        culturalPractices: [
+          "commemoration",
+          "special_prayers",
+          "charity",
+          "reflection",
+        ],
         governorateVariations: {
-          najaf: { additionalPractices: ['processions'], observanceLevel: 'mandatory' },
-          karbala: { additionalPractices: ['major_processions'], observanceLevel: 'mandatory' },
+          najaf: {
+            additionalPractices: ["processions"],
+            observanceLevel: "mandatory",
+          },
+          karbala: {
+            additionalPractices: ["major_processions"],
+            observanceLevel: "mandatory",
+          },
         },
       },
       {
-        id: 'mawlid',
-        name: 'Mawlid an-Nabi',
-        nameAr: 'المولد النبوي',
-        type: 'commemoration',
-        date: new Date('2025-09-05'), // Example date
+        id: "mawlid",
+        name: "Mawlid an-Nabi",
+        nameAr: "المولد النبوي",
+        type: "commemoration",
+        date: new Date("2025-09-05"), // Example date
         duration: 1,
-        observanceLevel: 'recommended',
+        observanceLevel: "recommended",
         workspaceImpact: {
           modifiedSchedule: false,
           reducedHours: false,
           specialObservance: true,
           contentRestrictions: false,
         },
-        culturalPractices: ['prophetic_remembrance', 'special_gatherings', 'charitable_acts'],
+        culturalPractices: [
+          "prophetic_remembrance",
+          "special_gatherings",
+          "charitable_acts",
+        ],
         governorateVariations: {},
       },
     ];
 
-    holidays.forEach(holiday => {
+    holidays.forEach((holiday) => {
       this.islamicHolidays.set(holiday.id, holiday);
     });
   }
@@ -343,7 +403,7 @@ export class IraqiCulturalSettingsService {
   public createDefaultCulturalSettings(
     domain: ProfessionalDomain,
     governorate?: IraqiGovernorate,
-    strictnessLevel: CulturalStrictnessLevel = 'standard'
+    strictnessLevel: CulturalStrictnessLevel = "standard",
   ): IraqiCulturalSettings {
     const domainConfig = getDomainConfig(domain);
     const baseCompliance = domainConfig.culturalCompliance;
@@ -355,12 +415,13 @@ export class IraqiCulturalSettingsService {
       halalContentFilter: baseCompliance.islamicCompliance,
       politicalNeutralityMode: baseCompliance.politicalNeutrality,
       sectarianContentFilter: baseCompliance.sectarianSafety,
-      culturalSensitivityLevel: baseCompliance.culturalSensitivity === 'maximum' ? 'maximum' : 'high',
+      culturalSensitivityLevel:
+        baseCompliance.culturalSensitivity === "maximum" ? "maximum" : "high",
       arabicContentPriority: true,
       islamicHolidayObservance: baseCompliance.islamicCompliance,
-      genderSeparationSupport: domain === 'medical' || domain === 'religious',
-      modestyCommunicationMode: domain === 'medical' || domain === 'religious',
-      governmentComplianceMode: domain === 'government' || domain === 'legal',
+      genderSeparationSupport: domain === "medical" || domain === "religious",
+      modestyCommunicationMode: domain === "medical" || domain === "religious",
+      governmentComplianceMode: domain === "government" || domain === "legal",
     };
   }
 
@@ -370,18 +431,19 @@ export class IraqiCulturalSettingsService {
   public validateCulturalSettings(
     settings: IraqiCulturalSettings,
     domain: ProfessionalDomain,
-    governorate?: IraqiGovernorate
+    governorate?: IraqiGovernorate,
   ): CulturalValidationResult {
     const cacheKey = `${domain}_${governorate}_${JSON.stringify(settings)}`;
     const cached = this.culturalValidationCache.get(cacheKey);
-    
-    if (cached && Date.now() - cached.validatedAt.getTime() < 3600000) { // 1 hour cache
+
+    if (cached && Date.now() - cached.validatedAt.getTime() < 3600000) {
+      // 1 hour cache
       return cached;
     }
 
     const domainConfig = getDomainConfig(domain);
     const requiredCompliance = domainConfig.culturalCompliance;
-    
+
     const validationResult: CulturalValidationResult = {
       isValid: true,
       score: this.calculateComplianceScore(settings, domain),
@@ -399,47 +461,80 @@ export class IraqiCulturalSettingsService {
       validatedAt: new Date(),
       expiresAt: new Date(Date.now() + 3600000), // 1 hour
       domainSpecific: this.getDomainSpecificValidation(settings, domain),
-      governorateSpecific: governorate ? this.getGovernorateSpecificValidation(settings, governorate) : undefined,
+      governorateSpecific: governorate
+        ? this.getGovernorateSpecificValidation(settings, governorate)
+        : undefined,
     };
 
     // Validate Islamic compliance requirements
-    if (requiredCompliance.islamicCompliance && !settings.enableIslamicCompliance) {
-      validationResult.errors.push('Islamic compliance is required for this domain but is disabled');
+    if (
+      requiredCompliance.islamicCompliance &&
+      !settings.enableIslamicCompliance
+    ) {
+      validationResult.errors.push(
+        "Islamic compliance is required for this domain but is disabled",
+      );
       validationResult.isValid = false;
     }
 
     // Validate cultural sensitivity requirements
-    if (requiredCompliance.culturalSensitivity === 'maximum' && 
-        settings.culturalSensitivityLevel !== 'maximum') {
-      validationResult.errors.push('Maximum cultural sensitivity is required for this domain');
+    if (
+      requiredCompliance.culturalSensitivity === "maximum" &&
+      settings.culturalSensitivityLevel !== "maximum"
+    ) {
+      validationResult.errors.push(
+        "Maximum cultural sensitivity is required for this domain",
+      );
       validationResult.isValid = false;
     }
 
     // Validate political neutrality requirements
-    if (requiredCompliance.politicalNeutrality && !settings.politicalNeutralityMode) {
-      validationResult.errors.push('Political neutrality is required for this domain but is disabled');
+    if (
+      requiredCompliance.politicalNeutrality &&
+      !settings.politicalNeutralityMode
+    ) {
+      validationResult.errors.push(
+        "Political neutrality is required for this domain but is disabled",
+      );
       validationResult.isValid = false;
     }
 
     // Validate sectarian safety requirements
-    if (requiredCompliance.sectarianSafety && !settings.sectarianContentFilter) {
-      validationResult.errors.push('Sectarian content filtering is required for this domain but is disabled');
+    if (
+      requiredCompliance.sectarianSafety &&
+      !settings.sectarianContentFilter
+    ) {
+      validationResult.errors.push(
+        "Sectarian content filtering is required for this domain but is disabled",
+      );
       validationResult.isValid = false;
     }
 
     // Calculate detailed compliance scores
-    validationResult.culturalCompliance = this.calculateDetailedComplianceScore(settings, domain, governorate);
+    validationResult.culturalCompliance = this.calculateDetailedComplianceScore(
+      settings,
+      domain,
+      governorate,
+    );
 
     // Generate suggestions for improvement
-    validationResult.suggestions = this.generateImprovementSuggestions(settings, domain, validationResult.culturalCompliance);
+    validationResult.suggestions = this.generateImprovementSuggestions(
+      settings,
+      domain,
+      validationResult.culturalCompliance,
+    );
 
     // Add warnings for suboptimal configurations
     if (validationResult.culturalCompliance.overallScore < 0.8) {
-      validationResult.warnings.push('Cultural compliance score is below recommended threshold (80%)');
+      validationResult.warnings.push(
+        "Cultural compliance score is below recommended threshold (80%)",
+      );
     }
 
-    if (!settings.arabicContentPriority && domain !== 'business') {
-      validationResult.warnings.push('Arabic content priority is recommended for Iraqi workspaces');
+    if (!settings.arabicContentPriority && domain !== "business") {
+      validationResult.warnings.push(
+        "Arabic content priority is recommended for Iraqi workspaces",
+      );
     }
 
     // Cache the result
@@ -451,7 +546,10 @@ export class IraqiCulturalSettingsService {
   /**
    * Calculate overall compliance score
    */
-  private calculateComplianceScore(settings: IraqiCulturalSettings, domain: ProfessionalDomain): number {
+  private calculateComplianceScore(
+    settings: IraqiCulturalSettings,
+    domain: ProfessionalDomain,
+  ): number {
     const weights = {
       islamicCompliance: 0.3,
       culturalSensitivity: 0.25,
@@ -465,7 +563,7 @@ export class IraqiCulturalSettingsService {
     // Islamic compliance scoring
     if (settings.enableIslamicCompliance) {
       score += weights.islamicCompliance;
-      
+
       if (settings.prayerTimeReminders) score += 0.05;
       if (settings.halalContentFilter) score += 0.05;
       if (settings.islamicHolidayObservance) score += 0.05;
@@ -473,25 +571,32 @@ export class IraqiCulturalSettingsService {
 
     // Cultural sensitivity scoring
     const sensitivityMultiplier = {
-      'low': 0.25,
-      'medium': 0.5,
-      'high': 0.75,
-      'maximum': 1.0,
+      low: 0.25,
+      medium: 0.5,
+      high: 0.75,
+      maximum: 1.0,
     };
-    score += weights.culturalSensitivity * sensitivityMultiplier[settings.culturalSensitivityLevel];
+    score +=
+      weights.culturalSensitivity *
+      sensitivityMultiplier[settings.culturalSensitivityLevel];
 
     // Arabic support scoring
     if (settings.arabicContentPriority) score += weights.arabicSupport;
 
     // Professional standards (domain-specific)
     const domainConfig = getDomainConfig(domain);
-    if (domainConfig.culturalCompliance.islamicCompliance === settings.enableIslamicCompliance) {
+    if (
+      domainConfig.culturalCompliance.islamicCompliance ===
+      settings.enableIslamicCompliance
+    ) {
       score += weights.professionalStandards;
     }
 
     // Government compliance scoring
-    if (settings.governmentComplianceMode && 
-        (domain === 'government' || domain === 'legal' || domain === 'medical')) {
+    if (
+      settings.governmentComplianceMode &&
+      (domain === "government" || domain === "legal" || domain === "medical")
+    ) {
       score += weights.governmentCompliance;
     }
 
@@ -504,21 +609,27 @@ export class IraqiCulturalSettingsService {
   private calculateDetailedComplianceScore(
     settings: IraqiCulturalSettings,
     domain: ProfessionalDomain,
-    governorate?: IraqiGovernorate
+    governorate?: IraqiGovernorate,
   ): CulturalComplianceScore {
     const islamicCompliance = this.calculateIslamicComplianceScore(settings);
-    const culturalSensitivity = this.calculateCulturalSensitivityScore(settings);
+    const culturalSensitivity =
+      this.calculateCulturalSensitivityScore(settings);
     const arabicSupport = this.calculateArabicSupportScore(settings);
-    const professionalStandards = this.calculateProfessionalStandardsScore(settings, domain);
-    const governmentCompliance = this.calculateGovernmentComplianceScore(settings, domain);
+    const professionalStandards = this.calculateProfessionalStandardsScore(
+      settings,
+      domain,
+    );
+    const governmentCompliance = this.calculateGovernmentComplianceScore(
+      settings,
+      domain,
+    );
 
-    const overallScore = (
+    const overallScore =
       islamicCompliance * 0.3 +
       culturalSensitivity * 0.25 +
       arabicSupport * 0.2 +
       professionalStandards * 0.15 +
-      governmentCompliance * 0.1
-    );
+      governmentCompliance * 0.1;
 
     return {
       overallScore,
@@ -533,7 +644,9 @@ export class IraqiCulturalSettingsService {
   /**
    * Calculate Islamic compliance score
    */
-  private calculateIslamicComplianceScore(settings: IraqiCulturalSettings): number {
+  private calculateIslamicComplianceScore(
+    settings: IraqiCulturalSettings,
+  ): number {
     if (!settings.enableIslamicCompliance) return 0;
 
     let score = 0.4; // Base score for enabling Islamic compliance
@@ -550,12 +663,14 @@ export class IraqiCulturalSettingsService {
   /**
    * Calculate cultural sensitivity score
    */
-  private calculateCulturalSensitivityScore(settings: IraqiCulturalSettings): number {
+  private calculateCulturalSensitivityScore(
+    settings: IraqiCulturalSettings,
+  ): number {
     const levelScores = {
-      'low': 0.25,
-      'medium': 0.5,
-      'high': 0.75,
-      'maximum': 1.0,
+      low: 0.25,
+      medium: 0.5,
+      high: 0.75,
+      maximum: 1.0,
     };
 
     let baseScore = levelScores[settings.culturalSensitivityLevel];
@@ -574,10 +689,10 @@ export class IraqiCulturalSettingsService {
     let score = 0;
 
     if (settings.arabicContentPriority) score += 0.7;
-    
+
     // Additional scoring based on other Arabic-related features
     if (settings.enableIslamicCompliance) score += 0.2; // Islamic content is typically Arabic
-    if (settings.culturalSensitivityLevel === 'maximum') score += 0.1;
+    if (settings.culturalSensitivityLevel === "maximum") score += 0.1;
 
     return Math.min(1.0, score);
   }
@@ -587,7 +702,7 @@ export class IraqiCulturalSettingsService {
    */
   private calculateProfessionalStandardsScore(
     settings: IraqiCulturalSettings,
-    domain: ProfessionalDomain
+    domain: ProfessionalDomain,
   ): number {
     const domainConfig = getDomainConfig(domain);
     const requiredCompliance = domainConfig.culturalCompliance;
@@ -595,9 +710,17 @@ export class IraqiCulturalSettingsService {
     let score = 0;
 
     // Check alignment with domain requirements
-    if (requiredCompliance.islamicCompliance === settings.enableIslamicCompliance) score += 0.4;
-    if (requiredCompliance.politicalNeutrality === settings.politicalNeutralityMode) score += 0.3;
-    if (requiredCompliance.sectarianSafety === settings.sectarianContentFilter) score += 0.3;
+    if (
+      requiredCompliance.islamicCompliance === settings.enableIslamicCompliance
+    )
+      score += 0.4;
+    if (
+      requiredCompliance.politicalNeutrality ===
+      settings.politicalNeutralityMode
+    )
+      score += 0.3;
+    if (requiredCompliance.sectarianSafety === settings.sectarianContentFilter)
+      score += 0.3;
 
     return score;
   }
@@ -607,14 +730,14 @@ export class IraqiCulturalSettingsService {
    */
   private calculateGovernmentComplianceScore(
     settings: IraqiCulturalSettings,
-    domain: ProfessionalDomain
+    domain: ProfessionalDomain,
   ): number {
     if (!settings.governmentComplianceMode) return 0;
 
     let score = 0.5; // Base score for enabling government compliance
 
     // Higher scores for domains that require government compliance
-    if (domain === 'government' || domain === 'legal' || domain === 'medical') {
+    if (domain === "government" || domain === "legal" || domain === "medical") {
       score += 0.3;
     }
 
@@ -631,34 +754,52 @@ export class IraqiCulturalSettingsService {
   private generateImprovementSuggestions(
     settings: IraqiCulturalSettings,
     domain: ProfessionalDomain,
-    scores: CulturalComplianceScore
+    scores: CulturalComplianceScore,
   ): string[] {
     const suggestions: string[] = [];
 
     if (scores.islamicCompliance < 0.8 && !settings.enableIslamicCompliance) {
-      suggestions.push('Enable Islamic compliance to improve cultural appropriateness');
+      suggestions.push(
+        "Enable Islamic compliance to improve cultural appropriateness",
+      );
     }
 
-    if (scores.islamicCompliance < 0.8 && settings.enableIslamicCompliance && !settings.prayerTimeReminders) {
-      suggestions.push('Enable prayer time reminders to enhance Islamic compliance');
+    if (
+      scores.islamicCompliance < 0.8 &&
+      settings.enableIslamicCompliance &&
+      !settings.prayerTimeReminders
+    ) {
+      suggestions.push(
+        "Enable prayer time reminders to enhance Islamic compliance",
+      );
     }
 
     if (scores.culturalSensitivity < 0.8) {
-      suggestions.push(`Consider increasing cultural sensitivity level from ${settings.culturalSensitivityLevel} to higher setting`);
+      suggestions.push(
+        `Consider increasing cultural sensitivity level from ${settings.culturalSensitivityLevel} to higher setting`,
+      );
     }
 
     if (scores.arabicSupport < 0.8 && !settings.arabicContentPriority) {
-      suggestions.push('Enable Arabic content priority for better Iraqi workspace integration');
+      suggestions.push(
+        "Enable Arabic content priority for better Iraqi workspace integration",
+      );
     }
 
-    if (scores.governmentCompliance < 0.8 && 
-        (domain === 'government' || domain === 'legal' || domain === 'medical') &&
-        !settings.governmentComplianceMode) {
-      suggestions.push('Enable government compliance mode for regulatory adherence');
+    if (
+      scores.governmentCompliance < 0.8 &&
+      (domain === "government" || domain === "legal" || domain === "medical") &&
+      !settings.governmentComplianceMode
+    ) {
+      suggestions.push(
+        "Enable government compliance mode for regulatory adherence",
+      );
     }
 
     if (!settings.sectarianContentFilter) {
-      suggestions.push('Enable sectarian content filtering to promote workplace harmony');
+      suggestions.push(
+        "Enable sectarian content filtering to promote workplace harmony",
+      );
     }
 
     return suggestions;
@@ -669,16 +810,22 @@ export class IraqiCulturalSettingsService {
    */
   private getDomainSpecificValidation(
     settings: IraqiCulturalSettings,
-    domain: ProfessionalDomain
+    domain: ProfessionalDomain,
   ): Record<string, any> {
     const domainConfig = getDomainConfig(domain);
-    
+
     return {
       domainRequirements: domainConfig.culturalCompliance,
       configurationAlignment: {
-        islamicCompliance: domainConfig.culturalCompliance.islamicCompliance === settings.enableIslamicCompliance,
-        politicalNeutrality: domainConfig.culturalCompliance.politicalNeutrality === settings.politicalNeutralityMode,
-        sectarianSafety: domainConfig.culturalCompliance.sectarianSafety === settings.sectarianContentFilter,
+        islamicCompliance:
+          domainConfig.culturalCompliance.islamicCompliance ===
+          settings.enableIslamicCompliance,
+        politicalNeutrality:
+          domainConfig.culturalCompliance.politicalNeutrality ===
+          settings.politicalNeutralityMode,
+        sectarianSafety:
+          domainConfig.culturalCompliance.sectarianSafety ===
+          settings.sectarianContentFilter,
       },
       recommendedSettings: this.getRecommendedSettingsForDomain(domain),
     };
@@ -689,11 +836,15 @@ export class IraqiCulturalSettingsService {
    */
   private getGovernorateSpecificValidation(
     settings: IraqiCulturalSettings,
-    governorate: IraqiGovernorate
+    governorate: IraqiGovernorate,
   ): Record<string, any> {
-    const isReligiousCenter = governorate === 'najaf' || governorate === 'karbala';
-    const isCapital = governorate === 'baghdad';
-    const isKurdish = governorate === 'arbil' || governorate === 'sulaymaniyah' || governorate === 'dahuk';
+    const isReligiousCenter =
+      governorate === "najaf" || governorate === "karbala";
+    const isCapital = governorate === "baghdad";
+    const isKurdish =
+      governorate === "arbil" ||
+      governorate === "sulaymaniyah" ||
+      governorate === "dahuk";
 
     return {
       governorateProfile: {
@@ -721,19 +872,28 @@ export class IraqiCulturalSettingsService {
   /**
    * Get recommended cultural settings for a specific domain
    */
-  public getRecommendedSettingsForDomain(domain: ProfessionalDomain): IraqiCulturalSettings {
+  public getRecommendedSettingsForDomain(
+    domain: ProfessionalDomain,
+  ): IraqiCulturalSettings {
     const domainConfig = getDomainConfig(domain);
-    
+
     const baseSettings: IraqiCulturalSettings = {
-      enableIslamicCompliance: domainConfig.culturalCompliance.islamicCompliance,
-      strictnessLevel: domainConfig.culturalCompliance.culturalSensitivity === 'maximum' ? 'strict' : 'standard',
+      enableIslamicCompliance:
+        domainConfig.culturalCompliance.islamicCompliance,
+      strictnessLevel:
+        domainConfig.culturalCompliance.culturalSensitivity === "maximum"
+          ? "strict"
+          : "standard",
       prayerTimeReminders: domainConfig.culturalCompliance.islamicCompliance,
       halalContentFilter: domainConfig.culturalCompliance.islamicCompliance,
-      politicalNeutralityMode: domainConfig.culturalCompliance.politicalNeutrality,
+      politicalNeutralityMode:
+        domainConfig.culturalCompliance.politicalNeutrality,
       sectarianContentFilter: domainConfig.culturalCompliance.sectarianSafety,
-      culturalSensitivityLevel: domainConfig.culturalCompliance.culturalSensitivity,
+      culturalSensitivityLevel:
+        domainConfig.culturalCompliance.culturalSensitivity,
       arabicContentPriority: true,
-      islamicHolidayObservance: domainConfig.culturalCompliance.islamicCompliance,
+      islamicHolidayObservance:
+        domainConfig.culturalCompliance.islamicCompliance,
       genderSeparationSupport: false,
       modestyCommunicationMode: false,
       governmentComplianceMode: false,
@@ -741,34 +901,34 @@ export class IraqiCulturalSettingsService {
 
     // Domain-specific adjustments
     switch (domain) {
-      case 'medical':
+      case "medical":
         baseSettings.genderSeparationSupport = true;
         baseSettings.modestyCommunicationMode = true;
-        baseSettings.culturalSensitivityLevel = 'maximum';
+        baseSettings.culturalSensitivityLevel = "maximum";
         break;
-      
-      case 'religious':
-        baseSettings.strictnessLevel = 'strict';
+
+      case "religious":
+        baseSettings.strictnessLevel = "strict";
         baseSettings.genderSeparationSupport = true;
         baseSettings.modestyCommunicationMode = true;
-        baseSettings.culturalSensitivityLevel = 'maximum';
+        baseSettings.culturalSensitivityLevel = "maximum";
         break;
-      
-      case 'government':
-      case 'legal':
+
+      case "government":
+      case "legal":
         baseSettings.governmentComplianceMode = true;
         baseSettings.politicalNeutralityMode = true;
         baseSettings.sectarianContentFilter = true;
         break;
-      
-      case 'educational':
-        baseSettings.culturalSensitivityLevel = 'high';
+
+      case "educational":
+        baseSettings.culturalSensitivityLevel = "high";
         baseSettings.islamicHolidayObservance = true;
         break;
-      
-      case 'business':
-        baseSettings.strictnessLevel = 'standard';
-        baseSettings.culturalSensitivityLevel = 'high';
+
+      case "business":
+        baseSettings.strictnessLevel = "standard";
+        baseSettings.culturalSensitivityLevel = "high";
         break;
     }
 
@@ -780,34 +940,35 @@ export class IraqiCulturalSettingsService {
    */
   public applyCulturalSettings(
     workspace: Partial<IraqiWorkspace>,
-    settings: IraqiCulturalSettings
+    settings: IraqiCulturalSettings,
   ): Partial<IraqiWorkspace> {
     const updatedWorkspace = { ...workspace };
 
     // Apply cultural settings
     updatedWorkspace.culturalSettings = settings;
-    
+
     // Update related workspace properties based on cultural settings
     if (settings.arabicContentPriority) {
       updatedWorkspace.arabicSupport = true;
-      
+
       // Set appropriate dialect if not specified
       if (!updatedWorkspace.dialectPreference) {
-        updatedWorkspace.dialectPreference = 'general';
+        updatedWorkspace.dialectPreference = "general";
       }
     }
 
     // Apply government compliance settings
     if (settings.governmentComplianceMode && workspace.type) {
       const domainConfig = getDomainConfig(workspace.type);
-      
+
       // Set appropriate data retention for government compliance
       if (!updatedWorkspace.dataRetentionPeriod) {
-        updatedWorkspace.dataRetentionPeriod = workspace.type === 'government' ? 7300 : 2555; // 20 years vs 7 years
+        updatedWorkspace.dataRetentionPeriod =
+          workspace.type === "government" ? 7300 : 2555; // 20 years vs 7 years
       }
-      
+
       // Require approval for government workspaces
-      if (workspace.type === 'government') {
+      if (workspace.type === "government") {
         updatedWorkspace.requireApproval = true;
         updatedWorkspace.allowGuestAccess = false;
       }
@@ -827,14 +988,14 @@ export class IraqiCulturalSettingsService {
    */
   public getIslamicHolidays(
     governorate?: IraqiGovernorate,
-    year: number = new Date().getFullYear()
+    year: number = new Date().getFullYear(),
   ): IslamicHoliday[] {
     const holidays = Array.from(this.islamicHolidays.values());
-    
+
     // Filter and customize holidays based on governorate
-    return holidays.map(holiday => {
+    return holidays.map((holiday) => {
       const customizedHoliday = { ...holiday };
-      
+
       // Apply governorate-specific variations
       if (governorate && holiday.governorateVariations[governorate]) {
         const variation = holiday.governorateVariations[governorate];
@@ -842,13 +1003,15 @@ export class IraqiCulturalSettingsService {
           customizedHoliday.nameAr = variation.localName;
         }
         if (variation.additionalPractices) {
-          customizedHoliday.culturalPractices.push(...variation.additionalPractices);
+          customizedHoliday.culturalPractices.push(
+            ...variation.additionalPractices,
+          );
         }
         if (variation.observanceLevel) {
           customizedHoliday.observanceLevel = variation.observanceLevel;
         }
       }
-      
+
       return customizedHoliday;
     });
   }
@@ -858,7 +1021,7 @@ export class IraqiCulturalSettingsService {
    */
   public createPrayerTimeSettings(
     governorate: IraqiGovernorate,
-    madhab: PrayerTimeSettings['madhab'] = 'hanafi'
+    madhab: PrayerTimeSettings["madhab"] = "hanafi",
   ): PrayerTimeSettings {
     return {
       enabled: true,
@@ -886,41 +1049,44 @@ export class IraqiCulturalSettingsService {
    */
   public createHalalContentFilter(
     domain: ProfessionalDomain,
-    strictnessLevel: CulturalStrictnessLevel = 'standard'
+    strictnessLevel: CulturalStrictnessLevel = "standard",
   ): HalalContentFilter {
-    const domainRequiresDietaryFilter = domain === 'medical' || domain === 'religious';
-    const domainRequiresFinancialFilter = domain === 'business' || domain === 'legal';
+    const domainRequiresDietaryFilter =
+      domain === "medical" || domain === "religious";
+    const domainRequiresFinancialFilter =
+      domain === "business" || domain === "legal";
 
     return {
       enabled: true,
       strictnessLevel,
       categories: {
         financial: {
-          enabled: domainRequiresFinancialFilter || strictnessLevel === 'strict',
+          enabled:
+            domainRequiresFinancialFilter || strictnessLevel === "strict",
           blockInterest: true,
           blockGambling: true,
-          blockSpeculation: strictnessLevel === 'strict',
+          blockSpeculation: strictnessLevel === "strict",
           islamicAlternatives: true,
         },
         dietary: {
-          enabled: domainRequiresDietaryFilter || strictnessLevel === 'strict',
+          enabled: domainRequiresDietaryFilter || strictnessLevel === "strict",
           blockPork: true,
           blockAlcohol: true,
-          requireHalalCertification: strictnessLevel === 'strict',
+          requireHalalCertification: strictnessLevel === "strict",
           halalDatabaseIntegration: domainRequiresDietaryFilter,
         },
         social: {
           enabled: true,
           blockInappropriateContent: true,
-          enforceModesty: domain === 'medical' || domain === 'religious',
-          genderSeparation: domain === 'religious',
+          enforceModesty: domain === "medical" || domain === "religious",
+          genderSeparation: domain === "religious",
           familyFriendly: true,
         },
         commercial: {
-          enabled: domain === 'business' || strictnessLevel === 'strict',
+          enabled: domain === "business" || strictnessLevel === "strict",
           ethicalBusiness: true,
-          fairTrade: strictnessLevel === 'strict',
-          socialResponsibility: domain === 'business',
+          fairTrade: strictnessLevel === "strict",
+          socialResponsibility: domain === "business",
           environmentalConsciousness: false,
         },
       },
@@ -928,9 +1094,9 @@ export class IraqiCulturalSettingsService {
         keywords: [],
         patterns: [],
         exceptions: [],
-        contextualAnalysis: strictnessLevel === 'strict',
+        contextualAnalysis: strictnessLevel === "strict",
       },
-      violationResponse: strictnessLevel === 'strict' ? 'block' : 'warn',
+      violationResponse: strictnessLevel === "strict" ? "block" : "warn",
     };
   }
 
@@ -940,7 +1106,7 @@ export class IraqiCulturalSettingsService {
   public validateWorkspaceCompliance(
     workspaceId: string,
     content: any,
-    settings: IraqiCulturalSettings
+    settings: IraqiCulturalSettings,
   ): Promise<CulturalValidationResult> {
     // This would integrate with real-time validation services
     // For now, return a mock validation result

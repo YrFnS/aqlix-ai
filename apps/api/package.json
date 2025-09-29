@@ -1,0 +1,73 @@
+{
+  "name": "@iraqi-ai/api",
+  "version": "1.0.0",
+  "description": "Iraqi AI Chat System - FastAPI Python Backend with Node.js Tooling",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"bun run dev:python\" \"bun run dev:watch\"",
+    "dev:python": "cd ../../ && python -m uvicorn apps.api.main:app --reload --host 0.0.0.0 --port 8000",
+    "dev:watch": "bun --watch scripts/dev-watcher.ts",
+    "build": "bun run build:types && bun run build:tools",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:tools": "bun build scripts/build-tools.ts --outdir dist/tools --format esm --target bun",
+    "start": "python -m uvicorn apps.api.main:app --host 0.0.0.0 --port 8000",
+    "lint": "eslint scripts/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "test:integration": "bun test --testNamePattern='integration'",
+    "test:cultural": "python -m pytest tests/cultural/",
+    "test:arabic": "python -m pytest tests/arabic/",
+    "clean": "rm -rf dist __pycache__ .pytest_cache"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/api-client": "workspace:*",
+    "fastify": "^4.25.2",
+    "socket.io": "^4.7.4",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "joi": "^17.12.0",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "winston": "^3.11.0",
+    "redis": "^4.6.12"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^20.10.6",
+    "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/bcryptjs": "^2.4.6",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "iraqi",
+    "ai",
+    "api",
+    "fastapi",
+    "python",
+    "nodejs",
+    "tooling",
+    "arabic"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "apps/api"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0",
+    "python": ">=3.11.0"
+  }
+}

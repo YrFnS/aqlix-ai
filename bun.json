@@ -1,0 +1,34 @@
+{
+  "$schema": "https://bun.sh/schema.json",
+  "name": "iraqi-ai-chat-system",
+  "workspaces": ["apps/*", "packages/*"],
+  "install": {
+    "cache": {
+      "dir": ".bun/cache"
+    },
+    "lockfile": {
+      "path": "bun.lockb"
+    },
+    "registry": {
+      "url": "https://registry.npmjs.org/",
+      "timeout": 30000
+    },
+    "production": false,
+    "optional": true,
+    "dev": true,
+    "peer": false
+  },
+  "run": {
+    "bun": true,
+    "silent": false,
+    "cwd": "."
+  },
+  "test": {
+    "root": ".",
+    "preload": [],
+    "smol": false,
+    "coverage": true,
+    "bail": 0,
+    "timeout": 5000
+  }
+}

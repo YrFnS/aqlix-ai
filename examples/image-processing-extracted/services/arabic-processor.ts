@@ -1,13 +1,18 @@
 // Arabic RTL Processing Service - Iraqi AI Chat System
 // Phase 3: Agent Integration for Image Generation Prompts
 
-import { Task } from '@/tools/task';
-import { analyzeArabicText, detectArabicDialect, formatArabicText, validateArabicText } from '../utils/arabic';
+import { Task } from "@/tools/task";
+import {
+  analyzeArabicText,
+  detectArabicDialect,
+  formatArabicText,
+  validateArabicText,
+} from "../utils/arabic";
 
 // Enhanced Arabic processing interfaces
 export interface ArabicProcessingRequest {
   text: string;
-  target_dialect?: 'iraqi' | 'gulf' | 'msa' | 'levantine';
+  target_dialect?: "iraqi" | "gulf" | "msa" | "levantine";
   rtl_optimization?: boolean;
   mixed_language_support?: boolean;
   translation_required?: boolean;
@@ -22,7 +27,7 @@ export interface ArabicProcessingResult {
   dialect_detected: string;
   dialect_confidence: number;
   rtl_optimized: boolean;
-  text_direction: 'ltr' | 'rtl' | 'mixed';
+  text_direction: "ltr" | "rtl" | "mixed";
   translation?: {
     english: string;
     pronunciation: string;
@@ -52,16 +57,19 @@ export interface BilingualProcessingResult {
   mixed_content?: {
     segments: Array<{
       text: string;
-      language: 'ar' | 'en';
+      language: "ar" | "en";
       rtl: boolean;
       cultural_score: number;
     }>;
-    optimal_layout: 'rtl' | 'ltr' | 'auto';
+    optimal_layout: "rtl" | "ltr" | "auto";
   };
 }
 
 export class ArabicProcessorService {
-  private cache: Map<string, { result: ArabicProcessingResult; timestamp: number }>;
+  private cache: Map<
+    string,
+    { result: ArabicProcessingResult; timestamp: number }
+  >;
   private cacheTimeout: number = 300000; // 5 minutes
 
   constructor() {
@@ -71,10 +79,12 @@ export class ArabicProcessorService {
   /**
    * Process single Arabic text with full Iraqi AI agent integration
    */
-  async processArabicText(request: ArabicProcessingRequest): Promise<ArabicProcessingResult> {
+  async processArabicText(
+    request: ArabicProcessingRequest,
+  ): Promise<ArabicProcessingResult> {
     const startTime = Date.now();
     const cacheKey = `arabic:${JSON.stringify(request)}`;
-    
+
     // Check cache first
     const cached = this.getCached(cacheKey);
     if (cached) return cached;
@@ -91,11 +101,11 @@ export class ArabicProcessorService {
         prompt: `Process Arabic text with Iraqi cultural optimization:
 
 TEXT: "${request.text}"
-TARGET_DIALECT: ${request.target_dialect || 'iraqi'}
+TARGET_DIALECT: ${request.target_dialect || "iraqi"}
 RTL_OPTIMIZATION: ${request.rtl_optimization !== false}
 MIXED_LANGUAGE: ${request.mixed_language_support || false}
 TRANSLATION_REQUIRED: ${request.translation_required || false}
-PROFESSIONAL_DOMAIN: ${request.professional_domain || 'general'}
+PROFESSIONAL_DOMAIN: ${request.professional_domain || "general"}
 
 ANALYSIS REQUIRED:
 1. RTL layout optimization for image generation prompts
@@ -106,13 +116,13 @@ ANALYSIS REQUIRED:
 6. Professional domain terminology validation
 
 LOCAL_ANALYSIS_INPUT:
-- Detected Dialect: ${dialectDetection.dialect || 'unknown'}
+- Detected Dialect: ${dialectDetection.dialect || "unknown"}
 - Confidence: ${dialectDetection.confidence}
 - Is Arabic: ${localAnalysis.isArabic}
 - Is RTL: ${localAnalysis.isRTL}
 - Is Mixed: ${localAnalysis.isMixed}
 
-Please provide comprehensive Arabic processing for image generation context.`
+Please provide comprehensive Arabic processing for image generation context.`,
       });
 
       // Process cultural validation if requested
@@ -121,14 +131,14 @@ Please provide comprehensive Arabic processing for image generation context.`
         const validation = validateArabicText(request.text, {
           professionalDomain: request.professional_domain,
           islamicCompliance: true,
-          blockedTerms: []
+          blockedTerms: [],
         });
 
         culturalValidation = {
           score: validation.score,
           compliant: validation.isValid,
           issues: validation.issues,
-          recommendations: validation.suggestions
+          recommendations: validation.suggestions,
         };
       }
 
@@ -137,20 +147,20 @@ Please provide comprehensive Arabic processing for image generation context.`
         processed_text: formatArabicText(request.text, {
           preserveWhitespace: false,
           normalizeNumbers: true,
-          addBidiMarks: request.mixed_language_support
+          addBidiMarks: request.mixed_language_support,
         }),
         original_text: request.text,
-        dialect_detected: dialectDetection.dialect || 'unknown',
+        dialect_detected: dialectDetection.dialect || "unknown",
         dialect_confidence: dialectDetection.confidence,
         rtl_optimized: true,
         text_direction: localAnalysis.direction,
         cultural_validation: culturalValidation,
         processing_metadata: {
-          agent_id: 'arabic-rtl-processor',
+          agent_id: "arabic-rtl-processor",
           processing_time: Date.now() - startTime,
           confidence_score: Math.max(dialectDetection.confidence, 0.7),
-          quality_score: 0.95
-        }
+          quality_score: 0.95,
+        },
       };
 
       // Add translation if requested
@@ -158,17 +168,16 @@ Please provide comprehensive Arabic processing for image generation context.`
         result.translation = {
           english: `[Translation processed by agent]`,
           pronunciation: `[Pronunciation guide for Iraqi dialect]`,
-          transliteration: `[Latin script transliteration]`
+          transliteration: `[Latin script transliteration]`,
         };
       }
 
       // Cache successful result
       this.setCached(cacheKey, result);
       return result;
-
     } catch (error) {
-      console.error('Arabic processing failed:', error);
-      
+      console.error("Arabic processing failed:", error);
+
       // Fallback to local processing
       return this.fallbackProcessing(request, startTime);
     }
@@ -184,27 +193,27 @@ Please provide comprehensive Arabic processing for image generation context.`
       optimize_for_images?: boolean;
       cultural_adaptation?: boolean;
       professional_domain?: string;
-    }
+    },
   ): Promise<BilingualProcessingResult> {
     const opts = {
       optimize_for_images: true,
       cultural_adaptation: true,
-      professional_domain: 'general',
-      ...options
+      professional_domain: "general",
+      ...options,
     };
 
     // Process Arabic text
     const arabicResult = await this.processArabicText({
       text: arabicText,
-      target_dialect: 'iraqi',
+      target_dialect: "iraqi",
       rtl_optimization: true,
       mixed_language_support: !!englishText,
       cultural_validation: opts.cultural_adaptation,
-      professional_domain: opts.professional_domain
+      professional_domain: opts.professional_domain,
     });
 
     const result: BilingualProcessingResult = {
-      arabic: arabicResult
+      arabic: arabicResult,
     };
 
     // Process English adaptation if provided
@@ -226,42 +235,42 @@ ADAPTATION_REQUIREMENTS:
 4. Consistency with Arabic context
 5. Image generation optimization
 
-Please provide culturally adapted English text with back-translation validation.`
+Please provide culturally adapted English text with back-translation validation.`,
         });
 
         result.english = {
           text: englishText,
           cultural_adaptation: englishText, // Would be filled by agent
-          back_translation: `[Back-translation from Arabic context]`
+          back_translation: `[Back-translation from Arabic context]`,
         };
       } catch (error) {
-        console.warn('English adaptation failed, using original:', error);
+        console.warn("English adaptation failed, using original:", error);
         result.english = {
           text: englishText,
           cultural_adaptation: englishText,
-          back_translation: englishText
+          back_translation: englishText,
         };
       }
     }
 
     // Analyze mixed content layout if both languages present
-    if (englishText && arabicResult.text_direction === 'mixed') {
+    if (englishText && arabicResult.text_direction === "mixed") {
       result.mixed_content = {
         segments: [
           {
             text: arabicResult.processed_text,
-            language: 'ar',
+            language: "ar",
             rtl: true,
-            cultural_score: arabicResult.cultural_validation?.score || 0.9
+            cultural_score: arabicResult.cultural_validation?.score || 0.9,
           },
           {
             text: result.english?.cultural_adaptation || englishText,
-            language: 'en',
+            language: "en",
             rtl: false,
-            cultural_score: 0.85
-          }
+            cultural_score: 0.85,
+          },
         ],
-        optimal_layout: 'auto' // Intelligent layout based on content
+        optimal_layout: "auto", // Intelligent layout based on content
       };
     }
 
@@ -277,7 +286,7 @@ Please provide culturally adapted English text with back-translation validation.
       style?: string;
       professional_domain?: string;
       cultural_requirements?: string[];
-    }
+    },
   ): Promise<{
     optimized_prompt: string;
     cultural_enhancements: string[];
@@ -285,10 +294,10 @@ Please provide culturally adapted English text with back-translation validation.
     agent_recommendations: string[];
   }> {
     const context = {
-      style: 'photorealistic',
-      professional_domain: 'general',
-      cultural_requirements: ['islamic_appropriate', 'iraqi_context'],
-      ...imageContext
+      style: "photorealistic",
+      professional_domain: "general",
+      cultural_requirements: ["islamic_appropriate", "iraqi_context"],
+      ...imageContext,
     };
 
     try {
@@ -300,7 +309,7 @@ Please provide culturally adapted English text with back-translation validation.
 ORIGINAL_PROMPT: "${prompt}"
 IMAGE_STYLE: ${context.style}
 PROFESSIONAL_DOMAIN: ${context.professional_domain}
-CULTURAL_REQUIREMENTS: ${context.cultural_requirements.join(', ')}
+CULTURAL_REQUIREMENTS: ${context.cultural_requirements.join(", ")}
 
 OPTIMIZATION_OBJECTIVES:
 1. Enhance prompt clarity for AI image generation
@@ -316,37 +325,36 @@ ANALYSIS_FOCUS:
 - Islamic compliance verification
 - Technical prompt engineering
 
-Please provide optimized prompt with detailed enhancement explanations.`
+Please provide optimized prompt with detailed enhancement explanations.`,
       });
 
       return {
         optimized_prompt: prompt, // Would be enhanced by agent
         cultural_enhancements: [
-          'Added Iraqi cultural context markers',
-          'Integrated Islamic architectural elements',
-          'Enhanced professional terminology'
+          "Added Iraqi cultural context markers",
+          "Integrated Islamic architectural elements",
+          "Enhanced professional terminology",
         ],
         technical_improvements: [
-          'Improved descriptive precision',
-          'Added composition guidelines',
-          'Enhanced lighting specifications'
+          "Improved descriptive precision",
+          "Added composition guidelines",
+          "Enhanced lighting specifications",
         ],
         agent_recommendations: [
-          'Consider Arabic calligraphy elements',
-          'Include traditional Iraqi patterns',
-          'Validate against cultural standards'
-        ]
+          "Consider Arabic calligraphy elements",
+          "Include traditional Iraqi patterns",
+          "Validate against cultural standards",
+        ],
       };
-
     } catch (error) {
-      console.error('Image prompt optimization failed:', error);
-      
+      console.error("Image prompt optimization failed:", error);
+
       // Fallback optimization
       return {
         optimized_prompt: prompt,
-        cultural_enhancements: ['Basic cultural validation applied'],
-        technical_improvements: ['Standard prompt formatting'],
-        agent_recommendations: ['Manual cultural review recommended']
+        cultural_enhancements: ["Basic cultural validation applied"],
+        technical_improvements: ["Standard prompt formatting"],
+        agent_recommendations: ["Manual cultural review recommended"],
       };
     }
   }
@@ -360,7 +368,7 @@ Please provide optimized prompt with detailed enhancement explanations.`
       professional_domain?: string;
       islamic_compliance?: boolean;
       user_role?: string;
-    }
+    },
   ): Promise<{
     overall_score: number;
     arabic_validation?: any;
@@ -370,10 +378,10 @@ Please provide optimized prompt with detailed enhancement explanations.`
     approved: boolean;
   }> {
     const ctx = {
-      professional_domain: 'general',
+      professional_domain: "general",
       islamic_compliance: true,
-      user_role: 'user',
-      ...context
+      user_role: "user",
+      ...context,
     };
 
     const validations: any[] = [];
@@ -384,9 +392,9 @@ Please provide optimized prompt with detailed enhancement explanations.`
     if (content.arabic) {
       const arabicValidation = validateArabicText(content.arabic, {
         professionalDomain: ctx.professional_domain,
-        islamicCompliance: ctx.islamic_compliance
+        islamicCompliance: ctx.islamic_compliance,
       });
-      validations.push({ type: 'arabic', result: arabicValidation });
+      validations.push({ type: "arabic", result: arabicValidation });
       totalScore += arabicValidation.score;
       validationCount++;
     }
@@ -400,7 +408,7 @@ Please provide optimized prompt with detailed enhancement explanations.`
           prompt: `Validate English content for Iraqi cultural appropriateness:
 
 ENGLISH_CONTENT: "${content.english}"
-ARABIC_CONTEXT: "${content.arabic || ''}"
+ARABIC_CONTEXT: "${content.arabic || ""}"
 PROFESSIONAL_DOMAIN: ${ctx.professional_domain}
 ISLAMIC_COMPLIANCE: ${ctx.islamic_compliance}
 
@@ -411,33 +419,40 @@ VALIDATION_CRITERIA:
 4. Consistency with Arabic context
 5. Overall appropriateness score
 
-Please provide detailed validation results.`
+Please provide detailed validation results.`,
         });
 
-        const englishValidation = { score: 0.9, isValid: true, issues: [], suggestions: [] };
-        validations.push({ type: 'english', result: englishValidation });
+        const englishValidation = {
+          score: 0.9,
+          isValid: true,
+          issues: [],
+          suggestions: [],
+        };
+        validations.push({ type: "english", result: englishValidation });
         totalScore += englishValidation.score;
         validationCount++;
       } catch (error) {
-        console.warn('English validation failed:', error);
+        console.warn("English validation failed:", error);
       }
     }
 
     const overallScore = validationCount > 0 ? totalScore / validationCount : 0;
-    const consistencyScore = validations.length > 1 ? 
-      Math.abs(validations[0].result.score - validations[1].result.score) : 1.0;
+    const consistencyScore =
+      validations.length > 1
+        ? Math.abs(validations[0].result.score - validations[1].result.score)
+        : 1.0;
 
     return {
       overall_score: overallScore,
-      arabic_validation: validations.find(v => v.type === 'arabic')?.result,
-      english_validation: validations.find(v => v.type === 'english')?.result,
+      arabic_validation: validations.find((v) => v.type === "arabic")?.result,
+      english_validation: validations.find((v) => v.type === "english")?.result,
       consistency_score: 1.0 - consistencyScore, // Higher is better
       recommendations: [
-        'Content passes cultural validation',
-        'Islamic compliance verified',
-        'Professional domain appropriate'
+        "Content passes cultural validation",
+        "Islamic compliance verified",
+        "Professional domain appropriate",
       ],
-      approved: overallScore >= 0.8 && (1.0 - consistencyScore) >= 0.7
+      approved: overallScore >= 0.8 && 1.0 - consistencyScore >= 0.7,
     };
   }
 
@@ -456,7 +471,7 @@ Please provide detailed validation results.`
       success_rate: 0.96, // Based on historical data
       average_processing_time: 180, // ms
       dialect_detection_accuracy: 0.87,
-      cultural_compliance_rate: 0.94
+      cultural_compliance_rate: 0.94,
     };
   }
 
@@ -481,35 +496,38 @@ Please provide detailed validation results.`
 
   private setCached(key: string, result: ArabicProcessingResult): void {
     this.cache.set(key, { result, timestamp: Date.now() });
-    
+
     // Clean up old entries
     if (this.cache.size > 500) {
       const oldestKeys = Array.from(this.cache.entries())
         .sort(([, a], [, b]) => a.timestamp - b.timestamp)
         .slice(0, 100)
         .map(([key]) => key);
-      
-      oldestKeys.forEach(key => this.cache.delete(key));
+
+      oldestKeys.forEach((key) => this.cache.delete(key));
     }
   }
 
-  private fallbackProcessing(request: ArabicProcessingRequest, startTime: number): ArabicProcessingResult {
+  private fallbackProcessing(
+    request: ArabicProcessingRequest,
+    startTime: number,
+  ): ArabicProcessingResult {
     const localAnalysis = analyzeArabicText(request.text);
     const dialectDetection = detectArabicDialect(request.text);
-    
+
     return {
       processed_text: formatArabicText(request.text),
       original_text: request.text,
-      dialect_detected: dialectDetection.dialect || 'unknown',
+      dialect_detected: dialectDetection.dialect || "unknown",
       dialect_confidence: dialectDetection.confidence || 0.5,
       rtl_optimized: localAnalysis.isRTL,
       text_direction: localAnalysis.direction,
       processing_metadata: {
-        agent_id: 'local-fallback',
+        agent_id: "local-fallback",
         processing_time: Date.now() - startTime,
         confidence_score: 0.6, // Lower confidence for fallback
-        quality_score: 0.7
-      }
+        quality_score: 0.7,
+      },
     };
   }
 }
@@ -521,5 +539,5 @@ export const arabicProcessor = new ArabicProcessorService();
 export type {
   ArabicProcessingRequest,
   ArabicProcessingResult,
-  BilingualProcessingResult
+  BilingualProcessingResult,
 };

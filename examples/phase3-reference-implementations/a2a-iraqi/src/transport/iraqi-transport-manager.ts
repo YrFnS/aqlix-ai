@@ -1,9 +1,9 @@
 /**
  * Iraqi Multi-Transport Manager
- * 
+ *
  * Implements multi-transport communication layer for Iraqi agents
  * Supports JSON-RPC, gRPC, and HTTP+JSON protocols with cultural validation
- * 
+ *
  * Based on A2A transport patterns with Iraqi enhancements:
  * - Cultural sovereignty validation for all communications
  * - Enhanced security levels including governmental-grade protocols
@@ -11,16 +11,21 @@
  * - Arabic text processing support across all transports
  */
 
-import { IraqiAgentCard, IraqiAgentMessage, IraqiTransportConfig, IraqiCulturalContext } from '../types/iraqi-a2a-types.js';
+import {
+  IraqiAgentCard,
+  IraqiAgentMessage,
+  IraqiTransportConfig,
+  IraqiCulturalContext,
+} from "../types/iraqi-a2a-types.js";
 
-export type TransportType = 'json-rpc' | 'grpc' | 'http-json';
+export type TransportType = "json-rpc" | "grpc" | "http-json";
 
 export interface IraqiTransportRequest {
   agentCard: IraqiAgentCard;
   message: IraqiAgentMessage;
   culturalContext: IraqiCulturalContext;
   transportType: TransportType;
-  securityLevel: 'standard' | 'enhanced' | 'governmental';
+  securityLevel: "standard" | "enhanced" | "governmental";
   timeout?: number;
 }
 
@@ -57,42 +62,51 @@ export class IraqiJsonRpcTransport {
 
     try {
       // Pre-validate cultural context
-      const culturalValidation = await this.validateCulturalContext(request.culturalContext);
-      if (culturalValidation.islamicCompliance < 90 || culturalValidation.culturalAppropriateness < 95) {
-        throw new Error('Cultural validation failed - insufficient compliance scores');
+      const culturalValidation = await this.validateCulturalContext(
+        request.culturalContext,
+      );
+      if (
+        culturalValidation.islamicCompliance < 90 ||
+        culturalValidation.culturalAppropriateness < 95
+      ) {
+        throw new Error(
+          "Cultural validation failed - insufficient compliance scores",
+        );
       }
 
       // Prepare JSON-RPC request
       const jsonRpcRequest = {
-        jsonrpc: '2.0',
-        method: 'iraqi_agent_message',
+        jsonrpc: "2.0",
+        method: "iraqi_agent_message",
         params: {
           agent_card: request.agentCard,
           message: request.message,
           cultural_context: request.culturalContext,
-          security_level: request.securityLevel
+          security_level: request.securityLevel,
         },
-        id: Date.now()
+        id: Date.now(),
       };
 
       // Send request with timeout
       const response = await fetch(this.endpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'X-Iraqi-Cultural-Version': '1.0',
-          'X-Security-Level': request.securityLevel
+          "Content-Type": "application/json",
+          "X-Iraqi-Cultural-Version": "1.0",
+          "X-Security-Level": request.securityLevel,
         },
         body: JSON.stringify(jsonRpcRequest),
-        signal: AbortSignal.timeout(request.timeout || this.timeout)
+        signal: AbortSignal.timeout(request.timeout || this.timeout),
       });
 
       if (!response.ok) {
-        throw new Error(`JSON-RPC transport failed: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `JSON-RPC transport failed: ${response.status} ${response.statusText}`,
+        );
       }
 
       const result = await response.json();
-      
+
       if (result.error) {
         throw new Error(`JSON-RPC error: ${result.error.message}`);
       }
@@ -105,43 +119,62 @@ export class IraqiJsonRpcTransport {
         culturalValidation,
         performance: {
           responseTime,
-          transportEfficiency: this.calculateEfficiency(responseTime, 'json-rpc')
-        }
+          transportEfficiency: this.calculateEfficiency(
+            responseTime,
+            "json-rpc",
+          ),
+        },
       };
-
     } catch (error) {
       const responseTime = Date.now() - startTime;
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown JSON-RPC transport error',
-        culturalValidation: await this.validateCulturalContext(request.culturalContext),
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown JSON-RPC transport error",
+        culturalValidation: await this.validateCulturalContext(
+          request.culturalContext,
+        ),
         performance: {
           responseTime,
-          transportEfficiency: 0
-        }
+          transportEfficiency: 0,
+        },
       };
     }
   }
 
-  private async validateCulturalContext(context: IraqiCulturalContext): Promise<{ islamicCompliance: number; culturalAppropriateness: number; politicalNeutrality: number; }> {
+  private async validateCulturalContext(
+    context: IraqiCulturalContext,
+  ): Promise<{
+    islamicCompliance: number;
+    culturalAppropriateness: number;
+    politicalNeutrality: number;
+  }> {
     // Implement cultural validation logic
     return {
       islamicCompliance: 95,
       culturalAppropriateness: 97,
-      politicalNeutrality: 100
+      politicalNeutrality: 100,
     };
   }
 
-  private calculateEfficiency(responseTime: number, transport: TransportType): number {
+  private calculateEfficiency(
+    responseTime: number,
+    transport: TransportType,
+  ): number {
     // Calculate transport efficiency based on response time and transport type
     const baselines = {
-      'json-rpc': 1000, // 1s baseline for JSON-RPC
-      'grpc': 800,      // 800ms baseline for gRPC
-      'http-json': 1200 // 1.2s baseline for HTTP+JSON
+      "json-rpc": 1000, // 1s baseline for JSON-RPC
+      grpc: 800, // 800ms baseline for gRPC
+      "http-json": 1200, // 1.2s baseline for HTTP+JSON
     };
 
     const baseline = baselines[transport];
-    return Math.max(0, Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100));
+    return Math.max(
+      0,
+      Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100),
+    );
   }
 }
 
@@ -163,9 +196,16 @@ export class IraqiGrpcTransport {
 
     try {
       // Pre-validate cultural context
-      const culturalValidation = await this.validateCulturalContext(request.culturalContext);
-      if (culturalValidation.islamicCompliance < 90 || culturalValidation.culturalAppropriateness < 95) {
-        throw new Error('Cultural validation failed - insufficient compliance scores');
+      const culturalValidation = await this.validateCulturalContext(
+        request.culturalContext,
+      );
+      if (
+        culturalValidation.islamicCompliance < 90 ||
+        culturalValidation.culturalAppropriateness < 95
+      ) {
+        throw new Error(
+          "Cultural validation failed - insufficient compliance scores",
+        );
       }
 
       // Simulate gRPC call (actual implementation would use generated protobuf client)
@@ -173,55 +213,73 @@ export class IraqiGrpcTransport {
         agentCard: request.agentCard,
         message: request.message,
         culturalContext: request.culturalContext,
-        securityLevel: request.securityLevel
+        securityLevel: request.securityLevel,
       };
 
       // In actual implementation, this would be:
       // const response = await this.client.SendMessage(grpcRequest, { deadline: Date.now() + this.timeout });
-      
+
       const responseTime = Date.now() - startTime;
 
       return {
         success: true,
-        response: { /* simulated gRPC response */ },
+        response: {
+          /* simulated gRPC response */
+        },
         culturalValidation,
         performance: {
           responseTime,
-          transportEfficiency: this.calculateEfficiency(responseTime, 'grpc')
-        }
+          transportEfficiency: this.calculateEfficiency(responseTime, "grpc"),
+        },
       };
-
     } catch (error) {
       const responseTime = Date.now() - startTime;
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown gRPC transport error',
-        culturalValidation: await this.validateCulturalContext(request.culturalContext),
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown gRPC transport error",
+        culturalValidation: await this.validateCulturalContext(
+          request.culturalContext,
+        ),
         performance: {
           responseTime,
-          transportEfficiency: 0
-        }
+          transportEfficiency: 0,
+        },
       };
     }
   }
 
-  private async validateCulturalContext(context: IraqiCulturalContext): Promise<{ islamicCompliance: number; culturalAppropriateness: number; politicalNeutrality: number; }> {
+  private async validateCulturalContext(
+    context: IraqiCulturalContext,
+  ): Promise<{
+    islamicCompliance: number;
+    culturalAppropriateness: number;
+    politicalNeutrality: number;
+  }> {
     return {
       islamicCompliance: 95,
       culturalAppropriateness: 97,
-      politicalNeutrality: 100
+      politicalNeutrality: 100,
     };
   }
 
-  private calculateEfficiency(responseTime: number, transport: TransportType): number {
+  private calculateEfficiency(
+    responseTime: number,
+    transport: TransportType,
+  ): number {
     const baselines = {
-      'json-rpc': 1000,
-      'grpc': 800,
-      'http-json': 1200
+      "json-rpc": 1000,
+      grpc: 800,
+      "http-json": 1200,
     };
 
     const baseline = baselines[transport];
-    return Math.max(0, Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100));
+    return Math.max(
+      0,
+      Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100),
+    );
   }
 }
 
@@ -243,9 +301,16 @@ export class IraqiHttpJsonTransport {
 
     try {
       // Pre-validate cultural context
-      const culturalValidation = await this.validateCulturalContext(request.culturalContext);
-      if (culturalValidation.islamicCompliance < 90 || culturalValidation.culturalAppropriateness < 95) {
-        throw new Error('Cultural validation failed - insufficient compliance scores');
+      const culturalValidation = await this.validateCulturalContext(
+        request.culturalContext,
+      );
+      if (
+        culturalValidation.islamicCompliance < 90 ||
+        culturalValidation.culturalAppropriateness < 95
+      ) {
+        throw new Error(
+          "Cultural validation failed - insufficient compliance scores",
+        );
       }
 
       // Prepare HTTP+JSON request
@@ -253,24 +318,26 @@ export class IraqiHttpJsonTransport {
         agent_card: request.agentCard,
         message: request.message,
         cultural_context: request.culturalContext,
-        security_level: request.securityLevel
+        security_level: request.securityLevel,
       };
 
       const response = await fetch(`${this.baseUrl}/agents/message`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-Iraqi-Cultural-Version': '1.0',
-          'X-Security-Level': request.securityLevel,
-          'X-Agent-Name': request.agentCard.name
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-Iraqi-Cultural-Version": "1.0",
+          "X-Security-Level": request.securityLevel,
+          "X-Agent-Name": request.agentCard.name,
         },
         body: JSON.stringify(httpRequest),
-        signal: AbortSignal.timeout(request.timeout || this.timeout)
+        signal: AbortSignal.timeout(request.timeout || this.timeout),
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP+JSON transport failed: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `HTTP+JSON transport failed: ${response.status} ${response.statusText}`,
+        );
       }
 
       const result = await response.json();
@@ -282,41 +349,60 @@ export class IraqiHttpJsonTransport {
         culturalValidation,
         performance: {
           responseTime,
-          transportEfficiency: this.calculateEfficiency(responseTime, 'http-json')
-        }
+          transportEfficiency: this.calculateEfficiency(
+            responseTime,
+            "http-json",
+          ),
+        },
       };
-
     } catch (error) {
       const responseTime = Date.now() - startTime;
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown HTTP+JSON transport error',
-        culturalValidation: await this.validateCulturalContext(request.culturalContext),
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown HTTP+JSON transport error",
+        culturalValidation: await this.validateCulturalContext(
+          request.culturalContext,
+        ),
         performance: {
           responseTime,
-          transportEfficiency: 0
-        }
+          transportEfficiency: 0,
+        },
       };
     }
   }
 
-  private async validateCulturalContext(context: IraqiCulturalContext): Promise<{ islamicCompliance: number; culturalAppropriateness: number; politicalNeutrality: number; }> {
+  private async validateCulturalContext(
+    context: IraqiCulturalContext,
+  ): Promise<{
+    islamicCompliance: number;
+    culturalAppropriateness: number;
+    politicalNeutrality: number;
+  }> {
     return {
       islamicCompliance: 95,
       culturalAppropriateness: 97,
-      politicalNeutrality: 100
+      politicalNeutrality: 100,
     };
   }
 
-  private calculateEfficiency(responseTime: number, transport: TransportType): number {
+  private calculateEfficiency(
+    responseTime: number,
+    transport: TransportType,
+  ): number {
     const baselines = {
-      'json-rpc': 1000,
-      'grpc': 800,
-      'http-json': 1200
+      "json-rpc": 1000,
+      grpc: 800,
+      "http-json": 1200,
     };
 
     const baseline = baselines[transport];
-    return Math.max(0, Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100));
+    return Math.max(
+      0,
+      Math.min(100, 100 - ((responseTime - baseline) / baseline) * 100),
+    );
   }
 }
 
@@ -337,32 +423,41 @@ export class IraqiTransportManager {
   private initializeTransports(): void {
     // Initialize JSON-RPC transport
     if (this.config.jsonRpc?.enabled) {
-      this.transports.set('json-rpc', new IraqiJsonRpcTransport(
-        this.config.jsonRpc.endpoint,
-        this.config.jsonRpc.timeout
-      ));
+      this.transports.set(
+        "json-rpc",
+        new IraqiJsonRpcTransport(
+          this.config.jsonRpc.endpoint,
+          this.config.jsonRpc.timeout,
+        ),
+      );
     }
 
     // Initialize gRPC transport
     if (this.config.grpc?.enabled) {
-      this.transports.set('grpc', new IraqiGrpcTransport(
-        this.config.grpc.endpoint,
-        this.config.grpc.timeout
-      ));
+      this.transports.set(
+        "grpc",
+        new IraqiGrpcTransport(
+          this.config.grpc.endpoint,
+          this.config.grpc.timeout,
+        ),
+      );
     }
 
     // Initialize HTTP+JSON transport
     if (this.config.httpJson?.enabled) {
-      this.transports.set('http-json', new IraqiHttpJsonTransport(
-        this.config.httpJson.baseUrl,
-        this.config.httpJson.timeout
-      ));
+      this.transports.set(
+        "http-json",
+        new IraqiHttpJsonTransport(
+          this.config.httpJson.baseUrl,
+          this.config.httpJson.timeout,
+        ),
+      );
     }
   }
 
   async send(request: IraqiTransportRequest): Promise<IraqiTransportResponse> {
     const transport = this.transports.get(request.transportType);
-    
+
     if (!transport) {
       return {
         success: false,
@@ -370,12 +465,12 @@ export class IraqiTransportManager {
         culturalValidation: {
           islamicCompliance: 0,
           culturalAppropriateness: 0,
-          politicalNeutrality: 0
+          politicalNeutrality: 0,
         },
         performance: {
           responseTime: 0,
-          transportEfficiency: 0
-        }
+          transportEfficiency: 0,
+        },
       };
     }
 
@@ -389,40 +484,49 @@ export class IraqiTransportManager {
     agentCard: IraqiAgentCard,
     message: IraqiAgentMessage,
     culturalContext: IraqiCulturalContext,
-    securityLevel: 'standard' | 'enhanced' | 'governmental' = 'standard'
+    securityLevel: "standard" | "enhanced" | "governmental" = "standard",
   ): Promise<IraqiTransportResponse> {
     // Select optimal transport based on agent capabilities and requirements
-    const optimalTransport = this.selectOptimalTransport(agentCard, securityLevel);
+    const optimalTransport = this.selectOptimalTransport(
+      agentCard,
+      securityLevel,
+    );
 
     const request: IraqiTransportRequest = {
       agentCard,
       message,
       culturalContext,
       transportType: optimalTransport,
-      securityLevel
+      securityLevel,
     };
 
     return await this.send(request);
   }
 
-  private selectOptimalTransport(agentCard: IraqiAgentCard, securityLevel: string): TransportType {
+  private selectOptimalTransport(
+    agentCard: IraqiAgentCard,
+    securityLevel: string,
+  ): TransportType {
     // Government security level prefers gRPC
-    if (securityLevel === 'governmental' && this.transports.has('grpc')) {
-      return 'grpc';
+    if (securityLevel === "governmental" && this.transports.has("grpc")) {
+      return "grpc";
     }
 
     // High-performance agents prefer gRPC
-    if (agentCard.capabilities?.performance?.priority === 'high' && this.transports.has('grpc')) {
-      return 'grpc';
+    if (
+      agentCard.capabilities?.performance?.priority === "high" &&
+      this.transports.has("grpc")
+    ) {
+      return "grpc";
     }
 
     // Default to JSON-RPC for general use
-    if (this.transports.has('json-rpc')) {
-      return 'json-rpc';
+    if (this.transports.has("json-rpc")) {
+      return "json-rpc";
     }
 
     // Fallback to HTTP+JSON
-    return 'http-json';
+    return "http-json";
   }
 
   getAvailableTransports(): TransportType[] {

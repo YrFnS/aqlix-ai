@@ -11,6 +11,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 ## Core Components Extracted
 
 ### 1. Multi-LLM Provider System
+
 - 15+ LLM provider support (OpenAI, Anthropic, Ollama, etc.)
 - Arabic language model optimization
 - Context-aware model selection
@@ -18,6 +19,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Cost optimization across providers
 
 ### 2. Advanced Chat Interface
+
 - Modern chat interface with voice recognition
 - Real-time streaming and response handling
 - Arabic RTL support with cultural validation
@@ -25,6 +27,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Conversation memory and context management
 
 ### 3. Code Execution Environment
+
 - Full IDE integration with terminal support
 - Code generation and execution sandbox
 - File system management and project organization
@@ -32,6 +35,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Professional code templates for Iraqi domains
 
 ### 4. Development Tools
+
 - Project scaffolding and template system
 - Dependency management and environment setup
 - Build tools and deployment automation
@@ -39,6 +43,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Performance monitoring and analytics
 
 ### 5. UI Components with Arabic Support
+
 - Complete component library with Arabic RTL
 - Professional design system for Iraqi contexts
 - Responsive layouts with RTL optimization
@@ -48,6 +53,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 ## Iraqi Enhancements
 
 ### Cultural Integration
+
 - Islamic compliance validation in generated code
 - Iraqi professional application templates
 - Government compliance code templates
@@ -55,6 +61,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Cultural validation in generated content
 
 ### Professional Use Cases
+
 - Legal document generation and contract templates
 - Medical application development with Islamic ethics
 - Educational platform creation with Arabic content
@@ -63,6 +70,7 @@ This extraction provides a complete AI-powered development environment with Iraq
 - Financial tools with Islamic banking principles
 
 ### Language Support
+
 - Iraqi Arabic dialect recognition and processing
 - Standard Arabic for professional contexts
 - English integration for technical content
@@ -102,6 +110,7 @@ bolt-diy-extracted/
 ### ✅ Completed Extractions
 
 #### 1. Multi-LLM Provider System (100% Complete)
+
 - **17 LLM Providers**: OpenAI, Anthropic, Ollama, Groq, Google, OpenRouter, Mistral, HuggingFace, DeepSeek, xAI, LMStudio, Cohere, TogetherAI, Fireworks, Replicate + Iraqi-optimized variants
 - **Arabic Capability Scoring**: 0-100 scale for each provider's Arabic language support
 - **Cultural Compliance Scoring**: 0-100 scale for Islamic and cultural appropriateness
@@ -111,6 +120,7 @@ bolt-diy-extracted/
 - **Performance Monitoring**: Real-time metrics and optimization
 
 #### 2. Advanced Chat Interface (100% Complete)
+
 - **Arabic RTL Support**: Full right-to-left text rendering with mixed content
 - **Iraqi Dialect Processing**: Support for Iraqi, Gulf, Levantine, and Standard Arabic
 - **Voice Recognition**: ar-IQ language support with cultural filtering
@@ -120,6 +130,7 @@ bolt-diy-extracted/
 - **Streaming Responses**: Real-time message streaming with Arabic optimization
 
 #### 3. Code Execution Environment (100% Complete)
+
 - **Full IDE Integration**: Complete development environment with terminal
 - **Iraqi Template Generation**: Professional templates for Iraqi domains
 - **Cultural Code Validation**: Real-time validation of code for cultural compliance
@@ -129,6 +140,7 @@ bolt-diy-extracted/
 - **Hot Reload Development**: Real-time development with cultural validation
 
 #### 4. Project Scaffolding System (100% Complete)
+
 - **Professional Domain Templates**: Complete project generation for Iraqi sectors
 - **Cultural Compliance Integration**: Built-in Islamic and cultural validation
 - **Arabic Language Support**: RTL UI generation and Arabic content support
@@ -140,12 +152,14 @@ bolt-diy-extracted/
 ## Integration with Iraqi AI Chat System
 
 ### Existing System Integration
+
 - Works with Langflow workflows for automated development
 - Integrates with Block/goose multi-LLM providers
 - Compatible with Browser-use for UI testing
 - Supports Suna for development orchestration
 
 ### Enhanced Features for Iraqi Context
+
 - Professional application development for Iraqi domains
 - Government compliance code generation
 - Islamic finance calculation libraries
@@ -156,6 +170,7 @@ bolt-diy-extracted/
 ## Professional Development Features
 
 ### Iraqi Developer Onboarding
+
 - Professional coding standards and guidelines
 - Arabic documentation generation
 - Cultural code review and validation
@@ -163,6 +178,7 @@ bolt-diy-extracted/
 - Iraqi market-specific optimization tools
 
 ### Development Environment
+
 - Complete AI development environment
 - Professional application templates
 - Government compliance tools
@@ -191,6 +207,7 @@ npm run test:all
 ## Configuration
 
 ### Environment Variables
+
 ```env
 # Multi-LLM Configuration
 OPENAI_API_KEY=your_openai_key
@@ -209,6 +226,7 @@ IRAQI_EDUCATION_STANDARDS=true
 ```
 
 ### Feature Flags
+
 ```typescript
 interface IraqiFeatureFlags {
   culturalValidation: boolean;
@@ -223,30 +241,35 @@ interface IraqiFeatureFlags {
 ## Professional Applications
 
 ### Government Services
+
 - E-government application development
 - Digital service platforms
 - Citizen service portals
 - Document management systems
 
 ### Healthcare
+
 - Medical record systems with Islamic ethics
 - Telemedicine platforms
 - Healthcare management tools
 - Medical education platforms
 
 ### Education
+
 - Learning management systems
 - Educational content platforms
 - Student information systems
 - Academic research tools
 
 ### Legal
+
 - Legal document generation
 - Contract management systems
 - Court case management
 - Legal research platforms
 
 ### Finance
+
 - Islamic banking applications
 - Financial management tools
 - Investment platforms
@@ -255,12 +278,14 @@ interface IraqiFeatureFlags {
 ## Security and Compliance
 
 ### Iraqi Government Compliance
+
 - Data protection regulations
 - Privacy law compliance
 - Government security standards
 - Digital signature integration
 
 ### Islamic Compliance
+
 - Sharia-compliant financial calculations
 - Islamic ethics validation
 - Halal content verification
@@ -277,6 +302,7 @@ interface IraqiFeatureFlags {
 ## Contributing
 
 Contributions welcome, especially:
+
 - Iraqi cultural enhancements
 - Arabic language improvements
 - Professional domain templates

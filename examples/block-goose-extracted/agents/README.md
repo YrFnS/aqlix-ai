@@ -50,7 +50,7 @@ class IraqiCulturalContext:
     age_appropriateness: str = "adult"
     sensitivity_level: CulturalSensitivity = CulturalSensitivity.HIGH
     regional_context: Optional[str] = None  # baghdad, basra, erbil, etc.
-    
+
     def to_prompt_context(self) -> str:
         """Convert to prompt context for LLM"""
         return f"""
@@ -65,7 +65,7 @@ Cultural Context:
 Guidelines:
 {self._get_cultural_guidelines()}
 """
-    
+
     def _get_domain_description(self) -> str:
         descriptions = {
             IraqiDomain.LEGAL: "Iraqi legal system, Islamic jurisprudence, civil law",
@@ -76,7 +76,7 @@ Guidelines:
             IraqiDomain.PERSONAL: "General Iraqi social interaction"
         }
         return descriptions.get(self.domain, "General context")
-    
+
     def _get_cultural_guidelines(self) -> str:
         """Get cultural guidelines based on domain and sensitivity"""
         base_guidelines = [
@@ -85,7 +85,7 @@ Guidelines:
             "- Avoid politically sensitive or sectarian topics",
             "- Consider Iraqi social customs and professional etiquette"
         ]
-        
+
         domain_guidelines = {
             IraqiDomain.LEGAL: [
                 "- Reference Iraqi legal framework and Islamic jurisprudence",
@@ -103,7 +103,7 @@ Guidelines:
                 "- Use age-appropriate language and concepts"
             ]
         }
-        
+
         guidelines = base_guidelines + domain_guidelines.get(self.domain, [])
         return "\n".join(guidelines)
 
@@ -117,17 +117,17 @@ class AgentMemory:
     conversation_history: List[Dict] = field(default_factory=list)
     cultural_violations: List[Dict] = field(default_factory=list)
     user_context: Optional[Dict] = None
-    
+
     def add_cultural_preference(self, key: str, value: Any, domain: IraqiDomain):
         """Add user cultural preference"""
         if domain.value not in self.cultural_preferences:
             self.cultural_preferences[domain.value] = {}
         self.cultural_preferences[domain.value][key] = value
-    
+
     def get_cultural_preference(self, key: str, domain: IraqiDomain) -> Any:
         """Get user cultural preference for domain"""
         return self.cultural_preferences.get(domain.value, {}).get(key)
-    
+
     def add_professional_knowledge(self, domain: IraqiDomain, knowledge: Dict):
         """Add domain-specific professional knowledge"""
         if domain.value not in self.professional_knowledge:
@@ -137,7 +137,7 @@ class AgentMemory:
             'timestamp': datetime.now().isoformat(),
             'validated': False
         })
-    
+
     def record_cultural_violation(self, violation: Dict):
         """Record cultural appropriateness violation for learning"""
         self.cultural_violations.append({
@@ -150,7 +150,7 @@ class IraqiAgentContext:
     Advanced agent context management for Iraqi AI Chat System
     Handles cultural context, memory, tool access, and professional domain knowledge
     """
-    
+
     def __init__(
         self,
         agent_id: str,
@@ -168,22 +168,22 @@ class IraqiAgentContext:
         self.active_subagents: Dict[str, Any] = {}
         self.conversation_state = "active"
         self.cultural_compliance_score = 1.0
-        
+
     def update_cultural_context(self, updates: Dict[str, Any]):
         """Update cultural context with new information"""
         for key, value in updates.items():
             if hasattr(self.cultural_context, key):
                 setattr(self.cultural_context, key, value)
-        
+
         # Re-evaluate compliance score
         self._update_compliance_score()
-    
+
     def add_message(self, role: str, content: str, metadata: Optional[Dict] = None):
         """Add message to conversation history with cultural validation"""
-        
+
         # Validate cultural appropriateness
         cultural_validation = self._validate_message_cultural_appropriateness(content)
-        
+
         message = {
             'role': role,
             'content': content,
@@ -191,10 +191,10 @@ class IraqiAgentContext:
             'cultural_validation': cultural_validation,
             'metadata': metadata or {}
         }
-        
+
         self.memory.conversation_history.append(message)
         self.last_activity = datetime.now()
-        
+
         # Record violation if found
         if not cultural_validation['appropriate']:
             self.memory.record_cultural_violation({
@@ -202,21 +202,21 @@ class IraqiAgentContext:
                 'issues': cultural_validation['issues'],
                 'domain': self.cultural_context.domain.value
             })
-    
+
     def get_context_for_llm(self) -> Dict[str, Any]:
         """Get formatted context for LLM with Iraqi cultural awareness"""
-        
+
         # Recent conversation history (last 10 messages)
         recent_history = self.memory.conversation_history[-10:]
-        
+
         # Relevant professional knowledge
         professional_context = self._get_relevant_professional_knowledge()
-        
+
         # Cultural preferences
         cultural_prefs = self.memory.cultural_preferences.get(
             self.cultural_context.domain.value, {}
         )
-        
+
         return {
             'agent_id': self.agent_id,
             'session_id': self.session_id,
@@ -228,75 +228,75 @@ class IraqiAgentContext:
             'active_domain': self.cultural_context.domain.value,
             'memory_summary': self._generate_memory_summary()
         }
-    
+
     def _validate_message_cultural_appropriateness(self, content: str) -> Dict[str, Any]:
         """Validate message for Iraqi cultural appropriateness"""
-        
+
         issues = []
-        
+
         # Check for religious sensitivity
         if self.cultural_context.islamic_compliance_required:
             religious_issues = self._check_religious_appropriateness(content)
             issues.extend(religious_issues)
-        
+
         # Check for cultural sensitivity based on domain
         cultural_issues = self._check_domain_appropriateness(content)
         issues.extend(cultural_issues)
-        
+
         # Check language appropriateness
         language_issues = self._check_language_appropriateness(content)
         issues.extend(language_issues)
-        
+
         return {
             'appropriate': len(issues) == 0,
             'issues': issues,
             'score': max(0.0, 1.0 - (len(issues) * 0.2))
         }
-    
+
     def _check_religious_appropriateness(self, content: str) -> List[str]:
         """Check content for Islamic appropriateness"""
         issues = []
         content_lower = content.lower()
-        
+
         # Check for inappropriate religious content
         inappropriate_terms = [
             'blasphemy', 'mockery', 'inappropriate_religious_reference'
         ]
-        
+
         for term in inappropriate_terms:
             if term in content_lower:
                 issues.append(f"Contains inappropriate religious content: {term}")
-        
+
         return issues
-    
+
     def _check_domain_appropriateness(self, content: str) -> List[str]:
         """Check content appropriateness for specific domain"""
         issues = []
-        
+
         if self.cultural_context.domain == IraqiDomain.LEGAL:
             # Check for legal accuracy and appropriateness
             if 'legal advice' in content.lower() and 'not licensed' not in content.lower():
                 issues.append("May contain unauthorized legal advice")
-        
+
         elif self.cultural_context.domain == IraqiDomain.MEDICAL:
             # Check for medical advice appropriateness
             if 'medical diagnosis' in content.lower() and 'consult doctor' not in content.lower():
                 issues.append("May contain unauthorized medical diagnosis")
-        
+
         return issues
-    
+
     def _get_relevant_professional_knowledge(self) -> List[Dict]:
         """Get relevant professional knowledge for current domain"""
         domain_knowledge = self.memory.professional_knowledge.get(
             self.cultural_context.domain.value, []
         )
-        
+
         # Return most recent and validated knowledge
         relevant_knowledge = [
-            k for k in domain_knowledge 
+            k for k in domain_knowledge
             if k.get('validated', False)
         ][-5:]  # Last 5 validated items
-        
+
         return relevant_knowledge
 ```
 
@@ -308,13 +308,13 @@ class IraqiAgentExtensionManager:
     Extension manager for Iraqi AI agents
     Handles tool registration, MCP server integration, and cultural compliance
     """
-    
+
     def __init__(self, agent_context: IraqiAgentContext):
         self.agent_context = agent_context
         self.registered_extensions: Dict[str, Dict] = {}
         self.mcp_clients: Dict[str, Any] = {}
         self.cultural_validators: List[Callable] = []
-        
+
     async def register_extension(
         self,
         name: str,
@@ -324,13 +324,13 @@ class IraqiAgentExtensionManager:
         domain_restrictions: Optional[List[IraqiDomain]] = None
     ):
         """Register extension with Iraqi cultural compliance"""
-        
+
         # Validate extension for cultural appropriateness
         if cultural_compliance_required:
             compliance_check = await self._validate_extension_compliance(handler)
             if not compliance_check['compliant']:
                 raise ValueError(f"Extension {name} fails cultural compliance: {compliance_check['issues']}")
-        
+
         self.registered_extensions[name] = {
             'type': extension_type,
             'handler': handler,
@@ -340,7 +340,7 @@ class IraqiAgentExtensionManager:
             'usage_count': 0,
             'cultural_violations': []
         }
-    
+
     async def execute_extension(
         self,
         name: str,
@@ -348,12 +348,12 @@ class IraqiAgentExtensionManager:
         bypass_cultural_check: bool = False
     ) -> Dict[str, Any]:
         """Execute extension with cultural validation"""
-        
+
         if name not in self.registered_extensions:
             raise ValueError(f"Extension {name} not registered")
-        
+
         extension = self.registered_extensions[name]
-        
+
         # Check domain restrictions
         if extension['domain_restrictions']:
             if self.agent_context.cultural_context.domain not in extension['domain_restrictions']:
@@ -361,7 +361,7 @@ class IraqiAgentExtensionManager:
                     'success': False,
                     'error': f"Extension {name} not available for {self.agent_context.cultural_context.domain.value} domain"
                 }
-        
+
         # Cultural validation
         if extension['cultural_compliance_required'] and not bypass_cultural_check:
             cultural_validation = await self._validate_execution_parameters(parameters)
@@ -377,34 +377,34 @@ class IraqiAgentExtensionManager:
                     'issues': cultural_validation['issues'],
                     'guidance': cultural_validation.get('guidance')
                 }
-        
+
         try:
             # Execute extension with Iraqi context
             result = await extension['handler'](
-                parameters, 
+                parameters,
                 self.agent_context.cultural_context
             )
-            
+
             # Post-execution cultural validation
             if extension['cultural_compliance_required']:
                 result = await self._validate_execution_result(result)
-            
+
             extension['usage_count'] += 1
-            
+
             return {
                 'success': True,
                 'result': result,
                 'cultural_compliance': True,
                 'extension': name
             }
-            
+
         except Exception as e:
             return {
                 'success': False,
                 'error': str(e),
                 'extension': name
             }
-    
+
     async def register_mcp_server(
         self,
         server_name: str,
@@ -413,17 +413,17 @@ class IraqiAgentExtensionManager:
         security_level: str = 'standard'
     ):
         """Register MCP server for Iraqi tools"""
-        
+
         from ..mcp_client import MCPClient
-        
+
         try:
             # Create MCP client with Iraqi cultural context
             mcp_client = MCPClient(server_url, self.agent_context.cultural_context)
             await mcp_client.connect()
-            
+
             # Get available tools
             available_tools = await mcp_client.list_iraqi_tools()
-            
+
             self.mcp_clients[server_name] = {
                 'client': mcp_client,
                 'url': server_url,
@@ -432,24 +432,24 @@ class IraqiAgentExtensionManager:
                 'security_level': security_level,
                 'connected_at': datetime.now().isoformat()
             }
-            
+
             # Register tools as extensions
             for tool in available_tools:
                 await self._register_mcp_tool_as_extension(server_name, tool)
-                
+
         except Exception as e:
             raise ConnectionError(f"Failed to register MCP server {server_name}: {e}")
-    
+
     async def _register_mcp_tool_as_extension(self, server_name: str, tool: Dict):
         """Register MCP tool as agent extension"""
-        
+
         tool_name = f"{server_name}_{tool['name']}"
-        
+
         async def mcp_tool_handler(params: Dict, cultural_context: IraqiCulturalContext):
             """Handler for MCP tool execution"""
             mcp_client = self.mcp_clients[server_name]['client']
             return await mcp_client.call_tool(tool['name'], params)
-        
+
         # Determine domain restrictions based on tool metadata
         domain_restrictions = []
         if tool.get('domain_specific'):
@@ -460,7 +460,7 @@ class IraqiAgentExtensionManager:
                 'government': [IraqiDomain.GOVERNMENT]
             }
             domain_restrictions = domain_map.get(tool.get('domain', ''), [])
-        
+
         await self.register_extension(
             name=tool_name,
             extension_type='mcp_tool',
@@ -468,11 +468,11 @@ class IraqiAgentExtensionManager:
             cultural_compliance_required=tool.get('cultural_validation_required', True),
             domain_restrictions=domain_restrictions
         )
-    
+
     def get_available_extensions_for_domain(self, domain: IraqiDomain) -> List[str]:
         """Get extensions available for specific domain"""
         available = []
-        
+
         for name, extension in self.registered_extensions.items():
             # Check domain restrictions
             if extension['domain_restrictions']:
@@ -481,7 +481,7 @@ class IraqiAgentExtensionManager:
             else:
                 # Available for all domains
                 available.append(name)
-        
+
         return available
 ```
 
@@ -495,17 +495,17 @@ class IraqiSubagentManager:
     Subagent orchestration system for Iraqi AI Chat System
     Manages specialized agents for different Iraqi professional domains
     """
-    
+
     def __init__(self, main_agent_context: IraqiAgentContext):
         self.main_context = main_agent_context
         self.active_subagents: Dict[str, Dict] = {}
         self.subagent_templates: Dict[str, Dict] = {}
         self.coordination_queue: List[Dict] = []
         self._setup_iraqi_subagent_templates()
-    
+
     def _setup_iraqi_subagent_templates(self):
         """Setup templates for Iraqi professional domain subagents"""
-        
+
         # Legal domain subagent
         self.subagent_templates['iraqi_legal_assistant'] = {
             'name': 'Iraqi Legal Assistant',
@@ -529,7 +529,7 @@ class IraqiSubagentManager:
                 'constitutional_law'
             ]
         }
-        
+
         # Medical domain subagent
         self.subagent_templates['iraqi_medical_assistant'] = {
             'name': 'Iraqi Medical Assistant',
@@ -553,7 +553,7 @@ class IraqiSubagentManager:
                 'patient_privacy_iraqi_law'
             ]
         }
-        
+
         # Educational domain subagent
         self.subagent_templates['iraqi_education_assistant'] = {
             'name': 'Iraqi Education Assistant',
@@ -577,7 +577,7 @@ class IraqiSubagentManager:
                 'iraqi_university_system'
             ]
         }
-        
+
         # Government services subagent
         self.subagent_templates['iraqi_government_assistant'] = {
             'name': 'Iraqi Government Services Assistant',
@@ -601,7 +601,7 @@ class IraqiSubagentManager:
                 'public_service_protocols'
             ]
         }
-    
+
     async def spawn_subagent(
         self,
         template_name: str,
@@ -609,32 +609,32 @@ class IraqiSubagentManager:
         specific_context: Optional[Dict] = None
     ) -> str:
         """Spawn specialized subagent for Iraqi domain"""
-        
+
         if template_name not in self.subagent_templates:
             raise ValueError(f"Subagent template {template_name} not found")
-        
+
         template = self.subagent_templates[template_name].copy()
         subagent_id = f"{template_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
+
         # Create subagent context
         subagent_cultural_context = template['cultural_context']
         if specific_context:
             for key, value in specific_context.items():
                 if hasattr(subagent_cultural_context, key):
                     setattr(subagent_cultural_context, key, value)
-        
+
         subagent_context = IraqiAgentContext(
             agent_id=subagent_id,
             cultural_context=subagent_cultural_context,
             user_id=self.main_context.user_id
         )
-        
+
         # Initialize subagent with required tools
         extension_manager = IraqiAgentExtensionManager(subagent_context)
-        
+
         # Register required MCP servers based on domain
         await self._setup_subagent_tools(extension_manager, template['domain'])
-        
+
         # Store subagent information
         self.active_subagents[subagent_id] = {
             'context': subagent_context,
@@ -646,9 +646,9 @@ class IraqiSubagentManager:
             'conversation_history': [],
             'parent_agent_id': self.main_context.agent_id
         }
-        
+
         return subagent_id
-    
+
     async def delegate_task_to_subagent(
         self,
         subagent_id: str,
@@ -656,37 +656,37 @@ class IraqiSubagentManager:
         context: Optional[Dict] = None
     ) -> Dict[str, Any]:
         """Delegate task to specific subagent"""
-        
+
         if subagent_id not in self.active_subagents:
             raise ValueError(f"Subagent {subagent_id} not found")
-        
+
         subagent = self.active_subagents[subagent_id]
         subagent_context = subagent['context']
         extension_manager = subagent['extension_manager']
-        
+
         # Add task to subagent's conversation history
         subagent_context.add_message('user', task, {'delegated_from': self.main_context.agent_id})
-        
+
         # Process task with subagent's specialized context
         try:
             # Get appropriate tools for the task
             available_extensions = extension_manager.get_available_extensions_for_domain(
                 subagent_context.cultural_context.domain
             )
-            
+
             # Determine best approach based on task and domain
             execution_plan = await self._create_subagent_execution_plan(
                 task, subagent_context, available_extensions
             )
-            
+
             # Execute the plan
             result = await self._execute_subagent_plan(
                 subagent_id, execution_plan, extension_manager
             )
-            
+
             # Add result to conversation history
             subagent_context.add_message('assistant', str(result), {'task_completed': True})
-            
+
             return {
                 'success': True,
                 'result': result,
@@ -694,7 +694,7 @@ class IraqiSubagentManager:
                 'domain': subagent_context.cultural_context.domain.value,
                 'cultural_compliance': subagent_context.cultural_compliance_score
             }
-            
+
         except Exception as e:
             return {
                 'success': False,
@@ -702,7 +702,7 @@ class IraqiSubagentManager:
                 'subagent_id': subagent_id,
                 'task': task
             }
-    
+
     async def coordinate_multi_subagent_task(
         self,
         task_description: str,
@@ -710,20 +710,20 @@ class IraqiSubagentManager:
         coordination_strategy: str = 'sequential'
     ) -> Dict[str, Any]:
         """Coordinate task requiring multiple Iraqi domain experts"""
-        
+
         coordination_id = f"coord_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        
+
         # Spawn required subagents
         subagent_ids = []
         for domain in required_domains:
             template_name = self._get_template_for_domain(domain)
             if template_name:
                 subagent_id = await self.spawn_subagent(
-                    template_name, 
+                    template_name,
                     f"Part of multi-domain task: {task_description}"
                 )
                 subagent_ids.append(subagent_id)
-        
+
         # Execute coordination strategy
         if coordination_strategy == 'sequential':
             return await self._execute_sequential_coordination(
@@ -737,10 +737,10 @@ class IraqiSubagentManager:
             return await self._execute_custom_coordination(
                 coordination_id, task_description, subagent_ids, coordination_strategy
             )
-    
+
     async def _setup_subagent_tools(self, extension_manager: IraqiAgentExtensionManager, domain: IraqiDomain):
         """Setup domain-specific tools for subagent"""
-        
+
         # Map domains to MCP servers
         domain_servers = {
             IraqiDomain.LEGAL: ['legal_services', 'document_processing'],
@@ -748,10 +748,10 @@ class IraqiSubagentManager:
             IraqiDomain.EDUCATIONAL: ['educational_services', 'document_processing'],
             IraqiDomain.GOVERNMENT: ['government_portal', 'document_processing']
         }
-        
+
         servers_to_register = domain_servers.get(domain, ['document_processing'])
         servers_to_register.append('cultural_validation')  # Always include cultural validation
-        
+
         # Register MCP servers
         server_configs = {
             'legal_services': 'ws://localhost:8004/mcp',
@@ -761,7 +761,7 @@ class IraqiSubagentManager:
             'document_processing': 'ws://localhost:8002/mcp',
             'cultural_validation': 'ws://localhost:8003/mcp'
         }
-        
+
         for server_name in servers_to_register:
             if server_name in server_configs:
                 try:
@@ -773,7 +773,7 @@ class IraqiSubagentManager:
                     )
                 except Exception as e:
                     print(f"Warning: Failed to register {server_name}: {e}")
-    
+
     def _get_template_for_domain(self, domain: IraqiDomain) -> Optional[str]:
         """Get subagent template name for domain"""
         domain_templates = {
@@ -783,7 +783,7 @@ class IraqiSubagentManager:
             IraqiDomain.GOVERNMENT: 'iraqi_government_assistant'
         }
         return domain_templates.get(domain)
-    
+
     async def _execute_sequential_coordination(
         self,
         coordination_id: str,
@@ -791,24 +791,24 @@ class IraqiSubagentManager:
         subagent_ids: List[str]
     ) -> Dict[str, Any]:
         """Execute sequential coordination of subagents"""
-        
+
         results = []
         accumulated_context = {}
-        
+
         for i, subagent_id in enumerate(subagent_ids):
             # Prepare task with accumulated context from previous subagents
             contextual_task = f"{task_description}\n\nContext from previous steps: {json.dumps(accumulated_context, ensure_ascii=False)}"
-            
+
             # Delegate to subagent
             result = await self.delegate_task_to_subagent(subagent_id, contextual_task)
             results.append(result)
-            
+
             # Accumulate context for next subagent
             if result['success']:
                 subagent = self.active_subagents[subagent_id]
                 domain = subagent['context'].cultural_context.domain.value
                 accumulated_context[f'step_{i+1}_{domain}'] = result['result']
-        
+
         return {
             'coordination_id': coordination_id,
             'strategy': 'sequential',
@@ -816,12 +816,12 @@ class IraqiSubagentManager:
             'final_context': accumulated_context,
             'success': all(r['success'] for r in results)
         }
-    
+
     def get_subagent_status(self, subagent_id: str) -> Dict[str, Any]:
         """Get status of specific subagent"""
         if subagent_id not in self.active_subagents:
             return {'exists': False}
-        
+
         subagent = self.active_subagents[subagent_id]
         return {
             'exists': True,
@@ -833,14 +833,14 @@ class IraqiSubagentManager:
             'cultural_compliance': subagent['context'].cultural_compliance_score,
             'parent_agent': subagent['parent_agent_id']
         }
-    
+
     async def terminate_subagent(self, subagent_id: str) -> bool:
         """Terminate subagent and clean up resources"""
         if subagent_id not in self.active_subagents:
             return False
-        
+
         subagent = self.active_subagents[subagent_id]
-        
+
         # Close MCP connections
         extension_manager = subagent['extension_manager']
         for server_name, server_info in extension_manager.mcp_clients.items():
@@ -848,15 +848,15 @@ class IraqiSubagentManager:
                 await server_info['client'].disconnect()
             except Exception as e:
                 print(f"Warning: Error disconnecting from {server_name}: {e}")
-        
+
         # Archive conversation history to main agent memory
         self.main_context.memory.professional_knowledge.setdefault(
             subagent['context'].cultural_context.domain.value, []
         ).extend(subagent['conversation_history'])
-        
+
         # Remove from active subagents
         del self.active_subagents[subagent_id]
-        
+
         return True
 ```
 
@@ -870,28 +870,28 @@ class IraqiSubagentManager:
 IRAQI_LEGAL_AGENT_CONFIG = {
     'system_prompt': """
     You are an Iraqi Legal Assistant specialized in Iraqi law and Islamic jurisprudence.
-    
+
     Expertise Areas:
     - Iraqi Civil Law and Commercial Code
     - Islamic Family Law (Personal Status Law)
     - Iraqi Constitutional Law
     - Administrative Law and Government Procedures
     - Contract Law with Islamic compliance
-    
+
     Cultural Guidelines:
     - Always maintain Islamic legal principles compatibility
     - Reference both Iraqi secular law and Islamic jurisprudence when applicable
     - Use formal Arabic legal terminology
     - Respect Iraqi cultural values in legal interpretations
     - Emphasize consultation with qualified Iraqi legal professionals
-    
+
     Limitations:
     - Cannot provide official legal advice
     - Cannot represent clients in legal matters
     - Must recommend consultation with licensed Iraqi lawyers
     - Cannot make legal decisions or interpretations with binding effect
     """,
-    
+
     'knowledge_base': [
         'iraqi_civil_code',
         'iraqi_commercial_law',
@@ -899,14 +899,14 @@ IRAQI_LEGAL_AGENT_CONFIG = {
         'iraqi_constitutional_law',
         'islamic_jurisprudence_principles'
     ],
-    
+
     'required_tools': [
         'iraqi_law_search',
         'legal_document_generator',
         'islamic_jurisprudence_reference',
         'cultural_validation'
     ],
-    
+
     'validation_rules': {
         'islamic_compliance': True,
         'cultural_sensitivity': 'high',
@@ -922,28 +922,28 @@ IRAQI_LEGAL_AGENT_CONFIG = {
 IRAQI_MEDICAL_AGENT_CONFIG = {
     'system_prompt': """
     You are an Iraqi Medical Assistant specialized in Iraqi healthcare system and Islamic medical ethics.
-    
+
     Expertise Areas:
     - Iraqi Healthcare System and Procedures
     - Islamic Medical Ethics and Bioethics
     - Arabic Medical Terminology
     - Iraqi Medical Licensing and Standards
     - Patient Privacy under Iraqi Law
-    
+
     Cultural Guidelines:
     - Follow Islamic bioethics principles
     - Respect Iraqi medical cultural practices
     - Consider gender-appropriate medical consultations
     - Maintain high sensitivity to religious considerations
     - Emphasize consultation with qualified Iraqi medical professionals
-    
+
     Limitations:
     - Cannot provide medical diagnosis
     - Cannot prescribe medications
     - Cannot replace professional medical consultation
     - Must recommend seeking qualified Iraqi medical professionals
     """,
-    
+
     'knowledge_base': [
         'iraqi_healthcare_system',
         'islamic_medical_ethics',
@@ -951,14 +951,14 @@ IRAQI_MEDICAL_AGENT_CONFIG = {
         'iraqi_medical_standards',
         'patient_privacy_laws'
     ],
-    
+
     'required_tools': [
         'iraqi_medical_reference',
         'symptom_checker_arabic',
         'medical_document_processor',
         'cultural_validation'
     ],
-    
+
     'validation_rules': {
         'islamic_compliance': True,
         'cultural_sensitivity': 'high',
@@ -975,7 +975,7 @@ IRAQI_MEDICAL_AGENT_CONFIG = {
 ```python
 class IraqiAgentMetrics:
     """Performance metrics for Iraqi AI agents"""
-    
+
     def __init__(self):
         self.metrics = {
             'cultural_compliance_rate': 0.0,
@@ -986,25 +986,25 @@ class IraqiAgentMetrics:
             'tool_usage_statistics': {},
             'subagent_coordination_success': 0.0
         }
-    
+
     def record_cultural_compliance(self, score: float, domain: str):
         """Record cultural compliance score"""
         if domain not in self.metrics['domain_accuracy_scores']:
             self.metrics['domain_accuracy_scores'][domain] = []
         self.metrics['domain_accuracy_scores'][domain].append(score)
-        
+
         # Update overall compliance rate
         all_scores = []
         for domain_scores in self.metrics['domain_accuracy_scores'].values():
             all_scores.extend(domain_scores)
         self.metrics['cultural_compliance_rate'] = sum(all_scores) / len(all_scores)
-    
+
     def get_performance_summary(self) -> Dict[str, Any]:
         """Get comprehensive performance summary"""
         return {
             'overall_cultural_compliance': self.metrics['cultural_compliance_rate'],
             'domain_performance': {
-                domain: sum(scores) / len(scores) 
+                domain: sum(scores) / len(scores)
                 for domain, scores in self.metrics['domain_accuracy_scores'].items()
             },
             'average_response_time': sum(self.metrics['response_times']) / len(self.metrics['response_times']) if self.metrics['response_times'] else 0,
@@ -1016,18 +1016,21 @@ class IraqiAgentMetrics:
 ## 🚀 INTEGRATION STRATEGY
 
 ### Phase 1: Core Agent Infrastructure
+
 1. **Agent Context System**: Deploy Iraqi cultural context management
 2. **Extension Manager**: Implement MCP tool integration with cultural validation
 3. **Memory System**: Deploy culturally-aware memory and knowledge management
 4. **Basic Subagents**: Implement single-domain specialized agents
 
 ### Phase 2: Advanced Orchestration
+
 1. **Multi-Subagent Coordination**: Deploy complex task coordination
 2. **Professional Domain Specialization**: Full Iraqi legal, medical, educational agents
 3. **Advanced Cultural Validation**: Comprehensive Islamic compliance system
 4. **Performance Monitoring**: Deploy Iraqi-specific metrics and analytics
 
 ### Phase 3: Enterprise Integration
+
 1. **Government Integration**: Deploy for Iraqi institutional use
 2. **Security Hardening**: Government-grade security for sensitive domains
 3. **Scalability Optimization**: Handle enterprise-level Iraqi organizations

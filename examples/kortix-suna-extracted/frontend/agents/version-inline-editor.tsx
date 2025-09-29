@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Edit2, Check, X, Loader2 } from 'lucide-react';
-import { useUpdateVersionDetails } from '@/lib/versioning/hooks/use-versions';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Edit2, Check, X, Loader2 } from "lucide-react";
+import { useUpdateVersionDetails } from "@/lib/versioning/hooks/use-versions";
+import { cn } from "@/lib/utils";
 
 interface VersionInlineEditorProps {
   agentId: string;
@@ -14,7 +14,10 @@ interface VersionInlineEditorProps {
   versionName: string;
   changeDescription?: string;
   isActive?: boolean;
-  onUpdate?: (updatedVersion: { versionName: string; changeDescription?: string }) => void;
+  onUpdate?: (updatedVersion: {
+    versionName: string;
+    changeDescription?: string;
+  }) => void;
 }
 
 export function VersionInlineEditor({
@@ -23,31 +26,33 @@ export function VersionInlineEditor({
   versionName,
   changeDescription,
   isActive = false,
-  onUpdate
+  onUpdate,
 }: VersionInlineEditorProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(versionName);
-  const [editedDescription, setEditedDescription] = useState(changeDescription || '');
+  const [editedDescription, setEditedDescription] = useState(
+    changeDescription || "",
+  );
   const [hasChanges, setHasChanges] = useState(false);
 
   const updateVersionMutation = useUpdateVersionDetails();
 
   useEffect(() => {
     const nameChanged = editedName !== versionName;
-    const descriptionChanged = editedDescription !== (changeDescription || '');
+    const descriptionChanged = editedDescription !== (changeDescription || "");
     setHasChanges(nameChanged || descriptionChanged);
   }, [editedName, editedDescription, versionName, changeDescription]);
 
   const handleStartEdit = () => {
     setIsEditing(true);
     setEditedName(versionName);
-    setEditedDescription(changeDescription || '');
+    setEditedDescription(changeDescription || "");
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditedName(versionName);
-    setEditedDescription(changeDescription || '');
+    setEditedDescription(changeDescription || "");
     setHasChanges(false);
   };
 
@@ -58,37 +63,38 @@ export function VersionInlineEditor({
     }
 
     try {
-      const updateData: { version_name?: string; change_description?: string } = {};
-      
+      const updateData: { version_name?: string; change_description?: string } =
+        {};
+
       if (editedName !== versionName) {
         updateData.version_name = editedName;
       }
-      
-      if (editedDescription !== (changeDescription || '')) {
+
+      if (editedDescription !== (changeDescription || "")) {
         updateData.change_description = editedDescription;
       }
 
       await updateVersionMutation.mutateAsync({
         agentId,
         versionId,
-        data: updateData
+        data: updateData,
       });
 
       setIsEditing(false);
       onUpdate?.({
         versionName: editedName,
-        changeDescription: editedDescription
+        changeDescription: editedDescription,
       });
     } catch (error) {
       // Error is handled by the mutation hook
-      console.error('Failed to update version:', error);
+      console.error("Failed to update version:", error);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       handleCancel();
-    } else if (e.key === 'Enter' && e.metaKey) {
+    } else if (e.key === "Enter" && e.metaKey) {
       handleSave();
     }
   };
@@ -153,10 +159,7 @@ export function VersionInlineEditor({
   return (
     <div className="group space-y-1">
       <div className="flex items-center gap-2">
-        <span className={cn(
-          "font-medium",
-          isActive && "text-primary"
-        )}>
+        <span className={cn("font-medium", isActive && "text-primary")}>
           {versionName}
         </span>
         <Button
@@ -178,4 +181,4 @@ export function VersionInlineEditor({
       )}
     </div>
   );
-} 
+}

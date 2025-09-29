@@ -31,26 +31,26 @@ The Iraqi AI system extends standard Agent Cards with cultural and professional 
 interface IraqiAgentCard extends AgentCard {
   // Cultural intelligence extensions
   culturalCapabilities: {
-    islamicCompliance: boolean;        // 90%+ accuracy required
-    culturalValidation: boolean;       // 95%+ appropriateness required
-    arabicProcessing: boolean;         // RTL support with dialect recognition
-    professionalDomain: string[];     // ['legal', 'medical', 'educational', etc.]
+    islamicCompliance: boolean; // 90%+ accuracy required
+    culturalValidation: boolean; // 95%+ appropriateness required
+    arabicProcessing: boolean; // RTL support with dialect recognition
+    professionalDomain: string[]; // ['legal', 'medical', 'educational', etc.]
   };
-  
+
   // Payment integration
   iraqiPaymentSupport: {
-    zainCash: boolean;                 // Mobile wallet (1000 IQD min)
-    fastPay: boolean;                  // Digital payments (500 IQD min) 
-    nassWallet: boolean;               // Electronic wallet (1000 IQD min)
-    islamicFinanceCompliant: boolean;  // Sharia-compliant transactions
+    zainCash: boolean; // Mobile wallet (1000 IQD min)
+    fastPay: boolean; // Digital payments (500 IQD min)
+    nassWallet: boolean; // Electronic wallet (1000 IQD min)
+    islamicFinanceCompliant: boolean; // Sharia-compliant transactions
   };
-  
+
   // Arabic language capabilities
   arabicLanguageSupport: {
-    rtlAccuracy: number;               // 99%+ required
-    dialectRecognition: number;        // 85%+ for Iraqi dialect
-    mixedContentHandling: boolean;     // Arabic-English mixed content
-    culturalTerminology: boolean;      // Islamic and cultural terms
+    rtlAccuracy: number; // 99%+ required
+    dialectRecognition: number; // 85%+ for Iraqi dialect
+    mixedContentHandling: boolean; // Arabic-English mixed content
+    culturalTerminology: boolean; // Islamic and cultural terms
   };
 }
 ```
@@ -63,20 +63,20 @@ Iraqi tasks incorporate cultural validation throughout their lifecycle:
 interface IraqiTask extends Task {
   // Cultural validation tracking
   culturalValidation: {
-    score: number;                     // 0-100, 85+ required
+    score: number; // 0-100, 85+ required
     passed: boolean;
-    islamicCompliance: number;         // 0-100, 90+ required
-    issues: string[];                  // Cultural concerns if any
+    islamicCompliance: number; // 0-100, 90+ required
+    issues: string[]; // Cultural concerns if any
   };
-  
+
   // Professional domain context
   professionalContext?: {
-    domain: 'legal' | 'medical' | 'educational' | 'business' | 'government';
+    domain: "legal" | "medical" | "educational" | "business" | "government";
     specialization?: string;
     regulatoryCompliance: boolean;
-    expertiseLevel: 'basic' | 'intermediate' | 'expert';
+    expertiseLevel: "basic" | "intermediate" | "expert";
   };
-  
+
   // Arabic language processing
   arabicProcessing?: {
     rtlFormatted: boolean;
@@ -96,23 +96,23 @@ interface IraqiMessage extends Message {
   // Cultural context
   culturalContext: {
     islamicCompliance: boolean;
-    culturalSensitivity: 'high' | 'medium' | 'low';
+    culturalSensitivity: "high" | "medium" | "low";
     professionalDomain?: string;
     arabicContent: boolean;
   };
-  
+
   // Language processing
   languageProcessing?: {
-    originalLanguage: 'arabic' | 'english' | 'mixed';
+    originalLanguage: "arabic" | "english" | "mixed";
     dialectDetected?: string;
     rtlFormatted: boolean;
     translationProvided: boolean;
   };
-  
+
   // Professional routing
   domainRouting?: {
     targetDomain: string;
-    urgency: 'critical' | 'high' | 'medium' | 'low';
+    urgency: "critical" | "high" | "medium" | "low";
     specialistRequired: boolean;
     regulatoryImplications: boolean;
   };
@@ -126,7 +126,7 @@ interface IraqiMessage extends Message {
 Every interaction in the Iraqi system follows a cultural validation pipeline:
 
 1. **Cultural Screening** (95%+ appropriateness required)
-2. **Islamic Compliance Check** (90%+ compliance required) 
+2. **Islamic Compliance Check** (90%+ compliance required)
 3. **Arabic Language Processing** (99%+ RTL accuracy)
 4. **Professional Domain Routing** (expert-level routing)
 5. **Quality Assurance** (8-step validation cycle)
@@ -148,10 +148,10 @@ Push notifications respect Islamic principles:
 ```typescript
 interface IslamicPushNotificationConfig extends PushNotificationConfig {
   islamicCompliance: {
-    respectPrayerTimes: boolean;       // Avoid notifications during prayer
-    culturallySensitive: boolean;      // Cultural context awareness
-    arabicSupport: boolean;            // Arabic notification support
-    urgencyClassification: string;     // Islamic urgency principles
+    respectPrayerTimes: boolean; // Avoid notifications during prayer
+    culturallySensitive: boolean; // Cultural context awareness
+    arabicSupport: boolean; // Arabic notification support
+    urgencyClassification: string; // Islamic urgency principles
   };
 }
 ```

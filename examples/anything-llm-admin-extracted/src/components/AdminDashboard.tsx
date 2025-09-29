@@ -1,7 +1,7 @@
 /**
  * Iraqi AI Admin Dashboard - Main Component
  * Enhanced admin interface with Arabic-first design and cultural compliance
- * 
+ *
  * Features:
  * - RTL/LTR adaptive layout
  * - Iraqi professional role management
@@ -22,7 +22,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
 } from 'chart.js';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
@@ -45,7 +45,7 @@ import {
   Calendar,
   BarChart3,
   Map,
-  Languages
+  Languages,
 } from 'lucide-react';
 
 import {
@@ -56,7 +56,7 @@ import {
   CulturalMetrics,
   IraqiUser,
   IraqiOrganization,
-  DashboardWidget
+  DashboardWidget,
 } from '../types/admin';
 import { useAdminData } from '../hooks/useAdminData';
 import UserManagement from './UserManagement';
@@ -86,9 +86,9 @@ interface AdminDashboardProps {
   onLanguageChange: (lang: 'ar' | 'en') => void;
 }
 
-const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({ 
+const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
   language = 'ar',
-  onLanguageChange 
+  onLanguageChange,
 }) => {
   // State management
   const [activeTab, setActiveTab] = useState('overview');
@@ -107,7 +107,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
     recentOrganizations,
     loading,
     error,
-    refreshData
+    refreshData,
   } = useAdminData(timeRange);
 
   // Update RTL when language changes
@@ -170,7 +170,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
       today: 'اليوم',
       thisWeek: 'هذا الأسبوع',
       thisMonth: 'هذا الشهر',
-      thisQuarter: 'هذا الربع'
+      thisQuarter: 'هذا الربع',
     },
     en: {
       dashboard: 'Iraqi AI Admin Dashboard',
@@ -223,8 +223,8 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
       today: 'Today',
       thisWeek: 'This Week',
       thisMonth: 'This Month',
-      thisQuarter: 'This Quarter'
-    }
+      thisQuarter: 'This Quarter',
+    },
   };
 
   const translations = t[language];
@@ -244,7 +244,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: 'compliance', label: translations.compliance, icon: Shield },
     { id: 'system', label: translations.system, icon: Activity },
     { id: 'audit', label: translations.audit, icon: Eye },
-    { id: 'settings', label: translations.settings, icon: Settings }
+    { id: 'settings', label: translations.settings, icon: Settings },
   ];
 
   // Loading state
@@ -290,7 +290,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
               {/* Time Range Selector */}
               <select
                 value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value as any)}
+                onChange={e => setTimeRange(e.target.value as any)}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="24h">{translations.today}</option>
@@ -332,7 +332,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8 overflow-x-auto">
-            {tabs.map((tab) => {
+            {tabs.map(tab => {
               const Icon = tab.icon;
               return (
                 <button
@@ -426,9 +426,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* User Growth Chart */}
               <div className="bg-white p-6 rounded-lg shadow">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {translations.newUsers}
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">{translations.newUsers}</h3>
                 <div className="h-64">
                   {/* User growth line chart would go here */}
                   <div className="flex items-center justify-center h-full text-gray-500">
@@ -454,9 +452,7 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Recent Activity */}
             <div className="bg-white rounded-lg shadow">
               <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">
-                  {translations.recentActivity}
-                </h3>
+                <h3 className="text-lg font-medium text-gray-900">{translations.recentActivity}</h3>
                 <button className="text-sm text-blue-600 hover:text-blue-800">
                   {translations.viewAll}
                 </button>
@@ -475,7 +471,9 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
                         </div>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {new Date(user.createdAt).toLocaleDateString(language === 'ar' ? 'ar-IQ' : 'en-US')}
+                        {new Date(user.createdAt).toLocaleDateString(
+                          language === 'ar' ? 'ar-IQ' : 'en-US'
+                        )}
                       </div>
                     </div>
                   ))}
@@ -486,24 +484,16 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
         )}
 
         {/* User Management Tab */}
-        {activeTab === 'users' && (
-          <UserManagement 
-            language={language}
-            isRTL={isRTL}
-          />
-        )}
+        {activeTab === 'users' && <UserManagement language={language} isRTL={isRTL} />}
 
         {/* Organization Management Tab */}
         {activeTab === 'organizations' && (
-          <OrganizationManagement 
-            language={language}
-            isRTL={isRTL}
-          />
+          <OrganizationManagement language={language} isRTL={isRTL} />
         )}
 
         {/* Compliance Monitoring Tab */}
         {activeTab === 'compliance' && (
-          <ComplianceMonitor 
+          <ComplianceMonitor
             language={language}
             isRTL={isRTL}
             metrics={complianceMetrics}
@@ -513,27 +503,16 @@ const IraqiAdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {/* System Health Tab */}
         {activeTab === 'system' && (
-          <SystemHealth 
-            language={language}
-            isRTL={isRTL}
-            metrics={systemMetrics}
-          />
+          <SystemHealth language={language} isRTL={isRTL} metrics={systemMetrics} />
         )}
 
         {/* Audit Logs Tab */}
-        {activeTab === 'audit' && (
-          <AuditLogs 
-            language={language}
-            isRTL={isRTL}
-          />
-        )}
+        {activeTab === 'audit' && <AuditLogs language={language} isRTL={isRTL} />}
 
         {/* Settings Tab */}
         {activeTab === 'settings' && (
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
-              {translations.settings}
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">{translations.settings}</h3>
             <p className="text-gray-500">Settings panel coming soon...</p>
           </div>
         )}

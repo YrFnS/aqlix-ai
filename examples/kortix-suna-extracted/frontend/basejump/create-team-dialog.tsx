@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import NewTeamForm from '@/components/basejump/new-team-form';
+} from "@/components/ui/dialog";
+import NewTeamForm from "@/components/basejump/new-team-form";
 
 interface CreateTeamDialogProps {
   open: boolean;

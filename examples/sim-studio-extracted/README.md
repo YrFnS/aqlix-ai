@@ -7,12 +7,14 @@ This extraction provides a comprehensive visual workflow builder enhanced with I
 ## 🌟 Key Features
 
 ### Core Workflow Builder
+
 - **Visual Drag & Drop Interface**: Intuitive workflow creation
 - **60+ Pre-built Blocks**: Comprehensive tool integration
 - **Real-time Execution**: Live workflow processing
 - **Version Control**: Git-based workflow management
 
 ### Iraqi AI Enhancements
+
 - **🇮🇶 Cultural Validation**: Automatic Islamic compliance checking
 - **🔤 Arabic Processing**: Full RTL support with Iraqi dialect recognition
 - **💰 Payment Integration**: ZainCash, FastPay, NassWallet support
@@ -51,6 +53,7 @@ sim-studio-extracted/
 ## 🚀 Implementation Progress
 
 ### ✅ Phase 1: Core Framework (Completed)
+
 - [x] Enhanced type definitions with Arabic and cultural support
 - [x] Block registry system with Iraqi enhancements
 - [x] Core workflow blocks (starter, workflow, condition, response)
@@ -58,6 +61,7 @@ sim-studio-extracted/
 - [x] Icon system for cultural and workflow elements
 
 ### 🔄 Phase 2: UI Components (In Progress)
+
 - [ ] Visual workflow canvas with RTL support
 - [ ] Block palette with cultural categories
 - [ ] Arabic text input components
@@ -66,6 +70,7 @@ sim-studio-extracted/
 - [ ] Professional domain interfaces
 
 ### ⏳ Phase 3: Tool Integrations
+
 - [ ] 60+ service integration blocks
 - [ ] Iraqi payment gateway connectors
 - [ ] Professional domain APIs
@@ -75,18 +80,21 @@ sim-studio-extracted/
 ## 🔧 Technical Specifications
 
 ### Cultural Intelligence Features
+
 - **Islamic Compliance**: 95%+ accuracy in religious content validation
 - **Political Neutrality**: Automatic filtering of sensitive topics
 - **Professional Context**: Domain-specific validation rules
 - **Arabic Processing**: 99% RTL accuracy, 85% Iraqi dialect recognition
 
 ### Payment Gateway Support
+
 - **ZainCash**: Full API integration with 1000 IQD test amounts
 - **FastPay**: Complete payment flow with 500 IQD transactions
 - **NassWallet**: Secure payment processing with 1000 IQD limits
 - **Security**: 100% PCI DSS compliance for all gateways
 
 ### Professional Domains
+
 - **Legal**: Iraqi law compliance and document processing
 - **Medical**: Healthcare record management and privacy
 - **Educational**: Academic content validation and structuring
@@ -95,12 +103,14 @@ sim-studio-extracted/
 ## 🛠️ Development Standards
 
 ### Code Quality
+
 - **TypeScript**: Full type safety with Arabic text types
 - **Cultural Types**: Comprehensive cultural validation interfaces
 - **RTL Support**: Right-to-left layout compatibility
 - **Performance**: <200ms cultural validation, <100ms Arabic processing
 
 ### Testing Requirements
+
 - **Cultural Tests**: 100% pass rate for Islamic compliance
 - **Arabic Tests**: 99% RTL accuracy, 85% dialect recognition
 - **Payment Tests**: 100% security compliance across all gateways
@@ -109,42 +119,45 @@ sim-studio-extracted/
 ## 📖 Usage Examples
 
 ### Basic Workflow Creation
+
 ```typescript
-import { iraqiBlockRegistry } from './blocks/registry'
-import { StarterBlock } from './blocks/core/starter'
+import { iraqiBlockRegistry } from "./blocks/registry";
+import { StarterBlock } from "./blocks/core/starter";
 
 // Create culturally aware workflow
 const workflow = {
   starter: StarterBlock,
   culturalValidation: true,
   arabicSupport: true,
-  professionalDomain: 'legal'
-}
+  professionalDomain: "legal",
+};
 ```
 
 ### Arabic Text Processing
+
 ```typescript
-import { ArabicTextProcessorBlock } from './blocks/iraqi/arabic-processor'
+import { ArabicTextProcessorBlock } from "./blocks/iraqi/arabic-processor";
 
 // Process Iraqi dialect text
 const processor = {
   inputText: "شلونك اليوم؟ شكو ماكو؟",
   dialectSettings: "iraqi",
-  rtlSupport: true
-}
+  rtlSupport: true,
+};
 ```
 
 ### Cultural Validation
+
 ```typescript
-import { CulturalValidatorBlock } from './blocks/iraqi/cultural-validator'
+import { CulturalValidatorBlock } from "./blocks/iraqi/cultural-validator";
 
 // Validate content for Iraqi context
 const validation = {
   islamicCompliance: true,
   politicalNeutrality: true,
   professionalContext: "legal",
-  confidenceThreshold: 0.95
-}
+  confidenceThreshold: 0.95,
+};
 ```
 
 ## 🔄 Integration with Iraqi AI System

@@ -8,7 +8,7 @@
   },
   "common": {
     "yes": "نعم",
-    "no": "كلا", 
+    "no": "كلا",
     "ok": "حسناً",
     "cancel": "إلغاء",
     "confirm": "تأكيد",
@@ -56,7 +56,7 @@
     "dark": "داكن",
     "light": "فاتح",
     "auto": "تلقائي",
-    "previous": "السابق", 
+    "previous": "السابق",
     "next": "التالي",
     "back": "العودة",
     "forward": "إلى الأمام",
@@ -90,7 +90,7 @@
   "iraqi_greetings": {
     "welcome": "أهلاً وسهلاً",
     "good_morning": "صباح الخير",
-    "good_afternoon": "مساء الخير", 
+    "good_afternoon": "مساء الخير",
     "good_evening": "مساء الخير",
     "good_night": "تصبح على خير",
     "hello": "مرحبا",
@@ -116,7 +116,7 @@
   },
   "iraqi_professional": {
     "doctor": "دكتور",
-    "engineer": "مهندس", 
+    "engineer": "مهندس",
     "lawyer": "محامي",
     "teacher": "أستاذ",
     "professor": "بروفيسور",
@@ -138,7 +138,7 @@
   },
   "iraqi_governorates": {
     "baghdad": "بغداد",
-    "basra": "البصرة", 
+    "basra": "البصرة",
     "mosul": "الموصل",
     "erbil": "أربيل",
     "najaf": "النجف الأشرف",
@@ -160,7 +160,7 @@
   },
   "iraqi_cultural": {
     "respect": "احترام",
-    "honor": "شرف", 
+    "honor": "شرف",
     "dignity": "كرامة",
     "hospitality": "ضيافة",
     "generosity": "كرم",
@@ -212,7 +212,7 @@
     "saturday": "السبت",
     "sunday": "الأحد",
     "january": "يناير",
-    "february": "فبراير", 
+    "february": "فبراير",
     "march": "مارس",
     "april": "أبريل",
     "may": "مايو",
@@ -227,7 +227,7 @@
   "islamic_terms": {
     "prayer": "صلاة",
     "fajr": "الفجر",
-    "dhuhr": "الظهر", 
+    "dhuhr": "الظهر",
     "asr": "العصر",
     "maghrib": "المغرب",
     "isha": "العشاء",

@@ -154,6 +154,7 @@ PATIENT_PRIVACY_COMPLIANCE=true
 ```
 
 **Health Ministry Features:**
+
 - Medical record collaboration with HIPAA-equivalent privacy
 - Healthcare team coordination workflows
 - Emergency response real-time collaboration
@@ -175,6 +176,7 @@ STUDENT_PRIVACY_COMPLIANCE=true
 ```
 
 **Education Ministry Features:**
+
 - Curriculum development collaboration
 - Student assessment workflows
 - Educational resource sharing
@@ -196,6 +198,7 @@ NATIONAL_SECURITY_COMPLIANCE=true
 ```
 
 **Interior Ministry Features:**
+
 - Citizen service document processing
 - Multi-department coordination
 - Security clearance workflows
@@ -216,6 +219,7 @@ LEGAL_PRIVILEGE_COMPLIANCE=true
 ```
 
 **Justice Ministry Features:**
+
 - Legal document collaboration
 - Case file review workflows
 - Court schedule coordination
@@ -370,7 +374,7 @@ services:
   collaboration-engine:
     build: .
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - NODE_ENV=production
       - MINISTRY_TYPE=health
@@ -411,8 +415,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/ssl:ro
@@ -451,15 +455,15 @@ metadata:
   name: collaboration-config
   namespace: iraqi-collaboration
 data:
-  MINISTRY_TYPE: "health"
-  ISLAMIC_WORKFLOW_COMPLIANCE: "true"
-  ARABIC_COLLABORATION: "true"
-  PRAYER_TIME_AWARE: "true"
-  CULTURAL_MODERATION: "true"
-  GOVERNMENT_SECURITY: "true"
-  AUDIT_TRAIL: "true"
-  SYNC_LATENCY_TARGET: "50"
-  RTL_OPTIMIZED: "true"
+  MINISTRY_TYPE: 'health'
+  ISLAMIC_WORKFLOW_COMPLIANCE: 'true'
+  ARABIC_COLLABORATION: 'true'
+  PRAYER_TIME_AWARE: 'true'
+  CULTURAL_MODERATION: 'true'
+  GOVERNMENT_SECURITY: 'true'
+  AUDIT_TRAIL: 'true'
+  SYNC_LATENCY_TARGET: '50'
+  RTL_OPTIMIZED: 'true'
 ```
 
 ### Deployment
@@ -490,42 +494,42 @@ spec:
         ministry: health
     spec:
       containers:
-      - name: collaboration-engine
-        image: iraqi-ai/collaboration-engine:1.0.0
-        ports:
-        - containerPort: 8080
-        envFrom:
-        - configMapRef:
-            name: collaboration-config
-        - secretRef:
-            name: collaboration-secrets
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "2000m"
-        volumeMounts:
-        - name: ssl-certs
-          mountPath: /app/ssl
-          readOnly: true
+        - name: collaboration-engine
+          image: iraqi-ai/collaboration-engine:1.0.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: collaboration-config
+            - secretRef:
+                name: collaboration-secrets
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: '512Mi'
+              cpu: '500m'
+            limits:
+              memory: '2Gi'
+              cpu: '2000m'
+          volumeMounts:
+            - name: ssl-certs
+              mountPath: /app/ssl
+              readOnly: true
       volumes:
-      - name: ssl-certs
-        secret:
-          secretName: collaboration-tls
+        - name: ssl-certs
+          secret:
+            secretName: collaboration-tls
 ---
 apiVersion: v1
 kind: Service
@@ -536,12 +540,12 @@ spec:
   selector:
     app: collaboration-engine
   ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-  - name: websocket
-    port: 8080
-    targetPort: 8080
+    - name: http
+      port: 80
+      targetPort: 8080
+    - name: websocket
+      port: 8080
+      targetPort: 8080
   type: LoadBalancer
 ```
 
@@ -561,7 +565,7 @@ const healthCheck = {
   culturalCompliance: true,
   islamicCompliance: true,
   arabicSupport: true,
-  prayerTimeAware: process.env.PRAYER_TIME_AWARE === 'true'
+  prayerTimeAware: process.env.PRAYER_TIME_AWARE === 'true',
 };
 
 const server = http.createServer((req, res) => {
@@ -679,7 +683,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # WebSocket support
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -719,10 +723,10 @@ CREATE OR REPLACE FUNCTION audit_trigger()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO audit_logs (
-        table_name, operation, old_data, new_data, 
+        table_name, operation, old_data, new_data,
         user_id, timestamp, ministry, islamic_compliant
     ) VALUES (
-        TG_TABLE_NAME, TG_OP, 
+        TG_TABLE_NAME, TG_OP,
         CASE WHEN TG_OP != 'INSERT' THEN row_to_json(OLD) END,
         CASE WHEN TG_OP != 'DELETE' THEN row_to_json(NEW) END,
         current_setting('app.current_user_id'),
@@ -750,36 +754,36 @@ const cluster = require('cluster');
 const numCPUs = require('os').cpus().length;
 
 if (cluster.isMaster) {
-    console.log(`Master ${process.pid} starting ${numCPUs} workers`);
-    
-    // Fork workers for each CPU
-    for (let i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
-    
-    cluster.on('exit', (worker, code, signal) => {
-        console.log(`Worker ${worker.process.pid} died`);
-        cluster.fork();
-    });
+  console.log(`Master ${process.pid} starting ${numCPUs} workers`);
+
+  // Fork workers for each CPU
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
 } else {
-    // Worker process - start the collaboration server
-    require('./dist/RealTimeCollaborationServer.js');
-    console.log(`Worker ${process.pid} started`);
+  // Worker process - start the collaboration server
+  require('./dist/RealTimeCollaborationServer.js');
+  console.log(`Worker ${process.pid} started`);
 }
 
 // Memory optimization
 process.on('SIGTERM', () => {
-    console.log('SIGTERM received, shutting down gracefully');
-    process.exit(0);
+  console.log('SIGTERM received, shutting down gracefully');
+  process.exit(0);
 });
 
 // Garbage collection optimization
 if (process.env.NODE_ENV === 'production') {
-    setInterval(() => {
-        if (global.gc) {
-            global.gc();
-        }
-    }, 60000); // Run GC every minute
+  setInterval(() => {
+    if (global.gc) {
+      global.gc();
+    }
+  }, 60000); // Run GC every minute
 }
 ```
 
@@ -895,6 +899,7 @@ echo "Update completed successfully"
 ### Common Issues and Solutions
 
 #### Issue: High Latency in Arabic Text Processing
+
 ```bash
 # Check Arabic font installation
 fc-list | grep -i arabic
@@ -907,6 +912,7 @@ tail -f logs/arabic-processing.log
 ```
 
 #### Issue: Prayer Time Detection Not Working
+
 ```bash
 # Check prayer time configuration
 curl "http://localhost:8080/api/prayer-times?date=$(date +%Y-%m-%d)"
@@ -919,6 +925,7 @@ curl "http://api.islamic-finder.org/prayer-times"
 ```
 
 #### Issue: Cultural Validation Failures
+
 ```bash
 # Check cultural validation logs
 grep "cultural-validation" logs/collaboration.log

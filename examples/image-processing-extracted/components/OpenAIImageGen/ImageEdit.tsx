@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { 
-  Upload, 
-  Edit3, 
-  RotateCcw, 
-  Download, 
-  AlertCircle, 
+import React, { useState, useCallback, useRef, useEffect } from "react";
+import {
+  Upload,
+  Edit3,
+  RotateCcw,
+  Download,
+  AlertCircle,
   CheckCircle2,
   Trash2,
   Eye,
@@ -16,10 +16,10 @@ import {
   Scissors,
   Languages,
   Shield,
-  Wand2
-} from 'lucide-react';
+  Wand2,
+} from "lucide-react";
 
-import { ImageDisplay } from '../ImageDisplay';
+import { ImageDisplay } from "../ImageDisplay";
 
 // Types
 interface EditRequest {
@@ -27,14 +27,14 @@ interface EditRequest {
   mask?: File | string; // File or base64/URL for areas to edit
   prompt: string;
   prompt_ar?: string;
-  model: 'dall-e-2';
-  size?: '256x256' | '512x512' | '1024x1024';
+  model: "dall-e-2";
+  size?: "256x256" | "512x512" | "1024x1024";
   n?: number;
   professional_domain?: string;
   cultural_validation?: boolean;
   islamic_compliance?: boolean;
   user_id?: string;
-  response_format?: 'url' | 'b64_json';
+  response_format?: "url" | "b64_json";
 }
 
 interface EditResponse {
@@ -69,14 +69,14 @@ interface ImageEditProps {
 }
 
 export const ImageEdit: React.FC<ImageEditProps> = ({
-  className = '',
+  className = "",
   isRtlMode = false,
-  defaultDomain = 'general',
+  defaultDomain = "general",
   onEdit,
   culturalValidationRequired = true,
   maxImages = 4,
-  allowedSizes = ['256x256', '512x512', '1024x1024'],
-  showMaskEditor = true
+  allowedSizes = ["256x256", "512x512", "1024x1024"],
+  showMaskEditor = true,
 }) => {
   // Refs
   const originalImageRef = useRef<HTMLInputElement>(null);
@@ -86,124 +86,155 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
 
   // State Management
   const [originalImage, setOriginalImage] = useState<File | null>(null);
-  const [originalImageUrl, setOriginalImageUrl] = useState<string>('');
+  const [originalImageUrl, setOriginalImageUrl] = useState<string>("");
   const [maskImage, setMaskImage] = useState<File | null>(null);
-  const [maskImageUrl, setMaskImageUrl] = useState<string>('');
+  const [maskImageUrl, setMaskImageUrl] = useState<string>("");
   const [showMaskPreview, setShowMaskPreview] = useState(true);
-  
+
   // Edit parameters
-  const [prompt, setPrompt] = useState('');
-  const [promptAr, setPromptAr] = useState('');
-  const [size, setSize] = useState<'256x256' | '512x512' | '1024x1024'>('1024x1024');
+  const [prompt, setPrompt] = useState("");
+  const [promptAr, setPromptAr] = useState("");
+  const [size, setSize] = useState<"256x256" | "512x512" | "1024x1024">(
+    "1024x1024",
+  );
   const [numImages, setNumImages] = useState(1);
   const [professionalDomain, setProfessionalDomain] = useState(defaultDomain);
-  const [culturalValidation, setCulturalValidation] = useState(culturalValidationRequired);
+  const [culturalValidation, setCulturalValidation] = useState(
+    culturalValidationRequired,
+  );
   const [islamicCompliance, setIslamicCompliance] = useState(true);
 
   // Processing state
   const [isProcessing, setIsProcessing] = useState(false);
   const [editedImages, setEditedImages] = useState<EditResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [previewMode, setPreviewMode] = useState<'original' | 'masked' | 'overlay'>('original');
+  const [previewMode, setPreviewMode] = useState<
+    "original" | "masked" | "overlay"
+  >("original");
 
   // Mask editor state
   const [isDrawing, setIsDrawing] = useState(false);
-  const [maskEditMode, setMaskEditMode] = useState<'draw' | 'erase'>('draw');
+  const [maskEditMode, setMaskEditMode] = useState<"draw" | "erase">("draw");
   const [brushSize, setBrushSize] = useState(20);
 
   // Professional Domain Options
   const professionalDomains = [
-    { value: 'general', label: 'عام / General' },
-    { value: 'legal', label: 'قانوني / Legal' },
-    { value: 'medical', label: 'طبي / Medical' },
-    { value: 'educational', label: 'تعليمي / Educational' },
-    { value: 'business', label: 'تجاري / Business' },
-    { value: 'engineering', label: 'هندسي / Engineering' }
+    { value: "general", label: "عام / General" },
+    { value: "legal", label: "قانوني / Legal" },
+    { value: "medical", label: "طبي / Medical" },
+    { value: "educational", label: "تعليمي / Educational" },
+    { value: "business", label: "تجاري / Business" },
+    { value: "engineering", label: "هندسي / Engineering" },
   ];
 
   // Handle original image upload
-  const handleOriginalImageUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleOriginalImageUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setError(isRtlMode ? 'يرجى اختيار ملف صورة صالح' : 'Please select a valid image file');
-      return;
-    }
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        setError(
+          isRtlMode
+            ? "يرجى اختيار ملف صورة صالح"
+            : "Please select a valid image file",
+        );
+        return;
+      }
 
-    // Validate file size (max 4MB)
-    if (file.size > 4 * 1024 * 1024) {
-      setError(isRtlMode ? 'حجم الملف كبير جداً (الحد الأقصى 4MB)' : 'File too large (max 4MB)');
-      return;
-    }
+      // Validate file size (max 4MB)
+      if (file.size > 4 * 1024 * 1024) {
+        setError(
+          isRtlMode
+            ? "حجم الملف كبير جداً (الحد الأقصى 4MB)"
+            : "File too large (max 4MB)",
+        );
+        return;
+      }
 
-    setOriginalImage(file);
-    setError(null);
-    
-    // Create preview URL
-    const url = URL.createObjectURL(file);
-    setOriginalImageUrl(url);
-    
-    // Clear existing mask
-    setMaskImage(null);
-    setMaskImageUrl('');
-  }, [isRtlMode]);
+      setOriginalImage(file);
+      setError(null);
+
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setOriginalImageUrl(url);
+
+      // Clear existing mask
+      setMaskImage(null);
+      setMaskImageUrl("");
+    },
+    [isRtlMode],
+  );
 
   // Handle mask image upload
-  const handleMaskImageUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleMaskImageUpload = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      setError(isRtlMode ? 'يرجى اختيار ملف قناع صالح' : 'Please select a valid mask image');
-      return;
-    }
+      if (!file.type.startsWith("image/")) {
+        setError(
+          isRtlMode
+            ? "يرجى اختيار ملف قناع صالح"
+            : "Please select a valid mask image",
+        );
+        return;
+      }
 
-    setMaskImage(file);
-    setError(null);
-    
-    const url = URL.createObjectURL(file);
-    setMaskImageUrl(url);
-  }, [isRtlMode]);
+      setMaskImage(file);
+      setError(null);
+
+      const url = URL.createObjectURL(file);
+      setMaskImageUrl(url);
+    },
+    [isRtlMode],
+  );
 
   // Canvas mask drawing
-  const startDrawing = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!canvasRef.current) return;
-    setIsDrawing(true);
-    
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  const startDrawing = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!canvasRef.current) return;
+      setIsDrawing(true);
 
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    ctx.globalCompositeOperation = maskEditMode === 'draw' ? 'source-over' : 'destination-out';
-    ctx.strokeStyle = maskEditMode === 'draw' ? 'white' : 'transparent';
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    
-    ctx.beginPath();
-    ctx.arc(x, y, brushSize / 2, 0, 2 * Math.PI);
-    ctx.fill();
-  }, [maskEditMode, brushSize]);
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-  const draw = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !canvasRef.current) return;
-    
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  }, [isDrawing]);
+      ctx.globalCompositeOperation =
+        maskEditMode === "draw" ? "source-over" : "destination-out";
+      ctx.strokeStyle = maskEditMode === "draw" ? "white" : "transparent";
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = "round";
+
+      ctx.beginPath();
+      ctx.arc(x, y, brushSize / 2, 0, 2 * Math.PI);
+      ctx.fill();
+    },
+    [maskEditMode, brushSize],
+  );
+
+  const draw = useCallback(
+    (event: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!isDrawing || !canvasRef.current) return;
+
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    },
+    [isDrawing],
+  );
 
   const stopDrawing = useCallback(() => {
     setIsDrawing(false);
@@ -212,13 +243,13 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
   // Clear mask
   const clearMask = useCallback(() => {
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
+      const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
     }
     setMaskImage(null);
-    setMaskImageUrl('');
+    setMaskImageUrl("");
   }, []);
 
   // Convert canvas to mask file
@@ -228,27 +259,35 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
         resolve(null);
         return;
       }
-      
+
       canvasRef.current.toBlob((blob) => {
         if (blob) {
-          const file = new File([blob], 'mask.png', { type: 'image/png' });
+          const file = new File([blob], "mask.png", { type: "image/png" });
           resolve(file);
         } else {
           resolve(null);
         }
-      }, 'image/png');
+      }, "image/png");
     });
   }, []);
 
   // Perform image edit
   const handleEdit = async () => {
     if (!originalImage) {
-      setError(isRtlMode ? 'يرجى اختيار صورة أصلية' : 'Please select an original image');
+      setError(
+        isRtlMode
+          ? "يرجى اختيار صورة أصلية"
+          : "Please select an original image",
+      );
       return;
     }
 
     if (!prompt.trim() && !promptAr.trim()) {
-      setError(isRtlMode ? 'يرجى إدخال وصف للتعديل' : 'Please enter an edit description');
+      setError(
+        isRtlMode
+          ? "يرجى إدخال وصف للتعديل"
+          : "Please enter an edit description",
+      );
       return;
     }
 
@@ -264,25 +303,29 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
       }
 
       if (!maskFile) {
-        throw new Error(isRtlMode ? 'يرجى إنشاء قناع للمناطق المراد تعديلها' : 'Please create a mask for areas to edit');
+        throw new Error(
+          isRtlMode
+            ? "يرجى إنشاء قناع للمناطق المراد تعديلها"
+            : "Please create a mask for areas to edit",
+        );
       }
 
       const formData = new FormData();
-      formData.append('image', originalImage);
-      formData.append('mask', maskFile);
-      formData.append('prompt', prompt.trim());
-      if (promptAr.trim()) formData.append('prompt_ar', promptAr.trim());
-      formData.append('model', 'dall-e-2');
-      formData.append('size', size);
-      formData.append('n', numImages.toString());
-      formData.append('professional_domain', professionalDomain);
-      formData.append('cultural_validation', culturalValidation.toString());
-      formData.append('islamic_compliance', islamicCompliance.toString());
-      formData.append('response_format', 'url');
+      formData.append("image", originalImage);
+      formData.append("mask", maskFile);
+      formData.append("prompt", prompt.trim());
+      if (promptAr.trim()) formData.append("prompt_ar", promptAr.trim());
+      formData.append("model", "dall-e-2");
+      formData.append("size", size);
+      formData.append("n", numImages.toString());
+      formData.append("professional_domain", professionalDomain);
+      formData.append("cultural_validation", culturalValidation.toString());
+      formData.append("islamic_compliance", islamicCompliance.toString());
+      formData.append("response_format", "url");
 
       // Simulate API call - replace with actual endpoint
-      const response = await fetch('/api/v1/images/edit', {
-        method: 'POST',
+      const response = await fetch("/api/v1/images/edit", {
+        method: "POST",
         body: formData,
       });
 
@@ -291,15 +334,15 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
       }
 
       const result: EditResponse = await response.json();
-      
+
       if (result.success) {
         setEditedImages(result);
         onEdit?.(result);
       } else {
-        throw new Error(result.error || 'Edit failed');
+        throw new Error(result.error || "Edit failed");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Edit failed';
+      const errorMessage = err instanceof Error ? err.message : "Edit failed";
       setError(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -309,19 +352,19 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
   // Clean up URLs
   useEffect(() => {
     return () => {
-      if (originalImageUrl && originalImageUrl.startsWith('blob:')) {
+      if (originalImageUrl && originalImageUrl.startsWith("blob:")) {
         URL.revokeObjectURL(originalImageUrl);
       }
-      if (maskImageUrl && maskImageUrl.startsWith('blob:')) {
+      if (maskImageUrl && maskImageUrl.startsWith("blob:")) {
         URL.revokeObjectURL(maskImageUrl);
       }
     };
   }, [originalImageUrl, maskImageUrl]);
 
   // RTL-aware classes
-  const rtlClass = isRtlMode ? 'rtl' : 'ltr';
-  const textAlign = isRtlMode ? 'text-right' : 'text-left';
-  const flexDir = isRtlMode ? 'flex-row-reverse' : 'flex-row';
+  const rtlClass = isRtlMode ? "rtl" : "ltr";
+  const textAlign = isRtlMode ? "text-right" : "text-left";
+  const flexDir = isRtlMode ? "flex-row-reverse" : "flex-row";
 
   return (
     <div className={`image-edit-container ${rtlClass} ${className}`}>
@@ -330,14 +373,14 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
         <div className="flex items-center gap-2">
           <Edit3 className="w-6 h-6 text-purple-600" />
           <h2 className="text-xl font-semibold text-gray-900">
-            {isRtlMode ? 'تعديل الصور بالذكاء الاصطناعي' : 'AI Image Editing'}
+            {isRtlMode ? "تعديل الصور بالذكاء الاصطناعي" : "AI Image Editing"}
           </h2>
         </div>
-        
+
         {culturalValidation && (
           <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded text-xs text-green-700">
             <Shield className="w-3 h-3" />
-            <span>{isRtlMode ? 'التحقق الثقافي' : 'Cultural Validation'}</span>
+            <span>{isRtlMode ? "التحقق الثقافي" : "Cultural Validation"}</span>
           </div>
         )}
       </div>
@@ -347,8 +390,10 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
         <div className="lg:col-span-1 space-y-6">
           {/* Original Image Upload */}
           <div>
-            <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-              {isRtlMode ? 'الصورة الأصلية' : 'Original Image'}
+            <label
+              className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+            >
+              {isRtlMode ? "الصورة الأصلية" : "Original Image"}
             </label>
             <div className="space-y-3">
               <input
@@ -364,16 +409,15 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               >
                 <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                 <p className="text-sm text-gray-600">
-                  {isRtlMode ? 'اختر صورة للتعديل' : 'Choose image to edit'}
+                  {isRtlMode ? "اختر صورة للتعديل" : "Choose image to edit"}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  PNG, JPG (Max 4MB)
-                </p>
+                <p className="text-xs text-gray-500 mt-1">PNG, JPG (Max 4MB)</p>
               </button>
-              
+
               {originalImage && (
                 <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
-                  ✓ {originalImage.name} ({(originalImage.size / 1024).toFixed(1)}KB)
+                  ✓ {originalImage.name} (
+                  {(originalImage.size / 1024).toFixed(1)}KB)
                 </div>
               )}
             </div>
@@ -382,10 +426,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
           {/* Mask Upload/Editor */}
           {originalImage && (
             <div>
-              <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                {isRtlMode ? 'قناع التعديل' : 'Edit Mask'}
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+              >
+                {isRtlMode ? "قناع التعديل" : "Edit Mask"}
               </label>
-              
+
               <div className="space-y-3">
                 {/* Mask method selection */}
                 <div className="grid grid-cols-2 gap-2">
@@ -394,16 +440,16 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                     className="p-2 text-xs border border-gray-300 rounded hover:bg-gray-50"
                   >
                     <Upload className="w-3 h-3 mx-auto mb-1" />
-                    {isRtlMode ? 'رفع قناع' : 'Upload Mask'}
+                    {isRtlMode ? "رفع قناع" : "Upload Mask"}
                   </button>
-                  
+
                   {showMaskEditor && (
                     <button
-                      onClick={() => setPreviewMode('masked')}
+                      onClick={() => setPreviewMode("masked")}
                       className="p-2 text-xs border border-gray-300 rounded hover:bg-gray-50"
                     >
                       <Brush className="w-3 h-3 mx-auto mb-1" />
-                      {isRtlMode ? 'رسم قناع' : 'Draw Mask'}
+                      {isRtlMode ? "رسم قناع" : "Draw Mask"}
                     </button>
                   )}
                 </div>
@@ -417,29 +463,31 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                 />
 
                 {/* Mask drawing tools */}
-                {showMaskEditor && previewMode === 'masked' && (
+                {showMaskEditor && previewMode === "masked" && (
                   <div className="p-3 bg-gray-50 rounded-lg space-y-3">
-                    <div className={`flex items-center justify-between ${flexDir}`}>
+                    <div
+                      className={`flex items-center justify-between ${flexDir}`}
+                    >
                       <span className="text-xs text-gray-700">
-                        {isRtlMode ? 'أدوات الرسم' : 'Drawing Tools'}
+                        {isRtlMode ? "أدوات الرسم" : "Drawing Tools"}
                       </span>
                       <div className="flex gap-1">
                         <button
-                          onClick={() => setMaskEditMode('draw')}
+                          onClick={() => setMaskEditMode("draw")}
                           className={`p-1 text-xs rounded ${
-                            maskEditMode === 'draw' 
-                              ? 'bg-blue-100 text-blue-700' 
-                              : 'text-gray-600 hover:bg-gray-100'
+                            maskEditMode === "draw"
+                              ? "bg-blue-100 text-blue-700"
+                              : "text-gray-600 hover:bg-gray-100"
                           }`}
                         >
                           <Brush className="w-3 h-3" />
                         </button>
                         <button
-                          onClick={() => setMaskEditMode('erase')}
+                          onClick={() => setMaskEditMode("erase")}
                           className={`p-1 text-xs rounded ${
-                            maskEditMode === 'erase' 
-                              ? 'bg-red-100 text-red-700' 
-                              : 'text-gray-600 hover:bg-gray-100'
+                            maskEditMode === "erase"
+                              ? "bg-red-100 text-red-700"
+                              : "text-gray-600 hover:bg-gray-100"
                           }`}
                         >
                           <Scissors className="w-3 h-3" />
@@ -452,10 +500,13 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                         </button>
                       </div>
                     </div>
-                    
+
                     <div>
-                      <label className={`block text-xs text-gray-600 mb-1 ${textAlign}`}>
-                        {isRtlMode ? 'حجم الفرشاة' : 'Brush Size'}: {brushSize}px
+                      <label
+                        className={`block text-xs text-gray-600 mb-1 ${textAlign}`}
+                      >
+                        {isRtlMode ? "حجم الفرشاة" : "Brush Size"}: {brushSize}
+                        px
                       </label>
                       <input
                         type="range"
@@ -477,8 +528,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
             <div className="space-y-4">
               {/* English Prompt */}
               <div>
-                <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                  {isRtlMode ? 'وصف التعديل (إنجليزي)' : 'Edit Description (English)'}
+                <label
+                  className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+                >
+                  {isRtlMode
+                    ? "وصف التعديل (إنجليزي)"
+                    : "Edit Description (English)"}
                 </label>
                 <textarea
                   ref={promptInputRef}
@@ -487,14 +542,18 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                   placeholder="Describe what you want to change in the marked areas..."
                   className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${textAlign}`}
                   rows={3}
-                  style={{ direction: 'ltr' }}
+                  style={{ direction: "ltr" }}
                 />
               </div>
 
               {/* Arabic Prompt */}
               <div>
-                <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                  {isRtlMode ? 'وصف التعديل (عربي)' : 'Edit Description (Arabic)'}
+                <label
+                  className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+                >
+                  {isRtlMode
+                    ? "وصف التعديل (عربي)"
+                    : "Edit Description (Arabic)"}
                 </label>
                 <textarea
                   value={promptAr}
@@ -502,7 +561,7 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                   placeholder="صف التغييرات المطلوبة في المناطق المحددة..."
                   className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-right font-arabic`}
                   rows={3}
-                  style={{ direction: 'rtl' }}
+                  style={{ direction: "rtl" }}
                 />
               </div>
             </div>
@@ -513,8 +572,10 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
             <div className="space-y-4">
               {/* Professional Domain */}
               <div>
-                <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                  {isRtlMode ? 'المجال المهني' : 'Professional Domain'}
+                <label
+                  className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+                >
+                  {isRtlMode ? "المجال المهني" : "Professional Domain"}
                 </label>
                 <select
                   value={professionalDomain}
@@ -531,8 +592,10 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
 
               {/* Size Selection */}
               <div>
-                <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                  {isRtlMode ? 'حجم الصورة' : 'Image Size'}
+                <label
+                  className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+                >
+                  {isRtlMode ? "حجم الصورة" : "Image Size"}
                 </label>
                 <select
                   value={size}
@@ -549,8 +612,11 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
 
               {/* Number of variations */}
               <div>
-                <label className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}>
-                  {isRtlMode ? 'عدد الإصدارات' : 'Number of Variations'}: {numImages}
+                <label
+                  className={`block text-sm font-medium text-gray-700 mb-2 ${textAlign}`}
+                >
+                  {isRtlMode ? "عدد الإصدارات" : "Number of Variations"}:{" "}
+                  {numImages}
                 </label>
                 <input
                   type="range"
@@ -566,7 +632,7 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               <div className="space-y-3 p-3 bg-gray-50 rounded-lg">
                 <div className={`flex items-center justify-between ${flexDir}`}>
                   <span className="text-sm text-gray-700">
-                    {isRtlMode ? 'التحقق الثقافي' : 'Cultural Validation'}
+                    {isRtlMode ? "التحقق الثقافي" : "Cultural Validation"}
                   </span>
                   <input
                     type="checkbox"
@@ -577,7 +643,7 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                 </div>
                 <div className={`flex items-center justify-between ${flexDir}`}>
                   <span className="text-sm text-gray-700">
-                    {isRtlMode ? 'الامتثال الإسلامي' : 'Islamic Compliance'}
+                    {isRtlMode ? "الامتثال الإسلامي" : "Islamic Compliance"}
                   </span>
                   <input
                     type="checkbox"
@@ -596,18 +662,18 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               onClick={handleEdit}
               disabled={isProcessing || (!prompt.trim() && !promptAr.trim())}
               className={`w-full flex items-center justify-center gap-2 px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed ${
-                isProcessing ? 'cursor-wait' : ''
+                isProcessing ? "cursor-wait" : ""
               }`}
             >
               {isProcessing ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>{isRtlMode ? 'جاري التعديل...' : 'Editing...'}</span>
+                  <span>{isRtlMode ? "جاري التعديل..." : "Editing..."}</span>
                 </>
               ) : (
                 <>
                   <Wand2 className="w-4 h-4" />
-                  <span>{isRtlMode ? 'تعديل الصورة' : 'Edit Image'}</span>
+                  <span>{isRtlMode ? "تعديل الصورة" : "Edit Image"}</span>
                 </>
               )}
             </button>
@@ -620,19 +686,20 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
             <div className="space-y-4">
               {/* Preview Mode Selector */}
               <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
-                {['original', 'masked', 'overlay'].map((mode) => (
+                {["original", "masked", "overlay"].map((mode) => (
                   <button
                     key={mode}
                     onClick={() => setPreviewMode(mode as any)}
                     className={`flex-1 px-3 py-2 text-xs rounded ${
                       previewMode === mode
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
                     }`}
                   >
-                    {mode === 'original' && (isRtlMode ? 'الأصلية' : 'Original')}
-                    {mode === 'masked' && (isRtlMode ? 'مع القناع' : 'Masked')}
-                    {mode === 'overlay' && (isRtlMode ? 'معاينة' : 'Overlay')}
+                    {mode === "original" &&
+                      (isRtlMode ? "الأصلية" : "Original")}
+                    {mode === "masked" && (isRtlMode ? "مع القناع" : "Masked")}
+                    {mode === "overlay" && (isRtlMode ? "معاينة" : "Overlay")}
                   </button>
                 ))}
               </div>
@@ -643,11 +710,11 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                   src={originalImageUrl}
                   alt="Original"
                   className="w-full h-auto"
-                  style={{ maxHeight: '400px', objectFit: 'contain' }}
+                  style={{ maxHeight: "400px", objectFit: "contain" }}
                 />
-                
+
                 {/* Canvas overlay for mask editing */}
-                {previewMode === 'masked' && showMaskEditor && (
+                {previewMode === "masked" && showMaskEditor && (
                   <canvas
                     ref={canvasRef}
                     className="absolute inset-0 w-full h-full cursor-crosshair"
@@ -655,45 +722,42 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
-                    style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}
+                    style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
                   />
                 )}
 
                 {/* Mask preview overlay */}
-                {previewMode === 'overlay' && maskImageUrl && (
+                {previewMode === "overlay" && maskImageUrl && (
                   <img
                     src={maskImageUrl}
                     alt="Mask"
                     className="absolute inset-0 w-full h-full opacity-50"
-                    style={{ mixBlendMode: 'multiply' }}
+                    style={{ mixBlendMode: "multiply" }}
                   />
                 )}
               </div>
 
               {/* Instructions */}
               <div className="text-xs text-gray-600 bg-blue-50 p-3 rounded-lg">
-                {previewMode === 'masked' && showMaskEditor && (
+                {previewMode === "masked" && showMaskEditor && (
                   <p className={textAlign}>
-                    {isRtlMode 
-                      ? 'ارسم على المناطق التي تريد تعديلها. المناطق البيضاء ستتم معالجتها.'
-                      : 'Draw on areas you want to edit. White areas will be processed.'
-                    }
+                    {isRtlMode
+                      ? "ارسم على المناطق التي تريد تعديلها. المناطق البيضاء ستتم معالجتها."
+                      : "Draw on areas you want to edit. White areas will be processed."}
                   </p>
                 )}
-                {previewMode === 'original' && (
+                {previewMode === "original" && (
                   <p className={textAlign}>
-                    {isRtlMode 
-                      ? 'الصورة الأصلية التي ستتم معالجتها.'
-                      : 'Original image that will be processed.'
-                    }
+                    {isRtlMode
+                      ? "الصورة الأصلية التي ستتم معالجتها."
+                      : "Original image that will be processed."}
                   </p>
                 )}
-                {previewMode === 'overlay' && (
+                {previewMode === "overlay" && (
                   <p className={textAlign}>
-                    {isRtlMode 
-                      ? 'معاينة القناع على الصورة الأصلية.'
-                      : 'Preview of mask overlaid on original image.'
-                    }
+                    {isRtlMode
+                      ? "معاينة القناع على الصورة الأصلية."
+                      : "Preview of mask overlaid on original image."}
                   </p>
                 )}
               </div>
@@ -703,13 +767,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               <div className="text-center">
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-lg font-medium text-gray-600 mb-2">
-                  {isRtlMode ? 'رفع صورة' : 'Upload Image'}
+                  {isRtlMode ? "رفع صورة" : "Upload Image"}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {isRtlMode 
-                    ? 'اختر صورة لبدء التعديل'
-                    : 'Choose an image to start editing'
-                  }
+                  {isRtlMode
+                    ? "اختر صورة لبدء التعديل"
+                    : "Choose an image to start editing"}
                 </p>
               </div>
             </div>
@@ -724,10 +787,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               <div className={`flex items-center gap-2 ${flexDir}`}>
                 <AlertCircle className="w-5 h-5 text-red-600" />
                 <span className="text-sm font-medium text-red-700">
-                  {isRtlMode ? 'خطأ في التعديل' : 'Edit Error'}
+                  {isRtlMode ? "خطأ في التعديل" : "Edit Error"}
                 </span>
               </div>
-              <p className={`mt-2 text-sm text-red-600 ${textAlign}`}>{error}</p>
+              <p className={`mt-2 text-sm text-red-600 ${textAlign}`}>
+                {error}
+              </p>
             </div>
           )}
 
@@ -737,10 +802,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
                 <p className="text-sm text-gray-600">
-                  {isRtlMode ? 'جاري تعديل الصورة...' : 'Editing image...'}
+                  {isRtlMode ? "جاري تعديل الصورة..." : "Editing image..."}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {isRtlMode ? 'قد يستغرق هذا بضع دقائق' : 'This may take a few minutes'}
+                  {isRtlMode
+                    ? "قد يستغرق هذا بضع دقائق"
+                    : "This may take a few minutes"}
                 </p>
               </div>
             </div>
@@ -754,18 +821,26 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                 <div className={`flex items-center gap-2 mb-2 ${flexDir}`}>
                   <CheckCircle2 className="w-5 h-5 text-green-600" />
                   <span className="text-sm font-medium text-green-700">
-                    {isRtlMode ? 'تم التعديل بنجاح' : 'Edit Successful'}
+                    {isRtlMode ? "تم التعديل بنجاح" : "Edit Successful"}
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div className={textAlign}>
-                    <span className="text-gray-600">{isRtlMode ? 'الإصدارات:' : 'Variations:'}</span>
-                    <span className="ml-1 font-medium">{editedImages.images.length}</span>
+                    <span className="text-gray-600">
+                      {isRtlMode ? "الإصدارات:" : "Variations:"}
+                    </span>
+                    <span className="ml-1 font-medium">
+                      {editedImages.images.length}
+                    </span>
                   </div>
                   {editedImages.processing_time && (
                     <div className={textAlign}>
-                      <span className="text-gray-600">{isRtlMode ? 'الوقت:' : 'Time:'}</span>
-                      <span className="ml-1 font-medium">{editedImages.processing_time}s</span>
+                      <span className="text-gray-600">
+                        {isRtlMode ? "الوقت:" : "Time:"}
+                      </span>
+                      <span className="ml-1 font-medium">
+                        {editedImages.processing_time}s
+                      </span>
                     </div>
                   )}
                 </div>
@@ -779,7 +854,7 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
                     imageData={{
                       url: image.url,
                       base64: image.b64_json,
-                      alt: `Edited image ${index + 1}`
+                      alt: `Edited image ${index + 1}`,
                     }}
                     originalPrompt={prompt}
                     originalPromptAr={promptAr}
@@ -805,13 +880,12 @@ export const ImageEdit: React.FC<ImageEditProps> = ({
               <div className="text-center">
                 <Edit3 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-lg font-medium text-gray-600 mb-2">
-                  {isRtlMode ? 'جاهز للتعديل' : 'Ready to Edit'}
+                  {isRtlMode ? "جاهز للتعديل" : "Ready to Edit"}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {isRtlMode 
-                    ? 'النتائج ستظهر هنا بعد التعديل'
-                    : 'Edited images will appear here'
-                  }
+                  {isRtlMode
+                    ? "النتائج ستظهر هنا بعد التعديل"
+                    : "Edited images will appear here"}
                 </p>
               </div>
             </div>

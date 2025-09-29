@@ -1,108 +1,115 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription 
-} from '@/components/ui/dialog';
-import { 
-  Loader2, 
-  Shield, 
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Loader2,
+  Shield,
   Download,
   ArrowRight,
-  CheckCircle
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { getAgentAvatar } from '@/lib/utils/get-agent-style';
-import { ProfileConnector } from './streamlined-profile-connector';
-import { CustomServerStep } from './custom-server-step';
-import type { MarketplaceTemplate, SetupStep } from './types';
+  CheckCircle,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { getAgentAvatar } from "@/lib/utils/get-agent-style";
+import { ProfileConnector } from "./streamlined-profile-connector";
+import { CustomServerStep } from "./custom-server-step";
+import type { MarketplaceTemplate, SetupStep } from "./types";
 
 interface StreamlinedInstallDialogProps {
   item: MarketplaceTemplate | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onInstall: (
-    item: MarketplaceTemplate, 
-    instanceName: string, 
-    profileMappings: Record<string, string>, 
-    customMcpConfigs: Record<string, Record<string, any>>
+    item: MarketplaceTemplate,
+    instanceName: string,
+    profileMappings: Record<string, string>,
+    customMcpConfigs: Record<string, Record<string, any>>,
   ) => Promise<void>;
   isInstalling: boolean;
 }
 
-export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> = ({
-  item,
-  open,
-  onOpenChange,
-  onInstall,
-  isInstalling
-}) => {
+export const StreamlinedInstallDialog: React.FC<
+  StreamlinedInstallDialogProps
+> = ({ item, open, onOpenChange, onInstall, isInstalling }) => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [instanceName, setInstanceName] = useState('');
-  const [profileMappings, setProfileMappings] = useState<Record<string, string>>({});
-  const [customMcpConfigs, setCustomMcpConfigs] = useState<Record<string, Record<string, any>>>({});
+  const [instanceName, setInstanceName] = useState("");
+  const [profileMappings, setProfileMappings] = useState<
+    Record<string, string>
+  >({});
+  const [customMcpConfigs, setCustomMcpConfigs] = useState<
+    Record<string, Record<string, any>>
+  >({});
   const [setupSteps, setSetupSteps] = useState<SetupStep[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const generateSetupSteps = useCallback(() => {
     if (!item?.mcp_requirements) return [];
-    
+
     const steps: SetupStep[] = [];
-    
+
     item.mcp_requirements
-      .filter(req => req.custom_type === 'pipedream')
-      .forEach(req => {
-        const app_slug = req.qualified_name.startsWith('pipedream:') 
-          ? req.qualified_name.substring('pipedream:'.length)
+      .filter((req) => req.custom_type === "pipedream")
+      .forEach((req) => {
+        const app_slug = req.qualified_name.startsWith("pipedream:")
+          ? req.qualified_name.substring("pipedream:".length)
           : req.qualified_name;
-        
+
         steps.push({
           id: req.qualified_name,
           title: `Connect ${req.display_name}`,
           description: `Select an existing ${req.display_name} profile or create a new one`,
-          type: 'pipedream_profile',
+          type: "pipedream_profile",
           service_name: req.display_name,
           qualified_name: req.qualified_name,
-          app_slug: app_slug
+          app_slug: app_slug,
         });
       });
 
     item.mcp_requirements
-      .filter(req => !req.custom_type)
-      .forEach(req => {
+      .filter((req) => !req.custom_type)
+      .forEach((req) => {
         steps.push({
           id: req.qualified_name,
           title: `Connect ${req.display_name}`,
           description: `Select or create a credential profile for ${req.display_name}`,
-          type: 'credential_profile',
+          type: "credential_profile",
           service_name: req.display_name,
-          qualified_name: req.qualified_name
+          qualified_name: req.qualified_name,
         });
       });
 
     item.mcp_requirements
-      .filter(req => req.custom_type && req.custom_type !== 'pipedream')
-      .forEach(req => {
+      .filter((req) => req.custom_type && req.custom_type !== "pipedream")
+      .forEach((req) => {
         steps.push({
           id: req.qualified_name,
           title: `Configure ${req.display_name}`,
           description: `Enter your ${req.display_name} server details`,
-          type: 'custom_server',
+          type: "custom_server",
           service_name: req.display_name,
           qualified_name: req.qualified_name,
           custom_type: req.custom_type,
-          required_fields: req.required_config?.map(key => ({
-            key,
-            label: key === 'url' ? `${req.display_name} Server URL` : key,
-            type: key === 'url' ? 'url' : 'text',
-            placeholder: key === 'url' ? `https://your-${req.display_name.toLowerCase()}-server.com` : `Enter your ${key}`,
-            description: key === 'url' ? `Your personal ${req.display_name} server endpoint` : undefined
-          })) || []
+          required_fields:
+            req.required_config?.map((key) => ({
+              key,
+              label: key === "url" ? `${req.display_name} Server URL` : key,
+              type: key === "url" ? "url" : "text",
+              placeholder:
+                key === "url"
+                  ? `https://your-${req.display_name.toLowerCase()}-server.com`
+                  : `Enter your ${key}`,
+              description:
+                key === "url"
+                  ? `Your personal ${req.display_name} server endpoint`
+                  : undefined,
+            })) || [],
         });
       });
 
@@ -117,51 +124,68 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
       setProfileMappings({});
       setCustomMcpConfigs({});
       setIsLoading(true);
-      
+
       const steps = generateSetupSteps();
       setSetupSteps(steps);
       setIsLoading(false);
     }
   }, [open, item, generateSetupSteps]);
 
-  const handleInstanceNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInstanceName(e.target.value);
-  }, []);
+  const handleInstanceNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInstanceName(e.target.value);
+    },
+    [],
+  );
 
-  const handleProfileSelect = useCallback((qualifiedName: string, profileId: string | null) => {
-    setProfileMappings(prev => ({
-      ...prev,
-      [qualifiedName]: profileId || ''
-    }));
-  }, []);
+  const handleProfileSelect = useCallback(
+    (qualifiedName: string, profileId: string | null) => {
+      setProfileMappings((prev) => ({
+        ...prev,
+        [qualifiedName]: profileId || "",
+      }));
+    },
+    [],
+  );
 
-  const handleCustomConfigUpdate = useCallback((qualifiedName: string, config: Record<string, any>) => {
-    setCustomMcpConfigs(prev => ({
-      ...prev,
-      [qualifiedName]: config
-    }));
-  }, []);
+  const handleCustomConfigUpdate = useCallback(
+    (qualifiedName: string, config: Record<string, any>) => {
+      setCustomMcpConfigs((prev) => ({
+        ...prev,
+        [qualifiedName]: config,
+      }));
+    },
+    [],
+  );
 
   const isCurrentStepComplete = useCallback((): boolean => {
     if (setupSteps.length === 0) return true;
     if (currentStep >= setupSteps.length) return !!instanceName.trim();
-    
+
     const step = setupSteps[currentStep];
-    
+
     switch (step.type) {
-      case 'credential_profile':
-      case 'pipedream_profile':
+      case "credential_profile":
+      case "pipedream_profile":
         return !!profileMappings[step.qualified_name];
-      case 'custom_server':
+      case "custom_server":
         const config = customMcpConfigs[step.qualified_name] || {};
-        return step.required_fields?.every(field => {
-          const value = config[field.key];
-          return value && value.toString().trim().length > 0;
-        }) || false;
+        return (
+          step.required_fields?.every((field) => {
+            const value = config[field.key];
+            return value && value.toString().trim().length > 0;
+          }) || false
+        );
       default:
         return false;
     }
-  }, [currentStep, setupSteps, profileMappings, customMcpConfigs, instanceName]);
+  }, [
+    currentStep,
+    setupSteps,
+    profileMappings,
+    customMcpConfigs,
+    instanceName,
+  ]);
 
   const handleNext = useCallback(() => {
     if (currentStep < setupSteps.length) {
@@ -178,30 +202,37 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
   const handleInstall = useCallback(async () => {
     if (!item || !instanceName.trim()) return;
     const finalCustomConfigs = { ...customMcpConfigs };
-    
-    setupSteps.forEach(step => {
-      if (step.type === 'pipedream_profile') {
+
+    setupSteps.forEach((step) => {
+      if (step.type === "pipedream_profile") {
         const profileId = profileMappings[step.qualified_name];
         if (profileId) {
           finalCustomConfigs[step.qualified_name] = {
-            url: 'https://remote.mcp.pipedream.net',
+            url: "https://remote.mcp.pipedream.net",
             headers: {
-              'x-pd-app-slug': step.app_slug,
+              "x-pd-app-slug": step.app_slug,
             },
-            profile_id: profileId
+            profile_id: profileId,
           };
         }
       }
     });
 
     await onInstall(item, instanceName, profileMappings, finalCustomConfigs);
-  }, [item, instanceName, profileMappings, customMcpConfigs, setupSteps, onInstall]);
+  }, [
+    item,
+    instanceName,
+    profileMappings,
+    customMcpConfigs,
+    setupSteps,
+    onInstall,
+  ]);
 
   const currentStepData = setupSteps[currentStep];
   const isOnFinalStep = currentStep >= setupSteps.length;
-  
+
   const { avatar, color } = useMemo(() => {
-    if (!item) return { avatar: '🤖', color: '#000' };
+    if (!item) return { avatar: "🤖", color: "#000" };
     if (item.avatar && item.avatar_color) {
       return { avatar: item.avatar, color: item.avatar_color };
     }
@@ -266,10 +297,13 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
         </div>
 
         <div>
-          {(currentStepData.type === 'credential_profile' || currentStepData.type === 'pipedream_profile') && (
+          {(currentStepData.type === "credential_profile" ||
+            currentStepData.type === "pipedream_profile") && (
             <ProfileConnector
               step={currentStepData}
-              selectedProfileId={profileMappings[currentStepData.qualified_name]}
+              selectedProfileId={
+                profileMappings[currentStepData.qualified_name]
+              }
               onProfileSelect={handleProfileSelect}
               onComplete={() => {
                 if (currentStep < setupSteps.length - 1) {
@@ -278,8 +312,8 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
               }}
             />
           )}
-          
-          {currentStepData.type === 'custom_server' && (
+
+          {currentStepData.type === "custom_server" && (
             <CustomServerStep
               step={currentStepData}
               config={customMcpConfigs[currentStepData.qualified_name] || {}}
@@ -296,7 +330,7 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
                   key={index}
                   className={cn(
                     "h-1 flex-1 rounded-full transition-colors",
-                    index <= currentStep ? 'bg-primary' : 'bg-muted'
+                    index <= currentStep ? "bg-primary" : "bg-muted",
                   )}
                 />
               ))}
@@ -315,11 +349,11 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-4">
           <div className="flex items-center gap-3">
-            <div 
+            <div
               className="h-12 w-12 flex-shrink-0 rounded-lg flex items-center justify-center"
-              style={{ 
+              style={{
                 backgroundColor: color,
-                boxShadow: `0 16px 48px -8px ${color}70, 0 8px 24px -4px ${color}50`
+                boxShadow: `0 16px 48px -8px ${color}70, 0 8px 24px -4px ${color}50`,
               }}
             >
               <span className="text-lg">{avatar}</span>
@@ -345,9 +379,9 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
               Back
             </Button>
           )}
-          
+
           {isOnFinalStep ? (
-            <Button 
+            <Button
               onClick={handleInstall}
               disabled={isInstalling || !instanceName.trim()}
               className="flex-1"
@@ -365,7 +399,7 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
               )}
             </Button>
           ) : setupSteps.length === 0 ? (
-            <Button 
+            <Button
               onClick={handleInstall}
               disabled={isInstalling || !instanceName.trim()}
               className="flex-1"
@@ -383,7 +417,7 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
               )}
             </Button>
           ) : (
-            <Button 
+            <Button
               onClick={handleNext}
               disabled={!isCurrentStepComplete()}
               className="flex-1"
@@ -396,4 +430,4 @@ export const StreamlinedInstallDialog: React.FC<StreamlinedInstallDialogProps> =
       </DialogContent>
     </Dialog>
   );
-}; 
+};

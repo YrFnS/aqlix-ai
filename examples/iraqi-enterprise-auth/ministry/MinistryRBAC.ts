@@ -1,7 +1,7 @@
 /**
  * Iraqi Enterprise Authentication - Ministry RBAC System
  * Role-Based Access Control for Iraqi Government Ministries
- * 
+ *
  * Features:
  * - Ministry-specific role hierarchies
  * - Cross-ministry approval workflows
@@ -11,19 +11,19 @@
  * - Temporary delegation and approval mechanisms
  */
 
-import { EventEmitter } from 'events';
-import type { 
-  IraqiMinistry, 
-  IraqiUser, 
+import { EventEmitter } from "events";
+import type {
+  IraqiMinistry,
+  IraqiUser,
   SecurityClearance,
-  MinistryConfiguration 
-} from '../interfaces/types';
-import type { 
-  SessionPermission, 
-  PermissionAction, 
+  MinistryConfiguration,
+} from "../interfaces/types";
+import type {
+  SessionPermission,
+  PermissionAction,
   PermissionScope,
-  PermissionCondition 
-} from '../interfaces/session';
+  PermissionCondition,
+} from "../interfaces/session";
 
 export interface MinistryRole {
   id: string;
@@ -38,12 +38,13 @@ export interface MinistryRole {
   canApprove: string[]; // What types of requests can approve
   restrictions: RoleRestriction[];
   culturalRequirements: CulturalRequirement[];
-}export interface MinistryPermission {
+}
+export interface MinistryPermission {
   resource: string; // e.g., 'patient_records', 'budget_data', 'citizen_info'
   actions: PermissionAction[];
   scope: MinistryPermissionScope;
   conditions: PermissionCondition[];
-  dataClassification: 'public' | 'internal' | 'confidential' | 'secret';
+  dataClassification: "public" | "internal" | "confidential" | "secret";
   culturalSensitive: boolean; // Requires cultural compliance validation
   emergencyOverride: boolean; // Can be overridden in emergencies
 }
@@ -62,15 +63,23 @@ export interface MinistryPermissionScope extends PermissionScope {
 }
 
 export interface RoleRestriction {
-  type: 'time_based' | 'location_based' | 'approval_required' | 'cultural_compliance';
+  type:
+    | "time_based"
+    | "location_based"
+    | "approval_required"
+    | "cultural_compliance";
   parameters: Record<string, any>;
-  severity: 'advisory' | 'warning' | 'blocking';
+  severity: "advisory" | "warning" | "blocking";
   message: string;
   messageAr: string;
 }
 
 export interface CulturalRequirement {
-  type: 'islamic_compliance' | 'family_consent' | 'guardian_approval' | 'cultural_sensitivity';
+  type:
+    | "islamic_compliance"
+    | "family_consent"
+    | "guardian_approval"
+    | "cultural_sensitivity";
   description: string;
   descriptionAr: string;
   required: boolean;

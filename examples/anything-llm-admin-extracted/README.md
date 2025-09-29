@@ -7,6 +7,7 @@ A sophisticated administrative interface designed specifically for the Iraqi AI 
 ## 🌟 Key Features
 
 ### 🏛️ Iraqi Government & Enterprise Ready
+
 - **Professional Role Management**: Lawyers, doctors, teachers, engineers, administrators
 - **Governorate-based Organization**: 15 Iraqi governorates with localized support
 - **Ministry Integration**: Government, university, hospital, law firm support
@@ -14,6 +15,7 @@ A sophisticated administrative interface designed specifically for the Iraqi AI 
 - **Iraqi Business Registration**: Validation with Ministry of Trade databases
 
 ### 🕌 Cultural & Islamic Compliance
+
 - **Islamic Values Integration**: 95%+ compliance monitoring and enforcement
 - **Cultural Appropriateness Tracking**: Real-time cultural sensitivity analysis
 - **Professional Standards**: Domain-specific compliance for Iraqi professions
@@ -21,6 +23,7 @@ A sophisticated administrative interface designed specifically for the Iraqi AI 
 - **Prayer Time Integration**: Hijri calendar and Islamic observance support
 
 ### 📊 Advanced Analytics & Reporting
+
 - **Real-time Compliance Metrics**: Islamic, cultural, and professional standards
 - **Cultural Usage Patterns**: Arabic vs English content distribution
 - **Professional Domain Analytics**: Usage by lawyer, doctor, teacher, etc.
@@ -28,6 +31,7 @@ A sophisticated administrative interface designed specifically for the Iraqi AI 
 - **Violation Tracking**: Automated detection and resolution workflow
 
 ### 🔐 Enterprise Security & Administration
+
 - **Role-based Access Control**: Super admin to viewer hierarchy
 - **Audit Trail**: Comprehensive logging with cultural impact assessment
 - **User Management**: 50+ user fields with Iraqi-specific metadata
@@ -35,6 +39,7 @@ A sophisticated administrative interface designed specifically for the Iraqi AI 
 - **Security Event Monitoring**: Threat detection with cultural context
 
 ### 🎨 Arabic-First Interface Design
+
 - **RTL/LTR Adaptive Layout**: Seamless language switching
 - **Arabic Typography**: Noto Sans Arabic with proper font rendering
 - **Cultural Color Schemes**: Islamic-appropriate design patterns
@@ -93,6 +98,7 @@ npm run dev
 ## 🎯 Key Components
 
 ### 1. AdminDashboard.tsx
+
 **Main administrative interface with real-time metrics**
 
 - Arabic-first design with RTL/LTR switching
@@ -103,6 +109,7 @@ npm run dev
 - Interactive charts with Arabic/English labels
 
 ### 2. UserManagement.tsx
+
 **Comprehensive user administration with Iraqi adaptations**
 
 - Professional role system for Iraqi domains
@@ -113,6 +120,7 @@ npm run dev
 - Bulk operations with cultural impact assessment
 
 ### 3. ComplianceMonitor.tsx
+
 **Cultural and Islamic compliance monitoring**
 
 - Real-time compliance scoring (95%+ Islamic, 88%+ cultural)
@@ -123,6 +131,7 @@ npm run dev
 - Remediation workflows with expert review process
 
 ### 4. AdminService.ts
+
 **Comprehensive API client for admin operations**
 
 - User lifecycle management with cultural validation
@@ -134,6 +143,7 @@ npm run dev
 ## 📊 System Metrics
 
 ### Performance Benchmarks
+
 - **Dashboard Load Time**: <2 seconds on 3G networks
 - **Real-time Updates**: <500ms metric refresh
 - **Arabic Processing**: <100ms text analysis
@@ -141,6 +151,7 @@ npm run dev
 - **Database Queries**: <50ms average response time
 
 ### Compliance Standards
+
 - **Islamic Compliance**: 96% adherence to Islamic values
 - **Cultural Appropriateness**: 88% cultural sensitivity score
 - **Professional Standards**: 92% compliance across domains
@@ -149,12 +160,14 @@ npm run dev
 ## 🔐 Security & Compliance
 
 ### Iraqi Government Standards
+
 - **Data Residency**: All data stored within Iraqi borders
 - **Encryption**: AES-256 encryption for sensitive data
 - **Access Control**: Role-based with ministry-level permissions
 - **Audit Compliance**: Full government audit trail requirements
 
 ### Cultural Compliance
+
 - **Content Filtering**: 99.5% accuracy in cultural appropriateness
 - **Islamic Values**: 96% compliance with Islamic principles
 - **Professional Ethics**: Domain-specific ethical guidelines
@@ -184,6 +197,7 @@ npm run test:professional  # Professional standards
 ## 🚀 Deployment
 
 ### Government Deployment
+
 ```bash
 # Production build
 npm run build
@@ -198,19 +212,22 @@ npm run lint && npm run type-check
 ## 📈 Iraqi Professional Integration
 
 ### Professional Domains
+
 - **Legal**: Lawyers, judges, legal assistants
-- **Medical**: Doctors, nurses, medical administrators  
+- **Medical**: Doctors, nurses, medical administrators
 - **Educational**: Teachers, professors, educational administrators
 - **Engineering**: Engineers, architects, technical specialists
 - **Government**: Civil servants, ministry officials, administrators
 
 ### Governorate Support
+
 - Baghdad, Basra, Mosul, Erbil, Najaf, Karbala, Hillah, Ramadi
 - Kirkuk, Dohuk, Samarra, Kut, Amarah, Nasiriyah, Diwaniyah
 
 ## 🤝 Contributing
 
 ### Development Guidelines
+
 1. **Cultural Sensitivity**: Respect Iraqi cultural values and Islamic principles
 2. **Arabic-First Design**: Prioritize Arabic users while supporting English
 3. **Government Standards**: Meet Iraqi government security requirements
@@ -220,6 +237,7 @@ npm run lint && npm run type-check
 ## 📞 Support
 
 ### Technical Support
+
 - **Development Team**: dev@iraqi-ai.gov.iq
 - **Cultural Compliance**: cultural@iraqi-ai.gov.iq
 - **Security Issues**: security@iraqi-ai.gov.iq
@@ -236,6 +254,6 @@ This software is proprietary and confidential. Licensed exclusively for use by I
 
 ---
 
-*Built with ❤️ for Iraq by the Iraqi AI Development Team*
+_Built with ❤️ for Iraq by the Iraqi AI Development Team_
 
-*في خدمة العراق وشعبه الكريم*
+_في خدمة العراق وشعبه الكريم_

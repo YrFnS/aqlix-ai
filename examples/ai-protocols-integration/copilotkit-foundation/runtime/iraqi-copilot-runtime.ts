@@ -1,9 +1,9 @@
 /**
  * Iraqi AI Chat System - Enhanced CopilotKit Runtime
- * 
+ *
  * Production-grade AI-frontend integration platform with Iraqi cultural sovereignty
  * Based on: CopilotKit Runtime 1,640 lines with Iraqi enhancements
- * 
+ *
  * Features:
  * - Complete CopilotKit infrastructure foundation
  * - Iraqi cultural validation pipeline integration
@@ -41,7 +41,10 @@ import {
 
 import { MessageInput } from "../../graphql/inputs/message.input";
 import { ActionInput } from "../../graphql/inputs/action.input";
-import { RuntimeEventSource, RuntimeEventTypes } from "../../service-adapters/events";
+import {
+  RuntimeEventSource,
+  RuntimeEventTypes,
+} from "../../service-adapters/events";
 import { convertGqlInputToMessages } from "../../service-adapters/conversion";
 import { Message } from "../../graphql/types/converted";
 import { ForwardedParametersInput } from "../../graphql/inputs/forwarded-parameters.input";
@@ -101,7 +104,9 @@ import { IraqiAgentCoordinator } from "../iraqi-enhancements/agent-coordinator";
 import { generateHelpfulErrorMessage } from "../streaming";
 
 // Define the function type alias
-type CreateMCPClientFunction = (config: MCPEndpointConfig) => Promise<MCPClient>;
+type CreateMCPClientFunction = (
+  config: MCPEndpointConfig,
+) => Promise<MCPClient>;
 
 // +++ Iraqi Enhancement Interfaces +++
 export interface IraqiCulturalValidationResult {
@@ -223,7 +228,9 @@ interface OnBeforeRequestOptions {
   // --- Iraqi Enhancement Options ---
 }
 
-type OnBeforeRequestHandler = (options: OnBeforeRequestOptions) => void | Promise<void>;
+type OnBeforeRequestHandler = (
+  options: OnBeforeRequestOptions,
+) => void | Promise<void>;
 
 interface OnAfterRequestOptions {
   threadId: string;
@@ -241,7 +248,9 @@ interface OnAfterRequestOptions {
   // --- Iraqi Enhancement Options ---
 }
 
-type OnAfterRequestHandler = (options: OnAfterRequestOptions) => void | Promise<void>;
+type OnAfterRequestHandler = (
+  options: OnAfterRequestOptions,
+) => void | Promise<void>;
 
 interface Middleware {
   /**
@@ -258,7 +267,9 @@ interface Middleware {
   /**
    * Iraqi cultural validation middleware
    */
-  onCulturalValidation?: (context: IraqiCulturalValidationResult) => void | Promise<void>;
+  onCulturalValidation?: (
+    context: IraqiCulturalValidationResult,
+  ) => void | Promise<void>;
 
   /**
    * Arabic processing middleware
@@ -268,13 +279,18 @@ interface Middleware {
   /**
    * Islamic compliance middleware
    */
-  onIslamicCompliance?: (isCompliant: boolean, score: number) => void | Promise<void>;
+  onIslamicCompliance?: (
+    isCompliant: boolean,
+    score: number,
+  ) => void | Promise<void>;
   // --- Iraqi Enhancement Middleware ---
 }
 
 type AgentWithEndpoint = Agent & { endpoint: EndpointDefinition };
 
-export interface IraqiCopilotRuntimeConstructorParams<T extends Parameter[] | [] = []> {
+export interface IraqiCopilotRuntimeConstructorParams<
+  T extends Parameter[] | [] = [],
+> {
   /**
    * Middleware to be used by the runtime.
    */
@@ -332,7 +348,7 @@ export interface IraqiCopilotRuntimeConstructorParams<T extends Parameter[] | []
    * ```ts
    * mcpServers: [
    *   { endpoint: "sequential-thinking" },
-   *   { endpoint: "context7-docs" },  
+   *   { endpoint: "context7-docs" },
    *   { endpoint: "magic-ui" }
    * ]
    * ```
@@ -352,7 +368,7 @@ export interface IraqiCopilotRuntimeConstructorParams<T extends Parameter[] | []
   // +++ Iraqi Enhancement Configuration +++
   /**
    * Iraqi AI system configuration with cultural sovereignty
-   * 
+   *
    * @example
    * ```typescript
    * const runtime = new IraqiCopilotRuntime({
@@ -360,13 +376,13 @@ export interface IraqiCopilotRuntimeConstructorParams<T extends Parameter[] | []
    *     culturalValidation: { enabled: true, requiredScore: 95 },
    *     islamicCompliance: { enabled: true, requiredScore: 90 },
    *     arabicProcessing: { enabled: true, dialectSupport: true },
-   *     professionalDomains: { 
+   *     professionalDomains: {
    *       enabled: true,
-   *       supportedDomains: ['legal', 'medical', 'educational'] 
+   *       supportedDomains: ['legal', 'medical', 'educational']
    *     },
-   *     paymentGateways: { 
+   *     paymentGateways: {
    *       enabled: true,
-   *       supportedGateways: ['zaincash', 'fastpay', 'nasswallet'] 
+   *       supportedGateways: ['zaincash', 'fastpay', 'nasswallet']
    *     }
    *   }
    * });
@@ -390,7 +406,7 @@ export interface IraqiCopilotRuntimeConstructorParams<T extends Parameter[] | []
 
 /**
  * Enhanced CopilotKit Runtime with Iraqi Cultural Sovereignty
- * 
+ *
  * Provides production-grade AI-frontend integration while maintaining
  * complete Iraqi cultural compliance and Islamic values.
  */
@@ -420,7 +436,7 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
   private readonly professionalDomains: IraqiProfessionalDomains;
   private readonly islamicValidator: IslamicComplianceValidator;
   private readonly agentCoordinator: IraqiAgentCoordinator;
-  
+
   // Iraqi Performance Metrics
   private culturalValidationCount = 0;
   private arabicProcessingCount = 0;
@@ -433,9 +449,13 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
     if (
       params?.actions &&
       params?.remoteEndpoints &&
-      params?.remoteEndpoints.some((e) => e.type === EndpointType.LangGraphPlatform)
+      params?.remoteEndpoints.some(
+        (e) => e.type === EndpointType.LangGraphPlatform,
+      )
     ) {
-      console.warn("Actions set in runtime instance will not be available for the agent");
+      console.warn(
+        "Actions set in runtime instance will not be available for the agent",
+      );
       console.warn(
         `LangGraph Platform remote endpoints are deprecated in favor of the "agents" property`,
       );
@@ -475,23 +495,41 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
     };
 
     // Initialize Iraqi specialized agents
-    this.culturalLayer = params?.iraqiAgents?.culturalValidator || new IraqiCulturalLayer(this.iraqiConfig);
-    this.arabicProcessor = params?.iraqiAgents?.arabicProcessor || new ArabicRTLProcessor(this.iraqiConfig);
-    this.paymentGateway = params?.iraqiAgents?.paymentGateway || new IraqiPaymentGateway(this.iraqiConfig);
-    this.professionalDomains = params?.iraqiAgents?.professionalDomains || new IraqiProfessionalDomains(this.iraqiConfig);
-    this.islamicValidator = params?.iraqiAgents?.islamicValidator || new IslamicComplianceValidator(this.iraqiConfig);
-    this.agentCoordinator = params?.iraqiAgents?.agentCoordinator || new IraqiAgentCoordinator({
-      culturalLayer: this.culturalLayer,
-      arabicProcessor: this.arabicProcessor,
-      paymentGateway: this.paymentGateway,
-      professionalDomains: this.professionalDomains,
-      islamicValidator: this.islamicValidator,
-    });
+    this.culturalLayer =
+      params?.iraqiAgents?.culturalValidator ||
+      new IraqiCulturalLayer(this.iraqiConfig);
+    this.arabicProcessor =
+      params?.iraqiAgents?.arabicProcessor ||
+      new ArabicRTLProcessor(this.iraqiConfig);
+    this.paymentGateway =
+      params?.iraqiAgents?.paymentGateway ||
+      new IraqiPaymentGateway(this.iraqiConfig);
+    this.professionalDomains =
+      params?.iraqiAgents?.professionalDomains ||
+      new IraqiProfessionalDomains(this.iraqiConfig);
+    this.islamicValidator =
+      params?.iraqiAgents?.islamicValidator ||
+      new IslamicComplianceValidator(this.iraqiConfig);
+    this.agentCoordinator =
+      params?.iraqiAgents?.agentCoordinator ||
+      new IraqiAgentCoordinator({
+        culturalLayer: this.culturalLayer,
+        arabicProcessor: this.arabicProcessor,
+        paymentGateway: this.paymentGateway,
+        professionalDomains: this.professionalDomains,
+        islamicValidator: this.islamicValidator,
+      });
 
     console.info("Iraqi AI Chat System initialized with cultural sovereignty");
-    console.info(`Cultural validation: ${this.iraqiConfig.culturalValidation.enabled ? 'ENABLED' : 'DISABLED'}`);
-    console.info(`Islamic compliance: ${this.iraqiConfig.islamicCompliance.enabled ? 'ENABLED' : 'DISABLED'}`);
-    console.info(`Arabic processing: ${this.iraqiConfig.arabicProcessing.enabled ? 'ENABLED' : 'DISABLED'}`);
+    console.info(
+      `Cultural validation: ${this.iraqiConfig.culturalValidation.enabled ? "ENABLED" : "DISABLED"}`,
+    );
+    console.info(
+      `Islamic compliance: ${this.iraqiConfig.islamicCompliance.enabled ? "ENABLED" : "DISABLED"}`,
+    );
+    console.info(
+      `Arabic processing: ${this.iraqiConfig.arabicProcessing.enabled ? "ENABLED" : "DISABLED"}`,
+    );
     // --- Iraqi Enhancement Configuration ---
 
     // Standard CopilotKit initialization
@@ -503,7 +541,8 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
       this.langserve.push(remoteChain.toAction());
     }
 
-    this.remoteEndpointDefinitions = params?.remoteEndpoints ?? params?.remoteActions ?? [];
+    this.remoteEndpointDefinitions =
+      params?.remoteEndpoints ?? params?.remoteActions ?? [];
     this.onBeforeRequest = params?.middleware?.onBeforeRequest;
     this.onAfterRequest = params?.middleware?.onAfterRequest;
     this.delegateAgentProcessingToServiceAdapter =
@@ -517,7 +556,11 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
     this.createMCPClientImpl = params?.createMCPClient;
 
     // Validate MCP configuration
-    if (this.mcpServersConfig && this.mcpServersConfig.length > 0 && !this.createMCPClientImpl) {
+    if (
+      this.mcpServersConfig &&
+      this.mcpServersConfig.length > 0 &&
+      !this.createMCPClientImpl
+    ) {
       throw new CopilotKitMisuseError({
         message:
           "MCP Integration Error: `mcpServers` were provided, but the `createMCPClient` function was not passed to the CopilotRuntime constructor. " +
@@ -528,7 +571,9 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
     // Warning for actions with remote endpoints
     if (
       params?.actions &&
-      (params?.remoteEndpoints?.some((e) => e.type === EndpointType.LangGraphPlatform) ||
+      (params?.remoteEndpoints?.some(
+        (e) => e.type === EndpointType.LangGraphPlatform,
+      ) ||
         this.mcpServersConfig?.length)
     ) {
       console.warn(
@@ -543,7 +588,7 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
    */
   private async validateIraqiCultural(
     messages: MessageInput[],
-    context?: { professionalDomain?: string; userProfile?: any }
+    context?: { professionalDomain?: string; userProfile?: any },
   ): Promise<IraqiCulturalValidationResult> {
     if (!this.iraqiConfig.culturalValidation.enabled) {
       return {
@@ -559,33 +604,44 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
 
     // Extract text content from messages
     const textContent = messages
-      .map(msg => msg.textMessage?.content || '')
-      .filter(content => content.length > 0)
-      .join(' ');
+      .map((msg) => msg.textMessage?.content || "")
+      .filter((content) => content.length > 0)
+      .join(" ");
 
     // Cultural validation
-    const culturalResult = await this.culturalLayer.validateContent(textContent, {
-      strictMode: this.iraqiConfig.culturalValidation.strictMode,
-      professionalDomain: context?.professionalDomain,
-    });
+    const culturalResult = await this.culturalLayer.validateContent(
+      textContent,
+      {
+        strictMode: this.iraqiConfig.culturalValidation.strictMode,
+        professionalDomain: context?.professionalDomain,
+      },
+    );
 
     // Islamic compliance validation
     const islamicResult = await this.islamicValidator.validate(textContent, {
-      strictInterpretation: this.iraqiConfig.islamicCompliance.strictInterpretation,
+      strictInterpretation:
+        this.iraqiConfig.islamicCompliance.strictInterpretation,
     });
 
     const result: IraqiCulturalValidationResult = {
-      approved: culturalResult.score >= this.iraqiConfig.culturalValidation.requiredScore &&
-                islamicResult.score >= this.iraqiConfig.islamicCompliance.requiredScore,
+      approved:
+        culturalResult.score >=
+          this.iraqiConfig.culturalValidation.requiredScore &&
+        islamicResult.score >= this.iraqiConfig.islamicCompliance.requiredScore,
       culturalScore: culturalResult.score,
       islamicCompliance: islamicResult.score,
       professionalContext: context?.professionalDomain,
       issues: [...culturalResult.issues, ...islamicResult.issues],
-      recommendations: [...culturalResult.recommendations, ...islamicResult.recommendations],
+      recommendations: [
+        ...culturalResult.recommendations,
+        ...islamicResult.recommendations,
+      ],
     };
 
     if (!result.approved) {
-      console.warn(`Iraqi cultural validation failed: Cultural=${result.culturalScore}%, Islamic=${result.islamicCompliance}%`);
+      console.warn(
+        `Iraqi cultural validation failed: Cultural=${result.culturalScore}%, Islamic=${result.islamicCompliance}%`,
+      );
       console.warn("Issues:", result.issues);
     }
 
@@ -596,7 +652,7 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
    * Processes Arabic text with RTL support and Iraqi dialect recognition
    */
   private async processArabicContent(
-    messages: MessageInput[]
+    messages: MessageInput[],
   ): Promise<ArabicProcessingResult> {
     if (!this.iraqiConfig.arabicProcessing.enabled) {
       return {
@@ -611,9 +667,9 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
 
     // Extract and process Arabic content
     const textContent = messages
-      .map(msg => msg.textMessage?.content || '')
-      .filter(content => content.length > 0)
-      .join(' ');
+      .map((msg) => msg.textMessage?.content || "")
+      .filter((content) => content.length > 0)
+      .join(" ");
 
     const result = await this.arabicProcessor.processText(textContent, {
       dialectSupport: this.iraqiConfig.arabicProcessing.dialectSupport,
@@ -629,10 +685,13 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
   private injectIraqiEnhancedMCPInstructions(
     messages: MessageInput[],
     currentActions: Action<any>[],
-    iraqiContext?: IraqiCulturalValidationResult
+    iraqiContext?: IraqiCulturalValidationResult,
   ): MessageInput[] {
     // Standard MCP instruction injection
-    const baseMessages = this.injectMCPToolInstructions(messages, currentActions);
+    const baseMessages = this.injectMCPToolInstructions(
+      messages,
+      currentActions,
+    );
 
     if (!iraqiContext || !this.iraqiConfig.culturalValidation.enabled) {
       return baseMessages;
@@ -644,7 +703,7 @@ export class IraqiCopilotRuntime<const T extends Parameter[] | [] = []> {
 IRAQI CULTURAL CONTEXT:
 - Cultural Appropriateness Score: ${iraqiContext.culturalScore}%
 - Islamic Compliance Score: ${iraqiContext.islamicCompliance}%
-- Professional Domain: ${iraqiContext.professionalContext || 'General'}
+- Professional Domain: ${iraqiContext.professionalContext || "General"}
 
 MANDATORY REQUIREMENTS:
 1. All responses must maintain Islamic values and Iraqi cultural sensitivity
@@ -652,20 +711,28 @@ MANDATORY REQUIREMENTS:
 3. Professional responses must align with Iraqi legal/medical/educational standards
 4. Payment processing must comply with Iraqi banking regulations
 
-${iraqiContext.issues.length > 0 ? 
-  `CULTURAL ISSUES TO ADDRESS: ${iraqiContext.issues.join(', ')}` : ''}
-${iraqiContext.recommendations.length > 0 ? 
-  `RECOMMENDATIONS: ${iraqiContext.recommendations.join(', ')}` : ''}
+${
+  iraqiContext.issues.length > 0
+    ? `CULTURAL ISSUES TO ADDRESS: ${iraqiContext.issues.join(", ")}`
+    : ""
+}
+${
+  iraqiContext.recommendations.length > 0
+    ? `RECOMMENDATIONS: ${iraqiContext.recommendations.join(", ")}`
+    : ""
+}
 `;
 
-    const systemMessageIndex = baseMessages.findIndex((msg) => msg.textMessage?.role === "system");
+    const systemMessageIndex = baseMessages.findIndex(
+      (msg) => msg.textMessage?.role === "system",
+    );
     const newMessages = [...baseMessages];
 
     if (systemMessageIndex !== -1) {
       const existingMsg = newMessages[systemMessageIndex];
       if (existingMsg.textMessage) {
         existingMsg.textMessage.content =
-          (existingMsg.textMessage.content || '') + culturalInstructions;
+          (existingMsg.textMessage.content || "") + culturalInstructions;
       }
     } else {
       newMessages.unshift({
@@ -693,7 +760,9 @@ ${iraqiContext.recommendations.length > 0 ?
     currentActions: Action<any>[],
   ): MessageInput[] {
     // Filter the *passed-in* actions for MCP tools
-    const mcpActionsForRequest = currentActions.filter((action) => (action as any)._isMCPTool);
+    const mcpActionsForRequest = currentActions.filter(
+      (action) => (action as any)._isMCPTool,
+    );
 
     if (!mcpActionsForRequest || mcpActionsForRequest.length === 0) {
       return messages; // No MCP tools for this specific request
@@ -723,7 +792,9 @@ ${iraqiContext.recommendations.length > 0 ?
                   }),
                   {},
                 ),
-                required: action.parameters.filter((p) => p.required).map((p) => p.name),
+                required: action.parameters
+                  .filter((p) => p.required)
+                  .map((p) => p.name),
               },
             }
           : {},
@@ -739,17 +810,21 @@ ${iraqiContext.recommendations.length > 0 ?
     }
 
     const instructions =
-      mcpToolInstructions + "\nUse them when appropriate to fulfill the user's request.";
+      mcpToolInstructions +
+      "\nUse them when appropriate to fulfill the user's request.";
 
-    const systemMessageIndex = messages.findIndex((msg) => msg.textMessage?.role === "system");
+    const systemMessageIndex = messages.findIndex(
+      (msg) => msg.textMessage?.role === "system",
+    );
     const newMessages = [...messages]; // Create a mutable copy
 
     if (systemMessageIndex !== -1) {
       const existingMsg = newMessages[systemMessageIndex];
       if (existingMsg.textMessage) {
         existingMsg.textMessage.content =
-          (existingMsg.textMessage.content ? existingMsg.textMessage.content + "\n\n" : "") +
-          instructions;
+          (existingMsg.textMessage.content
+            ? existingMsg.textMessage.content + "\n\n"
+            : "") + instructions;
       }
     } else {
       newMessages.unshift({
@@ -768,7 +843,9 @@ ${iraqiContext.recommendations.length > 0 ?
     return newMessages;
   }
 
-  async processRuntimeRequest(request: CopilotRuntimeRequest): Promise<CopilotRuntimeResponse> {
+  async processRuntimeRequest(
+    request: CopilotRuntimeRequest,
+  ): Promise<CopilotRuntimeResponse> {
     const {
       serviceAdapter,
       messages: rawMessages,
@@ -797,7 +874,7 @@ ${iraqiContext.recommendations.length > 0 ?
 
       if (!culturalValidation.approved) {
         throw new CopilotKitError({
-          message: `Iraqi cultural validation failed. Cultural Score: ${culturalValidation.culturalScore}%, Islamic Compliance: ${culturalValidation.islamicCompliance}%. Issues: ${culturalValidation.issues.join(', ')}`,
+          message: `Iraqi cultural validation failed. Cultural Score: ${culturalValidation.culturalScore}%, Islamic Compliance: ${culturalValidation.islamicCompliance}%. Issues: ${culturalValidation.issues.join(", ")}`,
           code: CopilotKitErrorCode.VALIDATION_ERROR,
         });
       }
@@ -847,7 +924,9 @@ ${iraqiContext.recommendations.length > 0 ?
         agentSession?.agentName &&
         !this.delegateAgentProcessingToServiceAdapter
       ) {
-        this.agents = { [agentSession.agentName]: this.agents[agentSession.agentName] };
+        this.agents = {
+          [agentSession.agentName]: this.agents[agentSession.agentName],
+        };
       }
 
       if (agentSession && !this.delegateAgentProcessingToServiceAdapter) {
@@ -866,15 +945,20 @@ please use an LLM adapter instead.`,
       const serverSideActions = await this.getServerSideActions(request);
 
       // Filter raw messages *before* injection
-      const filteredRawMessages = rawMessages.filter((message) => !message.agentStateMessage);
+      const filteredRawMessages = rawMessages.filter(
+        (message) => !message.agentStateMessage,
+      );
 
       // +++ Inject Iraqi-Enhanced MCP Instructions +++
-      const messagesWithInjectedInstructions = this.injectIraqiEnhancedMCPInstructions(
-        filteredRawMessages,
-        serverSideActions,
-        culturalValidation
+      const messagesWithInjectedInstructions =
+        this.injectIraqiEnhancedMCPInstructions(
+          filteredRawMessages,
+          serverSideActions,
+          culturalValidation,
+        );
+      const inputMessages = convertGqlInputToMessages(
+        messagesWithInjectedInstructions,
       );
-      const inputMessages = convertGqlInputToMessages(messagesWithInjectedInstructions);
       // --- Inject Iraqi-Enhanced MCP Instructions ---
 
       // Log LLM request if logging is enabled
@@ -905,11 +989,15 @@ please use an LLM adapter instead.`,
         }
       }
 
-      const serverSideActionsInput: ActionInput[] = serverSideActions.map((action) => ({
-        name: action.name,
-        description: action.description,
-        jsonSchema: JSON.stringify(actionParametersToJsonSchema(action.parameters)),
-      }));
+      const serverSideActionsInput: ActionInput[] = serverSideActions.map(
+        (action) => ({
+          name: action.name,
+          description: action.description,
+          jsonSchema: JSON.stringify(
+            actionParametersToJsonSchema(action.parameters),
+          ),
+        }),
+      );
 
       const actionInputs = flattenToolCallsNoDuplicates([
         ...serverSideActionsInput,
@@ -929,7 +1017,7 @@ please use an LLM adapter instead.`,
         iraqiContext: {
           culturalValidation: culturalValidation?.approved,
           professionalDomain: iraqiContext?.professionalDomain,
-          arabicContent: arabicProcessing?.direction === 'rtl',
+          arabicContent: arabicProcessing?.direction === "rtl",
         },
         // --- Iraqi Context for Middleware ---
       });
@@ -960,11 +1048,14 @@ please use an LLM adapter instead.`,
             properties: graphqlContext.properties,
             url,
             // +++ Iraqi Validation Results +++
-            iraqiValidation: culturalValidation && arabicProcessing ? {
-              culturalScore: culturalValidation.culturalScore,
-              islamicCompliance: culturalValidation.approved,
-              arabicAccuracy: arabicProcessing.dialectConfidence,
-            } : undefined,
+            iraqiValidation:
+              culturalValidation && arabicProcessing
+                ? {
+                    culturalScore: culturalValidation.culturalScore,
+                    islamicCompliance: culturalValidation.approved,
+                    arabicAccuracy: arabicProcessing.dialectConfidence,
+                  }
+                : undefined,
             // --- Iraqi Validation Results ---
           });
         })
@@ -979,7 +1070,9 @@ please use an LLM adapter instead.`,
                 threadId: result.threadId,
                 runId: result.runId,
                 model: forwardedParameters?.model,
-                output: this.observability.progressive ? streamedChunks : outputMessages,
+                output: this.observability.progressive
+                  ? streamedChunks
+                  : outputMessages,
                 latency: Date.now() - requestStartTime,
                 timestamp: Date.now(),
                 provider: this.detectProvider(serviceAdapter),
@@ -990,7 +1083,7 @@ please use an LLM adapter instead.`,
                     cultural: culturalValidation?.culturalScore,
                     islamic: culturalValidation?.islamicCompliance,
                     arabic: arabicProcessing?.dialectConfidence,
-                  }
+                  },
                 },
                 // --- Iraqi Observability Response ---
               };
@@ -1002,7 +1095,10 @@ please use an LLM adapter instead.`,
               }
             })
             .catch((error) => {
-              console.error("Failed to get output messages for logging:", error);
+              console.error(
+                "Failed to get output messages for logging:",
+                error,
+              );
             });
         } catch (error) {
           console.error("Error setting up logging for LLM response:", error);
@@ -1010,7 +1106,11 @@ please use an LLM adapter instead.`,
       }
 
       // Progressive logging with Iraqi enhancements...
-      if (this.observability?.enabled && this.observability.progressive && publicApiKey) {
+      if (
+        this.observability?.enabled &&
+        this.observability.progressive &&
+        publicApiKey
+      ) {
         const originalStream = eventSource.stream.bind(eventSource);
 
         eventSource.stream = async (callback) => {
@@ -1034,13 +1134,18 @@ please use an LLM adapter instead.`,
 
                     Promise.resolve()
                       .then(() => {
-                        this.observability.hooks.handleResponse(progressiveData);
+                        this.observability.hooks.handleResponse(
+                          progressiveData,
+                        );
                       })
                       .catch((error) => {
                         console.error("Error in progressive logging:", error);
                       });
                   } catch (error) {
-                    console.error("Error preparing progressive log data:", error);
+                    console.error(
+                      "Error preparing progressive log data:",
+                      error,
+                    );
                   }
                 }
               },
@@ -1058,15 +1163,20 @@ please use an LLM adapter instead.`,
         serverSideActions,
         actionInputsWithoutAgents: actionInputs.filter(
           (action) =>
-            !serverSideActions.find((serverSideAction) => serverSideAction.name == action.name),
+            !serverSideActions.find(
+              (serverSideAction) => serverSideAction.name == action.name,
+            ),
         ),
         extensions: result.extensions,
         // +++ Iraqi Validation Response +++
-        iraqiValidation: culturalValidation && arabicProcessing ? {
-          culturalCompliance: culturalValidation,
-          arabicProcessing: arabicProcessing,
-          islamicCompliance: culturalValidation.approved,
-        } : undefined,
+        iraqiValidation:
+          culturalValidation && arabicProcessing
+            ? {
+                culturalCompliance: culturalValidation,
+                arabicProcessing: arabicProcessing,
+                islamicCompliance: culturalValidation.approved,
+              }
+            : undefined,
         // --- Iraqi Validation Response ---
       };
     } catch (error) {
@@ -1083,7 +1193,9 @@ please use an LLM adapter instead.`,
             provider: this.detectProvider(serviceAdapter),
             // +++ Iraqi Error Context +++
             metadata: {
-              iraqiValidationFailed: culturalValidation ? !culturalValidation.approved : false,
+              iraqiValidationFailed: culturalValidation
+                ? !culturalValidation.approved
+                : false,
               culturalScore: culturalValidation?.culturalScore,
               islamicCompliance: culturalValidation?.islamicCompliance,
             },
@@ -1130,7 +1242,9 @@ please use an LLM adapter instead.`,
           },
           // +++ Iraqi Error Context +++
           iraqi: {
-            culturalValidationFailed: culturalValidation ? !culturalValidation.approved : false,
+            culturalValidationFailed: culturalValidation
+              ? !culturalValidation.approved
+              : false,
             culturalScore: culturalValidation?.culturalScore,
             islamicCompliance: culturalValidation?.islamicCompliance,
             issues: culturalValidation?.issues,
@@ -1166,7 +1280,7 @@ please use an LLM adapter instead.`,
         arabicProcessor: this.iraqiConfig.arabicProcessing.enabled,
         professionalDomains: this.iraqiConfig.professionalDomains.enabled,
         paymentGateways: this.iraqiConfig.paymentGateways.enabled,
-      }
+      },
     };
   }
 
@@ -1180,16 +1294,18 @@ please use an LLM adapter instead.`,
   // --- Iraqi Enhancement Methods ---
 
   // Preserve all other methods from original CopilotKit runtime with Iraqi enhancements...
-  // [getAllAgents, discoverAgentsFromEndpoints, discoverAgentsFromAgui, loadAgentState, 
+  // [getAllAgents, discoverAgentsFromEndpoints, discoverAgentsFromAgui, loadAgentState,
   //  processAgentRequest, getServerSideActions, detectProvider, convertStreamingErrorToStructured, error, etc.]
 }
 
 // Export utility functions with Iraqi enhancements
-export function iraqiCopilotKitEndpoint(config: Omit<CopilotKitEndpoint, "type"> & {
-  culturalValidation?: boolean;
-  arabicSupport?: boolean;
-  professionalDomain?: string;
-}): CopilotKitEndpoint & { iraqi?: any } {
+export function iraqiCopilotKitEndpoint(
+  config: Omit<CopilotKitEndpoint, "type"> & {
+    culturalValidation?: boolean;
+    arabicSupport?: boolean;
+    professionalDomain?: string;
+  },
+): CopilotKitEndpoint & { iraqi?: any } {
   return {
     ...config,
     type: EndpointType.CopilotKit,
@@ -1197,7 +1313,7 @@ export function iraqiCopilotKitEndpoint(config: Omit<CopilotKitEndpoint, "type">
       culturalValidation: config.culturalValidation ?? true,
       arabicSupport: config.arabicSupport ?? true,
       professionalDomain: config.professionalDomain,
-    }
+    },
   };
 }
 
@@ -1205,7 +1321,7 @@ export function iraqiLangGraphPlatformEndpoint(
   config: Omit<LangGraphPlatformEndpoint, "type"> & {
     culturalCompliance?: boolean;
     islamicValidation?: boolean;
-  }
+  },
 ): LangGraphPlatformEndpoint & { iraqi?: any } {
   return {
     ...config,
@@ -1213,12 +1329,14 @@ export function iraqiLangGraphPlatformEndpoint(
     iraqi: {
       culturalCompliance: config.culturalCompliance ?? true,
       islamicValidation: config.islamicValidation ?? true,
-    }
+    },
   };
 }
 
 // Preserve original utility functions
-export function flattenToolCallsNoDuplicates(toolsByPriority: ActionInput[]): ActionInput[] {
+export function flattenToolCallsNoDuplicates(
+  toolsByPriority: ActionInput[],
+): ActionInput[] {
   let allTools: ActionInput[] = [];
   const allToolNames: string[] = [];
   for (const tool of toolsByPriority) {

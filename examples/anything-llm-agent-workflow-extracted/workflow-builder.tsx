@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -8,36 +8,36 @@ import ReactFlow, {
   addEdge,
   useReactFlow,
   BackgroundVariant,
-} from 'reactflow';
+} from "reactflow";
 
-import '@styles/globals.css';
+import "@styles/globals.css";
 
-import { iraqiNodes } from './iraqi-nodes';
+import { iraqiNodes } from "./iraqi-nodes";
 
 const initialNodes = [
   {
-    id: '1',
-    type: 'culturalValidator',
-    data: { label: 'Cultural Validator Node' },
+    id: "1",
+    type: "culturalValidator",
+    data: { label: "Cultural Validator Node" },
     position: { x: 250, y: 25 },
   },
   {
-    id: '2',
-    type: 'arabicProcessor',
-    data: { label: 'Arabic Processor' },
+    id: "2",
+    type: "arabicProcessor",
+    data: { label: "Arabic Processor" },
     position: { x: 100, y: 125 },
   },
   {
-    id: '3',
-    type: 'legalWorkflow',
-    data: { label: 'Legal Consultation Flow' },
+    id: "3",
+    type: "legalWorkflow",
+    data: { label: "Legal Consultation Flow" },
     position: { x: 300, y: 200 },
   },
 ];
 
 const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3' },
+  { id: "e1-2", source: "1", target: "2" },
+  { id: "e2-3", source: "2", target: "3" },
 ];
 
 export default function WorkflowBuilder() {
@@ -51,7 +51,7 @@ export default function WorkflowBuilder() {
   );
 
   return (
-    <div style={{ width: '100vw', height: '100vh', direction: 'rtl' }}>
+    <div style={{ width: "100vw", height: "100vh", direction: "rtl" }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}

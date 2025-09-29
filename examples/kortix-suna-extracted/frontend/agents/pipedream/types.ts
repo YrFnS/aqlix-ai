@@ -1,5 +1,5 @@
-import type { PipedreamApp } from '@/hooks/react-query/pipedream/utils';
-import type { PipedreamProfile } from '@/components/agents/pipedream/pipedream-types';
+import type { PipedreamApp } from "@/hooks/react-query/pipedream/utils";
+import type { PipedreamProfile } from "@/components/agents/pipedream/pipedream-types";
 
 export type ConnectedApp = PipedreamApp & {
   connectedProfiles?: PipedreamProfile[];
@@ -8,9 +8,14 @@ export type ConnectedApp = PipedreamApp & {
 
 export interface PipedreamRegistryProps {
   onProfileSelected?: (profile: PipedreamProfile) => void;
-  onToolsSelected?: (profileId: string, selectedTools: string[], appName: string, appSlug: string) => void;
+  onToolsSelected?: (
+    profileId: string,
+    selectedTools: string[],
+    appName: string,
+    appSlug: string,
+  ) => void;
   onAppSelected?: (app: { app_slug: string; app_name: string }) => void;
-  mode?: 'full' | 'simple' | 'profile-only';
+  mode?: "full" | "simple" | "profile-only";
   onClose?: () => void;
   showAgentSelector?: boolean;
   selectedAgentId?: string;
@@ -27,7 +32,7 @@ export interface PipedreamRegistryProps {
 export interface AppCardProps {
   app: ConnectedApp | PipedreamApp;
   compact?: boolean;
-  mode?: 'full' | 'simple' | 'profile-only';
+  mode?: "full" | "simple" | "profile-only";
   currentAgentId?: string;
   agentName?: string;
   agentPipedreamProfiles?: any[];
@@ -63,7 +68,7 @@ export interface ConnectedAppsSectionProps {
   currentAgentId?: string;
   agent?: any;
   agentPipedreamProfiles?: any[];
-  mode?: 'full' | 'simple' | 'profile-only';
+  mode?: "full" | "simple" | "profile-only";
   onAppSelected?: (app: { app_slug: string; app_name: string }) => void;
   onConnectApp?: (app: PipedreamApp) => void;
   onConfigureTools?: (profile: any) => void;
@@ -73,7 +78,7 @@ export interface ConnectedAppsSectionProps {
 export interface AppsGridProps {
   apps: PipedreamApp[];
   selectedCategory: string;
-  mode?: 'full' | 'simple' | 'profile-only';
+  mode?: "full" | "simple" | "profile-only";
   isLoading: boolean;
   currentAgentId?: string;
   agent?: any;
@@ -88,7 +93,7 @@ export interface AppsGridProps {
 
 export interface EmptyStateProps {
   selectedCategory: string;
-  mode?: 'full' | 'simple' | 'profile-only';
+  mode?: "full" | "simple" | "profile-only";
   onClearFilters: () => void;
 }
 
@@ -98,4 +103,4 @@ export interface PaginationControlsProps {
   hasMore: boolean;
   onPrevPage: () => void;
   onNextPage: () => void;
-} 
+}

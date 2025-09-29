@@ -21,6 +21,7 @@
 **Iraqi image upload and display infrastructure:**
 
 ### Secure Image Upload System
+
 - **File Upload Handling:** Secure image upload with size and format validation
 - **Supabase Storage Integration:** Direct integration with Supabase buckets for scalable image storage
 - **Cultural Content Filtering:** Automatic filtering of culturally inappropriate images
@@ -28,6 +29,7 @@
 - **Upload Progress Tracking:** Real-time upload progress with Arabic/English status messages
 
 ### RTL-Optimized Image Display
+
 - **RTL Image Galleries:** Right-to-left optimized image gallery layouts
 - **Arabic Metadata Support:** Display of Arabic image captions, titles, and descriptions
 - **Responsive Image Grids:** Mobile-first responsive image grids with RTL support
@@ -35,6 +37,7 @@
 - **Cultural Context Display:** Show culturally-relevant image information and tags
 
 ### Image Management Features
+
 - **Image Categorization:** Organize images by Iraqi professional domains (legal, medical, educational)
 - **Search and Filtering:** Arabic-enabled image search with cultural tag filtering
 - **Batch Operations:** Multiple image selection and batch processing
@@ -42,6 +45,7 @@
 - **Privacy Controls:** Image privacy settings with Islamic compliance options
 
 ### Professional Domain Integration
+
 - **Legal Documents:** Support for legal document images with Iraqi court system formatting
 - **Medical Images:** HIPAA-compliant medical image handling with Arabic annotations
 - **Educational Resources:** Educational image management with Iraqi curriculum support
@@ -49,6 +53,7 @@
 - **Identity Documents:** Secure handling of Iraqi identification documents with privacy protection
 
 ### Cultural Validation Integration
+
 - **Islamic Compliance Checking:** Automatic validation of images against Islamic principles
 - **Cultural Appropriateness Validation:** Integration with iraqi-cultural-validator for image content
 - **Regional Adaptation:** Support for Baghdad, Basra, Mosul, Erbil cultural variations
@@ -62,112 +67,122 @@
 **Iraqi image upload and display examples:**
 
 ### Secure Image Upload Component
+
 ```tsx
 // components/ImageUpload.tsx
-import React, { useState, useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { Upload, AlertCircle, CheckCircle } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import { Upload, AlertCircle, CheckCircle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface ImageUploadProps {
-  onUploadComplete: (url: string, metadata: ImageMetadata) => void
-  culturalValidation?: boolean
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business'
+  onUploadComplete: (url: string, metadata: ImageMetadata) => void;
+  culturalValidation?: boolean;
+  professionalDomain?: "legal" | "medical" | "educational" | "business";
 }
 
 interface ImageMetadata {
-  originalName: string
-  arabicTitle?: string
-  arabicDescription?: string
-  culturalTags: string[]
-  professionalDomain?: string
-  uploadedAt: string
+  originalName: string;
+  arabicTitle?: string;
+  arabicDescription?: string;
+  culturalTags: string[];
+  professionalDomain?: string;
+  uploadedAt: string;
 }
 
-export default function ImageUpload({ 
-  onUploadComplete, 
+export default function ImageUpload({
+  onUploadComplete,
   culturalValidation = true,
-  professionalDomain 
+  professionalDomain,
 }: ImageUploadProps) {
-  const [uploading, setUploading] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [culturalValidationStatus, setCulturalValidationStatus] = useState<string>()
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [culturalValidationStatus, setCulturalValidationStatus] =
+    useState<string>();
 
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 0) return
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
 
-    const file = acceptedFiles[0]
-    setUploading(true)
-    setUploadProgress(0)
+      const file = acceptedFiles[0];
+      setUploading(true);
+      setUploadProgress(0);
 
-    try {
-      // Validate file size and type
-      if (file.size > 10 * 1024 * 1024) {
-        throw new Error('حجم الملف كبير جداً. الحد الأقصى 10 ميجابايت / File too large. Maximum 10MB')
+      try {
+        // Validate file size and type
+        if (file.size > 10 * 1024 * 1024) {
+          throw new Error(
+            "حجم الملف كبير جداً. الحد الأقصى 10 ميجابايت / File too large. Maximum 10MB",
+          );
+        }
+
+        if (!file.type.startsWith("image/")) {
+          throw new Error("يجب أن يكون الملف صورة / File must be an image");
+        }
+
+        // Cultural validation if enabled
+        if (culturalValidation) {
+          setCulturalValidationStatus(
+            "جاري التحقق من الامتثال الثقافي... / Validating cultural compliance...",
+          );
+
+          // Simulate cultural validation API call
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setCulturalValidationStatus(
+            "تم التحقق بنجاح / Validation successful",
+          );
+        }
+
+        // Upload to Supabase Storage
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+        const filePath = professionalDomain
+          ? `${professionalDomain}/${fileName}`
+          : `general/${fileName}`;
+
+        const { data, error } = await supabase.storage
+          .from("iraqi-ai-images")
+          .upload(filePath, file, {
+            onUploadProgress: (progress) => {
+              setUploadProgress((progress.loaded / progress.total) * 100);
+            },
+          });
+
+        if (error) throw error;
+
+        // Get public URL
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("iraqi-ai-images").getPublicUrl(filePath);
+
+        // Create metadata
+        const metadata: ImageMetadata = {
+          originalName: file.name,
+          culturalTags: ["approved"],
+          professionalDomain,
+          uploadedAt: new Date().toISOString(),
+        };
+
+        onUploadComplete(publicUrl, metadata);
+      } catch (error) {
+        console.error("Upload error:", error);
+        setCulturalValidationStatus(error.message);
+      } finally {
+        setUploading(false);
+        setUploadProgress(0);
       }
-
-      if (!file.type.startsWith('image/')) {
-        throw new Error('يجب أن يكون الملف صورة / File must be an image')
-      }
-
-      // Cultural validation if enabled
-      if (culturalValidation) {
-        setCulturalValidationStatus('جاري التحقق من الامتثال الثقافي... / Validating cultural compliance...')
-        
-        // Simulate cultural validation API call
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        setCulturalValidationStatus('تم التحقق بنجاح / Validation successful')
-      }
-
-      // Upload to Supabase Storage
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}-${Math.random()}.${fileExt}`
-      const filePath = professionalDomain 
-        ? `${professionalDomain}/${fileName}`
-        : `general/${fileName}`
-
-      const { data, error } = await supabase.storage
-        .from('iraqi-ai-images')
-        .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            setUploadProgress((progress.loaded / progress.total) * 100)
-          }
-        })
-
-      if (error) throw error
-
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('iraqi-ai-images')
-        .getPublicUrl(filePath)
-
-      // Create metadata
-      const metadata: ImageMetadata = {
-        originalName: file.name,
-        culturalTags: ['approved'],
-        professionalDomain,
-        uploadedAt: new Date().toISOString()
-      }
-
-      onUploadComplete(publicUrl, metadata)
-
-    } catch (error) {
-      console.error('Upload error:', error)
-      setCulturalValidationStatus(error.message)
-    } finally {
-      setUploading(false)
-      setUploadProgress(0)
-    }
-  }, [culturalValidation, professionalDomain, onUploadComplete])
+    },
+    [culturalValidation, professionalDomain, onUploadComplete],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp']
+      "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
     },
     maxFiles: 1,
-    disabled: uploading
-  })
+    disabled: uploading,
+  });
 
   return (
     <div className="w-full">
@@ -176,18 +191,19 @@ export default function ImageUpload({
         className={`
           border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
           transition-colors duration-200
-          ${isDragActive 
-            ? 'border-blue-400 bg-blue-50' 
-            : 'border-gray-300 hover:border-gray-400'
+          ${
+            isDragActive
+              ? "border-blue-400 bg-blue-50"
+              : "border-gray-300 hover:border-gray-400"
           }
-          ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
+          ${uploading ? "opacity-50 cursor-not-allowed" : ""}
         `}
       >
         <input {...getInputProps()} />
-        
+
         <div className="flex flex-col items-center space-y-4">
           <Upload className="w-12 h-12 text-gray-400" />
-          
+
           <div className="space-y-2">
             <p className="text-lg font-medium text-gray-900">
               اسحب الصورة هنا أو انقر للاختيار
@@ -210,7 +226,7 @@ export default function ImageUpload({
             <span>{Math.round(uploadProgress)}%</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${uploadProgress}%` }}
             />
@@ -221,7 +237,7 @@ export default function ImageUpload({
       {culturalValidationStatus && (
         <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
-            {culturalValidationStatus.includes('successful') ? (
+            {culturalValidationStatus.includes("successful") ? (
               <CheckCircle className="w-4 h-4 text-green-600" />
             ) : (
               <AlertCircle className="w-4 h-4 text-blue-600" />
@@ -231,56 +247,60 @@ export default function ImageUpload({
         </div>
       )}
     </div>
-  )
+  );
 }
 ```
 
 ### RTL Image Gallery Component
+
 ```tsx
 // components/ImageGallery.tsx
-import React, { useState } from 'react'
-import Image from 'next/image'
-import { Search, Filter, Grid, List, Eye } from 'lucide-react'
+import React, { useState } from "react";
+import Image from "next/image";
+import { Search, Filter, Grid, List, Eye } from "lucide-react";
 
 interface ImageItem {
-  id: string
-  url: string
-  arabicTitle?: string
-  arabicDescription?: string
-  culturalTags: string[]
-  professionalDomain?: string
-  uploadedAt: string
+  id: string;
+  url: string;
+  arabicTitle?: string;
+  arabicDescription?: string;
+  culturalTags: string[];
+  professionalDomain?: string;
+  uploadedAt: string;
 }
 
 interface ImageGalleryProps {
-  images: ImageItem[]
-  viewMode?: 'grid' | 'list'
-  enableSearch?: boolean
-  professionalDomain?: string
+  images: ImageItem[];
+  viewMode?: "grid" | "list";
+  enableSearch?: boolean;
+  professionalDomain?: string;
 }
 
-export default function ImageGallery({ 
-  images, 
-  viewMode = 'grid',
+export default function ImageGallery({
+  images,
+  viewMode = "grid",
   enableSearch = true,
-  professionalDomain 
+  professionalDomain,
 }: ImageGalleryProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedDomain, setSelectedDomain] = useState(professionalDomain || 'all')
-  const [currentViewMode, setCurrentViewMode] = useState(viewMode)
-  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDomain, setSelectedDomain] = useState(
+    professionalDomain || "all",
+  );
+  const [currentViewMode, setCurrentViewMode] = useState(viewMode);
+  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
 
-  const filteredImages = images.filter(image => {
-    const matchesSearch = !searchTerm || 
+  const filteredImages = images.filter((image) => {
+    const matchesSearch =
+      !searchTerm ||
       image.arabicTitle?.includes(searchTerm) ||
       image.arabicDescription?.includes(searchTerm) ||
-      image.culturalTags.some(tag => tag.includes(searchTerm))
-    
-    const matchesDomain = selectedDomain === 'all' || 
-      image.professionalDomain === selectedDomain
+      image.culturalTags.some((tag) => tag.includes(searchTerm));
 
-    return matchesSearch && matchesDomain
-  })
+    const matchesDomain =
+      selectedDomain === "all" || image.professionalDomain === selectedDomain;
+
+    return matchesSearch && matchesDomain;
+  });
 
   return (
     <div className="w-full space-y-6">
@@ -314,14 +334,14 @@ export default function ImageGallery({
 
             <div className="flex border border-gray-300 rounded-lg overflow-hidden">
               <button
-                onClick={() => setCurrentViewMode('grid')}
-                className={`p-2 ${currentViewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                onClick={() => setCurrentViewMode("grid")}
+                className={`p-2 ${currentViewMode === "grid" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
                 <Grid className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setCurrentViewMode('list')}
-                className={`p-2 ${currentViewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                onClick={() => setCurrentViewMode("list")}
+                className={`p-2 ${currentViewMode === "list" ? "bg-blue-500 text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -336,39 +356,52 @@ export default function ImageGallery({
       </div>
 
       {/* Image Gallery */}
-      <div className={`
-        ${currentViewMode === 'grid' 
-          ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6' 
-          : 'space-y-4'
+      <div
+        className={`
+        ${
+          currentViewMode === "grid"
+            ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            : "space-y-4"
         }
-      `}>
+      `}
+      >
         {filteredImages.map((image) => (
           <div
             key={image.id}
             className={`
               bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200 cursor-pointer
-              ${currentViewMode === 'list' ? 'flex items-center space-x-4 rtl:space-x-reverse p-4' : ''}
+              ${currentViewMode === "list" ? "flex items-center space-x-4 rtl:space-x-reverse p-4" : ""}
             `}
             onClick={() => setSelectedImage(image)}
           >
-            <div className={`relative ${currentViewMode === 'list' ? 'w-24 h-24' : 'aspect-square'}`}>
+            <div
+              className={`relative ${currentViewMode === "list" ? "w-24 h-24" : "aspect-square"}`}
+            >
               <Image
                 src={image.url}
-                alt={image.arabicTitle || 'صورة / Image'}
+                alt={image.arabicTitle || "صورة / Image"}
                 fill
                 className="object-cover"
               />
             </div>
 
-            <div className={`p-4 ${currentViewMode === 'list' ? 'flex-1 p-0' : ''}`}>
+            <div
+              className={`p-4 ${currentViewMode === "list" ? "flex-1 p-0" : ""}`}
+            >
               {image.arabicTitle && (
-                <h3 className="font-medium text-gray-900 mb-2 line-clamp-2" dir="rtl">
+                <h3
+                  className="font-medium text-gray-900 mb-2 line-clamp-2"
+                  dir="rtl"
+                >
                   {image.arabicTitle}
                 </h3>
               )}
-              
+
               {image.arabicDescription && (
-                <p className="text-sm text-gray-600 line-clamp-3 mb-3" dir="rtl">
+                <p
+                  className="text-sm text-gray-600 line-clamp-3 mb-3"
+                  dir="rtl"
+                >
                   {image.arabicDescription}
                 </p>
               )}
@@ -386,7 +419,9 @@ export default function ImageGallery({
 
               <div className="flex items-center justify-between text-xs text-gray-500">
                 <span>{image.professionalDomain}</span>
-                <span>{new Date(image.uploadedAt).toLocaleDateString('ar-IQ')}</span>
+                <span>
+                  {new Date(image.uploadedAt).toLocaleDateString("ar-IQ")}
+                </span>
               </div>
             </div>
           </div>
@@ -413,30 +448,30 @@ export default function ImageGallery({
 
       {/* Image Modal */}
       {selectedImage && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
           onClick={() => setSelectedImage(null)}
         >
-          <div 
+          <div
             className="bg-white rounded-lg max-w-4xl max-h-full overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-video">
               <Image
                 src={selectedImage.url}
-                alt={selectedImage.arabicTitle || 'صورة / Image'}
+                alt={selectedImage.arabicTitle || "صورة / Image"}
                 fill
                 className="object-contain"
               />
             </div>
-            
+
             <div className="p-6">
               {selectedImage.arabicTitle && (
                 <h2 className="text-xl font-bold text-gray-900 mb-2" dir="rtl">
                   {selectedImage.arabicTitle}
                 </h2>
               )}
-              
+
               {selectedImage.arabicDescription && (
                 <p className="text-gray-700 mb-4" dir="rtl">
                   {selectedImage.arabicDescription}
@@ -458,19 +493,20 @@ export default function ImageGallery({
         </div>
       )}
     </div>
-  )
+  );
 }
 ```
 
 ### Supabase Storage Configuration
+
 ```sql
 -- Supabase Storage Bucket Setup
 CREATE POLICY "Iraqi AI Images Upload Policy" ON storage.objects
-  FOR INSERT 
+  FOR INSERT
   WITH CHECK (bucket_id = 'iraqi-ai-images' AND auth.role() = 'authenticated');
 
 CREATE POLICY "Iraqi AI Images View Policy" ON storage.objects
-  FOR SELECT 
+  FOR SELECT
   USING (bucket_id = 'iraqi-ai-images');
 
 -- Image Metadata Table
@@ -504,32 +540,33 @@ CREATE POLICY "Users can update their own images" ON image_metadata
 ```
 
 ### Cultural Validation Integration
+
 ```tsx
 // lib/cultural-validation.ts
-import { Task } from '@/lib/task-delegation'
+import { Task } from "@/lib/task-delegation";
 
 interface ImageValidationResult {
-  approved: boolean
-  culturalScore: number
-  islamicCompliance: boolean
-  professionalAppropriateness: boolean
-  recommendations: string[]
-  arabicFeedback: string
-  englishFeedback: string
+  approved: boolean;
+  culturalScore: number;
+  islamicCompliance: boolean;
+  professionalAppropriateness: boolean;
+  recommendations: string[];
+  arabicFeedback: string;
+  englishFeedback: string;
 }
 
 export async function validateImageCulturally(
   imageUrl: string,
-  professionalDomain?: string
+  professionalDomain?: string,
 ): Promise<ImageValidationResult> {
   const task = new Task({
-    subagent_type: 'iraqi-cultural-validator',
-    description: 'Validate image cultural appropriateness',
+    subagent_type: "iraqi-cultural-validator",
+    description: "Validate image cultural appropriateness",
     prompt: `
       Please validate this image for Iraqi cultural appropriateness:
       
       Image URL: ${imageUrl}
-      Professional Domain: ${professionalDomain || 'general'}
+      Professional Domain: ${professionalDomain || "general"}
       
       Check for:
       1. Islamic compliance (95%+ required)
@@ -538,46 +575,46 @@ export async function validateImageCulturally(
       4. Content moderation requirements
       
       Provide validation results with Arabic and English feedback.
-    `
-  })
+    `,
+  });
 
-  const result = await task.execute()
-  
+  const result = await task.execute();
+
   return {
     approved: result.culturalScore >= 90 && result.islamicCompliance,
     culturalScore: result.culturalScore,
     islamicCompliance: result.islamicCompliance,
     professionalAppropriateness: result.professionalScore >= 85,
     recommendations: result.recommendations || [],
-    arabicFeedback: result.arabicFeedback || 'تم التحقق بنجاح',
-    englishFeedback: result.englishFeedback || 'Validation successful'
-  }
+    arabicFeedback: result.arabicFeedback || "تم التحقق بنجاح",
+    englishFeedback: result.englishFeedback || "Validation successful",
+  };
 }
 
 export async function processImageMetadata(
   imageFile: File,
   arabicTitle?: string,
-  arabicDescription?: string
+  arabicDescription?: string,
 ): Promise<any> {
   const task = new Task({
-    subagent_type: 'arabic-rtl-processor',
-    description: 'Process Arabic image metadata',
+    subagent_type: "arabic-rtl-processor",
+    description: "Process Arabic image metadata",
     prompt: `
       Process Arabic metadata for image:
       
       Original filename: ${imageFile.name}
-      Arabic title: ${arabicTitle || ''}
-      Arabic description: ${arabicDescription || ''}
+      Arabic title: ${arabicTitle || ""}
+      Arabic description: ${arabicDescription || ""}
       
       Generate:
       1. Cultural tags based on content
       2. RTL-optimized display formatting
       3. Professional domain classification
       4. SEO-friendly Arabic keywords
-    `
-  })
+    `,
+  });
 
-  return await task.execute()
+  return await task.execute();
 }
 ```
 
@@ -600,6 +637,7 @@ export async function processImageMetadata(
 **Iraqi image handling architecture patterns:**
 
 ### Secure Upload Architecture
+
 - **Client-side Validation:** File type, size, and format validation before upload
 - **Cultural Pre-screening:** Basic content validation using client-side heuristics
 - **Progressive Upload:** Chunked upload with progress tracking and resume capability
@@ -607,6 +645,7 @@ export async function processImageMetadata(
 - **Storage Organization:** Domain-based folder structure with Iraqi professional categories
 
 ### RTL Image Display Patterns
+
 - **Responsive RTL Grids:** CSS Grid and Flexbox patterns optimized for RTL layouts
 - **Arabic Typography Integration:** Arabic font loading and text rendering optimization
 - **Cultural Context Display:** Professional domain indicators and cultural compliance badges
@@ -614,6 +653,7 @@ export async function processImageMetadata(
 - **Accessibility Compliance:** WCAG 2.1 AA compliance with Arabic screen reader support
 
 ### Performance Optimization Patterns
+
 - **Image Lazy Loading:** Intersection Observer API for efficient image loading
 - **Progressive Image Enhancement:** Low-quality placeholder with progressive enhancement
 - **CDN Integration:** Supabase CDN optimization for global image delivery
@@ -621,6 +661,7 @@ export async function processImageMetadata(
 - **Mobile Optimization:** Responsive images with device-specific optimization
 
 ### Cultural Integration Patterns
+
 - **Islamic Compliance Validation:** Automated content moderation with cultural context
 - **Professional Domain Classification:** Automatic categorization based on Iraqi professional standards
 - **Regional Adaptation:** Support for Baghdad, Basra, Mosul, Erbil cultural variations
@@ -657,6 +698,7 @@ export async function processImageMetadata(
 **Iraqi image system validation:**
 
 ### Image Upload Testing
+
 - **File Format Support:** Test PNG, JPG, GIF, WebP upload and processing
 - **Size Validation:** Test file size limits and progressive upload functionality
 - **Cultural Filtering:** Validate cultural appropriateness detection accuracy (95%+)
@@ -664,6 +706,7 @@ export async function processImageMetadata(
 - **Arabic Metadata:** Validate Arabic text processing and display formatting
 
 ### Performance Testing
+
 - **Upload Performance:** Measure upload speeds and progress tracking accuracy
 - **Image Optimization:** Validate Next.js image optimization and lazy loading
 - **Mobile Responsiveness:** Test responsive image galleries on various screen sizes
@@ -671,6 +714,7 @@ export async function processImageMetadata(
 - **Storage Integration:** Validate Supabase Storage bucket policies and access control
 
 ### Cultural Compliance Testing
+
 - **Islamic Compliance:** Test image validation against Islamic principles (95%+ accuracy)
 - **Professional Appropriateness:** Validate domain-specific image classification
 - **Regional Variations:** Test cultural adaptation for different Iraqi regions
@@ -678,6 +722,7 @@ export async function processImageMetadata(
 - **Privacy Protection:** Test privacy controls and Islamic modesty compliance
 
 ### Integration Testing
+
 - **Multi-Agent Coordination:** Test integration with iraqi-cultural-validator and arabic-rtl-processor
 - **Professional Domain Integration:** Validate domain-specific image handling workflows
 - **User Authentication:** Test upload permissions and user-specific image management
@@ -691,18 +736,21 @@ export async function processImageMetadata(
 **Iraqi image system integration points:**
 
 ### Cultural Intelligence Integration
+
 - **iraqi-cultural-validator Integration:** Seamless cultural validation pipeline for uploaded images
 - **arabic-rtl-processor Integration:** Arabic metadata processing and RTL display optimization
 - **Professional Domain Integration:** Domain-specific image categorization and validation workflows
 - **Islamic Compliance Integration:** Automated Islamic principle compliance checking and validation
 
 ### Storage and Performance Integration
+
 - **Supabase Storage Integration:** Direct integration with Supabase buckets and CDN optimization
 - **Next.js Image Integration:** Advanced image optimization and lazy loading with cultural context
 - **Mobile Optimization Integration:** Responsive image delivery optimized for Iraqi mobile networks
 - **Caching Integration:** Multi-layer caching strategy for optimal performance and cost efficiency
 
 ### User Experience Integration
+
 - **RTL Layout Integration:** Seamless RTL layout integration with existing Arabic UI components
 - **Search Integration:** Integration with global Arabic-English search capabilities
 - **Authentication Integration:** User-specific image management with professional domain permissions
@@ -724,7 +772,7 @@ export async function processImageMetadata(
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [ ] **Intermediate** - Production-ready patterns with common features  
+- [ ] **Intermediate** - Production-ready patterns with common features
 - [x] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

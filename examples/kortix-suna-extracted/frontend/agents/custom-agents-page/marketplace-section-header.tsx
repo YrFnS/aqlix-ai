@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Shield } from 'lucide-react';
+import React from "react";
+import { Shield } from "lucide-react";
 
 interface MarketplaceSectionHeaderProps {
   title: string;
@@ -9,10 +9,10 @@ interface MarketplaceSectionHeaderProps {
   icon?: React.ReactNode;
 }
 
-export const MarketplaceSectionHeader = ({ 
-  title, 
-  subtitle, 
-  icon = <Shield className="h-5 w-5 text-white" /> 
+export const MarketplaceSectionHeader = ({
+  title,
+  subtitle,
+  icon = <Shield className="h-5 w-5 text-white" />,
 }: MarketplaceSectionHeaderProps) => {
   return (
     <div className="flex items-center gap-3">
@@ -25,4 +25,4 @@ export const MarketplaceSectionHeader = ({
       </div>
     </div>
   );
-}; 
+};

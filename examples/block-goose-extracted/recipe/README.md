@@ -30,7 +30,7 @@ class IraqiDomain(Enum):
 
 class RecipeComplexity(Enum):
     SIMPLE = "simple"
-    INTERMEDIATE = "intermediate" 
+    INTERMEDIATE = "intermediate"
     COMPLEX = "complex"
     ENTERPRISE = "enterprise"
 
@@ -44,7 +44,7 @@ class IraqiRecipeContext:
     government_security_level: Optional[str] = None
     regional_context: Optional[str] = None
     user_professional_level: str = "general"  # general, professional, expert
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             'domain': self.domain.value,
@@ -71,7 +71,7 @@ class RecipeStep:
     success_condition: Optional[str] = None
     error_handling: Optional[Dict] = None
 
-@dataclass 
+@dataclass
 class IraqiRecipe:
     """Complete Iraqi workflow automation recipe"""
     id: str
@@ -81,27 +81,27 @@ class IraqiRecipe:
     complexity: RecipeComplexity
     version: str
     author: str
-    
+
     # Recipe metadata
     tags: List[str] = field(default_factory=list)
     estimated_duration_minutes: int = 5
     required_tools: List[str] = field(default_factory=list)
     required_permissions: List[str] = field(default_factory=list)
     cultural_compliance_level: str = "high"
-    
+
     # Recipe structure
     parameters: Dict[str, Any] = field(default_factory=dict)
     steps: List[RecipeStep] = field(default_factory=list)
     validation_rules: Dict[str, Any] = field(default_factory=dict)
-    
+
     # Iraqi-specific features
     islamic_compliance_rules: Dict[str, Any] = field(default_factory=dict)
     arabic_language_requirements: Dict[str, Any] = field(default_factory=dict)
     professional_standards: Dict[str, Any] = field(default_factory=dict)
-    
+
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
-    
+
     def to_yaml(self) -> str:
         """Export recipe to YAML format"""
         recipe_dict = {
@@ -144,14 +144,14 @@ class IraqiRecipe:
                 'validation_rules': self.validation_rules
             }
         }
-        
+
         return yaml.dump(recipe_dict, allow_unicode=True, default_flow_style=False)
-    
+
     @classmethod
     def from_yaml(cls, yaml_content: str) -> 'IraqiRecipe':
         """Load recipe from YAML format"""
         data = yaml.safe_load(yaml_content)['recipe']
-        
+
         steps = [
             RecipeStep(
                 id=step_data['id'],
@@ -167,7 +167,7 @@ class IraqiRecipe:
                 error_handling=step_data.get('error_handling')
             ) for step_data in data.get('steps', [])
         ]
-        
+
         return cls(
             id=data['id'],
             name=data['name'],
@@ -193,13 +193,13 @@ class IraqiRecipeExecutor:
     """
     Execute Iraqi workflow automation recipes with cultural compliance
     """
-    
+
     def __init__(self, mcp_clients: Dict[str, Any], llm_providers: Dict[str, Any]):
         self.mcp_clients = mcp_clients
         self.llm_providers = llm_providers
         self.execution_history: List[Dict] = []
         self.cultural_validators: List[Callable] = []
-        
+
     async def execute_recipe(
         self,
         recipe: IraqiRecipe,
@@ -207,7 +207,7 @@ class IraqiRecipeExecutor:
         user_inputs: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Execute Iraqi recipe with cultural compliance validation"""
-        
+
         execution_id = f"exec_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         execution_log = {
             'execution_id': execution_id,
@@ -219,7 +219,7 @@ class IraqiRecipeExecutor:
             'cultural_violations': [],
             'status': 'running'
         }
-        
+
         try:
             # Pre-execution validation
             validation_result = await self._validate_recipe_execution(recipe, context)
@@ -230,11 +230,11 @@ class IraqiRecipeExecutor:
                     'validation_issues': validation_result['issues'],
                     'execution_id': execution_id
                 }
-            
+
             # Execute steps in dependency order
             step_results = {}
             for step in self._get_execution_order(recipe.steps):
-                
+
                 # Check dependencies
                 if not self._check_step_dependencies(step, step_results):
                     execution_log['steps_failed'].append({
@@ -242,11 +242,11 @@ class IraqiRecipeExecutor:
                         'reason': 'Dependencies not satisfied'
                     })
                     continue
-                
+
                 # Execute step with cultural validation
                 step_result = await self._execute_step(step, context, step_results, user_inputs)
                 step_results[step.id] = step_result
-                
+
                 if step_result['success']:
                     execution_log['steps_completed'].append(step.id)
                 else:
@@ -255,29 +255,29 @@ class IraqiRecipeExecutor:
                         'error': step_result.get('error'),
                         'cultural_issues': step_result.get('cultural_issues', [])
                     })
-                    
+
                     # Record cultural violations
                     if step_result.get('cultural_issues'):
                         execution_log['cultural_violations'].extend(step_result['cultural_issues'])
-                    
+
                     # Handle step failure based on recipe settings
                     if not step_result.get('continue_on_failure', False):
                         break
-            
+
             # Post-execution validation
             final_validation = await self._validate_recipe_completion(
                 recipe, context, step_results
             )
-            
+
             execution_log.update({
                 'completed_at': datetime.now().isoformat(),
                 'status': 'completed' if not execution_log['steps_failed'] else 'failed',
                 'final_validation': final_validation,
                 'results': step_results
             })
-            
+
             self.execution_history.append(execution_log)
-            
+
             return {
                 'success': len(execution_log['steps_failed']) == 0,
                 'execution_id': execution_id,
@@ -285,23 +285,23 @@ class IraqiRecipeExecutor:
                 'cultural_compliance_score': final_validation.get('cultural_compliance_score', 0.0),
                 'execution_log': execution_log
             }
-            
+
         except Exception as e:
             execution_log.update({
                 'completed_at': datetime.now().isoformat(),
                 'status': 'error',
                 'error': str(e)
             })
-            
+
             self.execution_history.append(execution_log)
-            
+
             return {
                 'success': False,
                 'error': str(e),
                 'execution_id': execution_id,
                 'execution_log': execution_log
             }
-    
+
     async def _execute_step(
         self,
         step: RecipeStep,
@@ -310,7 +310,7 @@ class IraqiRecipeExecutor:
         user_inputs: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Execute individual recipe step with cultural validation"""
-        
+
         try:
             # Cultural pre-validation
             if step.cultural_validation_required:
@@ -323,7 +323,7 @@ class IraqiRecipeExecutor:
                         'error': 'Cultural compliance violation',
                         'cultural_issues': cultural_check['issues']
                     }
-            
+
             # Execute based on action type
             if step.action_type == 'mcp_tool':
                 result = await self._execute_mcp_tool_step(step, context, previous_results)
@@ -338,7 +338,7 @@ class IraqiRecipeExecutor:
                     'success': False,
                     'error': f'Unknown action type: {step.action_type}'
                 }
-            
+
             # Cultural post-validation
             if step.cultural_validation_required and result['success']:
                 post_validation = await self._validate_step_output_cultural_compliance(
@@ -349,16 +349,16 @@ class IraqiRecipeExecutor:
                         'cultural_issues': post_validation['issues'],
                         'cultural_compliance_score': post_validation['score']
                     })
-            
+
             return result
-            
+
         except Exception as e:
             return {
                 'success': False,
                 'error': str(e),
                 'step_id': step.id
             }
-    
+
     async def _execute_mcp_tool_step(
         self,
         step: RecipeStep,
@@ -366,29 +366,29 @@ class IraqiRecipeExecutor:
         previous_results: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Execute MCP tool step with Iraqi context"""
-        
+
         tool_name = step.parameters.get('tool_name')
         server_name = step.parameters.get('server_name', 'default')
         tool_parameters = step.parameters.get('tool_parameters', {})
-        
+
         # Substitute parameters from previous results
         resolved_parameters = self._resolve_parameter_substitutions(
             tool_parameters, previous_results, context
         )
-        
+
         # Get appropriate MCP client
         if server_name not in self.mcp_clients:
             return {
                 'success': False,
                 'error': f'MCP server {server_name} not available'
             }
-        
+
         mcp_client = self.mcp_clients[server_name]
-        
+
         try:
             # Execute MCP tool with Iraqi cultural context
             result = await mcp_client.call_tool(tool_name, resolved_parameters)
-            
+
             return {
                 'success': True,
                 'result': result,
@@ -396,7 +396,7 @@ class IraqiRecipeExecutor:
                 'server_name': server_name,
                 'cultural_context_applied': True
             }
-            
+
         except Exception as e:
             return {
                 'success': False,
@@ -404,7 +404,7 @@ class IraqiRecipeExecutor:
                 'tool_name': tool_name,
                 'server_name': server_name
             }
-    
+
     def _resolve_parameter_substitutions(
         self,
         parameters: Dict[str, Any],
@@ -412,9 +412,9 @@ class IraqiRecipeExecutor:
         context: IraqiRecipeContext
     ) -> Dict[str, Any]:
         """Resolve parameter substitutions from previous steps and context"""
-        
+
         resolved = {}
-        
+
         for key, value in parameters.items():
             if isinstance(value, str):
                 # Handle substitutions like ${step_id.result.field}
@@ -428,9 +428,9 @@ class IraqiRecipeExecutor:
                     resolved[key] = value
             else:
                 resolved[key] = value
-        
+
         return resolved
-    
+
     def _resolve_substitution_path(
         self,
         path: str,
@@ -438,9 +438,9 @@ class IraqiRecipeExecutor:
         context: IraqiRecipeContext
     ) -> Any:
         """Resolve substitution path like 'step_id.result.field' or 'context.language'"""
-        
+
         parts = path.split('.')
-        
+
         if parts[0] == 'context':
             # Context substitution
             context_dict = context.to_dict()
@@ -451,7 +451,7 @@ class IraqiRecipeExecutor:
                 else:
                     return None
             return current
-        
+
         elif parts[0] in previous_results:
             # Previous step result substitution
             current = previous_results[parts[0]]
@@ -461,7 +461,7 @@ class IraqiRecipeExecutor:
                 else:
                     return None
             return current
-        
+
         return None
 ```
 
@@ -480,14 +480,15 @@ recipe:
   complexity: "intermediate"
   version: "1.0.0"
   author: "Iraqi AI Legal Team"
-  
+
   metadata:
     tags: ["legal", "contracts", "iraqi_law", "islamic_compliance"]
     estimated_duration_minutes: 15
-    required_tools: ["legal_document_generator", "cultural_validation", "iraqi_law_search"]
+    required_tools:
+      ["legal_document_generator", "cultural_validation", "iraqi_law_search"]
     required_permissions: ["legal_document_access"]
     cultural_compliance_level: "high"
-  
+
   iraqi_context:
     islamic_compliance_rules:
       interest_prohibition: true
@@ -502,14 +503,14 @@ recipe:
       iraqi_bar_association: true
       notarization_requirements: true
       government_registration: true
-  
+
   parameters:
     contract_type:
       type: "string"
       required: true
       enum: ["sale", "lease", "service", "employment", "partnership"]
       description: "Type of contract to generate"
-    
+
     parties:
       type: "array"
       required: true
@@ -521,23 +522,23 @@ recipe:
           type: { type: "string", enum: ["individual", "company"] }
           id_number: { type: "string" }
           address: { type: "string" }
-    
+
     contract_terms:
       type: "object"
       required: true
       description: "Contract-specific terms and conditions"
-    
+
     language:
       type: "string"
       default: "arabic"
       enum: ["arabic", "bilingual"]
       description: "Contract language"
-    
+
     islamic_compliance:
       type: "boolean"
       default: true
       description: "Ensure Islamic compliance"
-  
+
   steps:
     - id: "validate_parties"
       name: "Validate Contract Parties"
@@ -551,7 +552,7 @@ recipe:
           contract_type: "${contract_type}"
       cultural_validation_required: true
       timeout_seconds: 30
-      
+
     - id: "check_islamic_compliance"
       name: "Islamic Compliance Check"
       description: "Validate contract terms for Islamic compliance"
@@ -565,7 +566,7 @@ recipe:
           validation_level: "strict"
       depends_on: ["validate_parties"]
       cultural_validation_required: true
-      
+
     - id: "search_relevant_law"
       name: "Search Relevant Iraqi Law"
       description: "Find applicable Iraqi legal provisions"
@@ -578,7 +579,7 @@ recipe:
           law_type: "civil"
           language: "arabic"
       depends_on: ["check_islamic_compliance"]
-      
+
     - id: "generate_contract"
       name: "Generate Legal Contract"
       description: "Generate the final contract document"
@@ -597,7 +598,7 @@ recipe:
       depends_on: ["search_relevant_law"]
       cultural_validation_required: true
       timeout_seconds: 60
-      
+
     - id: "final_validation"
       name: "Final Contract Validation"
       description: "Final validation of generated contract"
@@ -608,7 +609,7 @@ recipe:
         check_legal_accuracy: true
         check_islamic_compliance: true
       depends_on: ["generate_contract"]
-  
+
   validation_rules:
     required_sections: ["parties", "terms", "obligations", "signatures"]
     arabic_text_quality: 0.95
@@ -627,14 +628,15 @@ recipe:
   complexity: "complex"
   version: "1.0.0"
   author: "Iraqi AI Government Services Team"
-  
+
   metadata:
     tags: ["government", "documents", "ocr", "verification", "citizen_services"]
     estimated_duration_minutes: 10
-    required_tools: ["arabic_ocr_extract", "document_verification", "government_portal"]
+    required_tools:
+      ["arabic_ocr_extract", "document_verification", "government_portal"]
     required_permissions: ["government_document_access"]
     cultural_compliance_level: "high"
-  
+
   iraqi_context:
     islamic_compliance_rules:
       privacy_respect: true
@@ -647,30 +649,37 @@ recipe:
       government_security_clearance: true
       citizen_privacy_protection: true
       official_document_standards: true
-  
+
   parameters:
     document_image:
       type: "string"
       required: true
       description: "Base64 encoded document image"
-    
+
     document_type:
       type: "string"
       required: true
-      enum: ["id_card", "passport", "birth_certificate", "marriage_certificate", "education_certificate"]
+      enum:
+        [
+          "id_card",
+          "passport",
+          "birth_certificate",
+          "marriage_certificate",
+          "education_certificate",
+        ]
       description: "Type of government document"
-    
+
     verification_level:
       type: "string"
       default: "standard"
       enum: ["basic", "standard", "comprehensive"]
       description: "Level of document verification"
-    
+
     citizen_consent:
       type: "boolean"
       required: true
       description: "Citizen consent for document processing"
-  
+
   steps:
     - id: "consent_validation"
       name: "Validate Citizen Consent"
@@ -680,7 +689,7 @@ recipe:
         consent_required: true
         privacy_notice_acknowledged: "${citizen_consent}"
       cultural_validation_required: true
-      
+
     - id: "extract_document_text"
       name: "Extract Arabic Text from Document"
       description: "Use OCR to extract Arabic text from government document"
@@ -694,7 +703,7 @@ recipe:
           enhancement: true
       depends_on: ["consent_validation"]
       timeout_seconds: 45
-      
+
     - id: "validate_document_authenticity"
       name: "Validate Document Authenticity"
       description: "Verify document against government databases"
@@ -708,7 +717,7 @@ recipe:
           verification_level: "${verification_level}"
       depends_on: ["extract_document_text"]
       timeout_seconds: 60
-      
+
     - id: "cultural_appropriateness_check"
       name: "Cultural Appropriateness Check"
       description: "Ensure extracted information respects cultural norms"
@@ -722,7 +731,7 @@ recipe:
           formality_level: "formal"
       depends_on: ["validate_document_authenticity"]
       cultural_validation_required: true
-      
+
     - id: "generate_verification_report"
       name: "Generate Verification Report"
       description: "Create comprehensive verification report"
@@ -743,11 +752,11 @@ recipe:
           OCR Results: ${extract_document_text.result}
           Verification Status: ${validate_document_authenticity.result}
           Cultural Check: ${cultural_appropriateness_check.result}
-          
+
           Please generate a verification report in Arabic.
       depends_on: ["cultural_appropriateness_check"]
       timeout_seconds: 30
-  
+
   validation_rules:
     ocr_confidence_threshold: 0.85
     authenticity_verification_required: true
@@ -768,14 +777,22 @@ recipe:
   complexity: "complex"
   version: "1.0.0"
   author: "Iraqi AI Medical Team"
-  
+
   metadata:
-    tags: ["medical", "consultation", "islamic_ethics", "healthcare", "patient_privacy"]
+    tags:
+      [
+        "medical",
+        "consultation",
+        "islamic_ethics",
+        "healthcare",
+        "patient_privacy",
+      ]
     estimated_duration_minutes: 20
-    required_tools: ["medical_reference", "symptom_checker", "cultural_validation"]
+    required_tools:
+      ["medical_reference", "symptom_checker", "cultural_validation"]
     required_permissions: ["medical_information_access"]
     cultural_compliance_level: "high"
-  
+
   iraqi_context:
     islamic_compliance_rules:
       patient_privacy_islamic: true
@@ -790,45 +807,45 @@ recipe:
       iraqi_medical_association: true
       hospital_protocols_iraq: true
       patient_rights_iraqi_law: true
-  
+
   parameters:
     patient_age:
-      type: "integer"  
+      type: "integer"
       required: true
       description: "Patient age"
-    
+
     patient_gender:
       type: "string"
       required: true
       enum: ["male", "female"]
       description: "Patient gender for appropriate consultation"
-    
+
     symptoms:
       type: "array"
       required: true
       description: "List of patient symptoms"
       items:
         type: "string"
-    
+
     medical_history:
       type: "array"
       required: false
       description: "Relevant medical history"
       items:
         type: "string"
-    
+
     consultation_language:
       type: "string"
       default: "arabic"
       enum: ["arabic", "english", "kurdish"]
       description: "Preferred consultation language"
-    
+
     urgency_level:
       type: "string"
       default: "routine"
       enum: ["emergency", "urgent", "routine"]
       description: "Medical urgency level"
-  
+
   steps:
     - id: "medical_ethics_validation"
       name: "Medical Ethics Validation"
@@ -843,7 +860,7 @@ recipe:
           validation_level: "strict"
           target_audience: "medical"
       cultural_validation_required: true
-      
+
     - id: "symptom_analysis"
       name: "Analyze Patient Symptoms"
       description: "Analyze symptoms using Iraqi medical knowledge base"
@@ -859,7 +876,7 @@ recipe:
           language: "${consultation_language}"
       depends_on: ["medical_ethics_validation"]
       timeout_seconds: 45
-      
+
     - id: "generate_consultation_guidance"
       name: "Generate Consultation Guidance"
       description: "Create culturally appropriate medical guidance"
@@ -869,7 +886,7 @@ recipe:
         model: "claude-3-sonnet"
         system_prompt: |
           You are an Iraqi medical consultation assistant following Islamic medical ethics.
-          
+
           Guidelines:
           - Maintain strict patient confidentiality
           - Follow Islamic bioethics principles
@@ -878,7 +895,7 @@ recipe:
           - Always recommend consulting qualified Iraqi medical professionals
           - Never provide definitive diagnoses or treatment prescriptions
           - Consider Iraqi healthcare system context
-          
+
           Language: ${consultation_language}
           Patient Context: ${patient_gender}, age ${patient_age}
         user_prompt: |
@@ -886,12 +903,12 @@ recipe:
           Medical History: ${medical_history}
           Symptom Analysis: ${symptom_analysis.result}
           Urgency Level: ${urgency_level}
-          
+
           Please provide appropriate medical consultation guidance in ${consultation_language}.
       depends_on: ["symptom_analysis"]
       cultural_validation_required: true
       timeout_seconds: 40
-      
+
     - id: "cultural_medical_validation"
       name: "Cultural Medical Validation"
       description: "Validate medical guidance for cultural appropriateness"
@@ -905,7 +922,7 @@ recipe:
           formality_level: "professional"
       depends_on: ["generate_consultation_guidance"]
       cultural_validation_required: true
-      
+
     - id: "generate_referral_recommendations"
       name: "Generate Referral Recommendations"
       description: "Recommend appropriate Iraqi healthcare providers"
@@ -921,7 +938,7 @@ recipe:
           specialization_needed: "${symptom_analysis.result.recommended_specialization}"
       depends_on: ["cultural_medical_validation"]
       timeout_seconds: 30
-  
+
   validation_rules:
     medical_accuracy_threshold: 0.90
     cultural_appropriateness_score: 0.95
@@ -943,14 +960,22 @@ recipe:
   complexity: "intermediate"
   version: "1.0.0"
   author: "Iraqi AI Education Team"
-  
+
   metadata:
-    tags: ["education", "curriculum", "islamic_values", "arabic_content", "student_learning"]
+    tags:
+      [
+        "education",
+        "curriculum",
+        "islamic_values",
+        "arabic_content",
+        "student_learning",
+      ]
     estimated_duration_minutes: 12
-    required_tools: ["curriculum_reference", "content_validator", "educational_tools"]
+    required_tools:
+      ["curriculum_reference", "content_validator", "educational_tools"]
     required_permissions: ["educational_content_creation"]
     cultural_compliance_level: "high"
-  
+
   iraqi_context:
     islamic_compliance_rules:
       educational_content_islamic: true
@@ -964,43 +989,52 @@ recipe:
       iraqi_ministry_of_education: true
       curriculum_alignment: true
       teacher_standards: true
-  
+
   parameters:
     subject:
       type: "string"
       required: true
-      enum: ["arabic", "islamic_studies", "mathematics", "science", "history", "geography", "english"]
+      enum:
+        [
+          "arabic",
+          "islamic_studies",
+          "mathematics",
+          "science",
+          "history",
+          "geography",
+          "english",
+        ]
       description: "Academic subject"
-    
+
     grade_level:
       type: "integer"
       required: true
       minimum: 1
       maximum: 12
       description: "Student grade level (1-12)"
-    
+
     topic:
       type: "string"
       required: true
       description: "Specific topic within the subject"
-    
+
     content_type:
       type: "string"
       required: true
       enum: ["lesson_plan", "worksheet", "quiz", "project", "explanation"]
       description: "Type of educational content"
-    
+
     student_level:
       type: "string"
       default: "average"
       enum: ["beginner", "average", "advanced", "gifted"]
       description: "Student academic level"
-    
+
     islamic_integration:
       type: "boolean"
       default: true
       description: "Include Islamic values and perspectives"
-  
+
   steps:
     - id: "curriculum_alignment_check"
       name: "Check Curriculum Alignment"
@@ -1015,7 +1049,7 @@ recipe:
           topic: "${topic}"
           content_type: "${content_type}"
       cultural_validation_required: true
-      
+
     - id: "islamic_values_integration"
       name: "Islamic Values Integration Planning"
       description: "Plan appropriate Islamic values integration"
@@ -1030,7 +1064,7 @@ recipe:
           integration_required: "${islamic_integration}"
       depends_on: ["curriculum_alignment_check"]
       cultural_validation_required: true
-      
+
     - id: "generate_educational_content"
       name: "Generate Educational Content"
       description: "Create age-appropriate educational content"
@@ -1040,7 +1074,7 @@ recipe:
         model: "gpt-4"
         system_prompt: |
           You are an Iraqi educational content creator specializing in curriculum-aligned materials.
-          
+
           Guidelines:
           - Follow Iraqi Ministry of Education curriculum standards
           - Integrate Islamic values and perspectives appropriately
@@ -1049,7 +1083,7 @@ recipe:
           - Ensure content is engaging and educationally sound
           - Follow Islamic educational principles
           - Use proper Arabic educational terminology
-          
+
           Subject: ${subject}
           Grade Level: ${grade_level}
           Student Level: ${student_level}
@@ -1058,11 +1092,11 @@ recipe:
           Content Type: ${content_type}
           Curriculum Requirements: ${curriculum_alignment_check.result}
           Islamic Integration Plan: ${islamic_values_integration.result}
-          
+
           Please create educational content in Arabic that meets these requirements.
       depends_on: ["islamic_values_integration"]
       timeout_seconds: 60
-      
+
     - id: "age_appropriateness_validation"
       name: "Age Appropriateness Validation"
       description: "Validate content for age appropriateness"
@@ -1077,7 +1111,7 @@ recipe:
           subject: "${subject}"
       depends_on: ["generate_educational_content"]
       cultural_validation_required: true
-      
+
     - id: "educational_quality_assessment"
       name: "Educational Quality Assessment"
       description: "Assess educational quality and effectiveness"
@@ -1092,7 +1126,7 @@ recipe:
           grade_level: "${grade_level}"
       depends_on: ["age_appropriateness_validation"]
       timeout_seconds: 30
-  
+
   validation_rules:
     curriculum_alignment_score: 0.90
     age_appropriateness_score: 0.95
@@ -1110,66 +1144,66 @@ class IraqiRecipeRegistry:
     """
     Central registry for Iraqi workflow automation recipes
     """
-    
+
     def __init__(self):
         self.recipes: Dict[str, IraqiRecipe] = {}
         self.domain_index: Dict[IraqiDomain, List[str]] = {}
         self.tag_index: Dict[str, List[str]] = {}
         self.complexity_index: Dict[RecipeComplexity, List[str]] = {}
-        
+
     def register_recipe(self, recipe: IraqiRecipe):
         """Register a new recipe in the registry"""
         self.recipes[recipe.id] = recipe
-        
+
         # Update domain index
         if recipe.domain not in self.domain_index:
             self.domain_index[recipe.domain] = []
         self.domain_index[recipe.domain].append(recipe.id)
-        
+
         # Update tag index
         for tag in recipe.tags:
             if tag not in self.tag_index:
                 self.tag_index[tag] = []
             self.tag_index[tag].append(recipe.id)
-        
+
         # Update complexity index
         if recipe.complexity not in self.complexity_index:
             self.complexity_index[recipe.complexity] = []
         self.complexity_index[recipe.complexity].append(recipe.id)
-    
+
     def find_recipes_by_domain(self, domain: IraqiDomain) -> List[IraqiRecipe]:
         """Find recipes for specific Iraqi domain"""
         recipe_ids = self.domain_index.get(domain, [])
         return [self.recipes[recipe_id] for recipe_id in recipe_ids]
-    
+
     def find_recipes_by_tags(self, tags: List[str]) -> List[IraqiRecipe]:
         """Find recipes matching any of the provided tags"""
         matching_ids = set()
         for tag in tags:
             if tag in self.tag_index:
                 matching_ids.update(self.tag_index[tag])
-        
+
         return [self.recipes[recipe_id] for recipe_id in matching_ids]
-    
+
     def recommend_recipes_for_task(self, task_description: str, domain: IraqiDomain) -> List[IraqiRecipe]:
         """Recommend recipes based on task description and domain"""
         # Simple keyword matching - could be enhanced with ML
         keywords = task_description.lower().split()
-        
+
         domain_recipes = self.find_recipes_by_domain(domain)
         scored_recipes = []
-        
+
         for recipe in domain_recipes:
             score = 0
             recipe_text = (recipe.name + ' ' + recipe.description + ' ' + ' '.join(recipe.tags)).lower()
-            
+
             for keyword in keywords:
                 if keyword in recipe_text:
                     score += 1
-            
+
             if score > 0:
                 scored_recipes.append((recipe, score))
-        
+
         # Sort by score and return top recipes
         scored_recipes.sort(key=lambda x: x[1], reverse=True)
         return [recipe for recipe, score in scored_recipes[:5]]
@@ -1177,13 +1211,13 @@ class IraqiRecipeRegistry:
 # Recipe collection initialization
 def initialize_iraqi_recipe_collection() -> IraqiRecipeRegistry:
     """Initialize the Iraqi recipe collection with standard recipes"""
-    
+
     registry = IraqiRecipeRegistry()
-    
+
     # Load standard Iraqi recipes
     standard_recipes = [
         "iraqi_legal_contract_generator",
-        "iraqi_government_document_processing", 
+        "iraqi_government_document_processing",
         "iraqi_medical_consultation_assistant",
         "iraqi_academic_content_generator",
         "iraqi_business_registration_assistant",
@@ -1192,31 +1226,34 @@ def initialize_iraqi_recipe_collection() -> IraqiRecipeRegistry:
         "iraqi_medical_record_processor",
         "iraqi_government_service_navigator"
     ]
-    
+
     # In a real implementation, these would be loaded from YAML files
     for recipe_id in standard_recipes:
         # Load recipe from file system or database
         recipe = load_recipe_from_yaml(f"recipes/{recipe_id}.yaml")
         registry.register_recipe(recipe)
-    
+
     return registry
 ```
 
 ## 🚀 INTEGRATION STRATEGY
 
 ### Phase 1: Core Recipe Framework
+
 1. **Recipe Engine**: Deploy Iraqi recipe execution system with cultural validation
 2. **Domain Templates**: Implement legal, medical, educational, government recipe templates
 3. **MCP Integration**: Connect recipes with Iraqi-specific MCP servers
 4. **Cultural Validation**: Integrate Islamic compliance and Iraqi appropriateness checking
 
 ### Phase 2: Professional Recipes
+
 1. **Legal Automation**: Deploy Iraqi legal document generation and validation recipes
 2. **Government Services**: Implement citizen services automation recipes
 3. **Medical Workflows**: Deploy healthcare consultation and documentation recipes
 4. **Educational Content**: Implement curriculum-aligned content generation recipes
 
 ### Phase 3: Advanced Orchestration
+
 1. **Multi-Recipe Workflows**: Chain recipes for complex Iraqi professional processes
 2. **Custom Recipe Builder**: Visual interface for creating Iraqi-specific recipes
 3. **Recipe Analytics**: Performance monitoring and optimization for Iraqi contexts

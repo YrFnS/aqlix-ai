@@ -7,6 +7,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 ## 🌟 Key Features
 
 ### **Advanced PydanticAI Integration**
+
 - **Structured Data Validation**: Comprehensive Pydantic models for all Iraqi cultural contexts
 - **Type-Safe Tool Calling**: Strongly typed tools with RunContext integration
 - **Result Validation**: Automated validation of agent outputs for compliance
@@ -14,6 +15,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 - **Async/Await Patterns**: Full async support for high-performance operations
 
 ### **Iraqi Cultural Compliance (95%+ Accuracy)**
+
 - **Cultural Validation Framework**: Real-time cultural appropriateness checking
 - **Islamic Compliance Engine**: Islamic jurisprudence integration with scholar consultation triggers
 - **Sectarian Neutrality Enforcement**: Automated detection and prevention of sectarian bias
@@ -21,6 +23,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 - **Regional Customization**: Support for Iraqi regional cultural variations (Baghdad, Basra, etc.)
 
 ### **Professional Domain Specialization**
+
 - **Legal Services**: Iraqi legal system integration with Islamic jurisprudence
 - **Medical Healthcare**: Culturally-sensitive medical guidance with family consultation protocols
 - **Government Services**: Ministry integration and bureaucratic process coordination
@@ -28,6 +31,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 - **Religious Guidance**: Islamic teachings with interfaith dialogue capabilities
 
 ### **Arabic Language Processing**
+
 - **RTL Text Support**: Right-to-left text handling with 99%+ accuracy
 - **Iraqi Dialect Recognition**: Advanced detection of Baghdadi, Basrawi, and Moslawi dialects
 - **Mixed Language Handling**: Seamless Arabic-English code switching
@@ -35,6 +39,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 - **Text Normalization**: Advanced Arabic text normalization with dialect preservation
 
 ### **Government Service Integration**
+
 - **Ministry Routing**: Intelligent routing to appropriate Iraqi government ministries
 - **Service Coordination**: Multi-ministry workflow coordination
 - **Cultural Protocol Compliance**: Government interaction protocols with cultural sensitivity
@@ -42,6 +47,7 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 - **Priority-Based Processing**: Urgent service handling with cultural appropriateness
 
 ### **Payment Gateway Integration**
+
 - **ZainCash Integration**: Iraq's leading mobile payment platform
 - **FastPay Support**: Popular Iraqi payment gateway
 - **NassWallet Integration**: Comprehensive digital wallet support
@@ -53,61 +59,69 @@ A comprehensive, production-ready Iraqi AI Agent System that integrates advanced
 ### **Core Components**
 
 #### **1. Enhanced PydanticAI Agent (`IraqiPydanticAgent`)**
+
 ```python
 class IraqiPydanticAgent:
     """Enhanced PydanticAI Iraqi Agent with comprehensive cultural integration"""
-    
+
     def __init__(self, dependencies: IraqiAgentDependencies, model: Optional[Model] = None)
     async def process_request(self, user_input: str, context: Optional[Dict[str, Any]] = None)
     def get_agent_status(self) -> Dict[str, Any]
 ```
 
 #### **2. Cultural Validation System**
+
 ```python
 class IraqiCulturalValidator:
     """Advanced cultural validation for Iraqi context"""
-    
+
     async def validate_content(self, content: str, context: Dict[str, Any]) -> CulturalValidationResult
 ```
 
 #### **3. Arabic Language Processor**
+
 ```python
 class ArabicLanguageProcessor:
     """Advanced Arabic language processing with Iraqi dialect support"""
-    
+
     async def process_text(self, text: str) -> tuple[str, Optional[ArabicProcessingMetrics]]
 ```
 
 #### **4. Islamic Compliance Checker**
+
 ```python
 class IslamicComplianceChecker:
     """Islamic compliance validation with scholar consultation triggers"""
-    
+
     async def check_compliance(self, content: str, context: Dict[str, Any]) -> IslamicComplianceResult
 ```
 
 #### **5. Multi-Agent Coordinator**
+
 ```python
 class IraqiAgentCoordinator:
     """Coordinate multiple Iraqi agents for complex workflows"""
-    
+
     async def coordinate_workflow(self, workflow_request: Dict[str, Any]) -> Dict[str, Any]
 ```
 
 ### **Pydantic Data Models**
 
 #### **Cultural Configuration**
+
 - `IraqiCulturalProfile`: Cultural profile enumeration
 - `IraqiAgentDomain`: Professional domain specialization
 - `CulturalComplianceLevel`: Compliance requirement levels
 - `IraqiRegion`: Regional customization options
 
 #### **Validation Results**
+
 - `CulturalValidationResult`: Comprehensive cultural validation
 - `ArabicProcessingMetrics`: Arabic language processing metrics
 - `ProfessionalDomainValidation`: Professional standards compliance
 
 #### **Service Requests**
+
 - `GovernmentServiceRequest`: Government service coordination
 - `PaymentIntegrationRequest`: Payment gateway integration
 
@@ -167,7 +181,7 @@ workflow = {
             "request": "تقييم طبي لحالة إعاقة"
         },
         {
-            "id": "legal_documentation", 
+            "id": "legal_documentation",
             "domain": "legal",
             "request": "Legal documentation for disability benefits"
         }
@@ -211,7 +225,7 @@ dependencies = IraqiAgentDependencies(
     domain_specialization=IraqiAgentDomain.LEGAL_SERVICES,
     compliance_level=CulturalComplianceLevel.CRITICAL,
     regional_customization=IraqiRegion.BAGHDAD,
-    
+
     # Capabilities
     arabic_processing_enabled=True,
     dialect_recognition_enabled=True,
@@ -226,6 +240,7 @@ dependencies = IraqiAgentDependencies(
 ## 📊 Performance Metrics
 
 ### **Cultural Compliance Benchmarks**
+
 - **Overall Cultural Accuracy**: 95%+
 - **Islamic Compliance Validation**: 99%+
 - **Arabic RTL Processing**: 99%+ accuracy
@@ -234,6 +249,7 @@ dependencies = IraqiAgentDependencies(
 - **Sectarian Neutrality**: 100% enforcement
 
 ### **System Performance**
+
 - **Response Time**: <500ms average
 - **Cultural Validation**: <200ms processing time
 - **Arabic Processing**: 99%+ RTL accuracy
@@ -241,6 +257,7 @@ dependencies = IraqiAgentDependencies(
 - **Government Service Integration**: 95%+ success rate
 
 ### **Professional Domain Accuracy**
+
 - **Legal Services**: 95%+ Iraqi law compliance
 - **Medical Healthcare**: 90%+ cultural sensitivity
 - **Government Services**: 95%+ bureaucratic accuracy
@@ -250,12 +267,14 @@ dependencies = IraqiAgentDependencies(
 ## 🔐 Security & Privacy
 
 ### **Data Protection**
+
 - **Session-Only Storage**: Auto-expiry within 1 hour
 - **API Key Security**: Environment-based configuration
 - **Input Validation**: Comprehensive sanitization
 - **Cultural Privacy**: Family data protection protocols
 
 ### **Islamic Finance Compliance**
+
 - **Riba Detection**: Automated interest identification
 - **Halal Validation**: Business activity compliance checking
 - **Scholar Consultation**: Automated triggers for complex cases
@@ -264,6 +283,7 @@ dependencies = IraqiAgentDependencies(
 ## 🌍 Iraqi Cultural Integration
 
 ### **Regional Customization**
+
 - **Baghdad**: Urban cultural patterns and dialect
 - **Basra**: Southern Iraqi cultural considerations
 - **Sulaymaniyah/Erbil**: Kurdish-Iraqi cultural integration
@@ -271,6 +291,7 @@ dependencies = IraqiAgentDependencies(
 - **General Iraqi**: Nationwide cultural patterns
 
 ### **Professional Domains**
+
 - **Legal**: Iraqi Civil Code, Criminal Code, Personal Status Law
 - **Medical**: Iraqi Medical Association Standards, Islamic Medical Ethics
 - **Government**: Ministry procedures, bureaucratic protocols
@@ -280,6 +301,7 @@ dependencies = IraqiAgentDependencies(
 ## 🛠️ Advanced Features
 
 ### **1. Structured Output Validation**
+
 ```python
 # All agent responses include comprehensive validation
 {
@@ -295,17 +317,19 @@ dependencies = IraqiAgentDependencies(
 ```
 
 ### **2. Government Service Coordination**
+
 ```python
 # Route requests to appropriate Iraqi ministries
 ministry_routing = {
     "civil_registration": "Ministry of Interior",
-    "education_services": "Ministry of Education", 
+    "education_services": "Ministry of Education",
     "health_services": "Ministry of Health",
     "legal_services": "Ministry of Justice"
 }
 ```
 
 ### **3. Payment Gateway Integration**
+
 ```python
 # Support for Iraqi payment systems
 payment_gateways = {
@@ -318,12 +342,14 @@ payment_gateways = {
 ## 📈 Monitoring & Analytics
 
 ### **Cultural Compliance Tracking**
+
 - Real-time compliance score monitoring
 - Cultural validation history
 - Islamic compliance trend analysis
 - Professional domain performance metrics
 
 ### **Performance Analytics**
+
 - Response time tracking
 - Arabic processing accuracy metrics
 - Multi-agent coordination efficiency

@@ -1,14 +1,14 @@
 /**
  * Workflow Orchestrator - Iraqi Integration Framework Orchestration
- * 
+ *
  * Orchestrates n8n workflows with cultural validation, service integration,
  * and payment processing for Iraqi government systems.
  */
 
-import { EventEmitter } from 'events';
-import { IraqiServiceManager } from './IraqiServiceManager';
-import { PaymentGatewayOrchestrator } from './PaymentGatewayOrchestrator';
-import { CulturalWorkflowValidator } from './CulturalWorkflowValidator';
+import { EventEmitter } from "events";
+import { IraqiServiceManager } from "./IraqiServiceManager";
+import { PaymentGatewayOrchestrator } from "./PaymentGatewayOrchestrator";
+import { CulturalWorkflowValidator } from "./CulturalWorkflowValidator";
 
 // Core orchestration interfaces
 export interface IWorkflowExecution {
@@ -68,7 +68,7 @@ export interface ICulturalExecutionContext {
   ministry: MinistryType;
   department?: string;
   serviceType: ServiceType;
-  language: 'ar' | 'en' | 'mixed';
+  language: "ar" | "en" | "mixed";
   dialect: IraqiDialect;
   formalityLevel: FormalityLevel;
   religiousContext: boolean;
@@ -161,7 +161,7 @@ export interface ICitizenExecutionInfo {
 export interface IServiceExecutionResult {
   serviceId: string;
   serviceName: string;
-  status: 'success' | 'failed' | 'timeout' | 'skipped';
+  status: "success" | "failed" | "timeout" | "skipped";
   response?: any;
   error?: IServiceExecutionError;
   culturalValidation: ICulturalValidationResult;
@@ -221,28 +221,120 @@ export interface ICulturalExecutionMetrics {
 }
 
 // Enums and types
-export type ExecutionType = 'manual' | 'scheduled' | 'webhook' | 'api' | 'citizen_request' | 'government_process';
-export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'timeout';
-export type ExecutionPriority = 'low' | 'normal' | 'high' | 'urgent' | 'emergency';
-export type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'skipped' | 'timeout';
-export type UrgencyLevel = 'routine' | 'normal' | 'urgent' | 'emergency' | 'critical';
-export type CulturalSensitivity = 'low' | 'medium' | 'high' | 'maximum';
-export type CitizenType = 'individual' | 'business' | 'organization' | 'government_entity' | 'foreign_national';
-export type ServiceType = 'citizen_services' | 'document_processing' | 'licensing' | 'registration' | 'verification' | 'payment' | 'notification';
-export type FormalityLevel = 'formal' | 'semi_formal' | 'standard';
-export type GovernmentLevel = 'federal' | 'regional' | 'local' | 'municipal';
-export type MinistryType = 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'transport' | 'agriculture' | 'labor' | 'general';
-export type IraqiDialect = 'baghdadi' | 'basri' | 'moslawi' | 'najafi' | 'kurdish' | 'standard_arabic';
-export type IraqiGovernorate = 'baghdad' | 'basra' | 'ninawa' | 'erbil' | 'najaf' | 'karbala' | 'babylon' | 'diyala' | 'anbar' | 'sulaymaniyah' | 'kirkuk' | 'wasit' | 'maysan' | 'dhi_qar' | 'muthanna' | 'qadisiyyah' | 'salah_al_din' | 'duhok';
-export type BusinessContext = 'government_service' | 'commercial_purchase' | 'utility_payment' | 'healthcare_service' | 'educational_fee';
-export type PaymentProvider = 'zaincash' | 'fastpay' | 'nasswallet';
-export type Currency = 'IQD' | 'USD' | 'EUR';
-export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'refunded';
-export type ValidationLevel = 'basic' | 'standard' | 'comprehensive' | 'ministry_grade';
-export type ComplianceStatus = 'fully_compliant' | 'conditionally_compliant' | 'non_compliant' | 'under_review';
+export type ExecutionType =
+  | "manual"
+  | "scheduled"
+  | "webhook"
+  | "api"
+  | "citizen_request"
+  | "government_process";
+export type ExecutionStatus =
+  | "pending"
+  | "running"
+  | "completed"
+  | "failed"
+  | "cancelled"
+  | "timeout";
+export type ExecutionPriority =
+  | "low"
+  | "normal"
+  | "high"
+  | "urgent"
+  | "emergency";
+export type StepStatus =
+  | "pending"
+  | "running"
+  | "completed"
+  | "failed"
+  | "skipped"
+  | "timeout";
+export type UrgencyLevel =
+  | "routine"
+  | "normal"
+  | "urgent"
+  | "emergency"
+  | "critical";
+export type CulturalSensitivity = "low" | "medium" | "high" | "maximum";
+export type CitizenType =
+  | "individual"
+  | "business"
+  | "organization"
+  | "government_entity"
+  | "foreign_national";
+export type ServiceType =
+  | "citizen_services"
+  | "document_processing"
+  | "licensing"
+  | "registration"
+  | "verification"
+  | "payment"
+  | "notification";
+export type FormalityLevel = "formal" | "semi_formal" | "standard";
+export type GovernmentLevel = "federal" | "regional" | "local" | "municipal";
+export type MinistryType =
+  | "health"
+  | "education"
+  | "interior"
+  | "justice"
+  | "finance"
+  | "transport"
+  | "agriculture"
+  | "labor"
+  | "general";
+export type IraqiDialect =
+  | "baghdadi"
+  | "basri"
+  | "moslawi"
+  | "najafi"
+  | "kurdish"
+  | "standard_arabic";
+export type IraqiGovernorate =
+  | "baghdad"
+  | "basra"
+  | "ninawa"
+  | "erbil"
+  | "najaf"
+  | "karbala"
+  | "babylon"
+  | "diyala"
+  | "anbar"
+  | "sulaymaniyah"
+  | "kirkuk"
+  | "wasit"
+  | "maysan"
+  | "dhi_qar"
+  | "muthanna"
+  | "qadisiyyah"
+  | "salah_al_din"
+  | "duhok";
+export type BusinessContext =
+  | "government_service"
+  | "commercial_purchase"
+  | "utility_payment"
+  | "healthcare_service"
+  | "educational_fee";
+export type PaymentProvider = "zaincash" | "fastpay" | "nasswallet";
+export type Currency = "IQD" | "USD" | "EUR";
+export type PaymentStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "cancelled"
+  | "refunded";
+export type ValidationLevel =
+  | "basic"
+  | "standard"
+  | "comprehensive"
+  | "ministry_grade";
+export type ComplianceStatus =
+  | "fully_compliant"
+  | "conditionally_compliant"
+  | "non_compliant"
+  | "under_review";
 
 export interface ICulturalServiceParameters {
-  language: 'ar' | 'en' | 'mixed';
+  language: "ar" | "en" | "mixed";
   dialect: IraqiDialect;
   formalityLevel: FormalityLevel;
   islamicCompliance: boolean;
@@ -252,13 +344,13 @@ export interface ICulturalServiceParameters {
 
 export interface IRetryPolicy {
   maxAttempts: number;
-  backoffStrategy: 'linear' | 'exponential' | 'fixed';
+  backoffStrategy: "linear" | "exponential" | "fixed";
   retryDelay: number;
   retryOnErrors: string[];
 }
 
 export interface ICulturalPaymentContext {
-  language: 'ar' | 'en' | 'mixed';
+  language: "ar" | "en" | "mixed";
   religiousContext: boolean;
   businessContext: BusinessContext;
   urgencyLevel: UrgencyLevel;
@@ -267,8 +359,8 @@ export interface ICulturalPaymentContext {
 }
 
 export interface ICitizenExecutionPreferences {
-  language: 'ar' | 'en' | 'mixed';
-  communicationMethod: 'sms' | 'email' | 'phone' | 'app';
+  language: "ar" | "en" | "mixed";
+  communicationMethod: "sms" | "email" | "phone" | "app";
   formalityLevel: FormalityLevel;
   notificationPreferences: INotificationPreferences;
   culturalMode: boolean;
@@ -280,7 +372,7 @@ export interface IVerificationStatus {
   identityVerified: boolean;
   biometricVerified: boolean;
   addressVerified: boolean;
-  verificationLevel: 'basic' | 'standard' | 'premium';
+  verificationLevel: "basic" | "standard" | "premium";
 }
 
 export interface INotificationPreferences {
@@ -298,7 +390,7 @@ export interface IStepError {
   details: string;
   culturalContext: string;
   stackTrace?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   recoverable: boolean;
 }
 
@@ -345,7 +437,7 @@ export interface IGeneratedDocument {
   type: string;
   name: string;
   nameArabic: string;
-  format: 'pdf' | 'docx' | 'html' | 'json';
+  format: "pdf" | "docx" | "html" | "json";
   content: string;
   contentArabic?: string;
   culturallyValidated: boolean;
@@ -355,13 +447,13 @@ export interface IGeneratedDocument {
 
 export interface IExecutionNotification {
   id: string;
-  type: 'success' | 'warning' | 'error' | 'info';
+  type: "success" | "warning" | "error" | "info";
   title: string;
   titleArabic: string;
   message: string;
   messageArabic: string;
   recipient: string;
-  method: 'sms' | 'email' | 'push' | 'app';
+  method: "sms" | "email" | "push" | "app";
   culturalContext: ICulturalExecutionContext;
   sent: boolean;
   timestamp: Date;
@@ -375,7 +467,7 @@ export interface IServiceExecutionError {
   details: string;
   culturalContext: string;
   retryable: boolean;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 export interface IPaymentExecutionError {
@@ -387,12 +479,12 @@ export interface IPaymentExecutionError {
   details: string;
   culturalContext: string;
   retryable: boolean;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
 }
 
 export interface IExecutionRecommendation {
   type: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: "low" | "medium" | "high" | "critical";
   description: string;
   descriptionArabic: string;
   action: string;
@@ -418,7 +510,7 @@ export interface IExecutionError {
   details: string;
   culturalContext: string;
   stackTrace?: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   recoverable: boolean;
   timestamp: Date;
 }
@@ -433,7 +525,7 @@ export interface IExecutionMetadata {
   executionDate: Date;
   ministry: MinistryType;
   department?: string;
-  environment: 'development' | 'staging' | 'production';
+  environment: "development" | "staging" | "production";
   compliance: boolean;
 }
 
@@ -462,7 +554,7 @@ export interface ICulturalValidationResult {
 
 /**
  * Workflow Orchestrator
- * 
+ *
  * Central orchestrator for Iraqi workflow execution with cultural intelligence
  */
 export class WorkflowOrchestrator extends EventEmitter {
@@ -472,36 +564,38 @@ export class WorkflowOrchestrator extends EventEmitter {
   private activeExecutions: Map<string, IWorkflowExecution>;
   private executionHistory: Map<string, IWorkflowOrchestrationResult>;
   private performanceMetrics: IOrchestrationMetrics;
-  
+
   constructor(options: IOrchestrationOptions = {}) {
     super();
-    
+
     this.serviceManager = new IraqiServiceManager();
     this.paymentOrchestrator = new PaymentGatewayOrchestrator();
     this.culturalValidator = new CulturalWorkflowValidator();
     this.activeExecutions = new Map();
     this.executionHistory = new Map();
     this.performanceMetrics = this.initializeMetrics();
-    
+
     this.setupEventHandlers();
   }
-  
+
   /**
    * Execute workflow with cultural validation and service integration
    */
-  async executeWorkflow(request: IWorkflowOrchestrationRequest): Promise<IWorkflowOrchestrationResult> {
+  async executeWorkflow(
+    request: IWorkflowOrchestrationRequest,
+  ): Promise<IWorkflowOrchestrationResult> {
     const startTime = Date.now();
-    
+
     try {
       // Validate request
       await this.validateOrchestrationRequest(request);
-      
+
       // Create execution record
       const execution: IWorkflowExecution = {
         id: `exec_${Date.now()}`,
         workflowId: request.workflowId,
         executionType: request.executionType,
-        status: 'pending',
+        status: "pending",
         culturalContext: request.culturalContext,
         ministry: request.ministry,
         startTime: new Date(),
@@ -518,67 +612,100 @@ export class WorkflowOrchestrator extends EventEmitter {
           ministryComplianceScore: 0,
           outputData: {},
           generatedDocuments: [],
-          notifications: []
+          notifications: [],
         },
         errors: [],
         metadata: {
-          executor: 'WorkflowOrchestrator',
-          executionEngine: '1.0.0',
-          workflowVersion: '1.0.0',
-          culturalValidationVersion: '2025.1',
-          serviceIntegrationVersion: '1.0.0',
-          paymentIntegrationVersion: '1.0.0',
+          executor: "WorkflowOrchestrator",
+          executionEngine: "1.0.0",
+          workflowVersion: "1.0.0",
+          culturalValidationVersion: "2025.1",
+          serviceIntegrationVersion: "1.0.0",
+          paymentIntegrationVersion: "1.0.0",
           executionDate: new Date(),
           ministry: request.ministry,
           department: request.department,
-          environment: 'production',
-          compliance: true
-        }
+          environment: "production",
+          compliance: true,
+        },
       };
-      
+
       this.activeExecutions.set(execution.id, execution);
-      
+
       // Perform cultural validation if required
       let validationResult: IValidationExecutionResult | undefined;
-      if (request.validationRequirements.islamicComplianceRequired || 
-          request.validationRequirements.culturalAppropriatenessRequired) {
-        validationResult = await this.performCulturalValidation(request, execution);
-        
-        if (request.validationRequirements.blockOnFailure && !validationResult.passed) {
-          throw new Error(`Cultural validation failed with score ${validationResult.overallScore}`);
+      if (
+        request.validationRequirements.islamicComplianceRequired ||
+        request.validationRequirements.culturalAppropriatenessRequired
+      ) {
+        validationResult = await this.performCulturalValidation(
+          request,
+          execution,
+        );
+
+        if (
+          request.validationRequirements.blockOnFailure &&
+          !validationResult.passed
+        ) {
+          throw new Error(
+            `Cultural validation failed with score ${validationResult.overallScore}`,
+          );
         }
       }
-      
+
       // Execute workflow steps
-      execution.status = 'running';
+      execution.status = "running";
       const stepResults = await this.executeWorkflowSteps(request, execution);
-      
+
       // Process service requirements
-      const serviceResults = await this.processServiceRequirements(request, execution);
-      
+      const serviceResults = await this.processServiceRequirements(
+        request,
+        execution,
+      );
+
       // Process payment requirements
       let paymentResults: IPaymentExecutionResult[] = [];
-      if (request.paymentRequirements && request.paymentRequirements.length > 0) {
-        paymentResults = await this.processPaymentRequirements(request, execution);
+      if (
+        request.paymentRequirements &&
+        request.paymentRequirements.length > 0
+      ) {
+        paymentResults = await this.processPaymentRequirements(
+          request,
+          execution,
+        );
       }
-      
+
       // Calculate performance metrics
-      const performanceMetrics = this.calculateExecutionPerformanceMetrics(execution, startTime);
-      
+      const performanceMetrics = this.calculateExecutionPerformanceMetrics(
+        execution,
+        startTime,
+      );
+
       // Calculate cultural metrics
-      const culturalMetrics = this.calculateCulturalExecutionMetrics(execution, stepResults);
-      
+      const culturalMetrics = this.calculateCulturalExecutionMetrics(
+        execution,
+        stepResults,
+      );
+
       // Generate recommendations
-      const recommendations = this.generateExecutionRecommendations(execution, serviceResults, paymentResults);
-      
+      const recommendations = this.generateExecutionRecommendations(
+        execution,
+        serviceResults,
+        paymentResults,
+      );
+
       // Generate next actions
-      const nextActions = this.generateNextActions(execution, serviceResults, paymentResults);
-      
+      const nextActions = this.generateNextActions(
+        execution,
+        serviceResults,
+        paymentResults,
+      );
+
       // Finalize execution
-      execution.status = 'completed';
+      execution.status = "completed";
       execution.endTime = new Date();
       execution.duration = Date.now() - execution.startTime.getTime();
-      
+
       // Create orchestration result
       const result: IWorkflowOrchestrationResult = {
         id: `result_${Date.now()}`,
@@ -591,9 +718,9 @@ export class WorkflowOrchestrator extends EventEmitter {
         serviceResults,
         paymentResults: paymentResults.length > 0 ? paymentResults : undefined,
         validationResults: validationResult || {
-          validationId: 'none',
+          validationId: "none",
           overallScore: 100,
-          complianceStatus: 'fully_compliant',
+          complianceStatus: "fully_compliant",
           islamicComplianceScore: 100,
           culturalAppropriatenessScore: 100,
           ministryComplianceScore: 100,
@@ -601,23 +728,23 @@ export class WorkflowOrchestrator extends EventEmitter {
           passed: true,
           criticalIssues: 0,
           warnings: 0,
-          processingTime: 0
+          processingTime: 0,
         },
         performanceMetrics,
         culturalMetrics,
         recommendations,
         nextActions,
         processingTime: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      
+
       // Store execution history
       this.executionHistory.set(result.id, result);
-      
+
       // Update performance metrics
       this.updateOrchestrationMetrics(result);
-      
-      this.emit('workflowExecuted', {
+
+      this.emit("workflowExecuted", {
         executionId: execution.id,
         workflowId: request.workflowId,
         status: result.status,
@@ -627,25 +754,24 @@ export class WorkflowOrchestrator extends EventEmitter {
         paymentCallsCount: paymentResults.length,
         processingTime: result.processingTime,
         ministry: request.ministry,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       return result;
-      
     } catch (error) {
       const errorResult: IWorkflowOrchestrationResult = {
         id: `error_result_${Date.now()}`,
         requestId: request.id,
         workflowId: request.workflowId,
         executionId: `error_exec_${Date.now()}`,
-        status: 'failed',
+        status: "failed",
         overallSuccess: false,
         culturalValidationPassed: false,
         serviceResults: [],
         validationResults: {
-          validationId: 'error',
+          validationId: "error",
           overallScore: 0,
-          complianceStatus: 'non_compliant',
+          complianceStatus: "non_compliant",
           islamicComplianceScore: 0,
           culturalAppropriatenessScore: 0,
           ministryComplianceScore: 0,
@@ -653,7 +779,7 @@ export class WorkflowOrchestrator extends EventEmitter {
           passed: false,
           criticalIssues: 1,
           warnings: 0,
-          processingTime: 0
+          processingTime: 0,
         },
         performanceMetrics: {
           totalDuration: Date.now() - startTime,
@@ -666,7 +792,7 @@ export class WorkflowOrchestrator extends EventEmitter {
           cpuUsage: 0,
           networkCalls: 0,
           cacheHits: 0,
-          cacheMisses: 0
+          cacheMisses: 0,
         },
         culturalMetrics: {
           arabicTextProcessed: 0,
@@ -676,42 +802,43 @@ export class WorkflowOrchestrator extends EventEmitter {
           rtlProcessingTime: 0,
           bilingualContentRatio: 0,
           culturalSensitivityScore: 0,
-          ministryStandardsScore: 0
+          ministryStandardsScore: 0,
         },
         recommendations: [],
         nextActions: [],
         processingTime: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      
-      this.emit('workflowExecutionFailed', {
+
+      this.emit("workflowExecutionFailed", {
         requestId: request.id,
         workflowId: request.workflowId,
         error: error.message,
         ministry: request.ministry,
         processingTime: Date.now() - startTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       throw error;
     } finally {
       // Clean up active execution
-      const executionId = Array.from(this.activeExecutions.keys()).find(key => 
-        this.activeExecutions.get(key)?.workflowId === request.workflowId
+      const executionId = Array.from(this.activeExecutions.keys()).find(
+        (key) =>
+          this.activeExecutions.get(key)?.workflowId === request.workflowId,
       );
       if (executionId) {
         this.activeExecutions.delete(executionId);
       }
     }
   }
-  
+
   /**
    * Get execution result by ID
    */
   getExecutionResult(resultId: string): IWorkflowOrchestrationResult | null {
     return this.executionHistory.get(resultId) || null;
   }
-  
+
   /**
    * Get orchestrator health metrics
    */
@@ -722,27 +849,39 @@ export class WorkflowOrchestrator extends EventEmitter {
       failedExecutions: this.performanceMetrics.failedExecutions,
       activeExecutions: this.activeExecutions.size,
       averageExecutionTime: this.performanceMetrics.averageExecutionTime,
-      averageCulturalComplianceScore: this.performanceMetrics.averageCulturalComplianceScore,
-      averageServiceSuccessRate: this.performanceMetrics.averageServiceSuccessRate,
-      averagePaymentSuccessRate: this.performanceMetrics.averagePaymentSuccessRate,
+      averageCulturalComplianceScore:
+        this.performanceMetrics.averageCulturalComplianceScore,
+      averageServiceSuccessRate:
+        this.performanceMetrics.averageServiceSuccessRate,
+      averagePaymentSuccessRate:
+        this.performanceMetrics.averagePaymentSuccessRate,
       ministryDistribution: this.getMinistryExecutionDistribution(),
       lastExecution: this.getLastExecutionTime(),
-      systemStatus: this.getOrchestrationSystemStatus()
+      systemStatus: this.getOrchestrationSystemStatus(),
     };
   }
-  
+
   // Private methods
-  private async validateOrchestrationRequest(request: IWorkflowOrchestrationRequest): Promise<void> {
+  private async validateOrchestrationRequest(
+    request: IWorkflowOrchestrationRequest,
+  ): Promise<void> {
     if (!request.workflowId || !request.culturalContext) {
-      throw new Error('Invalid orchestration request: missing workflow ID or cultural context');
+      throw new Error(
+        "Invalid orchestration request: missing workflow ID or cultural context",
+      );
     }
-    
+
     if (!request.ministry) {
-      throw new Error('Ministry is required for Iraqi government workflow execution');
+      throw new Error(
+        "Ministry is required for Iraqi government workflow execution",
+      );
     }
   }
-  
-  private async performCulturalValidation(request: IWorkflowOrchestrationRequest, execution: IWorkflowExecution): Promise<IValidationExecutionResult> {
+
+  private async performCulturalValidation(
+    request: IWorkflowOrchestrationRequest,
+    execution: IWorkflowExecution,
+  ): Promise<IValidationExecutionResult> {
     const validationRequest = {
       id: `validation_${Date.now()}`,
       workflowId: request.workflowId,
@@ -753,7 +892,7 @@ export class WorkflowOrchestrator extends EventEmitter {
         connections: [],
         triggers: [],
         settings: {
-          timezone: 'Asia/Baghdad',
+          timezone: "Asia/Baghdad",
           language: request.culturalContext.language,
           culturalSettings: {
             islamicCompliance: true,
@@ -761,68 +900,75 @@ export class WorkflowOrchestrator extends EventEmitter {
             rtlLayout: true,
             culturalValidation: true,
             formalityLevel: request.culturalContext.formalityLevel,
-            ministryBranding: true
+            ministryBranding: true,
           },
           securitySettings: {
             encryption: true,
             auditLogging: true,
             accessControl: true,
             dataProtection: true,
-            complianceMode: true
+            complianceMode: true,
           },
-          ministry: request.ministry
+          ministry: request.ministry,
         },
         metadata: {
-          creator: 'system',
+          creator: "system",
           created: new Date(),
           modified: new Date(),
-          version: '1.0.0',
+          version: "1.0.0",
           description: request.workflowName,
           descriptionArabic: request.workflowNameArabic,
           tags: [request.ministry],
           ministry: request.ministry,
           department: request.department,
-          complianceLevel: request.validationRequirements.level
-        }
+          complianceLevel: request.validationRequirements.level,
+        },
       },
       culturalContext: {
         ministry: request.culturalContext.ministry,
         department: request.culturalContext.department,
         serviceType: request.culturalContext.serviceType,
-        targetAudience: 'citizens',
+        targetAudience: "citizens",
         language: request.culturalContext.language,
         religiousContext: request.culturalContext.religiousContext,
         formalityLevel: request.culturalContext.formalityLevel,
         governmentLevel: request.culturalContext.governmentLevel,
-        dataClassification: 'internal',
-        complianceRequirements: ['islamic_compliance', 'ministry_approval']
+        dataClassification: "internal",
+        complianceRequirements: ["islamic_compliance", "ministry_approval"],
       },
       validationLevel: request.validationRequirements.level,
       ministry: request.ministry,
       businessContext: request.culturalContext.businessContext,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
-    const validationResult = await this.culturalValidator.validateWorkflow(validationRequest);
-    
+
+    const validationResult =
+      await this.culturalValidator.validateWorkflow(validationRequest);
+
     return {
       validationId: validationResult.id,
       overallScore: validationResult.overallScore,
       complianceStatus: validationResult.complianceStatus,
       islamicComplianceScore: validationResult.islamicCompliance.score,
-      culturalAppropriatenessScore: validationResult.culturalAppropriateness.score,
+      culturalAppropriatenessScore:
+        validationResult.culturalAppropriateness.score,
       ministryComplianceScore: validationResult.ministryCompliance.score,
       securityComplianceScore: validationResult.securityCompliance.score,
-      passed: validationResult.overallScore >= request.validationRequirements.threshold,
+      passed:
+        validationResult.overallScore >=
+        request.validationRequirements.threshold,
       criticalIssues: validationResult.criticalIssues.length,
       warnings: validationResult.warnings.length,
-      processingTime: validationResult.processingTime
+      processingTime: validationResult.processingTime,
     };
   }
-  
-  private async executeWorkflowSteps(request: IWorkflowOrchestrationRequest, execution: IWorkflowExecution): Promise<IExecutionStep[]> {
+
+  private async executeWorkflowSteps(
+    request: IWorkflowOrchestrationRequest,
+    execution: IWorkflowExecution,
+  ): Promise<IExecutionStep[]> {
     const steps: IExecutionStep[] = [];
-    
+
     // Mock workflow steps execution
     for (let i = 0; i < 5; i++) {
       const step: IExecutionStep = {
@@ -831,112 +977,138 @@ export class WorkflowOrchestrator extends EventEmitter {
         nodeId: `node_${i + 1}`,
         nodeName: `Step ${i + 1}`,
         nodeNameArabic: `الخطوة ${i + 1}`,
-        nodeType: 'function',
-        status: 'pending',
+        nodeType: "function",
+        status: "pending",
         startTime: new Date(),
         input: { data: `input_${i + 1}` },
         metadata: {
-          nodeType: 'function',
-          nodeVersion: '1.0.0',
+          nodeType: "function",
+          nodeVersion: "1.0.0",
           culturalValidated: true,
           serviceIntegrated: false,
           paymentProcessed: false,
           cacheUsed: false,
-          executionPath: [`node_${i + 1}`]
-        }
+          executionPath: [`node_${i + 1}`],
+        },
       };
-      
-      step.status = 'running';
-      
+
+      step.status = "running";
+
       // Simulate step execution
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      step.status = 'completed';
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      step.status = "completed";
       step.endTime = new Date();
       step.duration = step.endTime.getTime() - step.startTime.getTime();
       step.output = { result: `output_${i + 1}` };
-      
+
       steps.push(step);
       execution.steps.push(step);
     }
-    
+
     execution.results.totalSteps = steps.length;
-    execution.results.completedSteps = steps.filter(s => s.status === 'completed').length;
-    execution.results.success = execution.results.completedSteps === execution.results.totalSteps;
-    
+    execution.results.completedSteps = steps.filter(
+      (s) => s.status === "completed",
+    ).length;
+    execution.results.success =
+      execution.results.completedSteps === execution.results.totalSteps;
+
     return steps;
   }
-  
-  private async processServiceRequirements(request: IWorkflowOrchestrationRequest, execution: IWorkflowExecution): Promise<IServiceExecutionResult[]> {
+
+  private async processServiceRequirements(
+    request: IWorkflowOrchestrationRequest,
+    execution: IWorkflowExecution,
+  ): Promise<IServiceExecutionResult[]> {
     const serviceResults: IServiceExecutionResult[] = [];
-    
+
     for (const serviceReq of request.serviceRequirements) {
       const serviceRequest = {
         id: `service_req_${Date.now()}`,
         serviceId: serviceReq.serviceId,
-        endpointId: 'default',
+        endpointId: "default",
         parameters: serviceReq.parameters,
         citizen: request.citizen,
         ministry: serviceReq.ministry,
-        priority: 'normal' as const,
+        priority: "normal" as const,
         culturalContext: {
           language: request.culturalContext.language,
           dialect: request.culturalContext.dialect,
           formalityLevel: request.culturalContext.formalityLevel,
           religiousContext: request.culturalContext.religiousContext,
           professionalContext: request.culturalContext.ministry,
-          urgencyLevel: request.culturalContext.urgencyLevel
+          urgencyLevel: request.culturalContext.urgencyLevel,
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      
+
       try {
-        const serviceResponse = await this.serviceManager.executeRequest(serviceRequest);
-        
+        const serviceResponse =
+          await this.serviceManager.executeRequest(serviceRequest);
+
         serviceResults.push({
           serviceId: serviceReq.serviceId,
           serviceName: serviceReq.serviceName,
-          status: serviceResponse.status === 'success' ? 'success' : 'failed',
+          status: serviceResponse.status === "success" ? "success" : "failed",
           response: serviceResponse.data,
           culturalValidation: serviceResponse.culturalValidation,
           processingTime: serviceResponse.processingTime,
-          retryAttempts: 0
+          retryAttempts: 0,
         });
       } catch (error) {
         serviceResults.push({
           serviceId: serviceReq.serviceId,
           serviceName: serviceReq.serviceName,
-          status: 'failed',
+          status: "failed",
           error: {
             serviceId: serviceReq.serviceId,
-            errorCode: 'SERVICE_ERROR',
+            errorCode: "SERVICE_ERROR",
             message: error.message,
             messageArabic: this.translateError(error.message),
-            details: error.stack || '',
+            details: error.stack || "",
             culturalContext: `Ministry: ${serviceReq.ministry}, Language: ${request.culturalContext.language}`,
             retryable: true,
-            severity: 'high'
+            severity: "high",
           },
           culturalValidation: {
-            islamicCompliance: { score: 0, issues: ['Service failed'], recommendations: [] },
-            culturalAppropriateness: { score: 0, issues: ['Service failed'], adjustments: [] },
-            languageAccuracy: { arabicRTLScore: 0, dialectAccuracy: 0, translationQuality: 0 },
-            professionalStandards: { ministryCompliance: 0, formalityScore: 0, terminologyAccuracy: 0 }
+            islamicCompliance: {
+              score: 0,
+              issues: ["Service failed"],
+              recommendations: [],
+            },
+            culturalAppropriateness: {
+              score: 0,
+              issues: ["Service failed"],
+              adjustments: [],
+            },
+            languageAccuracy: {
+              arabicRTLScore: 0,
+              dialectAccuracy: 0,
+              translationQuality: 0,
+            },
+            professionalStandards: {
+              ministryCompliance: 0,
+              formalityScore: 0,
+              terminologyAccuracy: 0,
+            },
           },
           processingTime: 0,
-          retryAttempts: 0
+          retryAttempts: 0,
         });
       }
     }
-    
+
     return serviceResults;
   }
-  
-  private async processPaymentRequirements(request: IWorkflowOrchestrationRequest, execution: IWorkflowExecution): Promise<IPaymentExecutionResult[]> {
+
+  private async processPaymentRequirements(
+    request: IWorkflowOrchestrationRequest,
+    execution: IWorkflowExecution,
+  ): Promise<IPaymentExecutionResult[]> {
     const paymentResults: IPaymentExecutionResult[] = [];
-    
+
     if (!request.paymentRequirements) return paymentResults;
-    
+
     for (const paymentReq of request.paymentRequirements) {
       const paymentRequest = {
         id: `payment_req_${Date.now()}`,
@@ -945,11 +1117,11 @@ export class WorkflowOrchestrator extends EventEmitter {
         description: paymentReq.description,
         descriptionArabic: paymentReq.descriptionArabic,
         customer: {
-          id: request.citizen?.id || 'anonymous',
-          name: request.citizen?.name || 'Anonymous',
-          nameArabic: request.citizen?.nameArabic || 'مجهول',
-          phone: request.citizen?.phone || '',
-          governorate: request.citizen?.governorate || 'baghdad',
+          id: request.citizen?.id || "anonymous",
+          name: request.citizen?.name || "Anonymous",
+          nameArabic: request.citizen?.nameArabic || "مجهول",
+          phone: request.citizen?.phone || "",
+          governorate: request.citizen?.governorate || "baghdad",
           paymentHistory: {
             totalTransactions: 0,
             successfulTransactions: 0,
@@ -958,16 +1130,16 @@ export class WorkflowOrchestrator extends EventEmitter {
             averageAmount: 0,
             lastTransactionDate: new Date(),
             riskScore: 10,
-            trustScore: 90
+            trustScore: 90,
           },
           preferences: {
-            preferredGateway: paymentReq.preferredGateway || 'zaincash',
+            preferredGateway: paymentReq.preferredGateway || "zaincash",
             preferredCurrency: paymentReq.currency,
             language: request.culturalContext.language,
             biometricAuth: false,
             smsNotifications: true,
             emailNotifications: true,
-            culturalMode: true
+            culturalMode: true,
           },
           verificationStatus: request.citizen?.verificationStatus || {
             phoneVerified: true,
@@ -975,22 +1147,22 @@ export class WorkflowOrchestrator extends EventEmitter {
             identityVerified: false,
             biometricVerified: false,
             addressVerified: false,
-            verificationLevel: 'basic'
-          }
+            verificationLevel: "basic",
+          },
         },
         merchant: {
           id: `merchant_${request.ministry}`,
           name: `Ministry of ${request.ministry}`,
           nameArabic: `وزارة ${request.ministry}`,
-          businessType: 'government',
+          businessType: "government",
           ministry: request.ministry,
           licenseNumber: `GOV_${request.ministry.toUpperCase()}`,
           contactInfo: {
-            phone: '+964-1-123-4567',
+            phone: "+964-1-123-4567",
             email: `contact@${request.ministry}.gov.iq`,
-            address: 'Baghdad, Iraq',
-            addressArabic: 'بغداد، العراق',
-            contactPerson: 'Government Official'
+            address: "Baghdad, Iraq",
+            addressArabic: "بغداد، العراق",
+            contactPerson: "Government Official",
           },
           compliance: {
             businessLicense: true,
@@ -998,26 +1170,27 @@ export class WorkflowOrchestrator extends EventEmitter {
             centralBankLicense: true,
             ministryApproval: true,
             complianceScore: 100,
-            lastAuditDate: new Date()
-          }
+            lastAuditDate: new Date(),
+          },
         },
         culturalContext: paymentReq.culturalContext,
         preferredGateway: paymentReq.preferredGateway,
         metadata: {
-          serviceType: 'government',
+          serviceType: "government",
           ministry: request.ministry,
           department: request.department,
           referenceNumber: `REF_${Date.now()}`,
           description: paymentReq.description,
-          tags: [request.ministry, 'government'],
-          customFields: {}
+          tags: [request.ministry, "government"],
+          customFields: {},
         },
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      
+
       try {
-        const paymentResponse = await this.paymentOrchestrator.processPayment(paymentRequest);
-        
+        const paymentResponse =
+          await this.paymentOrchestrator.processPayment(paymentRequest);
+
         paymentResults.push({
           paymentId: paymentResponse.id,
           gateway: paymentResponse.gatewayUsed,
@@ -1026,44 +1199,65 @@ export class WorkflowOrchestrator extends EventEmitter {
           currency: paymentResponse.currency,
           transactionId: paymentResponse.transactionId,
           culturalValidation: paymentResponse.culturalValidation,
-          processingTime: paymentResponse.processingTime
+          processingTime: paymentResponse.processingTime,
         });
       } catch (error) {
         paymentResults.push({
           paymentId: `payment_error_${Date.now()}`,
-          gateway: paymentReq.preferredGateway || 'zaincash',
-          status: 'failed',
+          gateway: paymentReq.preferredGateway || "zaincash",
+          status: "failed",
           amount: paymentReq.amount,
           currency: paymentReq.currency,
           culturalValidation: {
-            islamicCompliance: { score: 0, halalStatus: false, issues: ['Payment failed'], recommendations: [] },
-            culturalAppropriateness: { score: 0, languageAccuracy: 0, contextualRelevance: 0, adjustments: [] },
-            governmentCompliance: { score: 0, regulatoryCompliance: false, auditTrail: false, dataProtection: false }
+            islamicCompliance: {
+              score: 0,
+              halalStatus: false,
+              issues: ["Payment failed"],
+              recommendations: [],
+            },
+            culturalAppropriateness: {
+              score: 0,
+              languageAccuracy: 0,
+              contextualRelevance: 0,
+              adjustments: [],
+            },
+            governmentCompliance: {
+              score: 0,
+              regulatoryCompliance: false,
+              auditTrail: false,
+              dataProtection: false,
+            },
           },
           processingTime: 0,
           error: {
             paymentId: `payment_error_${Date.now()}`,
-            gateway: paymentReq.preferredGateway || 'zaincash',
-            errorCode: 'PAYMENT_ERROR',
+            gateway: paymentReq.preferredGateway || "zaincash",
+            errorCode: "PAYMENT_ERROR",
             message: error.message,
             messageArabic: this.translateError(error.message),
-            details: error.stack || '',
+            details: error.stack || "",
             culturalContext: `Ministry: ${request.ministry}, Amount: ${paymentReq.amount} ${paymentReq.currency}`,
             retryable: true,
-            severity: 'high'
-          }
+            severity: "high",
+          },
         });
       }
     }
-    
+
     return paymentResults;
   }
-  
-  private calculateExecutionPerformanceMetrics(execution: IWorkflowExecution, startTime: number): IExecutionPerformanceMetrics {
+
+  private calculateExecutionPerformanceMetrics(
+    execution: IWorkflowExecution,
+    startTime: number,
+  ): IExecutionPerformanceMetrics {
     const totalDuration = Date.now() - startTime;
-    const stepDurations = execution.steps.map(s => s.duration || 0);
-    const averageStepDuration = stepDurations.length > 0 ? stepDurations.reduce((a, b) => a + b, 0) / stepDurations.length : 0;
-    
+    const stepDurations = execution.steps.map((s) => s.duration || 0);
+    const averageStepDuration =
+      stepDurations.length > 0
+        ? stepDurations.reduce((a, b) => a + b, 0) / stepDurations.length
+        : 0;
+
     return {
       totalDuration,
       averageStepDuration,
@@ -1075,11 +1269,14 @@ export class WorkflowOrchestrator extends EventEmitter {
       cpuUsage: 25, // Mock value in %
       networkCalls: execution.steps.length + 2, // Mock value
       cacheHits: 3, // Mock value
-      cacheMisses: 1 // Mock value
+      cacheMisses: 1, // Mock value
     };
   }
-  
-  private calculateCulturalExecutionMetrics(execution: IWorkflowExecution, steps: IExecutionStep[]): ICulturalExecutionMetrics {
+
+  private calculateCulturalExecutionMetrics(
+    execution: IWorkflowExecution,
+    steps: IExecutionStep[],
+  ): ICulturalExecutionMetrics {
     return {
       arabicTextProcessed: 1500, // Mock value - characters
       dialectRecognitionAccuracy: 85, // Mock value - percentage
@@ -1088,176 +1285,216 @@ export class WorkflowOrchestrator extends EventEmitter {
       rtlProcessingTime: 150, // Mock value - milliseconds
       bilingualContentRatio: 0.6, // Mock value - 60% bilingual
       culturalSensitivityScore: 90, // Mock value
-      ministryStandardsScore: 88 // Mock value
+      ministryStandardsScore: 88, // Mock value
     };
   }
-  
-  private generateExecutionRecommendations(execution: IWorkflowExecution, serviceResults: IServiceExecutionResult[], paymentResults: IPaymentExecutionResult[]): IExecutionRecommendation[] {
+
+  private generateExecutionRecommendations(
+    execution: IWorkflowExecution,
+    serviceResults: IServiceExecutionResult[],
+    paymentResults: IPaymentExecutionResult[],
+  ): IExecutionRecommendation[] {
     const recommendations: IExecutionRecommendation[] = [];
-    
+
     // Check for failed services
-    const failedServices = serviceResults.filter(s => s.status === 'failed');
+    const failedServices = serviceResults.filter((s) => s.status === "failed");
     if (failedServices.length > 0) {
       recommendations.push({
-        type: 'service_failure',
-        priority: 'high',
+        type: "service_failure",
+        priority: "high",
         description: `${failedServices.length} service(s) failed during execution`,
         descriptionArabic: `فشل ${failedServices.length} خدمة أثناء التنفيذ`,
-        action: 'Review service configurations and retry failed services',
-        impact: 'May affect workflow completion and user experience',
-        timeline: 'Immediate'
+        action: "Review service configurations and retry failed services",
+        impact: "May affect workflow completion and user experience",
+        timeline: "Immediate",
       });
     }
-    
+
     // Check for failed payments
-    const failedPayments = paymentResults.filter(p => p.status === 'failed');
+    const failedPayments = paymentResults.filter((p) => p.status === "failed");
     if (failedPayments.length > 0) {
       recommendations.push({
-        type: 'payment_failure',
-        priority: 'critical',
+        type: "payment_failure",
+        priority: "critical",
         description: `${failedPayments.length} payment(s) failed during execution`,
         descriptionArabic: `فشل ${failedPayments.length} دفعة أثناء التنفيذ`,
-        action: 'Investigate payment gateway issues and process refunds if necessary',
-        impact: 'Critical - may result in incomplete transactions',
-        timeline: 'Immediate'
+        action:
+          "Investigate payment gateway issues and process refunds if necessary",
+        impact: "Critical - may result in incomplete transactions",
+        timeline: "Immediate",
       });
     }
-    
+
     // Check cultural compliance
     if (execution.results.culturalComplianceScore < 90) {
       recommendations.push({
-        type: 'cultural_compliance',
-        priority: 'medium',
-        description: 'Cultural compliance score is below optimal threshold',
-        descriptionArabic: 'نتيجة الامتثال الثقافي أقل من الحد الأمثل',
-        action: 'Review cultural validation settings and improve Arabic language support',
-        impact: 'May affect user acceptance and cultural appropriateness',
-        timeline: 'Within 1 week'
+        type: "cultural_compliance",
+        priority: "medium",
+        description: "Cultural compliance score is below optimal threshold",
+        descriptionArabic: "نتيجة الامتثال الثقافي أقل من الحد الأمثل",
+        action:
+          "Review cultural validation settings and improve Arabic language support",
+        impact: "May affect user acceptance and cultural appropriateness",
+        timeline: "Within 1 week",
       });
     }
-    
+
     return recommendations;
   }
-  
-  private generateNextActions(execution: IWorkflowExecution, serviceResults: IServiceExecutionResult[], paymentResults: IPaymentExecutionResult[]): INextAction[] {
+
+  private generateNextActions(
+    execution: IWorkflowExecution,
+    serviceResults: IServiceExecutionResult[],
+    paymentResults: IPaymentExecutionResult[],
+  ): INextAction[] {
     const nextActions: INextAction[] = [];
-    
+
     // Always generate completion notification
     nextActions.push({
-      type: 'notification',
-      description: 'Send workflow completion notification to citizen',
-      descriptionArabic: 'إرسال إشعار اكتمال سير العمل للمواطن',
+      type: "notification",
+      description: "Send workflow completion notification to citizen",
+      descriptionArabic: "إرسال إشعار اكتمال سير العمل للمواطن",
       automated: true,
-      responsible: 'NotificationService',
-      priority: 'normal'
+      responsible: "NotificationService",
+      priority: "normal",
     });
-    
+
     // Generate audit log entry
     nextActions.push({
-      type: 'audit',
-      description: 'Create audit log entry for workflow execution',
-      descriptionArabic: 'إنشاء إدخال سجل التدقيق لتنفيذ سير العمل',
+      type: "audit",
+      description: "Create audit log entry for workflow execution",
+      descriptionArabic: "إنشاء إدخال سجل التدقيق لتنفيذ سير العمل",
       automated: true,
-      responsible: 'AuditService',
-      priority: 'normal'
+      responsible: "AuditService",
+      priority: "normal",
     });
-    
+
     // Check if follow-up is needed
-    const hasFailures = serviceResults.some(s => s.status === 'failed') || 
-                       paymentResults.some(p => p.status === 'failed');
-    
+    const hasFailures =
+      serviceResults.some((s) => s.status === "failed") ||
+      paymentResults.some((p) => p.status === "failed");
+
     if (hasFailures) {
       nextActions.push({
-        type: 'follow_up',
-        description: 'Schedule follow-up for failed operations',
-        descriptionArabic: 'جدولة المتابعة للعمليات الفاشلة',
+        type: "follow_up",
+        description: "Schedule follow-up for failed operations",
+        descriptionArabic: "جدولة المتابعة للعمليات الفاشلة",
         automated: false,
         scheduledTime: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
-        responsible: 'MinistryOperator',
-        priority: 'high'
+        responsible: "MinistryOperator",
+        priority: "high",
       });
     }
-    
+
     return nextActions;
   }
-  
-  private updateOrchestrationMetrics(result: IWorkflowOrchestrationResult): void {
+
+  private updateOrchestrationMetrics(
+    result: IWorkflowOrchestrationResult,
+  ): void {
     this.performanceMetrics.totalExecutions++;
     this.performanceMetrics.totalExecutionTime += result.processingTime;
-    this.performanceMetrics.averageExecutionTime = this.performanceMetrics.totalExecutionTime / this.performanceMetrics.totalExecutions;
-    
+    this.performanceMetrics.averageExecutionTime =
+      this.performanceMetrics.totalExecutionTime /
+      this.performanceMetrics.totalExecutions;
+
     if (result.overallSuccess) {
       this.performanceMetrics.successfulExecutions++;
     } else {
       this.performanceMetrics.failedExecutions++;
     }
-    
-    this.performanceMetrics.totalCulturalComplianceScore += result.culturalMetrics.culturalValidationScore;
-    this.performanceMetrics.averageCulturalComplianceScore = this.performanceMetrics.totalCulturalComplianceScore / this.performanceMetrics.totalExecutions;
-    
-    const successfulServices = result.serviceResults.filter(s => s.status === 'success').length;
+
+    this.performanceMetrics.totalCulturalComplianceScore +=
+      result.culturalMetrics.culturalValidationScore;
+    this.performanceMetrics.averageCulturalComplianceScore =
+      this.performanceMetrics.totalCulturalComplianceScore /
+      this.performanceMetrics.totalExecutions;
+
+    const successfulServices = result.serviceResults.filter(
+      (s) => s.status === "success",
+    ).length;
     const totalServices = result.serviceResults.length;
     if (totalServices > 0) {
       this.performanceMetrics.totalServiceCalls += totalServices;
       this.performanceMetrics.successfulServiceCalls += successfulServices;
-      this.performanceMetrics.averageServiceSuccessRate = (this.performanceMetrics.successfulServiceCalls / this.performanceMetrics.totalServiceCalls) * 100;
+      this.performanceMetrics.averageServiceSuccessRate =
+        (this.performanceMetrics.successfulServiceCalls /
+          this.performanceMetrics.totalServiceCalls) *
+        100;
     }
-    
+
     if (result.paymentResults) {
-      const successfulPayments = result.paymentResults.filter(p => p.status === 'completed').length;
+      const successfulPayments = result.paymentResults.filter(
+        (p) => p.status === "completed",
+      ).length;
       const totalPayments = result.paymentResults.length;
       this.performanceMetrics.totalPaymentCalls += totalPayments;
       this.performanceMetrics.successfulPaymentCalls += successfulPayments;
-      this.performanceMetrics.averagePaymentSuccessRate = (this.performanceMetrics.successfulPaymentCalls / this.performanceMetrics.totalPaymentCalls) * 100;
+      this.performanceMetrics.averagePaymentSuccessRate =
+        (this.performanceMetrics.successfulPaymentCalls /
+          this.performanceMetrics.totalPaymentCalls) *
+        100;
     }
   }
-  
+
   private translateError(message: string): string {
     const translations: Record<string, string> = {
-      'Service not found': 'الخدمة غير موجودة',
-      'Payment failed': 'فشل الدفع',
-      'Cultural validation failed': 'فشل التحقق الثقافي',
-      'Workflow execution failed': 'فشل تنفيذ سير العمل',
-      'Invalid request': 'طلب غير صحيح'
+      "Service not found": "الخدمة غير موجودة",
+      "Payment failed": "فشل الدفع",
+      "Cultural validation failed": "فشل التحقق الثقافي",
+      "Workflow execution failed": "فشل تنفيذ سير العمل",
+      "Invalid request": "طلب غير صحيح",
     };
-    
+
     return translations[message] || message;
   }
-  
+
   private getMinistryExecutionDistribution(): Record<MinistryType, number> {
     const distribution: Record<MinistryType, number> = {
-      health: 0, education: 0, interior: 0, justice: 0, finance: 0,
-      transport: 0, agriculture: 0, labor: 0, general: 0
+      health: 0,
+      education: 0,
+      interior: 0,
+      justice: 0,
+      finance: 0,
+      transport: 0,
+      agriculture: 0,
+      labor: 0,
+      general: 0,
     };
-    
+
     // Count executions by ministry from history
     return distribution;
   }
-  
+
   private getLastExecutionTime(): Date | null {
     const executions = Array.from(this.executionHistory.values());
     if (executions.length === 0) return null;
-    
-    return executions.reduce((latest, execution) => 
-      execution.timestamp > latest ? execution.timestamp : latest, 
-      executions[0].timestamp
+
+    return executions.reduce(
+      (latest, execution) =>
+        execution.timestamp > latest ? execution.timestamp : latest,
+      executions[0].timestamp,
     );
   }
-  
-  private getOrchestrationSystemStatus(): 'healthy' | 'degraded' | 'critical' {
-    if (this.performanceMetrics.averageCulturalComplianceScore > 90 && 
-        this.performanceMetrics.averageServiceSuccessRate > 95 && 
-        this.performanceMetrics.averageExecutionTime < 5000) {
-      return 'healthy';
-    } else if (this.performanceMetrics.averageCulturalComplianceScore > 80 && 
-               this.performanceMetrics.averageServiceSuccessRate > 85 && 
-               this.performanceMetrics.averageExecutionTime < 10000) {
-      return 'degraded';
+
+  private getOrchestrationSystemStatus(): "healthy" | "degraded" | "critical" {
+    if (
+      this.performanceMetrics.averageCulturalComplianceScore > 90 &&
+      this.performanceMetrics.averageServiceSuccessRate > 95 &&
+      this.performanceMetrics.averageExecutionTime < 5000
+    ) {
+      return "healthy";
+    } else if (
+      this.performanceMetrics.averageCulturalComplianceScore > 80 &&
+      this.performanceMetrics.averageServiceSuccessRate > 85 &&
+      this.performanceMetrics.averageExecutionTime < 10000
+    ) {
+      return "degraded";
     } else {
-      return 'critical';
+      return "critical";
     }
   }
-  
+
   private initializeMetrics(): IOrchestrationMetrics {
     return {
       totalExecutions: 0,
@@ -1272,26 +1509,26 @@ export class WorkflowOrchestrator extends EventEmitter {
       averageServiceSuccessRate: 0,
       totalPaymentCalls: 0,
       successfulPaymentCalls: 0,
-      averagePaymentSuccessRate: 0
+      averagePaymentSuccessRate: 0,
     };
   }
-  
+
   private setupEventHandlers(): void {
-    this.on('error', (error) => {
-      console.error('Workflow Orchestrator Error:', error);
+    this.on("error", (error) => {
+      console.error("Workflow Orchestrator Error:", error);
     });
-    
+
     // Setup event handlers for child components
-    this.serviceManager.on('serviceRegistered', (event) => {
-      this.emit('serviceRegistered', event);
+    this.serviceManager.on("serviceRegistered", (event) => {
+      this.emit("serviceRegistered", event);
     });
-    
-    this.paymentOrchestrator.on('paymentProcessed', (event) => {
-      this.emit('paymentProcessed', event);
+
+    this.paymentOrchestrator.on("paymentProcessed", (event) => {
+      this.emit("paymentProcessed", event);
     });
-    
-    this.culturalValidator.on('workflowValidated', (event) => {
-      this.emit('workflowValidated', event);
+
+    this.culturalValidator.on("workflowValidated", (event) => {
+      this.emit("workflowValidated", event);
     });
   }
 }
@@ -1332,7 +1569,7 @@ export interface IOrchestrationHealthMetrics {
   averagePaymentSuccessRate: number;
   ministryDistribution: Record<MinistryType, number>;
   lastExecution: Date | null;
-  systemStatus: 'healthy' | 'degraded' | 'critical';
+  systemStatus: "healthy" | "degraded" | "critical";
 }
 
 export default WorkflowOrchestrator;

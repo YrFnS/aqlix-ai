@@ -1,9 +1,9 @@
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Search, Sparkles } from 'lucide-react';
-import { AgentSelector } from '../../../thread/chat-input/agent-selector';
-import type { PipedreamHeaderProps } from '../types';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Search, Sparkles } from "lucide-react";
+import { AgentSelector } from "../../../thread/chat-input/agent-selector";
+import type { PipedreamHeaderProps } from "../types";
 
 export const PipedreamHeader: React.FC<PipedreamHeaderProps> = ({
   search,
@@ -12,7 +12,7 @@ export const PipedreamHeader: React.FC<PipedreamHeaderProps> = ({
   currentAgentId,
   onAgentChange,
   agentName,
-  isSunaAgent
+  isSunaAgent,
 }) => {
   return (
     <div className="flex-shrink-0 border-b bg-background px-4 py-3">
@@ -21,9 +21,12 @@ export const PipedreamHeader: React.FC<PipedreamHeaderProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {agentName ? `Integrations for ${agentName}` : 'Integrations'}
+                {agentName ? `Integrations for ${agentName}` : "Integrations"}
               </h1>
-              <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400 text-xs">
+              <Badge
+                variant="secondary"
+                className="bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400 text-xs"
+              >
                 <Sparkles className="h-3 w-3" />
                 New
               </Badge>
@@ -58,4 +61,4 @@ export const PipedreamHeader: React.FC<PipedreamHeaderProps> = ({
       </div>
     </div>
   );
-}; 
+};

@@ -7,6 +7,7 @@ A comprehensive enterprise authentication system designed specifically for Iraqi
 ## Features
 
 ### Core Authentication
+
 - **Multi-Factor Authentication (MFA)** with Iraqi telecom integration
 - **Biometric Authentication** (fingerprint, facial, iris recognition)
 - **Smart Card Authentication** for government employees
@@ -14,6 +15,7 @@ A comprehensive enterprise authentication system designed specifically for Iraqi
 - **Mobile Authentication** via ZainCash, Asiacell, Korek
 
 ### Iraqi Government Compliance
+
 - **Ministry-Level RBAC** with cross-ministry approval workflows
 - **Security Clearance Validation** (Basic, Elevated, High, Top Secret)
 - **Islamic Compliance** with prayer time-aware session management
@@ -22,6 +24,7 @@ A comprehensive enterprise authentication system designed specifically for Iraqi
 - **7-Year Audit Retention** for government compliance
 
 ### Advanced Security
+
 - **Government-Grade Encryption** (AES-256-GCM, ChaCha20-Poly1305)
 - **Threat Detection** with real-time monitoring
 - **Session Management** with cultural awareness
@@ -44,13 +47,13 @@ A comprehensive enterprise authentication system designed specifically for Iraqi
 ## Quick Start
 
 ```typescript
-import { IraqiEnterpriseAuth } from './core/IraqiEnterpriseAuth';
+import { IraqiEnterpriseAuth } from "./core/IraqiEnterpriseAuth";
 
 const auth = new IraqiEnterpriseAuth({
-  ministry: 'health',
+  ministry: "health",
   culturalCompliance: true,
   biometricEnabled: true,
-  auditRetentionYears: 7
+  auditRetentionYears: 7,
 });
 
 await auth.authenticate(credentials);
@@ -67,6 +70,7 @@ await auth.authenticate(credentials);
 ## Integration
 
 This system integrates with:
+
 - Iraqi government LDAP/Active Directory
 - Ministry domain controllers
 - Iraqi telecom providers (Zain, Asiacell, Korek)

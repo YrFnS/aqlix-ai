@@ -1,27 +1,39 @@
-import React, { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { X, Bot, Search, Sparkles, TrendingUp, Star, Filter, ArrowRight } from 'lucide-react';
-import { usePipedreamApps, usePipedreamPopularApps } from '@/hooks/react-query/pipedream/use-pipedream';
-import { usePipedreamProfiles } from '@/hooks/react-query/pipedream/use-pipedream-profiles';
-import { useAgent } from '@/hooks/react-query/agents/use-agents';
-import { PipedreamConnector } from './pipedream-connector';
-import { ToolsManager } from '../mcp/tools-manager';
-import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { useQueryClient, useQuery } from '@tanstack/react-query';
-import { AgentSelector } from '../../thread/chat-input/agent-selector';
-import type { PipedreamApp } from '@/hooks/react-query/pipedream/utils';
-import { pipedreamApi } from '@/hooks/react-query/pipedream/utils';
-import { AppCard } from './_components/app-card';
+import React, { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  X,
+  Bot,
+  Search,
+  Sparkles,
+  TrendingUp,
+  Star,
+  Filter,
+  ArrowRight,
+} from "lucide-react";
+import {
+  usePipedreamApps,
+  usePipedreamPopularApps,
+} from "@/hooks/react-query/pipedream/use-pipedream";
+import { usePipedreamProfiles } from "@/hooks/react-query/pipedream/use-pipedream-profiles";
+import { useAgent } from "@/hooks/react-query/agents/use-agents";
+import { PipedreamConnector } from "./pipedream-connector";
+import { ToolsManager } from "../mcp/tools-manager";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { AgentSelector } from "../../thread/chat-input/agent-selector";
+import type { PipedreamApp } from "@/hooks/react-query/pipedream/utils";
+import { pipedreamApi } from "@/hooks/react-query/pipedream/utils";
+import { AppCard } from "./_components/app-card";
 import {
   createConnectedAppsFromProfiles,
   getAgentPipedreamProfiles,
-} from './utils';
-import type { PipedreamRegistryProps, ConnectedApp } from './types';
-import { usePathname } from 'next/navigation';
+} from "./utils";
+import type { PipedreamRegistryProps, ConnectedApp } from "./types";
+import { usePathname } from "next/navigation";
 
 const AppCardSkeleton = () => (
   <div className="group relative overflow-hidden rounded-2xl border border-border bg-card transition-all">
@@ -55,18 +67,20 @@ const AppsGridSkeleton = ({ count = 8 }: { count?: number }) => (
 export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
   onToolsSelected,
   onAppSelected,
-  mode = 'full',
+  mode = "full",
   onClose,
   showAgentSelector = false,
   selectedAgentId,
   onAgentChange,
   versionData,
-  versionId
+  versionId,
 }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [showAllApps, setShowAllApps] = useState(false);
-  const [showStreamlinedConnector, setShowStreamlinedConnector] = useState(false);
-  const [selectedAppForConnection, setSelectedAppForConnection] = useState<PipedreamApp | null>(null);
+  const [showStreamlinedConnector, setShowStreamlinedConnector] =
+    useState(false);
+  const [selectedAppForConnection, setSelectedAppForConnection] =
+    useState<PipedreamApp | null>(null);
   const [showToolsManager, setShowToolsManager] = useState(false);
   const [selectedToolsProfile, setSelectedToolsProfile] = useState<{
     profileId: string;
@@ -74,17 +88,25 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
     profileName: string;
   } | null>(null);
   const pathname = usePathname();
-  const isHomePage = pathname.includes('dashboard');
-  
-  const [internalSelectedAgentId, setInternalSelectedAgentId] = useState<string | undefined>(selectedAgentId);
+  const isHomePage = pathname.includes("dashboard");
+
+  const [internalSelectedAgentId, setInternalSelectedAgentId] = useState<
+    string | undefined
+  >(selectedAgentId);
 
   const queryClient = useQueryClient();
-  
-  const { data: popularAppsData, isLoading: isLoadingPopular } = usePipedreamPopularApps();
-  
-  const shouldFetchAllApps = showAllApps || search.trim() !== '';
-  const { data: allAppsData, isLoading: isLoadingAll, error, refetch } = useQuery({
-    queryKey: ['pipedream', 'apps', undefined, search],
+
+  const { data: popularAppsData, isLoading: isLoadingPopular } =
+    usePipedreamPopularApps();
+
+  const shouldFetchAllApps = showAllApps || search.trim() !== "";
+  const {
+    data: allAppsData,
+    isLoading: isLoadingAll,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["pipedream", "apps", undefined, search],
     queryFn: async () => {
       const result = await pipedreamApi.getApps(undefined, search);
       return result;
@@ -93,11 +115,11 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
     staleTime: 5 * 60 * 1000,
     retry: 2,
   });
-  
+
   const { data: profiles } = usePipedreamProfiles();
-  
+
   const currentAgentId = selectedAgentId ?? internalSelectedAgentId;
-  const { data: agent } = useAgent(currentAgentId || '');
+  const { data: agent } = useAgent(currentAgentId || "");
 
   React.useEffect(() => {
     setInternalSelectedAgentId(selectedAgentId);
@@ -110,9 +132,9 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
       setInternalSelectedAgentId(agentId);
     }
     if (agentId !== currentAgentId) {
-      queryClient.invalidateQueries({ queryKey: ['agent'] });
+      queryClient.invalidateQueries({ queryKey: ["agent"] });
       if (agentId) {
-        queryClient.invalidateQueries({ queryKey: ['agent', agentId] });
+        queryClient.invalidateQueries({ queryKey: ["agent", agentId] });
       }
     }
   };
@@ -120,44 +142,57 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
   const effectiveVersionData = useMemo(() => {
     if (versionData) return versionData;
     if (!agent) return undefined;
-    
+
     if (agent.current_version) {
       return {
         configured_mcps: agent.current_version.configured_mcps || [],
         custom_mcps: agent.current_version.custom_mcps || [],
-        system_prompt: agent.current_version.system_prompt || '',
-        agentpress_tools: agent.current_version.agentpress_tools || {}
+        system_prompt: agent.current_version.system_prompt || "",
+        agentpress_tools: agent.current_version.agentpress_tools || {},
       };
     }
-    
+
     return {
       configured_mcps: agent.configured_mcps || [],
       custom_mcps: agent.custom_mcps || [],
-      system_prompt: agent.system_prompt || '',
-      agentpress_tools: agent.agentpress_tools || {}
+      system_prompt: agent.system_prompt || "",
+      agentpress_tools: agent.agentpress_tools || {},
     };
   }, [versionData, agent]);
 
   const agentPipedreamProfiles = useMemo(() => {
-    return getAgentPipedreamProfiles(agent, profiles, currentAgentId, effectiveVersionData);
+    return getAgentPipedreamProfiles(
+      agent,
+      profiles,
+      currentAgentId,
+      effectiveVersionData,
+    );
   }, [agent, profiles, currentAgentId, effectiveVersionData]);
 
   const connectedProfiles = useMemo(() => {
-    return profiles?.filter(p => p.is_connected) || [];
+    return profiles?.filter((p) => p.is_connected) || [];
   }, [profiles]);
 
   const connectedApps: ConnectedApp[] = useMemo(() => {
-    return createConnectedAppsFromProfiles(connectedProfiles, popularAppsData?.apps || []);
+    return createConnectedAppsFromProfiles(
+      connectedProfiles,
+      popularAppsData?.apps || [],
+    );
   }, [connectedProfiles, popularAppsData?.apps]);
 
   const handleSearch = (value: string) => {
     setSearch(value);
-    if (value.trim() === '') {
+    if (value.trim() === "") {
       setShowAllApps(false);
     }
   };
 
-  const handleConnectionComplete = (profileId: string, selectedTools: string[], appName: string, appSlug: string) => {
+  const handleConnectionComplete = (
+    profileId: string,
+    selectedTools: string[],
+    appName: string,
+    appSlug: string,
+  ) => {
     if (onToolsSelected) {
       onToolsSelected(profileId, selectedTools, appName, appSlug);
       toast.success(`Added ${selectedTools.length} tools from ${appName}!`);
@@ -172,19 +207,19 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
 
   const handleConfigureTools = (profile: any) => {
     if (!currentAgentId) {
-      toast.error('Please select an agent first');
+      toast.error("Please select an agent first");
       return;
     }
     setSelectedToolsProfile({
       profileId: profile.profile_id,
       appName: profile.app_name,
-      profileName: profile.profile_name
+      profileName: profile.profile_name,
     });
     setShowToolsManager(true);
   };
 
   const handleClearSearch = () => {
-    setSearch('');
+    setSearch("");
     setShowAllApps(false);
   };
 
@@ -199,7 +234,8 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
     return popularAppsData?.apps || [];
   }, [search, showAllApps, popularAppsData?.apps, allAppsData?.apps]);
 
-  const isLoading = search.trim() || showAllApps ? isLoadingAll : isLoadingPopular;
+  const isLoading =
+    search.trim() || showAllApps ? isLoadingAll : isLoadingPopular;
 
   if (error) {
     return (
@@ -209,7 +245,10 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
             <X className="h-12 w-12 mx-auto mb-2" />
             <p className="text-lg font-semibold">Failed to load integrations</p>
           </div>
-          <Button onClick={() => refetch()} className="bg-primary hover:bg-primary/90">
+          <Button
+            onClick={() => refetch()}
+            className="bg-primary hover:bg-primary/90"
+          >
             Try Again
           </Button>
         </div>
@@ -228,14 +267,19 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-semibold text-foreground">
-                  {agent?.name ? `${agent.name} Integrations` : 'Integrations'}
+                  {agent?.name ? `${agent.name} Integrations` : "Integrations"}
                 </h1>
-                <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-50 text-blue-700 border-blue-200 dark:border-blue-900 dark:bg-blue-900/20 dark:text-blue-400"
+                >
                   2700+ Apps
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mt-1">
-                {agent?.name ? 'Connect apps to enhance your agent\'s capabilities' : 'Connect your favorite apps and services'}
+                {agent?.name
+                  ? "Connect apps to enhance your agent's capabilities"
+                  : "Connect your favorite apps and services"}
               </p>
             </div>
           </div>
@@ -267,7 +311,7 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
           )}
         </div>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto">
         <div className="p-6">
           <div className="max-w-7xl mx-auto space-y-8">
@@ -280,40 +324,42 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
                   Select an Agent
                 </h3>
                 <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                  Choose an agent from the dropdown above to view and manage its integrations
+                  Choose an agent from the dropdown above to view and manage its
+                  integrations
                 </p>
               </div>
             )}
-            {connectedApps.length > 0 && (!showAgentSelector || currentAgentId) && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="border border-green-200 dark:border-green-900 h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
-                    <Star className="h-4 w-4 text-green-600 dark:text-green-400" />
+            {connectedApps.length > 0 &&
+              (!showAgentSelector || currentAgentId) && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="border border-green-200 dark:border-green-900 h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                      <Star className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <h2 className="text-md font-semibold text-foreground">
+                        Your Apps
+                      </h2>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-md font-semibold text-foreground">
-                    Your Apps
-                    </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {connectedApps.map((app) => (
+                      <AppCard
+                        key={`${app.name_slug}-${currentAgentId || "default"}`}
+                        app={app}
+                        mode={mode}
+                        currentAgentId={currentAgentId}
+                        agentName={agent?.name}
+                        agentPipedreamProfiles={agentPipedreamProfiles}
+                        onAppSelected={onAppSelected}
+                        onConnectApp={handleConnectApp}
+                        onConfigureTools={handleConfigureTools}
+                        handleCategorySelect={() => {}}
+                      />
+                    ))}
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {connectedApps.map((app) => (
-                    <AppCard 
-                      key={`${app.name_slug}-${currentAgentId || 'default'}`} 
-                      app={app}
-                      mode={mode}
-                      currentAgentId={currentAgentId}
-                      agentName={agent?.name}
-                      agentPipedreamProfiles={agentPipedreamProfiles}
-                      onAppSelected={onAppSelected}
-                      onConnectApp={handleConnectApp}
-                      onConfigureTools={handleConfigureTools}
-                      handleCategorySelect={() => {}}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+              )}
             {(!showAgentSelector || currentAgentId) && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -323,7 +369,11 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
                     </div>
                     <div>
                       <h2 className="text-md font-semibold text-foreground">
-                        {search.trim() ? 'Search Results' : showAllApps ? 'All Apps' : 'Popular Apps'}
+                        {search.trim()
+                          ? "Search Results"
+                          : showAllApps
+                            ? "All Apps"
+                            : "Popular Apps"}
                       </h2>
                     </div>
                   </div>
@@ -333,8 +383,8 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
                 ) : displayApps.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {displayApps.map((app) => (
-                      <AppCard 
-                        key={`${app.name_slug}-${currentAgentId || 'default'}`} 
+                      <AppCard
+                        key={`${app.name_slug}-${currentAgentId || "default"}`}
                         app={app}
                         mode={mode}
                         currentAgentId={currentAgentId}
@@ -354,10 +404,9 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
                       No apps found
                     </h3>
                     <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                      {search.trim() 
+                      {search.trim()
                         ? `No apps match "${search}". Try a different search term.`
-                        : 'No apps available at the moment.'
-                      }
+                        : "No apps available at the moment."}
                     </p>
                     {search.trim() && (
                       <Button
@@ -377,7 +426,7 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
           </div>
         </div>
       </div>
-      
+
       {/* Modals */}
       {selectedAppForConnection && (
         <PipedreamConnector
@@ -385,17 +434,18 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
           open={showStreamlinedConnector}
           onOpenChange={setShowStreamlinedConnector}
           onComplete={handleConnectionComplete}
-          mode={mode === 'profile-only' ? 'profile-only' : 'full'}
+          mode={mode === "profile-only" ? "profile-only" : "full"}
           agentId={currentAgentId}
-          saveMode={isHomePage ? 'direct' : 'callback'}
-          existingProfileIds={
-            agentPipedreamProfiles
-              .filter(profile => profile.app_slug === selectedAppForConnection.name_slug)
-              .map(profile => profile.profile_id)
-          }
+          saveMode={isHomePage ? "direct" : "callback"}
+          existingProfileIds={agentPipedreamProfiles
+            .filter(
+              (profile) =>
+                profile.app_slug === selectedAppForConnection.name_slug,
+            )
+            .map((profile) => profile.profile_id)}
         />
       )}
-      
+
       {selectedToolsProfile && currentAgentId && (
         <ToolsManager
           mode="pipedream"
@@ -411,7 +461,9 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
             }
           }}
           onToolsUpdate={(enabledTools) => {
-            queryClient.invalidateQueries({ queryKey: ['agent', currentAgentId] });
+            queryClient.invalidateQueries({
+              queryKey: ["agent", currentAgentId],
+            });
           }}
           versionData={effectiveVersionData}
           // Don't pass versionId for existing integrations - we want current configuration
@@ -420,4 +472,4 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
       )}
     </div>
   );
-}; 
+};

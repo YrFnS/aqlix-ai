@@ -20,6 +20,7 @@ description: "Template for generating comprehensive PRPs for PydanticAI agent de
 **IMPORTANT**: Keep your agent implementation focused and practical. Don't build unnecessary complexity.
 
 ### What NOT to do:
+
 - ❌ **Don't create dozens of tools** - Build only the tools your agent actually needs
 - ❌ **Don't over-complicate dependencies** - Keep dependency injection simple and focused
 - ❌ **Don't add unnecessary abstractions** - Follow main_agent_reference patterns directly
@@ -28,6 +29,7 @@ description: "Template for generating comprehensive PRPs for PydanticAI agent de
 - ❌ **Don't build in the examples/ folder**
 
 ### What TO do:
+
 - ✅ **Start simple** - Build the minimum viable agent that meets requirements
 - ✅ **Add tools incrementally** - Implement only what the agent needs to function
 - ✅ **Follow main_agent_reference** - Use proven patterns, don't reinvent
@@ -35,6 +37,7 @@ description: "Template for generating comprehensive PRPs for PydanticAI agent de
 - ✅ **Test early and often** - Use TestModel to validate as you build
 
 ### Key Question:
+
 **"Does this agent really need this feature to accomplish its core purpose?"**
 
 If the answer is no, don't build it. Keep it simple, focused, and functional.
@@ -52,18 +55,21 @@ If the answer is no, don't build it. Keep it simple, focused, and functional.
 ## What
 
 ### Agent Type Classification
+
 - [ ] **Chat Agent**: Conversational interface with memory and context
 - [ ] **Tool-Enabled Agent**: Agent with external tool integration capabilities
 - [ ] **Workflow Agent**: Multi-step task processing and orchestration
 - [ ] **Structured Output Agent**: Complex data validation and formatting
 
 ### Model Provider Requirements
+
 - [ ] **OpenAI**: `openai:gpt-4o` or `openai:gpt-4o-mini`
 - [ ] **Anthropic**: `anthropic:claude-3-5-sonnet-20241022` or `anthropic:claude-3-5-haiku-20241022`
 - [ ] **Google**: `gemini-1.5-flash` or `gemini-1.5-pro`
 - [ ] **Fallback Strategy**: Multiple provider support with automatic failover
 
 ### External Integrations
+
 - [ ] Database connections (specify type: PostgreSQL, MongoDB, etc.)
 - [ ] REST API integrations (list required services)
 - [ ] File system operations
@@ -71,6 +77,7 @@ If the answer is no, don't build it. Keep it simple, focused, and functional.
 - [ ] Real-time data sources
 
 ### Success Criteria
+
 - [ ] Agent successfully handles specified use cases
 - [ ] All tools work correctly with proper error handling
 - [ ] Structured outputs validate according to Pydantic models
@@ -129,22 +136,22 @@ agent_structure:
     - providers.py: Model provider abstraction with get_llm_model()
     - Environment variables for API keys and model selection
     - Never hardcode model strings like "openai:gpt-4o"
-  
+
   agent_definition:
     - Default to string output (no result_type unless structured output needed)
     - Use get_llm_model() from providers.py for model configuration
     - System prompts as string constants or functions
     - Dataclass dependencies for external services
-  
+
   tool_integration:
     - @agent.tool for context-aware tools with RunContext[DepsType]
     - Tool functions as pure functions that can be called independently
     - Proper error handling and logging in tool implementations
     - Dependency injection through RunContext.deps
-  
+
   testing_strategy:
     - TestModel for rapid development validation
-    - FunctionModel for custom behavior testing  
+    - FunctionModel for custom behavior testing
     - Agent.override() for test isolation
     - Comprehensive tool testing with mocks
 ```
@@ -155,15 +162,16 @@ agent_structure:
 # PydanticAI Security Patterns (research required)
 security_requirements:
   api_management:
-    environment_variables: ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GEMINI_API_KEY"]
+    environment_variables:
+      ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GEMINI_API_KEY"]
     secure_storage: "Never commit API keys to version control"
     rotation_strategy: "Plan for key rotation and management"
-  
+
   input_validation:
     sanitization: "Validate all user inputs with Pydantic models"
     prompt_injection: "Implement prompt injection prevention strategies"
     rate_limiting: "Prevent abuse with proper throttling"
-  
+
   output_security:
     data_filtering: "Ensure no sensitive data in agent responses"
     content_validation: "Validate output structure and content"
@@ -179,17 +187,17 @@ implementation_gotchas:
     issue: "Mixing sync and async agent calls inconsistently"
     research: "PydanticAI async/await best practices"
     solution: "[To be documented based on research]"
-  
+
   model_limits:
     issue: "Different models have different capabilities and token limits"
     research: "Model provider comparison and capabilities"
     solution: "[To be documented based on research]"
-  
+
   dependency_complexity:
     issue: "Complex dependency graphs can be hard to debug"
     research: "Dependency injection best practices in PydanticAI"
     solution: "[To be documented based on research]"
-  
+
   tool_error_handling:
     issue: "Tool failures can crash entire agent runs"
     research: "Error handling and retry patterns for tools"
@@ -203,6 +211,7 @@ implementation_gotchas:
 **RESEARCH REQUIRED - Complete before implementation:**
 
 ✅ **PydanticAI Framework Deep Dive:**
+
 - [ ] Agent creation patterns and best practices
 - [ ] Model provider configuration and fallback strategies
 - [ ] Tool integration patterns (@agent.tool vs @agent.tool_plain)
@@ -210,6 +219,7 @@ implementation_gotchas:
 - [ ] Testing strategies with TestModel and FunctionModel
 
 ✅ **Agent Architecture Investigation:**
+
 - [ ] Project structure conventions (agent.py, tools.py, models.py, dependencies.py)
 - [ ] System prompt design (static vs dynamic)
 - [ ] Structured output validation with Pydantic models
@@ -217,6 +227,7 @@ implementation_gotchas:
 - [ ] Error handling and retry mechanisms
 
 ✅ **Security and Production Patterns:**
+
 - [ ] API key management and secure configuration
 - [ ] Input validation and prompt injection prevention
 - [ ] Rate limiting and monitoring strategies

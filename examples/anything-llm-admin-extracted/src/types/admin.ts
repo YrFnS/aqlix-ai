@@ -1,7 +1,7 @@
 /**
  * Iraqi AI Admin System - Type Definitions
  * Extracted and enhanced from anything-llm admin system
- * 
+ *
  * Features:
  * - Iraqi professional role management
  * - Cultural compliance tracking
@@ -10,37 +10,37 @@
  */
 
 // Iraqi Professional Roles
-export type IraqiProfessionalRole = 
-  | 'lawyer' 
-  | 'doctor' 
-  | 'teacher' 
-  | 'engineer' 
-  | 'administrator' 
-  | 'manager' 
+export type IraqiProfessionalRole =
+  | 'lawyer'
+  | 'doctor'
+  | 'teacher'
+  | 'engineer'
+  | 'administrator'
+  | 'manager'
   | 'analyst';
 
 // Admin Role Hierarchy
-export type AdminRole = 
-  | 'super_admin'      // System-wide control
-  | 'organization_admin'  // Organization management
-  | 'department_admin'    // Department management
-  | 'supervisor'          // Team supervision
-  | 'user_admin'          // User management only
-  | 'viewer';             // Read-only access
+export type AdminRole =
+  | 'super_admin' // System-wide control
+  | 'organization_admin' // Organization management
+  | 'department_admin' // Department management
+  | 'supervisor' // Team supervision
+  | 'user_admin' // User management only
+  | 'viewer'; // Read-only access
 
 // Cultural Compliance Levels
-export type ComplianceLevel = 
-  | 'full_compliance'      // 95%+ Islamic compliance
-  | 'standard_compliance'  // 85%+ compliance
-  | 'basic_compliance'     // 70%+ compliance
-  | 'non_compliant';       // <70% compliance
+export type ComplianceLevel =
+  | 'full_compliance' // 95%+ Islamic compliance
+  | 'standard_compliance' // 85%+ compliance
+  | 'basic_compliance' // 70%+ compliance
+  | 'non_compliant'; // <70% compliance
 
 // User Management Types
 export interface IraqiUser {
   id: string;
   email: string;
   name: string;
-  arabicName?: string;  // Optional Arabic name
+  arabicName?: string; // Optional Arabic name
   role: AdminRole;
   professionalRole?: IraqiProfessionalRole;
   organizationId: string;
@@ -52,10 +52,10 @@ export interface IraqiUser {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  
+
   // Iraqi-specific fields
-  governorateCode?: string;    // Iraqi governorate
-  professionalLicenseId?: string;  // Professional license number
+  governorateCode?: string; // Iraqi governorate
+  professionalLicenseId?: string; // Professional license number
   securityClearanceLevel?: 'public' | 'restricted' | 'confidential' | 'secret';
   languagePreference: 'ar' | 'en' | 'both';
 }
@@ -71,10 +71,10 @@ export interface UserPreferences {
   language: 'ar' | 'en';
   theme: 'light' | 'dark' | 'auto';
   layoutDirection: 'rtl' | 'ltr' | 'auto';
-  timeZone: string;  // Default: 'Asia/Baghdad'
+  timeZone: string; // Default: 'Asia/Baghdad'
   dateFormat: 'gregorian' | 'hijri' | 'both';
   notifications: NotificationPreferences;
-  
+
   // Cultural preferences
   prayerTimeReminders?: boolean;
   culturalFiltering?: boolean;
@@ -86,7 +86,7 @@ export interface NotificationPreferences {
   browser: boolean;
   desktop: boolean;
   mobile: boolean;
-  
+
   // Iraqi-specific notifications
   complianceAlerts: boolean;
   securityNotifications: boolean;
@@ -100,7 +100,7 @@ export interface IraqiOrganization {
   arabicName?: string;
   type: OrganizationType;
   governorateCode: string;
-  registrationNumber?: string;  // Iraqi business registration
+  registrationNumber?: string; // Iraqi business registration
   contactInfo: ContactInfo;
   settings: OrganizationSettings;
   compliance: ComplianceMetrics;
@@ -110,9 +110,9 @@ export interface IraqiOrganization {
   updatedAt: string;
 }
 
-export type OrganizationType = 
+export type OrganizationType =
   | 'government'
-  | 'ministry' 
+  | 'ministry'
   | 'university'
   | 'hospital'
   | 'law_firm'
@@ -141,18 +141,18 @@ export interface OrganizationSettings {
   enabledLanguages: ('ar' | 'en')[];
   culturalFiltering: boolean;
   islamicCompliance: boolean;
-  
+
   // Professional Settings
   professionalDomains: IraqiProfessionalRole[];
   documentRetentionDays: number;
   backupFrequency: 'daily' | 'weekly' | 'monthly';
-  
+
   // Security Settings
   requireTwoFactor: boolean;
   sessionTimeoutMinutes: number;
   passwordPolicy: PasswordPolicy;
   ipWhitelist?: string[];
-  
+
   // Feature Settings
   enabledFeatures: string[];
   maxUsers: number;
@@ -165,8 +165,8 @@ export interface PasswordPolicy {
   requireLowercase: boolean;
   requireNumbers: boolean;
   requireSpecialChars: boolean;
-  maxAge: number;  // days
-  preventReuse: number;  // last N passwords
+  maxAge: number; // days
+  preventReuse: number; // last N passwords
 }
 
 // System Metrics and Analytics
@@ -194,15 +194,15 @@ export interface SystemOverview {
 export interface UserMetrics {
   newUsersToday: number;
   activeUsersToday: number;
-  userGrowthRate: number;  // percentage
-  averageSessionDuration: number;  // minutes
+  userGrowthRate: number; // percentage
+  averageSessionDuration: number; // minutes
   topUsersByActivity: UserActivitySummary[];
   userRetentionRate: number;
-  
+
   // Role distribution
   roleDistribution: Record<AdminRole, number>;
   professionalRoleDistribution: Record<IraqiProfessionalRole, number>;
-  
+
   // Geographic distribution
   governorateDistribution: Record<string, number>;
 }
@@ -241,12 +241,12 @@ export interface ComplianceMetrics {
   culturalAppropriateness: number;
   contentFilteringEffectiveness: number;
   professionalStandardsAdherence: number;
-  
+
   // Compliance by category
   complianceByRole: Record<IraqiProfessionalRole, number>;
   complianceByOrganizationType: Record<OrganizationType, number>;
   complianceByGovernorate: Record<string, number>;
-  
+
   // Trend data
   complianceTrend: ComplianceTrendData[];
   violationsCount: number;
@@ -266,14 +266,14 @@ export interface PerformanceMetrics {
   apiLatency: number;
   errorRate: number;
   uptime: number;
-  throughput: number;  // requests per second
-  
+  throughput: number; // requests per second
+
   // Resource utilization
   cpuUsage: number;
   memoryUsage: number;
   storageUsage: number;
   bandwidthUsage: number;
-  
+
   // Performance by region
   performanceByGovernorate: Record<string, PerformanceData>;
 }
@@ -288,15 +288,15 @@ export interface CulturalMetrics {
   arabicContentPercentage: number;
   englishContentPercentage: number;
   mixedLanguageContentPercentage: number;
-  
+
   // Cultural appropriateness
   culturallyAppropriateContentRate: number;
   flaggedContentCount: number;
   approvedContentAfterReviewCount: number;
-  
+
   // Professional domain usage
   professionalDomainUsage: Record<IraqiProfessionalRole, number>;
-  
+
   // Geographic and cultural distribution
   rtlInterfaceUsageRate: number;
   prayerTimeReminderUsage: number;
@@ -304,9 +304,9 @@ export interface CulturalMetrics {
 }
 
 // Subscription and Billing
-export type SubscriptionTier = 
+export type SubscriptionTier =
   | 'basic'
-  | 'professional' 
+  | 'professional'
   | 'enterprise'
   | 'government'
   | 'educational';
@@ -392,7 +392,7 @@ export interface DashboardWidget {
   };
 }
 
-export type WidgetType = 
+export type WidgetType =
   | 'metric_card'
   | 'line_chart'
   | 'bar_chart'
@@ -430,7 +430,7 @@ export interface AuditLog {
   userAgent: string;
   timestamp: string;
   severity: 'info' | 'warning' | 'error' | 'critical';
-  
+
   // Iraqi-specific audit fields
   complianceImpact?: 'none' | 'low' | 'medium' | 'high' | 'critical';
   culturalSensitivity?: boolean;
@@ -450,7 +450,7 @@ export interface SecurityEvent {
   additionalData?: Record<string, any>;
 }
 
-export type SecurityEventType = 
+export type SecurityEventType =
   | 'failed_login_attempt'
   | 'suspicious_activity'
   | 'unauthorized_access_attempt'
@@ -473,5 +473,5 @@ export type {
   SubscriptionDetails,
   DashboardWidget,
   AuditLog,
-  SecurityEvent
+  SecurityEvent,
 };

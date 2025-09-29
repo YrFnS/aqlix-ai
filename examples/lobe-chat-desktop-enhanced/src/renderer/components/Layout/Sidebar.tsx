@@ -3,11 +3,11 @@
  * Professional domain support with cultural adaptations
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSelector, useDispatch } from 'react-redux';
-import { motion, AnimatePresence } from 'framer-motion';
-import styled from 'styled-components';
+import React, { useState, useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import styled from "styled-components";
 
 // Icons
 import {
@@ -27,44 +27,45 @@ import {
   XMarkIcon,
   PlusIcon,
   ArchiveBoxIcon,
-  MagnifyingGlassIcon
-} from '@heroicons/react/24/outline';
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 // Types
-import type { 
-  ProfessionalDomain, 
+import type {
+  ProfessionalDomain,
   CulturalMode,
   ChatSession,
-  AppState 
-} from '../../types/app.types';
+  AppState,
+} from "../../types/app.types";
 
 // Components
-import { ProfessionalModeToggle } from '../Professional/ProfessionalModeToggle';
-import { RecentChats } from '../Chat/RecentChats';
-import { SearchInput } from '../UI/SearchInput';
+import { ProfessionalModeToggle } from "../Professional/ProfessionalModeToggle";
+import { RecentChats } from "../Chat/RecentChats";
+import { SearchInput } from "../UI/SearchInput";
 
 // Styled Components
-const SidebarContainer = styled(motion.aside)<{ 
+const SidebarContainer = styled(motion.aside)<{
   $collapsed: boolean;
   $isRTL: boolean;
   $culturalMode: CulturalMode;
 }>`
   position: relative;
   height: 100vh;
-  width: ${({ $collapsed }) => $collapsed ? '64px' : '280px'};
-  min-width: ${({ $collapsed }) => $collapsed ? '64px' : '280px'};
-  background: ${({ $culturalMode }) => 
-    $culturalMode === 'government' 
-      ? 'linear-gradient(180deg, #f8f9fb 0%, #ffffff 100%)'
-      : 'var(--bg-secondary)'
-  };
-  border-${({ $isRTL }) => $isRTL ? 'left' : 'right'}: 1px solid var(--text-secondary);
+  width: ${({ $collapsed }) => ($collapsed ? "64px" : "280px")};
+  min-width: ${({ $collapsed }) => ($collapsed ? "64px" : "280px")};
+  background: ${({ $culturalMode }) =>
+    $culturalMode === "government"
+      ? "linear-gradient(180deg, #f8f9fb 0%, #ffffff 100%)"
+      : "var(--bg-secondary)"};
+  border-${({ $isRTL }) => ($isRTL ? "left" : "right")}: 1px solid var(--text-secondary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 100;
   
-  ${({ $culturalMode }) => $culturalMode === 'government' && `
+  ${({ $culturalMode }) =>
+    $culturalMode === "government" &&
+    `
     border-top: 3px solid var(--iraqi-red);
     box-shadow: var(--shadow-lg);
   `}
@@ -79,17 +80,21 @@ const SidebarHeader = styled.div<{ $isRTL: boolean }>`
   align-items: center;
   justify-content: space-between;
   min-height: 64px;
-  
+
   .logo-section {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
     flex: 1;
-    
+
     .logo {
       width: 32px;
       height: 32px;
-      background: linear-gradient(135deg, var(--tigris-blue), var(--mesopotamian-gold));
+      background: linear-gradient(
+        135deg,
+        var(--tigris-blue),
+        var(--mesopotamian-gold)
+      );
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
@@ -98,7 +103,7 @@ const SidebarHeader = styled.div<{ $isRTL: boolean }>`
       font-weight: bold;
       font-size: 16px;
     }
-    
+
     .title {
       font-weight: 600;
       color: var(--text-primary);
@@ -106,14 +111,14 @@ const SidebarHeader = styled.div<{ $isRTL: boolean }>`
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     .subtitle {
       font-size: 0.75rem;
       color: var(--text-secondary);
       margin-top: 2px;
     }
   }
-  
+
   .toggle-button {
     width: 32px;
     height: 32px;
@@ -126,12 +131,12 @@ const SidebarHeader = styled.div<{ $isRTL: boolean }>`
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background: var(--bg-tertiary);
       color: var(--text-primary);
     }
-    
+
     svg {
       width: 18px;
       height: 18px;
@@ -144,21 +149,21 @@ const SidebarContent = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   padding: var(--spacing-md) 0;
-  
+
   &::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--text-secondary);
     border-radius: 2px;
     opacity: 0.3;
   }
-  
+
   &::-webkit-scrollbar-thumb:hover {
     opacity: 0.5;
   }
@@ -167,7 +172,7 @@ const SidebarContent = styled.div`
 const MenuSection = styled.div<{ $collapsed: boolean }>`
   padding: 0 var(--spacing-md);
   margin-bottom: var(--spacing-lg);
-  
+
   .section-title {
     font-size: 0.75rem;
     font-weight: 600;
@@ -176,13 +181,13 @@ const MenuSection = styled.div<{ $collapsed: boolean }>`
     letter-spacing: 0.05em;
     margin-bottom: var(--spacing-sm);
     padding: 0 var(--spacing-sm);
-    opacity: ${({ $collapsed }) => $collapsed ? 0 : 1};
-    visibility: ${({ $collapsed }) => $collapsed ? 'hidden' : 'visible'};
+    opacity: ${({ $collapsed }) => ($collapsed ? 0 : 1)};
+    visibility: ${({ $collapsed }) => ($collapsed ? "hidden" : "visible")};
     transition: all 0.2s ease;
   }
 `;
 
-const MenuItem = styled(motion.button)<{ 
+const MenuItem = styled(motion.button)<{
   $active?: boolean;
   $collapsed: boolean;
   $isRTL: boolean;
@@ -194,63 +199,67 @@ const MenuItem = styled(motion.button)<{
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   border: none;
-  background: ${({ $active }) => $active ? 'var(--accent-primary)' : 'transparent'};
-  color: ${({ $active }) => $active ? 'white' : 'var(--text-primary)'};
+  background: ${({ $active }) =>
+    $active ? "var(--accent-primary)" : "transparent"};
+  color: ${({ $active }) => ($active ? "white" : "var(--text-primary)")};
   border-radius: var(--radius-md);
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875rem;
   font-weight: 500;
-  text-align: ${({ $isRTL }) => $isRTL ? 'right' : 'left'};
+  text-align: ${({ $isRTL }) => ($isRTL ? "right" : "left")};
   transition: all 0.2s ease;
   margin-bottom: var(--spacing-xs);
-  
-  ${({ $domain }) => $domain && `
+
+  ${({ $domain }) =>
+    $domain &&
+    `
     border-left: 3px solid var(--domain-${$domain}-color, var(--accent-primary));
-    background: ${$domain ? `var(--domain-${$domain}-bg, var(--bg-tertiary))` : 'transparent'};
+    background: ${$domain ? `var(--domain-${$domain}-bg, var(--bg-tertiary))` : "transparent"};
   `}
-  
+
   &:hover {
     background: ${({ $active, $domain }) => {
-      if ($active) return 'var(--accent-primary)';
+      if ($active) return "var(--accent-primary)";
       if ($domain) return `var(--domain-${$domain}-bg, var(--bg-tertiary))`;
-      return 'var(--bg-tertiary)';
+      return "var(--bg-tertiary)";
     }};
-    transform: translateX(${({ $isRTL }) => $isRTL ? '-2px' : '2px'});
+    transform: translateX(${({ $isRTL }) => ($isRTL ? "-2px" : "2px")});
   }
-  
+
   &:active {
     transform: scale(0.98);
   }
-  
+
   .icon {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
-    opacity: ${({ $active }) => $active ? 1 : 0.7};
+    opacity: ${({ $active }) => ($active ? 1 : 0.7)};
   }
-  
+
   .label {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    opacity: ${({ $collapsed }) => $collapsed ? 0 : 1};
-    visibility: ${({ $collapsed }) => $collapsed ? 'hidden' : 'visible'};
+    opacity: ${({ $collapsed }) => ($collapsed ? 0 : 1)};
+    visibility: ${({ $collapsed }) => ($collapsed ? "hidden" : "visible")};
     transition: all 0.2s ease;
   }
-  
+
   .badge {
-    background: ${({ $active }) => $active ? 'rgba(255, 255, 255, 0.2)' : 'var(--accent-primary)'};
-    color: ${({ $active }) => $active ? 'white' : 'white'};
+    background: ${({ $active }) =>
+      $active ? "rgba(255, 255, 255, 0.2)" : "var(--accent-primary)"};
+    color: ${({ $active }) => ($active ? "white" : "white")};
     font-size: 0.625rem;
     font-weight: 600;
     padding: 2px 6px;
     border-radius: 10px;
     min-width: 18px;
     text-align: center;
-    opacity: ${({ $collapsed }) => $collapsed ? 0 : 1};
-    visibility: ${({ $collapsed }) => $collapsed ? 'hidden' : 'visible'};
+    opacity: ${({ $collapsed }) => ($collapsed ? 0 : 1)};
+    visibility: ${({ $collapsed }) => ($collapsed ? "hidden" : "visible")};
     transition: all 0.2s ease;
   }
 `;
@@ -260,43 +269,50 @@ const NewChatButton = styled(MenuItem)`
   color: white;
   font-weight: 600;
   margin-bottom: var(--spacing-lg);
-  
+
   &:hover {
     background: linear-gradient(135deg, #1e40af, #1d4ed8);
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
   }
-  
+
   .icon {
     opacity: 1;
   }
 `;
 
-const ProfessionalIndicator = styled.div<{ $domain: ProfessionalDomain; $collapsed: boolean }>`
+const ProfessionalIndicator = styled.div<{
+  $domain: ProfessionalDomain;
+  $collapsed: boolean;
+}>`
   padding: var(--spacing-sm) var(--spacing-md);
   margin: 0 var(--spacing-md) var(--spacing-md);
-  background: ${({ $domain }) => `var(--domain-${$domain}-bg, var(--bg-tertiary))`};
-  border: 1px solid ${({ $domain }) => `var(--domain-${$domain}-color, var(--accent-primary))`};
+  background: ${({ $domain }) =>
+    `var(--domain-${$domain}-bg, var(--bg-tertiary))`};
+  border: 1px solid
+    ${({ $domain }) => `var(--domain-${$domain}-color, var(--accent-primary))`};
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  opacity: ${({ $collapsed }) => $collapsed ? 0 : 1};
-  visibility: ${({ $collapsed }) => $collapsed ? 'hidden' : 'visible'};
+  opacity: ${({ $collapsed }) => ($collapsed ? 0 : 1)};
+  visibility: ${({ $collapsed }) => ($collapsed ? "hidden" : "visible")};
   transition: all 0.2s ease;
-  
+
   .indicator-dot {
     width: 8px;
     height: 8px;
-    background: ${({ $domain }) => `var(--domain-${$domain}-color, var(--accent-primary))`};
+    background: ${({ $domain }) =>
+      `var(--domain-${$domain}-color, var(--accent-primary))`};
     border-radius: 50%;
     flex-shrink: 0;
   }
-  
+
   .indicator-text {
     font-size: 0.75rem;
     font-weight: 500;
-    color: ${({ $domain }) => `var(--domain-${$domain}-color, var(--text-primary))`};
+    color: ${({ $domain }) =>
+      `var(--domain-${$domain}-color, var(--text-primary))`};
   }
 `;
 
@@ -309,27 +325,27 @@ const getDomainIcon = (domain: ProfessionalDomain): JSX.Element => {
     educational: <AcademicCapIcon className="icon" />,
     engineering: <WrenchScrewdriverIcon className="icon" />,
     business: <BriefcaseIcon className="icon" />,
-    government: <BuildingOffice2Icon className="icon" />
+    government: <BuildingOffice2Icon className="icon" />,
   };
   return iconMap[domain] || iconMap.general;
 };
 
 // Animation Variants
 const sidebarVariants = {
-  expanded: { 
+  expanded: {
     width: 280,
-    transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }
+    transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] },
   },
-  collapsed: { 
+  collapsed: {
     width: 64,
-    transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] }
-  }
+    transition: { duration: 0.3, ease: [0.4, 0.0, 0.2, 1] },
+  },
 };
 
 const menuItemVariants = {
   initial: { x: -20, opacity: 0 },
   animate: { x: 0, opacity: 1 },
-  exit: { x: -20, opacity: 0 }
+  exit: { x: -20, opacity: 0 },
 };
 
 interface SidebarProps {
@@ -345,103 +361,112 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   culturalMode,
   professionalDomain,
-  isRTL
+  isRTL,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  
+
   // Selectors
-  const { currentView, recentChats, unreadCount } = useSelector((state: AppState) => ({
-    currentView: state.app.currentView,
-    recentChats: state.chat.recentChats,
-    unreadCount: state.notifications.unreadCount
-  }));
-  
+  const { currentView, recentChats, unreadCount } = useSelector(
+    (state: AppState) => ({
+      currentView: state.app.currentView,
+      recentChats: state.chat.recentChats,
+      unreadCount: state.notifications.unreadCount,
+    }),
+  );
+
   // State
-  const [searchQuery, setSearchQuery] = useState('');
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Handlers
-  const handleViewChange = useCallback((view: string) => {
-    dispatch({ type: 'SET_CURRENT_VIEW', payload: view });
-  }, [dispatch]);
-  
+  const handleViewChange = useCallback(
+    (view: string) => {
+      dispatch({ type: "SET_CURRENT_VIEW", payload: view });
+    },
+    [dispatch],
+  );
+
   const handleNewChat = useCallback(() => {
-    dispatch({ type: 'CREATE_NEW_CHAT' });
+    dispatch({ type: "CREATE_NEW_CHAT" });
   }, [dispatch]);
-  
-  const handleSearchChange = useCallback((query: string) => {
-    setSearchQuery(query);
-    dispatch({ type: 'SET_CHAT_SEARCH_QUERY', payload: query });
-  }, [dispatch]);
-  
+
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      dispatch({ type: "SET_CHAT_SEARCH_QUERY", payload: query });
+    },
+    [dispatch],
+  );
+
   // Memoized menu items
-  const menuItems = useMemo(() => [
-    {
-      id: 'chat',
-      label: t('sidebar.chat', { defaultValue: 'المحادثة' }),
-      icon: <ChatBubbleLeftIcon className="icon" />,
-      active: currentView === 'chat',
-      onClick: () => handleViewChange('chat')
-    },
-    {
-      id: 'documents',
-      label: t('sidebar.documents', { defaultValue: 'الوثائق' }),
-      icon: <DocumentTextIcon className="icon" />,
-      active: currentView === 'documents',
-      onClick: () => handleViewChange('documents')
-    },
-    {
-      id: 'analytics',
-      label: t('sidebar.analytics', { defaultValue: 'التحليلات' }),
-      icon: <ChartBarIcon className="icon" />,
-      active: currentView === 'analytics',
-      onClick: () => handleViewChange('analytics')
-    },
-    {
-      id: 'profile',
-      label: t('sidebar.profile', { defaultValue: 'الملف الشخصي' }),
-      icon: <UserIcon className="icon" />,
-      active: currentView === 'profile',
-      onClick: () => handleViewChange('profile')
-    },
-    {
-      id: 'notifications',
-      label: t('sidebar.notifications', { defaultValue: 'الإشعارات' }),
-      icon: <BellIcon className="icon" />,
-      active: currentView === 'notifications',
-      badge: unreadCount > 0 ? unreadCount.toString() : undefined,
-      onClick: () => handleViewChange('notifications')
-    },
-    {
-      id: 'settings',
-      label: t('sidebar.settings', { defaultValue: 'الإعدادات' }),
-      icon: <Cog6ToothIcon className="icon" />,
-      active: currentView === 'settings',
-      onClick: () => handleViewChange('settings')
-    }
-  ], [currentView, unreadCount, t, handleViewChange]);
-  
+  const menuItems = useMemo(
+    () => [
+      {
+        id: "chat",
+        label: t("sidebar.chat", { defaultValue: "المحادثة" }),
+        icon: <ChatBubbleLeftIcon className="icon" />,
+        active: currentView === "chat",
+        onClick: () => handleViewChange("chat"),
+      },
+      {
+        id: "documents",
+        label: t("sidebar.documents", { defaultValue: "الوثائق" }),
+        icon: <DocumentTextIcon className="icon" />,
+        active: currentView === "documents",
+        onClick: () => handleViewChange("documents"),
+      },
+      {
+        id: "analytics",
+        label: t("sidebar.analytics", { defaultValue: "التحليلات" }),
+        icon: <ChartBarIcon className="icon" />,
+        active: currentView === "analytics",
+        onClick: () => handleViewChange("analytics"),
+      },
+      {
+        id: "profile",
+        label: t("sidebar.profile", { defaultValue: "الملف الشخصي" }),
+        icon: <UserIcon className="icon" />,
+        active: currentView === "profile",
+        onClick: () => handleViewChange("profile"),
+      },
+      {
+        id: "notifications",
+        label: t("sidebar.notifications", { defaultValue: "الإشعارات" }),
+        icon: <BellIcon className="icon" />,
+        active: currentView === "notifications",
+        badge: unreadCount > 0 ? unreadCount.toString() : undefined,
+        onClick: () => handleViewChange("notifications"),
+      },
+      {
+        id: "settings",
+        label: t("sidebar.settings", { defaultValue: "الإعدادات" }),
+        icon: <Cog6ToothIcon className="icon" />,
+        active: currentView === "settings",
+        onClick: () => handleViewChange("settings"),
+      },
+    ],
+    [currentView, unreadCount, t, handleViewChange],
+  );
+
   return (
     <SidebarContainer
       $collapsed={collapsed}
       $isRTL={isRTL}
       $culturalMode={culturalMode}
       variants={sidebarVariants}
-      animate={collapsed ? 'collapsed' : 'expanded'}
+      animate={collapsed ? "collapsed" : "expanded"}
     >
       {/* Header */}
       <SidebarHeader $isRTL={isRTL}>
         <div className="logo-section">
-          <div className="logo">
-            {isRTL ? 'ع.ذ' : 'AI'}
-          </div>
+          <div className="logo">{isRTL ? "ع.ذ" : "AI"}</div>
           {!collapsed && (
             <div>
               <div className="title">
-                {t('app.title', { defaultValue: 'الذكاء الاصطناعي العراقي' })}
+                {t("app.title", { defaultValue: "الذكاء الاصطناعي العراقي" })}
               </div>
               <div className="subtitle">
-                {t('app.subtitle', { defaultValue: 'نظام الدردشة المتقدم' })}
+                {t("app.subtitle", { defaultValue: "نظام الدردشة المتقدم" })}
               </div>
             </div>
           )}
@@ -450,7 +475,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {collapsed ? <Bars3Icon /> : <XMarkIcon />}
         </button>
       </SidebarHeader>
-      
+
       {/* Content */}
       <SidebarContent>
         {/* New Chat Button */}
@@ -467,39 +492,44 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <PlusIcon className="icon" />
             <span className="label">
-              {t('sidebar.newChat', { defaultValue: 'محادثة جديدة' })}
+              {t("sidebar.newChat", { defaultValue: "محادثة جديدة" })}
             </span>
           </NewChatButton>
         </MenuSection>
-        
+
         {/* Professional Domain Indicator */}
-        {professionalDomain !== 'general' && (
-          <ProfessionalIndicator $domain={professionalDomain} $collapsed={collapsed}>
+        {professionalDomain !== "general" && (
+          <ProfessionalIndicator
+            $domain={professionalDomain}
+            $collapsed={collapsed}
+          >
             <div className="indicator-dot" />
             <div className="indicator-text">
               {t(`professional.domain.${professionalDomain}.name`, {
-                defaultValue: professionalDomain
+                defaultValue: professionalDomain,
               })}
             </div>
           </ProfessionalIndicator>
         )}
-        
+
         {/* Search */}
         {!collapsed && (
           <MenuSection $collapsed={collapsed}>
             <SearchInput
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder={t('sidebar.searchChats', { defaultValue: 'البحث في المحادثات...' })}
+              placeholder={t("sidebar.searchChats", {
+                defaultValue: "البحث في المحادثات...",
+              })}
               isRTL={isRTL}
             />
           </MenuSection>
         )}
-        
+
         {/* Main Menu */}
         <MenuSection $collapsed={collapsed}>
           <div className="section-title">
-            {t('sidebar.sections.main', { defaultValue: 'القائمة الرئيسية' })}
+            {t("sidebar.sections.main", { defaultValue: "القائمة الرئيسية" })}
           </div>
           <AnimatePresence>
             {menuItems.map((item) => (
@@ -523,12 +553,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ))}
           </AnimatePresence>
         </MenuSection>
-        
+
         {/* Professional Domains */}
         {!collapsed && (
           <MenuSection $collapsed={collapsed}>
             <div className="section-title">
-              {t('sidebar.sections.domains', { defaultValue: 'المجالات المهنية' })}
+              {t("sidebar.sections.domains", {
+                defaultValue: "المجالات المهنية",
+              })}
             </div>
             <ProfessionalModeToggle
               currentDomain={professionalDomain}
@@ -537,12 +569,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
           </MenuSection>
         )}
-        
+
         {/* Recent Chats */}
         {!collapsed && (
           <MenuSection $collapsed={collapsed}>
             <div className="section-title">
-              {t('sidebar.sections.recent', { defaultValue: 'المحادثات الأخيرة' })}
+              {t("sidebar.sections.recent", {
+                defaultValue: "المحادثات الأخيرة",
+              })}
             </div>
             <RecentChats
               chats={recentChats}

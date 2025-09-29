@@ -5,7 +5,7 @@
 The Iraqi UI-TARS Desktop Agent System follows a modular, culturally-sovereign architecture that extends ByteDance's UI-TARS with comprehensive Iraqi cultural integration. The system is built on four architectural pillars:
 
 1. **Cultural Sovereignty Layer**: Islamic compliance and Iraqi cultural validation
-2. **Arabic Language Processing Layer**: RTL text handling and Iraqi dialect recognition  
+2. **Arabic Language Processing Layer**: RTL text handling and Iraqi dialect recognition
 3. **Professional Domain Integration Layer**: Specialized workflows for Iraqi professional contexts
 4. **Multi-Agent Coordination Layer**: PydanticAI agent integration and workflow orchestration
 
@@ -38,18 +38,21 @@ The Iraqi UI-TARS Desktop Agent System follows a modular, culturally-sovereign a
 #### Key Components:
 
 **Islamic Compliance Validator**
+
 - **Purpose**: Validates all automated actions against Islamic principles and jurisprudence
 - **Validation Rules**: Shariah law compliance, halal business practices, Islamic ethics
 - **Integration Points**: Pre-execution validation, real-time monitoring, post-execution assessment
 - **Performance**: <200ms validation time, 95%+ compliance accuracy
 
-**Cultural Appropriateness Validator** 
+**Cultural Appropriateness Validator**
+
 - **Purpose**: Ensures cultural sensitivity and Iraqi social norms compliance
 - **Validation Criteria**: Gender appropriateness, social etiquette, cultural context awareness
 - **Scoring System**: 0.0-1.0 appropriateness score with 85%+ threshold for approval
 - **Adaptation**: Dynamic sensitivity level adjustment based on context
 
 **Professional Standards Validator**
+
 - **Purpose**: Ensures compliance with Iraqi professional domain standards
 - **Supported Domains**: Legal (Iraqi Bar Association), Medical (Iraqi Medical Association), Educational (Ministry of Education), Governmental (Civil Service Standards)
 - **Integration**: Domain-specific workflow validation, professional ethics compliance
@@ -81,18 +84,21 @@ The Iraqi UI-TARS Desktop Agent System follows a modular, culturally-sovereign a
 #### Key Components:
 
 **Iraqi Dialect Recognition Engine**
+
 - **Dialect Coverage**: Baghdad, Basra, Mosul, Najaf, Karbala regional variations
 - **Recognition Accuracy**: 85%+ for Iraqi dialect identification
 - **Processing Pipeline**: Text analysis → Dialect classification → Context enhancement → Professional terminology mapping
 - **Cultural Integration**: Dialect-specific cultural context markers and appropriateness validation
 
 **RTL Text Layout Processor**
+
 - **Layout Management**: Right-to-left text flow, bidirectional text handling, mixed script coordination
 - **GUI Integration**: RTL-aware element positioning, text alignment, form field processing
 - **Performance**: 99%+ RTL formatting accuracy, <100ms processing time
 - **Cross-platform Support**: Desktop applications, web interfaces, document processors
 
 **Professional Terminology Validator**
+
 - **Domain Coverage**: Legal, medical, educational, governmental, business, religious terminology
 - **Validation Process**: Term recognition → Domain classification → Appropriateness scoring → Enhancement suggestion
 - **Cultural Context**: Iraqi-specific professional terms, Islamic terminology integration
@@ -125,18 +131,21 @@ The Iraqi UI-TARS Desktop Agent System follows a modular, culturally-sovereign a
 #### Domain Specifications:
 
 **Legal Domain Specialist**
+
 - **Standards**: Iraqi Bar Association guidelines, Islamic jurisprudence integration
 - **Workflows**: Contract preparation, court filing automation, legal research assistance
 - **Cultural Integration**: Islamic law compliance, gender-appropriate legal processes
 - **Government Integration**: Ministry of Justice portal automation, legal registry access
 
 **Medical Domain Specialist**
+
 - **Standards**: Iraqi Medical Association protocols, Islamic healthcare principles
 - **Workflows**: Patient record management, medical documentation, prescription processing
 - **Cultural Integration**: Islamic medical ethics, gender-sensitive care protocols, family involvement considerations
 - **Government Integration**: Ministry of Health systems, medical licensing portals
 
 **Educational Domain Specialist**
+
 - **Standards**: Ministry of Education requirements, Islamic educational values
 - **Workflows**: Student registration, academic credential processing, educational planning
 - **Cultural Integration**: Islamic curriculum considerations, gender-appropriate education paths
@@ -179,12 +188,14 @@ The Iraqi UI-TARS Desktop Agent System follows a modular, culturally-sovereign a
 #### Coordination Components:
 
 **PydanticAI Agent Bridge**
+
 - **Agent Types**: Cultural validation agents, professional domain experts, business analysts
 - **Communication Protocol**: Real-time validation requests, cultural context sharing, professional guidance delivery
 - **Integration Pattern**: Pre-execution validation → Real-time monitoring → Post-execution assessment
 - **Performance**: <50ms agent coordination overhead, 95%+ agent response reliability
 
 **UI-TARS Operator Coordination**
+
 - **Desktop Operator**: Native application automation, Arabic keyboard integration, professional domain hotkeys
 - **Browser Operator**: Web automation, RTL interface support, government portal navigation
 - **Switching Protocol**: Context preservation, cultural validation continuity, performance optimization
@@ -331,18 +342,26 @@ class IraqiGUIAgent<T extends IraqiOperator> extends BaseGUIAgent {
   private islamicComplianceChecker: IslamicComplianceEngine;
   private arabicProcessor: ArabicProcessingEngine;
   private professionalDomainManager: ProfessionalDomainManager;
-  
+
   // Enhanced execution with cultural validation
-  async run(instruction: string, historyMessages?: any[], headers?: Record<string, string>): Promise<void>;
-  
+  async run(
+    instruction: string,
+    historyMessages?: any[],
+    headers?: Record<string, string>,
+  ): Promise<void>;
+
   // Cultural validation pipeline
-  async validateCulturalCompliance(context: ScreenshotContext): Promise<CulturalValidationResult>;
-  
+  async validateCulturalCompliance(
+    context: ScreenshotContext,
+  ): Promise<CulturalValidationResult>;
+
   // Arabic text processing integration
   async processArabicContent(content: string): Promise<ArabicProcessingResult>;
-  
+
   // Professional domain coordination
-  async coordinateProfessionalWorkflow(domain: ProfessionalDomain): Promise<void>;
+  async coordinateProfessionalWorkflow(
+    domain: ProfessionalDomain,
+  ): Promise<void>;
 }
 ```
 
@@ -354,13 +373,13 @@ interface IraqiOperator extends Operator {
   culturalValidationConfig: CulturalValidationConfig;
   arabicSupportConfig: ArabicSupportConfig;
   professionalDomainConfig: ProfessionalDomainConfig;
-  
+
   // Enhanced execution with cultural context
   async execute(params: ExecuteParams, culturalContext?: CulturalContext): Promise<ExecuteOutput>;
-  
+
   // Cultural context management
   async updateCulturalContext(context: CulturalContext): Promise<void>;
-  
+
   // Arabic processing integration
   async processArabicInput(input: string): Promise<string>;
 }
@@ -370,7 +389,7 @@ class IraqiDesktopOperator implements IraqiOperator {
   private arabicKeyboardManager: ArabicKeyboardManager;
   private professionalHotkeyManager: ProfessionalHotkeyManager;
   private desktopIslamicIntegration: DesktopIslamicIntegration;
-  
+
   async execute(params: ExecuteParams, culturalContext?: CulturalContext): Promise<ExecuteOutput>;
   async switchArabicKeyboard(layout: ArabicKeyboardLayout): Promise<void>;
   async executeProfessionalWorkflow(domain: ProfessionalDomain): Promise<void>;
@@ -381,7 +400,7 @@ class IraqiBrowserOperator implements IraqiOperator {
   private rtlWebProcessor: RTLWebProcessor;
   private governmentPortalManager: GovernmentPortalManager;
   private arabicFormProcessor: ArabicFormProcessor;
-  
+
   async execute(params: ExecuteParams, culturalContext?: CulturalContext): Promise<ExecuteOutput>;
   async navigateGovernmentPortal(portal: GovernmentPortal): Promise<void>;
   async processArabicWebForm(formData: ArabicFormData): Promise<void>;
@@ -395,33 +414,41 @@ class CulturalValidationEngine {
   private islamicComplianceValidator: IslamicComplianceValidator;
   private culturalAppropriatenessValidator: CulturalAppropriatenessValidator;
   private professionalStandardsValidator: ProfessionalStandardsValidator;
-  
+
   async validateContent(
-    content: string | any, 
-    context: CulturalContext
+    content: string | any,
+    context: CulturalContext,
   ): Promise<CulturalValidationResult> {
     // Parallel validation execution for performance
-    const [islamicResult, culturalResult, professionalResult] = await Promise.all([
-      this.islamicComplianceValidator.validate(content, context),
-      this.culturalAppropriatenessValidator.validate(content, context),
-      this.professionalStandardsValidator.validate(content, context)
-    ]);
-    
-    return this.aggregateValidationResults(islamicResult, culturalResult, professionalResult);
+    const [islamicResult, culturalResult, professionalResult] =
+      await Promise.all([
+        this.islamicComplianceValidator.validate(content, context),
+        this.culturalAppropriatenessValidator.validate(content, context),
+        this.professionalStandardsValidator.validate(content, context),
+      ]);
+
+    return this.aggregateValidationResults(
+      islamicResult,
+      culturalResult,
+      professionalResult,
+    );
   }
-  
-  private aggregateValidationResults(...results: ValidationResult[]): CulturalValidationResult {
+
+  private aggregateValidationResults(
+    ...results: ValidationResult[]
+  ): CulturalValidationResult {
     // Weighted scoring algorithm based on cultural context requirements
     const weightedScore = this.calculateWeightedScore(results);
     const combinedViolations = this.combineViolations(results);
-    const consolidatedRecommendations = this.consolidateRecommendations(results);
-    
+    const consolidatedRecommendations =
+      this.consolidateRecommendations(results);
+
     return {
       isValid: weightedScore >= this.getValidationThreshold(),
       score: weightedScore,
       violations: combinedViolations,
       recommendations: consolidatedRecommendations,
-      enhancementSuggestions: this.generateEnhancementSuggestions(results)
+      enhancementSuggestions: this.generateEnhancementSuggestions(results),
     };
   }
 }
@@ -434,26 +461,30 @@ class ArabicProcessingEngine {
   private dialectRecognizer: IraqiDialectRecognizer;
   private rtlProcessor: RTLTextProcessor;
   private professionalTerminologyValidator: ProfessionalTerminologyValidator;
-  
+
   async processText(
-    text: string, 
-    context: ProcessingContext
+    text: string,
+    context: ProcessingContext,
   ): Promise<ArabicProcessingResult> {
     // Sequential processing pipeline for accuracy
     const dialectAnalysis = await this.dialectRecognizer.analyze(text);
     const rtlFormatting = await this.rtlProcessor.format(text, dialectAnalysis);
-    const terminologyValidation = await this.professionalTerminologyValidator.validate(
-      rtlFormatting.processedText, 
-      context.professionalDomain
-    );
-    
+    const terminologyValidation =
+      await this.professionalTerminologyValidator.validate(
+        rtlFormatting.processedText,
+        context.professionalDomain,
+      );
+
     return {
       processedText: terminologyValidation.enhancedText,
       dialectDetected: dialectAnalysis.detectedDialect,
       rtlFormatting: rtlFormatting.applied,
       professionalTerminology: terminologyValidation.validated,
-      culturalContext: this.extractCulturalContext(dialectAnalysis, terminologyValidation),
-      transliterationMap: this.generateTransliterationMap(text)
+      culturalContext: this.extractCulturalContext(
+        dialectAnalysis,
+        terminologyValidation,
+      ),
+      transliterationMap: this.generateTransliterationMap(text),
     };
   }
 }
@@ -473,21 +504,21 @@ class CulturalValidationCache {
     maxSize: 10000,
     evictionPolicy: 'LRU'
   };
-  
+
   async getCachedValidation(
-    content: string, 
+    content: string,
     context: CulturalContext
   ): Promise<CulturalValidationResult | null> {
     const cacheKey = this.generateCacheKey(content, context);
     const cached = this.cache.get(cacheKey);
-    
+
     if (cached && !this.isExpired(cached)) {
       return cached.result;
     }
-    
+
     return null;
   }
-  
+
   async setCachedValidation(
     content: string,
     context: CulturalContext,
@@ -499,7 +530,7 @@ class CulturalValidationCache {
       timestamp: Date.now(),
       accessCount: 0
     });
-    
+
     this.enforceCache Limits();
   }
 }
@@ -510,37 +541,44 @@ class CulturalValidationCache {
 ```typescript
 class ParallelProcessingCoordinator {
   async executeParallelValidations(
-    validationTasks: ValidationTask[]
+    validationTasks: ValidationTask[],
   ): Promise<ValidationResult[]> {
     // Group by dependency requirements
-    const independentTasks = validationTasks.filter(task => !task.dependencies);
-    const dependentTasks = validationTasks.filter(task => task.dependencies);
-    
+    const independentTasks = validationTasks.filter(
+      (task) => !task.dependencies,
+    );
+    const dependentTasks = validationTasks.filter((task) => task.dependencies);
+
     // Execute independent tasks in parallel
     const independentResults = await Promise.all(
-      independentTasks.map(task => this.executeValidationTask(task))
+      independentTasks.map((task) => this.executeValidationTask(task)),
     );
-    
+
     // Execute dependent tasks with proper sequencing
-    const dependentResults = await this.executeSequentialValidations(dependentTasks);
-    
+    const dependentResults =
+      await this.executeSequentialValidations(dependentTasks);
+
     return [...independentResults, ...dependentResults];
   }
-  
+
   async executeMultiOperatorWorkflow(
     desktopTasks: OperatorTask[],
-    browserTasks: OperatorTask[]
+    browserTasks: OperatorTask[],
   ): Promise<WorkflowResult> {
     // Identify parallelizable tasks
-    const parallelDesktopTasks = desktopTasks.filter(task => task.parallelizable);
-    const parallelBrowserTasks = browserTasks.filter(task => task.parallelizable);
-    
+    const parallelDesktopTasks = desktopTasks.filter(
+      (task) => task.parallelizable,
+    );
+    const parallelBrowserTasks = browserTasks.filter(
+      (task) => task.parallelizable,
+    );
+
     // Execute in parallel where possible
     const [desktopResults, browserResults] = await Promise.all([
-      this.executeOperatorTasks('desktop', parallelDesktopTasks),
-      this.executeOperatorTasks('browser', parallelBrowserTasks)
+      this.executeOperatorTasks("desktop", parallelDesktopTasks),
+      this.executeOperatorTasks("browser", parallelBrowserTasks),
     ]);
-    
+
     // Handle sequential dependencies
     return this.coordinateSequentialTasks(desktopResults, browserResults);
   }
@@ -555,29 +593,29 @@ class ParallelProcessingCoordinator {
 class CulturalContextManager {
   private contextHistory: CulturalContext[] = [];
   private maxHistorySize: number = 100;
-  
+
   private activeContext: CulturalContext;
   private contextTransitions: ContextTransition[] = [];
-  
+
   async switchContext(newContext: Partial<CulturalContext>): Promise<void> {
     const previousContext = { ...this.activeContext };
     this.activeContext = { ...this.activeContext, ...newContext };
-    
+
     // Record transition for analysis
     this.contextTransitions.push({
       from: previousContext,
       to: this.activeContext,
       timestamp: Date.now(),
-      trigger: 'manual_switch'
+      trigger: "manual_switch",
     });
-    
+
     // Update dependent components
     await this.propagateContextUpdate(newContext);
-    
+
     // Manage memory usage
     this.pruneContextHistory();
   }
-  
+
   private pruneContextHistory(): void {
     if (this.contextHistory.length > this.maxHistorySize) {
       this.contextHistory = this.contextHistory.slice(-this.maxHistorySize / 2);
@@ -603,13 +641,20 @@ class IraqiSecurityManager implements SecurityLayer {
   authorization: CulturallyAwareAuthorizationManager;
   auditLogging: IslamicComplianceAuditLogger;
   dataProtection: CulturallySensitiveDataProtectionManager;
-  
-  async validateSecurityContext(context: SecurityContext): Promise<SecurityValidationResult> {
+
+  async validateSecurityContext(
+    context: SecurityContext,
+  ): Promise<SecurityValidationResult> {
     // Multi-factor validation
     const authResult = await this.authentication.validate(context.credentials);
-    const authzResult = await this.authorization.validate(context.permissions, context.culturalContext);
-    const auditResult = await this.auditLogging.validateAuditRequirements(context.operation);
-    
+    const authzResult = await this.authorization.validate(
+      context.permissions,
+      context.culturalContext,
+    );
+    const auditResult = await this.auditLogging.validateAuditRequirements(
+      context.operation,
+    );
+
     return this.aggregateSecurityResults(authResult, authzResult, auditResult);
   }
 }
@@ -622,24 +667,32 @@ class CulturallySensitiveDataProtectionManager {
   private encryptionManager: EncryptionManager;
   private privacyManager: PrivacyManager;
   private culturalPrivacyValidator: CulturalPrivacyValidator;
-  
+
   async protectSensitiveData(
-    data: any, 
-    culturalContext: CulturalContext
+    data: any,
+    culturalContext: CulturalContext,
   ): Promise<ProtectedData> {
     // Identify culturally sensitive elements
-    const sensitivityAnalysis = await this.culturalPrivacyValidator.analyzeSensitivity(data, culturalContext);
-    
+    const sensitivityAnalysis =
+      await this.culturalPrivacyValidator.analyzeSensitivity(
+        data,
+        culturalContext,
+      );
+
     // Apply appropriate protection levels
     const protectionLevel = this.determineProtectionLevel(sensitivityAnalysis);
-    const encryptedData = await this.encryptionManager.encrypt(data, protectionLevel);
-    
-    // Apply privacy constraints
-    const privacyProtectedData = await this.privacyManager.applyPrivacyConstraints(
-      encryptedData, 
-      sensitivityAnalysis
+    const encryptedData = await this.encryptionManager.encrypt(
+      data,
+      protectionLevel,
     );
-    
+
+    // Apply privacy constraints
+    const privacyProtectedData =
+      await this.privacyManager.applyPrivacyConstraints(
+        encryptedData,
+        sensitivityAnalysis,
+      );
+
     return privacyProtectedData;
   }
 }
@@ -691,22 +744,26 @@ class ScalableIraqiGUIAgentCluster {
   private loadBalancer: CulturallyAwareLoadBalancer;
   private agentInstances: IraqiGUIAgent[] = [];
   private culturalValidationCluster: CulturalValidationCluster;
-  
+
   async scaleBasedOnCulturalDemand(metrics: ScalingMetrics): Promise<void> {
     // Analyze cultural processing load
-    const culturalLoad = metrics.culturalValidationRequests / metrics.totalRequests;
-    const arabicProcessingLoad = metrics.arabicProcessingRequests / metrics.totalRequests;
-    
+    const culturalLoad =
+      metrics.culturalValidationRequests / metrics.totalRequests;
+    const arabicProcessingLoad =
+      metrics.arabicProcessingRequests / metrics.totalRequests;
+
     // Scale cultural validation services
     if (culturalLoad > 0.7) {
       await this.culturalValidationCluster.scaleUp(Math.ceil(culturalLoad * 3));
     }
-    
+
     // Scale Arabic processing services
     if (arabicProcessingLoad > 0.5) {
-      await this.scaleArabicProcessingServices(Math.ceil(arabicProcessingLoad * 2));
+      await this.scaleArabicProcessingServices(
+        Math.ceil(arabicProcessingLoad * 2),
+      );
     }
-    
+
     // Scale main GUI agent instances
     const requiredInstances = this.calculateRequiredInstances(metrics);
     await this.adjustAgentInstances(requiredInstances);

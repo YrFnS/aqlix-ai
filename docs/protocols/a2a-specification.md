@@ -38,6 +38,7 @@ This document provides the enhanced A2A specification for the Iraqi AI Chat Syst
 Building upon standard A2A concepts with Iraqi cultural intelligence:
 
 ### 2.1. Standard A2A Concepts
+
 - **A2A Client**: Agent initiating requests (enhanced with cultural context)
 - **A2A Server (Remote Agent)**: Agent processing requests (with Iraqi specialization)
 - **Agent Card**: Metadata document (extended with cultural capabilities)
@@ -47,6 +48,7 @@ Building upon standard A2A concepts with Iraqi cultural intelligence:
 - **Artifact**: Agent output (culturally validated)
 
 ### 2.2. Iraqi Cultural Extensions
+
 - **Cultural Context**: Islamic compliance score, Arabic language preference, professional domain
 - **Iraqi Agent Capabilities**: Cultural validation, Arabic processing, payment integration
 - **Professional Domain Routing**: Legal, medical, educational, business specialization
@@ -68,16 +70,19 @@ All Iraqi AI agent communication **MUST** occur over **HTTPS** with additional s
 Iraqi AI agents **MUST** implement standard A2A transports with cultural enhancements:
 
 #### 3.2.1. JSON-RPC 2.0 Transport (Iraqi Enhanced)
+
 - **Cultural Headers**: `X-Iraqi-Cultural-Context`, `X-Islamic-Compliance-Level`
 - **Arabic Content-Type**: `application/json; charset=utf-8` with RTL direction metadata
 - **Method Naming**: Standard A2A with Iraqi extensions (e.g., `message/sendWithCulturalValidation`)
 
 #### 3.2.2. gRPC Transport (Arabic Language Support)
+
 - **Arabic Field Support**: Protocol Buffers with Arabic string validation
 - **Cultural Metadata**: gRPC metadata for cultural context transmission
 - **Islamic Compliance Streaming**: Real-time religious compliance validation
 
 #### 3.2.3. HTTP+JSON/REST Transport (RTL Support)
+
 - **Arabic URL Encoding**: Proper encoding for Arabic parameters
 - **Cultural Headers**: Iraqi-specific HTTP headers for cultural context
 - **RTL Response Format**: JSON responses with RTL layout hints
@@ -85,16 +90,19 @@ Iraqi AI agents **MUST** implement standard A2A transports with cultural enhance
 ## 4. Iraqi Enhanced Authentication and Authorization
 
 ### 4.1. Iraqi Government Authentication
+
 - **Iraqi ID Integration**: National ID card authentication support
 - **Ministry Access Control**: Government-level role-based access
 - **Islamic Identity Verification**: Religion-aware authentication flows
 
 ### 4.2. Cultural Authorization Patterns
+
 - **Professional Domain Access**: Specialized authorization for Iraqi professional sectors
 - **Islamic Compliance Gates**: Religious validation for sensitive operations
 - **Arabic Content Permissions**: Language-specific access control
 
 ### 4.3. Payment Gateway Authentication
+
 - **ZainCash Integration**: Mobile wallet authentication with Islamic compliance
 - **FastPay Authorization**: Digital payment validation with Sharia compliance
 - **NassWallet Support**: Electronic wallet authentication with religious validation
@@ -116,7 +124,7 @@ interface IraqiAgentCard extends AgentCard {
     culturalValidation: boolean;
     professionalDomainExpertise: string[]; // ['legal', 'medical', 'educational']
   };
-  
+
   // Payment integration
   paymentSupport: {
     zainCash: boolean;
@@ -124,7 +132,7 @@ interface IraqiAgentCard extends AgentCard {
     nassWallet: boolean;
     islamicFinanceCompliant: boolean;
   };
-  
+
   // Arabic language support
   languageSupport: {
     arabic: boolean;
@@ -143,10 +151,16 @@ Enhanced skill definitions for Iraqi professional domains:
 
 ```typescript
 interface IraqiProfessionalSkill extends AgentSkill {
-  professionalDomain: 'legal' | 'medical' | 'educational' | 'business' | 'government' | 'technology';
+  professionalDomain:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "government"
+    | "technology";
   islamicCompliance: boolean;
   arabicRequired: boolean;
-  culturalSensitivity: 'high' | 'medium' | 'low';
+  culturalSensitivity: "high" | "medium" | "low";
   iraqiRegulation: string[]; // Applicable Iraqi laws/regulations
 }
 ```
@@ -161,7 +175,7 @@ interface IraqiCulturalContext {
   islamicCompliance: boolean;
   arabicSupport: boolean;
   rtlLayout: boolean;
-  dialectSupport: 'iraqi' | 'standard' | 'mixed';
+  dialectSupport: "iraqi" | "standard" | "mixed";
   professionalDomain?: string;
   culturalScore: number; // 0-100, 85+ required
   islamicScore: number; // 0-100, 90+ required
@@ -205,7 +219,7 @@ interface IraqiTask extends Task {
   };
   professionalDomain?: string;
   paymentIntegration?: {
-    gateway?: 'ZainCash' | 'FastPay' | 'NassWallet';
+    gateway?: "ZainCash" | "FastPay" | "NassWallet";
     islamicCompliant: boolean;
     transactionId?: string;
   };
@@ -236,7 +250,7 @@ Real-time Arabic translation with dialect support:
 ```typescript
 interface ArabicTranslationParams {
   text: string;
-  targetDialect: 'iraqi' | 'standard';
+  targetDialect: "iraqi" | "standard";
   professionalDomain?: string;
   islamicTerminology: boolean;
 }
@@ -251,10 +265,10 @@ Iraqi legal consultation with Islamic jurisprudence:
 ```typescript
 interface LegalConsultationParams {
   query: string;
-  legalDomain: 'civil' | 'commercial' | 'family' | 'criminal';
+  legalDomain: "civil" | "commercial" | "family" | "criminal";
   islamicLawRequired: boolean;
   arabicResponse: boolean;
-  urgencyLevel: 'high' | 'medium' | 'low';
+  urgencyLevel: "high" | "medium" | "low";
 }
 ```
 
@@ -265,7 +279,7 @@ Iraqi medical consultation with Islamic medical ethics:
 ```typescript
 interface MedicalConsultationParams {
   symptoms: string;
-  patientGender: 'male' | 'female';
+  patientGender: "male" | "female";
   islamicMedicalEthics: boolean;
   arabicConsultation: boolean;
   emergencyLevel: number; // 1-10 scale
@@ -281,7 +295,7 @@ Islamic-compliant payment processing:
 ```typescript
 interface IraqiPaymentParams {
   amount: number; // in IQD
-  gateway: 'ZainCash' | 'FastPay' | 'NassWallet';
+  gateway: "ZainCash" | "FastPay" | "NassWallet";
   islamicCompliant: boolean;
   culturalContext: IraqiCulturalContext;
   description: string;
@@ -295,14 +309,14 @@ interface IraqiPaymentParams {
 
 Extended A2A error codes for Iraqi context:
 
-| Code | Error Name | Description |
-|------|------------|-------------|
-| `-33001` | `CulturalValidationFailedError` | Content failed Iraqi cultural appropriateness check |
-| `-33002` | `IslamicComplianceViolationError` | Operation violates Islamic principles |
-| `-33003` | `ArabicProcessingError` | RTL or dialect processing failure |
-| `-33004` | `ProfessionalDomainError` | Unauthorized professional domain access |
-| `-33005` | `PaymentGatewayError` | Iraqi payment gateway integration failure |
-| `-33006` | `LanguageNotSupportedError` | Requested Arabic dialect not supported |
+| Code     | Error Name                        | Description                                         |
+| -------- | --------------------------------- | --------------------------------------------------- |
+| `-33001` | `CulturalValidationFailedError`   | Content failed Iraqi cultural appropriateness check |
+| `-33002` | `IslamicComplianceViolationError` | Operation violates Islamic principles               |
+| `-33003` | `ArabicProcessingError`           | RTL or dialect processing failure                   |
+| `-33004` | `ProfessionalDomainError`         | Unauthorized professional domain access             |
+| `-33005` | `PaymentGatewayError`             | Iraqi payment gateway integration failure           |
+| `-33006` | `LanguageNotSupportedError`       | Requested Arabic dialect not supported              |
 
 ## 9. Iraqi Cultural Workflows & Examples
 
@@ -338,7 +352,7 @@ Extended A2A error codes for Iraqi context:
 {
   "jsonrpc": "2.0",
   "id": 2,
-  "method": "domain/medical/consultationRequest", 
+  "method": "domain/medical/consultationRequest",
   "params": {
     "symptoms": "صداع مستمر وحمى خفيفة",
     "patientGender": "female",
@@ -396,7 +410,7 @@ The A2A protocol integrates with our specialized Iraqi agents:
 A2A messages are processed through our unified cultural enhancement layer:
 
 1. **Cultural Validation**: 95%+ appropriateness score required
-2. **Islamic Compliance**: 90%+ compliance score required  
+2. **Islamic Compliance**: 90%+ compliance score required
 3. **Arabic Processing**: RTL accuracy 99%+, dialect recognition 85%+
 4. **Professional Domain Routing**: Automatic routing to domain specialists
 5. **Quality Assurance**: 8-step validation cycle with cultural gates

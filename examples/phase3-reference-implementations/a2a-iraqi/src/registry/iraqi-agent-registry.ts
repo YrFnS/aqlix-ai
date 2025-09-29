@@ -1,9 +1,9 @@
 /**
  * Iraqi Agent Registry
- * 
+ *
  * Central registry for all Iraqi AI agents with cultural filtering and discovery
  * Implements agent validation pipeline with cultural compliance verification
- * 
+ *
  * Features:
  * - Cultural sovereignty validation for agent registration
  * - Professional domain routing for intelligent agent selection
@@ -11,14 +11,29 @@
  * - 22 specialized Iraqi agents support with context management
  */
 
-import { IraqiAgentCard, IraqiCulturalContext, IraqiAgentCapabilities } from '../types/iraqi-a2a-types.js';
+import {
+  IraqiAgentCard,
+  IraqiCulturalContext,
+  IraqiAgentCapabilities,
+} from "../types/iraqi-a2a-types.js";
 
-export type ProfessionalDomain = 'cultural' | 'legal' | 'medical' | 'educational' | 'business' | 'technical' | 'security' | 'payment' | 'ui-ux' | 'devops' | 'analysis';
+export type ProfessionalDomain =
+  | "cultural"
+  | "legal"
+  | "medical"
+  | "educational"
+  | "business"
+  | "technical"
+  | "security"
+  | "payment"
+  | "ui-ux"
+  | "devops"
+  | "analysis";
 
 export interface AgentRegistrationRequest {
   agentCard: IraqiAgentCard;
   culturalContext: IraqiCulturalContext;
-  validationLevel: 'basic' | 'standard' | 'comprehensive';
+  validationLevel: "basic" | "standard" | "comprehensive";
 }
 
 export interface AgentRegistrationResponse {
@@ -50,7 +65,7 @@ export interface AgentDiscoveryQuery {
   };
   technicalRequirements?: {
     minimumPerformance?: number;
-    securityLevel?: 'standard' | 'enhanced' | 'governmental';
+    securityLevel?: "standard" | "enhanced" | "governmental";
     capabilities?: string[];
   };
   maxResults?: number;
@@ -88,21 +103,34 @@ export class IraqiAgentRegistry {
   private initializeIndexes(): void {
     // Initialize domain indexes for all professional domains
     const domains: ProfessionalDomain[] = [
-      'cultural', 'legal', 'medical', 'educational', 'business', 
-      'technical', 'security', 'payment', 'ui-ux', 'devops', 'analysis'
+      "cultural",
+      "legal",
+      "medical",
+      "educational",
+      "business",
+      "technical",
+      "security",
+      "payment",
+      "ui-ux",
+      "devops",
+      "analysis",
     ];
-    
-    domains.forEach(domain => {
+
+    domains.forEach((domain) => {
       this.domainIndex.set(domain, new Set());
     });
 
     // Initialize cultural indexes
     const culturalCategories = [
-      'islamic-compliant', 'culturally-appropriate', 'politically-neutral',
-      'arabic-capable', 'iraqi-expert', 'high-performance'
+      "islamic-compliant",
+      "culturally-appropriate",
+      "politically-neutral",
+      "arabic-capable",
+      "iraqi-expert",
+      "high-performance",
     ];
-    
-    culturalCategories.forEach(category => {
+
+    culturalCategories.forEach((category) => {
       this.culturalIndex.set(category, new Set());
     });
   }
@@ -110,7 +138,9 @@ export class IraqiAgentRegistry {
   /**
    * Register a new Iraqi agent with comprehensive validation
    */
-  async registerAgent(request: AgentRegistrationRequest): Promise<AgentRegistrationResponse> {
+  async registerAgent(
+    request: AgentRegistrationRequest,
+  ): Promise<AgentRegistrationResponse> {
     const startTime = Date.now();
 
     try {
@@ -119,29 +149,31 @@ export class IraqiAgentRegistry {
 
       // Step 2: Cultural compliance validation
       const culturalValidation = await this.validateCulturalCompliance(
-        request.agentCard, 
+        request.agentCard,
         request.culturalContext,
-        request.validationLevel
+        request.validationLevel,
       );
 
       // Step 3: Technical validation
       const technicalValidation = await this.validateTechnicalCapabilities(
         request.agentCard,
-        request.validationLevel
+        request.validationLevel,
       );
 
       // Step 4: Check if validation passed
-      const validationPassed = culturalValidation.passed && technicalValidation.passed;
+      const validationPassed =
+        culturalValidation.passed && technicalValidation.passed;
 
       if (!validationPassed) {
         return {
           success: false,
-          agentId: '',
+          agentId: "",
           validationResults: {
             culturalCompliance: culturalValidation,
-            technicalValidation
+            technicalValidation,
           },
-          error: 'Agent validation failed - insufficient compliance or capability scores'
+          error:
+            "Agent validation failed - insufficient compliance or capability scores",
         };
       }
 
@@ -157,29 +189,29 @@ export class IraqiAgentRegistry {
         agentId,
         validationResults: {
           culturalCompliance: culturalValidation,
-          technicalValidation
-        }
+          technicalValidation,
+        },
       };
-
     } catch (error) {
       return {
         success: false,
-        agentId: '',
+        agentId: "",
         validationResults: {
           culturalCompliance: {
             islamicCompliance: 0,
             culturalAppropriateness: 0,
             politicalNeutrality: 0,
-            passed: false
+            passed: false,
           },
           technicalValidation: {
             capabilitiesScore: 0,
             performanceScore: 0,
             securityScore: 0,
-            passed: false
-          }
+            passed: false,
+          },
         },
-        error: error instanceof Error ? error.message : 'Unknown registration error'
+        error:
+          error instanceof Error ? error.message : "Unknown registration error",
       };
     }
   }
@@ -187,7 +219,9 @@ export class IraqiAgentRegistry {
   /**
    * Discover agents based on professional domain and cultural requirements
    */
-  async discoverAgents(query: AgentDiscoveryQuery): Promise<AgentDiscoveryResult> {
+  async discoverAgents(
+    query: AgentDiscoveryQuery,
+  ): Promise<AgentDiscoveryResult> {
     const startTime = Date.now();
     let candidateAgents = new Set<string>();
     const filteredReasons: string[] = [];
@@ -207,12 +241,15 @@ export class IraqiAgentRegistry {
     let culturalFiltered = 0;
     if (query.culturalRequirements) {
       const filtered = new Set<string>();
-      
+
       for (const agentId of candidateAgents) {
         const agent = this.agents.get(agentId);
         if (!agent) continue;
 
-        const meetsRequirements = this.evaluateCulturalRequirements(agent, query.culturalRequirements);
+        const meetsRequirements = this.evaluateCulturalRequirements(
+          agent,
+          query.culturalRequirements,
+        );
         if (meetsRequirements.passed) {
           filtered.add(agentId);
         } else {
@@ -220,31 +257,34 @@ export class IraqiAgentRegistry {
           filteredReasons.push(...meetsRequirements.reasons);
         }
       }
-      
+
       candidateAgents = filtered;
     }
 
     // Step 3: Apply technical filters
     if (query.technicalRequirements) {
       const filtered = new Set<string>();
-      
+
       for (const agentId of candidateAgents) {
         const agent = this.agents.get(agentId);
         if (!agent) continue;
 
-        const meetsTechnical = this.evaluateTechnicalRequirements(agent, query.technicalRequirements);
+        const meetsTechnical = this.evaluateTechnicalRequirements(
+          agent,
+          query.technicalRequirements,
+        );
         if (meetsTechnical) {
           filtered.add(agentId);
         }
       }
-      
+
       candidateAgents = filtered;
     }
 
     // Step 4: Convert to agent cards and apply limit
     const resultAgents = Array.from(candidateAgents)
-      .map(agentId => this.agents.get(agentId))
-      .filter(agent => agent !== undefined)
+      .map((agentId) => this.agents.get(agentId))
+      .filter((agent) => agent !== undefined)
       .slice(0, query.maxResults || 50) as IraqiAgentCard[];
 
     const queryTime = Date.now() - startTime;
@@ -256,8 +296,8 @@ export class IraqiAgentRegistry {
       culturalFilter: {
         applied: !!query.culturalRequirements,
         filtered: culturalFiltered,
-        reasons: Array.from(new Set(filteredReasons))
-      }
+        reasons: Array.from(new Set(filteredReasons)),
+      },
     };
   }
 
@@ -267,20 +307,20 @@ export class IraqiAgentRegistry {
   async getCoordinationAgents(
     primaryDomain: ProfessionalDomain,
     culturalContext: IraqiCulturalContext,
-    maxAgents = 5
+    maxAgents = 5,
   ): Promise<IraqiAgentCard[]> {
     const query: AgentDiscoveryQuery = {
       professionalDomain: primaryDomain,
       culturalRequirements: {
         islamicCompliance: 90,
         culturalAppropriateness: 95,
-        arabicCapability: true
+        arabicCapability: true,
       },
       technicalRequirements: {
         minimumPerformance: 80,
-        securityLevel: culturalContext.securityLevel || 'standard'
+        securityLevel: culturalContext.securityLevel || "standard",
       },
-      maxResults: maxAgents
+      maxResults: maxAgents,
     };
 
     const result = await this.discoverAgents(query);
@@ -290,7 +330,11 @@ export class IraqiAgentRegistry {
   /**
    * Register all 22 specialized Iraqi agents
    */
-  async registerIraqiAgentEcosystem(): Promise<{ registered: number; failed: number; errors: string[] }> {
+  async registerIraqiAgentEcosystem(): Promise<{
+    registered: number;
+    failed: number;
+    errors: string[];
+  }> {
     const agentDefinitions = this.getIraqiAgentDefinitions();
     let registered = 0;
     let failed = 0;
@@ -301,18 +345,19 @@ export class IraqiAgentRegistry {
         const request: AgentRegistrationRequest = {
           agentCard,
           culturalContext: {
-            language: 'ar-IQ',
-            culturalSensitivity: 'high',
+            language: "ar-IQ",
+            culturalSensitivity: "high",
             islamicCompliance: true,
             politicalNeutrality: true,
-            professionalContext: agentCard.iraqiMetadata.professionalContext.primaryDomain,
-            securityLevel: 'standard'
+            professionalContext:
+              agentCard.iraqiMetadata.professionalContext.primaryDomain,
+            securityLevel: "standard",
           },
-          validationLevel: 'comprehensive'
+          validationLevel: "comprehensive",
         };
 
         const result = await this.registerAgent(request);
-        
+
         if (result.success) {
           registered++;
         } else {
@@ -321,7 +366,9 @@ export class IraqiAgentRegistry {
         }
       } catch (error) {
         failed++;
-        errors.push(`${agentCard.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        errors.push(
+          `${agentCard.name}: ${error instanceof Error ? error.message : "Unknown error"}`,
+        );
       }
     }
 
@@ -338,7 +385,7 @@ export class IraqiAgentRegistry {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(16);
@@ -347,43 +394,58 @@ export class IraqiAgentRegistry {
   private async validateCulturalCompliance(
     agentCard: IraqiAgentCard,
     culturalContext: IraqiCulturalContext,
-    level: string
-  ): Promise<{ islamicCompliance: number; culturalAppropriateness: number; politicalNeutrality: number; passed: boolean; }> {
+    level: string,
+  ): Promise<{
+    islamicCompliance: number;
+    culturalAppropriateness: number;
+    politicalNeutrality: number;
+    passed: boolean;
+  }> {
     // Implement comprehensive cultural validation
     const metadata = agentCard.iraqiMetadata;
-    
+
     const islamicCompliance = metadata.culturalCompliance.islamicCompliance;
-    const culturalAppropriateness = metadata.culturalCompliance.culturalAppropriateness;
+    const culturalAppropriateness =
+      metadata.culturalCompliance.culturalAppropriateness;
     const politicalNeutrality = metadata.culturalCompliance.politicalNeutrality;
 
-    const passed = islamicCompliance >= 90 && culturalAppropriateness >= 95 && politicalNeutrality === 100;
+    const passed =
+      islamicCompliance >= 90 &&
+      culturalAppropriateness >= 95 &&
+      politicalNeutrality === 100;
 
     return {
       islamicCompliance,
       culturalAppropriateness,
       politicalNeutrality,
-      passed
+      passed,
     };
   }
 
   private async validateTechnicalCapabilities(
     agentCard: IraqiAgentCard,
-    level: string
-  ): Promise<{ capabilitiesScore: number; performanceScore: number; securityScore: number; passed: boolean; }> {
+    level: string,
+  ): Promise<{
+    capabilitiesScore: number;
+    performanceScore: number;
+    securityScore: number;
+    passed: boolean;
+  }> {
     // Implement technical validation based on capabilities
     const capabilities = agentCard.capabilities;
-    
+
     const capabilitiesScore = this.calculateCapabilitiesScore(capabilities);
     const performanceScore = this.calculatePerformanceScore(agentCard);
     const securityScore = this.calculateSecurityScore(agentCard);
 
-    const passed = capabilitiesScore >= 70 && performanceScore >= 70 && securityScore >= 80;
+    const passed =
+      capabilitiesScore >= 70 && performanceScore >= 70 && securityScore >= 80;
 
     return {
       capabilitiesScore,
       performanceScore,
       securityScore,
-      passed
+      passed,
     };
   }
 
@@ -394,56 +456,73 @@ export class IraqiAgentRegistry {
 
     // Update cultural indexes
     const metadata = agentCard.iraqiMetadata;
-    
+
     if (metadata.culturalCompliance.islamicCompliance >= 90) {
-      this.culturalIndex.get('islamic-compliant')?.add(agentId);
+      this.culturalIndex.get("islamic-compliant")?.add(agentId);
     }
-    
+
     if (metadata.culturalCompliance.culturalAppropriateness >= 95) {
-      this.culturalIndex.get('culturally-appropriate')?.add(agentId);
+      this.culturalIndex.get("culturally-appropriate")?.add(agentId);
     }
-    
+
     if (metadata.culturalCompliance.politicalNeutrality === 100) {
-      this.culturalIndex.get('politically-neutral')?.add(agentId);
+      this.culturalIndex.get("politically-neutral")?.add(agentId);
     }
 
     if (metadata.arabicCapabilities.rtlAccuracy >= 99) {
-      this.culturalIndex.get('arabic-capable')?.add(agentId);
+      this.culturalIndex.get("arabic-capable")?.add(agentId);
     }
 
     if (metadata.professionalContext.iraqiExpertise) {
-      this.culturalIndex.get('iraqi-expert')?.add(agentId);
+      this.culturalIndex.get("iraqi-expert")?.add(agentId);
     }
   }
 
   private evaluateCulturalRequirements(
     agent: IraqiAgentCard,
-    requirements: NonNullable<AgentDiscoveryQuery['culturalRequirements']>
+    requirements: NonNullable<AgentDiscoveryQuery["culturalRequirements"]>,
   ): { passed: boolean; reasons: string[] } {
     const reasons: string[] = [];
     const metadata = agent.iraqiMetadata;
 
-    if (requirements.islamicCompliance && metadata.culturalCompliance.islamicCompliance < requirements.islamicCompliance) {
-      reasons.push(`Islamic compliance ${metadata.culturalCompliance.islamicCompliance} < required ${requirements.islamicCompliance}`);
+    if (
+      requirements.islamicCompliance &&
+      metadata.culturalCompliance.islamicCompliance <
+        requirements.islamicCompliance
+    ) {
+      reasons.push(
+        `Islamic compliance ${metadata.culturalCompliance.islamicCompliance} < required ${requirements.islamicCompliance}`,
+      );
     }
 
-    if (requirements.culturalAppropriateness && metadata.culturalCompliance.culturalAppropriateness < requirements.culturalAppropriateness) {
-      reasons.push(`Cultural appropriateness ${metadata.culturalCompliance.culturalAppropriateness} < required ${requirements.culturalAppropriateness}`);
+    if (
+      requirements.culturalAppropriateness &&
+      metadata.culturalCompliance.culturalAppropriateness <
+        requirements.culturalAppropriateness
+    ) {
+      reasons.push(
+        `Cultural appropriateness ${metadata.culturalCompliance.culturalAppropriateness} < required ${requirements.culturalAppropriateness}`,
+      );
     }
 
-    if (requirements.arabicCapability && metadata.arabicCapabilities.rtlAccuracy < 99) {
-      reasons.push(`Arabic capability insufficient: RTL accuracy ${metadata.arabicCapabilities.rtlAccuracy}`);
+    if (
+      requirements.arabicCapability &&
+      metadata.arabicCapabilities.rtlAccuracy < 99
+    ) {
+      reasons.push(
+        `Arabic capability insufficient: RTL accuracy ${metadata.arabicCapabilities.rtlAccuracy}`,
+      );
     }
 
     return {
       passed: reasons.length === 0,
-      reasons
+      reasons,
     };
   }
 
   private evaluateTechnicalRequirements(
     agent: IraqiAgentCard,
-    requirements: NonNullable<AgentDiscoveryQuery['technicalRequirements']>
+    requirements: NonNullable<AgentDiscoveryQuery["technicalRequirements"]>,
   ): boolean {
     // Implement technical requirements evaluation
     return true; // Simplified for now
@@ -455,11 +534,13 @@ export class IraqiAgentRegistry {
       successfulRequests: 0,
       averageResponseTime: 0,
       culturalValidationScore: 100,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     });
   }
 
-  private calculateCapabilitiesScore(capabilities: IraqiAgentCapabilities): number {
+  private calculateCapabilitiesScore(
+    capabilities: IraqiAgentCapabilities,
+  ): number {
     // Implement capabilities scoring algorithm
     return 85; // Simplified for now
   }
@@ -479,32 +560,33 @@ export class IraqiAgentRegistry {
     // For brevity, showing a sample structure
     return [
       {
-        protocolVersion: '1.0',
-        name: 'iraqi-cultural-validator',
-        description: 'Validates content for Iraqi cultural appropriateness and Islamic compliance',
-        version: '1.0.0',
+        protocolVersion: "1.0",
+        name: "iraqi-cultural-validator",
+        description:
+          "Validates content for Iraqi cultural appropriateness and Islamic compliance",
+        version: "1.0.0",
         capabilities: {
           culturalValidation: true,
           islamicCompliance: true,
           arabicProcessing: true,
-          performance: { priority: 'high', responseTime: '<200ms' }
+          performance: { priority: "high", responseTime: "<200ms" },
         },
         iraqiMetadata: {
           culturalCompliance: {
             islamicCompliance: 98,
             culturalAppropriateness: 99,
-            politicalNeutrality: 100
+            politicalNeutrality: 100,
           },
           arabicCapabilities: {
             rtlAccuracy: 99,
-            dialectRecognition: 90
+            dialectRecognition: 90,
           },
           professionalContext: {
-            primaryDomain: 'cultural',
-            iraqiExpertise: true
-          }
-        }
-      }
+            primaryDomain: "cultural",
+            iraqiExpertise: true,
+          },
+        },
+      },
       // ... other 21 agents would be defined here
     ];
   }

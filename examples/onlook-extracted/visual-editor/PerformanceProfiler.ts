@@ -2,7 +2,7 @@
  * Iraqi AI System - Performance Profiler for Visual Editor
  * Real-time performance monitoring and optimization for Iraqi government deployment
  * Enhanced from Onlook with cultural intelligence and government-grade monitoring
- * 
+ *
  * Key Features:
  * - Real-time performance monitoring with <16ms target latency
  * - Government-grade audit trail and compliance tracking
@@ -12,7 +12,7 @@
  * - Automated performance issue detection and resolution
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 export interface PerformanceProfilerConfig {
   // Monitoring settings
@@ -20,19 +20,19 @@ export interface PerformanceProfilerConfig {
   realTimeMonitoring: boolean;
   detailedMetrics: boolean;
   visualEditingOptimization: boolean;
-  
+
   // Performance targets (Iraqi government standards)
   targetLatency: number; // milliseconds (default: 16ms for 60fps)
   maxMemoryUsage: number; // MB (default: 100MB)
   maxCPUUsage: number; // percentage (default: 30%)
   targetFPS: number; // frames per second (default: 60)
-  
+
   // Cultural and ministry-specific settings
   culturalValidationOptimization: boolean;
   arabicRenderingOptimization: boolean;
-  ministrySpecific?: 'health' | 'education' | 'interior' | 'justice';
+  ministrySpecific?: "health" | "education" | "interior" | "justice";
   governmentAuditCompliance: boolean;
-  
+
   // Alert and notification settings
   alertThresholds: {
     latency: number; // ms
@@ -46,34 +46,34 @@ export interface PerformanceProfilerConfig {
 
 export interface PerformanceMetrics {
   timestamp: Date;
-  
+
   // Core performance metrics
   frameRate: number; // FPS
   renderTime: number; // ms
   layoutTime: number; // ms
   paintTime: number; // ms
   scriptTime: number; // ms
-  
+
   // Memory metrics
   heapUsed: number; // MB
   heapTotal: number; // MB
   heapLimit: number; // MB
-  
+
   // Visual editing specific metrics
   domManipulationTime: number; // ms
   culturalValidationTime: number; // ms
   astProcessingTime: number; // ms
   syncLatency: number; // ms
-  
+
   // Arabic and RTL specific metrics
   arabicRenderingTime: number; // ms
   rtlLayoutTime: number; // ms
   fontLoadingTime: number; // ms
-  
+
   // Ministry specific metrics
   brandingApplicationTime: number; // ms
   complianceCheckTime: number; // ms
-  
+
   // User interaction metrics
   inputLatency: number; // ms
   responseTime: number; // ms
@@ -83,8 +83,8 @@ export interface PerformanceMetrics {
 export interface PerformanceAlert {
   id: string;
   timestamp: Date;
-  severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
-  category: 'latency' | 'memory' | 'cpu' | 'fps' | 'cultural' | 'ministry';
+  severity: "critical" | "high" | "medium" | "low" | "info";
+  category: "latency" | "memory" | "cpu" | "fps" | "cultural" | "ministry";
   metric: string;
   currentValue: number;
   threshold: number;
@@ -96,11 +96,11 @@ export interface PerformanceAlert {
 
 export interface PerformanceOptimization {
   id: string;
-  type: 'cache' | 'batch' | 'throttle' | 'virtual' | 'cultural' | 'arabic';
+  type: "cache" | "batch" | "throttle" | "virtual" | "cultural" | "arabic";
   description: string;
   expectedImprovement: number; // percentage
-  implementationComplexity: 'low' | 'medium' | 'high';
-  culturalImpact: 'none' | 'low' | 'medium' | 'high';
+  implementationComplexity: "low" | "medium" | "high";
+  culturalImpact: "none" | "low" | "medium" | "high";
   governmentCompliance: boolean;
   autoApplicable: boolean;
 }
@@ -108,33 +108,33 @@ export interface PerformanceOptimization {
 export interface PerformanceReport {
   summary: {
     overallScore: number; // 0-100
-    performanceGrade: 'A+' | 'A' | 'B' | 'C' | 'D' | 'F';
+    performanceGrade: "A+" | "A" | "B" | "C" | "D" | "F";
     governmentCompliance: boolean;
     culturalOptimization: number; // 0-100
   };
-  
+
   metrics: {
     averageMetrics: PerformanceMetrics;
     peakMetrics: PerformanceMetrics;
     trendAnalysis: Array<{
       metric: string;
-      trend: 'improving' | 'stable' | 'degrading';
+      trend: "improving" | "stable" | "degrading";
       changeRate: number;
     }>;
   };
-  
+
   alerts: PerformanceAlert[];
   optimizations: PerformanceOptimization[];
-  
+
   culturalPerformance: {
     arabicRenderingEfficiency: number;
     rtlLayoutOptimization: number;
     culturalValidationSpeed: number;
     ministryComplianceSpeed: number;
   };
-  
+
   recommendations: Array<{
-    priority: 'critical' | 'high' | 'medium' | 'low';
+    priority: "critical" | "high" | "medium" | "low";
     category: string;
     description: string;
     implementation: string;
@@ -144,12 +144,12 @@ export interface PerformanceReport {
 
 export interface PerformanceBenchmark {
   name: string;
-  category: 'core' | 'cultural' | 'ministry' | 'accessibility';
+  category: "core" | "cultural" | "ministry" | "accessibility";
   target: number;
   current: number;
   unit: string;
   compliance: boolean;
-  importance: 'critical' | 'high' | 'medium' | 'low';
+  importance: "critical" | "high" | "medium" | "low";
 }
 
 export class PerformanceProfiler extends EventEmitter {
@@ -158,20 +158,20 @@ export class PerformanceProfiler extends EventEmitter {
   private metricsHistory: PerformanceMetrics[] = [];
   private activeAlerts: PerformanceAlert[] = [];
   private appliedOptimizations: PerformanceOptimization[] = [];
-  
+
   // Performance observers
   private performanceObserver: PerformanceObserver | null = null;
   private memoryObserver: any = null;
   private frameRateMonitor: any = null;
-  
+
   // Cultural performance tracking
   private culturalMetrics = {
     arabicRenderingTimes: [],
     rtlLayoutTimes: [],
     culturalValidationTimes: [],
-    ministryComplianceTimes: []
+    ministryComplianceTimes: [],
   };
-  
+
   // Government audit requirements
   private auditLog: Array<{
     timestamp: Date;
@@ -180,48 +180,48 @@ export class PerformanceProfiler extends EventEmitter {
     compliance: boolean;
     userImpact: string;
   }> = [];
-  
+
   // Performance optimization strategies
   private optimizationStrategies = new Map<string, PerformanceOptimization>();
-  
+
   // Government benchmarks for Iraqi ministries
   private governmentBenchmarks: PerformanceBenchmark[] = [
     {
-      name: 'Visual Editor Response Time',
-      category: 'core',
+      name: "Visual Editor Response Time",
+      category: "core",
       target: 16,
       current: 0,
-      unit: 'ms',
+      unit: "ms",
       compliance: false,
-      importance: 'critical'
+      importance: "critical",
     },
     {
-      name: 'Arabic Text Rendering',
-      category: 'cultural',
+      name: "Arabic Text Rendering",
+      category: "cultural",
       target: 50,
       current: 0,
-      unit: 'ms',
+      unit: "ms",
       compliance: false,
-      importance: 'high'
+      importance: "high",
     },
     {
-      name: 'Ministry Branding Application',
-      category: 'ministry',
+      name: "Ministry Branding Application",
+      category: "ministry",
       target: 100,
       current: 0,
-      unit: 'ms',
+      unit: "ms",
       compliance: false,
-      importance: 'medium'
+      importance: "medium",
     },
     {
-      name: 'Cultural Validation Speed',
-      category: 'cultural',
+      name: "Cultural Validation Speed",
+      category: "cultural",
       target: 200,
       current: 0,
-      unit: 'ms',
+      unit: "ms",
       compliance: false,
-      importance: 'high'
-    }
+      importance: "high",
+    },
   ];
 
   constructor(config: PerformanceProfilerConfig) {
@@ -236,19 +236,19 @@ export class PerformanceProfiler extends EventEmitter {
   private initializeProfiler(): void {
     // Load optimization strategies
     this.loadOptimizationStrategies();
-    
+
     // Setup performance observers
     this.setupPerformanceObservers();
-    
+
     // Initialize cultural performance tracking
     this.initializeCulturalTracking();
-    
+
     // Setup government audit compliance
     if (this.config.governmentAuditCompliance) {
       this.setupGovernmentAuditCompliance();
     }
 
-    this.emit('profiler-initialized', { config: this.config });
+    this.emit("profiler-initialized", { config: this.config });
   }
 
   /**
@@ -257,42 +257,41 @@ export class PerformanceProfiler extends EventEmitter {
   async startMonitoring(): Promise<boolean> {
     try {
       if (this.isMonitoring) {
-        throw new Error('Performance monitoring already active');
+        throw new Error("Performance monitoring already active");
       }
 
       // Start performance observers
       this.startPerformanceObservers();
-      
+
       // Start memory monitoring
       this.startMemoryMonitoring();
-      
+
       // Start frame rate monitoring
       this.startFrameRateMonitoring();
-      
+
       // Start cultural performance monitoring
       if (this.config.culturalValidationOptimization) {
         this.startCulturalPerformanceMonitoring();
       }
-      
+
       // Start ministry-specific monitoring
       if (this.config.ministrySpecific) {
         this.startMinistryPerformanceMonitoring();
       }
 
       this.isMonitoring = true;
-      
+
       // Perform initial benchmark
       const initialBenchmark = await this.runPerformanceBenchmark();
-      
-      this.emit('monitoring-started', { 
-        benchmark: initialBenchmark,
-        config: this.config 
-      });
-      
-      return true;
 
+      this.emit("monitoring-started", {
+        benchmark: initialBenchmark,
+        config: this.config,
+      });
+
+      return true;
     } catch (error) {
-      this.emit('monitoring-error', { error: error.message });
+      this.emit("monitoring-error", { error: error.message });
       return false;
     }
   }
@@ -307,17 +306,17 @@ export class PerformanceProfiler extends EventEmitter {
     if (this.performanceObserver) {
       this.performanceObserver.disconnect();
     }
-    
+
     if (this.memoryObserver) {
       clearInterval(this.memoryObserver);
     }
-    
+
     if (this.frameRateMonitor) {
       clearInterval(this.frameRateMonitor);
     }
 
     this.isMonitoring = false;
-    this.emit('monitoring-stopped');
+    this.emit("monitoring-stopped");
   }
 
   /**
@@ -326,43 +325,43 @@ export class PerformanceProfiler extends EventEmitter {
   async capturePerformanceSnapshot(): Promise<PerformanceMetrics> {
     const snapshot: PerformanceMetrics = {
       timestamp: new Date(),
-      
+
       // Core metrics
       frameRate: this.getCurrentFrameRate(),
       renderTime: this.measureRenderTime(),
       layoutTime: this.measureLayoutTime(),
       paintTime: this.measurePaintTime(),
       scriptTime: this.measureScriptTime(),
-      
+
       // Memory metrics
       heapUsed: this.getHeapUsed(),
       heapTotal: this.getHeapTotal(),
       heapLimit: this.getHeapLimit(),
-      
+
       // Visual editing metrics
       domManipulationTime: this.measureDOMManipulationTime(),
       culturalValidationTime: this.measureCulturalValidationTime(),
       astProcessingTime: this.measureASTProcessingTime(),
       syncLatency: this.measureSyncLatency(),
-      
+
       // Arabic/RTL metrics
       arabicRenderingTime: this.measureArabicRenderingTime(),
       rtlLayoutTime: this.measureRTLLayoutTime(),
       fontLoadingTime: this.measureFontLoadingTime(),
-      
+
       // Ministry metrics
       brandingApplicationTime: this.measureBrandingApplicationTime(),
       complianceCheckTime: this.measureComplianceCheckTime(),
-      
+
       // User interaction metrics
       inputLatency: this.measureInputLatency(),
       responseTime: this.measureResponseTime(),
-      interactionToVisualUpdate: this.measureInteractionToVisualUpdate()
+      interactionToVisualUpdate: this.measureInteractionToVisualUpdate(),
     };
 
     // Add to history
     this.metricsHistory.push(snapshot);
-    
+
     // Limit history size for memory management
     if (this.metricsHistory.length > 1000) {
       this.metricsHistory.splice(0, 100);
@@ -370,13 +369,13 @@ export class PerformanceProfiler extends EventEmitter {
 
     // Check for alerts
     this.checkPerformanceThresholds(snapshot);
-    
+
     // Record audit entry if government compliance enabled
     if (this.config.governmentAuditCompliance) {
-      this.recordAuditEntry('performance-snapshot', snapshot);
+      this.recordAuditEntry("performance-snapshot", snapshot);
     }
 
-    this.emit('snapshot-captured', snapshot);
+    this.emit("snapshot-captured", snapshot);
     return snapshot;
   }
 
@@ -398,30 +397,33 @@ export class PerformanceProfiler extends EventEmitter {
       // Calculate statistics
       const averageMetrics = this.calculateAverageMetrics(snapshots);
       const peakMetrics = this.calculatePeakMetrics(snapshots);
-      
+
       // Analyze trends
       const trendAnalysis = this.analyzeTrends();
-      
+
       // Generate alerts
       const alerts = this.generatePerformanceAlerts(averageMetrics);
-      
+
       // Generate optimizations
-      const optimizations = this.generateOptimizationRecommendations(averageMetrics);
-      
+      const optimizations =
+        this.generateOptimizationRecommendations(averageMetrics);
+
       // Calculate cultural performance
-      const culturalPerformance = this.calculateCulturalPerformance(averageMetrics);
-      
+      const culturalPerformance =
+        this.calculateCulturalPerformance(averageMetrics);
+
       // Calculate overall score
-      const overallScore = this.calculateOverallPerformanceScore(averageMetrics);
-      
+      const overallScore =
+        this.calculateOverallPerformanceScore(averageMetrics);
+
       // Update benchmarks
       this.updateGovernmentBenchmarks(averageMetrics);
-      
+
       // Generate recommendations
       const recommendations = this.generatePerformanceRecommendations(
-        averageMetrics, 
-        alerts, 
-        optimizations
+        averageMetrics,
+        alerts,
+        optimizations,
       );
 
       const report: PerformanceReport = {
@@ -429,29 +431,28 @@ export class PerformanceProfiler extends EventEmitter {
           overallScore,
           performanceGrade: this.getPerformanceGrade(overallScore),
           governmentCompliance: this.checkGovernmentCompliance(averageMetrics),
-          culturalOptimization: culturalPerformance.arabicRenderingEfficiency
+          culturalOptimization: culturalPerformance.arabicRenderingEfficiency,
         },
         metrics: {
           averageMetrics,
           peakMetrics,
-          trendAnalysis
+          trendAnalysis,
         },
         alerts,
         optimizations,
         culturalPerformance,
-        recommendations
+        recommendations,
       };
 
       const benchmarkTime = performance.now() - startTime;
-      
-      this.emit('benchmark-complete', { 
-        report, 
-        benchmarkTime,
-        complianceScore: overallScore 
-      });
-      
-      return report;
 
+      this.emit("benchmark-complete", {
+        report,
+        benchmarkTime,
+        complianceScore: overallScore,
+      });
+
+      return report;
     } catch (error) {
       throw new Error(`Performance benchmark failed: ${error.message}`);
     }
@@ -466,7 +467,7 @@ export class PerformanceProfiler extends EventEmitter {
       forceApply?: boolean;
       culturalSafe?: boolean;
       governmentCompliant?: boolean;
-    } = {}
+    } = {},
   ): Promise<{
     applied: number;
     skipped: number;
@@ -477,42 +478,42 @@ export class PerformanceProfiler extends EventEmitter {
       applied: 0,
       skipped: 0,
       errors: [],
-      performanceImprovement: 0
+      performanceImprovement: 0,
     };
 
-    const applicableOptimizations = optimizations.filter(opt => 
-      opt.autoApplicable && 
-      (options.culturalSafe !== true || opt.culturalImpact !== 'high') &&
-      (options.governmentCompliant !== true || opt.governmentCompliance)
+    const applicableOptimizations = optimizations.filter(
+      (opt) =>
+        opt.autoApplicable &&
+        (options.culturalSafe !== true || opt.culturalImpact !== "high") &&
+        (options.governmentCompliant !== true || opt.governmentCompliance),
     );
 
     for (const optimization of applicableOptimizations) {
       try {
         const applied = await this.applyOptimization(optimization, options);
-        
+
         if (applied) {
           results.applied++;
           results.performanceImprovement += optimization.expectedImprovement;
           this.appliedOptimizations.push(optimization);
-          
-          this.recordAuditEntry('optimization-applied', {
+
+          this.recordAuditEntry("optimization-applied", {
             optimization: optimization.id,
             improvement: optimization.expectedImprovement,
-            culturalImpact: optimization.culturalImpact
+            culturalImpact: optimization.culturalImpact,
           });
         } else {
           results.skipped++;
         }
-
       } catch (error) {
         results.errors.push({
           optimization: optimization.id,
-          error: error.message
+          error: error.message,
         });
       }
     }
 
-    this.emit('optimizations-applied', results);
+    this.emit("optimizations-applied", results);
     return results;
   }
 
@@ -521,7 +522,11 @@ export class PerformanceProfiler extends EventEmitter {
    */
   async measureCulturalPerformanceImpact(
     operation: () => Promise<void>,
-    operationType: 'arabic-rendering' | 'rtl-layout' | 'cultural-validation' | 'ministry-branding'
+    operationType:
+      | "arabic-rendering"
+      | "rtl-layout"
+      | "cultural-validation"
+      | "ministry-branding",
   ): Promise<{
     executionTime: number;
     culturalAccuracy: number;
@@ -534,41 +539,45 @@ export class PerformanceProfiler extends EventEmitter {
     try {
       // Execute the operation
       await operation();
-      
+
       const endTime = performance.now();
       const endMetrics = await this.capturePerformanceSnapshot();
-      
+
       const executionTime = endTime - startTime;
-      
+
       // Calculate cultural accuracy (implementation would depend on operation type)
       const culturalAccuracy = this.calculateCulturalAccuracy(operationType);
-      
+
       // Calculate performance impact
-      const performanceImpact = this.calculatePerformanceImpact(startMetrics, endMetrics);
-      
+      const performanceImpact = this.calculatePerformanceImpact(
+        startMetrics,
+        endMetrics,
+      );
+
       // Identify optimization opportunities
       const optimizationOpportunities = this.identifyOptimizationOpportunities(
-        operationType, 
-        executionTime, 
-        performanceImpact
+        operationType,
+        executionTime,
+        performanceImpact,
       );
 
       // Record cultural performance metric
       this.recordCulturalPerformanceMetric(operationType, {
         executionTime,
         culturalAccuracy,
-        performanceImpact
+        performanceImpact,
       });
 
       return {
         executionTime,
         culturalAccuracy,
         performanceImpact,
-        optimizationOpportunities
+        optimizationOpportunities,
       };
-
     } catch (error) {
-      throw new Error(`Cultural performance measurement failed: ${error.message}`);
+      throw new Error(
+        `Cultural performance measurement failed: ${error.message}`,
+      );
     }
   }
 
@@ -596,7 +605,7 @@ export class PerformanceProfiler extends EventEmitter {
     // Check each government benchmark
     for (const benchmark of this.governmentBenchmarks) {
       totalBenchmarks++;
-      
+
       if (benchmark.compliance) {
         complianceScore++;
       } else {
@@ -604,9 +613,9 @@ export class PerformanceProfiler extends EventEmitter {
           benchmark: benchmark.name,
           required: benchmark.target,
           current: benchmark.current,
-          impact: this.getBenchmarkImpactDescription(benchmark)
+          impact: this.getBenchmarkImpactDescription(benchmark),
         });
-        
+
         recommendations.push(this.getBenchmarkRecommendation(benchmark));
       }
     }
@@ -620,7 +629,7 @@ export class PerformanceProfiler extends EventEmitter {
       benchmarkResults: [...this.governmentBenchmarks],
       violations,
       recommendations,
-      auditSummary: this.generateAuditSummary()
+      auditSummary: this.generateAuditSummary(),
     };
   }
 
@@ -629,7 +638,7 @@ export class PerformanceProfiler extends EventEmitter {
    */
 
   private setupPerformanceObservers(): void {
-    if ('PerformanceObserver' in window) {
+    if ("PerformanceObserver" in window) {
       this.performanceObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         this.processPerformanceEntries(entries);
@@ -639,15 +648,22 @@ export class PerformanceProfiler extends EventEmitter {
 
   private startPerformanceObservers(): void {
     if (this.performanceObserver) {
-      this.performanceObserver.observe({ 
-        entryTypes: ['measure', 'navigation', 'paint', 'layout-shift', 'first-input', 'largest-contentful-paint']
+      this.performanceObserver.observe({
+        entryTypes: [
+          "measure",
+          "navigation",
+          "paint",
+          "layout-shift",
+          "first-input",
+          "largest-contentful-paint",
+        ],
       });
     }
   }
 
   private startMemoryMonitoring(): void {
     this.memoryObserver = setInterval(() => {
-      if ('memory' in performance) {
+      if ("memory" in performance) {
         const memoryInfo = (performance as any).memory;
         this.checkMemoryThresholds(memoryInfo);
       }
@@ -657,41 +673,41 @@ export class PerformanceProfiler extends EventEmitter {
   private startFrameRateMonitoring(): void {
     let lastTime = performance.now();
     let frameCount = 0;
-    
+
     const measureFPS = () => {
       frameCount++;
       const currentTime = performance.now();
-      
+
       if (currentTime - lastTime >= 1000) {
         const fps = frameCount;
         frameCount = 0;
         lastTime = currentTime;
-        
+
         this.checkFrameRateThreshold(fps);
       }
-      
+
       if (this.isMonitoring) {
         requestAnimationFrame(measureFPS);
       }
     };
-    
+
     requestAnimationFrame(measureFPS);
   }
 
   private startCulturalPerformanceMonitoring(): void {
     // Monitor Arabic rendering performance
     this.setupArabicRenderingMonitoring();
-    
+
     // Monitor RTL layout performance
     this.setupRTLLayoutMonitoring();
-    
+
     // Monitor cultural validation performance
     this.setupCulturalValidationMonitoring();
   }
 
   private startMinistryPerformanceMonitoring(): void {
     if (!this.config.ministrySpecific) return;
-    
+
     // Setup ministry-specific performance tracking
     this.setupMinistryBrandingMonitoring();
     this.setupMinistryComplianceMonitoring();
@@ -703,7 +719,7 @@ export class PerformanceProfiler extends EventEmitter {
       arabicRenderingTimes: [],
       rtlLayoutTimes: [],
       culturalValidationTimes: [],
-      ministryComplianceTimes: []
+      ministryComplianceTimes: [],
     };
   }
 
@@ -717,48 +733,48 @@ export class PerformanceProfiler extends EventEmitter {
   private loadOptimizationStrategies(): void {
     const strategies: PerformanceOptimization[] = [
       {
-        id: 'dom-virtualization',
-        type: 'virtual',
-        description: 'Implement virtual scrolling for large DOM trees',
+        id: "dom-virtualization",
+        type: "virtual",
+        description: "Implement virtual scrolling for large DOM trees",
         expectedImprovement: 40,
-        implementationComplexity: 'medium',
-        culturalImpact: 'low',
+        implementationComplexity: "medium",
+        culturalImpact: "low",
         governmentCompliance: true,
-        autoApplicable: true
+        autoApplicable: true,
       },
       {
-        id: 'arabic-font-preload',
-        type: 'arabic',
-        description: 'Preload Arabic fonts for faster rendering',
+        id: "arabic-font-preload",
+        type: "arabic",
+        description: "Preload Arabic fonts for faster rendering",
         expectedImprovement: 30,
-        implementationComplexity: 'low',
-        culturalImpact: 'high',
+        implementationComplexity: "low",
+        culturalImpact: "high",
         governmentCompliance: true,
-        autoApplicable: true
+        autoApplicable: true,
       },
       {
-        id: 'cultural-validation-cache',
-        type: 'cultural',
-        description: 'Cache cultural validation results',
+        id: "cultural-validation-cache",
+        type: "cultural",
+        description: "Cache cultural validation results",
         expectedImprovement: 50,
-        implementationComplexity: 'low',
-        culturalImpact: 'none',
+        implementationComplexity: "low",
+        culturalImpact: "none",
         governmentCompliance: true,
-        autoApplicable: true
+        autoApplicable: true,
       },
       {
-        id: 'batch-dom-updates',
-        type: 'batch',
-        description: 'Batch DOM updates for better performance',
+        id: "batch-dom-updates",
+        type: "batch",
+        description: "Batch DOM updates for better performance",
         expectedImprovement: 25,
-        implementationComplexity: 'medium',
-        culturalImpact: 'none',
+        implementationComplexity: "medium",
+        culturalImpact: "none",
         governmentCompliance: true,
-        autoApplicable: true
-      }
+        autoApplicable: true,
+      },
     ];
 
-    strategies.forEach(strategy => {
+    strategies.forEach((strategy) => {
       this.optimizationStrategies.set(strategy.id, strategy);
     });
   }
@@ -787,21 +803,21 @@ export class PerformanceProfiler extends EventEmitter {
   }
 
   private getHeapUsed(): number {
-    if ('memory' in performance) {
+    if ("memory" in performance) {
       return (performance as any).memory.usedJSHeapSize / 1024 / 1024;
     }
     return 0;
   }
 
   private getHeapTotal(): number {
-    if ('memory' in performance) {
+    if ("memory" in performance) {
       return (performance as any).memory.totalJSHeapSize / 1024 / 1024;
     }
     return 0;
   }
 
   private getHeapLimit(): number {
-    if ('memory' in performance) {
+    if ("memory" in performance) {
       return (performance as any).memory.jsHeapSizeLimit / 1024 / 1024;
     }
     return 0;
@@ -856,19 +872,21 @@ export class PerformanceProfiler extends EventEmitter {
   }
 
   // Analysis and calculation methods
-  private calculateAverageMetrics(snapshots: PerformanceMetrics[]): PerformanceMetrics {
+  private calculateAverageMetrics(
+    snapshots: PerformanceMetrics[],
+  ): PerformanceMetrics {
     // Calculate average of all metrics
     const avg = snapshots.reduce((acc, snapshot) => {
-      Object.keys(snapshot).forEach(key => {
-        if (typeof snapshot[key] === 'number') {
+      Object.keys(snapshot).forEach((key) => {
+        if (typeof snapshot[key] === "number") {
           acc[key] = (acc[key] || 0) + snapshot[key];
         }
       });
       return acc;
     }, {} as any);
 
-    Object.keys(avg).forEach(key => {
-      if (typeof avg[key] === 'number') {
+    Object.keys(avg).forEach((key) => {
+      if (typeof avg[key] === "number") {
         avg[key] /= snapshots.length;
       }
     });
@@ -877,11 +895,13 @@ export class PerformanceProfiler extends EventEmitter {
     return avg as PerformanceMetrics;
   }
 
-  private calculatePeakMetrics(snapshots: PerformanceMetrics[]): PerformanceMetrics {
+  private calculatePeakMetrics(
+    snapshots: PerformanceMetrics[],
+  ): PerformanceMetrics {
     // Calculate peak values for each metric
     const peak = snapshots.reduce((acc, snapshot) => {
-      Object.keys(snapshot).forEach(key => {
-        if (typeof snapshot[key] === 'number') {
+      Object.keys(snapshot).forEach((key) => {
+        if (typeof snapshot[key] === "number") {
           acc[key] = Math.max(acc[key] || 0, snapshot[key]);
         }
       });
@@ -892,16 +912,22 @@ export class PerformanceProfiler extends EventEmitter {
     return peak as PerformanceMetrics;
   }
 
-  private analyzeTrends(): Array<{ metric: string; trend: 'improving' | 'stable' | 'degrading'; changeRate: number; }> {
+  private analyzeTrends(): Array<{
+    metric: string;
+    trend: "improving" | "stable" | "degrading";
+    changeRate: number;
+  }> {
     // Analyze performance trends over time
     return [
-      { metric: 'renderTime', trend: 'stable', changeRate: 0.1 },
-      { metric: 'memoryUsage', trend: 'improving', changeRate: -0.5 },
-      { metric: 'frameRate', trend: 'stable', changeRate: 0.0 }
+      { metric: "renderTime", trend: "stable", changeRate: 0.1 },
+      { metric: "memoryUsage", trend: "improving", changeRate: -0.5 },
+      { metric: "frameRate", trend: "stable", changeRate: 0.0 },
     ];
   }
 
-  private generatePerformanceAlerts(metrics: PerformanceMetrics): PerformanceAlert[] {
+  private generatePerformanceAlerts(
+    metrics: PerformanceMetrics,
+  ): PerformanceAlert[] {
     const alerts: PerformanceAlert[] = [];
 
     // Check render time
@@ -909,15 +935,15 @@ export class PerformanceProfiler extends EventEmitter {
       alerts.push({
         id: this.generateAlertId(),
         timestamp: new Date(),
-        severity: 'high',
-        category: 'latency',
-        metric: 'renderTime',
+        severity: "high",
+        category: "latency",
+        metric: "renderTime",
         currentValue: metrics.renderTime,
         threshold: this.config.targetLatency,
-        impact: 'User interface feels sluggish',
-        recommendation: 'Enable DOM virtualization and batch updates',
+        impact: "User interface feels sluggish",
+        recommendation: "Enable DOM virtualization and batch updates",
         autoFixable: true,
-        culturalRelevance: false
+        culturalRelevance: false,
       });
     }
 
@@ -926,36 +952,44 @@ export class PerformanceProfiler extends EventEmitter {
       alerts.push({
         id: this.generateAlertId(),
         timestamp: new Date(),
-        severity: 'medium',
-        category: 'cultural',
-        metric: 'arabicRenderingTime',
+        severity: "medium",
+        category: "cultural",
+        metric: "arabicRenderingTime",
         currentValue: metrics.arabicRenderingTime,
         threshold: 50,
-        impact: 'Arabic text rendering is slow',
-        recommendation: 'Preload Arabic fonts and optimize RTL layouts',
+        impact: "Arabic text rendering is slow",
+        recommendation: "Preload Arabic fonts and optimize RTL layouts",
         autoFixable: true,
-        culturalRelevance: true
+        culturalRelevance: true,
       });
     }
 
     return alerts;
   }
 
-  private generateOptimizationRecommendations(metrics: PerformanceMetrics): PerformanceOptimization[] {
+  private generateOptimizationRecommendations(
+    metrics: PerformanceMetrics,
+  ): PerformanceOptimization[] {
     const optimizations: PerformanceOptimization[] = [];
 
     // Add applicable optimizations based on current metrics
     if (metrics.renderTime > this.config.targetLatency) {
-      optimizations.push(this.optimizationStrategies.get('dom-virtualization')!);
-      optimizations.push(this.optimizationStrategies.get('batch-dom-updates')!);
+      optimizations.push(
+        this.optimizationStrategies.get("dom-virtualization")!,
+      );
+      optimizations.push(this.optimizationStrategies.get("batch-dom-updates")!);
     }
 
     if (metrics.arabicRenderingTime > 40) {
-      optimizations.push(this.optimizationStrategies.get('arabic-font-preload')!);
+      optimizations.push(
+        this.optimizationStrategies.get("arabic-font-preload")!,
+      );
     }
 
     if (metrics.culturalValidationTime > 100) {
-      optimizations.push(this.optimizationStrategies.get('cultural-validation-cache')!);
+      optimizations.push(
+        this.optimizationStrategies.get("cultural-validation-cache")!,
+      );
     }
 
     return optimizations;
@@ -963,25 +997,39 @@ export class PerformanceProfiler extends EventEmitter {
 
   private calculateCulturalPerformance(metrics: PerformanceMetrics): any {
     return {
-      arabicRenderingEfficiency: Math.max(0, 100 - (metrics.arabicRenderingTime / 50) * 100),
-      rtlLayoutOptimization: Math.max(0, 100 - (metrics.rtlLayoutTime / 25) * 100),
-      culturalValidationSpeed: Math.max(0, 100 - (metrics.culturalValidationTime / 200) * 100),
-      ministryComplianceSpeed: Math.max(0, 100 - (metrics.complianceCheckTime / 100) * 100)
+      arabicRenderingEfficiency: Math.max(
+        0,
+        100 - (metrics.arabicRenderingTime / 50) * 100,
+      ),
+      rtlLayoutOptimization: Math.max(
+        0,
+        100 - (metrics.rtlLayoutTime / 25) * 100,
+      ),
+      culturalValidationSpeed: Math.max(
+        0,
+        100 - (metrics.culturalValidationTime / 200) * 100,
+      ),
+      ministryComplianceSpeed: Math.max(
+        0,
+        100 - (metrics.complianceCheckTime / 100) * 100,
+      ),
     };
   }
 
-  private calculateOverallPerformanceScore(metrics: PerformanceMetrics): number {
+  private calculateOverallPerformanceScore(
+    metrics: PerformanceMetrics,
+  ): number {
     let score = 100;
 
     // Deduct points for poor performance
     if (metrics.renderTime > this.config.targetLatency) {
       score -= (metrics.renderTime - this.config.targetLatency) * 2;
     }
-    
+
     if (metrics.frameRate < this.config.targetFPS) {
       score -= (this.config.targetFPS - metrics.frameRate) * 1.5;
     }
-    
+
     if (metrics.heapUsed > this.config.maxMemoryUsage) {
       score -= (metrics.heapUsed - this.config.maxMemoryUsage) * 0.5;
     }
@@ -989,39 +1037,46 @@ export class PerformanceProfiler extends EventEmitter {
     return Math.max(0, Math.min(100, score));
   }
 
-  private getPerformanceGrade(score: number): 'A+' | 'A' | 'B' | 'C' | 'D' | 'F' {
-    if (score >= 95) return 'A+';
-    if (score >= 90) return 'A';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'C';
-    if (score >= 60) return 'D';
-    return 'F';
+  private getPerformanceGrade(
+    score: number,
+  ): "A+" | "A" | "B" | "C" | "D" | "F" {
+    if (score >= 95) return "A+";
+    if (score >= 90) return "A";
+    if (score >= 80) return "B";
+    if (score >= 70) return "C";
+    if (score >= 60) return "D";
+    return "F";
   }
 
   private checkGovernmentCompliance(metrics: PerformanceMetrics): boolean {
-    return metrics.renderTime <= this.config.targetLatency &&
-           metrics.frameRate >= this.config.targetFPS &&
-           metrics.heapUsed <= this.config.maxMemoryUsage;
+    return (
+      metrics.renderTime <= this.config.targetLatency &&
+      metrics.frameRate >= this.config.targetFPS &&
+      metrics.heapUsed <= this.config.maxMemoryUsage
+    );
   }
 
   private updateGovernmentBenchmarks(metrics: PerformanceMetrics): void {
-    this.governmentBenchmarks.forEach(benchmark => {
+    this.governmentBenchmarks.forEach((benchmark) => {
       switch (benchmark.name) {
-        case 'Visual Editor Response Time':
+        case "Visual Editor Response Time":
           benchmark.current = metrics.renderTime;
           benchmark.compliance = metrics.renderTime <= benchmark.target;
           break;
-        case 'Arabic Text Rendering':
+        case "Arabic Text Rendering":
           benchmark.current = metrics.arabicRenderingTime;
-          benchmark.compliance = metrics.arabicRenderingTime <= benchmark.target;
+          benchmark.compliance =
+            metrics.arabicRenderingTime <= benchmark.target;
           break;
-        case 'Ministry Branding Application':
+        case "Ministry Branding Application":
           benchmark.current = metrics.brandingApplicationTime;
-          benchmark.compliance = metrics.brandingApplicationTime <= benchmark.target;
+          benchmark.compliance =
+            metrics.brandingApplicationTime <= benchmark.target;
           break;
-        case 'Cultural Validation Speed':
+        case "Cultural Validation Speed":
           benchmark.current = metrics.culturalValidationTime;
-          benchmark.compliance = metrics.culturalValidationTime <= benchmark.target;
+          benchmark.compliance =
+            metrics.culturalValidationTime <= benchmark.target;
           break;
       }
     });
@@ -1030,41 +1085,43 @@ export class PerformanceProfiler extends EventEmitter {
   private generatePerformanceRecommendations(
     metrics: PerformanceMetrics,
     alerts: PerformanceAlert[],
-    optimizations: PerformanceOptimization[]
+    optimizations: PerformanceOptimization[],
   ): Array<any> {
     const recommendations = [];
 
     // High priority recommendations based on critical alerts
-    const criticalAlerts = alerts.filter(alert => alert.severity === 'critical');
+    const criticalAlerts = alerts.filter(
+      (alert) => alert.severity === "critical",
+    );
     if (criticalAlerts.length > 0) {
       recommendations.push({
-        priority: 'critical',
-        category: 'performance',
-        description: 'معالجة التنبيهات الحرجة للأداء فوراً',
-        implementation: 'تطبيق التحسينات المقترحة للمشاكل الحرجة',
-        expectedBenefit: 'تحسين كبير في سرعة الاستجابة'
+        priority: "critical",
+        category: "performance",
+        description: "معالجة التنبيهات الحرجة للأداء فوراً",
+        implementation: "تطبيق التحسينات المقترحة للمشاكل الحرجة",
+        expectedBenefit: "تحسين كبير في سرعة الاستجابة",
       });
     }
 
     // Cultural performance recommendations
     if (metrics.arabicRenderingTime > 40) {
       recommendations.push({
-        priority: 'high',
-        category: 'cultural',
-        description: 'تحسين أداء عرض النصوص العربية',
-        implementation: 'تحميل الخطوط العربية مسبقاً وتحسين تخطيط RTL',
-        expectedBenefit: 'تحسين سرعة عرض المحتوى العربي بنسبة 30%'
+        priority: "high",
+        category: "cultural",
+        description: "تحسين أداء عرض النصوص العربية",
+        implementation: "تحميل الخطوط العربية مسبقاً وتحسين تخطيط RTL",
+        expectedBenefit: "تحسين سرعة عرض المحتوى العربي بنسبة 30%",
       });
     }
 
     // Memory optimization recommendations
     if (metrics.heapUsed > this.config.maxMemoryUsage * 0.8) {
       recommendations.push({
-        priority: 'medium',
-        category: 'memory',
-        description: 'تحسين استخدام الذاكرة',
-        implementation: 'تطبيق تقنيات تحسين الذاكرة وتنظيف البيانات',
-        expectedBenefit: 'تقليل استخدام الذاكرة وتحسين الاستقرار'
+        priority: "medium",
+        category: "memory",
+        description: "تحسين استخدام الذاكرة",
+        implementation: "تطبيق تقنيات تحسين الذاكرة وتنظيف البيانات",
+        expectedBenefit: "تقليل استخدام الذاكرة وتحسين الاستقرار",
       });
     }
 
@@ -1075,15 +1132,30 @@ export class PerformanceProfiler extends EventEmitter {
   private checkPerformanceThresholds(metrics: PerformanceMetrics): void {
     // Check against configured thresholds and generate alerts
     if (metrics.renderTime > this.config.alertThresholds.latency) {
-      this.generateAlert('latency', 'renderTime', metrics.renderTime, this.config.alertThresholds.latency);
+      this.generateAlert(
+        "latency",
+        "renderTime",
+        metrics.renderTime,
+        this.config.alertThresholds.latency,
+      );
     }
-    
+
     if (metrics.heapUsed > this.config.alertThresholds.memory) {
-      this.generateAlert('memory', 'heapUsed', metrics.heapUsed, this.config.alertThresholds.memory);
+      this.generateAlert(
+        "memory",
+        "heapUsed",
+        metrics.heapUsed,
+        this.config.alertThresholds.memory,
+      );
     }
   }
 
-  private generateAlert(category: string, metric: string, current: number, threshold: number): void {
+  private generateAlert(
+    category: string,
+    metric: string,
+    current: number,
+    threshold: number,
+  ): void {
     const alert: PerformanceAlert = {
       id: this.generateAlertId(),
       timestamp: new Date(),
@@ -1095,28 +1167,31 @@ export class PerformanceProfiler extends EventEmitter {
       impact: this.getAlertImpact(category, metric),
       recommendation: this.getAlertRecommendation(category, metric),
       autoFixable: this.isAlertAutoFixable(category, metric),
-      culturalRelevance: this.isAlertCulturallyRelevant(category, metric)
+      culturalRelevance: this.isAlertCulturallyRelevant(category, metric),
     };
 
     this.activeAlerts.push(alert);
-    this.emit('performance-alert', alert);
+    this.emit("performance-alert", alert);
   }
 
   private generateAlertId(): string {
     return `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private determineSeverity(current: number, threshold: number): 'critical' | 'high' | 'medium' | 'low' | 'info' {
+  private determineSeverity(
+    current: number,
+    threshold: number,
+  ): "critical" | "high" | "medium" | "low" | "info" {
     const ratio = current / threshold;
-    if (ratio >= 2) return 'critical';
-    if (ratio >= 1.5) return 'high';
-    if (ratio >= 1.2) return 'medium';
-    if (ratio >= 1.1) return 'low';
-    return 'info';
+    if (ratio >= 2) return "critical";
+    if (ratio >= 1.5) return "high";
+    if (ratio >= 1.2) return "medium";
+    if (ratio >= 1.1) return "low";
+    return "info";
   }
 
   private async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Placeholder methods for complex operations
@@ -1156,7 +1231,10 @@ export class PerformanceProfiler extends EventEmitter {
     // Perform government audit compliance check
   }
 
-  private async applyOptimization(optimization: PerformanceOptimization, options: any): Promise<boolean> {
+  private async applyOptimization(
+    optimization: PerformanceOptimization,
+    options: any,
+  ): Promise<boolean> {
     // Apply the specific optimization
     return true;
   }
@@ -1166,30 +1244,44 @@ export class PerformanceProfiler extends EventEmitter {
     return 0.95;
   }
 
-  private calculatePerformanceImpact(startMetrics: PerformanceMetrics, endMetrics: PerformanceMetrics): number {
+  private calculatePerformanceImpact(
+    startMetrics: PerformanceMetrics,
+    endMetrics: PerformanceMetrics,
+  ): number {
     // Calculate performance impact
     return endMetrics.renderTime - startMetrics.renderTime;
   }
 
-  private identifyOptimizationOpportunities(operationType: string, executionTime: number, performanceImpact: number): string[] {
+  private identifyOptimizationOpportunities(
+    operationType: string,
+    executionTime: number,
+    performanceImpact: number,
+  ): string[] {
     // Identify optimization opportunities
-    return ['Cache results', 'Optimize algorithms', 'Reduce DOM manipulation'];
+    return ["Cache results", "Optimize algorithms", "Reduce DOM manipulation"];
   }
 
-  private recordCulturalPerformanceMetric(operationType: string, metrics: any): void {
+  private recordCulturalPerformanceMetric(
+    operationType: string,
+    metrics: any,
+  ): void {
     // Record cultural performance metric
     switch (operationType) {
-      case 'arabic-rendering':
+      case "arabic-rendering":
         this.culturalMetrics.arabicRenderingTimes.push(metrics.executionTime);
         break;
-      case 'rtl-layout':
+      case "rtl-layout":
         this.culturalMetrics.rtlLayoutTimes.push(metrics.executionTime);
         break;
-      case 'cultural-validation':
-        this.culturalMetrics.culturalValidationTimes.push(metrics.executionTime);
+      case "cultural-validation":
+        this.culturalMetrics.culturalValidationTimes.push(
+          metrics.executionTime,
+        );
         break;
-      case 'ministry-branding':
-        this.culturalMetrics.ministryComplianceTimes.push(metrics.executionTime);
+      case "ministry-branding":
+        this.culturalMetrics.ministryComplianceTimes.push(
+          metrics.executionTime,
+        );
         break;
     }
   }
@@ -1200,7 +1292,7 @@ export class PerformanceProfiler extends EventEmitter {
       event,
       metrics: data,
       compliance: this.checkGovernmentCompliance(data),
-      userImpact: this.calculateUserImpact(data)
+      userImpact: this.calculateUserImpact(data),
     });
 
     // Limit audit log size
@@ -1211,10 +1303,12 @@ export class PerformanceProfiler extends EventEmitter {
 
   private calculateUserImpact(data: any): string {
     // Calculate user impact description
-    return 'Positive improvement in user experience';
+    return "Positive improvement in user experience";
   }
 
-  private getBenchmarkImpactDescription(benchmark: PerformanceBenchmark): string {
+  private getBenchmarkImpactDescription(
+    benchmark: PerformanceBenchmark,
+  ): string {
     return `Performance below government standards for ${benchmark.name}`;
   }
 
@@ -1225,8 +1319,10 @@ export class PerformanceProfiler extends EventEmitter {
   private generateAuditSummary(): any {
     return {
       totalEntries: this.auditLog.length,
-      complianceRate: this.auditLog.filter(entry => entry.compliance).length / this.auditLog.length,
-      lastAudit: this.auditLog[this.auditLog.length - 1]?.timestamp
+      complianceRate:
+        this.auditLog.filter((entry) => entry.compliance).length /
+        this.auditLog.length,
+      lastAudit: this.auditLog[this.auditLog.length - 1]?.timestamp,
     };
   }
 
@@ -1239,11 +1335,15 @@ export class PerformanceProfiler extends EventEmitter {
   }
 
   private isAlertAutoFixable(category: string, metric: string): boolean {
-    return category !== 'memory'; // Memory issues usually require manual intervention
+    return category !== "memory"; // Memory issues usually require manual intervention
   }
 
   private isAlertCulturallyRelevant(category: string, metric: string): boolean {
-    return category === 'cultural' || metric.includes('arabic') || metric.includes('rtl');
+    return (
+      category === "cultural" ||
+      metric.includes("arabic") ||
+      metric.includes("rtl")
+    );
   }
 
   /**
@@ -1254,14 +1354,16 @@ export class PerformanceProfiler extends EventEmitter {
     return { ...this.config };
   }
 
-  public updateConfiguration(newConfig: Partial<PerformanceProfilerConfig>): void {
+  public updateConfiguration(
+    newConfig: Partial<PerformanceProfilerConfig>,
+  ): void {
     this.config = { ...this.config, ...newConfig };
-    this.emit('configuration-updated', this.config);
+    this.emit("configuration-updated", this.config);
   }
 
   public getCurrentMetrics(): PerformanceMetrics | null {
-    return this.metricsHistory.length > 0 
-      ? this.metricsHistory[this.metricsHistory.length - 1] 
+    return this.metricsHistory.length > 0
+      ? this.metricsHistory[this.metricsHistory.length - 1]
       : null;
   }
 
@@ -1287,12 +1389,12 @@ export class PerformanceProfiler extends EventEmitter {
 
   public clearMetricsHistory(): void {
     this.metricsHistory = [];
-    this.emit('metrics-history-cleared');
+    this.emit("metrics-history-cleared");
   }
 
   public clearActiveAlerts(): void {
     this.activeAlerts = [];
-    this.emit('alerts-cleared');
+    this.emit("alerts-cleared");
   }
 
   public exportPerformanceData(): any {
@@ -1303,7 +1405,7 @@ export class PerformanceProfiler extends EventEmitter {
       activeAlerts: this.activeAlerts,
       appliedOptimizations: this.appliedOptimizations,
       governmentBenchmarks: this.governmentBenchmarks,
-      auditLog: this.auditLog.slice(-50) // Last 50 entries
+      auditLog: this.auditLog.slice(-50), // Last 50 entries
     };
   }
 

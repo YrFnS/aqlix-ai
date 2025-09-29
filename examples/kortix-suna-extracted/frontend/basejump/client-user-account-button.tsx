@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +9,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
-import { UserIcon } from 'lucide-react';
-import { signOut } from '@/app/auth/actions';
-import { useRouter } from 'next/navigation';
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { UserIcon } from "lucide-react";
+import { signOut } from "@/app/auth/actions";
+import { useRouter } from "next/navigation";
 
 interface ClientUserAccountButtonProps {
   userName?: string;
@@ -21,8 +21,8 @@ interface ClientUserAccountButtonProps {
 }
 
 export default function ClientUserAccountButton({
-  userName = 'Account',
-  userEmail = '',
+  userName = "Account",
+  userEmail = "",
 }: ClientUserAccountButtonProps) {
   const router = useRouter();
 

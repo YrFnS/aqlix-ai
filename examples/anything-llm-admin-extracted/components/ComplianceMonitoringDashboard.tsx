@@ -1,7 +1,7 @@
 /**
  * Cultural Compliance Monitoring Dashboard
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Real-time Islamic compliance monitoring
  * - Political neutrality tracking
@@ -19,11 +19,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  Shield, 
-  AlertTriangle, 
-  CheckCircle, 
-  TrendingUp, 
+import {
+  Shield,
+  AlertTriangle,
+  CheckCircle,
+  TrendingUp,
   TrendingDown,
   Eye,
   Settings,
@@ -34,14 +34,14 @@ import {
   MessageSquare,
   FileText,
   Globe,
-  Star
+  Star,
 } from 'lucide-react';
 import {
   ComplianceAlert,
   ComplianceReport,
   SystemMetrics,
   ProfessionalDomain,
-  CulturalComplianceLevel
+  CulturalComplianceLevel,
 } from '../types/admin';
 
 interface ComplianceMonitoringDashboardProps {
@@ -67,16 +67,19 @@ interface ComplianceMetrics {
     flags: number;
     trend: 'up' | 'down' | 'stable';
   };
-  professionalDomains: Record<ProfessionalDomain, {
-    score: number;
-    issues: number;
-  }>;
+  professionalDomains: Record<
+    ProfessionalDomain,
+    {
+      score: number;
+      issues: number;
+    }
+  >;
 }
 
 export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboardProps> = ({
   className,
   refreshInterval = 30000, // 30 seconds
-  showArabicLabels = false
+  showArabicLabels = false,
 }) => {
   const [metrics, setMetrics] = useState<ComplianceMetrics | null>(null);
   const [alerts, setAlerts] = useState<ComplianceAlert[]>([]);
@@ -88,18 +91,18 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
   const loadComplianceData = async () => {
     try {
       setLoading(true);
-      
+
       // Simulate API calls - replace with actual API endpoints
       const [metricsResponse, alertsResponse, reportsResponse] = await Promise.all([
         fetch('/api/admin/compliance/metrics'),
         fetch('/api/admin/compliance/alerts?status=active'),
-        fetch('/api/admin/compliance/reports?limit=5')
+        fetch('/api/admin/compliance/reports?limit=5'),
       ]);
-      
+
       const metricsData = await metricsResponse.json();
       const alertsData = await alertsResponse.json();
       const reportsData = await reportsResponse.json();
-      
+
       setMetrics(metricsData);
       setAlerts(alertsData);
       setRecentReports(reportsData);
@@ -114,7 +117,7 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
   // Auto-refresh data
   useEffect(() => {
     loadComplianceData();
-    
+
     const interval = setInterval(loadComplianceData, refreshInterval);
     return () => clearInterval(interval);
   }, [refreshInterval]);
@@ -125,9 +128,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
       const response = await fetch('/api/admin/compliance/reports/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type })
+        body: JSON.stringify({ type }),
       });
-      
+
       if (response.ok) {
         await loadComplianceData(); // Refresh data
       }
@@ -139,20 +142,28 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
   // Get severity color for alerts
   const getSeverityColor = (severity: ComplianceAlert['severity']) => {
     switch (severity) {
-      case 'critical': return 'text-red-600 bg-red-50';
-      case 'high': return 'text-orange-600 bg-orange-50';
-      case 'medium': return 'text-yellow-600 bg-yellow-50';
-      case 'low': return 'text-blue-600 bg-blue-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'critical':
+        return 'text-red-600 bg-red-50';
+      case 'high':
+        return 'text-orange-600 bg-orange-50';
+      case 'medium':
+        return 'text-yellow-600 bg-yellow-50';
+      case 'low':
+        return 'text-blue-600 bg-blue-50';
+      default:
+        return 'text-gray-600 bg-gray-50';
     }
   };
 
   // Get trend icon
   const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
-      case 'up': return <TrendingUp className="w-4 h-4 text-green-600" />;
-      case 'down': return <TrendingDown className="w-4 h-4 text-red-600" />;
-      case 'stable': return <div className="w-4 h-4 rounded-full bg-gray-400" />;
+      case 'up':
+        return <TrendingUp className="w-4 h-4 text-green-600" />;
+      case 'down':
+        return <TrendingDown className="w-4 h-4 text-red-600" />;
+      case 'stable':
+        return <div className="w-4 h-4 rounded-full bg-gray-400" />;
     }
   };
 
@@ -183,10 +194,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
             {showArabicLabels ? 'مراقبة الامتثال الثقافي' : 'Cultural Compliance Monitoring'}
           </h1>
           <p className="text-gray-600 mt-1">
-            {showArabicLabels 
+            {showArabicLabels
               ? `آخر تحديث: ${lastUpdated.toLocaleString('ar-IQ')}`
-              : `Last updated: ${lastUpdated.toLocaleString()}`
-            }
+              : `Last updated: ${lastUpdated.toLocaleString()}`}
           </p>
         </div>
         <div className="flex gap-2">
@@ -218,7 +228,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
               <Progress value={metrics.overallScore} className="mb-4" />
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className={`text-xl font-semibold ${getScoreColor(metrics.islamicCompliance.score)}`}>
+                  <div
+                    className={`text-xl font-semibold ${getScoreColor(metrics.islamicCompliance.score)}`}
+                  >
                     {metrics.islamicCompliance.score}%
                   </div>
                   <div className="text-sm text-gray-600 flex items-center justify-center gap-1">
@@ -227,7 +239,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className={`text-xl font-semibold ${getScoreColor(metrics.politicalNeutrality.score)}`}>
+                  <div
+                    className={`text-xl font-semibold ${getScoreColor(metrics.politicalNeutrality.score)}`}
+                  >
                     {metrics.politicalNeutrality.score}%
                   </div>
                   <div className="text-sm text-gray-600 flex items-center justify-center gap-1">
@@ -236,7 +250,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className={`text-xl font-semibold ${getScoreColor(metrics.culturalSensitivity.score)}`}>
+                  <div
+                    className={`text-xl font-semibold ${getScoreColor(metrics.culturalSensitivity.score)}`}
+                  >
                     {metrics.culturalSensitivity.score}%
                   </div>
                   <div className="text-sm text-gray-600 flex items-center justify-center gap-1">
@@ -262,7 +278,7 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {alerts.slice(0, 5).map((alert) => (
+              {alerts.slice(0, 5).map(alert => (
                 <Alert key={alert.id} className={getSeverityColor(alert.severity)}>
                   <AlertTriangle className="w-4 h-4" />
                   <AlertDescription>
@@ -271,7 +287,8 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                         <div className="font-semibold">{alert.title}</div>
                         <div className="text-sm mt-1">{alert.description}</div>
                         <div className="text-xs mt-2 text-gray-600">
-                          {showArabicLabels ? 'المتأثرون:' : 'Affected:'} {alert.affectedUsers} users, {alert.affectedContent} content items
+                          {showArabicLabels ? 'المتأثرون:' : 'Affected:'} {alert.affectedUsers}{' '}
+                          users, {alert.affectedContent} content items
                         </div>
                       </div>
                       <div className="flex gap-2 ml-4">
@@ -288,7 +305,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
               ))}
               {alerts.length > 5 && (
                 <Button variant="outline" className="w-full">
-                  {showArabicLabels ? `عرض جميع ${alerts.length} التنبيهات` : `View All ${alerts.length} Alerts`}
+                  {showArabicLabels
+                    ? `عرض جميع ${alerts.length} التنبيهات`
+                    : `View All ${alerts.length} Alerts`}
                 </Button>
               )}
             </div>
@@ -314,7 +333,9 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                       {data.score}%
                     </div>
                     <div className="text-sm text-gray-600 capitalize mb-2">
-                      {showArabicLabels ? getDomainArabicName(domain as ProfessionalDomain) : domain}
+                      {showArabicLabels
+                        ? getDomainArabicName(domain as ProfessionalDomain)
+                        : domain}
                     </div>
                     {data.issues > 0 && (
                       <Badge variant="destructive" className="text-xs">
@@ -340,12 +361,18 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
         <CardContent>
           {recentReports.length > 0 ? (
             <div className="space-y-3">
-              {recentReports.map((report) => (
-                <div key={report.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {recentReports.map(report => (
+                <div
+                  key={report.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div>
-                    <div className="font-semibold capitalize">{report.reportType} Compliance Report</div>
+                    <div className="font-semibold capitalize">
+                      {report.reportType} Compliance Report
+                    </div>
                     <div className="text-sm text-gray-600">
-                      {showArabicLabels ? 'تم الإنشاء:' : 'Generated:'} {report.generatedAt.toLocaleDateString()}
+                      {showArabicLabels ? 'تم الإنشاء:' : 'Generated:'}{' '}
+                      {report.generatedAt.toLocaleDateString()}
                     </div>
                     <div className="flex items-center gap-4 mt-1">
                       <span className={`text-sm font-medium ${getScoreColor(report.overallScore)}`}>
@@ -387,8 +414,8 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => generateReport('islamic')}
               className="flex flex-col items-center p-4 h-auto"
             >
@@ -397,8 +424,8 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                 {showArabicLabels ? 'تقرير إسلامي' : 'Islamic Report'}
               </span>
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => generateReport('political')}
               className="flex flex-col items-center p-4 h-auto"
             >
@@ -407,8 +434,8 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                 {showArabicLabels ? 'تقرير سياسي' : 'Political Report'}
               </span>
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => generateReport('cultural')}
               className="flex flex-col items-center p-4 h-auto"
             >
@@ -417,8 +444,8 @@ export const ComplianceMonitoringDashboard: React.FC<ComplianceMonitoringDashboa
                 {showArabicLabels ? 'تقرير ثقافي' : 'Cultural Report'}
               </span>
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => generateReport('professional')}
               className="flex flex-col items-center p-4 h-auto"
             >
@@ -443,7 +470,7 @@ const getDomainArabicName = (domain: ProfessionalDomain): string => {
     business: 'تجاري',
     engineering: 'هندسي',
     government: 'حكومي',
-    general: 'عام'
+    general: 'عام',
   };
   return arabicNames[domain] || domain;
 };

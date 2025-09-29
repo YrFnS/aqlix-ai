@@ -9,6 +9,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 ## Architecture Components
 
 ### 🧠 LangGraph Workflow System (`graph/`)
+
 - **State Management**: Complex multi-step Iraqi business processes
 - **Conditional Branching**: Iraqi regulatory compliance workflows
 - **Graph Visualization**: Visual workflow management and execution
@@ -16,6 +17,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 - **Workflow Orchestration**: Multi-agent coordination with cultural context
 
 ### 📚 RAG Platform (`rag/`)
+
 - **Knowledge Base**: Iraqi legal and regulatory documents
 - **Document Retrieval**: Arabic text processing with Iraqi dialect support
 - **Vector Database**: Culturally-aware information retrieval
@@ -23,6 +25,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 - **Context Management**: Islamic compliance validation
 
 ### 🎙️ Multi-Modal Content Generation (`content/`)
+
 - **Podcast Generation**: Arabic language educational content
 - **Presentation Creation**: Iraqi professional contexts with RTL support
 - **Document Generation**: Islamic compliance and cultural sensitivity
@@ -30,6 +33,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 - **Cultural Preservation**: Iraqi context in generated content
 
 ### 🔬 Research Platform (`research/`)
+
 - **Academic Research**: Iraqi university and institution support
 - **Literature Review**: Arabic and English academic sources
 - **Citation Management**: Iraqi academic standards compliance
@@ -37,6 +41,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 - **Collaboration**: Iraqi research team workflows
 
 ### 🔗 Integration Framework (`api/`, `services/`)
+
 - **RESTful APIs**: Multi-modal content management
 - **Authentication**: Iraqi institutional integration
 - **Content Validation**: Islamic compliance workflows
@@ -46,6 +51,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 ## Key Features
 
 ### 🌟 Core Capabilities
+
 - **Multi-Agent Research**: Specialized Iraqi domain agents
 - **LangGraph Workflows**: Visual process modeling
 - **RAG Integration**: Private Iraqi knowledge bases
@@ -56,30 +62,35 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 ### 🏛️ Iraqi Use Cases
 
 #### Academic Research
+
 - **University Projects**: Arabic documentation with peer review
 - **Thesis Research**: Iraqi academic standards compliance
 - **Literature Reviews**: Arabic and English source integration
 - **Research Collaboration**: Multi-institutional workflows
 
 #### Legal Documentation
+
 - **Case Studies**: Islamic jurisprudence integration
 - **Legal Research**: Iraqi law compliance validation
 - **Court Documents**: Professional Arabic formatting
 - **Contract Analysis**: Islamic finance principles
 
 #### Medical Research
+
 - **Healthcare Studies**: Islamic medical ethics compliance
 - **Clinical Research**: Iraqi healthcare standards
 - **Medical Documentation**: Arabic medical terminology
 - **Ethics Review**: Islamic bioethics integration
 
 #### Government Operations
+
 - **Policy Research**: Iraqi regulatory analysis
 - **Ministry Reports**: Official document generation
 - **Public Communications**: Culturally appropriate messaging
 - **Compliance Documentation**: Islamic governance principles
 
 #### Business Applications
+
 - **Market Research**: Iraqi economic context
 - **Business Plans**: Islamic finance compliance
 - **Presentations**: Professional Arabic formatting
@@ -88,6 +99,7 @@ DeerFlow is a community-driven Deep Research framework that combines language mo
 ## Technical Stack
 
 ### Backend Architecture
+
 ```python
 # Core Dependencies
 fastapi>=0.104.0
@@ -103,6 +115,7 @@ rtl-text-processor>=1.5.0
 ```
 
 ### Frontend Components
+
 ```typescript
 // Next.js 15+ with RTL Support
 "next": "^15.0.0"
@@ -114,17 +127,20 @@ rtl-text-processor>=1.5.0
 ## Integration with Existing Systems
 
 ### Agent Integration
+
 - **PraisonAI Agents**: Intelligent content creation
 - **AutoGen Teams**: Multi-agent research coordination
 - **Browser-Use**: Automated research workflows
 - **Skyvern**: Content publishing automation
 
 ### Workflow Integration
+
 - **Langflow**: Visual workflow design
 - **Block-Goose**: MCP server integration
 - **Kortix-Suna**: Agent versioning and deployment
 
 ### Cultural Integration
+
 - **Arabic NLP**: Iraqi dialect processing
 - **Islamic Compliance**: Content validation
 - **RTL Support**: Arabic text handling
@@ -133,12 +149,13 @@ rtl-text-processor>=1.5.0
 ## Installation & Setup
 
 ### Prerequisites
+
 ```bash
 # Python Environment
 python>=3.12
 uv>=0.4.0
 
-# Node.js Environment  
+# Node.js Environment
 node>=22.0.0
 pnpm>=9.0.0
 
@@ -149,6 +166,7 @@ islamic-calendar-support
 ```
 
 ### Quick Start
+
 ```bash
 # Clone and setup
 cd examples/deer-flow-extracted
@@ -164,6 +182,7 @@ cp .env.example .env.iraqi
 ```
 
 ### Configuration
+
 ```yaml
 # conf.iraqi.yaml
 research:
@@ -189,18 +208,21 @@ rag:
 ## Development Timeline
 
 ### Phase 1: Core Extraction (4-6 weeks)
+
 - LangGraph workflow system implementation
 - RAG platform with Arabic support
 - Basic multi-modal content generation
 - Iraqi cultural compliance integration
 
 ### Phase 2: Advanced Features (6-8 weeks)
+
 - Research platform development
 - Multi-agent coordination
 - Professional domain specialization
 - Government system integration
 
 ### Phase 3: Optimization (2-4 weeks)
+
 - Performance optimization
 - Cultural validation enhancement
 - Testing and quality assurance
@@ -211,24 +233,28 @@ rag:
 ## Professional Domain Templates
 
 ### Legal Templates
+
 - **Contract Analysis**: Islamic finance compliance
 - **Case Research**: Iraqi jurisprudence integration
 - **Legal Opinions**: Arabic legal formatting
 - **Court Submissions**: Professional documentation
 
 ### Medical Templates
+
 - **Research Papers**: Islamic medical ethics
 - **Clinical Studies**: Iraqi healthcare standards
 - **Medical Reports**: Arabic terminology
 - **Ethics Reviews**: Islamic bioethics
 
 ### Academic Templates
+
 - **Research Proposals**: Iraqi university standards
 - **Thesis Documentation**: Arabic academic writing
 - **Literature Reviews**: Multi-language sources
 - **Conference Papers**: Professional presentation
 
 ### Government Templates
+
 - **Policy Analysis**: Iraqi regulatory context
 - **Ministry Reports**: Official documentation
 - **Public Communications**: Cultural appropriateness
@@ -237,6 +263,7 @@ rag:
 ## API Documentation
 
 ### Research API
+
 ```python
 from deer_flow.research import IraqiResearchAgent
 
@@ -256,6 +283,7 @@ result = await agent.research(
 ```
 
 ### Content Generation API
+
 ```python
 from deer_flow.content import MultiModalGenerator
 
@@ -277,12 +305,14 @@ presentation = await generator.create_presentation(
 ## Testing & Quality Assurance
 
 ### Cultural Testing
+
 - **Islamic Compliance**: 100% validation rate required
 - **Arabic Accuracy**: RTL layout and terminology
 - **Iraqi Context**: Cultural appropriateness verification
 - **Professional Standards**: Domain-specific validation
 
 ### Performance Testing
+
 - **Arabic Processing**: Optimized text handling
 - **Multi-Modal Generation**: Efficient content creation
 - **Research Workflows**: Fast information retrieval
@@ -291,12 +321,14 @@ presentation = await generator.create_presentation(
 ## Contributing
 
 ### Development Guidelines
+
 1. **Cultural Sensitivity**: All contributions must respect Islamic values
 2. **Arabic Support**: RTL text handling requirements
 3. **Professional Quality**: Iraqi institutional standards
 4. **Testing Requirements**: Comprehensive validation coverage
 
 ### Iraqi Enhancement Areas
+
 - **Dialect Processing**: Enhanced Iraqi Arabic support
 - **Professional Domains**: Specialized knowledge expansion
 - **Government Integration**: Official system compatibility
@@ -305,12 +337,14 @@ presentation = await generator.create_presentation(
 ## Support & Documentation
 
 ### Resources
+
 - **API Documentation**: Comprehensive endpoint reference
 - **Cultural Guidelines**: Iraqi professional standards
 - **Integration Guides**: System compatibility documentation
 - **Best Practices**: Recommended implementation patterns
 
 ### Iraqi Specific Support
+
 - **Arabic Text Processing**: RTL handling best practices
 - **Islamic Compliance**: Validation methodology
 - **Professional Domains**: Specialized implementation guides
@@ -329,4 +363,4 @@ MIT License with Iraqi Cultural Compliance Requirements
 
 ---
 
-*This extraction provides comprehensive multi-modal research and content generation capabilities specifically designed for Iraqi academic, professional, and government institutions while maintaining Islamic compliance and Arabic RTL support.*
+_This extraction provides comprehensive multi-modal research and content generation capabilities specifically designed for Iraqi academic, professional, and government institutions while maintaining Islamic compliance and Arabic RTL support._

@@ -34,7 +34,7 @@
     "with_pleasure": "بكل سرور",
     "certainly": "أكيد",
     "of_course": "طبعاً",
-    "absolutely": "بالتأكيد", 
+    "absolutely": "بالتأكيد",
     "no_problem": "ما في مشكلة",
     "dont_worry": "لا تشيل هم",
     "everything_fine": "كله تمام",
@@ -47,7 +47,7 @@
   },
   "professional_chat": {
     "legal_consultation": "استشارة قانونية",
-    "medical_advice": "استشارة طبية", 
+    "medical_advice": "استشارة طبية",
     "educational_guidance": "إرشاد تعليمي",
     "engineering_consultation": "استشارة هندسية",
     "business_advice": "استشارة تجارية",
@@ -124,7 +124,7 @@
   },
   "islamic_chat": {
     "islamic_greeting": "السلام عليكم ورحمة الله وبركاته",
-    "islamic_response": "وعليكم السلام ورحمة الله وبركاته", 
+    "islamic_response": "وعليكم السلام ورحمة الله وبركاته",
     "bismillah": "بسم الله الرحمن الرحيم",
     "alhamdulillah": "الحمد لله رب العالمين",
     "inshallah": "إن شاء الله",
@@ -159,7 +159,7 @@
     },
     "medical": {
       "medical_consultation": "استشارة طبية",
-      "health_advice": "نصيحة صحية", 
+      "health_advice": "نصيحة صحية",
       "symptoms": "الأعراض",
       "diagnosis": "التشخيص",
       "treatment": "العلاج",

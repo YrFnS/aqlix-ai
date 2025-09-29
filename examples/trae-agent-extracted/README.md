@@ -7,24 +7,28 @@ A comprehensive trajectory recording and debugging system specifically designed 
 ## 🚀 Key Features
 
 ### Advanced Debugging Intelligence
+
 - **Iraqi-Specific Error Pattern Recognition**: Comprehensive database of error patterns specific to Iraqi AI systems
 - **Real-Time Performance Monitoring**: Baseline metrics for cultural validation, Arabic processing, payment gateways, and MCP coordination
 - **Intelligent Error Recovery**: Automated recovery strategies with cultural context preservation
 - **Emergency Debugging Protocols**: Critical system failure handling with immediate response actions
 
 ### Cultural Intelligence Debugging
+
 - **Islamic Compliance Monitoring**: 90%+ compliance threshold with automatic violation detection
 - **Arabic Text Processing Analysis**: UTF-8 encoding validation, RTL rendering diagnostics, Iraqi dialect recognition
 - **Professional Domain Validation**: Legal, medical, educational, and government service compliance
 - **Cultural Context Preservation**: Maintains Iraqi cultural context throughout debugging and recovery processes
 
 ### Iraqi Payment Gateway Debugging
+
 - **Multi-Gateway Support**: ZainCash, FastPay, NassWallet integration debugging
 - **Error Code Intelligence**: Comprehensive error code mapping and resolution strategies
 - **Security Compliance Validation**: 100% security compliance monitoring
 - **Transaction Recovery**: Automated fallback and retry mechanisms
 
 ### MCP Server Coordination Intelligence
+
 - **Health Monitoring**: Real-time health checks for Sequential, Context7, Magic, Playwright, Supabase, Sentry
 - **Coordination Analysis**: Performance analysis and optimization recommendations
 - **Failover Management**: Automatic server failover with graceful degradation
@@ -44,10 +48,12 @@ examples/trae-agent-extracted/
 ## 🛠 Installation and Setup
 
 ### Prerequisites
+
 - Python 3.8+
 - Required packages: `asyncio`, `psutil`, `python-dotenv`
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -190,24 +196,28 @@ health_status = await integration_manager.perform_system_health_check()
 ## 📊 Performance Baselines
 
 ### Cultural Validation
+
 - **Response Time**: <500ms
-- **Success Rate**: 95%+ 
+- **Success Rate**: 95%+
 - **Islamic Compliance**: 90%+
 - **Accuracy Threshold**: 90%+
 
 ### Arabic Processing
+
 - **Response Time**: <200ms
 - **RTL Accuracy**: 99%+
 - **Dialect Recognition**: 85%+
 - **Encoding Success**: 99%+
 
 ### Payment Gateways
+
 - **Response Time**: <3000ms
 - **Success Rate**: 99%+
 - **Security Compliance**: 100%
 - **Transaction Timeout**: <30s
 
 ### MCP Coordination
+
 - **Response Time**: <1000ms
 - **Server Availability**: 98%+
 - **Coordination Success**: 95%+
@@ -216,24 +226,28 @@ health_status = await integration_manager.perform_system_health_check()
 ## 🚨 Error Categories and Recovery
 
 ### Arabic Text Processing Errors
+
 - **Encoding Issues**: UTF-8 validation and correction
 - **RTL Rendering**: Bidirectional text support
 - **Dialect Recognition**: Iraqi dialect processing
 - **Mixed Content**: Arabic-English text handling
 
 ### Cultural Compliance Errors
+
 - **Islamic Violations**: Content filtering and validation
 - **Professional Standards**: Domain-specific compliance
 - **Cultural Sensitivity**: Iraqi context awareness
 - **Inappropriate Content**: Automatic blocking
 
 ### Payment Gateway Errors
+
 - **Authentication Failures**: Credential validation
 - **Network Issues**: Connectivity diagnostics
 - **Transaction Errors**: Error code analysis
 - **Security Violations**: Compliance monitoring
 
 ### System Integration Errors
+
 - **MCP Server Failures**: Health monitoring and failover
 - **Agent Coordination**: Communication debugging
 - **Performance Issues**: Bottleneck identification
@@ -242,24 +256,28 @@ health_status = await integration_manager.perform_system_health_check()
 ## 🔍 Debugging Intelligence Features
 
 ### Error Pattern Recognition
+
 - Machine learning-based pattern detection
 - Iraqi-specific error classification
 - Confidence scoring and validation
 - Historical pattern analysis
 
 ### Performance Monitoring
+
 - Real-time metrics collection
 - Baseline comparison and alerting
 - Trend analysis and prediction
 - Resource utilization tracking
 
 ### Recovery Intelligence
+
 - Automated recovery strategy selection
 - Cultural context preservation
 - Agent delegation optimization
 - Emergency protocol activation
 
 ### System Diagnostics
+
 - Comprehensive health scoring
 - Intelligent recommendations
 - Predictive failure detection
@@ -268,18 +286,21 @@ health_status = await integration_manager.perform_system_health_check()
 ## 📈 Metrics and Reporting
 
 ### Trajectory Metrics
+
 - Cultural appropriateness scores
 - Islamic compliance ratings
 - Processing time analysis
 - Error rate tracking
 
 ### Debugging Metrics
+
 - Error pattern frequency
 - Recovery success rates
 - System health scores
 - Performance trends
 
 ### Integration Metrics
+
 - Debugging integration success
 - Emergency protocol usage
 - Agent coordination efficiency
@@ -288,18 +309,21 @@ health_status = await integration_manager.perform_system_health_check()
 ## 🔒 Security and Compliance
 
 ### Data Protection
+
 - Secure trajectory storage
 - Encrypted error logging
 - Privacy-compliant debugging
 - Access control mechanisms
 
 ### Cultural Compliance
+
 - Islamic principles adherence
 - Professional domain standards
 - Iraqi regulatory compliance
 - Cultural context validation
 
 ### Payment Security
+
 - PCI compliance monitoring
 - Transaction security validation
 - Fraud detection integration
@@ -310,21 +334,25 @@ health_status = await integration_manager.perform_system_health_check()
 The enhanced trajectory system integrates seamlessly with the comprehensive Iraqi AI agent ecosystem:
 
 ### Cultural Intelligence Agents
+
 - `iraqi-cultural-validator`: Cultural compliance validation
 - `iraqi-cultural-tester`: Cultural testing and verification
 - `arabic-rtl-processor`: Arabic text processing and RTL rendering
 
 ### Payment System Agents
+
 - `payment-security-guardian`: Payment security and compliance
 - `iraqi-payment-tester`: Iraqi payment gateway testing
 - `external-service-coordinator`: External service coordination
 
 ### Technical Support Agents
+
 - `iraqi-technical-debugger`: Technical debugging and diagnostics
 - `iraqi-devops-engineer`: Infrastructure and deployment
 - `iraqi-ai-agent-architect`: System architecture and design
 
 ### Professional Domain Agents
+
 - `iraqi-professional-domain-expert`: Professional standards compliance
 - `iraqi-business-analyst`: Business process analysis
 - `iraqi-accessibility-specialist`: Accessibility and usability
@@ -332,12 +360,14 @@ The enhanced trajectory system integrates seamlessly with the comprehensive Iraq
 ## 🎯 Performance Targets
 
 ### System-Wide Targets
+
 - **Issue Resolution Rate**: 95%+
 - **Analysis Response Time**: <300ms
 - **Cultural Compliance**: 95%+
 - **System Uptime**: 99.9%+
 
 ### Iraqi-Specific Targets
+
 - **Arabic Processing Accuracy**: 99%+
 - **Dialect Recognition**: 85%+
 - **Islamic Compliance**: 90%+
@@ -346,6 +376,7 @@ The enhanced trajectory system integrates seamlessly with the comprehensive Iraq
 ## 🚀 Future Enhancements
 
 ### Planned Features
+
 - Machine learning-based error prediction
 - Advanced agent coordination optimization
 - Real-time cultural context adaptation
@@ -354,6 +385,7 @@ The enhanced trajectory system integrates seamlessly with the comprehensive Iraq
 - Advanced visualization and reporting
 
 ### Research Areas
+
 - Neural network-based error classification
 - Automated cultural context learning
 - Dynamic performance optimization
@@ -363,9 +395,11 @@ The enhanced trajectory system integrates seamlessly with the comprehensive Iraq
 ## 📞 Support and Contribution
 
 ### Technical Support
+
 For technical support and questions about the enhanced Iraqi trajectory intelligence system, please refer to the comprehensive documentation and example implementations provided.
 
 ### Contributing
+
 Contributions to improve the system's debugging intelligence, cultural awareness, and Iraqi-specific capabilities are welcome. Please ensure all contributions maintain the high standards of cultural sensitivity and technical excellence.
 
 ## 📄 License
@@ -375,6 +409,6 @@ This enhanced Iraqi trajectory intelligence system is designed to support Iraqi 
 ---
 
 **Enhanced Iraqi Trajectory Intelligence System v2.0**
-*Advanced Debugging Integration for Iraqi AI Systems*
+_Advanced Debugging Integration for Iraqi AI Systems_
 
 🇮🇶 Built with pride for the Iraqi AI community 🇮🇶

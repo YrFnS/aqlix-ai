@@ -1,11 +1,11 @@
 /**
  * Workflow Component Mapper - n8n to React Component Translation
- * 
+ *
  * Automatically generates React components from n8n workflows with
  * Arabic RTL support, Islamic compliance, and Iraqi cultural intelligence.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // Enhanced Workflow Mapping Interfaces
 export interface IWorkflowNode {
@@ -23,18 +23,18 @@ export interface IWorkflowNode {
 export interface ICulturalNodeMetadata {
   arabicLabel: string;
   englishLabel: string;
-  ministryDomain?: 'health' | 'education' | 'interior' | 'justice';
+  ministryDomain?: "health" | "education" | "interior" | "justice";
   islamicCompliance: boolean;
-  culturalSensitivity: 'high' | 'medium' | 'low';
+  culturalSensitivity: "high" | "medium" | "low";
   rtlSupport: boolean;
-  dialectVariation?: 'standard' | 'iraqi' | 'baghdadi' | 'basri' | 'moslawi';
+  dialectVariation?: "standard" | "iraqi" | "baghdadi" | "basri" | "moslawi";
   professionalContext: IProfessionalContext;
 }
 
 export interface IProfessionalContext {
-  targetAudience: 'officials' | 'citizens' | 'professionals' | 'students';
-  formalityLevel: 'high' | 'medium' | 'low';
-  terminologySet: 'technical' | 'general' | 'simplified';
+  targetAudience: "officials" | "citizens" | "professionals" | "students";
+  formalityLevel: "high" | "medium" | "low";
+  terminologySet: "technical" | "general" | "simplified";
   accessibilityRequirements: string[];
 }
 
@@ -66,7 +66,7 @@ export interface IWorkflowMetadata {
 }
 
 export interface ICulturalWorkflowConfig {
-  primaryLanguage: 'arabic' | 'english' | 'bilingual';
+  primaryLanguage: "arabic" | "english" | "bilingual";
   rtlLayout: boolean;
   islamicCompliance: boolean;
   governmentStandards: boolean;
@@ -76,7 +76,13 @@ export interface ICulturalWorkflowConfig {
 
 export interface IReactComponentSpec {
   componentName: string;
-  componentType: 'form' | 'display' | 'action' | 'navigation' | 'data' | 'ministry';
+  componentType:
+    | "form"
+    | "display"
+    | "action"
+    | "navigation"
+    | "data"
+    | "ministry";
   filePath: string;
   props: IComponentProps;
   imports: string[];
@@ -139,7 +145,7 @@ export interface ICulturalMappingValidation {
 
 /**
  * Advanced Workflow Component Mapper with Cultural Intelligence
- * 
+ *
  * Features:
  * - Automatic React component generation from n8n workflows
  * - Arabic RTL support with 99.8% layout accuracy
@@ -169,7 +175,7 @@ export class WorkflowComponentMapper extends EventEmitter {
    */
   async mapWorkflowToComponents(
     workflow: IWorkflowDefinition,
-    options: IComponentMappingOptions = {}
+    options: IComponentMappingOptions = {},
   ): Promise<IComponentMappingResult> {
     const startTime = Date.now();
     const components: IReactComponentSpec[] = [];
@@ -178,10 +184,13 @@ export class WorkflowComponentMapper extends EventEmitter {
 
     try {
       // Validate workflow for cultural compliance
-      const culturalValidation = await this.validateWorkflowCulturally(workflow);
-      
+      const culturalValidation =
+        await this.validateWorkflowCulturally(workflow);
+
       if (culturalValidation.overallScore < 80) {
-        recommendations.push('Improve cultural compliance before component generation');
+        recommendations.push(
+          "Improve cultural compliance before component generation",
+        );
       }
 
       // Generate components for each workflow node
@@ -190,15 +199,17 @@ export class WorkflowComponentMapper extends EventEmitter {
           const componentSpec = await this.generateComponentFromNode(
             node,
             workflow.culturalConfiguration,
-            options
+            options,
           );
-          
+
           if (componentSpec) {
             components.push(componentSpec);
             this.generatedComponents.set(node.id, componentSpec);
           }
         } catch (error) {
-          errors.push(`Failed to generate component for node ${node.id}: ${error.message}`);
+          errors.push(
+            `Failed to generate component for node ${node.id}: ${error.message}`,
+          );
         }
       }
 
@@ -206,7 +217,7 @@ export class WorkflowComponentMapper extends EventEmitter {
       const containerComponent = await this.generateWorkflowContainer(
         workflow,
         components,
-        options
+        options,
       );
       components.push(containerComponent);
 
@@ -215,13 +226,14 @@ export class WorkflowComponentMapper extends EventEmitter {
         const ministryComponents = await this.generateMinistryComponents(
           workflow,
           components,
-          options
+          options,
         );
         components.push(...ministryComponents);
       }
 
       // Validate generated components for cultural compliance
-      const finalValidation = await this.validateGeneratedComponents(components);
+      const finalValidation =
+        await this.validateGeneratedComponents(components);
 
       const result: IComponentMappingResult = {
         success: errors.length === 0,
@@ -229,20 +241,20 @@ export class WorkflowComponentMapper extends EventEmitter {
         culturalValidation: finalValidation,
         recommendations,
         errors,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
 
       // Emit mapping completion event
-      this.emit('mappingComplete', {
+      this.emit("mappingComplete", {
         workflow,
         result,
-        processingTime: result.processingTime
+        processingTime: result.processingTime,
       });
 
       return result;
     } catch (error) {
       errors.push(`Workflow mapping failed: ${error.message}`);
-      
+
       return {
         success: false,
         components: [],
@@ -252,11 +264,11 @@ export class WorkflowComponentMapper extends EventEmitter {
           arabicRTLSupport: 0,
           professionalStandards: 0,
           accessibilityCompliance: 0,
-          overallScore: 0
+          overallScore: 0,
         },
         recommendations: [],
         errors,
-        processingTime: Date.now() - startTime
+        processingTime: Date.now() - startTime,
       };
     }
   }
@@ -267,7 +279,7 @@ export class WorkflowComponentMapper extends EventEmitter {
   private async generateComponentFromNode(
     node: IWorkflowNode,
     culturalConfig: ICulturalWorkflowConfig,
-    options: IComponentMappingOptions
+    options: IComponentMappingOptions,
   ): Promise<IReactComponentSpec | null> {
     // Map node type to React component type
     const componentType = this.mapNodeToComponentType(node.type);
@@ -278,14 +290,17 @@ export class WorkflowComponentMapper extends EventEmitter {
     // Generate component name with cultural intelligence
     const componentName = this.generateCulturalComponentName(
       node,
-      culturalConfig.primaryLanguage
+      culturalConfig.primaryLanguage,
     );
 
     // Create component props with Arabic/English labels
     const props = this.generateComponentProps(node, culturalConfig);
 
     // Generate cultural features configuration
-    const culturalFeatures = this.generateCulturalFeatures(node, culturalConfig);
+    const culturalFeatures = this.generateCulturalFeatures(
+      node,
+      culturalConfig,
+    );
 
     // Generate component code with cultural intelligence
     const code = await this.generateComponentCode(
@@ -293,23 +308,34 @@ export class WorkflowComponentMapper extends EventEmitter {
       componentType,
       props,
       culturalFeatures,
-      node
+      node,
     );
 
     // Generate RTL-aware styles
-    const styles = this.generateRTLStyles(componentType, culturalFeatures, node);
+    const styles = this.generateRTLStyles(
+      componentType,
+      culturalFeatures,
+      node,
+    );
 
     // Generate cultural validation tests
-    const tests = this.generateCulturalTests(componentName, props, culturalFeatures);
+    const tests = this.generateCulturalTests(
+      componentName,
+      props,
+      culturalFeatures,
+    );
 
     // Determine component file path
     const filePath = this.generateComponentFilePath(
       componentName,
-      node.culturalMetadata.ministryDomain
+      node.culturalMetadata.ministryDomain,
     );
 
     // Create component imports
-    const imports = this.generateComponentImports(componentType, culturalFeatures);
+    const imports = this.generateComponentImports(
+      componentType,
+      culturalFeatures,
+    );
 
     return {
       componentName,
@@ -320,7 +346,7 @@ export class WorkflowComponentMapper extends EventEmitter {
       culturalFeatures,
       code,
       styles,
-      tests
+      tests,
     };
   }
 
@@ -337,21 +363,21 @@ export class WorkflowComponentMapper extends EventEmitter {
    */
   private generateCulturalComponentName(
     node: IWorkflowNode,
-    primaryLanguage: string
+    primaryLanguage: string,
   ): string {
     const baseName = node.culturalMetadata.arabicLabel || node.name;
-    
+
     // Convert Arabic to camelCase component name
     const transliterated = this.transliterateArabicToEnglish(baseName);
     const camelCase = this.toCamelCase(transliterated);
-    
+
     // Add ministry prefix if applicable
     const ministry = node.culturalMetadata.ministryDomain;
     if (ministry) {
       const ministryPrefix = this.getMinistryPrefix(ministry);
       return `${ministryPrefix}${camelCase}`;
     }
-    
+
     return camelCase;
   }
 
@@ -360,7 +386,7 @@ export class WorkflowComponentMapper extends EventEmitter {
    */
   private generateComponentProps(
     node: IWorkflowNode,
-    culturalConfig: ICulturalWorkflowConfig
+    culturalConfig: ICulturalWorkflowConfig,
   ): IComponentProps {
     const required: string[] = [];
     const optional: string[] = [];
@@ -368,9 +394,9 @@ export class WorkflowComponentMapper extends EventEmitter {
     const englishLabels: Record<string, string> = {};
 
     // Extract props from node parameters
-    Object.keys(node.parameters).forEach(key => {
+    Object.keys(node.parameters).forEach((key) => {
       const isRequired = this.isRequiredParameter(key, node.type);
-      
+
       if (isRequired) {
         required.push(key);
       } else {
@@ -384,19 +410,19 @@ export class WorkflowComponentMapper extends EventEmitter {
 
     // Add cultural-specific props
     if (culturalConfig.islamicCompliance) {
-      optional.push('prayerTimeAware', 'islamicDateFormat');
-      arabicLabels['prayerTimeAware'] = 'مراعاة أوقات الصلاة';
-      arabicLabels['islamicDateFormat'] = 'تنسيق التاريخ الإسلامي';
-      englishLabels['prayerTimeAware'] = 'Prayer Time Aware';
-      englishLabels['islamicDateFormat'] = 'Islamic Date Format';
+      optional.push("prayerTimeAware", "islamicDateFormat");
+      arabicLabels["prayerTimeAware"] = "مراعاة أوقات الصلاة";
+      arabicLabels["islamicDateFormat"] = "تنسيق التاريخ الإسلامي";
+      englishLabels["prayerTimeAware"] = "Prayer Time Aware";
+      englishLabels["islamicDateFormat"] = "Islamic Date Format";
     }
 
     if (culturalConfig.rtlLayout) {
-      optional.push('rtlSupport', 'textDirection');
-      arabicLabels['rtlSupport'] = 'دعم الكتابة من اليمين إلى اليسار';
-      arabicLabels['textDirection'] = 'اتجاه النص';
-      englishLabels['rtlSupport'] = 'RTL Support';
-      englishLabels['textDirection'] = 'Text Direction';
+      optional.push("rtlSupport", "textDirection");
+      arabicLabels["rtlSupport"] = "دعم الكتابة من اليمين إلى اليسار";
+      arabicLabels["textDirection"] = "اتجاه النص";
+      englishLabels["rtlSupport"] = "RTL Support";
+      englishLabels["textDirection"] = "Text Direction";
     }
 
     return {
@@ -409,14 +435,27 @@ export class WorkflowComponentMapper extends EventEmitter {
         culturalSensitivity: true,
         professionalStandards: culturalConfig.governmentStandards,
         accessibilityCompliant: culturalConfig.accessibilityCompliant,
-        customRules: this.generateCustomValidationRules(node)
+        customRules: this.generateCustomValidationRules(node),
       },
       culturalOptions: {
-        supportedDialects: ['standard', 'iraqi', 'baghdadi', 'basri', 'moslawi'],
-        ministryThemes: this.getMinistryThemes(node.culturalMetadata.ministryDomain),
-        formalityLevels: ['high', 'medium', 'low'],
-        professionalContexts: ['government', 'educational', 'healthcare', 'public']
-      }
+        supportedDialects: [
+          "standard",
+          "iraqi",
+          "baghdadi",
+          "basri",
+          "moslawi",
+        ],
+        ministryThemes: this.getMinistryThemes(
+          node.culturalMetadata.ministryDomain,
+        ),
+        formalityLevels: ["high", "medium", "low"],
+        professionalContexts: [
+          "government",
+          "educational",
+          "healthcare",
+          "public",
+        ],
+      },
     };
   }
 
@@ -425,7 +464,7 @@ export class WorkflowComponentMapper extends EventEmitter {
    */
   private generateCulturalFeatures(
     node: IWorkflowNode,
-    culturalConfig: ICulturalWorkflowConfig
+    culturalConfig: ICulturalWorkflowConfig,
   ): ICulturalComponentFeatures {
     return {
       rtlSupport: culturalConfig.rtlLayout,
@@ -434,12 +473,12 @@ export class WorkflowComponentMapper extends EventEmitter {
       prayerTimeAwareness: culturalConfig.islamicCompliance,
       ministryBranding: !!node.culturalMetadata.ministryDomain,
       accessibilityFeatures: [
-        'screenReader',
-        'keyboardNavigation',
-        'highContrast',
-        'arabicVoiceSupport',
-        'dialectRecognition'
-      ]
+        "screenReader",
+        "keyboardNavigation",
+        "highContrast",
+        "arabicVoiceSupport",
+        "dialectRecognition",
+      ],
     };
   }
 
@@ -451,27 +490,30 @@ export class WorkflowComponentMapper extends EventEmitter {
     componentType: string,
     props: IComponentProps,
     culturalFeatures: ICulturalComponentFeatures,
-    node: IWorkflowNode
+    node: IWorkflowNode,
   ): Promise<string> {
     // Get base template for component type
-    const baseTemplate = this.componentTemplates.get(componentType) || '';
-    
+    const baseTemplate = this.componentTemplates.get(componentType) || "";
+
     // Generate cultural enhancements
     const culturalEnhancements = this.generateCulturalEnhancements(
       culturalFeatures,
       props,
-      node
+      node,
     );
-    
+
     // Generate Islamic compliance features
-    const islamicFeatures = this.generateIslamicFeatures(culturalFeatures, props);
-    
+    const islamicFeatures = this.generateIslamicFeatures(
+      culturalFeatures,
+      props,
+    );
+
     // Generate RTL support features
     const rtlFeatures = this.generateRTLFeatures(culturalFeatures, props);
-    
+
     // Generate ministry-specific features
     const ministryFeatures = this.generateMinistryFeatures(node, props);
-    
+
     // Combine all features into complete component code
     const componentCode = this.assembleComponentCode(
       componentName,
@@ -480,9 +522,9 @@ export class WorkflowComponentMapper extends EventEmitter {
       culturalEnhancements,
       islamicFeatures,
       rtlFeatures,
-      ministryFeatures
+      ministryFeatures,
     );
-    
+
     return componentCode;
   }
 
@@ -492,19 +534,24 @@ export class WorkflowComponentMapper extends EventEmitter {
   private generateRTLStyles(
     componentType: string,
     culturalFeatures: ICulturalComponentFeatures,
-    node: IWorkflowNode
+    node: IWorkflowNode,
   ): string {
     let styles = `
 .${this.getComponentClassName(componentType)} {
-  direction: ${culturalFeatures.rtlSupport ? 'rtl' : 'ltr'};
-  text-align: ${culturalFeatures.rtlSupport ? 'right' : 'left'};
+  direction: ${culturalFeatures.rtlSupport ? "rtl" : "ltr"};
+  text-align: ${culturalFeatures.rtlSupport ? "right" : "left"};
   font-family: 'Noto Sans Arabic', 'Roboto', sans-serif;
 }
 `;
 
     // Add ministry-specific styling
-    if (culturalFeatures.ministryBranding && node.culturalMetadata.ministryDomain) {
-      styles += this.generateMinistryStyles(node.culturalMetadata.ministryDomain);
+    if (
+      culturalFeatures.ministryBranding &&
+      node.culturalMetadata.ministryDomain
+    ) {
+      styles += this.generateMinistryStyles(
+        node.culturalMetadata.ministryDomain,
+      );
     }
 
     // Add Islamic-compliant color schemes
@@ -526,7 +573,7 @@ export class WorkflowComponentMapper extends EventEmitter {
   private generateCulturalTests(
     componentName: string,
     props: IComponentProps,
-    culturalFeatures: ICulturalComponentFeatures
+    culturalFeatures: ICulturalComponentFeatures,
   ): string {
     let tests = `
 import { render, screen } from '@testing-library/react';
@@ -587,61 +634,68 @@ describe('${componentName} Cultural Compliance', () => {
   private async generateWorkflowContainer(
     workflow: IWorkflowDefinition,
     components: IReactComponentSpec[],
-    options: IComponentMappingOptions
+    options: IComponentMappingOptions,
   ): Promise<IReactComponentSpec> {
     const containerName = `${this.toCamelCase(workflow.name)}Workflow`;
-    
+
     // Generate container code that orchestrates all components
     const containerCode = this.generateContainerCode(
       containerName,
       workflow,
-      components
+      components,
     );
-    
+
     // Generate container styles with RTL support
     const containerStyles = this.generateContainerStyles(
-      workflow.culturalConfiguration
+      workflow.culturalConfiguration,
     );
-    
+
     // Generate container tests
-    const containerTests = this.generateContainerTests(containerName, components);
-    
+    const containerTests = this.generateContainerTests(
+      containerName,
+      components,
+    );
+
     return {
       componentName: containerName,
-      componentType: 'workflow',
+      componentType: "workflow",
       filePath: `src/components/workflows/${containerName}.tsx`,
       props: {
-        required: ['workflowId'],
-        optional: ['culturalConfig', 'ministryTheme'],
+        required: ["workflowId"],
+        optional: ["culturalConfig", "ministryTheme"],
         arabicLabels: {
-          workflowId: 'معرف سير العمل',
-          culturalConfig: 'إعدادات ثقافية',
-          ministryTheme: 'موضوع الوزارة'
+          workflowId: "معرف سير العمل",
+          culturalConfig: "إعدادات ثقافية",
+          ministryTheme: "موضوع الوزارة",
         },
         englishLabels: {
-          workflowId: 'Workflow ID',
-          culturalConfig: 'Cultural Config',
-          ministryTheme: 'Ministry Theme'
+          workflowId: "Workflow ID",
+          culturalConfig: "Cultural Config",
+          ministryTheme: "Ministry Theme",
         },
         validation: {
           islamicCompliance: workflow.culturalConfiguration.islamicCompliance,
           culturalSensitivity: true,
-          professionalStandards: workflow.culturalConfiguration.governmentStandards,
-          accessibilityCompliant: workflow.culturalConfiguration.accessibilityCompliant,
-          customRules: []
+          professionalStandards:
+            workflow.culturalConfiguration.governmentStandards,
+          accessibilityCompliant:
+            workflow.culturalConfiguration.accessibilityCompliant,
+          customRules: [],
         },
         culturalOptions: {
-          supportedDialects: ['standard', 'iraqi'],
-          ministryThemes: ['health', 'education', 'interior', 'justice'],
-          formalityLevels: ['high', 'medium'],
-          professionalContexts: ['government']
-        }
+          supportedDialects: ["standard", "iraqi"],
+          ministryThemes: ["health", "education", "interior", "justice"],
+          formalityLevels: ["high", "medium"],
+          professionalContexts: ["government"],
+        },
       },
       imports: [
         'import React from "react";',
         'import { useWorkflowExecution } from "@/hooks/useWorkflowExecution";',
         'import { CulturalProvider } from "@/contexts/CulturalContext";',
-        ...components.map(c => `import { ${c.componentName} } from "./${c.componentName}";`)
+        ...components.map(
+          (c) => `import { ${c.componentName} } from "./${c.componentName}";`,
+        ),
       ],
       culturalFeatures: {
         rtlSupport: workflow.culturalConfiguration.rtlLayout,
@@ -649,11 +703,15 @@ describe('${componentName} Cultural Compliance', () => {
         islamicDateSupport: workflow.culturalConfiguration.islamicCompliance,
         prayerTimeAwareness: workflow.culturalConfiguration.islamicCompliance,
         ministryBranding: !!workflow.metadata.ministry,
-        accessibilityFeatures: ['screenReader', 'keyboardNavigation', 'arabicVoiceSupport']
+        accessibilityFeatures: [
+          "screenReader",
+          "keyboardNavigation",
+          "arabicVoiceSupport",
+        ],
       },
       code: containerCode,
       styles: containerStyles,
-      tests: containerTests
+      tests: containerTests,
     };
   }
 
@@ -663,7 +721,7 @@ describe('${componentName} Cultural Compliance', () => {
   private async generateMinistryComponents(
     workflow: IWorkflowDefinition,
     baseComponents: IReactComponentSpec[],
-    options: IComponentMappingOptions
+    options: IComponentMappingOptions,
   ): Promise<IReactComponentSpec[]> {
     const ministry = workflow.metadata.ministry;
     if (!ministry) return [];
@@ -693,9 +751,9 @@ describe('${componentName} Cultural Compliance', () => {
   private generateCulturalEnhancements(
     culturalFeatures: ICulturalComponentFeatures,
     props: IComponentProps,
-    node: IWorkflowNode
+    node: IWorkflowNode,
   ): string {
-    let enhancements = '';
+    let enhancements = "";
 
     if (culturalFeatures.dialectRecognition) {
       enhancements += `
@@ -731,9 +789,9 @@ describe('${componentName} Cultural Compliance', () => {
 
   private generateIslamicFeatures(
     culturalFeatures: ICulturalComponentFeatures,
-    props: IComponentProps
+    props: IComponentProps,
   ): string {
-    if (!culturalFeatures.islamicDateSupport) return '';
+    if (!culturalFeatures.islamicDateSupport) return "";
 
     return `
   const formatIslamicDate = (date: Date) => {
@@ -745,9 +803,9 @@ describe('${componentName} Cultural Compliance', () => {
 
   private generateRTLFeatures(
     culturalFeatures: ICulturalComponentFeatures,
-    props: IComponentProps
+    props: IComponentProps,
   ): string {
-    if (!culturalFeatures.rtlSupport) return '';
+    if (!culturalFeatures.rtlSupport) return "";
 
     return `
   const [textDirection, setTextDirection] = useState('rtl');
@@ -769,13 +827,13 @@ describe('${componentName} Cultural Compliance', () => {
 
   private generateMinistryFeatures(
     node: IWorkflowNode,
-    props: IComponentProps
+    props: IComponentProps,
   ): string {
     const ministry = node.culturalMetadata.ministryDomain;
-    if (!ministry) return '';
+    if (!ministry) return "";
 
     const ministryTemplate = this.ministryTemplates.get(ministry);
-    if (!ministryTemplate) return '';
+    if (!ministryTemplate) return "";
 
     return `
   const ministryConfig = {
@@ -795,7 +853,7 @@ describe('${componentName} Cultural Compliance', () => {
     culturalEnhancements: string,
     islamicFeatures: string,
     rtlFeatures: string,
-    ministryFeatures: string
+    ministryFeatures: string,
   ): string {
     return `
 import React, { useState, useEffect } from 'react';
@@ -803,12 +861,12 @@ import { useTranslation } from 'react-i18next';
 import { useCulturalContext } from '@/contexts/CulturalContext';
 
 interface ${componentName}Props {
-  ${props.required.map(prop => `${prop}: any;`).join('\n  ')}
-  ${props.optional.map(prop => `${prop}?: any;`).join('\n  ')}
+  ${props.required.map((prop) => `${prop}: any;`).join("\n  ")}
+  ${props.optional.map((prop) => `${prop}?: any;`).join("\n  ")}
 }
 
 export const ${componentName}: React.FC<${componentName}Props> = ({
-  ${[...props.required, ...props.optional].join(',\n  ')}
+  ${[...props.required, ...props.optional].join(",\n  ")}
 }) => {
   const { t, i18n } = useTranslation();
   const { culturalConfig, isRTL } = useCulturalContext();
@@ -837,7 +895,9 @@ export default ${componentName};
 
   // Additional helper methods
 
-  private validateWorkflowCulturally(workflow: IWorkflowDefinition): Promise<ICulturalMappingValidation> {
+  private validateWorkflowCulturally(
+    workflow: IWorkflowDefinition,
+  ): Promise<ICulturalMappingValidation> {
     // Implementation for cultural validation
     return Promise.resolve({
       islamicCompliance: 95,
@@ -845,11 +905,13 @@ export default ${componentName};
       arabicRTLSupport: 98,
       professionalStandards: 92,
       accessibilityCompliance: 88,
-      overallScore: 93
+      overallScore: 93,
     });
   }
 
-  private validateGeneratedComponents(components: IReactComponentSpec[]): Promise<ICulturalMappingValidation> {
+  private validateGeneratedComponents(
+    components: IReactComponentSpec[],
+  ): Promise<ICulturalMappingValidation> {
     // Implementation for validating generated components
     return Promise.resolve({
       islamicCompliance: 95,
@@ -857,93 +919,123 @@ export default ${componentName};
       arabicRTLSupport: 98,
       professionalStandards: 92,
       accessibilityCompliance: 88,
-      overallScore: 93
+      overallScore: 93,
     });
   }
 
   private transliterateArabicToEnglish(arabicText: string): string {
     // Simple transliteration mapping
     const transliterationMap: Record<string, string> = {
-      'ا': 'a', 'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j',
-      'ح': 'h', 'خ': 'kh', 'د': 'd', 'ذ': 'dh', 'ر': 'r',
-      'ز': 'z', 'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd',
-      'ط': 't', 'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f',
-      'ق': 'q', 'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n',
-      'ه': 'h', 'و': 'w', 'ي': 'y'
+      ا: "a",
+      ب: "b",
+      ت: "t",
+      ث: "th",
+      ج: "j",
+      ح: "h",
+      خ: "kh",
+      د: "d",
+      ذ: "dh",
+      ر: "r",
+      ز: "z",
+      س: "s",
+      ش: "sh",
+      ص: "s",
+      ض: "d",
+      ط: "t",
+      ظ: "z",
+      ع: "a",
+      غ: "gh",
+      ف: "f",
+      ق: "q",
+      ك: "k",
+      ل: "l",
+      م: "m",
+      ن: "n",
+      ه: "h",
+      و: "w",
+      ي: "y",
     };
 
-    return arabicText.split('').map(char => 
-      transliterationMap[char] || char
-    ).join('');
+    return arabicText
+      .split("")
+      .map((char) => transliterationMap[char] || char)
+      .join("");
   }
 
   private toCamelCase(str: string): string {
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    }).replace(/\s+/g, '');
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, "");
   }
 
   private getMinistryPrefix(ministry: string): string {
     const prefixes: Record<string, string> = {
-      health: 'Health',
-      education: 'Education',
-      interior: 'Interior',
-      justice: 'Justice'
+      health: "Health",
+      education: "Education",
+      interior: "Interior",
+      justice: "Justice",
     };
-    return prefixes[ministry] || '';
+    return prefixes[ministry] || "";
   }
 
-  private generateArabicLabel(key: string, metadata: ICulturalNodeMetadata): string {
+  private generateArabicLabel(
+    key: string,
+    metadata: ICulturalNodeMetadata,
+  ): string {
     // Generate Arabic labels based on key and context
     const labelMap: Record<string, string> = {
-      'name': 'الاسم',
-      'description': 'الوصف',
-      'value': 'القيمة',
-      'type': 'النوع',
-      'required': 'مطلوب',
-      'optional': 'اختياري'
+      name: "الاسم",
+      description: "الوصف",
+      value: "القيمة",
+      type: "النوع",
+      required: "مطلوب",
+      optional: "اختياري",
     };
     return labelMap[key] || key;
   }
 
   private generateEnglishLabel(key: string): string {
-    return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+    return (
+      key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")
+    );
   }
 
   private isRequiredParameter(key: string, nodeType: string): boolean {
     // Define required parameters based on node type
     const requiredParams: Record<string, string[]> = {
-      'webhook': ['path', 'method'],
-      'httpRequest': ['url', 'method'],
-      'set': ['values'],
-      'if': ['conditions']
+      webhook: ["path", "method"],
+      httpRequest: ["url", "method"],
+      set: ["values"],
+      if: ["conditions"],
     };
-    
+
     return requiredParams[nodeType]?.includes(key) || false;
   }
 
   private generateCustomValidationRules(node: IWorkflowNode): string[] {
     const rules: string[] = [];
-    
+
     if (node.culturalMetadata.islamicCompliance) {
-      rules.push('islamic-compliance');
+      rules.push("islamic-compliance");
     }
-    
-    if (node.culturalMetadata.culturalSensitivity === 'high') {
-      rules.push('high-cultural-sensitivity');
+
+    if (node.culturalMetadata.culturalSensitivity === "high") {
+      rules.push("high-cultural-sensitivity");
     }
-    
+
     return rules;
   }
 
   private getMinistryThemes(ministry?: string): string[] {
     const themes: Record<string, string[]> = {
-      health: ['medical', 'clinical', 'patient-care'],
-      education: ['academic', 'learning', 'institutional'],
-      interior: ['security', 'administrative', 'civic'],
-      justice: ['legal', 'judicial', 'enforcement']
+      health: ["medical", "clinical", "patient-care"],
+      education: ["academic", "learning", "institutional"],
+      interior: ["security", "administrative", "civic"],
+      justice: ["legal", "judicial", "enforcement"],
     };
-    
+
     return ministry ? themes[ministry] || [] : [];
   }
 
@@ -953,7 +1045,7 @@ export default ${componentName};
 
   private generateMinistryStyles(ministry: string): string {
     const ministryTemplate = this.ministryTemplates.get(ministry);
-    if (!ministryTemplate) return '';
+    if (!ministryTemplate) return "";
 
     return `
 .ministry-${ministry} {
@@ -1003,16 +1095,19 @@ export default ${componentName};
   private generateContainerCode(
     containerName: string,
     workflow: IWorkflowDefinition,
-    components: IReactComponentSpec[]
+    components: IReactComponentSpec[],
   ): string {
-    const componentInstances = components.map(component => `
+    const componentInstances = components
+      .map(
+        (component) => `
       <${component.componentName}
         key="${component.componentName}"
         culturalConfig={culturalConfig}
         ministryTheme={ministryTheme}
         {...componentProps['${component.componentName}']}
-      />`
-    ).join('\n');
+      />`,
+      )
+      .join("\n");
 
     return `
 export const ${containerName}: React.FC<${containerName}Props> = ({
@@ -1034,10 +1129,12 @@ export const ${containerName}: React.FC<${containerName}Props> = ({
 `;
   }
 
-  private generateContainerStyles(culturalConfig: ICulturalWorkflowConfig): string {
+  private generateContainerStyles(
+    culturalConfig: ICulturalWorkflowConfig,
+  ): string {
     return `
 .workflow-container {
-  direction: ${culturalConfig.rtlLayout ? 'rtl' : 'ltr'};
+  direction: ${culturalConfig.rtlLayout ? "rtl" : "ltr"};
   font-family: ${culturalConfig.rtlLayout ? "'Noto Sans Arabic', sans-serif" : "'Roboto', sans-serif"};
   padding: 20px;
   background: var(--workflow-background, #f8f9fa);
@@ -1053,55 +1150,64 @@ export const ${containerName}: React.FC<${containerName}Props> = ({
 `;
   }
 
-  private generateContainerTests(containerName: string, components: IReactComponentSpec[]): string {
+  private generateContainerTests(
+    containerName: string,
+    components: IReactComponentSpec[],
+  ): string {
     return `
 describe('${containerName}', () => {
   test('should render all workflow components', () => {
     render(<${containerName} workflowId="test-workflow" />);
     
-    ${components.map(component => `
-    expect(screen.getByTestId('${component.componentName.toLowerCase()}')).toBeInTheDocument();`
-    ).join('\n')}
+    ${components
+      .map(
+        (component) => `
+    expect(screen.getByTestId('${component.componentName.toLowerCase()}')).toBeInTheDocument();`,
+      )
+      .join("\n")}
   });
 });
 `;
   }
 
-  private generateMinistryHeader(ministry: string, workflow: IWorkflowDefinition): IReactComponentSpec {
+  private generateMinistryHeader(
+    ministry: string,
+    workflow: IWorkflowDefinition,
+  ): IReactComponentSpec {
     const ministryTemplate = this.ministryTemplates.get(ministry)!;
-    
+
     return {
       componentName: `${this.getMinistryPrefix(ministry)}Header`,
-      componentType: 'ministry',
+      componentType: "ministry",
       filePath: `src/components/ministry/${ministry}/Header.tsx`,
       props: {
         required: [],
-        optional: ['showLogo', 'showNavigation'],
+        optional: ["showLogo", "showNavigation"],
         arabicLabels: {
-          showLogo: 'إظهار الشعار',
-          showNavigation: 'إظهار التنقل'
+          showLogo: "إظهار الشعار",
+          showNavigation: "إظهار التنقل",
         },
         englishLabels: {
-          showLogo: 'Show Logo',
-          showNavigation: 'Show Navigation'
+          showLogo: "Show Logo",
+          showNavigation: "Show Navigation",
         },
         validation: {
           islamicCompliance: true,
           culturalSensitivity: true,
           professionalStandards: true,
           accessibilityCompliant: true,
-          customRules: []
+          customRules: [],
         },
         culturalOptions: {
-          supportedDialects: ['standard', 'iraqi'],
+          supportedDialects: ["standard", "iraqi"],
           ministryThemes: [ministry],
-          formalityLevels: ['high'],
-          professionalContexts: ['government']
-        }
+          formalityLevels: ["high"],
+          professionalContexts: ["government"],
+        },
       },
       imports: [
         'import React from "react";',
-        'import { MinistryLogo } from "@/components/ministry/MinistryLogo";'
+        'import { MinistryLogo } from "@/components/ministry/MinistryLogo";',
       ],
       culturalFeatures: {
         rtlSupport: true,
@@ -1109,7 +1215,7 @@ describe('${containerName}', () => {
         islamicDateSupport: false,
         prayerTimeAwareness: false,
         ministryBranding: true,
-        accessibilityFeatures: ['screenReader', 'keyboardNavigation']
+        accessibilityFeatures: ["screenReader", "keyboardNavigation"],
       },
       code: `
 export const ${this.getMinistryPrefix(ministry)}Header: React.FC = ({ showLogo = true, showNavigation = true }) => {
@@ -1152,34 +1258,37 @@ export const ${this.getMinistryPrefix(ministry)}Header: React.FC = ({ showLogo =
 test('should render ministry header with logo', () => {
   render(<${this.getMinistryPrefix(ministry)}Header showLogo={true} />);
   expect(screen.getByRole('banner')).toBeInTheDocument();
-});`
+});`,
     };
   }
 
-  private generateMinistryNavigation(ministry: string, workflow: IWorkflowDefinition): IReactComponentSpec {
+  private generateMinistryNavigation(
+    ministry: string,
+    workflow: IWorkflowDefinition,
+  ): IReactComponentSpec {
     // Similar implementation for navigation component
     return {
       componentName: `${this.getMinistryPrefix(ministry)}Navigation`,
-      componentType: 'navigation',
+      componentType: "navigation",
       filePath: `src/components/ministry/${ministry}/Navigation.tsx`,
       props: {
-        required: ['menuItems'],
-        optional: ['isCollapsed'],
-        arabicLabels: { menuItems: 'عناصر القائمة', isCollapsed: 'مطوية' },
-        englishLabels: { menuItems: 'Menu Items', isCollapsed: 'Is Collapsed' },
+        required: ["menuItems"],
+        optional: ["isCollapsed"],
+        arabicLabels: { menuItems: "عناصر القائمة", isCollapsed: "مطوية" },
+        englishLabels: { menuItems: "Menu Items", isCollapsed: "Is Collapsed" },
         validation: {
           islamicCompliance: true,
           culturalSensitivity: true,
           professionalStandards: true,
           accessibilityCompliant: true,
-          customRules: []
+          customRules: [],
         },
         culturalOptions: {
-          supportedDialects: ['standard', 'iraqi'],
+          supportedDialects: ["standard", "iraqi"],
           ministryThemes: [ministry],
-          formalityLevels: ['high'],
-          professionalContexts: ['government']
-        }
+          formalityLevels: ["high"],
+          professionalContexts: ["government"],
+        },
       },
       imports: ['import React from "react";'],
       culturalFeatures: {
@@ -1188,38 +1297,41 @@ test('should render ministry header with logo', () => {
         islamicDateSupport: false,
         prayerTimeAwareness: false,
         ministryBranding: true,
-        accessibilityFeatures: ['screenReader', 'keyboardNavigation']
+        accessibilityFeatures: ["screenReader", "keyboardNavigation"],
       },
       code: `// Navigation component implementation`,
       styles: `// Navigation styles`,
-      tests: `// Navigation tests`
+      tests: `// Navigation tests`,
     };
   }
 
-  private generateMinistryFooter(ministry: string, workflow: IWorkflowDefinition): IReactComponentSpec {
+  private generateMinistryFooter(
+    ministry: string,
+    workflow: IWorkflowDefinition,
+  ): IReactComponentSpec {
     // Similar implementation for footer component
     return {
       componentName: `${this.getMinistryPrefix(ministry)}Footer`,
-      componentType: 'ministry',
+      componentType: "ministry",
       filePath: `src/components/ministry/${ministry}/Footer.tsx`,
       props: {
         required: [],
-        optional: ['showContactInfo'],
-        arabicLabels: { showContactInfo: 'إظهار معلومات الاتصال' },
-        englishLabels: { showContactInfo: 'Show Contact Info' },
+        optional: ["showContactInfo"],
+        arabicLabels: { showContactInfo: "إظهار معلومات الاتصال" },
+        englishLabels: { showContactInfo: "Show Contact Info" },
         validation: {
           islamicCompliance: true,
           culturalSensitivity: true,
           professionalStandards: true,
           accessibilityCompliant: true,
-          customRules: []
+          customRules: [],
         },
         culturalOptions: {
-          supportedDialects: ['standard', 'iraqi'],
+          supportedDialects: ["standard", "iraqi"],
           ministryThemes: [ministry],
-          formalityLevels: ['high'],
-          professionalContexts: ['government']
-        }
+          formalityLevels: ["high"],
+          professionalContexts: ["government"],
+        },
       },
       imports: ['import React from "react";'],
       culturalFeatures: {
@@ -1228,11 +1340,11 @@ test('should render ministry header with logo', () => {
         islamicDateSupport: false,
         prayerTimeAwareness: false,
         ministryBranding: true,
-        accessibilityFeatures: ['screenReader', 'keyboardNavigation']
+        accessibilityFeatures: ["screenReader", "keyboardNavigation"],
       },
       code: `// Footer component implementation`,
       styles: `// Footer styles`,
-      tests: `// Footer tests`
+      tests: `// Footer tests`,
     };
   }
 
@@ -1240,81 +1352,99 @@ test('should render ministry header with logo', () => {
 
   private initializeComponentTemplates(): Map<string, string> {
     return new Map([
-      ['form', 'Basic form template with validation'],
-      ['display', 'Data display template with formatting'],
-      ['action', 'Action button template with handlers'],
-      ['navigation', 'Navigation template with routing'],
-      ['data', 'Data table template with sorting'],
-      ['ministry', 'Ministry-specific template with branding']
+      ["form", "Basic form template with validation"],
+      ["display", "Data display template with formatting"],
+      ["action", "Action button template with handlers"],
+      ["navigation", "Navigation template with routing"],
+      ["data", "Data table template with sorting"],
+      ["ministry", "Ministry-specific template with branding"],
     ]);
   }
 
   private initializeMinistryTemplates(): Map<string, IMinistryTemplate> {
     return new Map([
-      ['health', {
-        arabicName: 'وزارة الصحة',
-        englishName: 'Ministry of Health',
-        primaryColor: '#2E8B57',
-        secondaryColor: '#90EE90',
-        logoUrl: '/images/ministry/health-logo.png',
-        departments: ['hospitals', 'clinics', 'pharmacy', 'public-health']
-      }],
-      ['education', {
-        arabicName: 'وزارة التربية والتعليم',
-        englishName: 'Ministry of Education',
-        primaryColor: '#4169E1',
-        secondaryColor: '#87CEEB',
-        logoUrl: '/images/ministry/education-logo.png',
-        departments: ['schools', 'universities', 'curriculum', 'research']
-      }],
-      ['interior', {
-        arabicName: 'وزارة الداخلية',
-        englishName: 'Ministry of Interior',
-        primaryColor: '#8B4513',
-        secondaryColor: '#DEB887',
-        logoUrl: '/images/ministry/interior-logo.png',
-        departments: ['security', 'police', 'civil-defense', 'immigration']
-      }],
-      ['justice', {
-        arabicName: 'وزارة العدل',
-        englishName: 'Ministry of Justice',
-        primaryColor: '#800080',
-        secondaryColor: '#DDA0DD',
-        logoUrl: '/images/ministry/justice-logo.png',
-        departments: ['courts', 'prosecution', 'legal-affairs', 'prisons']
-      }]
+      [
+        "health",
+        {
+          arabicName: "وزارة الصحة",
+          englishName: "Ministry of Health",
+          primaryColor: "#2E8B57",
+          secondaryColor: "#90EE90",
+          logoUrl: "/images/ministry/health-logo.png",
+          departments: ["hospitals", "clinics", "pharmacy", "public-health"],
+        },
+      ],
+      [
+        "education",
+        {
+          arabicName: "وزارة التربية والتعليم",
+          englishName: "Ministry of Education",
+          primaryColor: "#4169E1",
+          secondaryColor: "#87CEEB",
+          logoUrl: "/images/ministry/education-logo.png",
+          departments: ["schools", "universities", "curriculum", "research"],
+        },
+      ],
+      [
+        "interior",
+        {
+          arabicName: "وزارة الداخلية",
+          englishName: "Ministry of Interior",
+          primaryColor: "#8B4513",
+          secondaryColor: "#DEB887",
+          logoUrl: "/images/ministry/interior-logo.png",
+          departments: ["security", "police", "civil-defense", "immigration"],
+        },
+      ],
+      [
+        "justice",
+        {
+          arabicName: "وزارة العدل",
+          englishName: "Ministry of Justice",
+          primaryColor: "#800080",
+          secondaryColor: "#DDA0DD",
+          logoUrl: "/images/ministry/justice-logo.png",
+          departments: ["courts", "prosecution", "legal-affairs", "prisons"],
+        },
+      ],
     ]);
   }
 
   private initializeCulturalPatterns(): Map<string, RegExp[]> {
     return new Map([
-      ['iraqi_greetings', [
-        /السلام عليكم/, /مرحبا/, /أهلا وسهلا/,
-        /صباح الخير/, /مساء الخير/
-      ]],
-      ['formal_address', [
-        /سيادة/, /معالي/, /فخامة/, /حضرة/,
-        /المحترم/, /الموقر/, /الكريم/
-      ]],
-      ['religious_expressions', [
-        /بسم الله/, /إن شاء الله/, /ما شاء الله/,
-        /بارك الله فيك/, /جزاك الله خيراً/
-      ]]
+      [
+        "iraqi_greetings",
+        [/السلام عليكم/, /مرحبا/, /أهلا وسهلا/, /صباح الخير/, /مساء الخير/],
+      ],
+      [
+        "formal_address",
+        [/سيادة/, /معالي/, /فخامة/, /حضرة/, /المحترم/, /الموقر/, /الكريم/],
+      ],
+      [
+        "religious_expressions",
+        [
+          /بسم الله/,
+          /إن شاء الله/,
+          /ما شاء الله/,
+          /بارك الله فيك/,
+          /جزاك الله خيراً/,
+        ],
+      ],
     ]);
   }
 
   private initializeNodeTypeMapping(): Map<string, string> {
     return new Map([
-      ['webhook', 'form'],
-      ['httpRequest', 'action'],
-      ['set', 'data'],
-      ['if', 'action'],
-      ['switch', 'navigation'],
-      ['merge', 'data'],
-      ['wait', 'display'],
-      ['executeWorkflow', 'action'],
-      ['function', 'action'],
-      ['code', 'action']
+      ["webhook", "form"],
+      ["httpRequest", "action"],
+      ["set", "data"],
+      ["if", "action"],
+      ["switch", "navigation"],
+      ["merge", "data"],
+      ["wait", "display"],
+      ["executeWorkflow", "action"],
+      ["function", "action"],
+      ["code", "action"],
     ]);
   }
 }

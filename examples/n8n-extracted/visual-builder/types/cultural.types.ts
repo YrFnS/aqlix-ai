@@ -9,8 +9,8 @@ export interface IslamicComplianceResult {
   score: number; // 0-1
   issues: IslamicComplianceIssue[];
   recommendations: IslamicComplianceRecommendation[];
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  
+  severity: "low" | "medium" | "high" | "critical";
+
   // Detailed compliance breakdown
   breakdown: {
     financialCompliance: number; // Riba/interest check
@@ -19,7 +19,7 @@ export interface IslamicComplianceResult {
     professionalEthics: number; // Domain-specific Islamic ethics
     businessPractices: number; // Islamic business principles
   };
-  
+
   // Validation context
   context: {
     validatedAt: Date;
@@ -33,12 +33,18 @@ export interface IslamicComplianceResult {
 
 export interface IslamicComplianceIssue {
   id: string;
-  type: 'riba' | 'haram-content' | 'prayer-conflict' | 'ramadan-violation' | 'professional-ethics' | 'business-practice';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:
+    | "riba"
+    | "haram-content"
+    | "prayer-conflict"
+    | "ramadan-violation"
+    | "professional-ethics"
+    | "business-practice";
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   arabicMessage?: string;
   nodeId?: string;
-  
+
   // Issue details
   details: {
     violationType: string;
@@ -46,7 +52,7 @@ export interface IslamicComplianceIssue {
     professionalContext?: string;
     suggestedAlternative?: string;
   };
-  
+
   // Resolution guidance
   resolution: {
     required: boolean;
@@ -58,19 +64,19 @@ export interface IslamicComplianceIssue {
 
 export interface IslamicComplianceRecommendation {
   id: string;
-  type: 'enhancement' | 'alternative' | 'guidance' | 'best-practice';
-  priority: 'low' | 'medium' | 'high';
+  type: "enhancement" | "alternative" | "guidance" | "best-practice";
+  priority: "low" | "medium" | "high";
   message: string;
   arabicMessage?: string;
-  
+
   // Implementation details
   implementation: {
-    effort: 'minimal' | 'moderate' | 'significant';
-    impact: 'low' | 'medium' | 'high';
+    effort: "minimal" | "moderate" | "significant";
+    impact: "low" | "medium" | "high";
     timeframe: string;
     resources?: string[];
   };
-  
+
   // Islamic context
   islamic: {
     basis: string; // Quran, Hadith, scholarly consensus
@@ -86,7 +92,7 @@ export interface PrayerTimeContext {
     coordinates: { lat: number; lng: number };
     timezone: string;
   };
-  
+
   times: {
     fajr: string;
     sunrise: string;
@@ -94,13 +100,13 @@ export interface PrayerTimeContext {
     asr: string;
     maghrib: string;
     isha: string;
-    
+
     // Special times
     tahajjud?: string;
     ishraq?: string;
     zawal?: string; // Forbidden time before Dhuhr
   };
-  
+
   // Current status
   current: {
     nextPrayer: string;
@@ -108,7 +114,7 @@ export interface PrayerTimeContext {
     isRestrictedTime: boolean;
     fridayJumahTime?: string;
   };
-  
+
   // Ramadan context
   ramadan?: {
     isRamadan: boolean;
@@ -123,16 +129,16 @@ export interface PrayerTimeContext {
 export interface ArabicProcessingResult {
   originalText: string;
   processedText: string;
-  
+
   // Text analysis
   analysis: {
-    direction: 'rtl' | 'ltr' | 'mixed';
+    direction: "rtl" | "ltr" | "mixed";
     dialect: ArabicDialect;
     confidence: number; // 0-1
     languageRatio: { arabic: number; english: number; other: number };
-    complexity: 'simple' | 'moderate' | 'complex';
+    complexity: "simple" | "moderate" | "complex";
   };
-  
+
   // Processing enhancements
   enhancements: {
     rtlFormatting: boolean;
@@ -141,7 +147,7 @@ export interface ArabicProcessingResult {
     bilingualLabeling: boolean;
     culturalValidation: boolean;
   };
-  
+
   // Quality metrics
   quality: {
     readabilityScore: number; // 0-1
@@ -149,17 +155,24 @@ export interface ArabicProcessingResult {
     professionalAccuracy: number; // 0-1
     rtlLayoutCompliance: number; // 0-1
   };
-  
+
   // Issues and recommendations
   issues: ArabicProcessingIssue[];
   recommendations: ArabicProcessingRecommendation[];
 }
 
 export interface ArabicDialect {
-  primary: 'baghdadi' | 'basri' | 'moslawi' | 'kurdish' | 'standard' | 'mixed' | 'unknown';
+  primary:
+    | "baghdadi"
+    | "basri"
+    | "moslawi"
+    | "kurdish"
+    | "standard"
+    | "mixed"
+    | "unknown";
   secondary?: string[];
   confidence: number; // 0-1
-  
+
   // Dialect characteristics
   characteristics: {
     phonetic: string[]; // Distinctive sounds
@@ -167,29 +180,34 @@ export interface ArabicDialect {
     grammatical: string[]; // Grammar patterns
     cultural: string[]; // Cultural expressions
   };
-  
+
   // Professional adaptation
   professional: {
     domainTerminology: string[];
-    formalRegistr: 'colloquial' | 'formal' | 'professional' | 'academic';
+    formalRegistr: "colloquial" | "formal" | "professional" | "academic";
     audienceAppropriate: boolean;
   };
 }
 
 export interface ArabicProcessingIssue {
   id: string;
-  type: 'rtl-layout' | 'dialect-inconsistency' | 'mixed-language' | 'cultural-inappropriate' | 'professional-terminology';
-  severity: 'low' | 'medium' | 'high';
+  type:
+    | "rtl-layout"
+    | "dialect-inconsistency"
+    | "mixed-language"
+    | "cultural-inappropriate"
+    | "professional-terminology";
+  severity: "low" | "medium" | "high";
   message: string;
   arabicMessage?: string;
-  
+
   // Location in text
   location: {
     start: number;
     end: number;
     context: string;
   };
-  
+
   // Resolution guidance
   resolution: {
     required: boolean;
@@ -201,15 +219,19 @@ export interface ArabicProcessingIssue {
 
 export interface ArabicProcessingRecommendation {
   id: string;
-  type: 'enhancement' | 'optimization' | 'cultural-adaptation' | 'professional-improvement';
-  priority: 'low' | 'medium' | 'high';
+  type:
+    | "enhancement"
+    | "optimization"
+    | "cultural-adaptation"
+    | "professional-improvement";
+  priority: "low" | "medium" | "high";
   message: string;
   arabicMessage?: string;
-  
+
   // Implementation details
   implementation: {
-    effort: 'minimal' | 'moderate' | 'significant';
-    impact: 'low' | 'medium' | 'high';
+    effort: "minimal" | "moderate" | "significant";
+    impact: "low" | "medium" | "high";
     tools?: string[];
     resources?: string[];
   };
@@ -217,20 +239,31 @@ export interface ArabicProcessingRecommendation {
 
 // Professional Domain Types
 export interface ProfessionalDomainContext {
-  domain: 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'general';
+  domain:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "finance"
+    | "general";
   ministry?: string;
   department?: string;
   subdivision?: string;
-  
+
   // Domain-specific requirements
   requirements: {
-    securityLevel: 'public' | 'internal' | 'confidential' | 'secret' | 'top-secret';
+    securityLevel:
+      | "public"
+      | "internal"
+      | "confidential"
+      | "secret"
+      | "top-secret";
     complianceStandards: string[];
     islamicJurisprudence: boolean;
     arabicMandatory: boolean;
     bilingualRequired: boolean;
   };
-  
+
   // Professional terminology
   terminology: {
     arabic: string[];
@@ -239,7 +272,7 @@ export interface ProfessionalDomainContext {
     abbreviations: Record<string, string>;
     culturalTerms: Record<string, string>;
   };
-  
+
   // Cultural considerations
   cultural: {
     genderConsiderations: boolean;
@@ -248,7 +281,7 @@ export interface ProfessionalDomainContext {
     tribalSensitivities: boolean;
     sectarianNeutrality: boolean;
   };
-  
+
   // Operational context
   operational: {
     businessHours: { start: string; end: string };
@@ -263,7 +296,7 @@ export interface ProfessionalDomainValidation {
   isValid: boolean;
   score: number; // 0-1
   domain: string;
-  
+
   // Validation breakdown
   breakdown: {
     terminologyAccuracy: number;
@@ -272,11 +305,11 @@ export interface ProfessionalDomainValidation {
     operationalCompatibility: number;
     islamicConsistency: number;
   };
-  
+
   // Domain-specific issues
   issues: ProfessionalDomainIssue[];
   recommendations: ProfessionalDomainRecommendation[];
-  
+
   // Validation context
   context: {
     validatedAt: Date;
@@ -289,11 +322,16 @@ export interface ProfessionalDomainValidation {
 
 export interface ProfessionalDomainIssue {
   id: string;
-  type: 'terminology' | 'cultural-sensitivity' | 'compliance' | 'operational' | 'islamic-ethics';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:
+    | "terminology"
+    | "cultural-sensitivity"
+    | "compliance"
+    | "operational"
+    | "islamic-ethics";
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   arabicMessage?: string;
-  
+
   // Issue context
   context: {
     domain: string;
@@ -302,7 +340,7 @@ export interface ProfessionalDomainIssue {
     culturalNorm?: string;
     islamicPrinciple?: string;
   };
-  
+
   // Resolution guidance
   resolution: {
     required: boolean;
@@ -314,11 +352,15 @@ export interface ProfessionalDomainIssue {
 
 export interface ProfessionalDomainRecommendation {
   id: string;
-  type: 'best-practice' | 'optimization' | 'cultural-enhancement' | 'compliance-improvement';
-  priority: 'low' | 'medium' | 'high';
+  type:
+    | "best-practice"
+    | "optimization"
+    | "cultural-enhancement"
+    | "compliance-improvement";
+  priority: "low" | "medium" | "high";
   message: string;
   arabicMessage?: string;
-  
+
   // Professional context
   professional: {
     domain: string;
@@ -326,7 +368,7 @@ export interface ProfessionalDomainRecommendation {
     implementation: string;
     benefits: string[];
   };
-  
+
   // Cultural context
   cultural: {
     sensitivity: string;
@@ -342,7 +384,7 @@ export interface CulturalTheme {
   arabicName?: string;
   description: string;
   arabicDescription?: string;
-  
+
   // Visual properties
   colors: {
     primary: string;
@@ -353,7 +395,7 @@ export interface CulturalTheme {
     islamic?: string; // Green tones for Islamic elements
     ministry?: string; // Government colors
   };
-  
+
   // Typography
   typography: {
     arabicFont: string;
@@ -370,16 +412,16 @@ export interface CulturalTheme {
       bold: number;
     };
   };
-  
+
   // Layout properties
   layout: {
     rtlSupport: boolean;
-    spacing: 'compact' | 'normal' | 'spacious';
+    spacing: "compact" | "normal" | "spacious";
     borderRadius: string;
     shadows: boolean;
     animations: boolean;
   };
-  
+
   // Cultural elements
   cultural: {
     islamicMotifs: boolean;
@@ -391,9 +433,9 @@ export interface CulturalTheme {
 
 export interface CulturalDisplaySettings {
   theme: string;
-  language: 'arabic' | 'english' | 'bilingual';
-  direction: 'rtl' | 'ltr' | 'auto';
-  
+  language: "arabic" | "english" | "bilingual";
+  direction: "rtl" | "ltr" | "auto";
+
   // Content display
   content: {
     showArabicLabels: boolean;
@@ -402,7 +444,7 @@ export interface CulturalDisplaySettings {
     showPrayerTimeIndicators: boolean;
     showCulturalValidation: boolean;
   };
-  
+
   // Professional display
   professional: {
     showMinistryBranding: boolean;
@@ -410,7 +452,7 @@ export interface CulturalDisplaySettings {
     showComplianceStatus: boolean;
     showDomainSpecificIcons: boolean;
   };
-  
+
   // Accessibility
   accessibility: {
     highContrast: boolean;
@@ -418,7 +460,7 @@ export interface CulturalDisplaySettings {
     screenReaderOptimized: boolean;
     colorBlindFriendly: boolean;
   };
-  
+
   // Cultural preferences
   cultural: {
     islamicCalendar: boolean;
@@ -436,12 +478,12 @@ export interface CulturalValidationResult {
     score: number; // 0-1
     confidence: number; // 0-1
   };
-  
+
   // Component validations
   islamic: IslamicComplianceResult;
   arabic: ArabicProcessingResult;
   professional: ProfessionalDomainValidation;
-  
+
   // Aggregated metrics
   metrics: {
     culturalAccuracy: number;
@@ -450,15 +492,19 @@ export interface CulturalValidationResult {
     professionalAppropriatenesss: number;
     overallReadiness: number;
   };
-  
+
   // Summary
   summary: {
     criticalIssues: number;
     highPriorityRecommendations: number;
     estimatedFixTime: string;
-    readinessLevel: 'not-ready' | 'needs-work' | 'mostly-ready' | 'production-ready';
+    readinessLevel:
+      | "not-ready"
+      | "needs-work"
+      | "mostly-ready"
+      | "production-ready";
   };
-  
+
   // Validation metadata
   metadata: {
     validatedAt: Date;
@@ -472,7 +518,13 @@ export interface CulturalValidationResult {
 }
 
 // Export utility types
-export type CulturalValidationHandler = (result: CulturalValidationResult) => void;
-export type IslamicComplianceHandler = (result: IslamicComplianceResult) => void;
+export type CulturalValidationHandler = (
+  result: CulturalValidationResult,
+) => void;
+export type IslamicComplianceHandler = (
+  result: IslamicComplianceResult,
+) => void;
 export type ArabicProcessingHandler = (result: ArabicProcessingResult) => void;
-export type ProfessionalDomainHandler = (result: ProfessionalDomainValidation) => void;
+export type ProfessionalDomainHandler = (
+  result: ProfessionalDomainValidation,
+) => void;

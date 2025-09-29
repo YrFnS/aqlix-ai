@@ -21,6 +21,7 @@
 **Focused agent orchestration engine:**
 
 ### Intelligent Workflow Orchestration
+
 - **Dynamic Workflow Planning:** AI-driven workflow planning based on request analysis and cultural context
 - **Agent Sequence Optimization:** Optimal agent execution sequence determination with dependency resolution
 - **Workflow State Management:** Complete workflow state tracking and coordination across agent interactions
@@ -28,6 +29,7 @@
 - **Workflow Recovery:** Intelligent workflow recovery and continuation after interruptions or failures
 
 ### Smart Agent Selection
+
 - **AI-Driven Agent Selection:** Intelligent selection of optimal agents based on expertise, performance, and cultural requirements
 - **Dynamic Agent Matching:** Real-time matching of agents to tasks based on current capabilities and availability
 - **Performance-Based Selection:** Agent selection optimization based on historical performance metrics
@@ -35,6 +37,7 @@
 - **Expertise-Based Routing:** Intelligent routing of tasks to agents with appropriate domain expertise
 
 ### Dependency Management & Execution
+
 - **Dependency Resolution:** Automated resolution of agent dependencies and execution order optimization
 - **Parallel Execution Coordination:** Coordinated parallel execution of independent agent tasks with result aggregation
 - **Sequential Workflow Management:** Sequential agent execution with context passing and state management
@@ -48,6 +51,7 @@
 **Agent orchestration engine examples:**
 
 ### Intelligent Agent Orchestrator
+
 ```python
 # Advanced Multi-Agent Orchestrator
 class IraqiAgentOrchestrationEngine:
@@ -400,6 +404,7 @@ class IraqiAgentOrchestrationEngine:
 ```
 
 ### Workflow Planner
+
 ```python
 # Intelligent Workflow Planner
 class WorkflowPlanner:
@@ -686,6 +691,7 @@ CREATE TABLE workflow_performance_analytics (
 **Agent orchestration engine architecture patterns:**
 
 ### Orchestration Patterns
+
 - **Intelligent Workflow Planning:** AI-driven workflow planning with cultural context awareness
 - **Dynamic Agent Selection:** Real-time agent selection based on expertise, performance, and availability
 - **Dependency Resolution:** Automated dependency resolution with parallel execution optimization
@@ -693,6 +699,7 @@ CREATE TABLE workflow_performance_analytics (
 - **Result Aggregation:** Intelligent aggregation of multi-agent results with cultural validation
 
 ### Performance Optimization Patterns
+
 - **Parallel Execution Management:** Coordinated parallel execution of independent agent tasks
 - **Resource Coordination:** Intelligent coordination of shared resources across agent executions
 - **Execution Monitoring:** Real-time monitoring of workflow progress and agent performance
@@ -706,6 +713,7 @@ CREATE TABLE workflow_performance_analytics (
 **Agent orchestration engine validation:**
 
 ### Orchestration Performance Testing
+
 - **Workflow Coordination:** Multi-agent workflow coordination accuracy and efficiency testing
 - **Agent Selection Speed:** <100ms agent selection time testing
 - **Dependency Resolution:** Dependency resolution accuracy and performance testing
@@ -713,6 +721,7 @@ CREATE TABLE workflow_performance_analytics (
 - **Failover Management:** Agent failover coordination and recovery testing
 
 ### Cultural Compliance Testing
+
 - **Cultural Workflow Validation:** Cultural compliance throughout multi-agent workflows testing
 - **Agent Cultural Compatibility:** Agent selection cultural compatibility testing
 - **Cultural Context Preservation:** Cultural context preservation across agent interactions testing
@@ -725,12 +734,14 @@ CREATE TABLE workflow_performance_analytics (
 **Agent orchestration engine integration points:**
 
 ### Component Integration
+
 - **Agent Registry Integration:** Integration with agent registry and specialization management
 - **Context Optimization Integration:** Integration with context sharing optimization services
 - **Cultural Coordination Integration:** Integration with cultural compliance coordination
 - **Performance Monitoring Integration:** Integration with agent load balancing and performance management
 
 ### System Integration
+
 - **Database Integration:** Integration with Supabase for workflow persistence and tracking
 - **Real-time Integration:** Integration with WebSocket management for real-time workflow updates
 - **Monitoring Integration:** Integration with Sentry for workflow error tracking and performance monitoring

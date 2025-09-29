@@ -1,7 +1,7 @@
 /**
  * Iraqi AI Admin Role Service
  * Manages Iraqi-specific admin roles, permissions, and cultural compliance
- * 
+ *
  * Features:
  * - Role-based access control with Iraqi professional domains
  * - Cultural compliance permission management
@@ -10,16 +10,16 @@
  * - Organizational hierarchy support
  */
 
-import { 
-  UserRole, 
-  AdminPermissions, 
-  OrganizationPermissions, 
+import {
+  UserRole,
+  AdminPermissions,
+  OrganizationPermissions,
   CulturalValidationPermissions,
   ProfessionalDomainPermissions,
   IraqiUser,
   IraqiOrganization,
   ProfessionalDomain,
-  CulturalComplianceLevel
+  CulturalComplianceLevel,
 } from '../types/admin';
 
 /**
@@ -40,7 +40,15 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     auditLogAccess: true,
     performanceMetrics: true,
     complianceReports: true,
-    professionalDomainAccess: ['legal', 'medical', 'educational', 'business', 'engineering', 'government', 'general'],
+    professionalDomainAccess: [
+      'legal',
+      'medical',
+      'educational',
+      'business',
+      'engineering',
+      'government',
+      'general',
+    ],
     domainSpecificSettings: true,
     islamicComplianceSettings: true,
     culturalContentReview: true,
@@ -50,7 +58,7 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     paymentGatewaySettings: true,
     securitySettings: true,
     accessControlManagement: true,
-    dataProtectionSettings: true
+    dataProtectionSettings: true,
   },
 
   'organization-admin': {
@@ -69,7 +77,7 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     paymentGatewaySettings: false,
     securitySettings: false,
     accessControlManagement: true,
-    dataProtectionSettings: false
+    dataProtectionSettings: false,
   },
 
   'cultural-validator': {
@@ -85,7 +93,7 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     politicalNeutralityMonitoring: true,
     userManagement: false,
     workspaceManagement: false,
-    systemManagement: false
+    systemManagement: false,
   },
 
   'domain-expert': {
@@ -101,7 +109,7 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     culturalContentReview: true,
     userManagement: false,
     workspaceManagement: false,
-    systemManagement: false
+    systemManagement: false,
   },
 
   'workspace-admin': {
@@ -115,10 +123,10 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     professionalDomainAccess: ['general'],
     culturalContentReview: true,
     systemManagement: false,
-    settingsManagement: false
+    settingsManagement: false,
   },
 
-  'user': {
+  user: {
     // Regular user - minimal permissions
     systemManagement: false,
     userManagement: false,
@@ -142,10 +150,10 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     paymentGatewaySettings: false,
     securitySettings: false,
     accessControlManagement: false,
-    dataProtectionSettings: false
+    dataProtectionSettings: false,
   },
 
-  'guest': {
+  guest: {
     // Guest access - no admin permissions
     systemManagement: false,
     userManagement: false,
@@ -169,61 +177,104 @@ export const IRAQI_ROLE_PERMISSIONS: Record<UserRole, Partial<AdminPermissions>>
     paymentGatewaySettings: false,
     securitySettings: false,
     accessControlManagement: false,
-    dataProtectionSettings: false
-  }
+    dataProtectionSettings: false,
+  },
 };
 
 /**
  * Professional domain requirements for Iraqi system
  */
-export const PROFESSIONAL_DOMAIN_REQUIREMENTS: Record<ProfessionalDomain, {
-  requiredPermissions: (keyof AdminPermissions)[];
-  culturalComplianceLevel: CulturalComplianceLevel;
-  islamicCompliance: boolean;
-  specializedKnowledge: string[];
-}> = {
+export const PROFESSIONAL_DOMAIN_REQUIREMENTS: Record<
+  ProfessionalDomain,
+  {
+    requiredPermissions: (keyof AdminPermissions)[];
+    culturalComplianceLevel: CulturalComplianceLevel;
+    islamicCompliance: boolean;
+    specializedKnowledge: string[];
+  }
+> = {
   legal: {
     requiredPermissions: ['culturalValidation', 'complianceReports', 'documentManagement'],
     culturalComplianceLevel: 'strict',
     islamicCompliance: true,
-    specializedKnowledge: ['Iraqi Civil Law', 'Islamic Law (Sharia)', 'Commercial Law', 'Court Procedures']
+    specializedKnowledge: [
+      'Iraqi Civil Law',
+      'Islamic Law (Sharia)',
+      'Commercial Law',
+      'Court Procedures',
+    ],
   },
   medical: {
     requiredPermissions: ['culturalValidation', 'complianceReports', 'documentManagement'],
     culturalComplianceLevel: 'strict',
     islamicCompliance: true,
-    specializedKnowledge: ['Medical Ethics', 'Islamic Medical Ethics', 'Iraqi Healthcare System', 'Medical Arabic']
+    specializedKnowledge: [
+      'Medical Ethics',
+      'Islamic Medical Ethics',
+      'Iraqi Healthcare System',
+      'Medical Arabic',
+    ],
   },
   educational: {
     requiredPermissions: ['culturalValidation', 'knowledgeBaseManagement', 'documentManagement'],
     culturalComplianceLevel: 'moderate',
     islamicCompliance: true,
-    specializedKnowledge: ['Iraqi Education System', 'Islamic Education', 'Arabic Literature', 'Curriculum Standards']
+    specializedKnowledge: [
+      'Iraqi Education System',
+      'Islamic Education',
+      'Arabic Literature',
+      'Curriculum Standards',
+    ],
   },
   business: {
     requiredPermissions: ['documentManagement', 'paymentGatewaySettings'],
     culturalComplianceLevel: 'moderate',
     islamicCompliance: true,
-    specializedKnowledge: ['Iraqi Business Law', 'Islamic Finance', 'Commercial Practices', 'Tax Regulations']
+    specializedKnowledge: [
+      'Iraqi Business Law',
+      'Islamic Finance',
+      'Commercial Practices',
+      'Tax Regulations',
+    ],
   },
   engineering: {
     requiredPermissions: ['documentManagement', 'knowledgeBaseManagement'],
     culturalComplianceLevel: 'flexible',
     islamicCompliance: false,
-    specializedKnowledge: ['Iraqi Building Codes', 'Engineering Standards', 'Technical Arabic', 'Safety Regulations']
+    specializedKnowledge: [
+      'Iraqi Building Codes',
+      'Engineering Standards',
+      'Technical Arabic',
+      'Safety Regulations',
+    ],
   },
   government: {
-    requiredPermissions: ['culturalValidation', 'complianceReports', 'securitySettings', 'auditLogAccess'],
+    requiredPermissions: [
+      'culturalValidation',
+      'complianceReports',
+      'securitySettings',
+      'auditLogAccess',
+    ],
     culturalComplianceLevel: 'strict',
     islamicCompliance: true,
-    specializedKnowledge: ['Government Procedures', 'Administrative Law', 'Public Service Ethics', 'Civic Engagement']
+    specializedKnowledge: [
+      'Government Procedures',
+      'Administrative Law',
+      'Public Service Ethics',
+      'Civic Engagement',
+    ],
   },
   general: {
     requiredPermissions: ['culturalValidation'],
     culturalComplianceLevel: 'moderate',
     islamicCompliance: true,
-    specializedKnowledge: ['Iraqi Culture', 'Basic Arabic', 'Islamic Principles', 'Social Etiquette']
-  }
+    specializedKnowledge: [
+      'Iraqi Culture',
+      'Basic Arabic',
+      'Islamic Principles',
+      'Social Etiquette',
+    ],
+  },
 };
 
 export class AdminRoleService {
@@ -237,10 +288,7 @@ export class AdminRoleService {
   /**
    * Check if user has specific permission
    */
-  static hasPermission(
-    user: IraqiUser, 
-    permission: keyof AdminPermissions
-  ): boolean {
+  static hasPermission(user: IraqiUser, permission: keyof AdminPermissions): boolean {
     const rolePermissions = this.getRolePermissions(user.role);
     return rolePermissions[permission] === true;
   }
@@ -248,10 +296,7 @@ export class AdminRoleService {
   /**
    * Check if user can access professional domain
    */
-  static canAccessDomain(
-    user: IraqiUser, 
-    domain: ProfessionalDomain
-  ): boolean {
+  static canAccessDomain(user: IraqiUser, domain: ProfessionalDomain): boolean {
     const rolePermissions = this.getRolePermissions(user.role);
     const domainAccess = rolePermissions.professionalDomainAccess || [];
     return domainAccess.includes(domain) || user.professionalDomains.includes(domain);
@@ -266,18 +311,18 @@ export class AdminRoleService {
   ): boolean {
     const userLevel = user.culturalSettings.islamicCompliance;
     const hasPermission = this.hasPermission(user, 'culturalValidation');
-    
+
     // Check if user's compliance level meets requirement
     const complianceHierarchy: Record<CulturalComplianceLevel, number> = {
-      'flexible': 1,
-      'moderate': 2,
-      'strict': 3,
-      'custom': 4
+      flexible: 1,
+      moderate: 2,
+      strict: 3,
+      custom: 4,
     };
-    
+
     const userLevelValue = complianceHierarchy[userLevel] || 0;
     const requiredLevelValue = complianceHierarchy[requiredLevel] || 0;
-    
+
     return hasPermission && userLevelValue >= requiredLevelValue;
   }
 
@@ -289,7 +334,7 @@ export class AdminRoleService {
     baseRole: UserRole
   ): OrganizationPermissions {
     const basePermissions = this.getRolePermissions(baseRole);
-    
+
     return {
       ...basePermissions,
       organizationId: organization.id,
@@ -298,7 +343,7 @@ export class AdminRoleService {
       userInvitation: true,
       billingManagement: baseRole === 'organization-admin',
       organizationSettings: true,
-      professionalDomainAccess: organization.culturalSettings.professionalDomains
+      professionalDomainAccess: organization.culturalSettings.professionalDomains,
     };
   }
 
@@ -309,7 +354,7 @@ export class AdminRoleService {
     domains: ProfessionalDomain[]
   ): ProfessionalDomainPermissions {
     const basePermissions = this.getRolePermissions('domain-expert');
-    
+
     return {
       ...basePermissions,
       domains,
@@ -317,7 +362,7 @@ export class AdminRoleService {
       professionalContentReview: true,
       domainKnowledgeManagement: true,
       professionalUserManagement: false,
-      professionalDomainAccess: domains
+      professionalDomainAccess: domains,
     };
   }
 
@@ -332,7 +377,7 @@ export class AdminRoleService {
       contentModeration: true,
       complianceReports: true,
       analyticsAccess: true,
-      professionalDomainAccess: ['general']
+      professionalDomainAccess: ['general'],
     };
   }
 
@@ -357,7 +402,10 @@ export class AdminRoleService {
     }
 
     // Check professional domain requirements for domain experts
-    if (targetRole === 'domain-expert' && (!user.professionalDomains || user.professionalDomains.length === 0)) {
+    if (
+      targetRole === 'domain-expert' &&
+      (!user.professionalDomains || user.professionalDomains.length === 0)
+    ) {
       valid = false;
       reasons.push('Domain experts must have at least one professional domain');
     }
@@ -423,7 +471,9 @@ export class AdminRoleService {
     // Check cultural compliance level
     if (!this.validateCulturalCompliance(user, requirements.culturalComplianceLevel)) {
       qualified = false;
-      missingRequirements.push(`Insufficient cultural compliance level (required: ${requirements.culturalComplianceLevel})`);
+      missingRequirements.push(
+        `Insufficient cultural compliance level (required: ${requirements.culturalComplianceLevel})`
+      );
     }
 
     // Check Islamic compliance if required
@@ -440,12 +490,47 @@ export class AdminRoleService {
    */
   static getOrganizationRoleHierarchy(organizationType: IraqiOrganization['type']): UserRole[] {
     const hierarchies: Record<IraqiOrganization['type'], UserRole[]> = {
-      'legal_firm': ['super-admin', 'organization-admin', 'domain-expert', 'cultural-validator', 'workspace-admin', 'user'],
-      'hospital': ['super-admin', 'organization-admin', 'domain-expert', 'cultural-validator', 'workspace-admin', 'user'],
-      'university': ['super-admin', 'organization-admin', 'domain-expert', 'cultural-validator', 'workspace-admin', 'user'],
-      'business': ['super-admin', 'organization-admin', 'workspace-admin', 'user', 'guest'],
-      'government': ['super-admin', 'organization-admin', 'domain-expert', 'cultural-validator', 'workspace-admin', 'user'],
-      'ngo': ['super-admin', 'organization-admin', 'cultural-validator', 'workspace-admin', 'user', 'guest']
+      legal_firm: [
+        'super-admin',
+        'organization-admin',
+        'domain-expert',
+        'cultural-validator',
+        'workspace-admin',
+        'user',
+      ],
+      hospital: [
+        'super-admin',
+        'organization-admin',
+        'domain-expert',
+        'cultural-validator',
+        'workspace-admin',
+        'user',
+      ],
+      university: [
+        'super-admin',
+        'organization-admin',
+        'domain-expert',
+        'cultural-validator',
+        'workspace-admin',
+        'user',
+      ],
+      business: ['super-admin', 'organization-admin', 'workspace-admin', 'user', 'guest'],
+      government: [
+        'super-admin',
+        'organization-admin',
+        'domain-expert',
+        'cultural-validator',
+        'workspace-admin',
+        'user',
+      ],
+      ngo: [
+        'super-admin',
+        'organization-admin',
+        'cultural-validator',
+        'workspace-admin',
+        'user',
+        'guest',
+      ],
     };
 
     return hierarchies[organizationType] || ['super-admin', 'organization-admin', 'user'];

@@ -21,6 +21,7 @@
 **Iraqi AI-specific database infrastructure:**
 
 ### Iraqi User & Cultural Context Schema
+
 - **Iraqi User Profiles:** User management with Iraqi identity, regional context, and professional domain integration
 - **Cultural Context Storage:** Iraqi cultural preferences, Islamic compliance levels, and regional variations
 - **Professional Domain Integration:** Iraqi legal, medical, educational, business professional data structures
@@ -29,6 +30,7 @@
 - **Authentication Context:** Integration with Iraqi authentication, MFA, and professional verification
 
 ### Conversation & Agent Coordination Schema
+
 - **Iraqi AI Conversations:** Chat conversations with cultural context preservation and Arabic text support
 - **Multi-Agent Coordination:** Database structures supporting 21 specialized Iraqi AI agents
 - **Agent Performance Tracking:** Agent usage analytics, cultural compliance scores, and performance metrics
@@ -37,6 +39,7 @@
 - **Agent Communication Logs:** Inter-agent communication tracking and cultural validation logging
 
 ### Cultural Validation & Compliance Schema
+
 - **Cultural Validation Results:** Iraqi cultural appropriateness validation with detailed scoring and recommendations
 - **Islamic Compliance Tracking:** Islamic compliance validation results and Sharia principle adherence
 - **Professional Domain Compliance:** Iraqi professional standard compliance and ethics tracking
@@ -45,6 +48,7 @@
 - **Cultural Learning Patterns:** User cultural preference learning and adaptation tracking
 
 ### Payment & Subscription Schema
+
 - **Iraqi Payment Integration:** ZainCash, FastPay, NassWallet payment tracking and transaction management
 - **Islamic Finance Compliance:** Sharia-compliant billing, Zakat information, and Riba-free payment structures
 - **Subscription Management:** Iraqi Dinar pricing, cultural timing billing cycles, and family plan support
@@ -59,6 +63,7 @@
 **Iraqi AI-specific database schema examples:**
 
 ### Core Iraqi User & Cultural Tables
+
 ```sql
 -- Iraqi User Profiles with Cultural Context
 CREATE TABLE iraqi_user_profiles (
@@ -158,6 +163,7 @@ CREATE TABLE iraqi_cultural_context (
 ```
 
 ### Conversation & Agent Coordination Tables
+
 ```sql
 -- Iraqi AI Conversations with Cultural Context
 CREATE TABLE iraqi_ai_conversations (
@@ -300,6 +306,7 @@ CREATE TABLE iraqi_agent_performance (
 ```
 
 ### Cultural Validation & Compliance Tables
+
 ```sql
 -- Cultural Validation Results Storage
 CREATE TABLE cultural_validation_results (
@@ -409,6 +416,7 @@ CREATE TABLE islamic_compliance_tracking (
 ```
 
 ### Payment & Subscription Tables
+
 ```sql
 -- Iraqi Payment Integration
 CREATE TABLE iraqi_payment_transactions (
@@ -530,6 +538,7 @@ CREATE TABLE iraqi_usage_tracking (
 **Database schema Iraqi-specific considerations:**
 
 ### Arabic Text Storage & Processing
+
 - **UTF-8 Support:** Full Unicode support for Arabic text storage with proper collation
 - **RTL Text Indexing:** Specialized indexing for right-to-left text search and retrieval
 - **Dialect Preservation:** Storage mechanisms preserving Iraqi dialect variations and regional expressions
@@ -537,6 +546,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Cultural Expression Storage:** JSONB structures for storing Iraqi cultural expressions and metaphors
 
 ### Professional Domain Integration
+
 - **Iraqi Legal Domain:** Database structures for Iraqi legal terminology, case references, and legal document types
 - **Iraqi Medical Domain:** Medical terminology storage with Arabic medical terms and Iraqi healthcare context
 - **Iraqi Educational Domain:** Educational data structures supporting Iraqi curriculum and educational standards
@@ -544,6 +554,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Government Integration:** Database structures supporting Iraqi government service integration
 
 ### Islamic Compliance Database Design
+
 - **Sharia Compliance Tracking:** Database structures tracking Islamic compliance across all user interactions
 - **Halal Business Practices:** Data models supporting Islamic business principles and Riba-free transactions
 - **Prayer Time Integration:** Database structures supporting Islamic prayer schedule integration
@@ -557,6 +568,7 @@ CREATE TABLE iraqi_usage_tracking (
 **Iraqi AI database performance requirements:**
 
 ### Cultural Data Performance
+
 - **Arabic Text Search:** Optimized full-text search for Arabic content with dialect-aware indexing
 - **Cultural Context Retrieval:** Fast retrieval of cultural context data with <50ms query response times
 - **Regional Data Partitioning:** Database partitioning by Iraqi regions for optimized regional query performance
@@ -564,6 +576,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Islamic Compliance Caching:** Intelligent caching of Islamic compliance validation results
 
 ### Agent Coordination Performance
+
 - **Multi-Agent Query Optimization:** Database optimization for 21-agent coordination queries
 - **Real-time State Synchronization:** Database structures supporting <100ms real-time state updates
 - **Context Sharing Performance:** Optimized context sharing between agents with minimal database overhead
@@ -571,6 +584,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Cross-Agent Communication Logging:** High-performance logging of inter-agent communications
 
 ### Scalability Architecture
+
 - **User Growth Planning:** Database schema designed to scale to 1M+ Iraqi users
 - **Regional Scaling:** Database architecture supporting regional Iraqi data distribution
 - **Professional Domain Scaling:** Scalable structures for growing professional domain user bases
@@ -584,6 +598,7 @@ CREATE TABLE iraqi_usage_tracking (
 **Iraqi AI database schema validation:**
 
 ### Cultural Data Validation
+
 - **Arabic Text Integrity:** Validate Arabic text storage and retrieval without corruption
 - **Cultural Context Accuracy:** Test cultural context storage and retrieval with Iraqi-specific data
 - **Regional Data Consistency:** Validate regional cultural data consistency across Baghdad, Basra, Mosul, Erbil
@@ -591,6 +606,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Professional Domain Data:** Validate professional domain data integrity for Iraqi legal, medical, educational contexts
 
 ### Performance Validation
+
 - **Query Performance Testing:** Validate <50ms query response times for cultural and professional data
 - **Arabic Search Performance:** Test Arabic full-text search performance with large datasets
 - **Agent Coordination Performance:** Validate multi-agent coordination query performance under load
@@ -598,6 +614,7 @@ CREATE TABLE iraqi_usage_tracking (
 - **Scalability Testing:** Validate database performance with 100K+ concurrent Iraqi users
 
 ### Integration Validation
+
 - **Supabase Integration:** Test Supabase-specific features and Iraqi AI system integration
 - **Agent Database Integration:** Validate 21-agent database access patterns and performance
 - **Payment Gateway Integration:** Test Iraqi payment gateway database integration and transaction tracking
@@ -611,18 +628,21 @@ CREATE TABLE iraqi_usage_tracking (
 **Iraqi AI database schema implementation considerations:**
 
 ### Implementation Priorities
+
 - **Cultural data structures first** - Comprehensive Iraqi cultural and Islamic data models
 - **Arabic text optimization** - Specialized Arabic text storage and search capabilities
 - **Professional domain support** - Iraqi professional domain data structures and relationships
 - **Agent coordination efficiency** - Optimized database structures for 21-agent coordination
 
 ### Performance and Scalability Focus
+
 - **<50ms cultural data queries** for responsive cultural validation and context retrieval
 - **<100ms agent coordination queries** for seamless multi-agent workflow coordination
 - **Arabic text search optimization** with dialect-aware indexing and search capabilities
 - **Scalable architecture** supporting rapid growth of Iraqi user base and cultural data
 
 ### Cultural and Professional Integration
+
 - **Iraqi cultural pattern storage** - Comprehensive cultural pattern and preference data structures
 - **Islamic compliance tracking** - Complete Islamic compliance validation and tracking capabilities
 - **Professional domain specialization** - Iraqi legal, medical, educational, business domain data structures

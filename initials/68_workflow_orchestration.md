@@ -119,13 +119,14 @@
 **Workflow canvas and block system:**
 
 ### Visual Canvas Foundation
+
 ```typescript
 // Enhanced Workflow Canvas with Arabic RTL Support
-import ReactFlow, { 
-  Node, 
-  Edge, 
-  NodeTypes, 
-  Controls, 
+import ReactFlow, {
+  Node,
+  Edge,
+  NodeTypes,
+  Controls,
   Background,
   useNodesState,
   useEdgesState
@@ -147,7 +148,7 @@ export const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-  
+
   // Custom node types with Arabic support
   const nodeTypes: NodeTypes = {
     'cultural-validator': CulturalValidatorNode,
@@ -157,7 +158,7 @@ export const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
   }
 
   return (
-    <div 
+    <div
       className={`workflow-canvas ${isRtlMode ? 'rtl' : 'ltr'}`}
       dir={isRtlMode ? 'rtl' : 'ltr'}
     >
@@ -178,172 +179,185 @@ export const WorkflowCanvas: React.FC<WorkflowCanvasProps> = ({
 ```
 
 ### Iraqi-Enhanced Block Registry
+
 ```typescript
 // Block Registry with Cultural Intelligence
 export interface IraqiBlockConfig {
-  type: string
-  name: string
-  nameArabic: string
-  description: string
-  descriptionArabic: string
-  category: 'blocks' | 'tools' | 'triggers' | 'iraqi-tools' | 'cultural-validators'
-  bgColor: string
-  icon: React.ComponentType<{ className?: string }>
+  type: string;
+  name: string;
+  nameArabic: string;
+  description: string;
+  descriptionArabic: string;
+  category:
+    | "blocks"
+    | "tools"
+    | "triggers"
+    | "iraqi-tools"
+    | "cultural-validators";
+  bgColor: string;
+  icon: React.ComponentType<{ className?: string }>;
   culturalCompliance: {
-    islamicCompliance: boolean
-    culturalSensitivity: 'low' | 'medium' | 'high'
-    professionalDomain?: 'legal' | 'medical' | 'educational' | 'business'
-  }
-  subBlocks: SubBlockConfig[]
+    islamicCompliance: boolean;
+    culturalSensitivity: "low" | "medium" | "high";
+    professionalDomain?: "legal" | "medical" | "educational" | "business";
+  };
+  subBlocks: SubBlockConfig[];
 }
 
 export const IraqiBlockRegistry: Record<string, IraqiBlockConfig> = {
   // Cultural Validation Block
   cultural_validator: {
-    type: 'cultural_validator',
-    name: 'Cultural Validator',
-    nameArabic: 'مدقق الامتثال الثقافي',
-    description: 'Validates content for Iraqi cultural appropriateness',
-    descriptionArabic: 'يتحقق من مناسبة المحتوى للثقافة العراقية',
-    category: 'cultural-validators',
-    bgColor: '#10B981',
+    type: "cultural_validator",
+    name: "Cultural Validator",
+    nameArabic: "مدقق الامتثال الثقافي",
+    description: "Validates content for Iraqi cultural appropriateness",
+    descriptionArabic: "يتحقق من مناسبة المحتوى للثقافة العراقية",
+    category: "cultural-validators",
+    bgColor: "#10B981",
     icon: CheckCircleIcon,
     culturalCompliance: {
       islamicCompliance: true,
-      culturalSensitivity: 'high'
+      culturalSensitivity: "high",
     },
     subBlocks: [
       {
-        id: 'content',
-        title: 'Content to Validate',
-        titleArabic: 'المحتوى المراد التحقق منه',
-        type: 'long-input',
+        id: "content",
+        title: "Content to Validate",
+        titleArabic: "المحتوى المراد التحقق منه",
+        type: "long-input",
         required: true,
-        arabicRtlSupport: true
-      }
-    ]
+        arabicRtlSupport: true,
+      },
+    ],
   },
 
   // Arabic Text Processor Block
   arabic_processor: {
-    type: 'arabic_processor',
-    name: 'Arabic Text Processor',
-    nameArabic: 'معالج النص العربي',
-    description: 'Processes Arabic text with RTL support and dialect recognition',
-    descriptionArabic: 'يعالج النص العربي مع دعم الكتابة من اليمين واللهجة العراقية',
-    category: 'iraqi-tools',
-    bgColor: '#3B82F6',
+    type: "arabic_processor",
+    name: "Arabic Text Processor",
+    nameArabic: "معالج النص العربي",
+    description:
+      "Processes Arabic text with RTL support and dialect recognition",
+    descriptionArabic:
+      "يعالج النص العربي مع دعم الكتابة من اليمين واللهجة العراقية",
+    category: "iraqi-tools",
+    bgColor: "#3B82F6",
     icon: LanguageIcon,
     culturalCompliance: {
       islamicCompliance: true,
-      culturalSensitivity: 'medium'
+      culturalSensitivity: "medium",
     },
     subBlocks: [
       {
-        id: 'arabic_text',
-        title: 'Arabic Text Input',
-        titleArabic: 'إدخال النص العربي',
-        type: 'long-input',
+        id: "arabic_text",
+        title: "Arabic Text Input",
+        titleArabic: "إدخال النص العربي",
+        type: "long-input",
         required: true,
-        arabicRtlSupport: true
+        arabicRtlSupport: true,
       },
       {
-        id: 'dialect_detection',
-        title: 'Iraqi Dialect Detection',
-        titleArabic: 'كشف اللهجة العراقية',
-        type: 'switch',
-        defaultValue: true
-      }
-    ]
+        id: "dialect_detection",
+        title: "Iraqi Dialect Detection",
+        titleArabic: "كشف اللهجة العراقية",
+        type: "switch",
+        defaultValue: true,
+      },
+    ],
   },
 
   // Iraqi Payment Gateway Block
   iraqi_payment: {
-    type: 'iraqi_payment',
-    name: 'Iraqi Payment Gateway',
-    nameArabic: 'بوابة الدفع العراقية',
-    description: 'Integrates with Iraqi payment systems (ZainCash, FastPay)',
-    descriptionArabic: 'يتكامل مع أنظمة الدفع العراقية',
-    category: 'iraqi-tools',
-    bgColor: '#F59E0B',
+    type: "iraqi_payment",
+    name: "Iraqi Payment Gateway",
+    nameArabic: "بوابة الدفع العراقية",
+    description: "Integrates with Iraqi payment systems (ZainCash, FastPay)",
+    descriptionArabic: "يتكامل مع أنظمة الدفع العراقية",
+    category: "iraqi-tools",
+    bgColor: "#F59E0B",
     icon: CreditCardIcon,
     culturalCompliance: {
       islamicCompliance: true,
-      culturalSensitivity: 'high',
-      professionalDomain: 'business'
+      culturalSensitivity: "high",
+      professionalDomain: "business",
     },
     subBlocks: [
       {
-        id: 'gateway',
-        title: 'Payment Gateway',
-        titleArabic: 'بوابة الدفع',
-        type: 'dropdown',
+        id: "gateway",
+        title: "Payment Gateway",
+        titleArabic: "بوابة الدفع",
+        type: "dropdown",
         required: true,
         options: [
-          { value: 'zaincash', label: 'ZainCash', labelArabic: 'زين كاش' },
-          { value: 'fastpay', label: 'FastPay', labelArabic: 'فاست باي' },
-          { value: 'nasswallet', label: 'NassWallet', labelArabic: 'محفظة ناس' }
-        ]
+          { value: "zaincash", label: "ZainCash", labelArabic: "زين كاش" },
+          { value: "fastpay", label: "FastPay", labelArabic: "فاست باي" },
+          {
+            value: "nasswallet",
+            label: "NassWallet",
+            labelArabic: "محفظة ناس",
+          },
+        ],
       },
       {
-        id: 'amount',
-        title: 'Amount (IQD)',
-        titleArabic: 'المبلغ (دينار)',
-        type: 'short-input',
+        id: "amount",
+        title: "Amount (IQD)",
+        titleArabic: "المبلغ (دينار)",
+        type: "short-input",
         required: true,
-        inputType: 'number'
-      }
-    ]
-  }
-}
+        inputType: "number",
+      },
+    ],
+  },
+};
 ```
 
 ### Workflow Execution Engine
+
 ```typescript
 // Cultural-Aware Workflow Execution Engine
 export class IraqiWorkflowExecutor {
-  private culturalValidator: CulturalValidator
-  private arabicProcessor: ArabicProcessor
-  private performanceMonitor: PerformanceMonitor
+  private culturalValidator: CulturalValidator;
+  private arabicProcessor: ArabicProcessor;
+  private performanceMonitor: PerformanceMonitor;
 
   constructor() {
-    this.culturalValidator = new CulturalValidator()
-    this.arabicProcessor = new ArabicProcessor()
-    this.performanceMonitor = new PerformanceMonitor()
+    this.culturalValidator = new CulturalValidator();
+    this.arabicProcessor = new ArabicProcessor();
+    this.performanceMonitor = new PerformanceMonitor();
   }
 
   async executeWorkflow(
     workflow: WorkflowDefinition,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<WorkflowResult> {
-    const startTime = Date.now()
-    const executionId = generateExecutionId()
+    const startTime = Date.now();
+    const executionId = generateExecutionId();
 
     try {
       // Pre-execution cultural validation
-      const culturalValidation = await this.validateWorkflowCulture(workflow)
+      const culturalValidation = await this.validateWorkflowCulture(workflow);
       if (!culturalValidation.passed) {
-        throw new CulturalComplianceError(culturalValidation.issues)
+        throw new CulturalComplianceError(culturalValidation.issues);
       }
 
       // Execute workflow nodes in topological order
-      const executionOrder = this.calculateExecutionOrder(workflow.nodes)
-      const results: Record<string, any> = {}
+      const executionOrder = this.calculateExecutionOrder(workflow.nodes);
+      const results: Record<string, any> = {};
 
       for (const nodeId of executionOrder) {
-        const node = workflow.nodes.find(n => n.id === nodeId)
-        if (!node) continue
+        const node = workflow.nodes.find((n) => n.id === nodeId);
+        if (!node) continue;
 
         // Execute node with cultural validation
-        const nodeResult = await this.executeNode(node, results, context)
-        results[nodeId] = nodeResult
+        const nodeResult = await this.executeNode(node, results, context);
+        results[nodeId] = nodeResult;
 
         // Real-time progress update
         this.performanceMonitor.updateProgress(executionId, {
           nodeId,
-          status: 'completed',
-          duration: Date.now() - startTime
-        })
+          status: "completed",
+          duration: Date.now() - startTime,
+        });
       }
 
       return {
@@ -351,28 +365,27 @@ export class IraqiWorkflowExecutor {
         executionId,
         results,
         duration: Date.now() - startTime,
-        culturalCompliance: culturalValidation.score
-      }
-
+        culturalCompliance: culturalValidation.score,
+      };
     } catch (error) {
-      this.performanceMonitor.recordError(executionId, error)
+      this.performanceMonitor.recordError(executionId, error);
       return {
         success: false,
         executionId,
         error: error.message,
-        duration: Date.now() - startTime
-      }
+        duration: Date.now() - startTime,
+      };
     }
   }
 
   private async executeNode(
     node: WorkflowNode,
     previousResults: Record<string, any>,
-    context: ExecutionContext
+    context: ExecutionContext,
   ): Promise<any> {
-    const blockConfig = IraqiBlockRegistry[node.type]
+    const blockConfig = IraqiBlockRegistry[node.type];
     if (!blockConfig) {
-      throw new Error(`Unknown block type: ${node.type}`)
+      throw new Error(`Unknown block type: ${node.type}`);
     }
 
     // Cultural validation for node execution
@@ -380,80 +393,81 @@ export class IraqiWorkflowExecutor {
       const validation = await this.culturalValidator.validateNodeExecution(
         node,
         previousResults,
-        context
-      )
+        context,
+      );
       if (!validation.passed) {
-        throw new CulturalComplianceError(validation.issues)
+        throw new CulturalComplianceError(validation.issues);
       }
     }
 
     // Execute based on node type
     switch (node.type) {
-      case 'cultural_validator':
-        return await this.executeCulturalValidator(node, previousResults)
-      
-      case 'arabic_processor':
-        return await this.executeArabicProcessor(node, previousResults)
-      
-      case 'iraqi_payment':
-        return await this.executeIraqiPayment(node, previousResults, context)
-      
+      case "cultural_validator":
+        return await this.executeCulturalValidator(node, previousResults);
+
+      case "arabic_processor":
+        return await this.executeArabicProcessor(node, previousResults);
+
+      case "iraqi_payment":
+        return await this.executeIraqiPayment(node, previousResults, context);
+
       default:
-        return await this.executeGenericNode(node, previousResults, context)
+        return await this.executeGenericNode(node, previousResults, context);
     }
   }
 }
 ```
 
 ### Professional Domain Templates
+
 ```typescript
 // Pre-built Iraqi Professional Workflow Templates
 export const IraqiProfessionalTemplates = {
   legal: {
     document_analysis: {
-      name: 'Legal Document Analysis',
-      nameArabic: 'تحليل الوثائق القانونية',
-      description: 'Analyze legal documents for Iraqi law compliance',
-      descriptionArabic: 'تحليل الوثائق القانونية للامتثال للقانون العراقي',
+      name: "Legal Document Analysis",
+      nameArabic: "تحليل الوثائق القانونية",
+      description: "Analyze legal documents for Iraqi law compliance",
+      descriptionArabic: "تحليل الوثائق القانونية للامتثال للقانون العراقي",
       nodes: [
-        { type: 'document_upload', position: { x: 100, y: 100 } },
-        { type: 'cultural_validator', position: { x: 300, y: 100 } },
-        { type: 'arabic_processor', position: { x: 500, y: 100 } },
-        { type: 'legal_analyzer', position: { x: 700, y: 100 } }
-      ]
-    }
+        { type: "document_upload", position: { x: 100, y: 100 } },
+        { type: "cultural_validator", position: { x: 300, y: 100 } },
+        { type: "arabic_processor", position: { x: 500, y: 100 } },
+        { type: "legal_analyzer", position: { x: 700, y: 100 } },
+      ],
+    },
   },
 
   medical: {
     patient_consultation: {
-      name: 'Patient Consultation Workflow',
-      nameArabic: 'سير عمل استشارة المريض',
-      description: 'Medical consultation with Islamic medical ethics',
-      descriptionArabic: 'استشارة طبية مع الأخلاق الطبية الإسلامية',
+      name: "Patient Consultation Workflow",
+      nameArabic: "سير عمل استشارة المريض",
+      description: "Medical consultation with Islamic medical ethics",
+      descriptionArabic: "استشارة طبية مع الأخلاق الطبية الإسلامية",
       nodes: [
-        { type: 'patient_intake', position: { x: 100, y: 100 } },
-        { type: 'cultural_validator', position: { x: 300, y: 100 } },
-        { type: 'medical_analyzer', position: { x: 500, y: 100 } },
-        { type: 'islamic_medical_guidance', position: { x: 700, y: 100 } }
-      ]
-    }
+        { type: "patient_intake", position: { x: 100, y: 100 } },
+        { type: "cultural_validator", position: { x: 300, y: 100 } },
+        { type: "medical_analyzer", position: { x: 500, y: 100 } },
+        { type: "islamic_medical_guidance", position: { x: 700, y: 100 } },
+      ],
+    },
   },
 
   business: {
     payment_processing: {
-      name: 'Iraqi Payment Processing',
-      nameArabic: 'معالجة المدفوعات العراقية',
-      description: 'Complete payment workflow for Iraqi businesses',
-      descriptionArabic: 'سير عمل دفع كامل للشركات العراقية',
+      name: "Iraqi Payment Processing",
+      nameArabic: "معالجة المدفوعات العراقية",
+      description: "Complete payment workflow for Iraqi businesses",
+      descriptionArabic: "سير عمل دفع كامل للشركات العراقية",
       nodes: [
-        { type: 'customer_data', position: { x: 100, y: 100 } },
-        { type: 'cultural_validator', position: { x: 300, y: 100 } },
-        { type: 'iraqi_payment', position: { x: 500, y: 100 } },
-        { type: 'receipt_generator', position: { x: 700, y: 100 } }
-      ]
-    }
-  }
-}
+        { type: "customer_data", position: { x: 100, y: 100 } },
+        { type: "cultural_validator", position: { x: 300, y: 100 } },
+        { type: "iraqi_payment", position: { x: 500, y: 100 } },
+        { type: "receipt_generator", position: { x: 700, y: 100 } },
+      ],
+    },
+  },
+};
 ```
 
 ---
@@ -472,7 +486,7 @@ export const IraqiProfessionalTemplates = {
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [ ] **Intermediate** - Production-ready patterns with common features  
+- [ ] **Intermediate** - Production-ready patterns with common features
 - [x] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

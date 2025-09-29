@@ -21,6 +21,7 @@
 **Essential website automation and form filling infrastructure:**
 
 ### Iraqi Website Automation Core
+
 - **Iraqi Government Website Automation:** Automated interactions with Iraqi ministry and government websites
 - **Professional Website Integration:** Automation for Iraqi legal, medical, educational, business websites
 - **Arabic Form Processing:** Intelligent Arabic text processing and form field recognition
@@ -28,6 +29,7 @@
 - **Regional Website Support:** Support for Baghdad, Basra, Mosul, Erbil regional websites
 
 ### Intelligent Form Filling System
+
 - **Smart Field Recognition:** AI-powered form field detection and classification
 - **Cultural Context-Aware Completion:** Iraqi cultural context consideration in form filling
 - **Professional Domain Templates:** Pre-configured templates for Iraqi professional forms
@@ -36,6 +38,7 @@
 - **Captcha and Security Handling:** Intelligent handling of security measures and verification
 
 ### Automation Workflow Engine
+
 - **Workflow Configuration:** Configurable automation workflows for different Iraqi website types
 - **Error Recovery Mechanisms:** Intelligent error handling and recovery for failed automations
 - **Session Management:** Persistent session management across multiple website interactions
@@ -50,6 +53,7 @@
 **Working website automation and form filling examples:**
 
 ### Core Automation Components
+
 - **IraqiWebsiteAutomator:** Central website automation manager for Iraqi websites
 - **IntelligentFormFiller:** AI-powered form field detection and completion system
 - **CulturalDataValidator:** Iraqi cultural context validation for form data
@@ -57,6 +61,7 @@
 - **ArabicFormProcessor:** Arabic text processing and form interaction handler
 
 ### Specialized Automation Modules
+
 - **GovernmentWebsiteAutomator:** Automated interactions with Iraqi government websites
 - **LegalDocumentProcessor:** Automation for Iraqi legal form completion and document processing
 - **HealthcareFormAutomator:** Medical form completion with Iraqi healthcare system integration
@@ -64,6 +69,7 @@
 - **BusinessRegistrationAutomator:** Iraqi business registration and commercial form automation
 
 ### Configuration Examples
+
 - **Automation Workflow Templates:** Pre-configured workflows for common Iraqi website interactions
 - **Cultural Validation Rules:** Iraqi cultural appropriateness rules for form data
 - **Professional Domain Configurations:** Specialized settings for different Iraqi professional domains
@@ -76,12 +82,14 @@
 **Website automation and form filling documentation:**
 
 ### Iraqi Website Integration Sources
+
 - **Iraqi Government Website Structures:** Understanding Iraqi ministry and government website architectures
 - **Professional Website Patterns:** Common patterns in Iraqi legal, medical, educational, business websites
 - **Arabic Form Standards:** Arabic form field conventions and validation requirements
 - **Regional Website Variations:** Website differences across Iraqi regions and institutions
 
 ### Automation Technology Sources
+
 - **Playwright Advanced Automation:** Advanced browser automation patterns and best practices
 - **Puppeteer Iraqi Context:** Browser automation specifically configured for Iraqi websites
 - **Form Field Recognition:** AI-powered form field detection and classification techniques
@@ -89,6 +97,7 @@
 - **Security Bypass Techniques:** Ethical automation techniques for security measures
 
 ### Cultural Integration Sources
+
 - **Iraqi Digital Form Conventions:** Cultural conventions for form completion in Iraqi context
 - **Professional Form Standards:** Iraqi professional form completion standards and etiquette
 - **Cultural Data Validation:** Ensuring culturally appropriate data in automated form completion
@@ -101,6 +110,7 @@
 **Comprehensive website automation cultural considerations:**
 
 ### Iraqi Website Integration Standards
+
 - **Government Website Compliance:** Adherence to Iraqi government website interaction protocols
 - **Professional Etiquette:** Iraqi professional website interaction standards and procedures
 - **Cultural Form Completion:** Culturally appropriate form data and completion patterns
@@ -108,6 +118,7 @@
 - **Language Preference Handling:** Appropriate language selection and form completion preferences
 
 ### Islamic Automation Principles
+
 - **Ethical Automation Practices:** Islamic principles for automated website interactions
 - **Privacy Respect:** Islamic privacy principles in automated data handling
 - **Truthful Data Submission:** Islamic truthfulness principles in automated form completion
@@ -115,6 +126,7 @@
 - **Community Benefit Focus:** Automation practices that benefit the Iraqi community
 
 ### Professional Domain Automation Standards
+
 - **Legal Domain Automation:** Iraqi legal website automation with professional accuracy
 - **Medical Domain Integration:** Healthcare website automation with cultural medical sensitivity
 - **Educational Domain Support:** Iraqi educational website automation with academic appropriateness
@@ -321,6 +333,7 @@ CREATE TABLE user_automation_preferences (
 **Website automation and form filling architecture patterns:**
 
 ### Automation Pipeline Architecture
+
 - **Configuration Management:** Flexible automation workflow configuration and management
 - **Intelligent Field Recognition:** AI-powered form field detection and classification
 - **Cultural Data Processing:** Iraqi cultural context integration in form completion
@@ -328,6 +341,7 @@ CREATE TABLE user_automation_preferences (
 - **Performance Optimization:** Efficient automation with minimal resource consumption
 
 ### Iraqi Cultural Integration Patterns
+
 - **Cultural Data Validation:** Real-time cultural appropriateness validation for form data
 - **Professional Context Awareness:** Iraqi professional domain-specific automation patterns
 - **Regional Adaptation:** Support for Baghdad, Basra, Mosul, Erbil regional website variations
@@ -335,6 +349,7 @@ CREATE TABLE user_automation_preferences (
 - **Language-Aware Processing:** Arabic-English intelligent language handling in forms
 
 ### Security and Privacy Patterns
+
 - **Secure Session Management:** Protected browser session and credential management
 - **Data Privacy Protection:** Iraqi cultural privacy standards in automated data handling
 - **User Consent Management:** Clear consent workflows for automated website interactions
@@ -348,18 +363,21 @@ CREATE TABLE user_automation_preferences (
 **Comprehensive website automation and form filling testing:**
 
 ### Automation Functionality Testing
+
 - **Form Completion Accuracy:** Validation of accurate and appropriate form completion
 - **Field Recognition Testing:** AI form field detection and classification accuracy testing
 - **Cultural Data Validation:** Iraqi cultural appropriateness testing for form data
 - **Error Recovery Testing:** Automation error handling and recovery mechanism testing
 
 ### Iraqi Website Integration Testing
+
 - **Government Website Testing:** Testing automation with Iraqi government websites
 - **Professional Website Testing:** Testing with Iraqi legal, medical, educational, business websites
 - **Arabic Form Testing:** Arabic form processing and completion accuracy testing
 - **Regional Website Testing:** Testing with different Iraqi regional website variations
 
 ### Performance and Security Testing
+
 - **Automation Speed Testing:** <5 seconds form completion performance validation
 - **Security Compliance Testing:** Data protection and privacy standard validation
 - **Cultural Compliance Testing:** Iraqi cultural standard compliance validation
@@ -372,18 +390,21 @@ CREATE TABLE user_automation_preferences (
 **Website automation and form filling integration points:**
 
 ### Core System Integration
+
 - **AI Agent Integration:** PydanticAI agents with intelligent automation capabilities
 - **Browser Automation:** Playwright and Puppeteer integration for website automation
 - **Cultural Validation:** Integration with Iraqi cultural validation systems
 - **Professional Domain Integration:** Integration with Iraqi professional domain knowledge
 
 ### User Interface Integration
+
 - **Automation Control Dashboard:** User-friendly interface for automation management
 - **Real-time Monitoring:** Live automation progress monitoring and control
 - **Cultural Feedback Integration:** Cultural appropriateness feedback in automation interfaces
 - **Professional Workflow Integration:** Integration with Iraqi professional workflow automation
 
 ### External Service Integration
+
 - **Iraqi Website Integration:** Direct integration with Iraqi government and professional websites
 - **Cultural Validation Services:** Integration with Iraqi cultural appropriateness validation
 - **Professional Domain Services:** Integration with Iraqi professional domain expertise
@@ -396,18 +417,21 @@ CREATE TABLE user_automation_preferences (
 **Iraqi AI Chat System website automation considerations:**
 
 ### Implementation Priorities
+
 - **Cultural appropriateness** in all automated form completion and website interactions
 - **User supervision and control** for all automated website interactions
 - **Islamic compliance** in automated data handling and website behavior
 - **Professional domain expertise** for Iraqi legal, medical, educational, business automation
 
 ### Performance and Scalability
+
 - **<5 seconds form completion** for standard Iraqi website forms
 - **Intelligent error recovery** for robust automation experiences
 - **Efficient resource usage** for optimal automation performance
 - **Scalable architecture** supporting multiple concurrent automation sessions
 
 ### Cultural and Professional Focus
+
 - **Iraqi cultural data validation** ensuring appropriate form completion
 - **Professional domain specialization** for Iraqi professional website automation
 - **Regional website support** for diverse Iraqi regional website structures

@@ -11,6 +11,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **File**: `webeye/browser_factory.py`
 
 **Key Features**:
+
 - AI-powered web interactions using LLMs and computer vision
 - Advanced DOM manipulation and element detection
 - Iraqi government portal optimization
@@ -20,6 +21,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - Baghdad timezone and business hours support
 
 **Iraqi Enhancements**:
+
 - Arabic font loading (Noto Sans Arabic)
 - RTL text direction detection and handling
 - Iraqi national ID validation
@@ -32,6 +34,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **File**: `forge/workflow/service.py`
 
 **Key Features**:
+
 - Complex workflow orchestration and execution
 - Multi-step task coordination
 - Islamic compliance validation blocks
@@ -41,6 +44,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - Cultural validation workflows
 
 **Iraqi Enhancements**:
+
 - Iraqi business hours integration (Sunday-Thursday, 8AM-4PM)
 - Friday prayer time handling (12PM-2PM pause)
 - Ramadan schedule adjustments
@@ -53,6 +57,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **File**: `forge/services/iraqi_auth_service.py`
 
 **Key Features**:
+
 - Enterprise authentication for Iraqi institutions
 - Two-factor authentication (TOTP/SMS)
 - Biometric authentication support
@@ -62,6 +67,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - Islamic banking compliance validation
 
 **Iraqi Enhancements**:
+
 - Iraqi national ID format validation
 - Institution-based authorization
 - Security clearance levels (public, restricted, confidential, secret)
@@ -74,6 +80,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **File**: `forge/task_manager.py`
 
 **Key Features**:
+
 - Advanced task scheduling and execution
 - Priority-based task queuing
 - Iraqi business hours scheduling
@@ -83,6 +90,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - Performance monitoring and optimization
 
 **Iraqi Enhancements**:
+
 - Iraqi task priorities (emergency, urgent, Friday prayer, Ramadan adjusted)
 - Iraqi task types (government portal, ministry coordination, Islamic banking)
 - Business hours scheduling with Baghdad timezone
@@ -95,6 +103,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **File**: `forge/api/iraqi_integration_api.py`
 
 **Key Features**:
+
 - RESTful APIs for workflow management
 - Iraqi institution authentication endpoints
 - Government portal access APIs
@@ -104,6 +113,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - Multi-language support (Arabic/English)
 
 **Iraqi Enhancements**:
+
 - Iraqi authentication with national ID
 - Government portal operation APIs
 - Ministry coordination endpoints
@@ -118,24 +128,28 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **Comprehensive Integration Hub**:
 
 #### 1. Browser-use Enhancement
+
 - Enhanced browser sessions for Iraqi portals
 - Arabic support and compliance mode
 - Government workflow execution
 - Portal-specific optimizations
 
 #### 2. Suna Team Management Integration
+
 - Government project creation
 - Team member workflow assignment
 - Multi-ministry project coordination
 - Task status tracking
 
 #### 3. PraisonAI Agents Integration
+
 - Iraqi government specialist agents
 - AI-assisted workflow execution
 - Intelligence and performance reporting
 - Specialized agent capabilities
 
 #### 4. Langflow Visual Integration
+
 - Iraqi-specific visual components
 - Government portal login components
 - Arabic form processor components
@@ -145,24 +159,28 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 ## Key Iraqi Features
 
 ### Islamic Compliance System
+
 - **Content Validation**: Automatic detection of non-Islamic content
 - **Business Practice Verification**: Halal business compliance
 - **Prayer Time Integration**: Automatic scheduling around prayer times
 - **Islamic Calendar**: Hijri calendar integration for holidays
 
 ### Arabic RTL Support
+
 - **Text Processing**: Iraqi dialect recognition and processing
 - **Form Handling**: RTL form field processing
 - **Font Optimization**: Automatic Arabic font loading
 - **Layout Detection**: Automatic RTL layout adjustment
 
 ### Government Portal Integration
+
 - **Ministry Support**: Interior, Trade, Justice, Municipal services
 - **Document Processing**: Automated form filling and document download
 - **Authentication**: Secure portal access with Iraqi credentials
 - **Multi-Ministry Coordination**: Parallel processing across ministries
 
 ### Business Hours Integration
+
 - **Iraqi Schedule**: Sunday-Thursday, 8AM-4PM Baghdad time
 - **Friday Prayer**: Automatic pause during prayer time (12PM-2PM)
 - **Ramadan Hours**: Adjusted schedule during Ramadan (9AM-3PM)
@@ -173,6 +191,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 **Total Estimated Development Value**: 14-21 weeks
 
 ### Component Breakdown:
+
 - **Browser Automation Engine**: 4-6 weeks
   - AI-powered interactions: 2-3 weeks
   - Arabic RTL support: 1-2 weeks
@@ -202,6 +221,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 ## Technical Architecture
 
 ### Core Technologies
+
 - **Backend**: Python FastAPI with PydanticAI agents
 - **Browser Engine**: Playwright with AI-powered interactions
 - **Database**: PostgreSQL with Alembic migrations
@@ -209,6 +229,7 @@ Complete extraction and Iraqi adaptation of the Skyvern-AI/skyvern enterprise br
 - **Monitoring**: Comprehensive logging and audit trails
 
 ### Iraqi-Specific Technologies
+
 - **Arabic Processing**: Unicode normalization and RTL handling
 - **Islamic Calendar**: Hijri date calculations and holiday detection
 - **Government APIs**: Integration with Iraqi ministry portals
@@ -242,18 +263,21 @@ examples/skyvern-extracted/
 ## Key Benefits
 
 ### Enterprise Capabilities
+
 - **Scalable Architecture**: Handle multiple concurrent government operations
 - **Robust Security**: Multi-layered authentication and authorization
 - **Performance Monitoring**: Comprehensive metrics and logging
 - **Error Handling**: Graceful failure recovery and retry mechanisms
 
 ### Iraqi-Specific Benefits
+
 - **Cultural Compliance**: Full Islamic compliance validation
 - **Government Integration**: Direct integration with Iraqi ministry portals
 - **Arabic Support**: Native RTL text processing and Iraqi dialect support
 - **Business Process Automation**: Streamlined government service workflows
 
 ### System Integration Benefits
+
 - **Unified Platform**: Single platform for all Iraqi AI operations
 - **Component Reusability**: Modular components for different use cases
 - **Visual Workflow Design**: Langflow integration for non-technical users
@@ -262,6 +286,7 @@ examples/skyvern-extracted/
 ## Deployment and Usage
 
 ### Quick Start
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -281,6 +306,7 @@ workflow = await integration.create_comprehensive_iraqi_workflow({
 ```
 
 ### API Usage
+
 ```bash
 # Authenticate with Iraqi institution
 curl -X POST "/api/v1/iraqi/auth/login" \
@@ -296,13 +322,16 @@ curl -X POST "/api/v1/iraqi/tasks" \
 ## Support and Maintenance
 
 ### Specialized Agents
+
 The system integrates with specialized agents in `.claude/agents/` for:
+
 - **Iraqi Cultural Validation**: Islamic compliance and cultural appropriateness
 - **Arabic RTL Processing**: Advanced Arabic text handling
 - **Government Portal Specialists**: Ministry-specific automation experts
 - **Security and Compliance**: Enterprise security and audit specialists
 
 ### Monitoring and Logging
+
 - **Performance Metrics**: Response times, success rates, error rates
 - **Security Auditing**: Authentication attempts, access patterns, compliance violations
 - **Business Intelligence**: Usage patterns, workflow efficiency, government portal performance

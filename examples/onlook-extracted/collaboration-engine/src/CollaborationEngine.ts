@@ -2,7 +2,7 @@
  * Iraqi AI System - Real-Time Collaboration Engine
  * Multi-user collaboration platform with cultural intelligence and Islamic workflow compliance
  * Enhanced for Iraqi government deployment with Arabic awareness and ministry-specific features
- * 
+ *
  * Key Features:
  * - Real-time multi-user collaboration with Arabic RTL support
  * - Cultural team hierarchy reflecting Iraqi government structure
@@ -13,11 +13,27 @@
  */
 
 import { EventEmitter } from 'events';
-import { ArabicAnnotationSystem, type AnnotationConfig, type AnnotationResult } from './ArabicAnnotationSystem';
-import { MinistryWorkflowManager, type WorkflowConfig, type WorkflowResult } from './MinistryWorkflowManager';
+import {
+  ArabicAnnotationSystem,
+  type AnnotationConfig,
+  type AnnotationResult,
+} from './ArabicAnnotationSystem';
+import {
+  MinistryWorkflowManager,
+  type WorkflowConfig,
+  type WorkflowResult,
+} from './MinistryWorkflowManager';
 import { TeamSynchronization, type SyncConfig, type SyncResult } from './TeamSynchronization';
-import { CulturalConflictResolution, type ConflictConfig, type ConflictResolution } from './ConflictResolution';
-import { CollaborationSecurity, type SecurityConfig, type SecurityResult } from './CollaborationSecurity';
+import {
+  CulturalConflictResolution,
+  type ConflictConfig,
+  type ConflictResolution,
+} from './ConflictResolution';
+import {
+  CollaborationSecurity,
+  type SecurityConfig,
+  type SecurityResult,
+} from './CollaborationSecurity';
 
 export type MinistryType = 'health' | 'education' | 'interior' | 'justice';
 export type TeamStructure = 'hierarchical' | 'flat' | 'matrix';
@@ -30,27 +46,27 @@ export interface IraqiCollaborationConfig {
   teamStructure: TeamStructure;
   collaborationMode: CollaborationMode;
   maxParticipants: number;
-  
+
   // Cultural and religious settings
   islamicWorkflowCompliance: boolean;
   arabicCollaboration: boolean;
   prayerTimeAware: boolean;
   culturalModeration: boolean;
   ramadanScheduleAware: boolean;
-  
+
   // Government and security
   governmentSecurity: boolean;
   auditTrail: boolean;
   securityLevel: SecurityLevel;
   crossMinistryCollaboration: boolean;
   citizenInteraction: boolean;
-  
+
   // Performance and technical
   syncLatencyTarget: number; // milliseconds
   offlineSupport: boolean;
   mobileOptimized: boolean;
   rtlOptimized: boolean;
-  
+
   // Accessibility and compliance
   wcagCompliance: boolean;
   governmentAccessibility: boolean;
@@ -64,23 +80,23 @@ export interface CollaborationSession {
   description: string;
   participants: CollaborationParticipant[];
   document: CollaborativeDocument;
-  
+
   // Cultural context
   culturalContext: CulturalContext;
   islamicCompliance: boolean;
   arabicPrimary: boolean;
-  
+
   // Status and workflow
   status: 'active' | 'paused' | 'prayer-break' | 'ended';
   workflowStage: string;
   approvalRequired: boolean;
-  
+
   // Timing and scheduling
   createdAt: Date;
   lastActivity: Date;
   prayerPauseSchedule?: Date[];
   estimatedDuration: number;
-  
+
   // Security and audit
   securityLevel: SecurityLevel;
   auditLog: CollaborationAuditEntry[];
@@ -94,21 +110,21 @@ export interface CollaborationParticipant {
   role: ParticipantRole;
   ministry: MinistryType;
   department?: string;
-  
+
   // Collaboration status
   status: 'active' | 'away' | 'prayer' | 'offline';
   currentAction: string;
   lastSeen: Date;
-  
+
   // Cultural context
   preferredLanguage: 'arabic' | 'english' | 'bilingual';
   culturalPermissions: CulturalPermissions;
   prayerSchedule: PrayerSchedule;
-  
+
   // Technical status
   connection: ConnectionStatus;
   capabilities: ParticipantCapabilities;
-  
+
   // Permissions and security
   permissions: CollaborationPermissions;
   securityClearance: SecurityLevel;
@@ -130,30 +146,30 @@ export interface CollaborativeDocument {
   titleArabic: string;
   type: DocumentType;
   content: DocumentContent;
-  
+
   // Collaboration state
   currentEditors: string[]; // participant IDs
   editHistory: EditHistoryEntry[];
   annotations: AnnotationResult[];
-  
+
   // Cultural validation
   culturalCompliance: CulturalComplianceResult;
   islamicValidation: IslamicValidationResult;
   arabicContent: ArabicContentResult;
-  
+
   // Workflow and approval
   workflowState: WorkflowState;
   approvalStatus: ApprovalStatus;
   reviewComments: ReviewComment[];
-  
+
   // Version control
   version: string;
   lastModified: Date;
   conflictResolution: ConflictResolution[];
 }
 
-export type DocumentType = 
-  | 'policy-document' 
+export type DocumentType =
+  | 'policy-document'
   | 'citizen-service-form'
   | 'ministry-report'
   | 'legal-document'
@@ -167,19 +183,19 @@ export interface CulturalContext {
   arabicPrimary: boolean;
   governmentFormal: boolean;
   citizenFacing: boolean;
-  
+
   // Religious considerations
   prayerTimeRespect: boolean;
   ramadanAware: boolean;
   islamicHolidayAware: boolean;
   halalCompliance: boolean;
-  
+
   // Cultural norms
   genderSeparation?: boolean;
   formalAddressing: boolean;
   hierarchyRespect: boolean;
   eldersRespect: boolean;
-  
+
   // Professional context
   ministryProtocol: boolean;
   officialCommunication: boolean;
@@ -193,25 +209,25 @@ export interface CollaborationResult {
   participants: number;
   duration: number; // milliseconds
   culturalCompliance: number; // 0-1 score
-  
+
   // Performance metrics
   syncLatency: number;
   conflictsResolved: number;
   annotationsCreated: number;
   approvalStagesCompleted: number;
-  
+
   // Cultural metrics
   islamicComplianceScore: number;
   arabicUsageScore: number;
   culturalSensitivityScore: number;
   ministryProtocolScore: number;
-  
+
   // Technical metrics
   dataTransferred: number; // bytes
   networkLatency: number;
   errorCount: number;
   recoveryCount: number;
-  
+
   // Audit and security
   auditEntries: number;
   securityEvents: number;
@@ -225,17 +241,17 @@ export interface CollaborationAuditEntry {
   participantId: string;
   action: string;
   details: any;
-  
+
   // Cultural context
   culturallyAppropriate: boolean;
   islamicCompliant: boolean;
   ministryProtocolFollowed: boolean;
-  
+
   // Security context
   securityLevel: SecurityLevel;
   authorized: boolean;
   encryptionUsed: boolean;
-  
+
   // Performance context
   latency: number;
   success: boolean;
@@ -434,21 +450,21 @@ export class IraqiCollaborationEngine extends EventEmitter {
   private teamSync: TeamSynchronization;
   private conflictResolver: CulturalConflictResolution;
   private security: CollaborationSecurity;
-  
+
   // Active sessions management
   private activeSessions: Map<string, CollaborationSession> = new Map();
   private sessionParticipants: Map<string, string[]> = new Map(); // sessionId -> participantIds
-  
+
   // Real-time synchronization
   private syncEngine: any = null; // WebSocket/Socket.IO connection
   private syncTimer: NodeJS.Timeout | null = null;
   private lastSyncTimestamp = 0;
-  
+
   // Cultural context management
   private culturalContextCache: Map<string, CulturalContext> = new Map();
   private prayerTimeSchedule: Map<string, PrayerSchedule> = new Map();
   private ministryProtocols: Map<MinistryType, any> = new Map();
-  
+
   // Performance monitoring
   private performanceMetrics = {
     totalSessions: 0,
@@ -456,12 +472,12 @@ export class IraqiCollaborationEngine extends EventEmitter {
     culturalValidations: 0,
     conflictsResolved: 0,
     prayerPauses: 0,
-    approvalWorkflows: 0
+    approvalWorkflows: 0,
   };
-  
+
   // Government audit trail
   private auditLog: CollaborationAuditEntry[] = [];
-  
+
   constructor(config: IraqiCollaborationConfig) {
     super();
     this.config = config;
@@ -479,7 +495,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       ministryContext: this.config.ministry,
       culturalModeration: this.config.culturalModeration,
       bilingualSupport: this.config.multiLanguageSupport,
-      governmentCompliance: this.config.governmentSecurity
+      governmentCompliance: this.config.governmentSecurity,
     });
 
     // Initialize ministry workflow manager
@@ -490,7 +506,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       auditTrail: this.config.auditTrail,
       crossMinistry: this.config.crossMinistryCollaboration,
       citizenService: this.config.citizenInteraction,
-      securityLevel: this.config.securityLevel
+      securityLevel: this.config.securityLevel,
     });
 
     // Initialize team synchronization
@@ -501,7 +517,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       islamicWorkSchedule: this.config.islamicWorkflowCompliance,
       arabicCommunication: this.config.arabicCollaboration,
       syncLatencyTarget: this.config.syncLatencyTarget,
-      maxParticipants: this.config.maxParticipants
+      maxParticipants: this.config.maxParticipants,
     });
 
     // Initialize cultural conflict resolution
@@ -511,7 +527,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       culturalSensitivity: this.config.culturalModeration,
       hierarchicalResolution: this.config.teamStructure === 'hierarchical',
       auditCompliance: this.config.auditTrail,
-      governmentProtocol: this.config.governmentSecurity
+      governmentProtocol: this.config.governmentSecurity,
     });
 
     // Initialize collaboration security
@@ -521,15 +537,15 @@ export class IraqiCollaborationEngine extends EventEmitter {
       auditTrail: this.config.auditTrail,
       encryptionRequired: this.config.securityLevel !== 'public',
       ministry: this.config.ministry,
-      culturalFilter: this.config.culturalModeration
+      culturalFilter: this.config.culturalModeration,
     });
 
     // Load ministry-specific protocols
     this.loadMinistryProtocols();
-    
+
     // Setup cultural context caching
     this.setupCulturalContextManagement();
-    
+
     // Initialize performance monitoring
     this.setupPerformanceMonitoring();
 
@@ -547,7 +563,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         this.workflowManager.initialize(),
         this.teamSync.initialize(),
         this.conflictResolver.initialize(),
-        this.security.initialize()
+        this.security.initialize(),
       ]);
 
       // Start real-time synchronization engine
@@ -568,7 +584,6 @@ export class IraqiCollaborationEngine extends EventEmitter {
 
       this.emit('collaboration-engine-ready');
       return true;
-
     } catch (error) {
       this.emit('collaboration-engine-error', { error: error.message });
       return false;
@@ -589,7 +604,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
     securityLevel?: SecurityLevel;
   }): Promise<CollaborationSession> {
     const sessionId = this.generateSessionId();
-    
+
     try {
       // Validate participants and permissions
       const validatedParticipants = await this.validateParticipants(
@@ -609,7 +624,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         title: sessionConfig.name,
         titleArabic: sessionConfig.nameArabic || '',
         securityLevel: sessionConfig.securityLevel || this.config.securityLevel,
-        ministry: this.config.ministry
+        ministry: this.config.ministry,
       });
 
       // Setup workflow if required
@@ -619,7 +634,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
           documentType: sessionConfig.documentType,
           participants: validatedParticipants,
           ministry: this.config.ministry,
-          securityLevel: sessionConfig.securityLevel || this.config.securityLevel
+          securityLevel: sessionConfig.securityLevel || this.config.securityLevel,
         });
       }
 
@@ -632,7 +647,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         participants: validatedParticipants,
         document: {
           ...document,
-          workflowState: workflowState || this.createDefaultWorkflowState()
+          workflowState: workflowState || this.createDefaultWorkflowState(),
         },
         culturalContext,
         islamicCompliance: this.config.islamicWorkflowCompliance,
@@ -645,7 +660,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         estimatedDuration: this.estimateSessionDuration(sessionConfig.documentType),
         securityLevel: sessionConfig.securityLevel || this.config.securityLevel,
         auditLog: [],
-        encryptionEnabled: this.config.securityLevel !== 'public'
+        encryptionEnabled: this.config.securityLevel !== 'public',
       };
 
       // Setup prayer time schedule if enabled
@@ -655,7 +670,10 @@ export class IraqiCollaborationEngine extends EventEmitter {
 
       // Store session
       this.activeSessions.set(sessionId, session);
-      this.sessionParticipants.set(sessionId, validatedParticipants.map(p => p.id));
+      this.sessionParticipants.set(
+        sessionId,
+        validatedParticipants.map((p) => p.id)
+      );
 
       // Initialize real-time synchronization for session
       await this.initializeSessionSync(session);
@@ -666,17 +684,16 @@ export class IraqiCollaborationEngine extends EventEmitter {
         participants: validatedParticipants.length,
         documentType: sessionConfig.documentType,
         culturalContext: culturalContext,
-        securityLevel: session.securityLevel
+        securityLevel: session.securityLevel,
       });
 
       this.emit('collaboration-session-created', session);
       return session;
-
     } catch (error) {
-      this.emit('collaboration-session-error', { 
-        sessionId, 
+      this.emit('collaboration-session-error', {
+        sessionId,
         error: error.message,
-        config: sessionConfig
+        config: sessionConfig,
       });
       throw new Error(`Failed to create collaboration session: ${error.message}`);
     }
@@ -712,7 +729,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
           validatedParticipant,
           session.culturalContext
         );
-        
+
         if (!culturalValidation.approved) {
           throw new Error(`Cultural validation failed: ${culturalValidation.reason}`);
         }
@@ -730,12 +747,11 @@ export class IraqiCollaborationEngine extends EventEmitter {
       this.recordAuditEntry(sessionId, 'participant-joined', {
         participantId: validatedParticipant.id,
         participantName: validatedParticipant.name,
-        culturalValidation: true
+        culturalValidation: true,
       });
 
       this.emit('participant-joined', { sessionId, participant: validatedParticipant });
       return true;
-
     } catch (error) {
       this.emit('join-session-error', { sessionId, error: error.message });
       return false;
@@ -764,7 +780,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       }
 
       // Validate participant permissions
-      const participant = session.participants.find(p => p.id === annotationConfig.participantId);
+      const participant = session.participants.find((p) => p.id === annotationConfig.participantId);
       if (!participant || !participant.capabilities.canAnnotate) {
         throw new Error('Annotation permission denied');
       }
@@ -780,7 +796,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         ministry: this.config.ministry,
         culturalValidation: annotationConfig.culturalContext !== false,
         islamicCompliance: this.config.islamicWorkflowCompliance,
-        rtlSupported: this.config.rtlOptimized
+        rtlSupported: this.config.rtlOptimized,
       });
 
       // Add annotation to document
@@ -795,12 +811,11 @@ export class IraqiCollaborationEngine extends EventEmitter {
         annotationId: annotation.id,
         participantId: annotationConfig.participantId,
         type: annotationConfig.type,
-        culturallyValidated: annotation.culturallyValidated
+        culturallyValidated: annotation.culturallyValidated,
       });
 
       this.emit('annotation-created', { sessionId, annotation });
       return annotation;
-
     } catch (error) {
       this.emit('annotation-error', { sessionId, error: error.message });
       throw new Error(`Failed to create annotation: ${error.message}`);
@@ -827,7 +842,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       }
 
       // Validate participant permissions
-      const participant = session.participants.find(p => p.id === participantId);
+      const participant = session.participants.find((p) => p.id === participantId);
       if (!participant || !participant.permissions.write) {
         throw new Error('Write permission denied');
       }
@@ -838,7 +853,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
           contentUpdate.content,
           session.culturalContext
         );
-        
+
         if (!culturalValidation.approved) {
           throw new Error(`Cultural validation failed: ${culturalValidation.issues.join(', ')}`);
         }
@@ -851,7 +866,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         operation: contentUpdate.operation,
         position: contentUpdate.position,
         content: contentUpdate.content,
-        culturalValidated: contentUpdate.culturalValidation !== false
+        culturalValidated: contentUpdate.culturalValidation !== false,
       };
 
       session.document.editHistory.push(editEntry);
@@ -877,12 +892,11 @@ export class IraqiCollaborationEngine extends EventEmitter {
         participantId,
         operation: contentUpdate.operation,
         position: contentUpdate.position,
-        culturallyValidated: editEntry.culturalValidated
+        culturallyValidated: editEntry.culturalValidated,
       });
 
       this.emit('document-updated', { sessionId, editEntry });
       return true;
-
     } catch (error) {
       this.emit('document-update-error', { sessionId, error: error.message });
       return false;
@@ -909,7 +923,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       }
 
       // Validate initiator permissions
-      const initiator = session.participants.find(p => p.id === initiatorId);
+      const initiator = session.participants.find((p) => p.id === initiatorId);
       if (!initiator || !initiator.permissions.approve) {
         throw new Error('Approval initiation permission denied');
       }
@@ -925,7 +939,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
         customApprovers: workflowConfig?.customApprovers,
         urgentReview: workflowConfig?.urgentReview || false,
         culturalReview: workflowConfig?.culturalReview || this.config.culturalModeration,
-        islamicReview: workflowConfig?.islamicReview || this.config.islamicWorkflowCompliance
+        islamicReview: workflowConfig?.islamicReview || this.config.islamicWorkflowCompliance,
       });
 
       // Update session workflow state
@@ -942,12 +956,11 @@ export class IraqiCollaborationEngine extends EventEmitter {
         initiatorId,
         workflowType: 'approval',
         culturalReview: workflowConfig?.culturalReview,
-        islamicReview: workflowConfig?.islamicReview
+        islamicReview: workflowConfig?.islamicReview,
       });
 
       this.emit('workflow-started', { sessionId, workflowResult });
       return workflowResult;
-
     } catch (error) {
       this.emit('workflow-error', { sessionId, error: error.message });
       throw new Error(`Failed to start approval workflow: ${error.message}`);
@@ -961,33 +974,36 @@ export class IraqiCollaborationEngine extends EventEmitter {
     if (!this.config.prayerTimeAware) return;
 
     try {
-      const activeSessions = Array.from(this.activeSessions.values())
-        .filter(session => session.status === 'active');
+      const activeSessions = Array.from(this.activeSessions.values()).filter(
+        (session) => session.status === 'active'
+      );
 
       for (const session of activeSessions) {
         // Pause session
         session.status = 'prayer-break';
-        
+
         // Save current state
         await this.saveSessionState(session.id);
-        
+
         // Notify participants
         await this.notifyPrayerBreak(session.id, prayerName);
-        
+
         // Update performance metrics
         this.performanceMetrics.prayerPauses++;
       }
 
-      this.emit('prayer-break-initiated', { 
-        prayerName, 
-        sessionsPaused: activeSessions.length 
+      this.emit('prayer-break-initiated', {
+        prayerName,
+        sessionsPaused: activeSessions.length,
       });
 
       // Schedule automatic resume (typical prayer duration: 15-20 minutes)
-      setTimeout(() => {
-        this.resumeFromPrayerBreak(prayerName);
-      }, 20 * 60 * 1000); // 20 minutes
-
+      setTimeout(
+        () => {
+          this.resumeFromPrayerBreak(prayerName);
+        },
+        20 * 60 * 1000
+      ); // 20 minutes
     } catch (error) {
       this.emit('prayer-break-error', { error: error.message });
     }
@@ -998,26 +1014,26 @@ export class IraqiCollaborationEngine extends EventEmitter {
    */
   async resumeFromPrayerBreak(prayerName: string): Promise<void> {
     try {
-      const pausedSessions = Array.from(this.activeSessions.values())
-        .filter(session => session.status === 'prayer-break');
+      const pausedSessions = Array.from(this.activeSessions.values()).filter(
+        (session) => session.status === 'prayer-break'
+      );
 
       for (const session of pausedSessions) {
         // Resume session
         session.status = 'active';
         session.lastActivity = new Date();
-        
+
         // Restore session state
         await this.restoreSessionState(session.id);
-        
+
         // Notify participants
         await this.notifyPrayerBreakEnd(session.id, prayerName);
       }
 
-      this.emit('prayer-break-ended', { 
-        prayerName, 
-        sessionsResumed: pausedSessions.length 
+      this.emit('prayer-break-ended', {
+        prayerName,
+        sessionsResumed: pausedSessions.length,
       });
-
     } catch (error) {
       this.emit('prayer-break-resume-error', { error: error.message });
     }
@@ -1030,11 +1046,13 @@ export class IraqiCollaborationEngine extends EventEmitter {
     return {
       ...this.performanceMetrics,
       activeSessions: this.activeSessions.size,
-      totalParticipants: Array.from(this.activeSessions.values())
-        .reduce((total, session) => total + session.participants.length, 0),
+      totalParticipants: Array.from(this.activeSessions.values()).reduce(
+        (total, session) => total + session.participants.length,
+        0
+      ),
       averageSessionDuration: this.calculateAverageSessionDuration(),
       culturalComplianceRate: this.calculateCulturalComplianceRate(),
-      syncLatency: this.calculateAverageSyncLatency()
+      syncLatency: this.calculateAverageSyncLatency(),
     };
   }
 
@@ -1051,14 +1069,14 @@ export class IraqiCollaborationEngine extends EventEmitter {
       session: {
         ...session,
         // Remove sensitive data
-        participants: session.participants.map(p => ({
+        participants: session.participants.map((p) => ({
           ...p,
-          securityClearance: '[REDACTED]'
-        }))
+          securityClearance: '[REDACTED]',
+        })),
       },
-      auditLog: this.auditLog.filter(entry => entry.sessionId === sessionId),
+      auditLog: this.auditLog.filter((entry) => entry.sessionId === sessionId),
       performanceMetrics: this.getSessionPerformanceMetrics(sessionId),
-      culturalCompliance: this.getSessionCulturalCompliance(sessionId)
+      culturalCompliance: this.getSessionCulturalCompliance(sessionId),
     };
   }
 
@@ -1073,7 +1091,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       }
 
       // Validate permissions
-      const participant = session.participants.find(p => p.id === participantId);
+      const participant = session.participants.find((p) => p.id === participantId);
       if (!participant || (!participant.permissions.admin && participant.role.hierarchy > 3)) {
         throw new Error('Session end permission denied');
       }
@@ -1101,12 +1119,11 @@ export class IraqiCollaborationEngine extends EventEmitter {
       this.recordAuditEntry(sessionId, 'session-ended', {
         endedBy: participantId,
         reason: reason || 'manual',
-        duration: Date.now() - session.createdAt.getTime()
+        duration: Date.now() - session.createdAt.getTime(),
       });
 
       this.emit('session-ended', { sessionId, endedBy: participantId });
       return true;
-
     } catch (error) {
       this.emit('session-end-error', { sessionId, error: error.message });
       return false;
@@ -1138,7 +1155,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       this.workflowManager.destroy(),
       this.teamSync.destroy(),
       this.conflictResolver.destroy(),
-      this.security.destroy()
+      this.security.destroy(),
     ]);
 
     // Clear caches
@@ -1183,7 +1200,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       capabilities: this.createDefaultCapabilities(),
       permissions: this.createDefaultPermissions(),
       securityClearance: securityLevel,
-      auditRequired: securityLevel !== 'public'
+      auditRequired: securityLevel !== 'public',
     }));
   }
 
@@ -1213,7 +1230,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       ministryProtocol: this.config.governmentSecurity,
       officialCommunication: this.config.governmentSecurity,
       diplomaticLanguage: this.config.securityLevel !== 'public',
-      confidentialityAware: this.config.securityLevel !== 'public'
+      confidentialityAware: this.config.securityLevel !== 'public',
     };
   }
 
@@ -1233,7 +1250,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       authorized: true,
       encryptionUsed: this.config.securityLevel !== 'public',
       latency: 0,
-      success: true
+      success: true,
     };
 
     this.auditLog.push(entry);
@@ -1256,29 +1273,29 @@ export class IraqiCollaborationEngine extends EventEmitter {
         approvalLevels: 4,
         specializedRoles: ['doctor', 'nurse', 'administrator', 'medical-director'],
         confidentialityLevel: 'high',
-        patientPrivacyCompliance: true
+        patientPrivacyCompliance: true,
       },
       education: {
         documentTypes: ['curriculum', 'student-record', 'assessment-report'],
         approvalLevels: 3,
         specializedRoles: ['teacher', 'principal', 'supervisor', 'ministry-inspector'],
         confidentialityLevel: 'medium',
-        studentPrivacyCompliance: true
+        studentPrivacyCompliance: true,
       },
       interior: {
         documentTypes: ['citizen-service', 'security-clearance', 'identification'],
         approvalLevels: 5,
         specializedRoles: ['clerk', 'supervisor', 'director', 'deputy-minister'],
         confidentialityLevel: 'very-high',
-        nationalSecurityCompliance: true
+        nationalSecurityCompliance: true,
       },
       justice: {
         documentTypes: ['legal-document', 'court-order', 'judicial-decision'],
         approvalLevels: 4,
         specializedRoles: ['clerk', 'lawyer', 'judge', 'chief-justice'],
         confidentialityLevel: 'high',
-        legalPrivilegeCompliance: true
-      }
+        legalPrivilegeCompliance: true,
+      },
     };
 
     this.ministryProtocols.set(this.config.ministry, protocols[this.config.ministry]);
@@ -1289,17 +1306,23 @@ export class IraqiCollaborationEngine extends EventEmitter {
    */
   private setupCulturalContextManagement(): void {
     // Cultural context caching for 35% performance improvement
-    setInterval(() => {
-      // Refresh cultural contexts every 30 minutes
-      this.refreshCulturalContextCache();
-    }, 30 * 60 * 1000);
+    setInterval(
+      () => {
+        // Refresh cultural contexts every 30 minutes
+        this.refreshCulturalContextCache();
+      },
+      30 * 60 * 1000
+    );
 
     // Prayer time context updates
-    setInterval(() => {
-      if (this.config.prayerTimeAware) {
-        this.updatePrayerTimeContext();
-      }
-    }, 5 * 60 * 1000); // Every 5 minutes
+    setInterval(
+      () => {
+        if (this.config.prayerTimeAware) {
+          this.updatePrayerTimeContext();
+        }
+      },
+      5 * 60 * 1000
+    ); // Every 5 minutes
 
     // Ramadan schedule adjustments
     this.setupRamadanScheduleManagement();
@@ -1357,7 +1380,6 @@ export class IraqiCollaborationEngine extends EventEmitter {
       this.syncEngine.onerror = (error: any) => {
         this.emit('sync-engine-error', error);
       };
-
     } catch (error) {
       this.emit('sync-engine-initialization-error', error);
       throw new Error(`Failed to initialize sync engine: ${error.message}`);
@@ -1390,7 +1412,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       prayerTimeRespect: this.config.prayerTimeAware,
       ramadanAware: this.config.ramadanScheduleAware,
       ministryProtocol: true,
-      officialCommunication: true
+      officialCommunication: true,
     };
 
     this.culturalContextCache.set('base', baseContext);
@@ -1410,7 +1432,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       culturalValidations: 0,
       conflictsResolved: 0,
       prayerPauses: 0,
-      approvalWorkflows: 0
+      approvalWorkflows: 0,
     };
 
     // Start monitoring processes
@@ -1428,7 +1450,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       completedStages: [],
       pendingApprovals: [],
       blockedBy: [],
-      estimatedCompletion: new Date()
+      estimatedCompletion: new Date(),
     };
   }
   private estimateSessionDuration(documentType: DocumentType): number {
@@ -1440,7 +1462,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       'medical-record': 45 * 60 * 1000, // 45 minutes
       'educational-content': 60 * 60 * 1000, // 1 hour
       'security-briefing': 75 * 60 * 1000, // 1.25 hours
-      'budget-proposal': 150 * 60 * 1000 // 2.5 hours
+      'budget-proposal': 150 * 60 * 1000, // 2.5 hours
     };
     return durations[documentType] || 60 * 60 * 1000;
   }
@@ -1449,27 +1471,48 @@ export class IraqiCollaborationEngine extends EventEmitter {
     return [];
   }
   private async initializeSessionSync(session: CollaborationSession): Promise<void> {}
-  private async validateCulturalParticipation(participant: any, context: CulturalContext): Promise<any> {
+  private async validateCulturalParticipation(
+    participant: any,
+    context: CulturalContext
+  ): Promise<any> {
     return { approved: true };
   }
-  private async syncParticipantToSession(sessionId: string, participant: CollaborationParticipant): Promise<void> {}
+  private async syncParticipantToSession(
+    sessionId: string,
+    participant: CollaborationParticipant
+  ): Promise<void> {}
   private async syncAnnotationToParticipants(sessionId: string, annotation: any): Promise<void> {}
   private async validateContentCulturally(content: string, context: CulturalContext): Promise<any> {
     return { approved: true, issues: [] };
   }
-  private async syncContentUpdateToParticipants(sessionId: string, editEntry: EditHistoryEntry): Promise<void> {}
-  private async detectEditConflicts(sessionId: string): Promise<any[]> { return []; }
+  private async syncContentUpdateToParticipants(
+    sessionId: string,
+    editEntry: EditHistoryEntry
+  ): Promise<void> {}
+  private async detectEditConflicts(sessionId: string): Promise<any[]> {
+    return [];
+  }
   private async resolveEditConflicts(sessionId: string, conflicts: any[]): Promise<void> {}
   private async notifyWorkflowStarted(sessionId: string, workflowResult: any): Promise<void> {}
   private async saveSessionState(sessionId: string): Promise<void> {}
   private async notifyPrayerBreak(sessionId: string, prayerName: string): Promise<void> {}
   private async restoreSessionState(sessionId: string): Promise<void> {}
   private async notifyPrayerBreakEnd(sessionId: string, prayerName: string): Promise<void> {}
-  private calculateAverageSessionDuration(): number { return 0; }
-  private calculateCulturalComplianceRate(): number { return 0.95; }
-  private calculateAverageSyncLatency(): number { return 30; }
-  private getSessionPerformanceMetrics(sessionId: string): any { return {}; }
-  private getSessionCulturalCompliance(sessionId: string): any { return {}; }
+  private calculateAverageSessionDuration(): number {
+    return 0;
+  }
+  private calculateCulturalComplianceRate(): number {
+    return 0.95;
+  }
+  private calculateAverageSyncLatency(): number {
+    return 30;
+  }
+  private getSessionPerformanceMetrics(sessionId: string): any {
+    return {};
+  }
+  private getSessionCulturalCompliance(sessionId: string): any {
+    return {};
+  }
   private async finalizeDocument(sessionId: string): Promise<void> {}
   private async saveSessionData(sessionId: string): Promise<void> {}
   private async notifySessionEnded(sessionId: string, reason?: string): Promise<void> {}
@@ -1480,7 +1523,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       hierarchy: 5,
       approvalAuthority: false,
       culturalWeight: 0.1,
-      ministrySpecific: false
+      ministrySpecific: false,
     };
   }
   private createDefaultCulturalPermissions(): CulturalPermissions {
@@ -1488,7 +1531,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       canModerateCulture: false,
       canApproveIslamic: false,
       canEditArabic: true,
-      canAccessConfidential: false
+      canAccessConfidential: false,
     };
   }
   private createDefaultPrayerSchedule(): PrayerSchedule {
@@ -1498,7 +1541,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       asr: '15:30',
       maghrib: '18:00',
       isha: '19:30',
-      automated: true
+      automated: true,
     };
   }
   private createDefaultConnectionStatus(): ConnectionStatus {
@@ -1507,7 +1550,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       latency: 50,
       bandwidth: 1000,
       reliability: 0.95,
-      location: 'Baghdad, Iraq'
+      location: 'Baghdad, Iraq',
     };
   }
   private createDefaultCapabilities(): ParticipantCapabilities {
@@ -1519,7 +1562,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       voiceSupported: false,
       videoSupported: false,
       arabicInputSupported: true,
-      rtlSupported: true
+      rtlSupported: true,
     };
   }
   private createDefaultPermissions(): CollaborationPermissions {
@@ -1531,7 +1574,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
       admin: false,
       audit: false,
       cultural: false,
-      security: false
+      security: false,
     };
   }
 
@@ -1555,7 +1598,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
   private updatePrayerTimeContext(): void {
     const now = new Date();
     const currentPrayer = this.getCurrentPrayerTime(now);
-    
+
     if (currentPrayer && this.shouldPauseSessions(currentPrayer)) {
       this.handlePrayerTimePause(currentPrayer.name);
     }
@@ -1581,12 +1624,12 @@ export class IraqiCollaborationEngine extends EventEmitter {
    */
   private collectPerformanceMetrics(): void {
     const currentLatency = this.measureCurrentSyncLatency();
-    this.performanceMetrics.averageSyncLatency = 
+    this.performanceMetrics.averageSyncLatency =
       (this.performanceMetrics.averageSyncLatency + currentLatency) / 2;
 
     // Update memory usage metrics
     this.updateMemoryUsageMetrics();
-    
+
     // Update CPU usage metrics
     this.updateCPUUsageMetrics();
   }
@@ -1656,7 +1699,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
   private attemptReconnection(): void {
     let attempts = 0;
     const maxAttempts = 5;
-    
+
     const reconnect = () => {
       if (attempts >= maxAttempts) {
         this.emit('sync-reconnection-failed');
@@ -1664,11 +1707,14 @@ export class IraqiCollaborationEngine extends EventEmitter {
       }
 
       attempts++;
-      setTimeout(() => {
-        this.startRealTimeSync().catch(() => {
-          reconnect();
-        });
-      }, Math.pow(2, attempts) * 1000); // Exponential backoff
+      setTimeout(
+        () => {
+          this.startRealTimeSync().catch(() => {
+            reconnect();
+          });
+        },
+        Math.pow(2, attempts) * 1000
+      ); // Exponential backoff
     };
 
     reconnect();
@@ -1680,7 +1726,7 @@ export class IraqiCollaborationEngine extends EventEmitter {
   private checkPrayerTimes(): void {
     const now = new Date();
     const prayerTime = this.getCurrentPrayerTime(now);
-    
+
     if (prayerTime && this.shouldInitiatePrayerBreak(prayerTime)) {
       this.handlePrayerTimePause(prayerTime.name);
     }
@@ -1705,26 +1751,26 @@ export class IraqiCollaborationEngine extends EventEmitter {
         medicalEthics: true,
         patientConfidentiality: true,
         islamicMedicalPrinciples: true,
-        genderSensitivity: true
+        genderSensitivity: true,
       },
       education: {
         islamicEducationPrinciples: true,
         respectForKnowledge: true,
         teacherStudentRelationship: true,
-        parentalInvolvement: true
+        parentalInvolvement: true,
       },
       interior: {
         nationalSecurity: true,
         citizenService: true,
         publicSafety: true,
-        governmentAccountability: true
+        governmentAccountability: true,
       },
       justice: {
         islamicJurisprudence: true,
         fairTrial: true,
         legalEquity: true,
-        socialJustice: true
-      }
+        socialJustice: true,
+      },
     };
 
     this.culturalContextCache.set(
@@ -1752,7 +1798,8 @@ export class IraqiCollaborationEngine extends EventEmitter {
   private startResourceMonitoring(): void {
     setInterval(() => {
       const resources = this.measureResourceUsage();
-      if (resources.memory > 500 * 1024 * 1024) { // 500MB
+      if (resources.memory > 500 * 1024 * 1024) {
+        // 500MB
         this.emit('memory-warning', resources);
         this.optimizeMemoryUsage();
       }

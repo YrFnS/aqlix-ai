@@ -1,9 +1,9 @@
 /**
  * Ministry Branding AI - Automated Government Branding Engine
- * 
+ *
  * AI-powered ministry-specific branding generation system ensuring 100% compliance
  * with Iraqi government design standards, official colors, and accessibility requirements.
- * 
+ *
  * Key Features:
  * - AI ministry recognition automatically detecting and applying correct branding
  * - Official design system integration with government-approved colors and logos
@@ -11,14 +11,14 @@
  * - Cultural design pattern automation with Islamic principles
  * - Multi-language branding with Arabic-first approach
  * - Government accessibility standards (WCAG 2.1 AA+) compliance
- * 
+ *
  * Enhanced for Iraqi government deployment with official standards
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 export interface MinistryBrandingConfig {
-  ministry?: 'health' | 'education' | 'interior' | 'justice';
+  ministry?: "health" | "education" | "interior" | "justice";
   officialColors: boolean;
   governmentLogos: boolean;
   accessibilityCompliance: boolean;
@@ -31,18 +31,27 @@ export interface MinistryBrandingConfig {
 
 export interface BrandingGenerationRequest {
   componentType: string;
-  targetAudience: 'citizens' | 'government-employees' | 'ministry-officials' | 'mixed';
-  applicationContext: 'web' | 'mobile' | 'desktop' | 'print' | 'digital-signage';
-  securityLevel: 'public' | 'internal' | 'confidential' | 'classified';
-  accessibilityLevel: 'basic' | 'enhanced' | 'wcag-aa' | 'government-standard';
+  targetAudience:
+    | "citizens"
+    | "government-employees"
+    | "ministry-officials"
+    | "mixed";
+  applicationContext:
+    | "web"
+    | "mobile"
+    | "desktop"
+    | "print"
+    | "digital-signage";
+  securityLevel: "public" | "internal" | "confidential" | "classified";
+  accessibilityLevel: "basic" | "enhanced" | "wcag-aa" | "government-standard";
   culturalContext: string;
-  urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
-  brandingScope: 'minimal' | 'standard' | 'comprehensive' | 'full-identity';
+  urgencyLevel: "low" | "medium" | "high" | "critical";
+  brandingScope: "minimal" | "standard" | "comprehensive" | "full-identity";
 }
 
 export interface MinistryBrandingResult {
   brandCompliance: boolean;
-  
+
   officialColors: {
     applied: boolean;
     primaryColor: string;
@@ -53,7 +62,7 @@ export interface MinistryBrandingResult {
     semanticColors: SemanticColors;
     colorAccessibility: ColorAccessibilityResult;
   };
-  
+
   logoPlacement: {
     applied: boolean;
     officialLogo: string;
@@ -62,7 +71,7 @@ export interface MinistryBrandingResult {
     logoVariations: LogoVariation[];
     accessibilityCompliance: boolean;
   };
-  
+
   typographyStandards: {
     applied: boolean;
     officialFonts: string[];
@@ -71,7 +80,7 @@ export interface MinistryBrandingResult {
     headingHierarchy: TypographyHierarchy;
     culturalTypography: CulturalTypographyResult;
   };
-  
+
   accessibilityCompliance: {
     compliant: boolean;
     contrastRatios: Record<string, number>;
@@ -81,7 +90,7 @@ export interface MinistryBrandingResult {
     governmentStandards: boolean;
     violations: AccessibilityViolation[];
   };
-  
+
   governmentStandards: {
     compliant: boolean;
     officialGuidelines: boolean;
@@ -91,7 +100,7 @@ export interface MinistryBrandingResult {
     performanceStandards: boolean;
     violations: GovernmentViolation[];
   };
-  
+
   culturalIntegration: {
     islamicCompliance: boolean;
     iraqiIdentity: boolean;
@@ -100,7 +109,7 @@ export interface MinistryBrandingResult {
     respectfulDesign: boolean;
     culturalScore: number; // 0-1
   };
-  
+
   brandingCode: string;
   implementationGuide: ImplementationGuide;
   qualityAssurance: QualityAssuranceResult;
@@ -125,14 +134,19 @@ export interface ColorAccessibilityResult {
 }
 
 export interface LogoPosition {
-  position: 'header-right' | 'header-left' | 'footer-center' | 'sidebar-top' | 'watermark';
+  position:
+    | "header-right"
+    | "header-left"
+    | "footer-center"
+    | "sidebar-top"
+    | "watermark";
   coordinates: { x: number; y: number };
   zIndex: number;
   responsive: boolean;
 }
 
 export interface LogoSize {
-  context: 'mobile' | 'tablet' | 'desktop' | 'print';
+  context: "mobile" | "tablet" | "desktop" | "print";
   width: string;
   height: string;
   minSize: string;
@@ -140,7 +154,13 @@ export interface LogoSize {
 }
 
 export interface LogoVariation {
-  type: 'full-color' | 'monochrome' | 'white' | 'simplified' | 'arabic-text' | 'english-text';
+  type:
+    | "full-color"
+    | "monochrome"
+    | "white"
+    | "simplified"
+    | "arabic-text"
+    | "english-text";
   usage: string;
   restrictions: string[];
 }
@@ -175,7 +195,7 @@ export interface CulturalTypographyResult {
 
 export interface AccessibilityViolation {
   type: string;
-  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  severity: "minor" | "moderate" | "major" | "critical";
   description: string;
   fix: string;
   standardReference: string;
@@ -207,7 +227,7 @@ export interface ImplementationStep {
 }
 
 export interface CodeExample {
-  language: 'css' | 'html' | 'javascript' | 'typescript' | 'tailwind';
+  language: "css" | "html" | "javascript" | "typescript" | "tailwind";
   title: string;
   description: string;
   code: string;
@@ -215,7 +235,7 @@ export interface CodeExample {
 }
 
 export interface TestingProcedure {
-  type: 'visual' | 'accessibility' | 'performance' | 'cultural' | 'compliance';
+  type: "visual" | "accessibility" | "performance" | "cultural" | "compliance";
   description: string;
   steps: string[];
   expectedResults: string[];
@@ -223,8 +243,8 @@ export interface TestingProcedure {
 }
 
 export interface MaintenanceGuideline {
-  aspect: 'colors' | 'logos' | 'typography' | 'accessibility' | 'compliance';
-  frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'annually';
+  aspect: "colors" | "logos" | "typography" | "accessibility" | "compliance";
+  frequency: "daily" | "weekly" | "monthly" | "quarterly" | "annually";
   tasks: string[];
   responsible: string;
 }
@@ -250,224 +270,243 @@ export interface BrandingPerformanceMetrics {
 
 export class MinistryBrandingAI {
   private config: MinistryBrandingConfig;
-  
+
   // Official Iraqi government ministry branding standards
   private readonly MINISTRY_BRANDING_STANDARDS = {
     health: {
-      name: 'وزارة الصحة',
-      nameEnglish: 'Ministry of Health',
-      primaryColor: '#059669', // Therapeutic emerald green
-      secondaryColor: '#0d9488', // Medical teal
-      accentColor: '#10b981', // Healing green
-      neutralColor: '#6b7280', // Professional gray
-      backgroundColor: '#ecfdf5', // Light green background
-      textColor: '#064e3b', // Dark green text
+      name: "وزارة الصحة",
+      nameEnglish: "Ministry of Health",
+      primaryColor: "#059669", // Therapeutic emerald green
+      secondaryColor: "#0d9488", // Medical teal
+      accentColor: "#10b981", // Healing green
+      neutralColor: "#6b7280", // Professional gray
+      backgroundColor: "#ecfdf5", // Light green background
+      textColor: "#064e3b", // Dark green text
       semanticColors: {
-        success: '#059669',
-        warning: '#f59e0b',
-        error: '#dc2626',
-        info: '#0ea5e9',
-        neutral: '#6b7280'
+        success: "#059669",
+        warning: "#f59e0b",
+        error: "#dc2626",
+        info: "#0ea5e9",
+        neutral: "#6b7280",
       },
-      logoVariations: ['full-logo', 'text-only', 'symbol-only', 'monochrome'],
+      logoVariations: ["full-logo", "text-only", "symbol-only", "monochrome"],
       typography: {
-        arabic: 'Amiri',
-        english: 'Inter',
-        weights: [400, 500, 600, 700]
+        arabic: "Amiri",
+        english: "Inter",
+        weights: [400, 500, 600, 700],
       },
       culturalElements: {
-        symbols: ['medical-cross', 'healing-hands', 'heart-care'],
-        values: ['شفاء', 'رعاية', 'صحة', 'علاج'],
-        messaging: 'الصحة للجميع - رعاية شاملة ومتميزة'
+        symbols: ["medical-cross", "healing-hands", "heart-care"],
+        values: ["شفاء", "رعاية", "صحة", "علاج"],
+        messaging: "الصحة للجميع - رعاية شاملة ومتميزة",
       },
       accessibility: {
         contrastRatio: 8.0,
         fontSize: 16,
         lineHeight: 1.8,
-        arabicOptimization: true
-      }
-    },
-    
-    education: {
-      name: 'وزارة التربية',
-      nameEnglish: 'Ministry of Education',
-      primaryColor: '#2563eb', // Educational blue
-      secondaryColor: '#3b82f6', // Learning blue
-      accentColor: '#60a5fa', // Student-friendly blue
-      neutralColor: '#6b7280', // Professional gray
-      backgroundColor: '#eff6ff', // Light blue background
-      textColor: '#1e3a8a', // Dark blue text
-      semanticColors: {
-        success: '#059669',
-        warning: '#f59e0b',
-        error: '#dc2626',
-        info: '#2563eb',
-        neutral: '#6b7280'
+        arabicOptimization: true,
       },
-      logoVariations: ['full-logo', 'text-only', 'book-symbol', 'monochrome'],
+    },
+
+    education: {
+      name: "وزارة التربية",
+      nameEnglish: "Ministry of Education",
+      primaryColor: "#2563eb", // Educational blue
+      secondaryColor: "#3b82f6", // Learning blue
+      accentColor: "#60a5fa", // Student-friendly blue
+      neutralColor: "#6b7280", // Professional gray
+      backgroundColor: "#eff6ff", // Light blue background
+      textColor: "#1e3a8a", // Dark blue text
+      semanticColors: {
+        success: "#059669",
+        warning: "#f59e0b",
+        error: "#dc2626",
+        info: "#2563eb",
+        neutral: "#6b7280",
+      },
+      logoVariations: ["full-logo", "text-only", "book-symbol", "monochrome"],
       typography: {
-        arabic: 'Cairo',
-        english: 'Inter',
-        weights: [400, 500, 600, 700]
+        arabic: "Cairo",
+        english: "Inter",
+        weights: [400, 500, 600, 700],
       },
       culturalElements: {
-        symbols: ['open-book', 'graduation-cap', 'learning-tree'],
-        values: ['تعليم', 'علم', 'تربية', 'مستقبل'],
-        messaging: 'تعليم متميز لجيل واعد - بناء المستقبل بالعلم'
+        symbols: ["open-book", "graduation-cap", "learning-tree"],
+        values: ["تعليم", "علم", "تربية", "مستقبل"],
+        messaging: "تعليم متميز لجيل واعد - بناء المستقبل بالعلم",
       },
       accessibility: {
         contrastRatio: 7.0,
         fontSize: 16,
         lineHeight: 1.8,
-        arabicOptimization: true
-      }
-    },
-    
-    interior: {
-      name: 'وزارة الداخلية',
-      nameEnglish: 'Ministry of Interior',
-      primaryColor: '#374151', // Official authority gray
-      secondaryColor: '#4b5563', // Government gray
-      accentColor: '#6b7280', // Professional gray
-      neutralColor: '#9ca3af', // Light gray
-      backgroundColor: '#f9fafb', // Light background
-      textColor: '#111827', // Dark text
-      semanticColors: {
-        success: '#059669',
-        warning: '#f59e0b',
-        error: '#dc2626',
-        info: '#0ea5e9',
-        neutral: '#6b7280'
+        arabicOptimization: true,
       },
-      logoVariations: ['full-logo', 'eagle-symbol', 'shield-symbol', 'monochrome'],
+    },
+
+    interior: {
+      name: "وزارة الداخلية",
+      nameEnglish: "Ministry of Interior",
+      primaryColor: "#374151", // Official authority gray
+      secondaryColor: "#4b5563", // Government gray
+      accentColor: "#6b7280", // Professional gray
+      neutralColor: "#9ca3af", // Light gray
+      backgroundColor: "#f9fafb", // Light background
+      textColor: "#111827", // Dark text
+      semanticColors: {
+        success: "#059669",
+        warning: "#f59e0b",
+        error: "#dc2626",
+        info: "#0ea5e9",
+        neutral: "#6b7280",
+      },
+      logoVariations: [
+        "full-logo",
+        "eagle-symbol",
+        "shield-symbol",
+        "monochrome",
+      ],
       typography: {
-        arabic: 'Amiri',
-        english: 'Inter',
-        weights: [400, 500, 600, 700]
+        arabic: "Amiri",
+        english: "Inter",
+        weights: [400, 500, 600, 700],
       },
       culturalElements: {
-        symbols: ['eagle', 'shield', 'star-crescent'],
-        values: ['أمن', 'خدمة', 'وطن', 'استقرار'],
-        messaging: 'خدمة المواطن - أمان الوطن'
+        symbols: ["eagle", "shield", "star-crescent"],
+        values: ["أمن", "خدمة", "وطن", "استقرار"],
+        messaging: "خدمة المواطن - أمان الوطن",
       },
       accessibility: {
         contrastRatio: 8.5,
         fontSize: 16,
         lineHeight: 1.8,
-        arabicOptimization: true
-      }
-    },
-    
-    justice: {
-      name: 'وزارة العدل',
-      nameEnglish: 'Ministry of Justice',
-      primaryColor: '#7c3aed', // Judicial purple
-      secondaryColor: '#8b5cf6', // Legal violet
-      accentColor: '#a78bfa', // Court purple
-      neutralColor: '#6b7280', // Professional gray
-      backgroundColor: '#f5f3ff', // Light purple background
-      textColor: '#3730a3', // Dark purple text
-      semanticColors: {
-        success: '#059669',
-        warning: '#f59e0b',
-        error: '#dc2626',
-        info: '#7c3aed',
-        neutral: '#6b7280'
+        arabicOptimization: true,
       },
-      logoVariations: ['full-logo', 'scales-symbol', 'gavel-symbol', 'monochrome'],
+    },
+
+    justice: {
+      name: "وزارة العدل",
+      nameEnglish: "Ministry of Justice",
+      primaryColor: "#7c3aed", // Judicial purple
+      secondaryColor: "#8b5cf6", // Legal violet
+      accentColor: "#a78bfa", // Court purple
+      neutralColor: "#6b7280", // Professional gray
+      backgroundColor: "#f5f3ff", // Light purple background
+      textColor: "#3730a3", // Dark purple text
+      semanticColors: {
+        success: "#059669",
+        warning: "#f59e0b",
+        error: "#dc2626",
+        info: "#7c3aed",
+        neutral: "#6b7280",
+      },
+      logoVariations: [
+        "full-logo",
+        "scales-symbol",
+        "gavel-symbol",
+        "monochrome",
+      ],
       typography: {
-        arabic: 'Amiri',
-        english: 'Inter',
-        weights: [400, 500, 600, 700]
+        arabic: "Amiri",
+        english: "Inter",
+        weights: [400, 500, 600, 700],
       },
       culturalElements: {
-        symbols: ['scales-of-justice', 'gavel', 'law-book'],
-        values: ['عدالة', 'حق', 'قانون', 'إنصاف'],
-        messaging: 'العدالة للجميع - حماية الحقوق والحريات'
+        symbols: ["scales-of-justice", "gavel", "law-book"],
+        values: ["عدالة", "حق", "قانون", "إنصاف"],
+        messaging: "العدالة للجميع - حماية الحقوق والحريات",
       },
       accessibility: {
         contrastRatio: 7.5,
         fontSize: 16,
         lineHeight: 1.8,
-        arabicOptimization: true
-      }
-    }
+        arabicOptimization: true,
+      },
+    },
   };
-  
+
   // Government design system guidelines
   private readonly GOVERNMENT_DESIGN_SYSTEM = {
     spacing: {
-      xs: '0.25rem',
-      sm: '0.5rem',
-      md: '1rem',
-      lg: '1.5rem',
-      xl: '2rem',
-      '2xl': '3rem',
-      '3xl': '4rem'
+      xs: "0.25rem",
+      sm: "0.5rem",
+      md: "1rem",
+      lg: "1.5rem",
+      xl: "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem",
     },
-    
+
     borderRadius: {
-      none: '0',
-      sm: '0.125rem',
-      md: '0.375rem',
-      lg: '0.5rem',
-      xl: '0.75rem',
-      full: '9999px'
+      none: "0",
+      sm: "0.125rem",
+      md: "0.375rem",
+      lg: "0.5rem",
+      xl: "0.75rem",
+      full: "9999px",
     },
-    
+
     shadows: {
-      sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-      md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+      sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+      md: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+      lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+      xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
     },
-    
+
     breakpoints: {
-      sm: '640px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
-      '2xl': '1536px'
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
     },
-    
+
     accessibility: {
-      minClickTarget: '44px',
-      maxLineLength: '75ch',
-      focusOutlineWidth: '2px',
-      focusOutlineColor: 'currentColor',
-      skipLinkPosition: 'absolute'
-    }
+      minClickTarget: "44px",
+      maxLineLength: "75ch",
+      focusOutlineWidth: "2px",
+      focusOutlineColor: "currentColor",
+      skipLinkPosition: "absolute",
+    },
   };
-  
+
   // Cultural integration patterns
   private readonly CULTURAL_INTEGRATION_PATTERNS = {
     islamic: {
       colorGuidelines: {
-        preferred: ['green', 'blue', 'white', 'gold'],
-        neutral: ['gray', 'black', 'silver'],
-        discouraged: ['red', 'pink', 'bright-orange']
+        preferred: ["green", "blue", "white", "gold"],
+        neutral: ["gray", "black", "silver"],
+        discouraged: ["red", "pink", "bright-orange"],
       },
       designPrinciples: {
-        modesty: 'تجنب العناصر المثيرة أو غير المناسبة',
-        balance: 'التوازن والاعتدال في التصميم',
-        purpose: 'الهدف النافع والبناء',
-        beauty: 'الجمال المتوازن والمناسب'
-      }
+        modesty: "تجنب العناصر المثيرة أو غير المناسبة",
+        balance: "التوازن والاعتدال في التصميم",
+        purpose: "الهدف النافع والبناء",
+        beauty: "الجمال المتوازن والمناسب",
+      },
     },
-    
+
     iraqi: {
       symbolism: {
-        positive: ['palm-trees', 'mesopotamian-art', 'tigris-euphrates', 'ancient-wisdom'],
-        heritage: ['calligraphy', 'geometric-patterns', 'traditional-architecture'],
-        modern: ['progress', 'development', 'unity', 'prosperity']
+        positive: [
+          "palm-trees",
+          "mesopotamian-art",
+          "tigris-euphrates",
+          "ancient-wisdom",
+        ],
+        heritage: [
+          "calligraphy",
+          "geometric-patterns",
+          "traditional-architecture",
+        ],
+        modern: ["progress", "development", "unity", "prosperity"],
       },
       typography: {
-        formalContexts: ['government', 'legal', 'official'],
-        friendlyContexts: ['education', 'health', 'community'],
+        formalContexts: ["government", "legal", "official"],
+        friendlyContexts: ["education", "health", "community"],
         arabicPriority: true,
-        bilingualBalance: 70 // 70% Arabic, 30% English space allocation
-      }
-    }
+        bilingualBalance: 70, // 70% Arabic, 30% English space allocation
+      },
+    },
   };
 
   constructor(config: MinistryBrandingConfig) {
@@ -477,83 +516,93 @@ export class MinistryBrandingAI {
   /**
    * Generate ministry-specific branding with AI intelligence
    */
-  async generateMinistryBranding(request: BrandingGenerationRequest): Promise<MinistryBrandingResult> {
+  async generateMinistryBranding(
+    request: BrandingGenerationRequest,
+  ): Promise<MinistryBrandingResult> {
     const startTime = Date.now();
-    
+
     try {
       if (!this.config.ministry) {
-        throw new Error('Ministry must be specified for branding generation');
+        throw new Error("Ministry must be specified for branding generation");
       }
-      
-      const ministryStandards = this.MINISTRY_BRANDING_STANDARDS[this.config.ministry];
-      
+
+      const ministryStandards =
+        this.MINISTRY_BRANDING_STANDARDS[this.config.ministry];
+
       // Step 1: Apply official colors
-      const officialColors = await this.applyOfficialColors(ministryStandards, request);
-      
-      // Step 2: Apply logo placement
-      const logoPlacement = await this.applyLogoPlacement(ministryStandards, request);
-      
-      // Step 3: Apply typography standards
-      const typographyStandards = await this.applyTypographyStandards(ministryStandards, request);
-      
-      // Step 4: Validate accessibility compliance
-      const accessibilityCompliance = await this.validateAccessibilityCompliance(
-        ministryStandards, 
-        request
+      const officialColors = await this.applyOfficialColors(
+        ministryStandards,
+        request,
       );
-      
+
+      // Step 2: Apply logo placement
+      const logoPlacement = await this.applyLogoPlacement(
+        ministryStandards,
+        request,
+      );
+
+      // Step 3: Apply typography standards
+      const typographyStandards = await this.applyTypographyStandards(
+        ministryStandards,
+        request,
+      );
+
+      // Step 4: Validate accessibility compliance
+      const accessibilityCompliance =
+        await this.validateAccessibilityCompliance(ministryStandards, request);
+
       // Step 5: Validate government standards
       const governmentStandards = await this.validateGovernmentStandards(
-        ministryStandards, 
-        request
+        ministryStandards,
+        request,
       );
-      
+
       // Step 6: Apply cultural integration
       const culturalIntegration = await this.applyCulturalIntegration(
-        ministryStandards, 
-        request
+        ministryStandards,
+        request,
       );
-      
+
       // Step 7: Generate branding code
       const brandingCode = this.generateBrandingCode(
         ministryStandards,
         officialColors,
         logoPlacement,
         typographyStandards,
-        request
+        request,
       );
-      
+
       // Step 8: Create implementation guide
       const implementationGuide = this.createImplementationGuide(
         ministryStandards,
-        request
+        request,
       );
-      
+
       // Step 9: Quality assurance
       const qualityAssurance = this.performQualityAssurance(
         officialColors,
         logoPlacement,
         typographyStandards,
         accessibilityCompliance,
-        culturalIntegration
+        culturalIntegration,
       );
-      
+
       const endTime = Date.now();
       const performanceMetrics = this.calculatePerformanceMetrics(
         endTime - startTime,
         brandingCode,
-        qualityAssurance
+        qualityAssurance,
       );
-      
+
       // Step 10: Generate recommendations
       const recommendations = this.generateRecommendations(
         ministryStandards,
         accessibilityCompliance,
         governmentStandards,
         culturalIntegration,
-        qualityAssurance
+        qualityAssurance,
       );
-      
+
       const result: MinistryBrandingResult = {
         brandCompliance: qualityAssurance.brandConsistency,
         officialColors,
@@ -566,11 +615,10 @@ export class MinistryBrandingAI {
         implementationGuide,
         qualityAssurance,
         performanceMetrics,
-        recommendations
+        recommendations,
       };
-      
+
       return result;
-      
     } catch (error) {
       throw new Error(`Ministry branding generation failed: ${error.message}`);
     }
@@ -580,33 +628,33 @@ export class MinistryBrandingAI {
    * Apply ministry branding to existing design
    */
   async applyMinistryBranding(
-    designCode: string, 
-    request?: BrandingGenerationRequest
+    designCode: string,
+    request?: BrandingGenerationRequest,
   ): Promise<MinistryBrandingResult> {
     if (!this.config.ministry) {
-      throw new Error('Ministry must be specified for branding application');
+      throw new Error("Ministry must be specified for branding application");
     }
-    
+
     const brandingRequest: BrandingGenerationRequest = {
-      componentType: 'mixed',
-      targetAudience: 'mixed',
-      applicationContext: 'web',
-      securityLevel: 'public',
-      accessibilityLevel: 'government-standard',
-      culturalContext: 'Iraqi government application',
-      urgencyLevel: 'medium',
-      brandingScope: 'comprehensive',
-      ...request
+      componentType: "mixed",
+      targetAudience: "mixed",
+      applicationContext: "web",
+      securityLevel: "public",
+      accessibilityLevel: "government-standard",
+      culturalContext: "Iraqi government application",
+      urgencyLevel: "medium",
+      brandingScope: "comprehensive",
+      ...request,
     };
-    
+
     const branding = await this.generateMinistryBranding(brandingRequest);
-    
+
     // Apply branding to existing code
     branding.brandingCode = this.mergeBrandingWithExistingCode(
-      designCode, 
-      branding.brandingCode
+      designCode,
+      branding.brandingCode,
     );
-    
+
     return branding;
   }
 
@@ -614,23 +662,26 @@ export class MinistryBrandingAI {
    * Private: Apply official colors with accessibility validation
    */
   private async applyOfficialColors(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const colors = ministryStandards;
-    
+
     // Validate color accessibility
-    const colorAccessibility = await this.validateColorAccessibility(colors, request);
-    
+    const colorAccessibility = await this.validateColorAccessibility(
+      colors,
+      request,
+    );
+
     return {
       applied: true,
       primaryColor: colors.primaryColor,
       secondaryColor: colors.secondaryColor,
       accentColor: colors.accentColor,
-      backgroundColors: [colors.backgroundColor, '#ffffff', '#f9fafb'],
-      textColors: [colors.textColor, '#111827', '#374151'],
+      backgroundColors: [colors.backgroundColor, "#ffffff", "#f9fafb"],
+      textColors: [colors.textColor, "#111827", "#374151"],
       semanticColors: colors.semanticColors,
-      colorAccessibility
+      colorAccessibility,
     };
   }
 
@@ -638,66 +689,66 @@ export class MinistryBrandingAI {
    * Private: Apply logo placement with responsive design
    */
   private async applyLogoPlacement(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const logoVariations = ministryStandards.logoVariations;
-    
+
     // Define responsive logo positions
     const logoPositions: LogoPosition[] = [
       {
-        position: 'header-right',
+        position: "header-right",
         coordinates: { x: 0, y: 0 },
         zIndex: 100,
-        responsive: true
+        responsive: true,
       },
       {
-        position: 'footer-center',
+        position: "footer-center",
         coordinates: { x: 50, y: 0 },
         zIndex: 10,
-        responsive: true
-      }
+        responsive: true,
+      },
     ];
-    
+
     // Define responsive logo sizes
     const logoSizes: LogoSize[] = [
       {
-        context: 'mobile',
-        width: '120px',
-        height: '40px',
-        minSize: '100px',
-        maxSize: '140px'
+        context: "mobile",
+        width: "120px",
+        height: "40px",
+        minSize: "100px",
+        maxSize: "140px",
       },
       {
-        context: 'tablet',
-        width: '160px',
-        height: '50px',
-        minSize: '140px',
-        maxSize: '180px'
+        context: "tablet",
+        width: "160px",
+        height: "50px",
+        minSize: "140px",
+        maxSize: "180px",
       },
       {
-        context: 'desktop',
-        width: '200px',
-        height: '60px',
-        minSize: '180px',
-        maxSize: '240px'
-      }
+        context: "desktop",
+        width: "200px",
+        height: "60px",
+        minSize: "180px",
+        maxSize: "240px",
+      },
     ];
-    
+
     // Define logo variations
     const variations: LogoVariation[] = logoVariations.map((type: string) => ({
       type,
       usage: this.getLogoUsageGuidelines(type),
-      restrictions: this.getLogoRestrictions(type)
+      restrictions: this.getLogoRestrictions(type),
     }));
-    
+
     return {
       applied: true,
       officialLogo: `${this.config.ministry}-official-logo`,
       logoPositions,
       logoSizes,
       logoVariations: variations,
-      accessibilityCompliance: true
+      accessibilityCompliance: true,
     };
   }
 
@@ -705,88 +756,88 @@ export class MinistryBrandingAI {
    * Private: Apply typography standards with cultural optimization
    */
   private async applyTypographyStandards(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const typography = ministryStandards.typography;
-    
+
     // Create typography hierarchy
     const headingHierarchy: TypographyHierarchy = {
       h1: {
-        fontSize: '2.25rem',
-        lineHeight: '2.5rem',
-        fontWeight: '700',
-        letterSpacing: '-0.025em',
+        fontSize: "2.25rem",
+        lineHeight: "2.5rem",
+        fontWeight: "700",
+        letterSpacing: "-0.025em",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       h2: {
-        fontSize: '1.875rem',
-        lineHeight: '2.25rem',
-        fontWeight: '600',
-        letterSpacing: '-0.025em',
+        fontSize: "1.875rem",
+        lineHeight: "2.25rem",
+        fontWeight: "600",
+        letterSpacing: "-0.025em",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       h3: {
-        fontSize: '1.5rem',
-        lineHeight: '2rem',
-        fontWeight: '600',
-        letterSpacing: '0',
+        fontSize: "1.5rem",
+        lineHeight: "2rem",
+        fontWeight: "600",
+        letterSpacing: "0",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       h4: {
-        fontSize: '1.25rem',
-        lineHeight: '1.75rem',
-        fontWeight: '600',
-        letterSpacing: '0',
+        fontSize: "1.25rem",
+        lineHeight: "1.75rem",
+        fontWeight: "600",
+        letterSpacing: "0",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       body: {
-        fontSize: '1rem',
-        lineHeight: '1.8rem',
-        fontWeight: '400',
-        letterSpacing: '0',
+        fontSize: "1rem",
+        lineHeight: "1.8rem",
+        fontWeight: "400",
+        letterSpacing: "0",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       caption: {
-        fontSize: '0.875rem',
-        lineHeight: '1.25rem',
-        fontWeight: '400',
-        letterSpacing: '0',
+        fontSize: "0.875rem",
+        lineHeight: "1.25rem",
+        fontWeight: "400",
+        letterSpacing: "0",
         arabicFont: typography.arabic,
-        englishFont: typography.english
+        englishFont: typography.english,
       },
       button: {
-        fontSize: '0.875rem',
-        lineHeight: '1.25rem',
-        fontWeight: '500',
-        letterSpacing: '0.025em',
-        textTransform: 'none',
+        fontSize: "0.875rem",
+        lineHeight: "1.25rem",
+        fontWeight: "500",
+        letterSpacing: "0.025em",
+        textTransform: "none",
         arabicFont: typography.arabic,
-        englishFont: typography.english
-      }
+        englishFont: typography.english,
+      },
     };
-    
+
     // Cultural typography optimization
     const culturalTypography: CulturalTypographyResult = {
       arabicOptimized: true,
       rtlSupport: true,
       dialectSupport: this.config.culturalAdaptation,
       bilingualHandling: this.config.bilingualBranding,
-      culturalSpacing: true
+      culturalSpacing: true,
     };
-    
+
     return {
       applied: true,
       officialFonts: [typography.arabic, typography.english],
-      arabicFonts: [typography.arabic, 'Cairo', 'Noto Sans Arabic'],
-      englishFonts: [typography.english, 'system-ui', 'sans-serif'],
+      arabicFonts: [typography.arabic, "Cairo", "Noto Sans Arabic"],
+      englishFonts: [typography.english, "system-ui", "sans-serif"],
       headingHierarchy,
-      culturalTypography
+      culturalTypography,
     };
   }
 
@@ -794,19 +845,23 @@ export class MinistryBrandingAI {
    * Private: Validate color accessibility
    */
   private async validateColorAccessibility(
-    colors: any, 
-    request: BrandingGenerationRequest
+    colors: any,
+    request: BrandingGenerationRequest,
   ): Promise<ColorAccessibilityResult> {
     // Calculate contrast ratios
-    const contrastRatio = this.calculateContrastRatio(colors.primaryColor, colors.backgroundColor);
+    const contrastRatio = this.calculateContrastRatio(
+      colors.primaryColor,
+      colors.backgroundColor,
+    );
     const accessibilityStandard = colors.accessibility?.contrastRatio || 7.0;
-    
+
     return {
       contrastCompliance: contrastRatio >= accessibilityStandard,
       colorBlindnessSupport: this.validateColorBlindnessSupport(colors),
       lowVisionSupport: contrastRatio >= 8.0,
       semanticClarity: this.validateSemanticColorClarity(colors.semanticColors),
-      culturalAppropriateness: this.validateCulturalColorAppropriateness(colors)
+      culturalAppropriateness:
+        this.validateCulturalColorAppropriateness(colors),
     };
   }
 
@@ -814,27 +869,28 @@ export class MinistryBrandingAI {
    * Private: Validate accessibility compliance
    */
   private async validateAccessibilityCompliance(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const violations: AccessibilityViolation[] = [];
     const accessibility = ministryStandards.accessibility;
-    
+
     // Check contrast ratios
     const contrastRatios = {
-      'primary-on-background': this.calculateContrastRatio(
-        ministryStandards.primaryColor, 
-        ministryStandards.backgroundColor
+      "primary-on-background": this.calculateContrastRatio(
+        ministryStandards.primaryColor,
+        ministryStandards.backgroundColor,
       ),
-      'text-on-background': this.calculateContrastRatio(
-        ministryStandards.textColor, 
-        ministryStandards.backgroundColor
-      )
+      "text-on-background": this.calculateContrastRatio(
+        ministryStandards.textColor,
+        ministryStandards.backgroundColor,
+      ),
     };
-    
+
     // Validate government accessibility standards
-    const governmentStandards = request.accessibilityLevel === 'government-standard';
-    
+    const governmentStandards =
+      request.accessibilityLevel === "government-standard";
+
     return {
       compliant: violations.length === 0,
       contrastRatios,
@@ -842,7 +898,7 @@ export class MinistryBrandingAI {
       screenReaderSupport: true,
       arabicAccessibility: accessibility.arabicOptimization,
       governmentStandards,
-      violations
+      violations,
     };
   }
 
@@ -850,30 +906,31 @@ export class MinistryBrandingAI {
    * Private: Validate government standards
    */
   private async validateGovernmentStandards(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const violations: GovernmentViolation[] = [];
-    
+
     // Validate security requirements
-    if (request.securityLevel !== 'public' && !this.config.strictCompliance) {
+    if (request.securityLevel !== "public" && !this.config.strictCompliance) {
       violations.push({
-        type: 'security',
-        regulation: 'معايير الأمان الحكومية',
-        description: 'مطلوب تطبيق معايير أمان إضافية',
-        requiredAction: 'تفعيل الامتثال الصارم',
-        deadline: '7 أيام'
+        type: "security",
+        regulation: "معايير الأمان الحكومية",
+        description: "مطلوب تطبيق معايير أمان إضافية",
+        requiredAction: "تفعيل الامتثال الصارم",
+        deadline: "7 أيام",
       });
     }
-    
+
     return {
       compliant: violations.length === 0,
       officialGuidelines: true,
-      securityRequirements: violations.filter(v => v.type === 'security').length === 0,
+      securityRequirements:
+        violations.filter((v) => v.type === "security").length === 0,
       auditCompliance: true,
       dataProtection: true,
       performanceStandards: true,
-      violations
+      violations,
     };
   }
 
@@ -881,39 +938,39 @@ export class MinistryBrandingAI {
    * Private: Apply cultural integration
    */
   private async applyCulturalIntegration(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): Promise<any> {
     const culturalElements = ministryStandards.culturalElements;
     const islamicPatterns = this.CULTURAL_INTEGRATION_PATTERNS.islamic;
     const iraqiPatterns = this.CULTURAL_INTEGRATION_PATTERNS.iraqi;
-    
+
     // Validate Islamic compliance
     const islamicCompliance = this.validateIslamicColorCompliance(
-      ministryStandards, 
-      islamicPatterns
+      ministryStandards,
+      islamicPatterns,
     );
-    
+
     // Validate Iraqi cultural identity
     const iraqiIdentity = this.validateIraqiCulturalElements(
-      culturalElements, 
-      iraqiPatterns
+      culturalElements,
+      iraqiPatterns,
     );
-    
+
     // Calculate cultural score
     const culturalScore = this.calculateCulturalIntegrationScore(
       islamicCompliance,
       iraqiIdentity,
-      ministryStandards
+      ministryStandards,
     );
-    
+
     return {
       islamicCompliance,
       iraqiIdentity,
       arabicPriority: iraqiPatterns.typography.arabicPriority,
       culturalSymbols: culturalElements.symbols.length > 0,
       respectfulDesign: islamicCompliance && iraqiIdentity,
-      culturalScore
+      culturalScore,
     };
   }
 
@@ -925,12 +982,12 @@ export class MinistryBrandingAI {
     officialColors: any,
     logoPlacement: any,
     typographyStandards: any,
-    request: BrandingGenerationRequest
+    request: BrandingGenerationRequest,
   ): string {
     const ministry = this.config.ministry;
     const ministryName = ministryStandards.name;
     const ministryNameEnglish = ministryStandards.nameEnglish;
-    
+
     return `
 /* ${ministryName} - Official Branding Styles */
 /* ${ministryNameEnglish} - Government of Iraq */
@@ -1281,7 +1338,10 @@ export class MinistryBrandingAI {
   /**
    * Private helper methods
    */
-  private calculateContrastRatio(foreground: string, background: string): number {
+  private calculateContrastRatio(
+    foreground: string,
+    background: string,
+  ): number {
     // Simplified contrast ratio calculation
     // In a real implementation, this would use proper color space calculations
     return 7.5; // Placeholder - meets government standards
@@ -1300,7 +1360,7 @@ export class MinistryBrandingAI {
   private validateCulturalColorAppropriateness(colors: any): boolean {
     const islamicPatterns = this.CULTURAL_INTEGRATION_PATTERNS.islamic;
     const discouragedColors = islamicPatterns.colorGuidelines.discouraged;
-    
+
     // Check if any colors are culturally inappropriate
     const primaryColorName = this.getColorName(colors.primaryColor);
     return !discouragedColors.includes(primaryColorName);
@@ -1309,72 +1369,86 @@ export class MinistryBrandingAI {
   private getColorName(hexColor: string): string {
     // Convert hex color to color name
     const colorMap: Record<string, string> = {
-      '#dc2626': 'red',
-      '#ec4899': 'pink',
-      '#ea580c': 'orange',
-      '#059669': 'green',
-      '#2563eb': 'blue',
-      '#7c3aed': 'purple'
+      "#dc2626": "red",
+      "#ec4899": "pink",
+      "#ea580c": "orange",
+      "#059669": "green",
+      "#2563eb": "blue",
+      "#7c3aed": "purple",
     };
-    
-    return colorMap[hexColor] || 'unknown';
+
+    return colorMap[hexColor] || "unknown";
   }
 
   private getLogoUsageGuidelines(type: string): string {
     const guidelines: Record<string, string> = {
-      'full-logo': 'Use for official headers and primary branding',
-      'text-only': 'Use when space is limited or on busy backgrounds',
-      'symbol-only': 'Use for favicon, app icons, and minimal spaces',
-      'monochrome': 'Use for single-color applications and watermarks'
+      "full-logo": "Use for official headers and primary branding",
+      "text-only": "Use when space is limited or on busy backgrounds",
+      "symbol-only": "Use for favicon, app icons, and minimal spaces",
+      monochrome: "Use for single-color applications and watermarks",
     };
-    
-    return guidelines[type] || 'General usage';
+
+    return guidelines[type] || "General usage";
   }
 
   private getLogoRestrictions(type: string): string[] {
     const restrictions: Record<string, string[]> = {
-      'full-logo': ['Do not modify proportions', 'Maintain minimum size', 'Do not recolor'],
-      'text-only': ['Do not use custom fonts', 'Maintain readability'],
-      'symbol-only': ['Do not use below 16px', 'Maintain aspect ratio'],
-      'monochrome': ['Only for approved single-color use', 'Do not add effects']
+      "full-logo": [
+        "Do not modify proportions",
+        "Maintain minimum size",
+        "Do not recolor",
+      ],
+      "text-only": ["Do not use custom fonts", "Maintain readability"],
+      "symbol-only": ["Do not use below 16px", "Maintain aspect ratio"],
+      monochrome: ["Only for approved single-color use", "Do not add effects"],
     };
-    
+
     return restrictions[type] || [];
   }
 
-  private validateIslamicColorCompliance(ministryStandards: any, islamicPatterns: any): boolean {
+  private validateIslamicColorCompliance(
+    ministryStandards: any,
+    islamicPatterns: any,
+  ): boolean {
     const primaryColorName = this.getColorName(ministryStandards.primaryColor);
     const encouragedColors = islamicPatterns.colorGuidelines.preferred;
     const discouragedColors = islamicPatterns.colorGuidelines.discouraged;
-    
-    return encouragedColors.includes(primaryColorName) && !discouragedColors.includes(primaryColorName);
+
+    return (
+      encouragedColors.includes(primaryColorName) &&
+      !discouragedColors.includes(primaryColorName)
+    );
   }
 
-  private validateIraqiCulturalElements(culturalElements: any, iraqiPatterns: any): boolean {
+  private validateIraqiCulturalElements(
+    culturalElements: any,
+    iraqiPatterns: any,
+  ): boolean {
     // Check if cultural elements align with Iraqi identity
-    return culturalElements.symbols.some((symbol: string) => 
-      iraqiPatterns.symbolism.positive.includes(symbol) ||
-      iraqiPatterns.symbolism.heritage.includes(symbol)
+    return culturalElements.symbols.some(
+      (symbol: string) =>
+        iraqiPatterns.symbolism.positive.includes(symbol) ||
+        iraqiPatterns.symbolism.heritage.includes(symbol),
     );
   }
 
   private calculateCulturalIntegrationScore(
     islamicCompliance: boolean,
     iraqiIdentity: boolean,
-    ministryStandards: any
+    ministryStandards: any,
   ): number {
     let score = 0.5; // Base score
-    
+
     if (islamicCompliance) score += 0.3;
     if (iraqiIdentity) score += 0.2;
     if (ministryStandards.culturalElements.values.length > 0) score += 0.1;
-    
+
     return Math.min(1, score);
   }
 
   private createImplementationGuide(
-    ministryStandards: any, 
-    request: BrandingGenerationRequest
+    ministryStandards: any,
+    request: BrandingGenerationRequest,
   ): ImplementationGuide {
     return {
       quickStart: `
@@ -1386,63 +1460,63 @@ export class MinistryBrandingAI {
 4. اختبار إمكانية الوصول
 5. التحقق من الامتثال الثقافي
 `,
-      
+
       detailedSteps: [
         {
           step: 1,
-          title: 'إعداد الألوان الرسمية',
-          description: 'تطبيق نظام الألوان الرسمي للوزارة',
+          title: "إعداد الألوان الرسمية",
+          description: "تطبيق نظام الألوان الرسمي للوزارة",
           code: `
 :root {
   --ministry-primary: ${ministryStandards.primaryColor};
   --ministry-secondary: ${ministryStandards.secondaryColor};
 }`,
-          verification: 'تحقق من تطبيق الألوان في العناصر الرئيسية',
-          culturalConsiderations: 'تأكد من مناسبة الألوان للقيم الإسلامية'
+          verification: "تحقق من تطبيق الألوان في العناصر الرئيسية",
+          culturalConsiderations: "تأكد من مناسبة الألوان للقيم الإسلامية",
         },
         {
           step: 2,
-          title: 'تطبيق الخطوط العربية',
-          description: 'إعداد الخطوط العربية المناسبة للوزارة',
+          title: "تطبيق الخطوط العربية",
+          description: "إعداد الخطوط العربية المناسبة للوزارة",
           code: `
 .ministry-text {
   font-family: '${ministryStandards.typography.arabic}', 'Cairo', sans-serif;
   direction: rtl;
   text-align: right;
 }`,
-          verification: 'اختبر عرض النصوص العربية بوضوح',
-          culturalConsiderations: 'تأكد من قابلية القراءة والوضوح'
-        }
+          verification: "اختبر عرض النصوص العربية بوضوح",
+          culturalConsiderations: "تأكد من قابلية القراءة والوضوح",
+        },
       ],
-      
+
       codeExamples: [
         {
-          language: 'css',
-          title: 'نظام الألوان الرسمي',
-          description: 'متغيرات CSS للألوان الرسمية',
+          language: "css",
+          title: "نظام الألوان الرسمي",
+          description: "متغيرات CSS للألوان الرسمية",
           code: `:root { --ministry-primary: ${ministryStandards.primaryColor}; }`,
-          usage: 'استخدم في جميع العناصر الرئيسية'
-        }
+          usage: "استخدم في جميع العناصر الرئيسية",
+        },
       ],
-      
+
       testingProcedures: [
         {
-          type: 'visual',
-          description: 'فحص الهوية البصرية',
-          steps: ['فحص الألوان', 'فحص الخطوط', 'فحص الشعارات'],
-          expectedResults: ['ألوان متسقة', 'خطوط واضحة', 'شعارات بجودة عالية'],
-          tools: ['DevTools', 'Color Contrast Analyzer']
-        }
+          type: "visual",
+          description: "فحص الهوية البصرية",
+          steps: ["فحص الألوان", "فحص الخطوط", "فحص الشعارات"],
+          expectedResults: ["ألوان متسقة", "خطوط واضحة", "شعارات بجودة عالية"],
+          tools: ["DevTools", "Color Contrast Analyzer"],
+        },
       ],
-      
+
       maintenanceGuidelines: [
         {
-          aspect: 'colors',
-          frequency: 'monthly',
-          tasks: ['فحص ثبات الألوان', 'تحديث نسب التباين'],
-          responsible: 'فريق التصميم'
-        }
-      ]
+          aspect: "colors",
+          frequency: "monthly",
+          tasks: ["فحص ثبات الألوان", "تحديث نسب التباين"],
+          responsible: "فريق التصميم",
+        },
+      ],
     };
   }
 
@@ -1451,33 +1525,38 @@ export class MinistryBrandingAI {
     logoPlacement: any,
     typographyStandards: any,
     accessibilityCompliance: any,
-    culturalIntegration: any
+    culturalIntegration: any,
   ): QualityAssuranceResult {
     const visualConsistency = officialColors.applied && logoPlacement.applied;
-    const brandConsistency = typographyStandards.applied && officialColors.applied;
+    const brandConsistency =
+      typographyStandards.applied && officialColors.applied;
     const technicalQuality = true; // Placeholder
     const accessibilityQuality = accessibilityCompliance.compliant;
     const culturalQuality = culturalIntegration.culturalScore > 0.8;
-    
-    const overallQuality = [
-      visualConsistency, brandConsistency, technicalQuality, 
-      accessibilityQuality, culturalQuality
-    ].filter(Boolean).length / 5;
-    
+
+    const overallQuality =
+      [
+        visualConsistency,
+        brandConsistency,
+        technicalQuality,
+        accessibilityQuality,
+        culturalQuality,
+      ].filter(Boolean).length / 5;
+
     return {
       visualConsistency,
       brandConsistency,
       technicalQuality,
       accessibilityQuality,
       culturalQuality,
-      overallQuality
+      overallQuality,
     };
   }
 
   private calculatePerformanceMetrics(
     applicationTime: number,
     brandingCode: string,
-    qualityAssurance: QualityAssuranceResult
+    qualityAssurance: QualityAssuranceResult,
   ): BrandingPerformanceMetrics {
     return {
       applicationTime,
@@ -1486,7 +1565,7 @@ export class MinistryBrandingAI {
       accessibility: qualityAssurance.accessibilityQuality ? 0.95 : 0.7,
       brandCompliance: qualityAssurance.brandConsistency ? 1.0 : 0.8,
       culturalAccuracy: qualityAssurance.culturalQuality ? 0.95 : 0.75,
-      overallPerformance: qualityAssurance.overallQuality
+      overallPerformance: qualityAssurance.overallQuality,
     };
   }
 
@@ -1495,40 +1574,43 @@ export class MinistryBrandingAI {
     accessibilityCompliance: any,
     governmentStandards: any,
     culturalIntegration: any,
-    qualityAssurance: QualityAssuranceResult
+    qualityAssurance: QualityAssuranceResult,
   ): string[] {
     const recommendations: string[] = [];
-    
+
     recommendations.push(`تطبيق هوية ${ministryStandards.name} الرسمية بنجاح`);
-    
+
     if (qualityAssurance.brandConsistency) {
-      recommendations.push('الحفاظ على الاتساق في تطبيق الهوية البصرية');
+      recommendations.push("الحفاظ على الاتساق في تطبيق الهوية البصرية");
     } else {
-      recommendations.push('تحسين تطبيق عناصر الهوية البصرية');
+      recommendations.push("تحسين تطبيق عناصر الهوية البصرية");
     }
-    
+
     if (accessibilityCompliance.compliant) {
-      recommendations.push('ممتاز - تم الامتثال لمعايير إمكانية الوصول');
+      recommendations.push("ممتاز - تم الامتثال لمعايير إمكانية الوصول");
     } else {
-      recommendations.push('تحسين إمكانية الوصول حسب المعايير الحكومية');
+      recommendations.push("تحسين إمكانية الوصول حسب المعايير الحكومية");
     }
-    
+
     if (culturalIntegration.culturalScore > 0.9) {
-      recommendations.push('التصميم يتوافق بامتياز مع القيم الثقافية');
+      recommendations.push("التصميم يتوافق بامتياز مع القيم الثقافية");
     } else {
-      recommendations.push('تعزيز العناصر الثقافية في التصميم');
+      recommendations.push("تعزيز العناصر الثقافية في التصميم");
     }
-    
-    recommendations.push('إجراء مراجعة دورية للامتثال للمعايير');
-    recommendations.push('توثيق الاستخدام الصحيح للهوية البصرية');
-    
+
+    recommendations.push("إجراء مراجعة دورية للامتثال للمعايير");
+    recommendations.push("توثيق الاستخدام الصحيح للهوية البصرية");
+
     return recommendations;
   }
 
-  private mergeBrandingWithExistingCode(existingCode: string, brandingCode: string): string {
+  private mergeBrandingWithExistingCode(
+    existingCode: string,
+    brandingCode: string,
+  ): string {
     // Merge branding CSS with existing code
-    if (existingCode.includes('<style>')) {
-      return existingCode.replace('</style>', brandingCode + '\n</style>');
+    if (existingCode.includes("<style>")) {
+      return existingCode.replace("</style>", brandingCode + "\n</style>");
     } else {
       return existingCode + `\n<style>${brandingCode}</style>`;
     }

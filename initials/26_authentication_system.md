@@ -21,6 +21,7 @@
 **Essential authentication infrastructure:**
 
 ### User Registration & Verification
+
 - **Email Registration:** Secure email-based registration with verification workflows
 - **Iraqi ID Validation:** Optional Iraqi national ID verification with regional support
 - **Professional License Verification:** Validation for Iraqi legal, medical, educational, business professionals
@@ -29,6 +30,7 @@
 - **Family Business Registration:** Support for Iraqi family business and institutional structures
 
 ### Login & Session Management
+
 - **Secure Login:** Email/password authentication with cultural greeting customization
 - **JWT Token Management:** Secure token generation, validation, and renewal
 - **Session Persistence:** Cross-device session management with cultural context preservation
@@ -37,6 +39,7 @@
 - **Session Recovery:** Secure session recovery with cultural context restoration
 
 ### Iraqi Professional Domain Integration
+
 - **Legal Professional Verification:** Iraqi Bar Association license validation
 - **Medical Professional Verification:** Iraqi Medical Association credential validation
 - **Educational Professional Verification:** Iraqi Ministry of Education credential validation
@@ -45,6 +48,7 @@
 - **Professional Context Preservation:** Domain-specific authentication and context management
 
 ### Cultural Authentication Features
+
 - **Islamic Compliance Authentication:** Authentication methods respecting Islamic principles
 - **Cultural Greeting Customization:** Personalized cultural greetings and welcome messages
 - **Prayer Time Authentication:** Reduced friction during prayer times and religious observances
@@ -59,79 +63,84 @@
 **Focused authentication system examples:**
 
 ### Iraqi User Registration System
+
 ```typescript
 // Iraqi User Registration Service
 interface IraqiUserRegistration {
   // Basic information
-  email: string
-  password: string
-  fullName: string
+  email: string;
+  password: string;
+  fullName: string;
 
   // Iraqi context
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'other'
-  iraqiId?: string // Optional Iraqi national ID
+  region: "baghdad" | "basra" | "mosul" | "erbil" | "other";
+  iraqiId?: string; // Optional Iraqi national ID
 
   // Professional context
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business'
-  professionalLicense?: string
-  institutionalAffiliation?: string
+  professionalDomain?: "legal" | "medical" | "educational" | "business";
+  professionalLicense?: string;
+  institutionalAffiliation?: string;
 
   // Cultural preferences
   culturalPreferences: {
-    islamicComplianceLevel: 'basic' | 'standard' | 'strict'
-    languagePreference: 'ar-IQ' | 'en-US' | 'both'
-    regionalCulturalVariation: string
-    professionalEtiquetteLevel: 'standard' | 'formal' | 'traditional'
-  }
+    islamicComplianceLevel: "basic" | "standard" | "strict";
+    languagePreference: "ar-IQ" | "en-US" | "both";
+    regionalCulturalVariation: string;
+    professionalEtiquetteLevel: "standard" | "formal" | "traditional";
+  };
 
   // Privacy preferences
-  familyPrivacyLevel: 'public' | 'family' | 'private'
-  professionalVisibility: boolean
+  familyPrivacyLevel: "public" | "family" | "private";
+  professionalVisibility: boolean;
 }
 
 class IraqiAuthenticationService {
   constructor() {
-    this.supabaseAuth = createSupabaseClient()
-    this.iraqiIdValidator = new IraqiIdValidator()
-    this.professionalLicenseValidator = new ProfessionalLicenseValidator()
-    this.culturalContextManager = new CulturalContextManager()
+    this.supabaseAuth = createSupabaseClient();
+    this.iraqiIdValidator = new IraqiIdValidator();
+    this.professionalLicenseValidator = new ProfessionalLicenseValidator();
+    this.culturalContextManager = new CulturalContextManager();
   }
 
-  async registerUser(userData: IraqiUserRegistration): Promise<AuthenticationResult> {
+  async registerUser(
+    userData: IraqiUserRegistration,
+  ): Promise<AuthenticationResult> {
     // Validate Iraqi ID if provided
-    let iraqiIdValidation = null
+    let iraqiIdValidation = null;
     if (userData.iraqiId) {
       iraqiIdValidation = await this.iraqiIdValidator.validate({
         idNumber: userData.iraqiId,
         region: userData.region,
-        verificationLevel: 'standard'
-      })
+        verificationLevel: "standard",
+      });
 
       if (!iraqiIdValidation.isValid) {
         return {
           success: false,
-          error: 'Invalid Iraqi ID format or details',
-          validationErrors: iraqiIdValidation.errors
-        }
+          error: "Invalid Iraqi ID format or details",
+          validationErrors: iraqiIdValidation.errors,
+        };
       }
     }
 
     // Validate professional license if provided
-    let professionalValidation = null
+    let professionalValidation = null;
     if (userData.professionalDomain && userData.professionalLicense) {
-      professionalValidation = await this.professionalLicenseValidator.validate({
-        domain: userData.professionalDomain,
-        licenseNumber: userData.professionalLicense,
-        region: userData.region,
-        institutionalAffiliation: userData.institutionalAffiliation
-      })
+      professionalValidation = await this.professionalLicenseValidator.validate(
+        {
+          domain: userData.professionalDomain,
+          licenseNumber: userData.professionalLicense,
+          region: userData.region,
+          institutionalAffiliation: userData.institutionalAffiliation,
+        },
+      );
 
       if (!professionalValidation.isValid) {
         return {
           success: false,
-          error: 'Invalid professional license credentials',
-          validationErrors: professionalValidation.errors
-        }
+          error: "Invalid professional license credentials",
+          validationErrors: professionalValidation.errors,
+        };
       }
     }
 
@@ -140,8 +149,8 @@ class IraqiAuthenticationService {
       region: userData.region,
       culturalPreferences: userData.culturalPreferences,
       professionalDomain: userData.professionalDomain,
-      familyPrivacyLevel: userData.familyPrivacyLevel
-    })
+      familyPrivacyLevel: userData.familyPrivacyLevel,
+    });
 
     // Register with Supabase Auth
     const { data, error } = await this.supabaseAuth.auth.signUp({
@@ -153,20 +162,22 @@ class IraqiAuthenticationService {
           region: userData.region,
           iraqi_id_verified: iraqiIdValidation?.isValid || false,
           professional_domain: userData.professionalDomain,
-          professional_license_verified: professionalValidation?.isValid || false,
+          professional_license_verified:
+            professionalValidation?.isValid || false,
           cultural_context_id: culturalContext.id,
-          islamic_compliance_level: userData.culturalPreferences.islamicComplianceLevel,
-          language_preference: userData.culturalPreferences.languagePreference
-        }
-      }
-    })
+          islamic_compliance_level:
+            userData.culturalPreferences.islamicComplianceLevel,
+          language_preference: userData.culturalPreferences.languagePreference,
+        },
+      },
+    });
 
     if (error) {
       return {
         success: false,
         error: error.message,
-        errorCode: error.status
-      }
+        errorCode: error.status,
+      };
     }
 
     return {
@@ -176,33 +187,34 @@ class IraqiAuthenticationService {
       verificationStatus: {
         iraqiIdVerified: iraqiIdValidation?.isValid || false,
         professionalLicenseVerified: professionalValidation?.isValid || false,
-        culturalContextConfigured: true
+        culturalContextConfigured: true,
       },
-      nextSteps: await this.getPostRegistrationSteps(userData)
-    }
+      nextSteps: await this.getPostRegistrationSteps(userData),
+    };
   }
 }
 ```
 
 ### Cultural Context Authentication
+
 ```typescript
 // Cultural Context Authentication Manager
 class CulturalAuthenticationManager {
   constructor() {
-    this.islamicComplianceChecker = new IslamicComplianceChecker()
-    this.regionalContextManager = new RegionalContextManager()
-    this.professionalEtiquetteManager = new ProfessionalEtiquetteManager()
+    this.islamicComplianceChecker = new IslamicComplianceChecker();
+    this.regionalContextManager = new RegionalContextManager();
+    this.professionalEtiquetteManager = new ProfessionalEtiquetteManager();
   }
 
   async authenticateWithCulturalContext(
     credentials: LoginCredentials,
-    deviceContext: DeviceContext
+    deviceContext: DeviceContext,
   ): Promise<CulturalAuthenticationResult> {
     // Standard authentication
     const authResult = await this.supabaseAuth.auth.signInWithPassword({
       email: credentials.email,
-      password: credentials.password
-    })
+      password: credentials.password,
+    });
 
     if (authResult.error) {
       return {
@@ -210,15 +222,15 @@ class CulturalAuthenticationManager {
         error: authResult.error.message,
         culturallyAppropriateMessage: await this.getCulturalErrorMessage(
           authResult.error,
-          deviceContext.culturalPreferences
-        )
-      }
+          deviceContext.culturalPreferences,
+        ),
+      };
     }
 
-    const user = authResult.data.user
+    const user = authResult.data.user;
 
     // Load user cultural context
-    const culturalContext = await this.loadUserCulturalContext(user.id)
+    const culturalContext = await this.loadUserCulturalContext(user.id);
 
     // Generate culturally appropriate greeting
     const culturalGreeting = await this.generateCulturalGreeting({
@@ -226,24 +238,24 @@ class CulturalAuthenticationManager {
       culturalContext,
       currentTime: new Date(),
       region: culturalContext.region,
-      islamicComplianceLevel: culturalContext.islamicComplianceLevel
-    })
+      islamicComplianceLevel: culturalContext.islamicComplianceLevel,
+    });
 
     // Check for prayer time considerations
     const prayerTimeContext = await this.checkPrayerTimeContext({
       region: culturalContext.region,
       currentTime: new Date(),
-      userPrayerPreferences: culturalContext.prayerPreferences
-    })
+      userPrayerPreferences: culturalContext.prayerPreferences,
+    });
 
     // Professional context activation
-    let professionalContext = null
+    let professionalContext = null;
     if (culturalContext.professionalDomain) {
       professionalContext = await this.activateProfessionalContext({
         domain: culturalContext.professionalDomain,
         region: culturalContext.region,
-        institutionalAffiliation: culturalContext.institutionalAffiliation
-      })
+        institutionalAffiliation: culturalContext.institutionalAffiliation,
+      });
     }
 
     // Create session with cultural context
@@ -252,8 +264,8 @@ class CulturalAuthenticationManager {
       culturalContext,
       professionalContext,
       deviceContext,
-      prayerTimeContext
-    })
+      prayerTimeContext,
+    });
 
     return {
       success: true,
@@ -267,36 +279,43 @@ class CulturalAuthenticationManager {
         languagePreference: culturalContext.languagePreference,
         regionalVariation: culturalContext.regionalVariation,
         islamicComplianceLevel: culturalContext.islamicComplianceLevel,
-        professionalInterfaceMode: professionalContext?.interfaceMode || 'standard'
-      }
-    }
+        professionalInterfaceMode:
+          professionalContext?.interfaceMode || "standard",
+      },
+    };
   }
 
-  async generateCulturalGreeting(context: CulturalGreetingContext): Promise<CulturalGreeting> {
-    const { user, culturalContext, currentTime, region } = context
+  async generateCulturalGreeting(
+    context: CulturalGreetingContext,
+  ): Promise<CulturalGreeting> {
+    const { user, culturalContext, currentTime, region } = context;
 
     // Islamic greeting considerations
-    const islamicGreeting = await this.islamicComplianceChecker.generateGreeting({
-      islamicComplianceLevel: culturalContext.islamicComplianceLevel,
-      currentTime,
-      userIslamicPreferences: culturalContext.islamicPreferences
-    })
+    const islamicGreeting =
+      await this.islamicComplianceChecker.generateGreeting({
+        islamicComplianceLevel: culturalContext.islamicComplianceLevel,
+        currentTime,
+        userIslamicPreferences: culturalContext.islamicPreferences,
+      });
 
     // Regional greeting customization
-    const regionalGreeting = await this.regionalContextManager.generateGreeting({
-      region,
-      timeOfDay: this.getTimeOfDay(currentTime),
-      culturalFormality: culturalContext.formalityLevel
-    })
+    const regionalGreeting = await this.regionalContextManager.generateGreeting(
+      {
+        region,
+        timeOfDay: this.getTimeOfDay(currentTime),
+        culturalFormality: culturalContext.formalityLevel,
+      },
+    );
 
     // Professional greeting if applicable
-    let professionalGreeting = null
+    let professionalGreeting = null;
     if (culturalContext.professionalDomain) {
-      professionalGreeting = await this.professionalEtiquetteManager.generateGreeting({
-        professionalDomain: culturalContext.professionalDomain,
-        professionalLevel: culturalContext.professionalLevel,
-        institutionalContext: culturalContext.institutionalAffiliation
-      })
+      professionalGreeting =
+        await this.professionalEtiquetteManager.generateGreeting({
+          professionalDomain: culturalContext.professionalDomain,
+          professionalLevel: culturalContext.professionalLevel,
+          institutionalContext: culturalContext.institutionalAffiliation,
+        });
     }
 
     return {
@@ -304,88 +323,91 @@ class CulturalAuthenticationManager {
       regionalVariation: regionalGreeting.variation,
       professionalSuffix: professionalGreeting?.suffix,
       timeBasedAdjustment: this.getTimeBasedGreeting(currentTime, region),
-      culturalRespectLevel: culturalContext.respectLevel || 'standard'
-    }
+      culturalRespectLevel: culturalContext.respectLevel || "standard",
+    };
   }
 }
 ```
 
 ### Multi-Factor Authentication with Cultural Adaptation
+
 ```typescript
 // Iraqi Cultural MFA System
 class IraqiCulturalMFAManager {
   constructor() {
-    this.smsProvider = new IraqiSMSProvider()
-    this.culturalTimingManager = new CulturalTimingManager()
-    this.islamicComplianceChecker = new IslamicComplianceChecker()
+    this.smsProvider = new IraqiSMSProvider();
+    this.culturalTimingManager = new CulturalTimingManager();
+    this.islamicComplianceChecker = new IslamicComplianceChecker();
   }
 
   async initiateMFA(
     userId: string,
-    mfaMethod: 'sms' | 'email' | 'cultural_questions',
-    culturalContext: CulturalContext
+    mfaMethod: "sms" | "email" | "cultural_questions",
+    culturalContext: CulturalContext,
   ): Promise<MFAInitiationResult> {
     // Check cultural timing appropriateness
-    const timingCheck = await this.culturalTimingManager.checkTimingAppropriateness({
-      currentTime: new Date(),
-      region: culturalContext.region,
-      islamicConsiderations: true,
-      respectPrayerTimes: culturalContext.respectPrayerTimes
-    })
+    const timingCheck =
+      await this.culturalTimingManager.checkTimingAppropriateness({
+        currentTime: new Date(),
+        region: culturalContext.region,
+        islamicConsiderations: true,
+        respectPrayerTimes: culturalContext.respectPrayerTimes,
+      });
 
-    if (!timingCheck.appropriate && timingCheck.reason === 'prayer_time') {
+    if (!timingCheck.appropriate && timingCheck.reason === "prayer_time") {
       return {
         success: false,
         delayed: true,
-        delayReason: 'prayer_time_respect',
+        delayReason: "prayer_time_respect",
         suggestedRetryTime: timingCheck.suggestedRetryTime,
-        culturalMessage: 'Authentication will resume after prayer time completion'
-      }
+        culturalMessage:
+          "Authentication will resume after prayer time completion",
+      };
     }
 
     switch (mfaMethod) {
-      case 'sms':
-        return await this.initiateSMSMFA(userId, culturalContext)
+      case "sms":
+        return await this.initiateSMSMFA(userId, culturalContext);
 
-      case 'email':
-        return await this.initiateEmailMFA(userId, culturalContext)
+      case "email":
+        return await this.initiateEmailMFA(userId, culturalContext);
 
-      case 'cultural_questions':
-        return await this.initiateCulturalQuestionsMFA(userId, culturalContext)
+      case "cultural_questions":
+        return await this.initiateCulturalQuestionsMFA(userId, culturalContext);
 
       default:
-        return { success: false, error: 'Unsupported MFA method' }
+        return { success: false, error: "Unsupported MFA method" };
     }
   }
 
   async initiateSMSMFA(
     userId: string,
-    culturalContext: CulturalContext
+    culturalContext: CulturalContext,
   ): Promise<SMSMFAResult> {
-    const user = await this.getUserDetails(userId)
+    const user = await this.getUserDetails(userId);
 
     // Generate culturally appropriate SMS message
     const smsMessage = await this.generateCulturalSMSMessage({
       userName: user.fullName,
       region: culturalContext.region,
       languagePreference: culturalContext.languagePreference,
-      islamicComplianceLevel: culturalContext.islamicComplianceLevel
-    })
+      islamicComplianceLevel: culturalContext.islamicComplianceLevel,
+    });
 
     // Send SMS with Iraqi provider integration
     const smsResult = await this.smsProvider.sendSMS({
       phoneNumber: user.phoneNumber,
       message: smsMessage.text,
       language: culturalContext.languagePreference,
-      priority: 'normal'
-    })
+      priority: "normal",
+    });
 
     if (!smsResult.success) {
       return {
         success: false,
-        error: 'Failed to send SMS verification',
-        culturalErrorMessage: smsMessage.errorFallback
-      }
+        error: "Failed to send SMS verification",
+        culturalErrorMessage: smsMessage.errorFallback,
+      };
     }
 
     return {
@@ -393,46 +415,51 @@ class IraqiCulturalMFAManager {
       verificationId: smsResult.verificationId,
       expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
       culturalInstructions: smsMessage.instructions,
-      languageUsed: culturalContext.languagePreference
-    }
+      languageUsed: culturalContext.languagePreference,
+    };
   }
 
   async verifyCulturalMFA(
     verificationId: string,
     userInput: string,
-    culturalContext: CulturalContext
+    culturalContext: CulturalContext,
   ): Promise<MFAVerificationResult> {
     // Validate cultural appropriateness of timing
-    const timingValid = await this.culturalTimingManager.validateVerificationTiming({
-      verificationInitiated: await this.getVerificationTimestamp(verificationId),
-      currentTime: new Date(),
-      culturalContext
-    })
+    const timingValid =
+      await this.culturalTimingManager.validateVerificationTiming({
+        verificationInitiated:
+          await this.getVerificationTimestamp(verificationId),
+        currentTime: new Date(),
+        culturalContext,
+      });
 
     if (!timingValid.valid) {
       return {
         success: false,
-        error: 'Verification window expired due to cultural timing constraints',
-        culturalGuidance: timingValid.guidance
-      }
+        error: "Verification window expired due to cultural timing constraints",
+        culturalGuidance: timingValid.guidance,
+      };
     }
 
     // Verify the code/answer
-    const verificationResult = await this.verifyMFACode(verificationId, userInput)
+    const verificationResult = await this.verifyMFACode(
+      verificationId,
+      userInput,
+    );
 
     if (verificationResult.success) {
       // Generate culturally appropriate success message
       const successMessage = await this.generateCulturalSuccessMessage({
         culturalContext,
-        verificationMethod: verificationResult.method
-      })
+        verificationMethod: verificationResult.method,
+      });
 
       return {
         success: true,
         verificationComplete: true,
         culturalSuccessMessage: successMessage,
-        sessionEnhanced: true
-      }
+        sessionEnhanced: true,
+      };
     }
 
     return {
@@ -441,9 +468,9 @@ class IraqiCulturalMFAManager {
       attemptsRemaining: verificationResult.attemptsRemaining,
       culturalErrorGuidance: await this.generateCulturalErrorGuidance(
         verificationResult.error,
-        culturalContext
-      )
-    }
+        culturalContext,
+      ),
+    };
   }
 }
 ```
@@ -665,6 +692,7 @@ CREATE TABLE cultural_mfa_configuration (
 **Authentication with Iraqi cultural considerations:**
 
 ### Iraqi Identity Integration
+
 - **National ID Support:** Optional Iraqi national ID verification with regional validation
 - **Professional License Verification:** Integration with Iraqi professional licensing authorities
 - **Institutional Authentication:** SSO integration with Iraqi universities, hospitals, government systems
@@ -672,6 +700,7 @@ CREATE TABLE cultural_mfa_configuration (
 - **Regional Variation Support:** Authentication adapted for Baghdad, Basra, Mosul, Erbil cultural differences
 
 ### Islamic Authentication Principles
+
 - **Transparent Authentication:** Clear, honest authentication processes without hidden data collection
 - **Privacy-Respecting Registration:** Registration that respects Islamic privacy principles
 - **Prayer Time Consideration:** Authentication timing that respects Islamic prayer schedules
@@ -679,6 +708,7 @@ CREATE TABLE cultural_mfa_configuration (
 - **Halal Authentication Methods:** Authentication methods compliant with Islamic principles
 
 ### Professional Domain Integration
+
 - **Iraqi Legal Professional:** Iraqi Bar Association integration and verification
 - **Iraqi Medical Professional:** Iraqi Medical Association credential validation
 - **Iraqi Educational Professional:** Iraqi Ministry of Education credential verification
@@ -692,6 +722,7 @@ CREATE TABLE cultural_mfa_configuration (
 **Authentication system validation:**
 
 ### Basic Authentication Testing
+
 - **Registration Flow:** Test email registration, verification, and Iraqi context setup
 - **Login Functionality:** Test secure login with cultural greeting customization
 - **Session Management:** Test JWT token generation, validation, and renewal
@@ -699,6 +730,7 @@ CREATE TABLE cultural_mfa_configuration (
 - **Professional Verification:** Test Iraqi professional license validation across domains
 
 ### Cultural Authentication Testing
+
 - **Iraqi ID Validation:** Test Iraqi national ID verification with regional variations
 - **Cultural Context Integration:** Test cultural preference setup and preservation
 - **Islamic Compliance:** Test authentication methods for Islamic compliance
@@ -706,6 +738,7 @@ CREATE TABLE cultural_mfa_configuration (
 - **Professional Integration:** Test domain-specific authentication for Iraqi professionals
 
 ### Security and Performance Testing
+
 - **Multi-Factor Authentication:** Test SMS, email, and cultural MFA methods
 - **Session Security:** Test session hijacking prevention and secure token management
 - **Rate Limiting Integration:** Test authentication rate limiting with cultural timing
@@ -719,18 +752,21 @@ CREATE TABLE cultural_mfa_configuration (
 **Authentication system integration points:**
 
 ### Core System Integration
+
 - **Database Integration:** Authentication integration with Iraqi AI database schema
 - **Cultural System Integration:** Deep integration with cultural validation and compliance systems
 - **Professional Domain Integration:** Authentication integration with Iraqi professional domain systems
 - **Session Management Integration:** Integration with real-time state management and context persistence
 
 ### External Service Integration
+
 - **Supabase Auth Integration:** Native integration with Supabase authentication services
 - **Iraqi Identity Services:** Integration with Iraqi national ID verification services
 - **Professional Authority Integration:** Integration with Iraqi professional licensing authorities
 - **SMS Provider Integration:** Integration with Iraqi SMS providers for MFA
 
 ### User Experience Integration
+
 - **Frontend Integration:** Authentication integration with Next.js frontend and Arabic RTL support
 - **Cultural UI Integration:** Authentication UI integration with Iraqi cultural design patterns
 - **Professional Interface Integration:** Authentication integration with professional domain interfaces
@@ -743,18 +779,21 @@ CREATE TABLE cultural_mfa_configuration (
 **Iraqi AI authentication system considerations:**
 
 ### Implementation Priorities
+
 - **Cultural compliance first** - All authentication must respect Iraqi cultural values and Islamic principles
 - **Professional domain expertise** - Authentication adapted for Iraqi professional contexts
 - **Regional sensitivity** - Support for different Iraqi regional authentication preferences
 - **Security without friction** - Secure authentication that doesn't impede cultural user experience
 
 ### Performance and Scalability
+
 - **<100ms authentication response** for immediate user feedback
 - **<200ms cultural context loading** for seamless cultural integration
 - **<50ms session validation** for responsive user experience
 - **Scalable architecture** supporting 100,000+ concurrent authenticated Iraqi users
 
 ### Security and Privacy Focus
+
 - **Transparent authentication** aligned with Islamic principles of honesty
 - **Privacy protection** respecting Iraqi family privacy expectations
 - **Professional confidentiality** maintaining Iraqi professional ethics standards

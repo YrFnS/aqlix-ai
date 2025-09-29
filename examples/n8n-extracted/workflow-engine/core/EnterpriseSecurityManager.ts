@@ -1,9 +1,9 @@
 /**
  * Enterprise Security Manager - Government-Grade Security
- * 
+ *
  * Comprehensive security management system for Iraqi government workflow automation.
  * Implements enterprise-grade security with cultural awareness and Islamic compliance.
- * 
+ *
  * Features:
  * - Government-grade role-based access control
  * - Multi-factor authentication with biometric support
@@ -12,14 +12,14 @@
  * - Cultural security validation
  * - Comprehensive audit logging (7-year retention)
  * - Real-time threat detection
- * 
+ *
  * @author Iraqi AI Security Team
  * @version 2.0.0
  * @license Government Security Certified License
  */
 
-import { EventEmitter } from 'events';
-import { createHash, randomBytes, createCipher, createDecipher } from 'crypto';
+import { EventEmitter } from "events";
+import { createHash, randomBytes, createCipher, createDecipher } from "crypto";
 
 // Security interfaces
 export interface IEnterpriseSecurityConfig {
@@ -30,10 +30,15 @@ export interface IEnterpriseSecurityConfig {
   biometricSupport: boolean;
   culturalValidation: boolean;
   prayerTimeAware: boolean;
-  encryptionLevel: 'standard' | 'high' | 'maximum';
+  encryptionLevel: "standard" | "high" | "maximum";
   sessionTimeout: number;
   maxFailedAttempts: number;
-  securityLevel: 'public' | 'restricted' | 'confidential' | 'secret' | 'top-secret';
+  securityLevel:
+    | "public"
+    | "restricted"
+    | "confidential"
+    | "secret"
+    | "top-secret";
 }
 
 export interface ISecurityValidationResult {
@@ -42,7 +47,7 @@ export interface ISecurityValidationResult {
   violations: string[];
   warnings: string[];
   recommendations: string[];
-  accessLevel: 'denied' | 'read' | 'write' | 'admin' | 'super-admin';
+  accessLevel: "denied" | "read" | "write" | "admin" | "super-admin";
   sessionInfo: {
     userId: string;
     sessionId: string;
@@ -62,10 +67,26 @@ export interface IUserPermissions {
   userId: string;
   ministry: string;
   department: string;
-  role: 'citizen' | 'employee' | 'supervisor' | 'director' | 'minister' | 'admin' | 'super-admin';
+  role:
+    | "citizen"
+    | "employee"
+    | "supervisor"
+    | "director"
+    | "minister"
+    | "admin"
+    | "super-admin";
   permissions: string[];
-  securityClearance: 'public' | 'restricted' | 'confidential' | 'secret' | 'top-secret';
-  culturalRole: 'standard' | 'cultural-advisor' | 'religious-authority' | 'translator';
+  securityClearance:
+    | "public"
+    | "restricted"
+    | "confidential"
+    | "secret"
+    | "top-secret";
+  culturalRole:
+    | "standard"
+    | "cultural-advisor"
+    | "religious-authority"
+    | "translator";
   workingHours: {
     start: string;
     end: string;
@@ -102,7 +123,7 @@ export interface IAuditLogEntry {
     culturalValidation: boolean;
     islamicCompliance: boolean;
   };
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskLevel: "low" | "medium" | "high" | "critical";
   geolocation?: {
     country: string;
     city: string;
@@ -116,8 +137,13 @@ export interface IAuditLogEntry {
 export interface ISecurityThreat {
   id: string;
   timestamp: Date;
-  type: 'unauthorized_access' | 'brute_force' | 'suspicious_activity' | 'data_breach' | 'cultural_violation';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type:
+    | "unauthorized_access"
+    | "brute_force"
+    | "suspicious_activity"
+    | "data_breach"
+    | "cultural_violation";
+  severity: "low" | "medium" | "high" | "critical";
   source: {
     userId?: string;
     ipAddress: string;
@@ -137,7 +163,7 @@ export interface ISecurityThreat {
 
 export interface IBiometricAuthResult {
   success: boolean;
-  method: 'fingerprint' | 'facial' | 'voice' | 'iris' | 'palm';
+  method: "fingerprint" | "facial" | "voice" | "iris" | "palm";
   confidence: number;
   userId: string;
   timestamp: Date;
@@ -190,7 +216,7 @@ export interface IMinistrySecurityPolicy {
 
 /**
  * Enterprise Security Manager
- * 
+ *
  * Government-grade security management with cultural intelligence,
  * Islamic compliance, and Iraqi ministry-specific security policies.
  */
@@ -219,17 +245,16 @@ export class EnterpriseSecurityManager extends EventEmitter {
   async validateWorkflowPermissions(
     workflow: any,
     userId: string,
-    requestedPermissions: string[]
+    requestedPermissions: string[],
   ): Promise<ISecurityValidationResult> {
-    
     const validationStartTime = Date.now();
-    
+
     try {
-      this.emit('permissionValidationStarted', {
+      this.emit("permissionValidationStarted", {
         workflowId: workflow.id,
         userId,
         permissions: requestedPermissions,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Get user permissions
@@ -237,28 +262,28 @@ export class EnterpriseSecurityManager extends EventEmitter {
       if (!userPerms) {
         await this.logAuditEvent({
           userId,
-          action: 'permission_validation_failed',
+          action: "permission_validation_failed",
           resource: workflow.id,
           success: false,
-          details: { reason: 'user_not_found' },
-          riskLevel: 'high'
+          details: { reason: "user_not_found" },
+          riskLevel: "high",
         });
-        
-        throw new Error('User not found or not authorized');
+
+        throw new Error("User not found or not authorized");
       }
 
       // Check account status
       if (userPerms.accountLocked) {
         await this.logAuditEvent({
           userId,
-          action: 'permission_validation_failed',
+          action: "permission_validation_failed",
           resource: workflow.id,
           success: false,
-          details: { reason: 'account_locked' },
-          riskLevel: 'high'
+          details: { reason: "account_locked" },
+          riskLevel: "high",
         });
-        
-        throw new Error('Account is locked');
+
+        throw new Error("Account is locked");
       }
 
       // Get cultural security context
@@ -266,28 +291,32 @@ export class EnterpriseSecurityManager extends EventEmitter {
 
       const result: ISecurityValidationResult = {
         isAuthorized: false,
-        securityLevel: workflow.securityLevel || 'public',
+        securityLevel: workflow.securityLevel || "public",
         violations: [],
         warnings: [],
         recommendations: [],
-        accessLevel: 'denied',
+        accessLevel: "denied",
         sessionInfo: {
           userId,
           sessionId: this.generateSessionId(),
           loginTime: userPerms.lastLogin,
           lastActivity: new Date(),
-          ipAddress: '',
-          userAgent: '',
-          location: ''
+          ipAddress: "",
+          userAgent: "",
+          location: "",
         },
         auditRequired: this.config.auditLogging,
         culturalCompliance: true,
         validatedAt: new Date(),
-        expiresAt: new Date(Date.now() + this.config.sessionTimeout)
+        expiresAt: new Date(Date.now() + this.config.sessionTimeout),
       };
 
       // 1. Validate basic permissions
-      await this.validateBasicPermissions(userPerms, requestedPermissions, result);
+      await this.validateBasicPermissions(
+        userPerms,
+        requestedPermissions,
+        result,
+      );
 
       // 2. Validate security clearance
       await this.validateSecurityClearance(userPerms, workflow, result);
@@ -296,7 +325,11 @@ export class EnterpriseSecurityManager extends EventEmitter {
       await this.validateMinistryPolicies(userPerms, workflow, result);
 
       // 4. Validate cultural and temporal restrictions
-      await this.validateCulturalRestrictions(userPerms, culturalContext, result);
+      await this.validateCulturalRestrictions(
+        userPerms,
+        culturalContext,
+        result,
+      );
 
       // 5. Validate prayer time restrictions
       if (this.config.prayerTimeAware && culturalContext.prayerTimeActive) {
@@ -317,43 +350,42 @@ export class EnterpriseSecurityManager extends EventEmitter {
       // Log audit event
       await this.logAuditEvent({
         userId,
-        action: 'permission_validation_completed',
+        action: "permission_validation_completed",
         resource: workflow.id,
         success: result.isAuthorized,
         details: {
           accessLevel: result.accessLevel,
           securityLevel: result.securityLevel,
           culturalCompliance: result.culturalCompliance,
-          validationTime: Date.now() - validationStartTime
+          validationTime: Date.now() - validationStartTime,
         },
-        riskLevel: result.isAuthorized ? 'low' : 'medium'
+        riskLevel: result.isAuthorized ? "low" : "medium",
       });
 
-      this.emit('permissionValidationCompleted', {
+      this.emit("permissionValidationCompleted", {
         workflowId: workflow.id,
         userId,
         isAuthorized: result.isAuthorized,
         accessLevel: result.accessLevel,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return result;
-
     } catch (error) {
-      this.emit('permissionValidationError', {
+      this.emit("permissionValidationError", {
         workflowId: workflow.id,
         userId,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       await this.logAuditEvent({
         userId,
-        action: 'permission_validation_error',
+        action: "permission_validation_error",
         resource: workflow.id,
         success: false,
         details: { error: error.message },
-        riskLevel: 'high'
+        riskLevel: "high",
       });
 
       throw error;
@@ -374,89 +406,97 @@ export class EnterpriseSecurityManager extends EventEmitter {
       ipAddress: string;
       userAgent: string;
       location?: string;
-    }
+    },
   ): Promise<ISecurityValidationResult> {
-    
     const authStartTime = Date.now();
     const userId = credentials.username;
 
     try {
-      this.emit('authenticationStarted', {
+      this.emit("authenticationStarted", {
         userId,
         ipAddress: context.ipAddress,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Get user data
       const userPerms = this.userPermissions.get(userId);
       if (!userPerms) {
-        throw new Error('Invalid credentials');
+        throw new Error("Invalid credentials");
       }
 
       // Check account lock status
       if (userPerms.accountLocked) {
-        throw new Error('Account is locked');
+        throw new Error("Account is locked");
       }
 
       // Check failed attempts
       if (userPerms.failedAttempts >= this.config.maxFailedAttempts) {
         userPerms.accountLocked = true;
         await this.logSecurityThreat({
-          type: 'brute_force',
-          severity: 'high',
+          type: "brute_force",
+          severity: "high",
           source: {
             userId,
             ipAddress: context.ipAddress,
-            userAgent: context.userAgent
+            userAgent: context.userAgent,
           },
           details: `Account locked after ${this.config.maxFailedAttempts} failed attempts`,
-          affectedResources: [userId]
+          affectedResources: [userId],
         });
-        throw new Error('Account locked due to failed attempts');
+        throw new Error("Account locked due to failed attempts");
       }
 
       // Validate password
-      if (!await this.validatePassword(credentials.password, userPerms)) {
+      if (!(await this.validatePassword(credentials.password, userPerms))) {
         userPerms.failedAttempts++;
         await this.logAuditEvent({
           userId,
-          action: 'authentication_failed',
-          resource: 'login',
+          action: "authentication_failed",
+          resource: "login",
           success: false,
-          details: { reason: 'invalid_password', attempts: userPerms.failedAttempts },
-          riskLevel: 'medium'
+          details: {
+            reason: "invalid_password",
+            attempts: userPerms.failedAttempts,
+          },
+          riskLevel: "medium",
         });
-        throw new Error('Invalid credentials');
+        throw new Error("Invalid credentials");
       }
 
       // Validate MFA if required
       if (this.config.multiFactorAuth && credentials.mfaToken) {
-        if (!await this.validateMFAToken(credentials.mfaToken, userPerms)) {
+        if (!(await this.validateMFAToken(credentials.mfaToken, userPerms))) {
           await this.logAuditEvent({
             userId,
-            action: 'authentication_failed',
-            resource: 'login',
+            action: "authentication_failed",
+            resource: "login",
             success: false,
-            details: { reason: 'invalid_mfa' },
-            riskLevel: 'medium'
+            details: { reason: "invalid_mfa" },
+            riskLevel: "medium",
           });
-          throw new Error('Invalid MFA token');
+          throw new Error("Invalid MFA token");
         }
       }
 
       // Validate biometric if available
       if (this.config.biometricSupport && credentials.biometricData) {
-        const biometricResult = await this.validateBiometric(credentials.biometricData, userPerms);
+        const biometricResult = await this.validateBiometric(
+          credentials.biometricData,
+          userPerms,
+        );
         if (!biometricResult.success) {
           await this.logAuditEvent({
             userId,
-            action: 'authentication_failed',
-            resource: 'login',
+            action: "authentication_failed",
+            resource: "login",
             success: false,
-            details: { reason: 'biometric_failed', method: biometricResult.method },
-            riskLevel: 'medium'
+            details: {
+              reason: "biometric_failed",
+              method: biometricResult.method,
+            },
+            riskLevel: "medium",
           });
-          throw new Error('Biometric validation failed');
+          throw new Error("Biometric validation failed");
         }
       }
 
@@ -469,7 +509,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
         lastActivity: new Date(),
         ipAddress: context.ipAddress,
         userAgent: context.userAgent,
-        location: context.location || 'Unknown'
+        location: context.location || "Unknown",
       };
 
       this.activeSessions.set(sessionId, session);
@@ -490,51 +530,50 @@ export class EnterpriseSecurityManager extends EventEmitter {
         auditRequired: this.config.auditLogging,
         culturalCompliance: true,
         validatedAt: new Date(),
-        expiresAt: new Date(Date.now() + this.config.sessionTimeout)
+        expiresAt: new Date(Date.now() + this.config.sessionTimeout),
       };
 
       // Check for warnings
       if (userPerms.passwordExpiry < new Date()) {
-        result.warnings.push('Password has expired');
-        result.recommendations.push('Update password immediately');
+        result.warnings.push("Password has expired");
+        result.recommendations.push("Update password immediately");
       }
 
       if (!userPerms.culturalTrainingCompleted) {
-        result.warnings.push('Cultural training not completed');
-        result.recommendations.push('Complete cultural sensitivity training');
+        result.warnings.push("Cultural training not completed");
+        result.recommendations.push("Complete cultural sensitivity training");
       }
 
       // Log successful authentication
       await this.logAuditEvent({
         userId,
-        action: 'authentication_successful',
-        resource: 'login',
+        action: "authentication_successful",
+        resource: "login",
         success: true,
         details: {
           sessionId,
           authenticationTime: Date.now() - authStartTime,
           location: context.location,
           mfaUsed: !!credentials.mfaToken,
-          biometricUsed: !!credentials.biometricData
+          biometricUsed: !!credentials.biometricData,
         },
-        riskLevel: 'low'
+        riskLevel: "low",
       });
 
-      this.emit('authenticationSuccessful', {
+      this.emit("authenticationSuccessful", {
         userId,
         sessionId,
         accessLevel: result.accessLevel,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return result;
-
     } catch (error) {
-      this.emit('authenticationFailed', {
+      this.emit("authenticationFailed", {
         userId,
         error: error.message,
         ipAddress: context.ipAddress,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       throw error;
@@ -546,32 +585,32 @@ export class EnterpriseSecurityManager extends EventEmitter {
    */
   private async getCulturalSecurityContext(): Promise<ICulturalSecurityContext> {
     const now = new Date();
-    const timeFormat = new Intl.DateTimeFormat('en-GB', {
+    const timeFormat = new Intl.DateTimeFormat("en-GB", {
       hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'Asia/Baghdad'
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Asia/Baghdad",
     }).format(now);
 
     // Check prayer times (simplified - would integrate with prayer time API)
     const prayerTimes = {
-      fajr: '05:30',
-      dhuhr: '12:15',
-      asr: '15:45',
-      maghrib: '18:30',
-      isha: '20:00'
+      fajr: "05:30",
+      dhuhr: "12:15",
+      asr: "15:45",
+      maghrib: "18:30",
+      isha: "20:00",
     };
 
     let prayerTimeActive = false;
     let currentPrayerTime: string | undefined;
 
     for (const [prayer, time] of Object.entries(prayerTimes)) {
-      const [prayerHour, prayerMinute] = time.split(':').map(Number);
-      const [currentHour, currentMinute] = timeFormat.split(':').map(Number);
-      
+      const [prayerHour, prayerMinute] = time.split(":").map(Number);
+      const [currentHour, currentMinute] = timeFormat.split(":").map(Number);
+
       const prayerTimeMinutes = prayerHour * 60 + prayerMinute;
       const currentTimeMinutes = currentHour * 60 + currentMinute;
-      
+
       if (Math.abs(currentTimeMinutes - prayerTimeMinutes) <= 15) {
         prayerTimeActive = true;
         currentPrayerTime = prayer;
@@ -580,13 +619,15 @@ export class EnterpriseSecurityManager extends EventEmitter {
     }
 
     // Check if it's Friday prayer time
-    const fridayPrayer = now.getDay() === 5 && 
-                        currentTimeMinutes >= 780 && // 13:00
-                        currentTimeMinutes <= 840;   // 14:00
+    const fridayPrayer =
+      now.getDay() === 5 &&
+      currentTimeMinutes >= 780 && // 13:00
+      currentTimeMinutes <= 840; // 14:00
 
     // Check working hours (8 AM to 5 PM Baghdad time)
-    const currentTimeMinutes = parseInt(timeFormat.replace(':', ''));
-    const workingHours = currentTimeMinutes >= 800 && currentTimeMinutes <= 1700;
+    const currentTimeMinutes = parseInt(timeFormat.replace(":", ""));
+    const workingHours =
+      currentTimeMinutes >= 800 && currentTimeMinutes <= 1700;
 
     return {
       prayerTimeActive,
@@ -596,7 +637,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
       culturalHoliday: this.isCulturalHoliday(),
       workingHours,
       culturalSensitiveOperation: false,
-      religousAuthoritySuperivision: false
+      religousAuthoritySuperivision: false,
     };
   }
 
@@ -605,67 +646,67 @@ export class EnterpriseSecurityManager extends EventEmitter {
    */
   private initializeMinistryPolicies(): void {
     // Health Ministry Security Policy
-    this.ministryPolicies.set('health', {
-      ministry: 'health',
-      securityLevel: 'confidential',
+    this.ministryPolicies.set("health", {
+      ministry: "health",
+      securityLevel: "confidential",
       accessControls: {
         timeBasedAccess: true,
         locationBasedAccess: true,
         prayerTimeRestrictions: true,
         biometricRequired: true,
         multiFactorRequired: true,
-        culturalValidationRequired: true
+        culturalValidationRequired: true,
       },
       dataClassification: {
-        levels: ['public', 'restricted', 'confidential', 'secret'],
+        levels: ["public", "restricted", "confidential", "secret"],
         encryptionRequired: true,
         auditRequired: true,
-        retentionPeriod: 7
+        retentionPeriod: 7,
       },
       workflowRestrictions: {
-        allowedOperations: ['read', 'create', 'update'],
-        restrictedOperations: ['delete', 'export'],
-        approvalRequired: ['sensitive_data_access', 'patient_records'],
-        culturalReviewRequired: ['patient_consent', 'medical_ethics']
+        allowedOperations: ["read", "create", "update"],
+        restrictedOperations: ["delete", "export"],
+        approvalRequired: ["sensitive_data_access", "patient_records"],
+        culturalReviewRequired: ["patient_consent", "medical_ethics"],
       },
       incidentResponse: {
-        escalationLevels: ['supervisor', 'security_officer', 'ministry_ciso'],
-        notificationChannels: ['email', 'sms', 'secure_chat'],
+        escalationLevels: ["supervisor", "security_officer", "ministry_ciso"],
+        notificationChannels: ["email", "sms", "secure_chat"],
         culturalAuthorityNotification: true,
-        religiousAuthorityNotification: false
-      }
+        religiousAuthorityNotification: false,
+      },
     });
 
     // Add more ministry policies...
-    this.ministryPolicies.set('education', {
-      ministry: 'education',
-      securityLevel: 'restricted',
+    this.ministryPolicies.set("education", {
+      ministry: "education",
+      securityLevel: "restricted",
       accessControls: {
         timeBasedAccess: true,
         locationBasedAccess: false,
         prayerTimeRestrictions: true,
         biometricRequired: false,
         multiFactorRequired: true,
-        culturalValidationRequired: true
+        culturalValidationRequired: true,
       },
       dataClassification: {
-        levels: ['public', 'restricted', 'confidential'],
+        levels: ["public", "restricted", "confidential"],
         encryptionRequired: true,
         auditRequired: true,
-        retentionPeriod: 5
+        retentionPeriod: 5,
       },
       workflowRestrictions: {
-        allowedOperations: ['read', 'create', 'update'],
-        restrictedOperations: ['delete'],
-        approvalRequired: ['grade_changes', 'enrollment_changes'],
-        culturalReviewRequired: ['curriculum_content', 'student_assessment']
+        allowedOperations: ["read", "create", "update"],
+        restrictedOperations: ["delete"],
+        approvalRequired: ["grade_changes", "enrollment_changes"],
+        culturalReviewRequired: ["curriculum_content", "student_assessment"],
       },
       incidentResponse: {
-        escalationLevels: ['supervisor', 'security_officer'],
-        notificationChannels: ['email', 'secure_chat'],
+        escalationLevels: ["supervisor", "security_officer"],
+        notificationChannels: ["email", "secure_chat"],
         culturalAuthorityNotification: true,
-        religiousAuthorityNotification: true
-      }
+        religiousAuthorityNotification: true,
+      },
     });
   }
 
@@ -675,9 +716,8 @@ export class EnterpriseSecurityManager extends EventEmitter {
   private async validateBasicPermissions(
     userPerms: IUserPermissions,
     requestedPermissions: string[],
-    result: ISecurityValidationResult
+    result: ISecurityValidationResult,
   ): Promise<void> {
-    
     for (const permission of requestedPermissions) {
       if (!userPerms.permissions.includes(permission)) {
         result.violations.push(`Missing permission: ${permission}`);
@@ -696,17 +736,28 @@ export class EnterpriseSecurityManager extends EventEmitter {
   private async validateSecurityClearance(
     userPerms: IUserPermissions,
     workflow: any,
-    result: ISecurityValidationResult
+    result: ISecurityValidationResult,
   ): Promise<void> {
-    
-    const workflowSecurityLevel = workflow.securityLevel || 'public';
-    const clearanceLevels = ['public', 'restricted', 'confidential', 'secret', 'top-secret'];
-    
-    const userClearanceIndex = clearanceLevels.indexOf(userPerms.securityClearance);
-    const requiredClearanceIndex = clearanceLevels.indexOf(workflowSecurityLevel);
+    const workflowSecurityLevel = workflow.securityLevel || "public";
+    const clearanceLevels = [
+      "public",
+      "restricted",
+      "confidential",
+      "secret",
+      "top-secret",
+    ];
+
+    const userClearanceIndex = clearanceLevels.indexOf(
+      userPerms.securityClearance,
+    );
+    const requiredClearanceIndex = clearanceLevels.indexOf(
+      workflowSecurityLevel,
+    );
 
     if (userClearanceIndex < requiredClearanceIndex) {
-      result.violations.push(`Insufficient security clearance: required ${workflowSecurityLevel}, has ${userPerms.securityClearance}`);
+      result.violations.push(
+        `Insufficient security clearance: required ${workflowSecurityLevel}, has ${userPerms.securityClearance}`,
+      );
       result.isAuthorized = false;
     }
   }
@@ -720,84 +771,97 @@ export class EnterpriseSecurityManager extends EventEmitter {
     const auditEntry: IAuditLogEntry = {
       id: this.generateAuditId(),
       timestamp: new Date(),
-      userId: event.userId || 'system',
-      sessionId: event.sessionId || 'no-session',
-      action: event.action || 'unknown',
-      resource: event.resource || 'unknown',
-      ministry: event.ministry || 'general',
-      securityLevel: event.securityLevel || 'public',
-      ipAddress: event.ipAddress || 'unknown',
-      userAgent: event.userAgent || 'unknown',
+      userId: event.userId || "system",
+      sessionId: event.sessionId || "no-session",
+      action: event.action || "unknown",
+      resource: event.resource || "unknown",
+      ministry: event.ministry || "general",
+      securityLevel: event.securityLevel || "public",
+      ipAddress: event.ipAddress || "unknown",
+      userAgent: event.userAgent || "unknown",
       success: event.success || false,
       details: event.details || {},
       culturalContext: event.culturalContext || {
         prayerTime: false,
         culturalValidation: false,
-        islamicCompliance: false
+        islamicCompliance: false,
       },
-      riskLevel: event.riskLevel || 'low',
-      geolocation: event.geolocation
+      riskLevel: event.riskLevel || "low",
+      geolocation: event.geolocation,
     };
 
     this.auditLog.push(auditEntry);
 
     // Emit audit event for external systems
-    this.emit('auditEvent', auditEntry);
+    this.emit("auditEvent", auditEntry);
 
     // Clean up old audit entries (keep 7 years for government compliance)
     const sevenYearsAgo = new Date();
     sevenYearsAgo.setFullYear(sevenYearsAgo.getFullYear() - 7);
-    
-    this.auditLog = this.auditLog.filter(entry => entry.timestamp > sevenYearsAgo);
+
+    this.auditLog = this.auditLog.filter(
+      (entry) => entry.timestamp > sevenYearsAgo,
+    );
   }
 
   // Utility methods
   private generateEncryptionKey(): string {
-    return randomBytes(32).toString('hex');
+    return randomBytes(32).toString("hex");
   }
 
   private generateSessionId(): string {
-    return `sess_${Date.now()}_${randomBytes(16).toString('hex')}`;
+    return `sess_${Date.now()}_${randomBytes(16).toString("hex")}`;
   }
 
   private generateAuditId(): string {
-    return `audit_${Date.now()}_${randomBytes(8).toString('hex')}`;
+    return `audit_${Date.now()}_${randomBytes(8).toString("hex")}`;
   }
 
-  private async validatePassword(password: string, userPerms: IUserPermissions): Promise<boolean> {
+  private async validatePassword(
+    password: string,
+    userPerms: IUserPermissions,
+  ): Promise<boolean> {
     // In real implementation, this would hash and compare passwords
     return true; // Placeholder
   }
 
-  private async validateMFAToken(token: string, userPerms: IUserPermissions): Promise<boolean> {
+  private async validateMFAToken(
+    token: string,
+    userPerms: IUserPermissions,
+  ): Promise<boolean> {
     // In real implementation, this would validate MFA token
     return true; // Placeholder
   }
 
-  private async validateBiometric(data: any, userPerms: IUserPermissions): Promise<IBiometricAuthResult> {
+  private async validateBiometric(
+    data: any,
+    userPerms: IUserPermissions,
+  ): Promise<IBiometricAuthResult> {
     // In real implementation, this would validate biometric data
     return {
       success: true,
-      method: 'fingerprint',
+      method: "fingerprint",
       confidence: 95,
       userId: userPerms.userId,
       timestamp: new Date(),
-      deviceId: 'device-123',
-      location: 'Baghdad, Iraq'
+      deviceId: "device-123",
+      location: "Baghdad, Iraq",
     };
   }
 
-  private mapRoleToAccessLevel(role: string): 'denied' | 'read' | 'write' | 'admin' | 'super-admin' {
+  private mapRoleToAccessLevel(
+    role: string,
+  ): "denied" | "read" | "write" | "admin" | "super-admin" {
     const roleMap: { [key: string]: any } = {
-      'citizen': 'read',
-      'employee': 'write',
-      'supervisor': 'write',
-      'director': 'admin',
-      'minister': 'admin',
-      'admin': 'admin',
-      'super-admin': 'super-admin'
+      citizen: "read",
+      employee: "write",
+      supervisor: "write",
+      director: "admin",
+      minister: "admin",
+      admin: "admin",
+      "super-admin": "super-admin",
     };
-    return roleMap[role] || 'denied';
+    return roleMap[role] || "denied";
   }
 
   private isRamadanPeriod(): boolean {
@@ -817,7 +881,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
       activeSessions: 0,
       securityThreats: 0,
       auditEvents: 0,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
   }
 
@@ -834,64 +898,91 @@ export class EnterpriseSecurityManager extends EventEmitter {
     for (const [sessionId, session] of this.activeSessions) {
       if (now - session.lastActivity.getTime() > this.config.sessionTimeout) {
         this.activeSessions.delete(sessionId);
-        this.emit('sessionExpired', { sessionId, userId: session.userId });
+        this.emit("sessionExpired", { sessionId, userId: session.userId });
       }
     }
   }
 
   private updateSecurityMetrics(): void {
     this.securityMetrics = {
-      totalLogins: this.auditLog.filter(e => e.action === 'authentication_successful').length,
-      failedLogins: this.auditLog.filter(e => e.action === 'authentication_failed').length,
+      totalLogins: this.auditLog.filter(
+        (e) => e.action === "authentication_successful",
+      ).length,
+      failedLogins: this.auditLog.filter(
+        (e) => e.action === "authentication_failed",
+      ).length,
       activeSessions: this.activeSessions.size,
-      securityThreats: this.securityThreats.filter(t => !t.resolved).length,
+      securityThreats: this.securityThreats.filter((t) => !t.resolved).length,
       auditEvents: this.auditLog.length,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
     };
   }
 
-  private async logSecurityThreat(threat: Partial<ISecurityThreat>): Promise<void> {
+  private async logSecurityThreat(
+    threat: Partial<ISecurityThreat>,
+  ): Promise<void> {
     const securityThreat: ISecurityThreat = {
-      id: `threat_${Date.now()}_${randomBytes(8).toString('hex')}`,
+      id: `threat_${Date.now()}_${randomBytes(8).toString("hex")}`,
       timestamp: new Date(),
-      type: threat.type || 'suspicious_activity',
-      severity: threat.severity || 'medium',
+      type: threat.type || "suspicious_activity",
+      severity: threat.severity || "medium",
       source: threat.source || {
-        ipAddress: 'unknown',
-        userAgent: 'unknown'
+        ipAddress: "unknown",
+        userAgent: "unknown",
       },
-      details: threat.details || 'Unknown security threat',
+      details: threat.details || "Unknown security threat",
       affectedResources: threat.affectedResources || [],
       mitigationActions: threat.mitigationActions || [],
-      resolved: false
+      resolved: false,
     };
 
     this.securityThreats.push(securityThreat);
-    this.emit('securityThreat', securityThreat);
+    this.emit("securityThreat", securityThreat);
   }
 
   // Placeholder methods for additional validation
-  private async validateMinistryPolicies(userPerms: IUserPermissions, workflow: any, result: ISecurityValidationResult): Promise<void> {
+  private async validateMinistryPolicies(
+    userPerms: IUserPermissions,
+    workflow: any,
+    result: ISecurityValidationResult,
+  ): Promise<void> {
     // Implementation would validate ministry-specific policies
   }
 
-  private async validateCulturalRestrictions(userPerms: IUserPermissions, culturalContext: ICulturalSecurityContext, result: ISecurityValidationResult): Promise<void> {
+  private async validateCulturalRestrictions(
+    userPerms: IUserPermissions,
+    culturalContext: ICulturalSecurityContext,
+    result: ISecurityValidationResult,
+  ): Promise<void> {
     // Implementation would validate cultural restrictions
   }
 
-  private async validatePrayerTimeRestrictions(userPerms: IUserPermissions, workflow: any, result: ISecurityValidationResult): Promise<void> {
+  private async validatePrayerTimeRestrictions(
+    userPerms: IUserPermissions,
+    workflow: any,
+    result: ISecurityValidationResult,
+  ): Promise<void> {
     // Implementation would validate prayer time restrictions
   }
 
-  private async validateBiometricRequirements(userPerms: IUserPermissions, workflow: any, result: ISecurityValidationResult): Promise<void> {
+  private async validateBiometricRequirements(
+    userPerms: IUserPermissions,
+    workflow: any,
+    result: ISecurityValidationResult,
+  ): Promise<void> {
     // Implementation would validate biometric requirements
   }
 
-  private async checkSecurityThreats(userId: string, result: ISecurityValidationResult): Promise<void> {
+  private async checkSecurityThreats(
+    userId: string,
+    result: ISecurityValidationResult,
+  ): Promise<void> {
     // Implementation would check for active security threats
   }
 
-  private finalizeAuthorizationDecision(result: ISecurityValidationResult): void {
+  private finalizeAuthorizationDecision(
+    result: ISecurityValidationResult,
+  ): void {
     // Final authorization logic
     if (result.violations.length === 0) {
       result.isAuthorized = true;

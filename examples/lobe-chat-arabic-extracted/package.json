@@ -18,7 +18,7 @@
   "files": [
     "dist",
     "styles",
-    "locales", 
+    "locales",
     "components",
     "README.md",
     "CHANGELOG.md"
@@ -98,7 +98,7 @@
     "description": "Specialized Arabic and RTL processing libraries",
     "packages": {
       "bidi-js": "^1.0.3",
-      "arabic-reshaper": "^2.1.0", 
+      "arabic-reshaper": "^2.1.0",
       "rtl-detect": "^1.1.2",
       "arabic-utils": "^1.3.0",
       "@types/arabic-utils": "^1.3.0",
@@ -195,7 +195,9 @@
   ],
   "jest": {
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
     "testMatch": [
       "**/__tests__/**/*.(js|jsx|ts|tsx)",
       "**/*.(test|spec).(js|jsx|ts|tsx)"
@@ -245,13 +247,22 @@
     "useTabs": false
   },
   "tsup": {
-    "entry": ["src/index.ts"],
-    "format": ["cjs", "esm"],
+    "entry": [
+      "src/index.ts"
+    ],
+    "format": [
+      "cjs",
+      "esm"
+    ],
     "dts": true,
     "splitting": false,
     "sourcemap": true,
     "clean": true,
-    "external": ["react", "react-dom", "next"],
+    "external": [
+      "react",
+      "react-dom",
+      "next"
+    ],
     "esbuildOptions": {
       "banner": {
         "js": "/* Iraqi AI Chat System - Arabic Localization Components */"
@@ -269,12 +280,29 @@
   "config": {
     "localization": {
       "defaultLocale": "ar-IQ",
-      "supportedLocales": ["ar-IQ", "en-US", "ar-SA"],
-      "dialectSupport": ["baghdad", "basra", "mosul", "kurdish", "standard"],
+      "supportedLocales": [
+        "ar-IQ",
+        "en-US",
+        "ar-SA"
+      ],
+      "dialectSupport": [
+        "baghdad",
+        "basra",
+        "mosul",
+        "kurdish",
+        "standard"
+      ],
       "professionalDomains": [
-        "legal", "medical", "educational", "engineering", 
-        "business", "government", "religious", "cultural", 
-        "technology", "general"
+        "legal",
+        "medical",
+        "educational",
+        "engineering",
+        "business",
+        "government",
+        "religious",
+        "cultural",
+        "technology",
+        "general"
       ],
       "culturalCompliance": {
         "islamicCompliance": true,

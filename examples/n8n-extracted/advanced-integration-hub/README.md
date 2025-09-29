@@ -12,7 +12,7 @@ The Advanced Integration Hub is a production-ready orchestration system that man
 advanced-integration-hub/
 ├── core/
 │   ├── IntegrationHubManager.ts         # Main orchestration manager
-│   ├── APIGatewayRouter.ts             # API gateway and routing system  
+│   ├── APIGatewayRouter.ts             # API gateway and routing system
 │   ├── ServiceOrchestrator.ts          # Service orchestration framework
 │   ├── EventProcessor.ts               # Event-driven architecture components
 │   ├── MessageQueue.ts                 # Message queuing and transformation
@@ -47,6 +47,7 @@ advanced-integration-hub/
 ## ✨ Core Features
 
 ### 🏛️ Government Service Orchestration
+
 - **21 Ministry Integration**: Complete orchestration across all Iraqi government ministries
 - **Service Discovery**: Automatic discovery and registration of government services
 - **API Gateway**: Unified API gateway with intelligent routing and load balancing
@@ -54,6 +55,7 @@ advanced-integration-hub/
 - **Workflow Coordination**: Complex inter-ministry workflow coordination and management
 
 ### 🔐 Enterprise Security
+
 - **End-to-End Encryption**: AES-256 encryption for all ministry-to-ministry communications
 - **Zero-Trust Architecture**: Comprehensive security with continuous verification
 - **Biometric Integration**: Seamless integration with Iraqi biometric systems
@@ -61,6 +63,7 @@ advanced-integration-hub/
 - **Audit Compliance**: Government-grade audit logging with 7-year retention
 
 ### 🕌 Cultural Intelligence
+
 - **Arabic Processing**: Advanced Arabic RTL processing with Iraqi dialect support
 - **Islamic Compliance**: Comprehensive Islamic compliance validation across all operations
 - **Prayer Time Awareness**: Intelligent scheduling and processing with prayer time consideration
@@ -68,6 +71,7 @@ advanced-integration-hub/
 - **Professional Terminology**: Ministry-specific Arabic terminology mapping and validation
 
 ### ⚡ Real-Time Processing
+
 - **Event-Driven Architecture**: Scalable event-driven processing for government operations
 - **Message Queuing**: Reliable message queuing with guaranteed delivery
 - **Stream Processing**: Real-time data stream processing with low latency
@@ -75,6 +79,7 @@ advanced-integration-hub/
 - **Priority Handling**: Intelligent priority-based processing for critical government services
 
 ### 🌐 Integration Capabilities
+
 - **API Management**: Comprehensive API versioning and backward compatibility
 - **Service Mesh**: Microservices orchestration with service mesh architecture
 - **Protocol Support**: Support for REST, GraphQL, gRPC, and WebSocket protocols
@@ -84,41 +89,43 @@ advanced-integration-hub/
 ## 🚀 Quick Start
 
 ### Installation
+
 ```bash
 cd examples/n8n-extracted/advanced-integration-hub
 bun install
 ```
 
 ### Basic Configuration
+
 ```typescript
-import { IntegrationHubManager } from './core/IntegrationHubManager';
+import { IntegrationHubManager } from "./core/IntegrationHubManager";
 
 // Initialize Integration Hub
 const integrationHub = new IntegrationHubManager({
   culturalIntelligence: {
     arabicSupport: true,
-    islamicCompliance: 'strict',
+    islamicCompliance: "strict",
     prayerTimeAwareness: true,
-    dialectSupport: ['baghdadi', 'basri', 'moslawi', 'standard']
+    dialectSupport: ["baghdadi", "basri", "moslawi", "standard"],
   },
   security: {
-    encryptionLevel: 'government-grade',
-    auditLevel: 'comprehensive',
-    accessControl: 'multi-level',
-    biometricIntegration: true
+    encryptionLevel: "government-grade",
+    auditLevel: "comprehensive",
+    accessControl: "multi-level",
+    biometricIntegration: true,
   },
   ministryConfiguration: {
     registeredMinistries: 21,
     interMinistryDataFlows: true,
     serviceDiscovery: true,
-    healthMonitoring: true
+    healthMonitoring: true,
   },
   performance: {
     realTimeProcessing: true,
     maxLatency: 200, // milliseconds
-    throughput: '10000 requests/second',
-    scalability: 'horizontal'
-  }
+    throughput: "10000 requests/second",
+    scalability: "horizontal",
+  },
 });
 
 // Start the Integration Hub
@@ -126,97 +133,105 @@ await integrationHub.start();
 ```
 
 ### Ministry Service Registration
+
 ```typescript
-import { MinistryServiceRegistry } from './integration/MinistryServiceRegistry';
+import { MinistryServiceRegistry } from "./integration/MinistryServiceRegistry";
 
 // Register Health Ministry Services
-const healthServices = await registry.registerMinistryServices('health', {
+const healthServices = await registry.registerMinistryServices("health", {
   services: [
     {
-      name: 'Patient Registry',
-      nameArabic: 'سجل المرضى',
-      endpoint: '/api/v1/patients',
-      methods: ['GET', 'POST', 'PUT'],
+      name: "Patient Registry",
+      nameArabic: "سجل المرضى",
+      endpoint: "/api/v1/patients",
+      methods: ["GET", "POST", "PUT"],
       culturalValidation: true,
       islamicCompliance: true,
-      securityLevel: 'confidential',
-      dataClassification: 'medical'
+      securityLevel: "confidential",
+      dataClassification: "medical",
     },
     {
-      name: 'Appointment Scheduler',
-      nameArabic: 'جدولة المواعيد',
-      endpoint: '/api/v1/appointments',
-      methods: ['GET', 'POST', 'DELETE'],
+      name: "Appointment Scheduler",
+      nameArabic: "جدولة المواعيد",
+      endpoint: "/api/v1/appointments",
+      methods: ["GET", "POST", "DELETE"],
       prayerTimeAware: true,
       islamicCompliance: true,
-      securityLevel: 'restricted'
-    }
-  ]
+      securityLevel: "restricted",
+    },
+  ],
 });
 ```
 
 ### Inter-Ministry Data Flow
+
 ```typescript
-import { GovernmentDataFlows } from './integration/GovernmentDataFlows';
+import { GovernmentDataFlows } from "./integration/GovernmentDataFlows";
 
 // Create secure data flow between ministries
 const dataFlow = await governmentFlows.createSecureFlow({
-  sourceMinistry: 'interior',
-  targetMinistry: 'health',
-  dataType: 'citizen-verification',
-  encryptionLevel: 'government-grade',
+  sourceMinistry: "interior",
+  targetMinistry: "health",
+  dataType: "citizen-verification",
+  encryptionLevel: "government-grade",
   culturalValidation: true,
   islamicCompliance: true,
-  auditLevel: 'comprehensive',
-  retentionPolicy: '7-years',
+  auditLevel: "comprehensive",
+  retentionPolicy: "7-years",
   accessControl: {
-    clearanceLevel: 'secret',
-    ministryPermissions: ['interior', 'health'],
-    userRoles: ['senior-officer', 'department-head']
-  }
+    clearanceLevel: "secret",
+    ministryPermissions: ["interior", "health"],
+    userRoles: ["senior-officer", "department-head"],
+  },
 });
 
 // Execute data flow with monitoring
 const result = await dataFlow.execute({
-  citizenId: 'IRQ-123456789',
-  verificationType: 'medical-eligibility',
-  requestingOfficer: 'health-officer-001',
-  purpose: 'emergency-medical-treatment',
+  citizenId: "IRQ-123456789",
+  verificationType: "medical-eligibility",
+  requestingOfficer: "health-officer-001",
+  purpose: "emergency-medical-treatment",
   culturalContext: {
-    language: 'ar-IQ',
-    region: 'baghdad',
-    urgencyLevel: 'high'
-  }
+    language: "ar-IQ",
+    region: "baghdad",
+    urgencyLevel: "high",
+  },
 });
 ```
 
 ### Real-Time Event Processing
+
 ```typescript
-import { EventProcessor } from './core/EventProcessor';
+import { EventProcessor } from "./core/EventProcessor";
 
 // Set up real-time event processing
 const eventProcessor = new EventProcessor({
   culturalIntelligence: true,
   islamicCompliance: true,
-  prayerTimeAwareness: true
+  prayerTimeAwareness: true,
 });
 
 // Register event handlers
-await eventProcessor.registerHandler('citizen-service-request', async (event) => {
-  // Validate cultural appropriateness
-  const culturalValidation = await event.validateCulturalContext();
-  if (!culturalValidation.isAppropriate) {
-    throw new Error(`Cultural validation failed: ${culturalValidation.violations.join(', ')}`);
-  }
+await eventProcessor.registerHandler(
+  "citizen-service-request",
+  async (event) => {
+    // Validate cultural appropriateness
+    const culturalValidation = await event.validateCulturalContext();
+    if (!culturalValidation.isAppropriate) {
+      throw new Error(
+        `Cultural validation failed: ${culturalValidation.violations.join(", ")}`,
+      );
+    }
 
-  // Check prayer time restrictions
-  if (await eventProcessor.isPrayerTime(event.region)) {
-    return await eventProcessor.scheduleAfterPrayer(event);
-  }
+    // Check prayer time restrictions
+    if (await eventProcessor.isPrayerTime(event.region)) {
+      return await eventProcessor.scheduleAfterPrayer(event);
+    }
 
-  // Process with ministry-specific logic
-  return await eventProcessor.processWithMinistryLogic(event);
-});
+    // Process with ministry-specific logic
+    return await eventProcessor.processWithMinistryLogic(event);
+  },
+);
 
 // Start real-time processing
 await eventProcessor.start();
@@ -225,6 +240,7 @@ await eventProcessor.start();
 ## 📊 Performance Metrics
 
 ### **Integration Performance**
+
 - **API Gateway Latency**: <100ms average response time
 - **Service Discovery**: <50ms service lookup time
 - **Data Transformation**: <200ms complex transformation time
@@ -232,6 +248,7 @@ await eventProcessor.start();
 - **Inter-Ministry Communication**: <300ms secure encrypted communication
 
 ### **Security & Compliance**
+
 - **Encryption Performance**: <10ms encryption/decryption overhead
 - **Access Control Validation**: <50ms permission validation
 - **Audit Logging**: <25ms comprehensive audit entry creation
@@ -239,6 +256,7 @@ await eventProcessor.start();
 - **Biometric Verification**: <2s biometric authentication
 
 ### **Cultural Intelligence**
+
 - **Arabic Processing Accuracy**: 99.2% RTL handling and processing
 - **Islamic Compliance**: 99.8% compliance validation accuracy
 - **Dialect Recognition**: 87% Iraqi dialect recognition accuracy
@@ -246,6 +264,7 @@ await eventProcessor.start();
 - **Prayer Time Integration**: 100% accurate prayer time detection
 
 ### **Scalability & Reliability**
+
 - **Horizontal Scaling**: 100+ concurrent ministry connections
 - **Message Throughput**: 10,000+ messages/second processing
 - **Uptime Target**: 99.9% (8.7 hours/year downtime)
@@ -255,6 +274,7 @@ await eventProcessor.start();
 ## 🔧 Configuration
 
 ### Ministry Configuration
+
 ```yaml
 # config/ministries.yml
 ministries:
@@ -285,6 +305,7 @@ ministries:
 ```
 
 ### Security Configuration
+
 ```yaml
 # config/security.yml
 encryption:
@@ -295,7 +316,7 @@ encryption:
 access_control:
   levels:
     - "public"
-    - "restricted" 
+    - "restricted"
     - "confidential"
     - "secret"
   ministry_isolation: true
@@ -309,12 +330,13 @@ audit:
 ```
 
 ### Cultural Intelligence Configuration
+
 ```yaml
 # config/cultural.yml
 arabic_processing:
   dialects:
     - "baghdadi"
-    - "basri" 
+    - "basri"
     - "moslawi"
     - "standard"
   rtl_support: true
@@ -338,6 +360,7 @@ cultural_validation:
 ## 🛡️ Security Features
 
 ### **End-to-End Encryption**
+
 - **Government-Grade Encryption**: AES-256-GCM with hardware security modules
 - **Key Management**: Automated key rotation with secure key escrow
 - **Perfect Forward Secrecy**: Ephemeral key exchange for all communications
@@ -345,6 +368,7 @@ cultural_validation:
 - **Transit Security**: TLS 1.3 with certificate pinning for all communications
 
 ### **Zero-Trust Architecture**
+
 - **Continuous Verification**: Every request verified regardless of source
 - **Micro-Segmentation**: Ministry-specific network isolation
 - **Identity Verification**: Multi-factor authentication with biometric support
@@ -352,6 +376,7 @@ cultural_validation:
 - **Behavioral Analytics**: AI-powered anomaly detection and threat analysis
 
 ### **Access Control Matrix**
+
 - **Role-Based Access Control (RBAC)**: Ministry-specific role definitions
 - **Attribute-Based Access Control (ABAC)**: Dynamic permission evaluation
 - **Temporal Access Control**: Time-based and prayer-time-aware access restrictions
@@ -361,6 +386,7 @@ cultural_validation:
 ## 🌐 Integration Connectors
 
 ### **Iraqi Government Services**
+
 - **Central Bank of Iraq**: Financial transaction processing and validation
 - **Iraqi eGovernment Portal**: Citizen service automation and management
 - **Kurdistan Regional Government**: Regional service integration and coordination
@@ -368,13 +394,15 @@ cultural_validation:
 - **Ministry APIs**: Direct integration with all 21 government ministries
 
 ### **Payment Gateway Integration**
+
 - **ZainCash**: Mobile payment processing (1000 IQD minimum)
-- **FastPay**: Digital payment gateway (500 IQD minimum)  
+- **FastPay**: Digital payment gateway (500 IQD minimum)
 - **NassWallet**: E-wallet integration (1000 IQD minimum)
 - **Banking Integration**: Direct integration with Iraqi commercial banks
 - **International Transfer**: Secure international payment processing
 
 ### **Telecommunications Integration**
+
 - **Zain Iraq**: Mobile network integration and SMS services
 - **AsiaCell**: Mobile network integration and data services
 - **Korek Telecom**: Telecommunications integration and messaging
@@ -382,6 +410,7 @@ cultural_validation:
 - **Government Communication Network**: Secure government communications
 
 ### **Biometric and Identity Services**
+
 - **Iraqi National ID System**: Citizen identity verification
 - **Biometric Authentication**: Fingerprint and facial recognition
 - **Civil Registry Integration**: Birth and death certificate automation
@@ -393,6 +422,7 @@ cultural_validation:
 ### **Core Integration APIs**
 
 #### Service Registration API
+
 ```typescript
 POST /api/v1/services/register
 {
@@ -410,11 +440,12 @@ POST /api/v1/services/register
 ```
 
 #### Data Flow Creation API
+
 ```typescript
 POST /api/v1/flows/create
 {
   "sourceMinistry": "interior",
-  "targetMinistry": "health", 
+  "targetMinistry": "health",
   "dataType": "citizen-verification",
   "encryptionLevel": "government-grade",
   "culturalValidation": true,
@@ -427,6 +458,7 @@ POST /api/v1/flows/create
 ```
 
 #### Event Processing API
+
 ```typescript
 POST /api/v1/events/process
 {
@@ -447,17 +479,19 @@ POST /api/v1/events/process
 ### **Cultural Intelligence APIs**
 
 #### Arabic Text Processing API
+
 ```typescript
 POST /api/v1/cultural/arabic/process
 {
   "text": "طلب شهادة تخرج من وزارة التربية",
-  "dialect": "baghdadi", 
+  "dialect": "baghdadi",
   "professionalDomain": "educational",
   "culturalValidation": true
 }
 ```
 
 #### Islamic Compliance Validation API
+
 ```typescript
 POST /api/v1/cultural/islamic/validate
 {
@@ -470,6 +504,7 @@ POST /api/v1/cultural/islamic/validate
 ```
 
 #### Prayer Time Scheduling API
+
 ```typescript
 GET /api/v1/cultural/prayer-times/{region}
 {
@@ -482,6 +517,7 @@ GET /api/v1/cultural/prayer-times/{region}
 ## 🧪 Testing & Validation
 
 ### Integration Testing
+
 ```bash
 # Run integration tests
 bun test:integration
@@ -500,6 +536,7 @@ bun test:ministry --ministry=health
 ```
 
 ### Load Testing
+
 ```bash
 # Test API gateway performance
 bun test:load:gateway --requests=10000 --concurrent=100
@@ -515,6 +552,7 @@ bun test:load:cultural --texts=10000 --languages=ar,en
 ```
 
 ### Security Testing
+
 ```bash
 # Run security vulnerability scans
 bun test:security:vulnerabilities
@@ -532,6 +570,7 @@ bun test:security:audit --entries=100000
 ## 🚀 Deployment & Operations
 
 ### **Production Deployment**
+
 - **Containerized Architecture**: Docker containers with Kubernetes orchestration
 - **High Availability**: Multi-region deployment with automatic failover
 - **Load Balancing**: Intelligent load balancing with health checks
@@ -539,6 +578,7 @@ bun test:security:audit --entries=100000
 - **Monitoring**: Comprehensive monitoring with Sentry and custom dashboards
 
 ### **Government Compliance**
+
 - **Iraqi Data Protection**: Full compliance with Iraqi data protection laws
 - **Ministry Isolation**: Complete logical isolation between ministries
 - **Audit Requirements**: Government-grade audit trails with 7-year retention
@@ -546,6 +586,7 @@ bun test:security:audit --entries=100000
 - **Cultural Compliance**: Continuous cultural and Islamic compliance monitoring
 
 ### **Operational Excellence**
+
 - **Zero-Downtime Deployments**: Blue-green deployments with gradual rollout
 - **Disaster Recovery**: Multi-region backup with <1 hour recovery time
 - **Performance Monitoring**: Real-time performance monitoring and alerting
@@ -556,4 +597,4 @@ bun test:security:audit --entries=100000
 
 **🇮🇶 Built for Iraqi Government Excellence with Advanced Integration Intelligence and Islamic Values 🚀✨**
 
-*Empowering Iraq's digital transformation through culturally-intelligent, Islamically-compliant, and government-grade integration excellence.*
+_Empowering Iraq's digital transformation through culturally-intelligent, Islamically-compliant, and government-grade integration excellence._

@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { Button } from '../ui/button';
-import { GetAccountMembersResponse } from '@usebasejump/shared';
-import { useEffect, useState } from 'react';
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { GetAccountMembersResponse } from "@usebasejump/shared";
+import { useEffect, useState } from "react";
 import {
   DialogHeader,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import EditTeamMemberRoleForm from './edit-team-member-role-form';
-import DeleteTeamMemberForm from './delete-team-member-form';
+} from "@/components/ui/dialog";
+import EditTeamMemberRoleForm from "./edit-team-member-role-form";
+import DeleteTeamMemberForm from "./delete-team-member-form";
 
 type Props = {
   accountId: string;

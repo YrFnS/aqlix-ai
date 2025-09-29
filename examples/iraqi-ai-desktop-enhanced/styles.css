@@ -6,25 +6,25 @@
   --primary-blue: #1e40af; /* Professional reliability */
   --primary-green: #059669; /* Success and Islamic values */
   --error-red: #dc2626; /* Used sparingly for errors */
-  
+
   /* Secondary Colors from Knowledge Base */
-  --trust-green: #2E8B57;
-  --accent-gold: #D4AF37;
-  --warning-amber: #D97706;
-  
+  --trust-green: #2e8b57;
+  --accent-gold: #d4af37;
+  --warning-amber: #d97706;
+
   /* Typography */
-  --font-arabic-primary: 'Noto Sans Arabic', 'Amiri', system-ui, sans-serif;
+  --font-arabic-primary: "Noto Sans Arabic", "Amiri", system-ui, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 600;
   --font-weight-bold: 700;
-  
+
   /* Spacing and Layout - RTL Optimized */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;
   --spacing-lg: 2rem;
   --border-radius: 0.5rem; /* Moderate for professional appearance */
-  
+
   /* Accessibility - High Contrast */
   --contrast-text: #ffffff;
   --contrast-bg: #000000;
@@ -139,8 +139,13 @@ body {
 
 /* Respectful Animations - Subtle and Professional */
 @keyframes gentle-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .loading {
@@ -154,7 +159,9 @@ body {
   cursor: pointer;
   padding: var(--spacing-sm);
   border-radius: var(--border-radius);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   border: 1px solid transparent;
 }
 
@@ -173,9 +180,15 @@ body {
   margin-left: var(--spacing-xs); /* RTL: left for indicators */
 }
 
-.validation-pass { background-color: var(--primary-green); }
-.validation-warning { background-color: var(--warning-amber); }
-.validation-fail { background-color: var(--error-red); }
+.validation-pass {
+  background-color: var(--primary-green);
+}
+.validation-warning {
+  background-color: var(--warning-amber);
+}
+.validation-fail {
+  background-color: var(--error-red);
+}
 
 /* WCAG AA Compliance - High Contrast for Arabic Text */
 .high-contrast {
@@ -209,17 +222,25 @@ body {
 }
 
 /* Ministry Themes - Professional Organization Themes */
-.theme-legal { --primary-blue: #1e40af; } /* Default */
-.theme-medical { --primary-green: #059669; }
-.theme-educational { --accent-gold: #D4AF37; }
-.theme-engineering { --trust-green: #2E8B57; }
+.theme-legal {
+  --primary-blue: #1e40af;
+} /* Default */
+.theme-medical {
+  --primary-green: #059669;
+}
+.theme-educational {
+  --accent-gold: #d4af37;
+}
+.theme-engineering {
+  --trust-green: #2e8b57;
+}
 
 /* Mobile-First Responsive - From Knowledge Base */
 @media (max-width: 640px) {
   .iraqi-container {
     padding: var(--spacing-sm);
   }
-  
+
   .arabic-display {
     font-size: 1.75rem;
     line-height: 2rem;

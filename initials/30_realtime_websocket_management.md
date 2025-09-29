@@ -21,6 +21,7 @@
 **Focused real-time WebSocket management:**
 
 ### WebSocket Connection Management
+
 - **Connection Lifecycle:** Complete WebSocket connection initialization, maintenance, and cleanup
 - **Connection Pooling:** Efficient WebSocket connection pooling and resource management
 - **Heartbeat Management:** Connection health monitoring with ping/pong heartbeat mechanisms
@@ -28,6 +29,7 @@
 - **Connection Quality Monitoring:** Real-time connection quality assessment and optimization
 
 ### Real-time Subscription Management
+
 - **Dynamic Subscriptions:** Real-time subscription creation, modification, and cleanup
 - **Subscription Routing:** Intelligent routing of real-time updates to appropriate handlers
 - **Filter Management:** Advanced filtering of real-time updates based on cultural context
@@ -35,6 +37,7 @@
 - **Error Handling:** Robust error handling for subscription failures and recovery
 
 ### Cultural Timing Integration
+
 - **Prayer Time Awareness:** WebSocket management adapted for Iraqi prayer time patterns
 - **Business Hours Optimization:** Connection management optimized for Iraqi business hours
 - **Ramadan Adaptations:** Special handling during Ramadan with adjusted timing patterns
@@ -48,28 +51,30 @@
 **Real-time WebSocket management examples:**
 
 ### WebSocket Connection Manager
+
 ```typescript
 // Real-time WebSocket Connection Manager
 class IraqiWebSocketManager {
   constructor() {
-    this.supabaseClient = createSupabaseClient()
-    this.connectionPool = new WebSocketConnectionPool()
-    this.culturalTimingManager = new CulturalTimingManager()
-    this.performanceMonitor = new WebSocketPerformanceMonitor()
-    this.connectionRecovery = new ConnectionRecoveryManager()
+    this.supabaseClient = createSupabaseClient();
+    this.connectionPool = new WebSocketConnectionPool();
+    this.culturalTimingManager = new CulturalTimingManager();
+    this.performanceMonitor = new WebSocketPerformanceMonitor();
+    this.connectionRecovery = new ConnectionRecoveryManager();
   }
 
   async initializeConnection(
     userId: string,
     culturalContext: CulturalContext,
-    connectionPreferences?: ConnectionPreferences
+    connectionPreferences?: ConnectionPreferences,
   ): Promise<WebSocketConnectionResult> {
     // Get cultural timing optimizations
-    const timingOptimizations = await this.culturalTimingManager.getOptimizations({
-      region: culturalContext.region,
-      userPreferences: culturalContext.preferences,
-      currentTime: new Date()
-    })
+    const timingOptimizations =
+      await this.culturalTimingManager.getOptimizations({
+        region: culturalContext.region,
+        userPreferences: culturalContext.preferences,
+        currentTime: new Date(),
+      });
 
     // Initialize connection with cultural awareness
     const connectionConfig = {
@@ -78,29 +83,29 @@ class IraqiWebSocketManager {
       reconnectDelay: timingOptimizations.reconnectDelay,
       maxReconnectAttempts: timingOptimizations.maxReconnectAttempts,
       culturalPriorityMode: timingOptimizations.priorityMode,
-      prayerTimeHandling: timingOptimizations.prayerTimeHandling
-    }
+      prayerTimeHandling: timingOptimizations.prayerTimeHandling,
+    };
 
     // Create WebSocket connection
     const connection = await this.connectionPool.createConnection({
       config: connectionConfig,
-      quality: connectionPreferences?.quality || 'standard',
-      priority: connectionPreferences?.priority || 'normal'
-    })
+      quality: connectionPreferences?.quality || "standard",
+      priority: connectionPreferences?.priority || "normal",
+    });
 
     // Set up heartbeat monitoring
     await this.setupHeartbeatMonitoring({
       connection,
       culturalContext,
-      timingOptimizations
-    })
+      timingOptimizations,
+    });
 
     // Initialize performance monitoring
     await this.performanceMonitor.startMonitoring({
       connectionId: connection.id,
       userId,
-      culturalContext
-    })
+      culturalContext,
+    });
 
     return {
       success: true,
@@ -108,110 +113,118 @@ class IraqiWebSocketManager {
       connectionQuality: connection.quality,
       culturalOptimizations: timingOptimizations,
       estimatedLatency: connection.estimatedLatency,
-      heartbeatInterval: timingOptimizations.heartbeatInterval
-    }
+      heartbeatInterval: timingOptimizations.heartbeatInterval,
+    };
   }
 
   async manageSubscription(
     connectionId: string,
     subscriptionConfig: SubscriptionConfig,
-    culturalContext: CulturalContext
+    culturalContext: CulturalContext,
   ): Promise<SubscriptionResult> {
     // Get connection from pool
-    const connection = await this.connectionPool.getConnection(connectionId)
+    const connection = await this.connectionPool.getConnection(connectionId);
     if (!connection) {
       return {
         success: false,
-        error: 'Connection not found',
-        requiresReconnection: true
-      }
+        error: "Connection not found",
+        requiresReconnection: true,
+      };
     }
 
     // Apply cultural filtering rules
     const culturalFilters = await this.applyCulturalFilters({
       subscriptionConfig,
       culturalContext,
-      islamicComplianceRequired: culturalContext.islamicComplianceRequired
-    })
+      islamicComplianceRequired: culturalContext.islamicComplianceRequired,
+    });
 
     // Create subscription with cultural awareness
     const subscription = await this.supabaseClient
       .channel(`${subscriptionConfig.channel}:${culturalContext.region}`)
-      .on('postgres_changes', {
-        event: subscriptionConfig.events,
-        schema: 'public',
-        table: subscriptionConfig.table,
-        filter: culturalFilters.combinedFilter
-      }, async (payload) => {
-        // Validate cultural appropriateness of incoming data
-        const culturalValidation = await this.validateIncomingData({
-          payload,
-          culturalContext,
-          islamicComplianceRequired: true
-        })
+      .on(
+        "postgres_changes",
+        {
+          event: subscriptionConfig.events,
+          schema: "public",
+          table: subscriptionConfig.table,
+          filter: culturalFilters.combinedFilter,
+        },
+        async (payload) => {
+          // Validate cultural appropriateness of incoming data
+          const culturalValidation = await this.validateIncomingData({
+            payload,
+            culturalContext,
+            islamicComplianceRequired: true,
+          });
 
-        if (culturalValidation.isValid) {
-          await this.handleValidatedPayload({
-            payload,
-            culturalValidation,
-            connectionId,
-            subscriptionConfig
-          })
-        } else {
-          await this.handleCulturallyInappropriatePayload({
-            payload,
-            culturalIssues: culturalValidation.issues,
-            connectionId
-          })
-        }
-      })
-      .subscribe()
+          if (culturalValidation.isValid) {
+            await this.handleValidatedPayload({
+              payload,
+              culturalValidation,
+              connectionId,
+              subscriptionConfig,
+            });
+          } else {
+            await this.handleCulturallyInappropriatePayload({
+              payload,
+              culturalIssues: culturalValidation.issues,
+              connectionId,
+            });
+          }
+        },
+      )
+      .subscribe();
 
     // Track subscription performance
     await this.performanceMonitor.trackSubscription({
       subscriptionId: subscription.id,
       connectionId,
       culturalFilters: culturalFilters.activeFilters,
-      expectedUpdateFrequency: subscriptionConfig.expectedFrequency
-    })
+      expectedUpdateFrequency: subscriptionConfig.expectedFrequency,
+    });
 
     return {
       success: true,
       subscriptionId: subscription.id,
       culturalFiltersApplied: culturalFilters.activeFilters.length,
       islamicComplianceEnabled: culturalFilters.islamicComplianceEnabled,
-      estimatedUpdateFrequency: subscriptionConfig.expectedFrequency
-    }
+      estimatedUpdateFrequency: subscriptionConfig.expectedFrequency,
+    };
   }
 
   async handleConnectionRecovery(
     connectionId: string,
-    recoveryReason: 'network_loss' | 'server_disconnect' | 'timeout' | 'cultural_pause',
-    culturalContext: CulturalContext
+    recoveryReason:
+      | "network_loss"
+      | "server_disconnect"
+      | "timeout"
+      | "cultural_pause",
+    culturalContext: CulturalContext,
   ): Promise<ConnectionRecoveryResult> {
     // Determine recovery strategy based on cultural context
     const recoveryStrategy = await this.connectionRecovery.determineStrategy({
       recoveryReason,
       culturalContext,
       currentTime: new Date(),
-      connectionHistory: await this.getConnectionHistory(connectionId)
-    })
+      connectionHistory: await this.getConnectionHistory(connectionId),
+    });
 
     // Handle cultural recovery reasons (e.g., prayer time pause)
-    if (recoveryReason === 'cultural_pause') {
+    if (recoveryReason === "cultural_pause") {
       const culturalRecovery = await this.handleCulturalRecovery({
         connectionId,
         culturalContext,
-        pauseReason: recoveryStrategy.culturalPauseReason
-      })
+        pauseReason: recoveryStrategy.culturalPauseReason,
+      });
 
       if (!culturalRecovery.shouldReconnect) {
         return {
           success: false,
           shouldReconnect: false,
           culturalPauseActive: true,
-          estimatedResumeTime: culturalRecovery.estimatedResumeTime
-        }
+          estimatedResumeTime: culturalRecovery.estimatedResumeTime,
+        };
       }
     }
 
@@ -221,16 +234,16 @@ class IraqiWebSocketManager {
       strategy: recoveryStrategy,
       culturalContext,
       maxAttempts: recoveryStrategy.maxAttempts,
-      backoffStrategy: recoveryStrategy.backoffStrategy
-    })
+      backoffStrategy: recoveryStrategy.backoffStrategy,
+    });
 
     // Restore subscriptions if recovery successful
     if (recoveryResult.success) {
       await this.restoreSubscriptions({
         connectionId,
         culturalContext,
-        preserveCulturalFilters: true
-      })
+        preserveCulturalFilters: true,
+      });
     }
 
     return {
@@ -238,136 +251,143 @@ class IraqiWebSocketManager {
       recoveryLatency: recoveryResult.latency,
       subscriptionsRestored: recoveryResult.subscriptionsRestored,
       culturalContinuityMaintained: recoveryResult.culturalContinuityMaintained,
-      connectionQuality: recoveryResult.newConnectionQuality
-    }
+      connectionQuality: recoveryResult.newConnectionQuality,
+    };
   }
 }
 ```
 
 ### Cultural Timing Manager
+
 ```typescript
 // Cultural Timing Manager for WebSocket Operations
 class CulturalTimingManager {
   constructor() {
-    this.prayerTimeCalculator = new IraqiPrayerTimeCalculator()
-    this.businessHoursManager = new IraqiBusinessHoursManager()
-    this.culturalEventTracker = new CulturalEventTracker()
+    this.prayerTimeCalculator = new IraqiPrayerTimeCalculator();
+    this.businessHoursManager = new IraqiBusinessHoursManager();
+    this.culturalEventTracker = new CulturalEventTracker();
   }
 
-  async getOptimizations(
-    context: {
-      region: string
-      userPreferences: any
-      currentTime: Date
-    }
-  ): Promise<TimingOptimizations> {
+  async getOptimizations(context: {
+    region: string;
+    userPreferences: any;
+    currentTime: Date;
+  }): Promise<TimingOptimizations> {
     // Get current prayer time status
     const prayerTimeStatus = await this.prayerTimeCalculator.getCurrentStatus({
       region: context.region,
-      currentTime: context.currentTime
-    })
+      currentTime: context.currentTime,
+    });
 
     // Check if it's during business hours
     const businessHoursStatus = await this.businessHoursManager.getStatus({
       region: context.region,
       currentTime: context.currentTime,
-      userType: context.userPreferences?.userType || 'general'
-    })
+      userType: context.userPreferences?.userType || "general",
+    });
 
     // Check for special cultural events (Ramadan, Eid, etc.)
     const culturalEvents = await this.culturalEventTracker.getCurrentEvents({
       region: context.region,
-      currentTime: context.currentTime
-    })
+      currentTime: context.currentTime,
+    });
 
     // Calculate timing optimizations
-    let heartbeatInterval = 30000 // 30 seconds default
-    let reconnectDelay = 1000    // 1 second default
-    let maxReconnectAttempts = 5 // default
+    let heartbeatInterval = 30000; // 30 seconds default
+    let reconnectDelay = 1000; // 1 second default
+    let maxReconnectAttempts = 5; // default
 
     // Adjust for prayer times
     if (prayerTimeStatus.isPrayerTime) {
-      heartbeatInterval = 60000 // 1 minute during prayer
-      reconnectDelay = 5000     // 5 seconds delay
-      maxReconnectAttempts = 3  // fewer attempts
+      heartbeatInterval = 60000; // 1 minute during prayer
+      reconnectDelay = 5000; // 5 seconds delay
+      maxReconnectAttempts = 3; // fewer attempts
     }
 
     // Adjust for business hours
     if (businessHoursStatus.isBusinessHours) {
-      heartbeatInterval = Math.min(heartbeatInterval, 20000) // 20 seconds max
-      reconnectDelay = Math.min(reconnectDelay, 500)         // 500ms min delay
-      maxReconnectAttempts = Math.max(maxReconnectAttempts, 7) // more attempts
+      heartbeatInterval = Math.min(heartbeatInterval, 20000); // 20 seconds max
+      reconnectDelay = Math.min(reconnectDelay, 500); // 500ms min delay
+      maxReconnectAttempts = Math.max(maxReconnectAttempts, 7); // more attempts
     }
 
     // Adjust for cultural events
     if (culturalEvents.isRamadan) {
-      heartbeatInterval *= 1.5 // Longer intervals during Ramadan
-      reconnectDelay *= 2      // Longer delays
+      heartbeatInterval *= 1.5; // Longer intervals during Ramadan
+      reconnectDelay *= 2; // Longer delays
     }
 
     return {
       heartbeatInterval,
       reconnectDelay,
       maxReconnectAttempts,
-      priorityMode: prayerTimeStatus.isPrayerTime ? 'respectful' : 'standard',
+      priorityMode: prayerTimeStatus.isPrayerTime ? "respectful" : "standard",
       prayerTimeHandling: {
         isPrayerTime: prayerTimeStatus.isPrayerTime,
         nextPrayerIn: prayerTimeStatus.nextPrayerIn,
-        pauseRecommended: prayerTimeStatus.shouldPause
+        pauseRecommended: prayerTimeStatus.shouldPause,
       },
       businessHoursOptimization: businessHoursStatus.isBusinessHours,
-      culturalEventAdjustments: culturalEvents.activeEvents
-    }
+      culturalEventAdjustments: culturalEvents.activeEvents,
+    };
   }
 
   async shouldPauseConnection(
     connectionId: string,
     culturalContext: CulturalContext,
-    currentTime: Date
+    currentTime: Date,
   ): Promise<ConnectionPauseDecision> {
     // Check prayer time status
     const prayerTimeStatus = await this.prayerTimeCalculator.getCurrentStatus({
       region: culturalContext.region,
-      currentTime
-    })
+      currentTime,
+    });
 
     // Check user preferences for cultural pausing
-    const userPausePreferences = culturalContext.preferences?.connectionPausing || {
+    const userPausePreferences = culturalContext.preferences
+      ?.connectionPausing || {
       pauseForPrayer: true,
       pauseForCulturalEvents: false,
-      respectBusinessHours: true
-    }
+      respectBusinessHours: true,
+    };
 
-    let shouldPause = false
-    let pauseReason = null
-    let estimatedResumeTime = null
+    let shouldPause = false;
+    let pauseReason = null;
+    let estimatedResumeTime = null;
 
     // Prayer time pausing
     if (prayerTimeStatus.isPrayerTime && userPausePreferences.pauseForPrayer) {
-      shouldPause = true
-      pauseReason = 'prayer_time'
-      estimatedResumeTime = prayerTimeStatus.prayerEndTime
+      shouldPause = true;
+      pauseReason = "prayer_time";
+      estimatedResumeTime = prayerTimeStatus.prayerEndTime;
     }
 
     // Cultural event pausing
     const culturalEvents = await this.culturalEventTracker.getCurrentEvents({
       region: culturalContext.region,
-      currentTime
-    })
+      currentTime,
+    });
 
-    if (culturalEvents.shouldPauseConnections && userPausePreferences.pauseForCulturalEvents) {
-      shouldPause = true
-      pauseReason = 'cultural_event'
-      estimatedResumeTime = culturalEvents.estimatedEndTime
+    if (
+      culturalEvents.shouldPauseConnections &&
+      userPausePreferences.pauseForCulturalEvents
+    ) {
+      shouldPause = true;
+      pauseReason = "cultural_event";
+      estimatedResumeTime = culturalEvents.estimatedEndTime;
     }
 
     return {
       shouldPause,
       pauseReason,
       estimatedResumeTime,
-      culturalJustification: shouldPause ? this.getCulturalJustification(pauseReason) : null,
-      userNotificationMessage: shouldPause ? this.getUserNotificationMessage(pauseReason, culturalContext.language) : null
-    }
+      culturalJustification: shouldPause
+        ? this.getCulturalJustification(pauseReason)
+        : null,
+      userNotificationMessage: shouldPause
+        ? this.getUserNotificationMessage(pauseReason, culturalContext.language)
+        : null,
+    };
   }
 }
 ```
@@ -522,6 +542,7 @@ CREATE TABLE websocket_performance_analytics (
 **Real-time WebSocket management architecture patterns:**
 
 ### Connection Management Patterns
+
 - **Connection Lifecycle:** Complete connection initialization, maintenance, heartbeat, and cleanup patterns
 - **Connection Pooling:** Efficient connection pooling with resource management and optimization
 - **Quality Monitoring:** Real-time connection quality assessment and adaptive optimization
@@ -529,6 +550,7 @@ CREATE TABLE websocket_performance_analytics (
 - **Performance Optimization:** Connection performance optimization based on cultural timing patterns
 
 ### Subscription Management Patterns
+
 - **Dynamic Subscriptions:** Real-time subscription creation, modification, and cleanup patterns
 - **Cultural Filtering:** Advanced filtering patterns for culturally appropriate real-time updates
 - **Performance Tracking:** Subscription performance monitoring and optimization patterns
@@ -542,6 +564,7 @@ CREATE TABLE websocket_performance_analytics (
 **Real-time WebSocket management validation:**
 
 ### Connection Performance Testing
+
 - **Connection Latency:** <50ms WebSocket connection establishment testing
 - **Heartbeat Reliability:** >99% heartbeat success rate validation
 - **Reconnection Speed:** <2 seconds reconnection time testing
@@ -549,6 +572,7 @@ CREATE TABLE websocket_performance_analytics (
 - **Cultural Timing:** Cultural timing adaptation effectiveness testing
 
 ### Subscription Performance Testing
+
 - **Subscription Setup:** <100ms subscription creation time testing
 - **Update Delivery:** Real-time update delivery latency testing
 - **Cultural Filtering:** Cultural filter accuracy and performance testing
@@ -562,12 +586,14 @@ CREATE TABLE websocket_performance_analytics (
 **Real-time WebSocket management integration points:**
 
 ### Foundation Integration
+
 - **Context Management Foundation:** Integration with shared context validation and cultural services
 - **Cultural Timing Services:** Integration with Iraqi cultural timing and event management
 - **Performance Monitoring:** Integration with system-wide performance monitoring
 - **Error Handling:** Integration with centralized error handling and logging
 
 ### Component Integration
+
 - **Cross-session Persistence:** WebSocket integration with context persistence services
 - **Multi-device Sync:** WebSocket integration with multi-device synchronization
 - **Cultural State Management:** WebSocket integration with cultural state transitions

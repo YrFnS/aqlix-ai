@@ -9,7 +9,7 @@ A comprehensive multi-agent orchestration system based on Google's Agent Develop
 This system extracts and adapts core patterns from Google's Agent Development Kit with the following Iraqi-specific enhancements:
 
 - **Cultural Compliance**: 95%+ cultural appropriateness validation
-- **Islamic Principles**: 100% adherence to Islamic values  
+- **Islamic Principles**: 100% adherence to Islamic values
 - **Arabic Processing**: Full RTL support with Iraqi dialect recognition
 - **Professional Domains**: Iraqi legal, medical, and educational context support
 - **Multi-Agent Orchestration**: Hierarchical coordination with cultural priority
@@ -54,7 +54,7 @@ result = await agent.process({
 
 ```python
 from examples.google_adk_extracted import (
-    IraqiMultiAgentSystem, 
+    IraqiMultiAgentSystem,
     OrchestrationConfig,
     OrchestrationStrategy
 )
@@ -92,7 +92,7 @@ result = await tools.execute_tool(
 
 # Process Arabic text
 result = await tools.execute_tool(
-    "arabic_processing_tool", 
+    "arabic_processing_tool",
     "النص العربي مع دعم RTL"
 )
 ```
@@ -102,18 +102,21 @@ result = await tools.execute_tool(
 ### Core Agent Classes
 
 **IraqiBaseAgent** - Foundation class with cultural awareness
+
 - Cultural compliance validation (95%+ threshold)
 - Islamic principles enforcement
 - Agent status management and monitoring
 - Multi-agent delegation capabilities
 
 **IraqiAgent** - Main agent class with full functionality
+
 - Single and multi-agent processing modes
 - Tool integration and MCP server coordination
 - Cultural validation workflows
 - Performance optimization
 
 **IraqiLlmAgent** - Advanced LLM-powered agent
+
 - Enhanced cultural context integration
 - Arabic language processing instructions
 - Islamic principle guidance
@@ -122,6 +125,7 @@ result = await tools.execute_tool(
 ### Multi-Agent Orchestration
 
 **OrchestrationStrategy Options:**
+
 - `SEQUENTIAL` - Chain agents for dependent processing
 - `PARALLEL` - Independent agent execution
 - `CULTURAL_PRIORITY` - Cultural validation first
@@ -129,6 +133,7 @@ result = await tools.execute_tool(
 - `HYBRID` - Adaptive strategy based on complexity
 
 **Key Capabilities:**
+
 - Intelligent agent selection based on task characteristics
 - Cultural compliance enforcement across all agents
 - Performance monitoring and metrics tracking
@@ -137,11 +142,13 @@ result = await tools.execute_tool(
 ### Tool Integration System
 
 **Built-in Tools:**
+
 - **CulturalValidationTool** - Iraqi cultural appropriateness validation
 - **ArabicProcessingTool** - RTL layout and Iraqi dialect processing
 - **ProfessionalDomainTool** - Domain-specific content processing
 
 **Tool Categories:**
+
 - Cultural Validation (Critical Priority)
 - Arabic Processing (High Priority)
 - Professional Domains (High Priority)
@@ -151,21 +158,25 @@ result = await tools.execute_tool(
 ### Cultural Enhancement Mixins
 
 **CulturalMixin** - Core cultural assessment capabilities
+
 - Cultural appropriateness scoring (0.0 to 1.0)
 - Compliance level classification
 - Cultural violation detection and recommendations
 
-**IslamicComplianceMixin** - Islamic principle validation  
+**IslamicComplianceMixin** - Islamic principle validation
+
 - Halal/Haram content classification
 - Religious appropriateness assessment
 - Islamic value alignment verification
 
 **ArabicLanguageMixin** - Arabic language processing
+
 - RTL layout optimization
 - Iraqi dialect recognition and processing
 - Mixed Arabic-English content handling
 
 **ProfessionalContextMixin** - Professional domain support
+
 - Iraqi legal, medical, educational domain validation
 - Professional terminology processing
 - Organizational context awareness
@@ -173,18 +184,21 @@ result = await tools.execute_tool(
 ## 📊 Performance Characteristics
 
 ### Cultural Compliance
+
 - **Validation Accuracy**: 95%+ cultural appropriateness
 - **Islamic Compliance**: 100% adherence to Islamic principles
 - **Processing Speed**: <200ms cultural validation
 - **Arabic Accuracy**: 99%+ RTL accuracy, 85%+ dialect recognition
 
 ### System Performance
+
 - **Agent Creation**: <50ms initialization time
 - **Single Agent Processing**: <300ms average response
 - **Multi-Agent Orchestration**: 200ms-2s depending on complexity
 - **Tool Execution**: <100ms per tool average
 
 ### Resource Efficiency
+
 - **Memory Usage**: <100MB per agent instance
 - **CPU Utilization**: <30% average, <80% peak
 - **Scalability**: 5+ agents in parallel orchestration
@@ -200,8 +214,9 @@ python test_basic_functionality.py
 ```
 
 **Test Coverage:**
+
 - ✅ Agent Creation and Configuration
-- ✅ Cultural Validation Functionality  
+- ✅ Cultural Validation Functionality
 - ✅ Agent Processing Workflows
 - ✅ Tool Integration System
 - ✅ Multi-Agent Orchestration
@@ -213,6 +228,7 @@ python example.py
 ```
 
 **Example Scenarios:**
+
 - Single agent cultural validation
 - Multi-agent orchestration with cultural priority
 - Tool integration workflows
@@ -258,14 +274,16 @@ config = OrchestrationConfig(
 ## 🌐 Integration Points
 
 ### MCP Server Coordination
+
 - **Context7**: Documentation and patterns
-- **Sequential**: Complex analysis workflows  
+- **Sequential**: Complex analysis workflows
 - **Magic**: UI component generation
 - **Playwright**: E2E testing and validation
 - **Supabase**: Database operations
 - **Sentry**: Error tracking and performance
 
 ### Framework Compatibility
+
 - **FastAPI**: Backend service integration
 - **Next.js**: Frontend component integration
 - **PydanticAI**: Advanced AI model integration
@@ -274,6 +292,7 @@ config = OrchestrationConfig(
 ## 📈 Strategic Value
 
 ### Iraqi AI Chat System Benefits
+
 - **95%+ Cultural Alignment**: Perfect fit for Iraqi AI requirements
 - **Production Ready**: Enterprise-grade multi-agent orchestration
 - **Hierarchical Delegation**: Ideal for cultural validation chains
@@ -281,6 +300,7 @@ config = OrchestrationConfig(
 - **Performance Optimized**: 100x faster than traditional approaches
 
 ### Competitive Advantages
+
 - **Cultural First**: World's first culturally-aware agent orchestration
 - **Islamic Compliant**: 100% adherence to Islamic principles
 - **Arabic Native**: Full RTL and Iraqi dialect support
@@ -290,6 +310,7 @@ config = OrchestrationConfig(
 ## 🚦 Status & Next Steps
 
 ### ✅ Phase 1: Foundation Layer - COMPLETED
+
 - [x] Google ADK Python core agent classes extracted and enhanced
 - [x] Iraqi-specific agent base architecture implemented
 - [x] Multi-agent orchestration system operational
@@ -298,6 +319,7 @@ config = OrchestrationConfig(
 - [x] Comprehensive examples and tests created
 
 ### 🎯 Phase 2: Advanced Reasoning Integration - NEXT
+
 - [ ] Sapient HRM (Hierarchical Reasoning Machine) integration
 - [ ] Microsoft rStar multi-step reasoning patterns
 - [ ] Google Mangle symbolic reasoning capabilities
@@ -316,4 +338,4 @@ Based on Google's Agent Development Kit patterns, enhanced for Iraqi cultural co
 
 ---
 
-*Built with 💙 for the Iraqi AI community | إنشاء مع الحب للمجتمع العراقي الذكي*
+_Built with 💙 for the Iraqi AI community | إنشاء مع الحب للمجتمع العراقي الذكي_

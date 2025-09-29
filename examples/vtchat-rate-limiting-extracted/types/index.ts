@@ -5,17 +5,31 @@
 
 // ====================== Core Rate Limiting Types ======================
 
-export type RateLimitInterval = 'minute' | 'hour' | 'day' | 'month';
+export type RateLimitInterval = "minute" | "hour" | "day" | "month";
 
-export type SubscriptionTier = 'trial' | 'basic' | 'premium' | 'organization';
+export type SubscriptionTier = "trial" | "basic" | "premium" | "organization";
 
-export type ProfessionalDomain = 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
+export type ProfessionalDomain =
+  | "legal"
+  | "medical"
+  | "educational"
+  | "business"
+  | "engineering";
 
-export type IraqiPaymentGateway = 'zaincash' | 'fastpay' | 'nasswallet';
+export type IraqiPaymentGateway = "zaincash" | "fastpay" | "nasswallet";
 
-export type OperationType = 'chat' | 'translation' | 'cultural_validation' | 'document_processing' | 'image_generation';
+export type OperationType =
+  | "chat"
+  | "translation"
+  | "cultural_validation"
+  | "document_processing"
+  | "image_generation";
 
-export type RateLimitStatus = 'allowed' | 'rate_limited' | 'quota_exceeded' | 'budget_exceeded';
+export type RateLimitStatus =
+  | "allowed"
+  | "rate_limited"
+  | "quota_exceeded"
+  | "budget_exceeded";
 
 // ====================== Rate Limiting Configuration ======================
 
@@ -45,10 +59,10 @@ export interface IraqiUser {
   email: string;
   subscriptionTier: SubscriptionTier;
   professionalDomain?: ProfessionalDomain;
-  preferredLanguage: 'ar' | 'en' | 'ar-iq';
+  preferredLanguage: "ar" | "en" | "ar-iq";
   isVerifiedProfessional: boolean;
   organizationId?: string;
-  culturalComplianceLevel: 'basic' | 'standard' | 'strict';
+  culturalComplianceLevel: "basic" | "standard" | "strict";
   createdAt: Date;
   lastActiveAt: Date;
 }
@@ -130,7 +144,7 @@ export interface PaymentGatewayConfig {
   apiKey: string;
   secretKey: string;
   webhookUrl: string;
-  currency: 'IQD';
+  currency: "IQD";
   minAmount: number;
   maxAmount: number;
   isActive: boolean;
@@ -138,7 +152,7 @@ export interface PaymentGatewayConfig {
 
 export interface PaymentRequest {
   amount: number; // In IQD
-  currency: 'IQD';
+  currency: "IQD";
   description: string;
   customerEmail: string;
   customerId: string;
@@ -154,7 +168,7 @@ export interface PaymentResponse {
   errorMessage?: string;
   estimatedProcessingTime: number; // In seconds
   gateway: IraqiPaymentGateway;
-  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  status: "pending" | "completed" | "failed" | "cancelled";
 }
 
 // ====================== Quota Management Types ======================
@@ -173,7 +187,7 @@ export interface QuotaConfig {
 }
 
 export interface QuotaUsage {
-  period: 'hour' | 'day' | 'month';
+  period: "hour" | "day" | "month";
   used: number;
   limit: number;
   remaining: number;
@@ -195,9 +209,9 @@ export interface QuotaAllowance {
 
 export interface CulturalValidationRequest {
   content: string;
-  language: 'ar' | 'en' | 'ar-iq';
+  language: "ar" | "en" | "ar-iq";
   professionalDomain?: ProfessionalDomain;
-  strictnessLevel: 'basic' | 'standard' | 'strict';
+  strictnessLevel: "basic" | "standard" | "strict";
   checkIslamicCompliance: boolean;
   checkPoliticalNeutrality: boolean;
 }
@@ -214,8 +228,8 @@ export interface CulturalValidationResult {
 
 export interface ArabicProcessingRequest {
   text: string;
-  dialect: 'iraqi' | 'standard' | 'gulf' | 'levantine';
-  operation: 'rtl_format' | 'dialect_detect' | 'translation' | 'grammar_check';
+  dialect: "iraqi" | "standard" | "gulf" | "levantine";
+  operation: "rtl_format" | "dialect_detect" | "translation" | "grammar_check";
   preserveFormatting: boolean;
 }
 
@@ -234,10 +248,10 @@ export interface ProfessionalContext {
   domain: ProfessionalDomain;
   organizationId?: string;
   licenseNumber?: string;
-  verificationStatus: 'unverified' | 'pending' | 'verified';
+  verificationStatus: "unverified" | "pending" | "verified";
   specializations: string[];
   complianceRequirements: string[];
-  culturalSensitivityLevel: 'standard' | 'high' | 'critical';
+  culturalSensitivityLevel: "standard" | "high" | "critical";
 }
 
 export interface ProfessionalRateLimit {
@@ -290,17 +304,22 @@ export interface ApiResponse<T> {
 
 export interface RateLimitApiResponse extends ApiResponse<RateLimitResult> {
   headers: {
-    'X-RateLimit-Limit': string;
-    'X-RateLimit-Remaining': string;
-    'X-RateLimit-Reset': string;
-    'X-RateLimit-Retry-After'?: string;
+    "X-RateLimit-Limit": string;
+    "X-RateLimit-Remaining": string;
+    "X-RateLimit-Reset": string;
+    "X-RateLimit-Retry-After"?: string;
   };
 }
 
 // ====================== Error Types ======================
 
 export interface RateLimitError extends Error {
-  code: 'RATE_LIMIT_EXCEEDED' | 'QUOTA_EXCEEDED' | 'BUDGET_EXCEEDED' | 'CULTURAL_VIOLATION' | 'ARABIC_PROCESSING_ERROR';
+  code:
+    | "RATE_LIMIT_EXCEEDED"
+    | "QUOTA_EXCEEDED"
+    | "BUDGET_EXCEEDED"
+    | "CULTURAL_VIOLATION"
+    | "ARABIC_PROCESSING_ERROR";
   statusCode: number;
   retryAfter?: number;
   remainingQuota?: number;
@@ -309,7 +328,11 @@ export interface RateLimitError extends Error {
 }
 
 export interface PaymentGatewayError extends Error {
-  code: 'PAYMENT_FAILED' | 'GATEWAY_TIMEOUT' | 'INSUFFICIENT_FUNDS' | 'INVALID_CREDENTIALS';
+  code:
+    | "PAYMENT_FAILED"
+    | "GATEWAY_TIMEOUT"
+    | "INSUFFICIENT_FUNDS"
+    | "INVALID_CREDENTIALS";
   gateway: IraqiPaymentGateway;
   transactionId?: string;
   statusCode: number;
@@ -329,7 +352,7 @@ export interface IraqiRateLimitEnvironment {
   nasswalletClientSecret: string;
   culturalValidationApiUrl: string;
   arabicProcessingApiUrl: string;
-  defaultCurrency: 'IQD';
+  defaultCurrency: "IQD";
   enableDebugMode: boolean;
   enableCulturalLogging: boolean;
 }
@@ -358,7 +381,7 @@ export interface BudgetRecord {
   totalBudget: number; // In IQD
   spentAmount: number;
   lastUpdated: Date;
-  billingCycle: 'monthly' | 'annual';
+  billingCycle: "monthly" | "annual";
   professionalDomain?: ProfessionalDomain;
   culturalValidationSpend: number;
   arabicTranslationSpend: number;
@@ -376,7 +399,8 @@ export type IraqiRateLimitConfigPartial = DeepPartial<IraqiRateLimitConfig>;
 
 export type RequireField<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
-export type OptionalField<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type OptionalField<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>;
 
 // ====================== Export All Types ======================
 
@@ -388,63 +412,63 @@ export default {
   IraqiPaymentGateway,
   OperationType,
   RateLimitStatus,
-  
+
   // Configuration types
   RateLimitConfig,
   IraqiRateLimitConfig,
-  
+
   // User and context types
   IraqiUser,
   RequestContext,
-  
+
   // Response types
   RateLimitResult,
   RateLimitMetrics,
-  
+
   // Budget types
   IraqiPricing,
   BudgetAllocation,
   BudgetUsage,
-  
+
   // Payment types
   PaymentGatewayConfig,
   PaymentRequest,
   PaymentResponse,
-  
+
   // Quota types
   QuotaConfig,
   QuotaUsage,
   QuotaAllowance,
-  
+
   // Cultural and Arabic types
   CulturalValidationRequest,
   CulturalValidationResult,
   ArabicProcessingRequest,
   ArabicProcessingResult,
-  
+
   // Professional domain types
   ProfessionalContext,
   ProfessionalRateLimit,
-  
+
   // Hook types
   UseRateLimitOptions,
   UseRateLimitReturn,
-  
+
   // API types
   ApiResponse,
   RateLimitApiResponse,
-  
+
   // Error types
   RateLimitError,
   PaymentGatewayError,
-  
+
   // Environment types
   IraqiRateLimitEnvironment,
-  
+
   // Database types
   RateLimitRecord,
   BudgetRecord,
-  
+
   // Utility types
   DeepPartial,
   IraqiRateLimitConfigPartial,

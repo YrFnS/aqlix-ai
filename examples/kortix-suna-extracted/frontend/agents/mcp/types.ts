@@ -5,9 +5,9 @@ export interface MCPConfiguration {
   enabledTools: string[];
   selectedProfileId?: string;
   isCustom?: boolean;
-  customType?: 'http' | 'sse' | 'pipedream';
+  customType?: "http" | "sse" | "pipedream";
 }
-  
+
 export interface MCPConfigurationProps {
   configuredMCPs: MCPConfiguration[];
   onConfigurationChange: (mcps: MCPConfiguration[]) => void;
@@ -18,6 +18,6 @@ export interface MCPConfigurationProps {
     system_prompt?: string;
     agentpress_tools?: any;
   };
-  saveMode?: 'direct' | 'callback';
+  saveMode?: "direct" | "callback";
   versionId?: string;
 }

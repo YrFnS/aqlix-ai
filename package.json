@@ -1,0 +1,55 @@
+{
+  "name": "iraqi-ai-chat-system",
+  "version": "1.0.0",
+  "description": "Iraqi AI Chat System - Advanced AI chat with Arabic Iraqi dialect support, cultural compliance, and multi-modal capabilities",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter ./apps/web dev",
+    "dev:all": "concurrently \"bun run --filter ./apps/web dev\" \"bun run --filter ./apps/api dev\"",
+    "build": "bun run --filter \"packages/*\" build && bun run --filter \"apps/*\" build",
+    "test": "bun test --recursive",
+    "test:cultural": "bun run --filter \"*\" test:cultural",
+    "test:arabic": "bun run --filter \"*\" test:arabic",
+    "test:image": "bun run --filter \"*\" test:image",
+    "test:voice": "bun run --filter \"*\" test:voice",
+    "test:desktop": "bun run --filter \"*\" test:desktop",
+    "lint": "bun run --filter \"*\" lint",
+    "typecheck": "bun run --filter \"*\" typecheck",
+    "clean": "bun run --filter \"*\" clean",
+    "postinstall": "bun pm ls"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "ai",
+    "chat",
+    "arabic",
+    "cultural-ai",
+    "islamic",
+    "rtl",
+    "bun",
+    "monorepo"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
+  }
+}

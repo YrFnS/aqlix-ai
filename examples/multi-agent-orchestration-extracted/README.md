@@ -9,24 +9,28 @@ This package provides the foundation for complex workflow coordination with cult
 ## 🚀 Key Features
 
 ### Core Orchestration
+
 - **8-Phase Workflow Coordination** with cultural intelligence checkpoints
-- **Agent Specialization Framework** with Iraqi cultural competence scoring  
+- **Agent Specialization Framework** with Iraqi cultural competence scoring
 - **Workflow Execution Strategies** (sequential, parallel, cultural_priority)
 - **Islamic Compliance Monitoring** throughout all operations
 
 ### Cultural Intelligence
+
 - **95%+ Cultural Appropriateness** maintained across all workflows
 - **100% Islamic Compliance** with continuous validation
 - **Iraqi Dialect Recognition** with 85%+ accuracy
 - **Professional Domain Support** for legal/medical/educational sectors
 
 ### Performance Optimization
+
 - **40-60% Token Reduction** while preserving cultural context
 - **Real-time Processing** with <200ms cultural validation
 - **Intelligent Load Balancing** across multiple specialized agents
 - **Workflow Coordination** with <100ms orchestration overhead
 
 ### Advanced Monitoring
+
 - **WebSocket Real-time Updates** with Arabic RTL support
 - **Cultural Validation Tracking** with Islamic compliance scoring
 - **Performance Analytics** with cultural retention metrics
@@ -37,7 +41,7 @@ This package provides the foundation for complex workflow coordination with cult
 ```
 multi-agent-orchestration-extracted/
 ├── orchestration_engine.py          # Core workflow orchestration (1,531 lines)
-├── code_memory_manager.py           # Memory optimization with cultural preservation (1,000 lines)  
+├── code_memory_manager.py           # Memory optimization with cultural preservation (1,000 lines)
 ├── arabic_document_segmentation.py  # Arabic document processing (1,537 lines)
 ├── workflow_progress_tracker.py     # Real-time monitoring (1,563 lines)
 ├── __init__.py                      # Package initialization
@@ -49,12 +53,14 @@ multi-agent-orchestration-extracted/
 ## 🕌 Cultural Compliance
 
 ### Islamic Compliance Features
+
 - **Halal Content Validation** at every workflow phase
 - **Islamic Principles Adherence** in all decision-making processes
 - **Cultural Sensitivity Scoring** with automatic threshold enforcement
 - **Religious Context Preservation** throughout data processing
 
 ### Iraqi Cultural Integration
+
 - **Dialect Recognition** for Iraqi Arabic variations
 - **Professional Terminology** preservation for legal/medical/educational domains
 - **Ministry-Grade Protocols** for government integration
@@ -77,11 +83,11 @@ orchestrator = IraqiMultiAgentOrchestrator(
 # Execute workflow with cultural validation
 workflow_result = await orchestrator.execute_workflow({
     "workflow_type": "document_processing",
-    "cultural_context": "iraqi_legal_documents", 
+    "cultural_context": "iraqi_legal_documents",
     "agents": ["cultural_validator", "arabic_processor", "legal_analyzer"],
     "phases": [
         {"phase": "analysis", "cultural_validation": True},
-        {"phase": "processing", "islamic_compliance_check": True}, 
+        {"phase": "processing", "islamic_compliance_check": True},
         {"phase": "validation", "professional_review": True}
     ]
 })
@@ -140,9 +146,10 @@ class IraqiMultiAgentOrchestrator:
 ```
 
 **Phases**:
+
 - **Phase 0**: Workspace Synthesis - Environment setup with cultural context
 - **Phase 1**: Analysis Processing - Content analysis with Islamic compliance
-- **Phase 2**: Infrastructure Synthesis - Technical setup with cultural validation  
+- **Phase 2**: Infrastructure Synthesis - Technical setup with cultural validation
 - **Phase 3**: Document Segmentation - Arabic document processing
 - **Phase 4**: Planning Orchestration - Workflow planning with cultural considerations
 - **Phase 5**: Intelligence Discovery - Knowledge extraction with dialect recognition
@@ -154,7 +161,7 @@ class IraqiMultiAgentOrchestrator:
 
 Intelligent memory optimization with cultural preservation:
 
-```python  
+```python
 class IraqiCodeMemoryManager:
     """
     Core Features:
@@ -166,6 +173,7 @@ class IraqiCodeMemoryManager:
 ```
 
 **Key Capabilities**:
+
 - **Cultural Importance Scoring** (0-100 scale)
 - **Islamic Compliance Assessment** with automatic validation
 - **Arabic Content Processing** with dialect recognition
@@ -177,7 +185,7 @@ Advanced Arabic document processing with cultural intelligence:
 
 ```python
 class ArabicDocumentSegmentationAgent:
-    """  
+    """
     Core Features:
     - RTL boundary detection with Iraqi dialect recognition
     - Mixed Arabic-English processing with cultural intelligence
@@ -187,8 +195,9 @@ class ArabicDocumentSegmentationAgent:
 ```
 
 **Segmentation Strategies**:
+
 - **Semantic**: Content meaning preservation
-- **Structural**: Document hierarchy maintenance  
+- **Structural**: Document hierarchy maintenance
 - **Linguistic**: Language boundary respect
 - **Cultural**: Cultural content block preservation
 - **Mixed**: Hybrid approach with adaptive intelligence
@@ -203,12 +212,13 @@ class IraqiWorkflowProgressTracker:
     Core Features:
     - Real-time WebSocket monitoring with Arabic RTL support
     - Cultural compliance tracking with Islamic validation
-    - Multi-agent coordination with performance analytics  
+    - Multi-agent coordination with performance analytics
     - Visual progress indicators with government-grade protocols
     """
 ```
 
 **Monitoring Capabilities**:
+
 - **Real-time Progress Updates** via WebSocket (port 8765 default)
 - **Cultural Validation Tracking** with threshold enforcement
 - **Performance Metrics** with cultural retention analytics
@@ -221,7 +231,7 @@ class IraqiWorkflowProgressTracker:
 ```python
 cultural_config = {
     "islamic_compliance_threshold": 95.0,      # Minimum Islamic compliance score
-    "cultural_appropriateness_threshold": 90.0, # Minimum cultural appropriateness  
+    "cultural_appropriateness_threshold": 90.0, # Minimum cultural appropriateness
     "dialect_recognition_enabled": True,        # Enable Iraqi dialect recognition
     "professional_domain_support": [            # Supported professional domains
         "legal", "medical", "educational", "government"
@@ -252,7 +262,7 @@ orchestration_config = {
     "agent_specialization_enabled": True,      # Enable specialized agents
     "cultural_priority_mode": True,            # Prioritize cultural compliance
     "error_recovery_enabled": True,            # Enable intelligent error recovery
-    "progress_notifications": True,            # Enable progress notifications  
+    "progress_notifications": True,            # Enable progress notifications
     "websocket_monitoring": True               # Enable WebSocket monitoring
 }
 ```
@@ -260,13 +270,15 @@ orchestration_config = {
 ## 📈 Performance Metrics
 
 ### Processing Performance
+
 - **Token Optimization**: 40-60% reduction while preserving 95%+ cultural context
-- **Cultural Validation**: <200ms average validation time  
+- **Cultural Validation**: <200ms average validation time
 - **Workflow Coordination**: <100ms orchestration overhead
 - **Real-time Monitoring**: <50ms WebSocket update latency
 - **Memory Efficiency**: 35% improvement through intelligent caching
 
 ### Cultural Compliance Metrics
+
 - **Islamic Compliance**: 100% adherence with continuous monitoring
 - **Cultural Appropriateness**: 95%+ maintained across all workflows
 - **Iraqi Dialect Recognition**: 85%+ accuracy with pattern matching
@@ -274,6 +286,7 @@ orchestration_config = {
 - **RTL Processing**: 99%+ accuracy for Arabic text handling
 
 ### System Scalability
+
 - **Concurrent Workflows**: Support for 10+ parallel executions
 - **Agent Coordination**: Efficient load balancing across specialized agents
 - **Document Processing**: Handle documents up to 100MB with segmentation
@@ -296,20 +309,20 @@ class EnhancedIraqiAIChatSystem(ChatSystemCore):
             cultural_compliance_threshold=95.0,
             islamic_compliance_threshold=100.0
         )
-        
+
     async def process_complex_request(self, user_request: str) -> dict:
         """Process complex requests using multi-agent orchestration"""
-        
+
         # Analyze request complexity
         complexity_analysis = await self.orchestrator.analyze_request_complexity(
             user_request, cultural_context="iraqi_professional"
         )
-        
+
         if complexity_analysis.requires_orchestration:
             # Use multi-agent orchestration
             workflow_result = await self.orchestrator.execute_workflow({
                 "request": user_request,
-                "cultural_context": "iraqi_professional", 
+                "cultural_context": "iraqi_professional",
                 "islamic_compliance": True,
                 "dialect_processing": "iraqi_arabic"
             })
@@ -332,10 +345,10 @@ class IraqiGovernmentSystemIntegration:
             islamic_compliance_threshold=100.0,
             enable_ministry_protocols=True
         )
-    
+
     async def process_ministry_document(self, document_content: str) -> dict:
         """Process ministry documents with full cultural compliance"""
-        
+
         workflow_result = await self.orchestrator.execute_workflow({
             "workflow_type": "ministry_document_processing",
             "document": document_content,
@@ -347,12 +360,12 @@ class IraqiGovernmentSystemIntegration:
             },
             "agents": [
                 "iraqi_cultural_validator",
-                "islamic_compliance_checker", 
+                "islamic_compliance_checker",
                 "ministry_protocol_validator",
                 "arabic_document_processor"
             ]
         })
-        
+
         return {
             "processing_result": workflow_result.output,
             "cultural_compliance_score": workflow_result.cultural_compliance_score,
@@ -371,7 +384,7 @@ python -m pytest tests/ -v --cultural-validation --islamic-compliance
 
 # Run specific component tests
 python -m pytest tests/test_orchestration_engine.py -v
-python -m pytest tests/test_cultural_validation.py -v  
+python -m pytest tests/test_cultural_validation.py -v
 python -m pytest tests/test_arabic_processing.py -v
 python -m pytest tests/test_progress_tracking.py -v
 ```
@@ -385,7 +398,7 @@ from multi_agent_orchestration_extracted.tests import CulturalComplianceTestSuit
 test_suite = CulturalComplianceTestSuite()
 results = await test_suite.run_full_compliance_test({
     "islamic_compliance": True,
-    "cultural_appropriateness": True, 
+    "cultural_appropriateness": True,
     "iraqi_dialect_recognition": True,
     "professional_domains": ["legal", "medical", "educational"]
 })
@@ -400,13 +413,13 @@ assert results.islamic_compliance_score >= 100.0
 
 ```yaml
 # docker-compose.yml for production deployment
-version: '3.8'
+version: "3.8"
 services:
   iraqi-ai-orchestrator:
     build: .
     ports:
-      - "8765:8765"  # WebSocket monitoring
-      - "8080:8080"  # API endpoint
+      - "8765:8765" # WebSocket monitoring
+      - "8080:8080" # API endpoint
     environment:
       - CULTURAL_COMPLIANCE_THRESHOLD=95.0
       - ISLAMIC_COMPLIANCE_THRESHOLD=100.0
@@ -448,13 +461,13 @@ export CULTURAL_CONTEXT_RESERVE_TOKENS=10000
 async def process_with_cultural_validation(content: str) -> dict:
     """
     Process content with comprehensive cultural validation
-    
+
     Cultural Requirements:
     - Islamic compliance validation (100%)
     - Cultural appropriateness check (95%+)
     - Iraqi dialect recognition when applicable
     - Professional terminology preservation
-    
+
     Performance Requirements:
     - Cultural validation: <200ms
     - Processing overhead: <100ms
@@ -466,14 +479,16 @@ async def process_with_cultural_validation(content: str) -> dict:
 ## 📚 Documentation
 
 ### API Reference
+
 - **Orchestration Engine API**: Complete workflow coordination reference
 - **Memory Manager API**: Cultural context preservation documentation
 - **Document Segmentation API**: Arabic processing capabilities reference
 - **Progress Tracker API**: Real-time monitoring integration guide
 
 ### Cultural Integration Guides
+
 - **Islamic Compliance Guide**: Ensuring 100% Islamic adherence
-- **Iraqi Cultural Patterns**: Recognition and preservation strategies  
+- **Iraqi Cultural Patterns**: Recognition and preservation strategies
 - **Professional Domain Support**: Legal/medical/educational integration
 - **Arabic RTL Processing**: Right-to-left text handling best practices
 
@@ -500,4 +515,4 @@ For technical support, cultural validation questions, or integration assistance:
 
 **Developed with deep respect for Iraqi culture and Islamic principles** 🇮🇶 ☪️
 
-*This system embodies the highest standards of cultural sensitivity, Islamic compliance, and technical excellence for the Iraqi professional community.*
+_This system embodies the highest standards of cultural sensitivity, Islamic compliance, and technical excellence for the Iraqi professional community._

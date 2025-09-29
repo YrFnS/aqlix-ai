@@ -1,9 +1,6 @@
 {
   "permissions": {
-    "allow": [
-      "WebSearch",
-      "WebFetch(domain:raw.githubusercontent.com)"
-    ],
+    "allow": ["WebSearch", "WebFetch(domain:raw.githubusercontent.com)"],
     "deny": [],
     "ask": []
   }

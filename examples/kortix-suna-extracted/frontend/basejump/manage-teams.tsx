@@ -4,17 +4,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../ui/card';
-import { createClient } from '@/lib/supabase/server';
-import { Table, TableRow, TableBody, TableCell } from '../ui/table';
-import { Button } from '../ui/button';
-import Link from 'next/link';
-import { Badge } from '../ui/badge';
+} from "../ui/card";
+import { createClient } from "@/lib/supabase/server";
+import { Table, TableRow, TableBody, TableCell } from "../ui/table";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { Badge } from "../ui/badge";
 
 export default async function ManageTeams() {
   const supabaseClient = await createClient();
 
-  const { data } = await supabaseClient.rpc('get_accounts');
+  const { data } = await supabaseClient.rpc("get_accounts");
 
   const teams: any[] = data?.filter(
     (team: any) => team.personal_account === false,
@@ -43,16 +43,16 @@ export default async function ManageTeams() {
                     </span>
                     <Badge
                       variant={
-                        team.account_role === 'owner' ? 'default' : 'outline'
+                        team.account_role === "owner" ? "default" : "outline"
                       }
                       className={
-                        team.account_role === 'owner'
-                          ? 'bg-primary hover:bg-primary/90'
-                          : 'text-foreground/70 border-subtle dark:border-white/10'
+                        team.account_role === "owner"
+                          ? "bg-primary hover:bg-primary/90"
+                          : "text-foreground/70 border-subtle dark:border-white/10"
                       }
                     >
                       {team.is_primary_owner
-                        ? 'Primary Owner'
+                        ? "Primary Owner"
                         : team.account_role}
                     </Badge>
                   </div>

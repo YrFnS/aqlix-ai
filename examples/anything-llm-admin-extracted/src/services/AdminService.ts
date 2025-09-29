@@ -1,7 +1,7 @@
 /**
  * Iraqi AI Admin Service
  * Comprehensive admin management with Iraqi cultural compliance
- * 
+ *
  * Features:
  * - Arabic-first user management
  * - Cultural compliance monitoring
@@ -26,13 +26,13 @@ import {
   SecurityEvent,
   AdminRole,
   IraqiProfessionalRole,
-  ComplianceLevel
+  ComplianceLevel,
 } from '../types/admin';
 
 class IraqiAdminService {
   private baseUrl: string;
   private apiKey: string;
-  
+
   constructor(baseUrl: string, apiKey: string) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
@@ -41,13 +41,19 @@ class IraqiAdminService {
   // ======================
   // Authentication
   // ======================
-  
-  async authenticateAdmin(email: string, password: string, twoFactorCode?: string): Promise<ApiResponse<{
-    user: IraqiUser;
-    token: string;
-    refreshToken: string;
-    permissions: string[];
-  }>> {
+
+  async authenticateAdmin(
+    email: string,
+    password: string,
+    twoFactorCode?: string
+  ): Promise<
+    ApiResponse<{
+      user: IraqiUser;
+      token: string;
+      refreshToken: string;
+      permissions: string[];
+    }>
+  > {
     const response = await fetch(`${this.baseUrl}/admin/auth/login`, {
       method: 'POST',
       headers: {
@@ -57,10 +63,10 @@ class IraqiAdminService {
         email,
         password,
         twoFactorCode,
-        culturalContext: 'iraqi_admin'
-      })
+        culturalContext: 'iraqi_admin',
+      }),
     });
-    
+
     return response.json();
   }
 
@@ -70,9 +76,9 @@ class IraqiAdminService {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ refreshToken })
+      body: JSON.stringify({ refreshToken }),
     });
-    
+
     return response.json();
   }
 
@@ -90,11 +96,11 @@ class IraqiAdminService {
       page: page.toString(),
       pageSize: pageSize.toString(),
       ...filters,
-      ...(sort && { sortField: sort.field, sortDirection: sort.direction })
+      ...(sort && { sortField: sort.field, sortDirection: sort.direction }),
     });
 
     const response = await fetch(`${this.baseUrl}/admin/users?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -102,7 +108,7 @@ class IraqiAdminService {
 
   async getUser(userId: string): Promise<ApiResponse<IraqiUser>> {
     const response = await fetch(`${this.baseUrl}/admin/users/${userId}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -111,7 +117,7 @@ class IraqiAdminService {
   async createUser(userData: Partial<IraqiUser>): Promise<ApiResponse<IraqiUser>> {
     // Validate cultural compliance before creation
     const culturalValidation = await this.validateCulturalCompliance(userData);
-    
+
     const response = await fetch(`${this.baseUrl}/admin/users`, {
       method: 'POST',
       headers: {
@@ -122,8 +128,8 @@ class IraqiAdminService {
         ...userData,
         culturalValidation,
         createdBy: 'admin_system',
-        createdAt: new Date().toISOString()
-      })
+        createdAt: new Date().toISOString(),
+      }),
     });
 
     // Log user creation for audit trail
@@ -131,7 +137,7 @@ class IraqiAdminService {
       userEmail: userData.email,
       role: userData.role,
       professionalRole: userData.professionalRole,
-      complianceLevel: culturalValidation.complianceLevel
+      complianceLevel: culturalValidation.complianceLevel,
     });
 
     return response.json();
@@ -140,7 +146,7 @@ class IraqiAdminService {
   async updateUser(userId: string, updates: Partial<IraqiUser>): Promise<ApiResponse<IraqiUser>> {
     // Validate cultural compliance for updates
     const culturalValidation = await this.validateCulturalCompliance(updates);
-    
+
     const response = await fetch(`${this.baseUrl}/admin/users/${userId}`, {
       method: 'PUT',
       headers: {
@@ -150,14 +156,14 @@ class IraqiAdminService {
       body: JSON.stringify({
         ...updates,
         culturalValidation,
-        updatedAt: new Date().toISOString()
-      })
+        updatedAt: new Date().toISOString(),
+      }),
     });
 
     // Log user update for audit trail
     await this.logAdminAction('update_user', 'user', userId, {
       changes: updates,
-      complianceImpact: culturalValidation.complianceLevel
+      complianceImpact: culturalValidation.complianceLevel,
     });
 
     return response.json();
@@ -170,16 +176,16 @@ class IraqiAdminService {
         ...this.getAuthHeaders(),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         reason,
-        deletedAt: new Date().toISOString()
-      })
+        deletedAt: new Date().toISOString(),
+      }),
     });
 
     // Log user deletion for audit trail
     await this.logAdminAction('delete_user', 'user', userId, {
       reason,
-      severity: 'high'
+      severity: 'high',
     });
 
     return response.json();
@@ -194,8 +200,8 @@ class IraqiAdminService {
   }
 
   private async updateUserStatus(
-    userId: string, 
-    status: 'active' | 'inactive' | 'suspended', 
+    userId: string,
+    status: 'active' | 'inactive' | 'suspended',
     reason?: string
   ): Promise<ApiResponse<IraqiUser>> {
     const response = await fetch(`${this.baseUrl}/admin/users/${userId}/status`, {
@@ -204,18 +210,18 @@ class IraqiAdminService {
         ...this.getAuthHeaders(),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         status,
         reason,
-        updatedAt: new Date().toISOString()
-      })
+        updatedAt: new Date().toISOString(),
+      }),
     });
 
     // Log status change for audit trail
     await this.logAdminAction('update_user_status', 'user', userId, {
       newStatus: status,
       reason,
-      severity: status === 'suspended' ? 'high' : 'medium'
+      severity: status === 'suspended' ? 'high' : 'medium',
     });
 
     return response.json();
@@ -235,11 +241,11 @@ class IraqiAdminService {
       page: page.toString(),
       pageSize: pageSize.toString(),
       ...filters,
-      ...(sort && { sortField: sort.field, sortDirection: sort.direction })
+      ...(sort && { sortField: sort.field, sortDirection: sort.direction }),
     });
 
     const response = await fetch(`${this.baseUrl}/admin/organizations?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -247,13 +253,15 @@ class IraqiAdminService {
 
   async getOrganization(organizationId: string): Promise<ApiResponse<IraqiOrganization>> {
     const response = await fetch(`${this.baseUrl}/admin/organizations/${organizationId}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
   }
 
-  async createOrganization(orgData: Partial<IraqiOrganization>): Promise<ApiResponse<IraqiOrganization>> {
+  async createOrganization(
+    orgData: Partial<IraqiOrganization>
+  ): Promise<ApiResponse<IraqiOrganization>> {
     // Validate Iraqi business registration if provided
     if (orgData.registrationNumber) {
       await this.validateBusinessRegistration(orgData.registrationNumber);
@@ -271,23 +279,23 @@ class IraqiAdminService {
         compliance: {
           islamicCompliance: 85, // Default compliance score
           culturalAppropriateness: 90,
-          overallScore: 87.5
-        }
-      })
+          overallScore: 87.5,
+        },
+      }),
     });
 
     // Log organization creation
     await this.logAdminAction('create_organization', 'organization', orgData.id, {
       organizationName: orgData.name,
       type: orgData.type,
-      governorate: orgData.governorateCode
+      governorate: orgData.governorateCode,
     });
 
     return response.json();
   }
 
   async updateOrganization(
-    organizationId: string, 
+    organizationId: string,
     updates: Partial<IraqiOrganization>
   ): Promise<ApiResponse<IraqiOrganization>> {
     const response = await fetch(`${this.baseUrl}/admin/organizations/${organizationId}`, {
@@ -298,13 +306,13 @@ class IraqiAdminService {
       },
       body: JSON.stringify({
         ...updates,
-        updatedAt: new Date().toISOString()
-      })
+        updatedAt: new Date().toISOString(),
+      }),
     });
 
     // Log organization update
     await this.logAdminAction('update_organization', 'organization', organizationId, {
-      changes: updates
+      changes: updates,
     });
 
     return response.json();
@@ -318,7 +326,7 @@ class IraqiAdminService {
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<SystemMetrics>> {
     const response = await fetch(`${this.baseUrl}/admin/metrics/system?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -328,7 +336,7 @@ class IraqiAdminService {
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<UserMetrics>> {
     const response = await fetch(`${this.baseUrl}/admin/metrics/users?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -337,9 +345,12 @@ class IraqiAdminService {
   async getOrganizationMetrics(
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<OrganizationMetrics>> {
-    const response = await fetch(`${this.baseUrl}/admin/metrics/organizations?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
-    });
+    const response = await fetch(
+      `${this.baseUrl}/admin/metrics/organizations?timeRange=${timeRange}`,
+      {
+        headers: this.getAuthHeaders(),
+      }
+    );
 
     return response.json();
   }
@@ -347,9 +358,12 @@ class IraqiAdminService {
   async getComplianceMetrics(
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<ComplianceMetrics>> {
-    const response = await fetch(`${this.baseUrl}/admin/metrics/compliance?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
-    });
+    const response = await fetch(
+      `${this.baseUrl}/admin/metrics/compliance?timeRange=${timeRange}`,
+      {
+        headers: this.getAuthHeaders(),
+      }
+    );
 
     return response.json();
   }
@@ -357,9 +371,12 @@ class IraqiAdminService {
   async getPerformanceMetrics(
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<PerformanceMetrics>> {
-    const response = await fetch(`${this.baseUrl}/admin/metrics/performance?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
-    });
+    const response = await fetch(
+      `${this.baseUrl}/admin/metrics/performance?timeRange=${timeRange}`,
+      {
+        headers: this.getAuthHeaders(),
+      }
+    );
 
     return response.json();
   }
@@ -368,7 +385,7 @@ class IraqiAdminService {
     timeRange: '24h' | '7d' | '30d' | '90d' = '24h'
   ): Promise<ApiResponse<CulturalMetrics>> {
     const response = await fetch(`${this.baseUrl}/admin/metrics/cultural?timeRange=${timeRange}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -393,8 +410,8 @@ class IraqiAdminService {
       body: JSON.stringify({
         data,
         validationType: 'comprehensive',
-        culturalContext: 'iraqi_professional'
-      })
+        culturalContext: 'iraqi_professional',
+      }),
     });
 
     return response.json();
@@ -404,28 +421,30 @@ class IraqiAdminService {
     organizationId?: string,
     userId?: string,
     timeRange: '7d' | '30d' | '90d' = '30d'
-  ): Promise<ApiResponse<{
-    overallScore: number;
-    islamicCompliance: number;
-    culturalAppropriateness: number;
-    professionalStandards: number;
-    violations: Array<{
-      type: string;
-      severity: 'low' | 'medium' | 'high' | 'critical';
-      description: string;
-      timestamp: string;
-      resolved: boolean;
-    }>;
-    recommendations: string[];
-  }>> {
+  ): Promise<
+    ApiResponse<{
+      overallScore: number;
+      islamicCompliance: number;
+      culturalAppropriateness: number;
+      professionalStandards: number;
+      violations: Array<{
+        type: string;
+        severity: 'low' | 'medium' | 'high' | 'critical';
+        description: string;
+        timestamp: string;
+        resolved: boolean;
+      }>;
+      recommendations: string[];
+    }>
+  > {
     const params = new URLSearchParams({
       timeRange,
       ...(organizationId && { organizationId }),
-      ...(userId && { userId })
+      ...(userId && { userId }),
     });
 
     const response = await fetch(`${this.baseUrl}/admin/compliance/report?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -439,22 +458,25 @@ class IraqiAdminService {
       resolvedBy: string;
     }
   ): Promise<ApiResponse<boolean>> {
-    const response = await fetch(`${this.baseUrl}/admin/compliance/violations/${violationId}/resolve`, {
-      method: 'POST',
-      headers: {
-        ...this.getAuthHeaders(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...resolution,
-        resolvedAt: new Date().toISOString()
-      })
-    });
+    const response = await fetch(
+      `${this.baseUrl}/admin/compliance/violations/${violationId}/resolve`,
+      {
+        method: 'POST',
+        headers: {
+          ...this.getAuthHeaders(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...resolution,
+          resolvedAt: new Date().toISOString(),
+        }),
+      }
+    );
 
     // Log compliance resolution
     await this.logAdminAction('resolve_compliance_violation', 'compliance_violation', violationId, {
       resolution,
-      severity: 'medium'
+      severity: 'medium',
     });
 
     return response.json();
@@ -481,12 +503,12 @@ class IraqiAdminService {
       ...filters,
       ...(filters?.dateRange && {
         startDate: filters.dateRange.start,
-        endDate: filters.dateRange.end
-      })
+        endDate: filters.dateRange.end,
+      }),
     });
 
     const response = await fetch(`${this.baseUrl}/admin/audit/logs?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -506,11 +528,11 @@ class IraqiAdminService {
     const params = new URLSearchParams({
       page: page.toString(),
       pageSize: pageSize.toString(),
-      ...filters
+      ...filters,
     });
 
     const response = await fetch(`${this.baseUrl}/admin/security/events?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -535,8 +557,8 @@ class IraqiAdminService {
           resourceId,
           additionalData,
           timestamp: new Date().toISOString(),
-          severity: additionalData?.severity || 'info'
-        })
+          severity: additionalData?.severity || 'info',
+        }),
       });
     } catch (error) {
       console.error('Failed to log admin action:', error);
@@ -563,8 +585,8 @@ class IraqiAdminService {
         role,
         professionalRole,
         reason,
-        assignedAt: new Date().toISOString()
-      })
+        assignedAt: new Date().toISOString(),
+      }),
     });
 
     // Log role assignment
@@ -572,7 +594,7 @@ class IraqiAdminService {
       role,
       professionalRole,
       reason,
-      severity: 'high'
+      severity: 'high',
     });
 
     return response.json();
@@ -580,7 +602,7 @@ class IraqiAdminService {
 
   async getUserPermissions(userId: string): Promise<ApiResponse<string[]>> {
     const response = await fetch(`${this.baseUrl}/admin/users/${userId}/permissions`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();
@@ -600,8 +622,8 @@ class IraqiAdminService {
       },
       body: JSON.stringify({
         registrationNumber,
-        country: 'IQ'
-      })
+        country: 'IQ',
+      }),
     });
 
     const result = await response.json();
@@ -614,10 +636,10 @@ class IraqiAdminService {
 
   private getAuthHeaders(): Record<string, string> {
     return {
-      'Authorization': `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.apiKey}`,
       'X-Admin-Client': 'iraqi-ai-admin',
-      'Accept': 'application/json',
-      'Accept-Language': 'ar,en'
+      Accept: 'application/json',
+      'Accept-Language': 'ar,en',
     };
   }
 
@@ -633,11 +655,11 @@ class IraqiAdminService {
     const params = new URLSearchParams({
       format,
       includePersonalData: includePersonalData.toString(),
-      ...filters
+      ...filters,
     });
 
     const response = await fetch(`${this.baseUrl}/admin/reports/users?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.blob();
@@ -651,11 +673,11 @@ class IraqiAdminService {
     const params = new URLSearchParams({
       format,
       timeRange,
-      ...(organizationId && { organizationId })
+      ...(organizationId && { organizationId }),
     });
 
     const response = await fetch(`${this.baseUrl}/admin/reports/compliance?${params}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.blob();
@@ -681,33 +703,35 @@ class IraqiAdminService {
       },
       body: JSON.stringify({
         ...settings,
-        updatedAt: new Date().toISOString()
-      })
+        updatedAt: new Date().toISOString(),
+      }),
     });
 
     // Log system settings update
     await this.logAdminAction('update_system_settings', 'system', undefined, {
       changes: settings,
-      severity: 'critical'
+      severity: 'critical',
     });
 
     return response.json();
   }
 
-  async getSystemHealth(): Promise<ApiResponse<{
-    status: 'healthy' | 'degraded' | 'critical';
-    uptime: number;
-    services: Array<{
-      name: string;
-      status: 'online' | 'offline' | 'degraded';
-      responseTime: number;
-      lastCheck: string;
-    }>;
-    culturalComplianceStatus: 'operational' | 'degraded' | 'offline';
-    arabicProcessingStatus: 'operational' | 'degraded' | 'offline';
-  }>> {
+  async getSystemHealth(): Promise<
+    ApiResponse<{
+      status: 'healthy' | 'degraded' | 'critical';
+      uptime: number;
+      services: Array<{
+        name: string;
+        status: 'online' | 'offline' | 'degraded';
+        responseTime: number;
+        lastCheck: string;
+      }>;
+      culturalComplianceStatus: 'operational' | 'degraded' | 'offline';
+      arabicProcessingStatus: 'operational' | 'degraded' | 'offline';
+    }>
+  > {
     const response = await fetch(`${this.baseUrl}/admin/system/health`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
 
     return response.json();

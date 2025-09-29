@@ -2,7 +2,7 @@
  * Iraqi AI Code Generator
  * AI-powered code generation with cultural intelligence and Arabic support
  * Enhanced from Onlook's AI tools for Iraqi government deployment
- * 
+ *
  * Key Features:
  * - Culturally appropriate React component generation
  * - Arabic RTL-first code creation
@@ -11,12 +11,12 @@
  * - Bilingual code documentation and comments
  */
 
-import { tool } from 'ai';
-import { z } from 'zod';
+import { tool } from "ai";
+import { z } from "zod";
 
 export interface IraqiCodeGenerationConfig {
-  ministry?: 'health' | 'education' | 'interior' | 'justice';
-  language: 'arabic' | 'english' | 'bilingual';
+  ministry?: "health" | "education" | "interior" | "justice";
+  language: "arabic" | "english" | "bilingual";
   islamicCompliance: boolean;
   rtlSupport: boolean;
   governmentSecurity: boolean;
@@ -24,11 +24,19 @@ export interface IraqiCodeGenerationConfig {
 }
 
 export interface CodeGenerationContext {
-  projectType: 'government-service' | 'ministry-dashboard' | 'citizen-portal' | 'administrative-tool';
-  targetAudience: 'citizens' | 'government-employees' | 'ministry-officials' | 'mixed';
-  securityLevel: 'public' | 'internal' | 'confidential' | 'restricted';
+  projectType:
+    | "government-service"
+    | "ministry-dashboard"
+    | "citizen-portal"
+    | "administrative-tool";
+  targetAudience:
+    | "citizens"
+    | "government-employees"
+    | "ministry-officials"
+    | "mixed";
+  securityLevel: "public" | "internal" | "confidential" | "restricted";
   arabicContent: boolean;
-  accessibilityLevel: 'basic' | 'enhanced' | 'wcag-aa' | 'government-standard';
+  accessibilityLevel: "basic" | "enhanced" | "wcag-aa" | "government-standard";
 }
 
 export interface CulturalCodeValidation {
@@ -65,21 +73,21 @@ export interface GeneratedCodeResult {
 
 export class IraqiCodeGenerator {
   private config: IraqiCodeGenerationConfig;
-  
+
   // Islamic design principles and color schemes
   private readonly ISLAMIC_COLOR_PALETTE = {
-    primary: ['emerald-600', 'teal-700', 'blue-600', 'indigo-700'],
-    secondary: ['slate-600', 'gray-700', 'zinc-600'],
-    accent: ['green-500', 'sky-500', 'purple-600'],
-    neutral: ['gray-50', 'slate-100', 'zinc-100'],
+    primary: ["emerald-600", "teal-700", "blue-600", "indigo-700"],
+    secondary: ["slate-600", "gray-700", "zinc-600"],
+    accent: ["green-500", "sky-500", "purple-600"],
+    neutral: ["gray-50", "slate-100", "zinc-100"],
     semantic: {
-      success: 'emerald-600',
-      warning: 'amber-600',
-      error: 'red-600', // Allowed for error states
-      info: 'blue-600'
-    }
+      success: "emerald-600",
+      warning: "amber-600",
+      error: "red-600", // Allowed for error states
+      info: "blue-600",
+    },
   };
-  
+
   // Ministry-specific component templates
   private readonly MINISTRY_TEMPLATES = {
     health: {
@@ -105,7 +113,7 @@ const PatientForm = () => {
       {/* Form fields */}
     </form>
   );
-};`
+};`,
     },
     education: {
       dashboard: `// وزارة التربية - نظام إدارة المدارس
@@ -130,7 +138,7 @@ const ElectronicGradebook = () => {
       {/* Gradebook content */}
     </div>
   );
-};`
+};`,
     },
     interior: {
       citizenServices: `// وزارة الداخلية - خدمات المواطنين
@@ -155,7 +163,7 @@ const IDVerification = () => {
       {/* ID verification form */}
     </div>
   );
-};`
+};`,
     },
     justice: {
       caseManagement: `// وزارة العدل - إدارة القضايا
@@ -180,27 +188,27 @@ const CourtSchedule = () => {
       {/* Court schedule */}
     </div>
   );
-};`
-    }
+};`,
+    },
   };
-  
+
   // Cultural validation patterns
   private readonly CULTURAL_PATTERNS = {
     islamicCompliant: {
       colors: this.ISLAMIC_COLOR_PALETTE,
-      forbiddenContent: ['gambling', 'alcohol', 'inappropriate-imagery'],
-      requiredElements: ['prayer-time-awareness', 'halal-compliance']
+      forbiddenContent: ["gambling", "alcohol", "inappropriate-imagery"],
+      requiredElements: ["prayer-time-awareness", "halal-compliance"],
     },
     arabicSupport: {
-      rtlClasses: ['dir-rtl', 'text-right', 'font-arabic'],
-      typographyClasses: ['leading-relaxed', 'tracking-wide'],
-      layoutClasses: ['flex-row-reverse', 'justify-end']
+      rtlClasses: ["dir-rtl", "text-right", "font-arabic"],
+      typographyClasses: ["leading-relaxed", "tracking-wide"],
+      layoutClasses: ["flex-row-reverse", "justify-end"],
     },
     governmentStandards: {
-      accessibility: ['aria-label', 'role', 'tabindex'],
-      security: ['data-secure', 'csrf-token'],
-      audit: ['data-action', 'data-user', 'data-timestamp']
-    }
+      accessibility: ["aria-label", "role", "tabindex"],
+      security: ["data-secure", "csrf-token"],
+      audit: ["data-action", "data-user", "data-timestamp"],
+    },
   };
 
   constructor(config: IraqiCodeGenerationConfig) {
@@ -212,83 +220,97 @@ const CourtSchedule = () => {
    */
   async generateComponent(
     componentName: string,
-    componentType: 'form' | 'dashboard' | 'navigation' | 'card' | 'modal' | 'table',
+    componentType:
+      | "form"
+      | "dashboard"
+      | "navigation"
+      | "card"
+      | "modal"
+      | "table",
     requirements: string,
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): Promise<GeneratedCodeResult> {
     try {
       // Analyze requirements for cultural elements
-      const culturalRequirements = this.analyzeCulturalRequirements(requirements, context);
-      
+      const culturalRequirements = this.analyzeCulturalRequirements(
+        requirements,
+        context,
+      );
+
       // Generate base component code
       let generatedCode = await this.generateBaseComponent(
-        componentName, 
-        componentType, 
-        requirements, 
+        componentName,
+        componentType,
+        requirements,
         context,
-        culturalRequirements
+        culturalRequirements,
       );
-      
+
       // Apply cultural enhancements
-      generatedCode = this.applyCulturalEnhancements(generatedCode, culturalRequirements);
-      
+      generatedCode = this.applyCulturalEnhancements(
+        generatedCode,
+        culturalRequirements,
+      );
+
       // Add ministry-specific customizations
       if (this.config.ministry) {
-        generatedCode = this.applyMinistryCustomizations(generatedCode, this.config.ministry);
+        generatedCode = this.applyMinistryCustomizations(
+          generatedCode,
+          this.config.ministry,
+        );
       }
-      
+
       // Apply Islamic design compliance
       if (this.config.islamicCompliance) {
         generatedCode = this.applyIslamicDesignPrinciples(generatedCode);
       }
-      
+
       // Add Arabic RTL support
       if (this.config.rtlSupport) {
         generatedCode = this.applyRTLSupport(generatedCode);
       }
-      
+
       // Add security enhancements for government deployment
       if (this.config.governmentSecurity) {
         generatedCode = this.applyGovernmentSecurity(generatedCode, context);
       }
-      
+
       // Generate comprehensive explanation
       const explanation = this.generateExplanation(
-        componentName, 
-        componentType, 
-        culturalRequirements
+        componentName,
+        componentType,
+        culturalRequirements,
       );
-      
+
       // Validate cultural compliance
       const culturalValidation = await this.validateCulturalCompliance(
-        generatedCode, 
-        context
+        generatedCode,
+        context,
       );
-      
+
       // Generate improvement suggestions
       const improvements = this.generateImprovementSuggestions(
-        generatedCode, 
-        culturalValidation
+        generatedCode,
+        culturalValidation,
       );
-      
+
       // Generate testing instructions
       const testingInstructions = this.generateTestingInstructions(
-        componentName, 
-        context
+        componentName,
+        context,
       );
-      
+
       // Generate deployment notes
       const deploymentNotes = this.generateDeploymentNotes(context);
-      
+
       return {
         code: generatedCode,
         explanation,
         culturalValidation,
         improvements,
         testingInstructions,
-        deploymentNotes
+        deploymentNotes,
       };
-      
     } catch (error) {
       throw new Error(`Code generation failed: ${error.message}`);
     }
@@ -298,36 +320,36 @@ const CourtSchedule = () => {
    * Generate ministry-specific dashboard component
    */
   async generateMinistryDashboard(
-    ministry: 'health' | 'education' | 'interior' | 'justice',
+    ministry: "health" | "education" | "interior" | "justice",
     features: string[],
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): Promise<GeneratedCodeResult> {
     const dashboardTemplate = this.MINISTRY_TEMPLATES[ministry]?.dashboard;
-    
+
     if (!dashboardTemplate) {
       throw new Error(`No template available for ${ministry} ministry`);
     }
-    
+
     // Customize template based on features
     let customizedCode = this.customizeDashboardTemplate(
-      dashboardTemplate, 
-      features, 
-      context
+      dashboardTemplate,
+      features,
+      context,
     );
-    
+
     // Apply full cultural validation
     const culturalValidation = await this.validateCulturalCompliance(
-      customizedCode, 
-      context
+      customizedCode,
+      context,
     );
-    
+
     return {
       code: customizedCode,
       explanation: `وزارة ${this.getMinistryNameInArabic(ministry)} - لوحة تحكم مخصصة مع الدعم الكامل للغة العربية والامتثال الإسلامي`,
       culturalValidation,
       improvements: this.generateMinistrySpecificImprovements(ministry),
       testingInstructions: this.generateMinistryTestingInstructions(ministry),
-      deploymentNotes: this.generateMinistryDeploymentNotes(ministry)
+      deploymentNotes: this.generateMinistryDeploymentNotes(ministry),
     };
   }
 
@@ -338,25 +360,28 @@ const CourtSchedule = () => {
     formName: string,
     fields: Array<{
       name: string;
-      type: 'text' | 'email' | 'phone' | 'textarea' | 'select' | 'date';
+      type: "text" | "email" | "phone" | "textarea" | "select" | "date";
       labelArabic: string;
       labelEnglish?: string;
       required?: boolean;
       validation?: string;
     }>,
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): Promise<GeneratedCodeResult> {
     const formCode = this.generateArabicFormCode(formName, fields, context);
-    
-    const culturalValidation = await this.validateCulturalCompliance(formCode, context);
-    
+
+    const culturalValidation = await this.validateCulturalCompliance(
+      formCode,
+      context,
+    );
+
     return {
       code: formCode,
       explanation: `نموذج عربي متكامل مع دعم الـ RTL والتحقق من البيانات والامتثال الثقافي`,
       culturalValidation,
       improvements: this.generateFormImprovements(fields),
       testingInstructions: this.generateFormTestingInstructions(formName),
-      deploymentNotes: this.generateFormDeploymentNotes()
+      deploymentNotes: this.generateFormDeploymentNotes(),
     };
   }
 
@@ -365,15 +390,15 @@ const CourtSchedule = () => {
    */
 
   private analyzeCulturalRequirements(
-    requirements: string, 
-    context: CodeGenerationContext
+    requirements: string,
+    context: CodeGenerationContext,
   ): any {
     return {
-      needsRTL: context.arabicContent || this.config.language !== 'english',
+      needsRTL: context.arabicContent || this.config.language !== "english",
       needsMinistryBranding: !!this.config.ministry,
       needsIslamicCompliance: this.config.islamicCompliance,
-      needsGovernmentSecurity: context.securityLevel !== 'public',
-      needsAccessibility: context.accessibilityLevel !== 'basic'
+      needsGovernmentSecurity: context.securityLevel !== "public",
+      needsAccessibility: context.accessibilityLevel !== "basic",
     };
   }
 
@@ -382,18 +407,18 @@ const CourtSchedule = () => {
     componentType: string,
     requirements: string,
     context: CodeGenerationContext,
-    culturalRequirements: any
+    culturalRequirements: any,
   ): Promise<string> {
     // Generate basic component structure
     const baseTemplate = this.getBaseComponentTemplate(componentType);
-    
+
     // Customize based on requirements
     return this.customizeComponentTemplate(
-      baseTemplate, 
-      componentName, 
-      requirements, 
+      baseTemplate,
+      componentName,
+      requirements,
       context,
-      culturalRequirements
+      culturalRequirements,
     );
   }
 
@@ -505,7 +530,7 @@ const ComponentName = ({ data, columns }) => {
   );
 };
 
-export default ComponentName;`
+export default ComponentName;`,
     };
 
     return templates[componentType] || templates.card;
@@ -516,117 +541,120 @@ export default ComponentName;`
     componentName: string,
     requirements: string,
     context: CodeGenerationContext,
-    culturalRequirements: any
+    culturalRequirements: any,
   ): string {
     let customized = template.replace(/ComponentName/g, componentName);
-    
+
     // Add ministry-specific styling if needed
     if (this.config.ministry) {
       customized = this.addMinistryBranding(customized, this.config.ministry);
     }
-    
+
     // Add security attributes for government deployment
-    if (context.securityLevel !== 'public') {
+    if (context.securityLevel !== "public") {
       customized = this.addSecurityAttributes(customized, context);
     }
-    
+
     return customized;
   }
 
   private applyCulturalEnhancements(code: string, requirements: any): string {
     let enhanced = code;
-    
+
     // Add RTL support
     if (requirements.needsRTL) {
       enhanced = enhanced.replace(/className="/g, 'className="dir-rtl ');
     }
-    
+
     // Add Arabic font classes
-    if (this.config.language !== 'english') {
-      enhanced = enhanced.replace(/font-arabic/g, 'font-arabic text-right');
+    if (this.config.language !== "english") {
+      enhanced = enhanced.replace(/font-arabic/g, "font-arabic text-right");
     }
-    
+
     return enhanced;
   }
 
   private applyMinistryCustomizations(code: string, ministry: string): string {
     const ministryColors = {
-      health: 'emerald',
-      education: 'blue',
-      interior: 'slate',
-      justice: 'purple'
+      health: "emerald",
+      education: "blue",
+      interior: "slate",
+      justice: "purple",
     };
-    
-    const color = ministryColors[ministry] || 'blue';
+
+    const color = ministryColors[ministry] || "blue";
     return code.replace(/bg-blue-700/g, `bg-${color}-700`);
   }
 
   private applyIslamicDesignPrinciples(code: string): string {
     // Ensure modest and appropriate design
     return code
-      .replace(/bg-red-/g, 'bg-blue-')
-      .replace(/border-red-/g, 'border-blue-')
-      .replace(/text-red-/g, 'text-blue-');
+      .replace(/bg-red-/g, "bg-blue-")
+      .replace(/border-red-/g, "border-blue-")
+      .replace(/text-red-/g, "text-blue-");
   }
 
   private applyRTLSupport(code: string): string {
     return code
-      .replace(/text-left/g, 'text-right')
-      .replace(/justify-start/g, 'justify-end')
-      .replace(/flex-row/g, 'flex-row-reverse');
+      .replace(/text-left/g, "text-right")
+      .replace(/justify-start/g, "justify-end")
+      .replace(/flex-row/g, "flex-row-reverse");
   }
 
-  private applyGovernmentSecurity(code: string, context: CodeGenerationContext): string {
+  private applyGovernmentSecurity(
+    code: string,
+    context: CodeGenerationContext,
+  ): string {
     // Add security attributes
     let secured = code;
-    
+
     // Add CSRF protection
     secured = secured.replace(/<form/g, '<form data-csrf-protected="true"');
-    
+
     // Add audit trail attributes
     secured = secured.replace(/onClick=/g, 'data-audit="true" onClick=');
-    
+
     return secured;
   }
 
   private generateExplanation(
     componentName: string,
     componentType: string,
-    requirements: any
+    requirements: any,
   ): string {
     const typeNames = {
-      form: 'نموذج',
-      dashboard: 'لوحة تحكم',
-      navigation: 'شريط التنقل',
-      card: 'بطاقة',
-      modal: 'نافذة منبثقة',
-      table: 'جدول'
+      form: "نموذج",
+      dashboard: "لوحة تحكم",
+      navigation: "شريط التنقل",
+      card: "بطاقة",
+      modal: "نافذة منبثقة",
+      table: "جدول",
     };
-    
-    return `تم إنشاء ${typeNames[componentType] || 'مكون'} "${componentName}" مع الدعم الكامل للغة العربية والتوجه من اليمين إلى اليسار (RTL). يتضمن المكون المعايير الثقافية والإسلامية المطلوبة للنشر الحكومي العراقي.`;
+
+    return `تم إنشاء ${typeNames[componentType] || "مكون"} "${componentName}" مع الدعم الكامل للغة العربية والتوجه من اليمين إلى اليسار (RTL). يتضمن المكون المعايير الثقافية والإسلامية المطلوبة للنشر الحكومي العراقي.`;
   }
 
   private async validateCulturalCompliance(
     code: string,
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): Promise<CulturalCodeValidation> {
     // Validate Islamic compliance
     const islamicCompliance = this.validateIslamicCompliance(code);
-    
+
     // Validate Arabic support
     const arabicSupport = this.validateArabicSupport(code);
-    
+
     // Validate ministry compliance
     const ministryCompliance = this.validateMinistryCompliance(code);
-    
+
     // Validate security compliance
     const securityCompliance = this.validateSecurityCompliance(code, context);
-    
+
     return {
       islamicCompliance,
       arabicSupport,
       ministryCompliance,
-      securityCompliance
+      securityCompliance,
     };
   }
 
@@ -634,30 +662,32 @@ export default ComponentName;`
     const issues: string[] = [];
     const recommendations: string[] = [];
     let score = 1.0;
-    
+
     // Check for non-compliant content
-    const forbiddenTerms = ['gambling', 'alcohol', 'casino'];
+    const forbiddenTerms = ["gambling", "alcohol", "casino"];
     for (const term of forbiddenTerms) {
       if (code.includes(term)) {
         issues.push(`Contains forbidden content: ${term}`);
         score -= 0.3;
       }
     }
-    
+
     // Check for appropriate colors
-    if (code.includes('bg-red-') && !code.includes('error')) {
-      recommendations.push('Consider using blue or green instead of red for non-error states');
+    if (code.includes("bg-red-") && !code.includes("error")) {
+      recommendations.push(
+        "Consider using blue or green instead of red for non-error states",
+      );
       score -= 0.1;
     }
-    
+
     return { score: Math.max(0, score), issues, recommendations };
   }
 
   private validateArabicSupport(code: string): any {
     return {
       rtlLayout: code.includes('dir="rtl"'),
-      arabicTypography: code.includes('font-arabic'),
-      bilingualSupport: this.config.language === 'bilingual'
+      arabicTypography: code.includes("font-arabic"),
+      bilingualSupport: this.config.language === "bilingual",
     };
   }
 
@@ -665,59 +695,62 @@ export default ComponentName;`
     return {
       designTokens: !!this.config.ministry,
       colorScheme: true, // Would check against ministry color scheme
-      componentStandards: true // Would validate against ministry component standards
+      componentStandards: true, // Would validate against ministry component standards
     };
   }
 
-  private validateSecurityCompliance(code: string, context: CodeGenerationContext): any {
+  private validateSecurityCompliance(
+    code: string,
+    context: CodeGenerationContext,
+  ): any {
     return {
-      dataProtection: context.securityLevel !== 'public',
-      accessControl: code.includes('data-secure'),
-      auditTrail: code.includes('data-audit')
+      dataProtection: context.securityLevel !== "public",
+      accessControl: code.includes("data-secure"),
+      auditTrail: code.includes("data-audit"),
     };
   }
 
   private generateImprovementSuggestions(
     code: string,
-    validation: CulturalCodeValidation
+    validation: CulturalCodeValidation,
   ): string[] {
     const suggestions: string[] = [];
-    
+
     if (validation.islamicCompliance.score < 0.9) {
-      suggestions.push('تحسين الامتثال للمبادئ الإسلامية في التصميم');
+      suggestions.push("تحسين الامتثال للمبادئ الإسلامية في التصميم");
     }
-    
+
     if (!validation.arabicSupport.rtlLayout) {
-      suggestions.push('إضافة دعم كامل للتوجه من اليمين إلى اليسار');
+      suggestions.push("إضافة دعم كامل للتوجه من اليمين إلى اليسار");
     }
-    
+
     if (!validation.securityCompliance.auditTrail) {
-      suggestions.push('إضافة سجل تدقيق للأعمال الحكومية');
+      suggestions.push("إضافة سجل تدقيق للأعمال الحكومية");
     }
-    
+
     return suggestions;
   }
 
   private generateTestingInstructions(
     componentName: string,
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): string[] {
     return [
       `اختبار عرض المكون ${componentName} في المتصفحات المختلفة`,
-      'التحقق من دعم اللغة العربية والتوجه RTL',
-      'اختبار إمكانية الوصول (Accessibility) حسب معايير WCAG',
-      'التحقق من الامتثال الثقافي والإسلامي',
-      'اختبار الأمان على مستوى المؤسسة الحكومية'
+      "التحقق من دعم اللغة العربية والتوجه RTL",
+      "اختبار إمكانية الوصول (Accessibility) حسب معايير WCAG",
+      "التحقق من الامتثال الثقافي والإسلامي",
+      "اختبار الأمان على مستوى المؤسسة الحكومية",
     ];
   }
 
   private generateDeploymentNotes(context: CodeGenerationContext): string[] {
     return [
-      'التأكد من تكوين خادم الويب لدعم RTL',
-      'تحميل خطوط اللغة العربية المطلوبة',
-      'تفعيل إعدادات الأمان الحكومية',
-      'التحقق من شهادات SSL للنشر الآمن',
-      'مراجعة متطلبات الامتثال الوزاري'
+      "التأكد من تكوين خادم الويب لدعم RTL",
+      "تحميل خطوط اللغة العربية المطلوبة",
+      "تفعيل إعدادات الأمان الحكومية",
+      "التحقق من شهادات SSL للنشر الآمن",
+      "مراجعة متطلبات الامتثال الوزاري",
     ];
   }
 
@@ -726,10 +759,12 @@ export default ComponentName;`
   private generateArabicFormCode(
     formName: string,
     fields: any[],
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): string {
-    const fieldsCode = fields.map(field => this.generateFieldCode(field)).join('\n');
-    
+    const fieldsCode = fields
+      .map((field) => this.generateFieldCode(field))
+      .join("\n");
+
     return `
 import React, { useState } from 'react';
 
@@ -755,12 +790,12 @@ const ${formName} = () => {
       onSubmit={handleSubmit}
       className="max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg space-y-6"
       dir="rtl"
-      data-ministry="${this.config.ministry || 'general'}"
+      data-ministry="${this.config.ministry || "general"}"
       data-islamic-compliant="true"
     >
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-gray-800 font-arabic">
-          ${formName.replace(/([A-Z])/g, ' $1').trim()}
+          ${formName.replace(/([A-Z])/g, " $1").trim()}
         </h2>
         <p className="text-gray-600 mt-2 font-arabic">
           يرجى ملء جميع الحقول المطلوبة
@@ -791,14 +826,15 @@ export default ${formName};`;
   }
 
   private generateFieldCode(field: any): string {
-    const baseClasses = "w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-arabic text-right";
-    
+    const baseClasses =
+      "w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-arabic text-right";
+
     switch (field.type) {
-      case 'textarea':
+      case "textarea":
         return `
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2 font-arabic text-right">
-          ${field.labelArabic} ${field.required ? '*' : ''}
+          ${field.labelArabic} ${field.required ? "*" : ""}
         </label>
         <textarea
           name="${field.name}"
@@ -809,12 +845,12 @@ export default ${formName};`;
           onChange={(e) => handleInputChange('${field.name}', e.target.value)}
         />
       </div>`;
-      
-      case 'select':
+
+      case "select":
         return `
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2 font-arabic text-right">
-          ${field.labelArabic} ${field.required ? '*' : ''}
+          ${field.labelArabic} ${field.required ? "*" : ""}
         </label>
         <select
           name="${field.name}"
@@ -826,12 +862,12 @@ export default ${formName};`;
           {/* Add options here */}
         </select>
       </div>`;
-      
+
       default:
         return `
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2 font-arabic text-right">
-          ${field.labelArabic} ${field.required ? '*' : ''}
+          ${field.labelArabic} ${field.required ? "*" : ""}
         </label>
         <input
           type="${field.type}"
@@ -847,28 +883,34 @@ export default ${formName};`;
 
   private addMinistryBranding(code: string, ministry: string): string {
     const ministryNames = {
-      health: 'وزارة الصحة',
-      education: 'وزارة التربية',
-      interior: 'وزارة الداخلية',
-      justice: 'وزارة العدل'
+      health: "وزارة الصحة",
+      education: "وزارة التربية",
+      interior: "وزارة الداخلية",
+      justice: "وزارة العدل",
     };
-    
-    return code.replace(/لوحة التحكم/g, `${ministryNames[ministry]} - لوحة التحكم`);
+
+    return code.replace(
+      /لوحة التحكم/g,
+      `${ministryNames[ministry]} - لوحة التحكم`,
+    );
   }
 
-  private addSecurityAttributes(code: string, context: CodeGenerationContext): string {
+  private addSecurityAttributes(
+    code: string,
+    context: CodeGenerationContext,
+  ): string {
     return code.replace(
       /<form/g,
-      `<form data-security-level="${context.securityLevel}" data-audit-required="true"`
+      `<form data-security-level="${context.securityLevel}" data-audit-required="true"`,
     );
   }
 
   private getMinistryNameInArabic(ministry: string): string {
     const names = {
-      health: 'الصحة',
-      education: 'التربية',
-      interior: 'الداخلية',
-      justice: 'العدل'
+      health: "الصحة",
+      education: "التربية",
+      interior: "الداخلية",
+      justice: "العدل",
     };
     return names[ministry] || ministry;
   }
@@ -876,86 +918,86 @@ export default ${formName};`;
   private generateMinistrySpecificImprovements(ministry: string): string[] {
     const improvements = {
       health: [
-        'إضافة تشفير إضافي لبيانات المرضى',
-        'تطبيق معايير HIPAA للخصوصية الطبية',
-        'إضافة تقويم طبي بأوقات الصلاة'
+        "إضافة تشفير إضافي لبيانات المرضى",
+        "تطبيق معايير HIPAA للخصوصية الطبية",
+        "إضافة تقويم طبي بأوقات الصلاة",
       ],
       education: [
-        'تطبيق معايير حماية بيانات الطلاب',
-        'إضافة نظام تقييم متوافق مع المنهج العراقي',
-        'دعم التقويم الهجري والميلادي'
+        "تطبيق معايير حماية بيانات الطلاب",
+        "إضافة نظام تقييم متوافق مع المنهج العراقي",
+        "دعم التقويم الهجري والميلادي",
       ],
       interior: [
-        'تطبيق أعلى مستويات الأمان لبيانات المواطنين',
-        'دعم التحقق البيومتري',
-        'تكامل مع قواعد بيانات الهوية الوطنية'
+        "تطبيق أعلى مستويات الأمان لبيانات المواطنين",
+        "دعم التحقق البيومتري",
+        "تكامل مع قواعد بيانات الهوية الوطنية",
       ],
       justice: [
-        'تطبيق معايير الأمان القضائي',
-        'دعم التوقيع الإلكتروني القانوني',
-        'توافق مع الأحكام الشرعية والقانونية'
-      ]
+        "تطبيق معايير الأمان القضائي",
+        "دعم التوقيع الإلكتروني القانوني",
+        "توافق مع الأحكام الشرعية والقانونية",
+      ],
     };
-    
+
     return improvements[ministry] || [];
   }
 
   private generateMinistryTestingInstructions(ministry: string): string[] {
     return [
       `اختبار متطلبات وزارة ${this.getMinistryNameInArabic(ministry)} الخاصة`,
-      'التحقق من معايير الأمان الوزارية',
-      'اختبار التكامل مع الأنظمة الحكومية الأخرى'
+      "التحقق من معايير الأمان الوزارية",
+      "اختبار التكامل مع الأنظمة الحكومية الأخرى",
     ];
   }
 
   private generateMinistryDeploymentNotes(ministry: string): string[] {
     return [
       `الحصول على موافقة وزارة ${this.getMinistryNameInArabic(ministry)}`,
-      'تكوين الشبكة الحكومية الآمنة',
-      'التدريب على النظام للموظفين المختصين'
+      "تكوين الشبكة الحكومية الآمنة",
+      "التدريب على النظام للموظفين المختصين",
     ];
   }
 
   private generateFormImprovements(fields: any[]): string[] {
     return [
-      'إضافة التحقق من صحة البيانات (Validation)',
-      'تطبيق التشفير للحقول الحساسة',
-      'إضافة دعم الحفظ التلقائي'
+      "إضافة التحقق من صحة البيانات (Validation)",
+      "تطبيق التشفير للحقول الحساسة",
+      "إضافة دعم الحفظ التلقائي",
     ];
   }
 
   private generateFormTestingInstructions(formName: string): string[] {
     return [
       `اختبار جميع حقول نموذج ${formName}`,
-      'التحقق من رسائل الخطأ باللغة العربية',
-      'اختبار إرسال النموذج والتحقق من البيانات'
+      "التحقق من رسائل الخطأ باللغة العربية",
+      "اختبار إرسال النموذج والتحقق من البيانات",
     ];
   }
 
   private generateFormDeploymentNotes(): string[] {
     return [
-      'تكوين قاعدة البيانات لحفظ بيانات النموذج',
-      'تفعيل التشفير للبيانات الحساسة',
-      'إعداد نسخ احتياطية دورية'
+      "تكوين قاعدة البيانات لحفظ بيانات النموذج",
+      "تفعيل التشفير للبيانات الحساسة",
+      "إعداد نسخ احتياطية دورية",
     ];
   }
 
   private customizeDashboardTemplate(
     template: string,
     features: string[],
-    context: CodeGenerationContext
+    context: CodeGenerationContext,
   ): string {
     // Add features to dashboard template
     let customized = template;
-    
-    features.forEach(feature => {
+
+    features.forEach((feature) => {
       const featureComponent = this.generateFeatureComponent(feature);
       customized = customized.replace(
-        '{/* Dashboard content */}',
-        `{/* Dashboard content */}\n        ${featureComponent}`
+        "{/* Dashboard content */}",
+        `{/* Dashboard content */}\n        ${featureComponent}`,
       );
     });
-    
+
     return customized;
   }
 

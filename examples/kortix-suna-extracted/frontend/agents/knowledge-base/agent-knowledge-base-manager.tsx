@@ -1,20 +1,32 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Clock, 
+import React, { useState, useRef, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Clock,
   MoreVertical,
   AlertCircle,
   FileText,
@@ -33,15 +45,15 @@ import {
   File as FileIcon,
   BookOpen,
   PenTool,
-  X
-} from 'lucide-react';
-import { 
+  X,
+} from "lucide-react";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,14 +63,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { 
+} from "@/components/ui/dialog";
+import {
   useAgentKnowledgeBaseEntries,
   useCreateAgentKnowledgeBaseEntry,
   useUpdateKnowledgeBaseEntry,
@@ -66,34 +78,39 @@ import {
   useUploadAgentFiles,
   useCloneGitRepository,
   useAgentProcessingJobs,
-} from '@/hooks/react-query/knowledge-base/use-knowledge-base-queries';
-import { cn, truncateString } from '@/lib/utils';
-import { CreateKnowledgeBaseEntryRequest, KnowledgeBaseEntry, UpdateKnowledgeBaseEntryRequest, ProcessingJob } from '@/hooks/react-query/knowledge-base/types';
-import { toast } from 'sonner';
-import JSZip from 'jszip';
+} from "@/hooks/react-query/knowledge-base/use-knowledge-base-queries";
+import { cn, truncateString } from "@/lib/utils";
+import {
+  CreateKnowledgeBaseEntryRequest,
+  KnowledgeBaseEntry,
+  UpdateKnowledgeBaseEntryRequest,
+  ProcessingJob,
+} from "@/hooks/react-query/knowledge-base/types";
+import { toast } from "sonner";
+import JSZip from "jszip";
 
-import { 
-  SiJavascript, 
-  SiTypescript, 
-  SiPython, 
-  SiReact, 
-  SiHtml5, 
-  SiCss3, 
+import {
+  SiJavascript,
+  SiTypescript,
+  SiPython,
+  SiReact,
+  SiHtml5,
+  SiCss3,
   SiJson,
   SiMarkdown,
   SiYaml,
-  SiXml
-} from 'react-icons/si';
-import { 
-  FaFilePdf, 
-  FaFileWord, 
-  FaFileExcel, 
-  FaFileImage, 
-  FaFileArchive, 
+  SiXml,
+} from "react-icons/si";
+import {
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFileImage,
+  FaFileArchive,
   FaFileCode,
   FaFileAlt,
-  FaFile
-} from 'react-icons/fa';
+  FaFile,
+} from "react-icons/fa";
 
 interface AgentKnowledgeBaseManagerProps {
   agentId: string;
@@ -108,7 +125,7 @@ interface EditDialogData {
 interface UploadedFile {
   file: File;
   id: string;
-  status: 'pending' | 'uploading' | 'success' | 'error' | 'extracting';
+  status: "pending" | "uploading" | "success" | "error" | "extracting";
   error?: string;
   isFromZip?: boolean;
   zipParentId?: string;
@@ -116,67 +133,82 @@ interface UploadedFile {
 }
 
 const USAGE_CONTEXT_OPTIONS = [
-  { 
-    value: 'always', 
-    label: 'Always Active', 
+  {
+    value: "always",
+    label: "Always Active",
     icon: Globe,
-    color: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'
+    color:
+      "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800",
   },
 ] as const;
 
 const getFileTypeIcon = (filename: string, mimeType?: string) => {
-  const extension = filename.split('.').pop()?.toLowerCase();
+  const extension = filename.split(".").pop()?.toLowerCase();
   switch (extension) {
-    case 'js':
+    case "js":
       return SiJavascript;
-    case 'ts':
+    case "ts":
       return SiTypescript;
-    case 'jsx':
-    case 'tsx':
+    case "jsx":
+    case "tsx":
       return SiReact;
-    case 'py':
+    case "py":
       return SiPython;
-    case 'html':
+    case "html":
       return SiHtml5;
-    case 'css':
+    case "css":
       return SiCss3;
-    case 'json':
+    case "json":
       return SiJson;
-    case 'md':
+    case "md":
       return SiMarkdown;
-    case 'yaml':
-    case 'yml':
+    case "yaml":
+    case "yml":
       return SiYaml;
-    case 'xml':
+    case "xml":
       return SiXml;
-    case 'pdf':
+    case "pdf":
       return FaFilePdf;
-    case 'doc':
-    case 'docx':
+    case "doc":
+    case "docx":
       return FaFileWord;
-    case 'xls':
-    case 'xlsx':
-    case 'csv':
+    case "xls":
+    case "xlsx":
+    case "csv":
       return FaFileExcel;
-    case 'png':
-    case 'jpg':
-    case 'jpeg':
-    case 'gif':
-    case 'svg':
-    case 'webp':
-    case 'ico':
+    case "png":
+    case "jpg":
+    case "jpeg":
+    case "gif":
+    case "svg":
+    case "webp":
+    case "ico":
       return FaFileImage;
-    case 'zip':
-    case 'rar':
-    case '7z':
-    case 'tar':
-    case 'gz':
+    case "zip":
+    case "rar":
+    case "7z":
+    case "tar":
+    case "gz":
       return FaFileArchive;
     default:
-      if (['java', 'cpp', 'c', 'cs', 'php', 'rb', 'go', 'rs', 'swift', 'kt', 'scala'].includes(extension || '')) {
+      if (
+        [
+          "java",
+          "cpp",
+          "c",
+          "cs",
+          "php",
+          "rb",
+          "go",
+          "rs",
+          "swift",
+          "kt",
+          "scala",
+        ].includes(extension || "")
+      ) {
         return FaFileCode;
       }
-      if (['txt', 'rtf', 'log'].includes(extension || '')) {
+      if (["txt", "rtf", "log"].includes(extension || "")) {
         return FaFileAlt;
       }
       return FaFile;
@@ -184,66 +216,66 @@ const getFileTypeIcon = (filename: string, mimeType?: string) => {
 };
 
 const getFileIconColor = (filename: string) => {
-  const extension = filename.split('.').pop()?.toLowerCase();
-  
+  const extension = filename.split(".").pop()?.toLowerCase();
+
   switch (extension) {
-    case 'js':
-      return 'text-yellow-500';
-    case 'ts':
-    case 'tsx':
-      return 'text-blue-500';
-    case 'jsx':
-      return 'text-cyan-500';
-    case 'py':
-      return 'text-green-600';
-    case 'html':
-      return 'text-orange-600';
-    case 'css':
-      return 'text-blue-600';
-    case 'json':
-      return 'text-yellow-600';
-    case 'md':
-      return 'text-gray-700 dark:text-gray-300';
-    case 'yaml':
-    case 'yml':
-      return 'text-red-500';
-    case 'xml':
-      return 'text-orange-500';
-    case 'pdf':
-      return 'text-red-600';
-    case 'doc':
-    case 'docx':
-      return 'text-blue-700';
-    case 'xls':
-    case 'xlsx':
-    case 'csv':
-      return 'text-green-700';
-    case 'png':
-    case 'jpg':
-    case 'jpeg':
-    case 'gif':
-    case 'svg':
-    case 'webp':
-    case 'ico':
-      return 'text-purple-500';
-    case 'zip':
-    case 'rar':
-    case '7z':
-    case 'tar':
-    case 'gz':
-      return 'text-yellow-700';
+    case "js":
+      return "text-yellow-500";
+    case "ts":
+    case "tsx":
+      return "text-blue-500";
+    case "jsx":
+      return "text-cyan-500";
+    case "py":
+      return "text-green-600";
+    case "html":
+      return "text-orange-600";
+    case "css":
+      return "text-blue-600";
+    case "json":
+      return "text-yellow-600";
+    case "md":
+      return "text-gray-700 dark:text-gray-300";
+    case "yaml":
+    case "yml":
+      return "text-red-500";
+    case "xml":
+      return "text-orange-500";
+    case "pdf":
+      return "text-red-600";
+    case "doc":
+    case "docx":
+      return "text-blue-700";
+    case "xls":
+    case "xlsx":
+    case "csv":
+      return "text-green-700";
+    case "png":
+    case "jpg":
+    case "jpeg":
+    case "gif":
+    case "svg":
+    case "webp":
+    case "ico":
+      return "text-purple-500";
+    case "zip":
+    case "rar":
+    case "7z":
+    case "tar":
+    case "gz":
+      return "text-yellow-700";
     default:
-      return 'text-gray-500';
+      return "text-gray-500";
   }
 };
 
 const getSourceIcon = (sourceType: string, filename?: string) => {
   switch (sourceType) {
-    case 'file':
+    case "file":
       return filename ? getFileTypeIcon(filename) : FileIcon;
-    case 'git_repo':
+    case "git_repo":
       return GitBranch;
-    case 'zip_extracted':
+    case "zip_extracted":
       return Archive;
     default:
       return FileText;
@@ -290,24 +322,35 @@ const AgentKnowledgeBaseSkeleton = () => (
   </div>
 );
 
-export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledgeBaseManagerProps) => {
-  const [editDialog, setEditDialog] = useState<EditDialogData>({ isOpen: false });
+export const AgentKnowledgeBaseManager = ({
+  agentId,
+  agentName,
+}: AgentKnowledgeBaseManagerProps) => {
+  const [editDialog, setEditDialog] = useState<EditDialogData>({
+    isOpen: false,
+  });
   const [deleteEntryId, setDeleteEntryId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [addDialogTab, setAddDialogTab] = useState<'manual' | 'files' | 'repo'>('manual');
+  const [addDialogTab, setAddDialogTab] = useState<"manual" | "files" | "repo">(
+    "manual",
+  );
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [formData, setFormData] = useState<CreateKnowledgeBaseEntryRequest>({
-    name: '',
-    description: '',
-    content: '',
-    usage_context: 'always',
+    name: "",
+    description: "",
+    content: "",
+    usage_context: "always",
   });
 
-  const { data: knowledgeBase, isLoading, error } = useAgentKnowledgeBaseEntries(agentId);
+  const {
+    data: knowledgeBase,
+    isLoading,
+    error,
+  } = useAgentKnowledgeBaseEntries(agentId);
   const { data: processingJobsData } = useAgentProcessingJobs(agentId);
   const createMutation = useCreateAgentKnowledgeBaseEntry();
   const updateMutation = useUpdateKnowledgeBaseEntry();
@@ -318,9 +361,9 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   }, []);
@@ -329,20 +372,20 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files);
     }
   }, []);
 
-  const handleOpenAddDialog = (tab: 'manual' | 'files' | 'repo' = 'manual') => {
+  const handleOpenAddDialog = (tab: "manual" | "files" | "repo" = "manual") => {
     setAddDialogTab(tab);
     setAddDialogOpen(true);
     setFormData({
-      name: '',
-      description: '',
-      content: '',
-      usage_context: 'always',
+      name: "",
+      description: "",
+      content: "",
+      usage_context: "always",
     });
     setUploadedFiles([]);
   };
@@ -350,7 +393,7 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
   const handleOpenEditDialog = (entry: KnowledgeBaseEntry) => {
     setFormData({
       name: entry.name,
-      description: entry.description || '',
+      description: entry.description || "",
       content: entry.content,
       usage_context: entry.usage_context,
     });
@@ -361,17 +404,17 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
     setEditDialog({ isOpen: false });
     setAddDialogOpen(false);
     setFormData({
-      name: '',
-      description: '',
-      content: '',
-      usage_context: 'always',
+      name: "",
+      description: "",
+      content: "",
+      usage_context: "always",
     });
     setUploadedFiles([]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim() || !formData.content.trim()) {
       return;
     }
@@ -379,22 +422,37 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
     try {
       if (editDialog.entry) {
         const updateData: UpdateKnowledgeBaseEntryRequest = {
-          name: formData.name !== editDialog.entry.name ? formData.name : undefined,
-          description: formData.description !== editDialog.entry.description ? formData.description : undefined,
-          content: formData.content !== editDialog.entry.content ? formData.content : undefined,
-          usage_context: formData.usage_context !== editDialog.entry.usage_context ? formData.usage_context : undefined,
+          name:
+            formData.name !== editDialog.entry.name ? formData.name : undefined,
+          description:
+            formData.description !== editDialog.entry.description
+              ? formData.description
+              : undefined,
+          content:
+            formData.content !== editDialog.entry.content
+              ? formData.content
+              : undefined,
+          usage_context:
+            formData.usage_context !== editDialog.entry.usage_context
+              ? formData.usage_context
+              : undefined,
         };
-        const hasChanges = Object.values(updateData).some(value => value !== undefined);
+        const hasChanges = Object.values(updateData).some(
+          (value) => value !== undefined,
+        );
         if (hasChanges) {
-          await updateMutation.mutateAsync({ entryId: editDialog.entry.entry_id, data: updateData });
+          await updateMutation.mutateAsync({
+            entryId: editDialog.entry.entry_id,
+            data: updateData,
+          });
         }
       } else {
         await createMutation.mutateAsync({ agentId, data: formData });
       }
-      
+
       handleCloseDialog();
     } catch (error) {
-      console.error('Error saving agent knowledge base entry:', error);
+      console.error("Error saving agent knowledge base entry:", error);
     }
   };
 
@@ -403,7 +461,7 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
       await deleteMutation.mutateAsync(entryId);
       setDeleteEntryId(null);
     } catch (error) {
-      console.error('Error deleting agent knowledge base entry:', error);
+      console.error("Error deleting agent knowledge base entry:", error);
     }
   };
 
@@ -411,47 +469,53 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
     try {
       await updateMutation.mutateAsync({
         entryId: entry.entry_id,
-        data: { is_active: !entry.is_active }
+        data: { is_active: !entry.is_active },
       });
     } catch (error) {
-      console.error('Error toggling entry status:', error);
+      console.error("Error toggling entry status:", error);
     }
   };
 
   const extractZipFile = async (zipFile: File, zipId: string) => {
     try {
-      setUploadedFiles(prev => prev.map(f => 
-        f.id === zipId ? { ...f, status: 'extracting' } : f
-      ));
+      setUploadedFiles((prev) =>
+        prev.map((f) => (f.id === zipId ? { ...f, status: "extracting" } : f)),
+      );
 
       const zip = new JSZip();
       const zipContent = await zip.loadAsync(zipFile);
       const extractedFiles: UploadedFile[] = [];
       const rejectedFiles: string[] = [];
-      const supportedExtensions = ['.txt', '.pdf', '.docx'];
+      const supportedExtensions = [".txt", ".pdf", ".docx"];
 
       for (const [path, file] of Object.entries(zipContent.files)) {
-        if (!file.dir && !path.startsWith('__MACOSX/') && !path.includes('/.')) {
-          const fileName = path.split('/').pop() || path;
-          const fileExtension = fileName.toLowerCase().substring(fileName.lastIndexOf('.'));
-          
+        if (
+          !file.dir &&
+          !path.startsWith("__MACOSX/") &&
+          !path.includes("/.")
+        ) {
+          const fileName = path.split("/").pop() || path;
+          const fileExtension = fileName
+            .toLowerCase()
+            .substring(fileName.lastIndexOf("."));
+
           // Only process supported file formats
           if (!supportedExtensions.includes(fileExtension)) {
             rejectedFiles.push(fileName);
             continue;
           }
-          
+
           try {
-            const blob = await file.async('blob');
+            const blob = await file.async("blob");
             const extractedFile = new File([blob], fileName);
 
             extractedFiles.push({
               file: extractedFile,
               id: Math.random().toString(36).substr(2, 9),
-              status: 'pending' as const,
+              status: "pending" as const,
               isFromZip: true,
               zipParentId: zipId,
-              originalPath: path
+              originalPath: path,
             });
           } catch (error) {
             console.warn(`Failed to extract ${path}:`, error);
@@ -459,124 +523,154 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
         }
       }
 
-      setUploadedFiles(prev => [
-        ...prev.map(f => f.id === zipId ? { ...f, status: 'success' as const } : f),
-        ...extractedFiles
+      setUploadedFiles((prev) => [
+        ...prev.map((f) =>
+          f.id === zipId ? { ...f, status: "success" as const } : f,
+        ),
+        ...extractedFiles,
       ]);
 
       let message = `Extracted ${extractedFiles.length} supported files from ${zipFile.name}`;
       if (rejectedFiles.length > 0) {
-        message += `. Skipped ${rejectedFiles.length} unsupported files: ${rejectedFiles.slice(0, 5).join(', ')}${rejectedFiles.length > 5 ? '...' : ''}`;
+        message += `. Skipped ${rejectedFiles.length} unsupported files: ${rejectedFiles.slice(0, 5).join(", ")}${rejectedFiles.length > 5 ? "..." : ""}`;
       }
-      
+
       toast.success(message);
     } catch (error) {
-      console.error('Error extracting ZIP:', error);
-      setUploadedFiles(prev => prev.map(f => 
-        f.id === zipId ? { 
-          ...f, 
-          status: 'error', 
-          error: 'Failed to extract ZIP file' 
-        } : f
-      ));
-      toast.error('Failed to extract ZIP file');
+      console.error("Error extracting ZIP:", error);
+      setUploadedFiles((prev) =>
+        prev.map((f) =>
+          f.id === zipId
+            ? {
+                ...f,
+                status: "error",
+                error: "Failed to extract ZIP file",
+              }
+            : f,
+        ),
+      );
+      toast.error("Failed to extract ZIP file");
     }
   };
 
   const handleFileUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-    
-    const supportedExtensions = ['.txt', '.pdf', '.docx'];
+
+    const supportedExtensions = [".txt", ".pdf", ".docx"];
     const newFiles: UploadedFile[] = [];
     const rejectedFiles: string[] = [];
-    
+
     for (const file of Array.from(files)) {
-      const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
-      
+      const fileExtension = file.name
+        .toLowerCase()
+        .substring(file.name.lastIndexOf("."));
+
       // Allow ZIP files as they can contain supported formats
-      if (!supportedExtensions.includes(fileExtension) && fileExtension !== '.zip') {
+      if (
+        !supportedExtensions.includes(fileExtension) &&
+        fileExtension !== ".zip"
+      ) {
         rejectedFiles.push(file.name);
         continue;
       }
-      
+
       const fileId = Math.random().toString(36).substr(2, 9);
       const uploadedFile: UploadedFile = {
         file,
         id: fileId,
-        status: 'pending'
+        status: "pending",
       };
-      
+
       newFiles.push(uploadedFile);
-      
+
       // Extract ZIP files to get individual files
-      if (file.name.toLowerCase().endsWith('.zip')) {
+      if (file.name.toLowerCase().endsWith(".zip")) {
         setTimeout(() => extractZipFile(file, fileId), 100);
       }
     }
-    
+
     if (rejectedFiles.length > 0) {
-      toast.error(`Unsupported file format(s): ${rejectedFiles.join(', ')}. Only .txt, .pdf, .docx, and .zip files are supported.`);
+      toast.error(
+        `Unsupported file format(s): ${rejectedFiles.join(", ")}. Only .txt, .pdf, .docx, and .zip files are supported.`,
+      );
     }
-    
+
     if (newFiles.length > 0) {
-      setUploadedFiles(prev => [...prev, ...newFiles]);
+      setUploadedFiles((prev) => [...prev, ...newFiles]);
       if (!addDialogOpen) {
-        setAddDialogTab('files');
+        setAddDialogTab("files");
         setAddDialogOpen(true);
       }
     }
   };
 
   const uploadFiles = async () => {
-    const filesToUpload = uploadedFiles.filter(f => 
-      f.status === 'pending' && 
-      (f.isFromZip || !f.file.name.toLowerCase().endsWith('.zip'))
+    const filesToUpload = uploadedFiles.filter(
+      (f) =>
+        f.status === "pending" &&
+        (f.isFromZip || !f.file.name.toLowerCase().endsWith(".zip")),
     );
     for (const uploadedFile of filesToUpload) {
       try {
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === uploadedFile.id ? { ...f, status: 'uploading' as const } : f
-        ));
-        
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id
+              ? { ...f, status: "uploading" as const }
+              : f,
+          ),
+        );
+
         await uploadMutation.mutateAsync({ agentId, file: uploadedFile.file });
-        
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === uploadedFile.id ? { ...f, status: 'success' as const } : f
-        ));
+
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id ? { ...f, status: "success" as const } : f,
+          ),
+        );
       } catch (error) {
-        setUploadedFiles(prev => prev.map(f => 
-          f.id === uploadedFile.id ? { 
-            ...f, 
-            status: 'error' as const, 
-            error: error instanceof Error ? error.message : 'Upload failed' 
-          } : f
-        ));
+        setUploadedFiles((prev) =>
+          prev.map((f) =>
+            f.id === uploadedFile.id
+              ? {
+                  ...f,
+                  status: "error" as const,
+                  error:
+                    error instanceof Error ? error.message : "Upload failed",
+                }
+              : f,
+          ),
+        );
       }
     }
-    
+
     setTimeout(() => {
-      const nonZipFiles = uploadedFiles.filter(f => !f.file.name.toLowerCase().endsWith('.zip') || f.isFromZip);
-      if (nonZipFiles.every(f => f.status === 'success')) {
+      const nonZipFiles = uploadedFiles.filter(
+        (f) => !f.file.name.toLowerCase().endsWith(".zip") || f.isFromZip,
+      );
+      if (nonZipFiles.every((f) => f.status === "success")) {
         handleCloseDialog();
       }
     }, 1000);
   };
 
   const removeFile = (fileId: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.id !== fileId));
+    setUploadedFiles((prev) => prev.filter((f) => f.id !== fileId));
   };
 
   const getUsageContextConfig = (context: string) => {
-    return USAGE_CONTEXT_OPTIONS.find(option => option.value === context) || USAGE_CONTEXT_OPTIONS[0];
+    return (
+      USAGE_CONTEXT_OPTIONS.find((option) => option.value === context) ||
+      USAGE_CONTEXT_OPTIONS[0]
+    );
   };
 
   const getJobStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
+      case "completed":
         return CheckCircle;
-      case 'failed':
+      case "failed":
         return XCircle;
-      case 'processing':
+      case "processing":
         return RefreshCw;
       default:
         return Clock;
@@ -585,14 +679,14 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
 
   const getJobStatusColor = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'text-green-600';
-      case 'failed':
-        return 'text-red-600';
-      case 'processing':
-        return 'text-blue-600';
+      case "completed":
+        return "text-green-600";
+      case "failed":
+        return "text-red-600";
+      case "processing":
+        return "text-blue-600";
       default:
-        return 'text-yellow-600';
+        return "text-yellow-600";
     }
   };
 
@@ -605,7 +699,9 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <AlertCircle className="h-8 w-8 text-red-500 mx-auto mb-4" />
-          <p className="text-sm text-red-600 dark:text-red-400">Failed to load agent knowledge base</p>
+          <p className="text-sm text-red-600 dark:text-red-400">
+            Failed to load agent knowledge base
+          </p>
         </div>
       </div>
     );
@@ -613,14 +709,16 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
 
   const entries = knowledgeBase?.entries || [];
   const processingJobs = processingJobsData?.jobs || [];
-  const filteredEntries = entries.filter(entry => 
-    entry.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (entry.description && entry.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredEntries = entries.filter(
+    (entry) =>
+      entry.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (entry.description &&
+        entry.description.toLowerCase().includes(searchQuery.toLowerCase())),
   );
 
   return (
-    <div 
+    <div
       className="space-y-6"
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
@@ -631,7 +729,9 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
         <div className="fixed inset-0 bg-blue-500/20 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border-2 border-dashed border-blue-500">
             <Upload className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-lg font-medium text-center">Drop files here to upload</p>
+            <p className="text-lg font-medium text-center">
+              Drop files here to upload
+            </p>
             <p className="text-sm text-muted-foreground text-center mt-2">
               Supports documents, images, code files, and ZIP archives
             </p>
@@ -658,10 +758,13 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
           <div className="mx-auto w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-4 border">
             <Bot className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="text-sm font-semibold mb-2">No Agent Knowledge Entries</h3>
+          <h3 className="text-sm font-semibold mb-2">
+            No Agent Knowledge Entries
+          </h3>
           <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
-            Add knowledge entries to provide <span className="font-medium">{agentName}</span> with specialized context, 
-            guidelines, and information it should always remember.
+            Add knowledge entries to provide{" "}
+            <span className="font-medium">{agentName}</span> with specialized
+            context, guidelines, and information it should always remember.
           </p>
         </div>
       ) : (
@@ -669,22 +772,25 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
           {filteredEntries.length === 0 ? (
             <div className="text-center py-8">
               <Search className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
-              <p className="text-sm text-muted-foreground">No entries match your search</p>
+              <p className="text-sm text-muted-foreground">
+                No entries match your search
+              </p>
             </div>
           ) : (
             filteredEntries.map((entry) => {
               const contextConfig = getUsageContextConfig(entry.usage_context);
               const ContextIcon = contextConfig.icon;
-              const SourceIcon = getSourceIcon(entry.source_type || 'manual', entry.source_metadata?.filename);
-              
+              const SourceIcon = getSourceIcon(
+                entry.source_type || "manual",
+                entry.source_metadata?.filename,
+              );
+
               return (
                 <Card
                   key={entry.entry_id}
                   className={cn(
                     "group transition-all p-0",
-                    entry.is_active 
-                      ? "bg-card" 
-                      : "bg-muted/30 opacity-70"
+                    entry.is_active ? "bg-card" : "bg-muted/30 opacity-70",
                   )}
                 >
                   <CardContent className="p-4">
@@ -699,12 +805,16 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                               Disabled
                             </Badge>
                           )}
-                          {entry.source_type && entry.source_type !== 'manual' && (
-                            <Badge variant="outline" className="text-xs">
-                              {entry.source_type === 'git_repo' ? 'Git' : 
-                               entry.source_type === 'zip_extracted' ? 'ZIP' : 'File'}
-                            </Badge>
-                          )}
+                          {entry.source_type &&
+                            entry.source_type !== "manual" && (
+                              <Badge variant="outline" className="text-xs">
+                                {entry.source_type === "git_repo"
+                                  ? "Git"
+                                  : entry.source_type === "zip_extracted"
+                                    ? "ZIP"
+                                    : "File"}
+                              </Badge>
+                            )}
                         </div>
                         {entry.description && (
                           <p className="text-sm text-muted-foreground line-clamp-1">
@@ -716,7 +826,13 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                         </p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <Badge variant="outline" className={cn("text-xs gap-1", contextConfig.color)}>
+                            <Badge
+                              variant="outline"
+                              className={cn(
+                                "text-xs gap-1",
+                                contextConfig.color,
+                              )}
+                            >
                               <ContextIcon className="h-3 w-3" />
                               {contextConfig.label}
                             </Badge>
@@ -739,20 +855,24 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-36">
-                          <DropdownMenuItem onClick={() => handleOpenEditDialog(entry)}>
+                          <DropdownMenuItem
+                            onClick={() => handleOpenEditDialog(entry)}
+                          >
                             <Edit2 className="h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleToggleActive(entry)}>
+                          <DropdownMenuItem
+                            onClick={() => handleToggleActive(entry)}
+                          >
                             {entry.is_active ? (
                               <>
                                 <EyeOff className="h-4 w-4" />
@@ -766,7 +886,7 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                             )}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem 
+                          <DropdownMenuItem
                             onClick={() => setDeleteEntryId(entry.entry_id)}
                             className="text-destructive focus:bg-destructive/10 focus:text-destructive"
                           >
@@ -797,27 +917,49 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
             {processingJobs.map((job) => {
               const StatusIcon = getJobStatusIcon(job.status);
               const statusColor = getJobStatusColor(job.status);
-              
+
               return (
-                <div key={job.job_id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                <div
+                  key={job.job_id}
+                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                >
                   <div className="flex items-center gap-3">
-                    <StatusIcon className={cn("h-4 w-4", statusColor, job.status === 'processing' && 'animate-spin')} />
+                    <StatusIcon
+                      className={cn(
+                        "h-4 w-4",
+                        statusColor,
+                        job.status === "processing" && "animate-spin",
+                      )}
+                    />
                     <div>
                       <p className="text-sm font-medium">
-                        {job.job_type === 'file_upload' ? 'File Upload' :
-                         job.job_type === 'git_clone' ? 'Git Repository' : 'Processing'}
+                        {job.job_type === "file_upload"
+                          ? "File Upload"
+                          : job.job_type === "git_clone"
+                            ? "Git Repository"
+                            : "Processing"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {job.source_info.filename || job.source_info.git_url || 'Unknown source'}
+                        {job.source_info.filename ||
+                          job.source_info.git_url ||
+                          "Unknown source"}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <Badge variant={job.status === 'completed' ? 'default' : 
-                                 job.status === 'failed' ? 'destructive' : 'secondary'} className="text-xs">
+                    <Badge
+                      variant={
+                        job.status === "completed"
+                          ? "default"
+                          : job.status === "failed"
+                            ? "destructive"
+                            : "secondary"
+                      }
+                      className="text-xs"
+                    >
                       {job.status}
                     </Badge>
-                    {job.status === 'completed' && (
+                    {job.status === "completed" && (
                       <p className="text-xs text-muted-foreground mt-1">
                         {job.entries_created} entries created
                       </p>
@@ -845,9 +987,13 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
               Add Knowledge to {agentName}
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto">
-            <Tabs value={addDialogTab} onValueChange={(value) => setAddDialogTab(value as any)} className="w-full">
+            <Tabs
+              value={addDialogTab}
+              onValueChange={(value) => setAddDialogTab(value as any)}
+              className="w-full"
+            >
               <TabsList className="grid w-80 grid-cols-2">
                 <TabsTrigger value="manual" className="gap-2">
                   <PenTool className="h-4 w-4" />
@@ -867,22 +1013,39 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
               <TabsContent value="manual" className="space-y-6 mt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
+                    <Label htmlFor="name" className="text-sm font-medium">
+                      Name *
+                    </Label>
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
                       placeholder="e.g., Coding Standards, Domain Knowledge, API Guidelines"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="usage_context" className="text-sm font-medium">Usage Context</Label>
+                    <Label
+                      htmlFor="usage_context"
+                      className="text-sm font-medium"
+                    >
+                      Usage Context
+                    </Label>
                     <Select
                       value={formData.usage_context}
-                      onValueChange={(value: 'always' | 'on_request' | 'contextual') => 
-                        setFormData(prev => ({ ...prev, usage_context: value }))
+                      onValueChange={(
+                        value: "always" | "on_request" | "contextual",
+                      ) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          usage_context: value,
+                        }))
                       }
                     >
                       <SelectTrigger>
@@ -905,37 +1068,64 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="description" className="text-sm font-medium">Description</Label>
+                    <Label
+                      htmlFor="description"
+                      className="text-sm font-medium"
+                    >
+                      Description
+                    </Label>
                     <Input
                       id="description"
                       value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
                       placeholder="Brief description of this knowledge (optional)"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="content" className="text-sm font-medium">Content *</Label>
+                    <Label htmlFor="content" className="text-sm font-medium">
+                      Content *
+                    </Label>
                     <Textarea
                       id="content"
                       value={formData.content}
-                      onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          content: e.target.value,
+                        }))
+                      }
                       placeholder={`Enter the specialized knowledge that ${agentName} should know...`}
                       className="min-h-[200px] resize-y"
                       required
                     />
                     <div className="text-xs text-muted-foreground">
-                      Approximately {Math.ceil(formData.content.length / 4).toLocaleString()} tokens
+                      Approximately{" "}
+                      {Math.ceil(formData.content.length / 4).toLocaleString()}{" "}
+                      tokens
                     </div>
                   </div>
 
                   <div className="flex justify-end gap-3 pt-4 border-t">
-                    <Button type="button" variant="outline" onClick={handleCloseDialog}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCloseDialog}
+                    >
                       Cancel
                     </Button>
-                    <Button 
-                      type="submit" 
-                      disabled={!formData.name.trim() || !formData.content.trim() || createMutation.isPending}
+                    <Button
+                      type="submit"
+                      disabled={
+                        !formData.name.trim() ||
+                        !formData.content.trim() ||
+                        createMutation.isPending
+                      }
                       className="gap-2"
                     >
                       {createMutation.isPending ? (
@@ -956,10 +1146,11 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                       <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                       <h3 className="text-lg font-medium mb-2">Upload Files</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Drag and drop files here or click to browse.<br />
+                        Drag and drop files here or click to browse.
+                        <br />
                         Supports: Documents, Code, ZIP archives
                       </p>
-                      <Button 
+                      <Button
                         onClick={() => fileInputRef.current?.click()}
                         variant="outline"
                         className="gap-2"
@@ -971,108 +1162,179 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                   )}
                   {uploadedFiles.length > 0 && (
                     <div className="space-y-6">
-                      {uploadedFiles.filter(f => f.file.name.toLowerCase().endsWith('.zip') && !f.isFromZip).map((zipFile) => {
-                        const extractedFiles = uploadedFiles.filter(f => f.zipParentId === zipFile.id);
-                        return (
-                          <div key={zipFile.id} className="space-y-3">
-                            {extractedFiles.length > 0 && (
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground mb-3">
-                                  Extracted Files ({extractedFiles.length}):
-                                </p>
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                                  {extractedFiles.map((extractedFile) => {
-                                    const ExtractedFileIcon = getFileTypeIcon(extractedFile.file.name);
-                                    const iconColor = getFileIconColor(extractedFile.file.name);
-                                    return (
-                                      <div key={extractedFile.id} className="group relative p-2 pb-0 rounded-lg border bg-muted flex items-center">
-                                        <div className="flex items-center text-center space-y-2">
-                                          <ExtractedFileIcon className={cn("h-8 w-8", iconColor)} />
-                                          <div className="w-full flex flex-col items-start ml-2">
-                                            <p className="text-xs font-medium truncate" title={extractedFile.file.name}>
-                                              {extractedFile.file.name}
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                              {(extractedFile.file.size / 1024).toFixed(1)}KB
-                                            </p>
-                                          </div>
-                                          <div className="absolute top-1 right-1">
-                                            {extractedFile.status === 'uploading' && (
-                                              <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
-                                            )}
-                                            {extractedFile.status === 'success' && (
-                                              <CheckCircle className="h-3 w-3 text-green-600" />
-                                            )}
-                                            {extractedFile.status === 'error' && (
-                                              <XCircle className="h-3 w-3 text-red-600" />
-                                            )}
-                                            {extractedFile.status === 'pending' && (
-                                              <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => removeFile(extractedFile.id)}
-                                                className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      {uploadedFiles
+                        .filter(
+                          (f) =>
+                            f.file.name.toLowerCase().endsWith(".zip") &&
+                            !f.isFromZip,
+                        )
+                        .map((zipFile) => {
+                          const extractedFiles = uploadedFiles.filter(
+                            (f) => f.zipParentId === zipFile.id,
+                          );
+                          return (
+                            <div key={zipFile.id} className="space-y-3">
+                              {extractedFiles.length > 0 && (
+                                <div>
+                                  <p className="text-sm font-medium text-muted-foreground mb-3">
+                                    Extracted Files ({extractedFiles.length}):
+                                  </p>
+                                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                    {extractedFiles.map((extractedFile) => {
+                                      const ExtractedFileIcon = getFileTypeIcon(
+                                        extractedFile.file.name,
+                                      );
+                                      const iconColor = getFileIconColor(
+                                        extractedFile.file.name,
+                                      );
+                                      return (
+                                        <div
+                                          key={extractedFile.id}
+                                          className="group relative p-2 pb-0 rounded-lg border bg-muted flex items-center"
+                                        >
+                                          <div className="flex items-center text-center space-y-2">
+                                            <ExtractedFileIcon
+                                              className={cn(
+                                                "h-8 w-8",
+                                                iconColor,
+                                              )}
+                                            />
+                                            <div className="w-full flex flex-col items-start ml-2">
+                                              <p
+                                                className="text-xs font-medium truncate"
+                                                title={extractedFile.file.name}
                                               >
-                                                <X className="h-3 w-3" />
-                                              </Button>
-                                            )}
+                                                {extractedFile.file.name}
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">
+                                                {(
+                                                  extractedFile.file.size / 1024
+                                                ).toFixed(1)}
+                                                KB
+                                              </p>
+                                            </div>
+                                            <div className="absolute top-1 right-1">
+                                              {extractedFile.status ===
+                                                "uploading" && (
+                                                <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
+                                              )}
+                                              {extractedFile.status ===
+                                                "success" && (
+                                                <CheckCircle className="h-3 w-3 text-green-600" />
+                                              )}
+                                              {extractedFile.status ===
+                                                "error" && (
+                                                <XCircle className="h-3 w-3 text-red-600" />
+                                              )}
+                                              {extractedFile.status ===
+                                                "pending" && (
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() =>
+                                                    removeFile(extractedFile.id)
+                                                  }
+                                                  className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                  <X className="h-3 w-3" />
+                                                </Button>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                      {uploadedFiles.filter(f => !f.isFromZip && !f.file.name.toLowerCase().endsWith('.zip')).length > 0 && (
-                        <div className="space-y-3">
-                          <p className="text-sm font-medium text-muted-foreground">
-                            Individual Files ({uploadedFiles.filter(f => !f.isFromZip && !f.file.name.toLowerCase().endsWith('.zip')).length}):
-                          </p>
-                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                            {uploadedFiles.filter(f => !f.isFromZip && !f.file.name.toLowerCase().endsWith('.zip')).map((uploadedFile) => {
-                              const FileTypeIcon = getFileTypeIcon(uploadedFile.file.name);
-                              const iconColor = getFileIconColor(uploadedFile.file.name);
-                              return (
-                                <div key={uploadedFile.id} className="group relative p-2 pb-0 rounded-lg border bg-muted flex items-center">
-                                  <div className="flex items-center text-center space-y-2">
-                                    <FileTypeIcon className={cn("h-8 w-8", iconColor)} />
-                                    <div className="w-full flex flex-col items-start ml-2">
-                                      <p className="text-xs font-medium truncate" title={uploadedFile.file.name}>
-                                        {truncateString(uploadedFile.file.name, 20)}
-                                      </p>
-                                      <p className="text-xs text-muted-foreground">
-                                        {(uploadedFile.file.size / 1024).toFixed(1)}KB
-                                      </p>
-                                    </div>
-                                    <div className="absolute top-1 right-1">
-                                      {uploadedFile.status === 'uploading' && (
-                                        <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
-                                      )}
-                                      {uploadedFile.status === 'success' && (
-                                        <CheckCircle className="h-3 w-3 text-green-600" />
-                                      )}
-                                      {uploadedFile.status === 'error' && (
-                                        <XCircle className="h-3 w-3 text-red-600" />
-                                      )}
-                                      {uploadedFile.status === 'pending' && (
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          onClick={() => removeFile(uploadedFile.id)}
-                                          className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        >
-                                          <X className="h-3 w-3" />
-                                        </Button>
-                                      )}
-                                    </div>
+                                      );
+                                    })}
                                   </div>
                                 </div>
-                              );
-                            })}
+                              )}
+                            </div>
+                          );
+                        })}
+                      {uploadedFiles.filter(
+                        (f) =>
+                          !f.isFromZip &&
+                          !f.file.name.toLowerCase().endsWith(".zip"),
+                      ).length > 0 && (
+                        <div className="space-y-3">
+                          <p className="text-sm font-medium text-muted-foreground">
+                            Individual Files (
+                            {
+                              uploadedFiles.filter(
+                                (f) =>
+                                  !f.isFromZip &&
+                                  !f.file.name.toLowerCase().endsWith(".zip"),
+                              ).length
+                            }
+                            ):
+                          </p>
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                            {uploadedFiles
+                              .filter(
+                                (f) =>
+                                  !f.isFromZip &&
+                                  !f.file.name.toLowerCase().endsWith(".zip"),
+                              )
+                              .map((uploadedFile) => {
+                                const FileTypeIcon = getFileTypeIcon(
+                                  uploadedFile.file.name,
+                                );
+                                const iconColor = getFileIconColor(
+                                  uploadedFile.file.name,
+                                );
+                                return (
+                                  <div
+                                    key={uploadedFile.id}
+                                    className="group relative p-2 pb-0 rounded-lg border bg-muted flex items-center"
+                                  >
+                                    <div className="flex items-center text-center space-y-2">
+                                      <FileTypeIcon
+                                        className={cn("h-8 w-8", iconColor)}
+                                      />
+                                      <div className="w-full flex flex-col items-start ml-2">
+                                        <p
+                                          className="text-xs font-medium truncate"
+                                          title={uploadedFile.file.name}
+                                        >
+                                          {truncateString(
+                                            uploadedFile.file.name,
+                                            20,
+                                          )}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {(
+                                            uploadedFile.file.size / 1024
+                                          ).toFixed(1)}
+                                          KB
+                                        </p>
+                                      </div>
+                                      <div className="absolute top-1 right-1">
+                                        {uploadedFile.status ===
+                                          "uploading" && (
+                                          <Loader2 className="h-3 w-3 animate-spin text-blue-600" />
+                                        )}
+                                        {uploadedFile.status === "success" && (
+                                          <CheckCircle className="h-3 w-3 text-green-600" />
+                                        )}
+                                        {uploadedFile.status === "error" && (
+                                          <XCircle className="h-3 w-3 text-red-600" />
+                                        )}
+                                        {uploadedFile.status === "pending" && (
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                              removeFile(uploadedFile.id)
+                                            }
+                                            className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                          >
+                                            <X className="h-3 w-3" />
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
                           </div>
                         </div>
                       )}
@@ -1081,15 +1343,24 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
 
                   {uploadedFiles.length > 0 && (
                     <div className="flex justify-end gap-3 pt-4 border-t">
-                      <Button type="button" variant="outline" onClick={handleCloseDialog}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCloseDialog}
+                      >
                         Cancel
                       </Button>
-                      <Button 
+                      <Button
                         onClick={uploadFiles}
-                        disabled={uploadMutation.isPending || uploadedFiles.filter(f => 
-                          f.status === 'pending' && 
-                          (f.isFromZip || !f.file.name.toLowerCase().endsWith('.zip'))
-                        ).length === 0}
+                        disabled={
+                          uploadMutation.isPending ||
+                          uploadedFiles.filter(
+                            (f) =>
+                              f.status === "pending" &&
+                              (f.isFromZip ||
+                                !f.file.name.toLowerCase().endsWith(".zip")),
+                          ).length === 0
+                        }
                         className="gap-2"
                       >
                         {uploadMutation.isPending ? (
@@ -1097,10 +1368,16 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
                         ) : (
                           <Upload className="h-4 w-4" />
                         )}
-                        Upload Files ({uploadedFiles.filter(f => 
-                          f.status === 'pending' && 
-                          (f.isFromZip || !f.file.name.toLowerCase().endsWith('.zip'))
-                        ).length})
+                        Upload Files (
+                        {
+                          uploadedFiles.filter(
+                            (f) =>
+                              f.status === "pending" &&
+                              (f.isFromZip ||
+                                !f.file.name.toLowerCase().endsWith(".zip")),
+                          ).length
+                        }
+                        )
                       </Button>
                     </div>
                   )}
@@ -1118,26 +1395,37 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
               Edit Knowledge Entry
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto">
             <form onSubmit={handleSubmit} className="space-y-6 p-1">
               <div className="space-y-2">
-                <Label htmlFor="edit-name" className="text-sm font-medium">Name *</Label>
+                <Label htmlFor="edit-name" className="text-sm font-medium">
+                  Name *
+                </Label>
                 <Input
                   id="edit-name"
                   value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, name: e.target.value }))
+                  }
                   placeholder="e.g., Coding Standards, Domain Knowledge, API Guidelines"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-usage_context" className="text-sm font-medium">Usage Context</Label>
+                <Label
+                  htmlFor="edit-usage_context"
+                  className="text-sm font-medium"
+                >
+                  Usage Context
+                </Label>
                 <Select
                   value={formData.usage_context}
-                  onValueChange={(value: 'always' | 'on_request' | 'contextual') => 
-                    setFormData(prev => ({ ...prev, usage_context: value }))
+                  onValueChange={(
+                    value: "always" | "on_request" | "contextual",
+                  ) =>
+                    setFormData((prev) => ({ ...prev, usage_context: value }))
                   }
                 >
                   <SelectTrigger>
@@ -1160,37 +1448,64 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-description" className="text-sm font-medium">Description</Label>
+                <Label
+                  htmlFor="edit-description"
+                  className="text-sm font-medium"
+                >
+                  Description
+                </Label>
                 <Input
                   id="edit-description"
                   value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="Brief description of this knowledge (optional)"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-content" className="text-sm font-medium">Content *</Label>
+                <Label htmlFor="edit-content" className="text-sm font-medium">
+                  Content *
+                </Label>
                 <Textarea
                   id="edit-content"
                   value={formData.content}
-                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      content: e.target.value,
+                    }))
+                  }
                   placeholder={`Enter the specialized knowledge that ${agentName} should know...`}
                   className="min-h-[200px] resize-y"
                   required
                 />
                 <div className="text-xs text-muted-foreground">
-                  Approximately {Math.ceil(formData.content.length / 4).toLocaleString()} tokens
+                  Approximately{" "}
+                  {Math.ceil(formData.content.length / 4).toLocaleString()}{" "}
+                  tokens
                 </div>
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button type="button" variant="outline" onClick={handleCloseDialog}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCloseDialog}
+                >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={!formData.name.trim() || !formData.content.trim() || updateMutation.isPending}
+                <Button
+                  type="submit"
+                  disabled={
+                    !formData.name.trim() ||
+                    !formData.content.trim() ||
+                    updateMutation.isPending
+                  }
                   className="gap-2"
                 >
                   {updateMutation.isPending ? (
@@ -1205,7 +1520,10 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
           </div>
         </DialogContent>
       </Dialog>
-      <AlertDialog open={!!deleteEntryId} onOpenChange={() => setDeleteEntryId(null)}>
+      <AlertDialog
+        open={!!deleteEntryId}
+        onOpenChange={() => setDeleteEntryId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
@@ -1213,7 +1531,8 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
               Delete Knowledge Entry
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete this knowledge entry. {agentName} will no longer have access to this information.
+              This will permanently delete this knowledge entry. {agentName}{" "}
+              will no longer have access to this information.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1229,4 +1548,4 @@ export const AgentKnowledgeBaseManager = ({ agentId, agentName }: AgentKnowledge
       </AlertDialog>
     </div>
   );
-}; 
+};

@@ -23,6 +23,7 @@
 ## Core Features
 
 ### Iraqi Document Generation Capabilities
+
 - **PDF Generation**: Multi-language documents with RTL Arabic support and Iraqi government formatting
 - **Word Documents**: Professional templates with Iraqi ministry and organization formatting standards
 - **Excel Spreadsheets**: Arabic data handling with cultural number formats and Iraqi business templates
@@ -30,6 +31,7 @@
 - **Cultural Templates**: Iraqi professional forms, legal documents, medical reports, and organizational templates
 
 ### Arabic Language Support
+
 - **RTL Layout**: Proper right-to-left text flow in generated documents
 - **Arabic Typography**: Support for Arabic fonts and calligraphy styles
 - **Date Formats**: Islamic calendar alongside Gregorian dates
@@ -37,6 +39,7 @@
 - **Cultural Headers**: Iraqi professional document headers and footers
 
 ### Iraqi Professional Domain Templates
+
 - **Legal Documents**: Iraqi legal document formats with Sharia law compliance and court system standards
 - **Medical Reports**: Arabic medical terminology with Iraqi healthcare system formatting and cultural sensitivity
 - **Educational Materials**: Iraqi educational system document standards with ministry-approved formats
@@ -48,6 +51,7 @@
 ## Technical Implementation
 
 ### Core Architecture
+
 ```python
 # File Generation Service
 from typing import Dict, List, Any, Optional
@@ -66,7 +70,7 @@ class IraqiFileGenerator:
         self.template_manager = template_manager
         self.cultural_validator = cultural_validator
         self.supported_types = [DocumentType.PDF, DocumentType.WORD, DocumentType.EXCEL]
-        
+
     async def generate_document(
         self,
         content: Dict[str, Any],
@@ -78,13 +82,14 @@ class IraqiFileGenerator:
         validation_result = await self.cultural_validator.validate_content(content)
         if not validation_result.is_culturally_appropriate:
             raise CulturalComplianceError(validation_result.issues)
-            
+
         # Generate document with Iraqi enhancements
         document = await self._create_document(content, document_type, template)
         return await self._apply_cultural_formatting(document, cultural_context)
 ```
 
 ### Cultural Enhancement Features
+
 - **Islamic Compliance Check**: Validate content before document generation
 - **Arabic Text Processing**: Handle RTL text layout and typography
 - **Cultural Metadata**: Include Iraqi professional context in document properties
@@ -92,6 +97,7 @@ class IraqiFileGenerator:
 - **Date Localization**: Support for both Islamic and Gregorian calendars
 
 ### Template System
+
 - **Professional Templates**: Iraqi official document formats
 - **Professional Templates**: Domain-specific templates (legal, medical, educational)
 - **Cultural Validation**: Every template validated for Islamic compliance
@@ -101,6 +107,7 @@ class IraqiFileGenerator:
 ## Integration Points
 
 ### Database Schema Enhancement
+
 ```sql
 -- File Generation Tracking
 CREATE TABLE file_generations (
@@ -136,6 +143,7 @@ CREATE TABLE document_templates (
 ```
 
 ### API Endpoints
+
 ```python
 # FastAPI Routes
 @router.post("/generate/{document_type}")
@@ -145,7 +153,7 @@ async def generate_document(
     current_user: User = Depends(get_current_user)
 ) -> DocumentGenerationResponse:
     """Generate document with Iraqi cultural compliance"""
-    
+
 @router.get("/templates/{professional_domain}")
 async def get_templates(
     professional_domain: str,
@@ -156,6 +164,7 @@ async def get_templates(
 ```
 
 ### Frontend Integration
+
 - **Document Preview**: Real-time preview with Arabic RTL rendering
 - **Template Selection**: Professional domain-specific template chooser
 - **Cultural Validation**: Live cultural appropriateness checking
@@ -165,6 +174,7 @@ async def get_templates(
 ## Cultural Validation
 
 ### Islamic Compliance Requirements
+
 - **Content Screening**: Automated Islamic appropriateness validation
 - **Professional Ethics**: Compliance with Iraqi professional standards
 - **Cultural Sensitivity**: Respect for Iraqi cultural norms and traditions
@@ -172,6 +182,7 @@ async def get_templates(
 - **Regional Awareness**: Baghdad, Basra, Mosul, Erbil regional considerations
 
 ### Arabic Language Standards
+
 - **RTL Layout Validation**: Ensure proper right-to-left text flow
 - **Typography Standards**: Use of appropriate Arabic fonts and styles
 - **Dialect Handling**: Support for Iraqi Arabic dialect variations
@@ -181,6 +192,7 @@ async def get_templates(
 ## Security & Privacy
 
 ### Data Protection
+
 - **Temporary File Handling**: Secure temporary file creation and cleanup
 - **Content Encryption**: Encrypt sensitive document content at rest
 - **Access Control**: User-based access to generated documents
@@ -188,6 +200,7 @@ async def get_templates(
 - **Data Retention**: Configurable retention policies for generated files
 
 ### Compliance Requirements
+
 - **Iraqi Data Protection**: Compliance with Iraqi data protection regulations
 - **Professional Confidentiality**: Protection of sensitive professional information
 - **Professional Standards**: Adherence to Iraqi professional document standards
@@ -196,6 +209,7 @@ async def get_templates(
 ## Testing Strategy
 
 ### Cultural Validation Tests
+
 - **Islamic Compliance**: Test content validation against Islamic principles
 - **Arabic RTL**: Verify proper RTL layout in all generated documents
 - **Professional Standards**: Validate Iraqi professional document requirements
@@ -203,6 +217,7 @@ async def get_templates(
 - **Regional Variations**: Test support for different Iraqi regional contexts
 
 ### Integration Tests
+
 - **Document Generation**: End-to-end document creation workflow
 - **Template System**: Template selection and customization
 - **File Handling**: Upload, processing, and download workflows
@@ -212,6 +227,7 @@ async def get_templates(
 ## Success Metrics
 
 ### Functional Metrics
+
 - **Document Generation Speed**: <5 seconds for standard documents
 - **Cultural Compliance Rate**: 95%+ cultural appropriateness score
 - **Arabic RTL Accuracy**: 99%+ proper RTL layout rendering
@@ -219,6 +235,7 @@ async def get_templates(
 - **User Satisfaction**: 90%+ positive feedback on document quality
 
 ### Technical Metrics
+
 - **System Performance**: <200ms API response for template requests
 - **File Processing**: Support for documents up to 50MB
 - **Concurrent Users**: Handle 100+ simultaneous document generations
@@ -228,18 +245,21 @@ async def get_templates(
 ## Implementation Phases
 
 ### Phase 1: Basic Generation (MVP)
+
 - Core PDF generation with Arabic RTL support
 - Basic cultural validation
 - Simple template system
 - File storage and retrieval
 
 ### Phase 2: Professional Templates (Post-MVP)
+
 - Iraqi professional document templates
 - Professional domain-specific formats
 - Enhanced cultural validation
 - Batch document generation
 
 ### Phase 3: Advanced Features (Future)
+
 - AI-powered template suggestions
 - Advanced Arabic typography
 - Multi-format simultaneous generation
@@ -248,6 +268,7 @@ async def get_templates(
 ## Dependencies
 
 ### Technical Dependencies
+
 - **PDF Libraries**: ReportLab with Arabic support
 - **Word Processing**: python-docx with RTL capabilities
 - **Excel Generation**: openpyxl with Arabic number formatting
@@ -255,6 +276,7 @@ async def get_templates(
 - **Cultural Validation**: Integration with PydanticAI cultural agents
 
 ### Cultural Dependencies
+
 - **Iraqi Legal Standards**: Compliance with Iraqi legal document requirements
 - **Professional Bodies**: Alignment with Iraqi professional organization standards
 - **Professional Regulations**: Adherence to Iraqi professional document formats

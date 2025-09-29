@@ -18,6 +18,7 @@ Based on deep code analysis, this strategic plan extracts and integrates the mos
 ✅ **ALL EXTRACTION TASKS COMPLETED SUCCESSFULLY**
 
 **Major Achievements**:
+
 - ✅ **20+ Repositories Successfully Extracted and Integrated**
 - ✅ **Unified Integration System Orchestrator Created** (`examples/unified-integration-orchestrator/`)
 - ✅ **95%+ Cultural Compliance Achieved** across all integrated systems
@@ -27,6 +28,7 @@ Based on deep code analysis, this strategic plan extracts and integrates the mos
 - ✅ **Production-Ready System** with comprehensive testing suite
 
 **Key Deliverables**:
+
 1. **Iraqi AI Ecosystem Orchestrator** - 1730-line comprehensive system unifying all extractions
 2. **Cultural Intelligence Framework** - 95%+ compliance with Islamic values and Iraqi cultural norms
 3. **Arabic Processing Engine** - 99%+ RTL accuracy, 85%+ Iraqi dialect recognition
@@ -37,6 +39,7 @@ Based on deep code analysis, this strategic plan extracts and integrates the mos
 8. **Comprehensive Testing Suite** - Full test coverage for all integrated components
 
 **System Capabilities**:
+
 - **Performance**: <200ms cultural validation, <500ms complex workflows
 - **Scalability**: 10+ concurrent workflows, 50+ concurrent components
 - **Integration**: 99%+ cross-component compatibility
@@ -50,16 +53,16 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 
 ## 📊 REPOSITORY COMPARISON MATRIX
 
-| Repository | Core Value | Iraqi Enhancement Potential | Final Status | Development Savings |
-|------------|------------|----------------------------|--------------|-------------------|
-| **cline/cline** | Revolutionary 3-phase planning system + @ mentions + workflows + checkpoints | Iraqi AI planning workflows + cultural context management + comprehensive automation | ✅ **COMPLETED** | 51-80 weeks |
-| **coleam00/Archon** | Advanced RAG system with 4-stage pipeline + hybrid search | Iraqi professional knowledge base + sophisticated search | ✅ **COMPLETED** | 15-20 weeks |
-| **RooCodeInc/roo-code** | Advanced tool orchestration + MCP integration + browser automation | Iraqi tool management + cultural validation + professional workflows | ✅ **COMPLETED** | 12-16 weeks |
-| **google-gemini/gemini-cli** | Official Gemini CLI + enterprise security + tool discovery | Iraqi government services + enterprise compliance | ✅ **COMPLETED** | 10-14 weeks |
-| **bytedance/trae-agent** | Trajectory recording + sequential thinking | Iraqi AI debugging + reasoning (SELECTIVE) | ✅ **COMPLETED** | 6-8 weeks |
-| **sst/opencode** | Terminal UI + provider abstraction + permission system | Iraqi professional terminal interfaces | ✅ **COMPLETED** | 8-11 weeks |
-| **QwenLM/qwen-code** | Memory management + web search | Iraqi context persistence | ⏭️ **SKIPPED** | 0 weeks |
-| **UNIFIED ORCHESTRATOR** | Complete system integration of all 20+ repositories | Iraqi AI ecosystem unification and orchestration | ✅ **COMPLETED** | 15-25 weeks |
+| Repository                   | Core Value                                                                   | Iraqi Enhancement Potential                                                          | Final Status     | Development Savings |
+| ---------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------- | ------------------- |
+| **cline/cline**              | Revolutionary 3-phase planning system + @ mentions + workflows + checkpoints | Iraqi AI planning workflows + cultural context management + comprehensive automation | ✅ **COMPLETED** | 51-80 weeks         |
+| **coleam00/Archon**          | Advanced RAG system with 4-stage pipeline + hybrid search                    | Iraqi professional knowledge base + sophisticated search                             | ✅ **COMPLETED** | 15-20 weeks         |
+| **RooCodeInc/roo-code**      | Advanced tool orchestration + MCP integration + browser automation           | Iraqi tool management + cultural validation + professional workflows                 | ✅ **COMPLETED** | 12-16 weeks         |
+| **google-gemini/gemini-cli** | Official Gemini CLI + enterprise security + tool discovery                   | Iraqi government services + enterprise compliance                                    | ✅ **COMPLETED** | 10-14 weeks         |
+| **bytedance/trae-agent**     | Trajectory recording + sequential thinking                                   | Iraqi AI debugging + reasoning (SELECTIVE)                                           | ✅ **COMPLETED** | 6-8 weeks           |
+| **sst/opencode**             | Terminal UI + provider abstraction + permission system                       | Iraqi professional terminal interfaces                                               | ✅ **COMPLETED** | 8-11 weeks          |
+| **QwenLM/qwen-code**         | Memory management + web search                                               | Iraqi context persistence                                                            | ⏭️ **SKIPPED**   | 0 weeks             |
+| **UNIFIED ORCHESTRATOR**     | Complete system integration of all 20+ repositories                          | Iraqi AI ecosystem unification and orchestration                                     | ✅ **COMPLETED** | 15-25 weeks         |
 
 ## 🎯 DETAILED EXTRACTION PLANS
 
@@ -93,11 +96,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ## 📋 STEP-BY-STEP EXTRACTION PROGRESS
 
 ### Step 1: Deep Planning System ✅ COMPLETED
+
 **Time Savings**: 12-18 weeks
 **Status**: ✅ Completed - Iraqi Deep Planning System implemented
 **Location**: `examples/cline-extracted/deep-planning/iraqi_deep_planning_system.py`
 
 **What Was Extracted**:
+
 - ✅ 4-step planning methodology (Silent Investigation → Discussion → Plan Document → Task Creation)
 - ✅ Comprehensive codebase investigation patterns with cultural awareness
 - ✅ Question generation system enhanced for Iraqi context
@@ -105,6 +110,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Task creation with Arabic support and cultural validation
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural context investigation phase with IraqiCulturalContext dataclass
 - ✅ Islamic compliance validation throughout planning process
 - ✅ Professional domain specialization (legal, medical, education, government)
@@ -114,11 +120,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Complete placeholder framework for validation components
 
 ### Step 2: Focus Chain Task Management ✅ COMPLETED
+
 **Time Savings**: 8-12 weeks
 **Status**: ✅ Completed - Iraqi Focus Chain Task Management implemented
 **Location**: `examples/cline-extracted/focus-chain/`
 
 **What Was Extracted**:
+
 - ✅ Automatic todo list generation with real-time progress tracking enhanced for Iraqi context
 - ✅ User-editable markdown todo files with Arabic RTL support and change detection
 - ✅ Visual progress indicators and step counters with cultural compliance metrics
@@ -126,11 +134,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Integration with Plan/Act mode workflows enhanced for professional domains
 
 **Key Files Studied and Implemented**:
+
 - ✅ `/docs/features/focus-chain.mdx` - Task management patterns extracted
 - ✅ `/docs/features/plan-and-act.mdx` - Plan/Act integration patterns implemented
 - ✅ `/docs/features/checkpoints.mdx` - Checkpoint patterns integrated
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Arabic todo descriptions and RTL markdown support (`arabic_todo_processor.py`)
 - ✅ Cultural task validation and Islamic compliance checking (`cultural_task_validator.py`, `islamic_task_compliance.py`)
 
@@ -139,26 +149,31 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ### Section 2: Tool Orchestration System - **COMPLETED SECTIONS**
 
 ### Section 2A: Tool Orchestration System ✅ COMPLETED
+
 **Status**: ✅ Completed - Iraqi Tool Orchestration implemented
 **Location**: `examples/roo-code-extracted/tool-orchestration/`
 
 **What Was Extracted**:
+
 - ✅ Tool dependency graph management with enhanced Iraqi cultural validation
 - ✅ Tool execution coordination with Arabic language processing capabilities
 - ✅ Tool result aggregation with professional domain validation
 - ✅ Robust error handling and recovery mechanisms with cultural compliance
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural validation integration throughout tool orchestration workflow
 - ✅ Arabic text processing capabilities for tool inputs/outputs
 - ✅ Professional domain-specific tool execution with appropriate validators
 - ✅ Islamic compliance checking for tool operations and results
 
 ### Section 2E: CLI Command System ✅ COMPLETED
+
 **Status**: ✅ Completed - Iraqi CLI Command Management implemented  
 **Location**: `examples/roo-code-extracted/cli-command/`
 
 **What Was Extracted**:
+
 - ✅ Sophisticated command discovery and loading with Iraqi cultural integration (`iraqi_command_manager.py`)
 - ✅ Advanced command validation using longest prefix match algorithm (`iraqi_command_validator.py`)
 - ✅ Security-first command execution with comprehensive subshell detection
@@ -167,6 +182,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Command parsing with pattern extraction and risk assessment
 
 **Key Roo-Code Patterns Implemented**:
+
 - ✅ Command interface with metadata and async loading from directories
 - ✅ Global/project command override logic with Iraqi cultural configuration
 - ✅ Longest prefix match algorithm for intelligent allowlist/denylist resolution
@@ -174,6 +190,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Command pattern extraction with shell-quote parsing and breaking expression detection
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural compliance validation with domain-specific analysis (legal, medical, educational, government, engineering, religious)
 - ✅ Islamic compliance checking with halal/haram validation and automated remediation
 - ✅ Arabic language processing with RTL command processing and Iraqi dialect recognition
@@ -182,6 +199,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Security-first validation with command injection prevention and execution safety
 
 **Files Created**:
+
 - ✅ `iraqi_command_manager.py` (1,500+ lines) - Comprehensive command management with cultural integration
 - ✅ `iraqi_command_validator.py` (1,400+ lines) - Advanced validation with longest prefix match and cultural compliance
 
@@ -190,10 +208,12 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ### Section 3: LangGraph Agent Orchestration - **COMPLETED SECTIONS**
 
 ### Section 3A: LangGraph Agent Orchestration ✅ COMPLETED
+
 **Status**: ✅ Completed - Iraqi StateGraph workflows implemented
 **Location**: `examples/open-swe-extracted/langgraph-orchestration/`
 
 **What Was Extracted**:
+
 - ✅ StateGraph workflow patterns with Iraqi cultural validation integration (`iraqi_state_graph.py`)
 - ✅ Multi-agent orchestration systems with comprehensive cultural compliance (`iraqi_graph_client.py`)
 - ✅ Graph state management with Arabic processing and RTL support
@@ -201,6 +221,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ LangGraph client patterns with Iraqi cultural configuration and secrets management
 
 **Key Open-SWE Patterns Implemented**:
+
 - ✅ PlannerGraphState and ReviewerGraphState patterns with Iraqi enhancements
 - ✅ MessagesZodState with cultural validation and Arabic content processing
 - ✅ LangGraph client creation with encrypted secrets and cultural headers
@@ -208,6 +229,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Multi-graph orchestration with intelligent agent coordination
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural validation nodes with IslamicComplianceStatus and CulturalComplianceLevel
 - ✅ Arabic processing workflows with RTL layout support and Iraqi dialect detection
 - ✅ Professional domain validation for medical, legal, educational, and government domains
@@ -217,12 +239,14 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Comprehensive execution tracking with cultural compliance statistics
 
 **Files Created**:
+
 - ✅ `iraqi_state_graph.py` (2,100+ lines) - StateGraph orchestration with cultural validation
 - ✅ `iraqi_graph_client.py` (1,800+ lines) - LangGraph client with Iraqi integration and secrets management
 
 **Cultural Integration Features**:
+
 - ✅ IraqiGraphState with cultural context preservation across all workflow stages
-- ✅ Cultural routing nodes for intelligent workflow progression based on compliance scores  
+- ✅ Cultural routing nodes for intelligent workflow progression based on compliance scores
 - ✅ Arabic content caching and RTL layout configuration management
 - ✅ Professional domain state management for sector-specific validation requirements
 - ✅ Islamic compliance state tracking with automated remediation workflows
@@ -232,18 +256,21 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Comprehensive Iraqi Focus Chain Manager with real-time progress tracking (`iraqi_focus_chain_manager.py`)
 
 **Components Created**:
+
 - ✅ `iraqi_focus_chain_manager.py` - Main Focus Chain system with Iraqi enhancements
-- ✅ `cultural_task_validator.py` - Cultural validation system for Focus Chain tasks  
+- ✅ `cultural_task_validator.py` - Cultural validation system for Focus Chain tasks
 - ✅ `arabic_todo_processor.py` - Arabic language processing with RTL support and Iraqi dialect recognition
 - ✅ `professional_progress_tracker.py` - Professional domain progress tracking with Iraqi standards
 - ✅ `islamic_task_compliance.py` - Comprehensive Islamic compliance validation system
 
 ### Step 3: Auto Compact Context Management ✅ COMPLETED
+
 **Time Savings**: 6-10 weeks
 **Status**: ✅ Completed - Iraqi Auto Compact system implemented
 **Location**: `examples/cline-extracted/auto-compact/`
 
 **What Was Extracted**:
+
 - ✅ Intelligent context summarization with token limit management (iraqi_context_summarizer.py)
 - ✅ Cultural context preservation across summarizations (cultural_context_preserver.py)
 - ✅ Arabic content compression with RTL awareness (arabic_context_processor.py)
@@ -251,6 +278,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Focus Chain integration with persistent todo lists
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural context preservation prioritization system with 11-phase summarization
 - ✅ Arabic content compression with RTL awareness and Iraqi dialect recognition
 - ✅ Professional domain context preservation for all Iraqi sectors (legal, medical, education, government, etc.)
@@ -263,11 +291,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Comprehensive validation system for preservation quality
 
 ### Step 4: @ Mentions Context System ✅ COMPLETED
+
 **Time Savings**: 4-6 weeks
 **Status**: ✅ Completed - Iraqi @ Mentions System implemented
 **Location**: `examples/cline-extracted/mentions/`
 
 **What Was Extracted**:
+
 - ✅ Enhanced @ mentions for context injection (Cline pattern)
 - ✅ File and directory mention system with cultural validation
 - ✅ Professional role mentions for Iraqi domains (@legal, @medical, @government)
@@ -276,6 +306,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Regional service mentions (@baghdad-court, @basra-hospital, @mosul-university)
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_mentions_manager.py` - Main enhanced @ mentions system with cultural validation
 - ✅ `cultural_mention_processor.py` - Islamic compliance and family context validation
 - ✅ `professional_mention_handler.py` - Iraqi professional domain handling with hierarchy
@@ -283,69 +314,83 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ `regional_service_adapter.py` - Regional variations for all Iraqi governorates
 
 ### Step 5: Smart Checkpoints System ✅ COMPLETED
+
 **Time Savings**: 3-4 weeks
 **Status**: ✅ Completed - Iraqi Smart Checkpoints System implemented
 **Location**: `examples/cline-extracted/checkpoints/`
 
 **What Was Extracted**:
+
 - ✅ Smart checkpoint creation and restoration with cultural context preservation
 - ✅ Session state management with Iraqi professional domain awareness
 - ✅ Context preservation across sessions with Islamic compliance tracking
 - ✅ Cultural context checkpointing with comprehensive Iraqi enhancements
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_checkpoint_manager.py` - Main checkpoint manager with cultural preservation
 - ✅ `cultural_context_processor.py` - Islamic compliance and family context preservation
 - ✅ `professional_state_manager.py` - Professional domain state management for Iraqi contexts
 
 ### Step 6: Trajectory Recording System ✅ COMPLETED
+
 **Time Savings**: 4-5 weeks  
 **Status**: ✅ Completed - Iraqi Trajectory Recording System implemented
 **Location**: `examples/trae-agent-extracted/trajectory/`
 
 **What Was Extracted**:
+
 - ✅ Comprehensive execution tracking with cultural context preservation
 - ✅ LLM interaction monitoring with Iraqi compliance metrics and Islamic validation
 - ✅ Agent step tracking with professional domain validation and ethics monitoring
 - ✅ Performance metrics with cultural appropriateness scoring and Arabic processing analysis
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_trajectory_recorder.py` - Enhanced trajectory recorder with cultural, professional, and Arabic context tracking
 
 ### Step 7: Sequential Thinking Enhancement ✅ COMPLETED
+
 **Time Savings**: 2-3 weeks  
 **Status**: ✅ Completed - Iraqi Sequential Thinking System implemented
 **Location**: `examples/trae-agent-extracted/thinking/`
 
 **What Was Extracted**:
+
 - ✅ Dynamic and reflective problem-solving with Iraqi cultural context integration
 - ✅ Professional domain-specific reasoning patterns with Islamic compliance validation
 - ✅ Thought revision and branching capabilities with cultural appropriateness scoring
 - ✅ Multi-step solution development with Arabic language consideration and regional awareness
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_sequential_thinking_tool.py` - Enhanced thinking tool with cultural validation, professional compliance, and Islamic principles integration
 
 ### Step 8: Agent Architecture Patterns ✅ COMPLETED
+
 **Time Savings**: 2-3 weeks  
 **Status**: ✅ Completed - Iraqi Agent Architecture System implemented
 **Location**: `examples/trae-agent-extracted/agent/`
 
 **What Was Extracted**:
+
 - ✅ Enhanced agent architecture patterns with Iraqi cultural and professional context integration
 - ✅ Comprehensive cultural validation, professional domain specialization, Arabic language processing
 - ✅ Islamic compliance integration with halal status tracking and prayer time awareness
 - ✅ Professional domain integration with Iraqi legal, medical, educational, and government standards
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_agent_architecture.py` - Enhanced agent architecture patterns with cultural validation, professional compliance, and Islamic principles integration
 
 ### Section 4C: Archon Agent System Architecture ✅ COMPLETED
+
 **Time Savings**: 6-8 weeks
 **Status**: ✅ Completed - Iraqi Archon Agent System Architecture implemented
 **Location**: `examples/archon-extracted/agents/`
 
 **What Was Extracted**:
+
 - ✅ Comprehensive agent factory system with Iraqi cultural intelligence
 - ✅ PydanticAI agent architecture with Islamic compliance integration
 - ✅ Professional domain specialization (legal, medical, educational, government, banking, religious)
@@ -354,6 +399,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Multi-agent coordination with cultural context preservation
 
 **Key Files Created**:
+
 - ✅ `/iraqi_agent_factory.py` - Centralized agent creation with cultural intelligence (665 lines)
 - ✅ `/iraqi_base_agent.py` - Enhanced base agent class with Islamic compliance (580 lines)
 - ✅ `/iraqi_agent_registry.py` - Agent registration and discovery with professional domains (445 lines)
@@ -361,6 +407,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ `/__init__.py` - System integration with performance standards (2,240+ total lines)
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Agent creation with 95%+ cultural compliance and 90%+ Islamic compliance scoring
 - ✅ Professional domain agent specialization with Iraqi legal, medical, educational standards
 - ✅ Arabic text processing with 99%+ RTL accuracy and 85%+ Iraqi dialect recognition
@@ -369,11 +416,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Comprehensive audit logging for regulatory compliance and performance optimization
 
 ### Section 4D: Agent Communication Patterns ✅ COMPLETED
+
 **Time Savings**: 5-7 weeks  
 **Status**: ✅ Completed - Iraqi Agent Communication Patterns implemented
 **Location**: `examples/archon-extracted/communication/`
 
 **What Was Extracted**:
+
 - ✅ Event-driven agent communication with Iraqi cultural intelligence
 - ✅ Message queuing systems with priority handling and cultural validation
 - ✅ Multi-agent orchestration with workflow management capabilities
@@ -382,11 +431,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Performance monitoring with real-time metrics tracking
 
 **Key Files Created**:
+
 - ✅ `/iraqi_agent_communicator.py` - Advanced communication system (850+ lines)
 - ✅ `/iraqi_agent_orchestrator.py` - Multi-agent workflow orchestration (550+ lines)
 - ✅ Total: 1,400+ lines of sophisticated communication infrastructure
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Event-driven messaging with cultural validation and Arabic message processing
 - ✅ Multi-channel communication routing with professional domain protocols
 - ✅ Islamic compliance validation in communication flows
@@ -395,11 +446,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Asynchronous message processing with cultural context preservation
 
 ### Section 4E: RAG Orchestration System ✅ COMPLETED
+
 **Time Savings**: 7-9 weeks
 **Status**: ✅ Completed - Iraqi RAG Orchestration System implemented  
 **Location**: `examples/archon-extracted/rag/`
 
 **What Was Extracted**:
+
 - ✅ Hybrid search with vector and keyword strategies enhanced with Iraqi cultural intelligence
 - ✅ Multi-strategy embedding generation with cultural context
 - ✅ Comprehensive cultural compliance validation pipeline
@@ -408,11 +461,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Advanced result fusion with cultural scoring and Islamic compliance
 
 **Key Files Created**:
+
 - ✅ `/iraqi_rag_orchestrator.py` - Main orchestrator with hybrid search (2,800+ lines enhanced)
 - ✅ `/iraqi_rag_helpers.py` - Comprehensive helper methods (1,200+ lines)
 - ✅ Total: 4,000+ lines of advanced RAG infrastructure
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Hybrid search with <200ms response times and 95%+ cultural compliance
 - ✅ Multi-strategy embeddings with cultural intelligence and professional domain focus
 - ✅ Advanced Arabic linguistic processing with 99%+ RTL accuracy and 85%+ dialect recognition
@@ -422,11 +477,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Performance monitoring with cultural metrics and quality assurance tracking
 
 ### Step 9: Tool Orchestration System ✅ COMPLETED
+
 **Time Savings**: 4-6 weeks
 **Status**: ✅ Completed - Iraqi Tool Orchestration System implemented
 **Location**: `examples/roo-code-extracted/tool-orchestration/`
 
 **What Was Extracted**:
+
 - ✅ Advanced tool repetition detection with ABABAB non-continuous pattern detection (Roo-Code pattern)
 - ✅ Comprehensive cultural tool validation with Iraqi mode compatibility checking
 - ✅ Multi-step validation pipeline with Mode → Requirements → Parameters → Cultural → Security → Final approval
@@ -434,11 +491,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Advanced error handling and recovery mechanisms with cultural context preservation
 
 **Key Files Created**:
+
 - ✅ `/iraqi_tool_repetition_detector.py` - Advanced repetition detection with cultural validation
 - ✅ `/cultural_tool_validator.py` - Comprehensive tool validation with Iraqi modes and Islamic compliance
 - ✅ `/tool_validation_patterns.py` - Multi-step validation pipeline with Iraqi parameter types
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Tool repetition detection with Islamic compliance checking and family context validation
 - ✅ Cultural appropriateness validation for repetitive actions with professional domain awareness
 - ✅ Mode-based tool validation system supporting IraqiMode (GENERAL, PROFESSIONAL, FAMILY, ISLAMIC, GOVERNMENT, etc.)
@@ -448,11 +507,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Comprehensive audit logging for compliance tracking and performance monitoring
 
 ### Step 10: LangGraph Agent Orchestration System ✅ COMPLETED
+
 **Time Savings**: 5-7 weeks
 **Status**: ✅ Completed - Iraqi LangGraph Agent Orchestration System implemented
 **Location**: `examples/open-swe-extracted/agent-orchestration/`
 
 **What Was Extracted**:
+
 - ✅ StateGraph-based workflow orchestration with Iraqi cultural validation and conditional routing
 - ✅ Multi-agent coordination patterns with Manager, Planner, Programmer, and Reviewer workflows
 - ✅ Conditional edge routing with Islamic compliance and professional domain validation
@@ -461,11 +522,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Performance monitoring and analytics with cultural metrics tracking
 
 **Key Files Created**:
+
 - ✅ `/iraqi_langgraph_orchestrator.py` - Main orchestrator with StateGraph workflow management and cultural validation
 - ✅ `/iraqi_state_management.py` - Enhanced state management with comprehensive Iraqi context preservation
 - ✅ `/iraqi_conditional_routing.py` - Conditional routing system with multi-criteria cultural decision making
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ StateGraph workflow orchestration with Iraqi cultural context integration and Islamic compliance validation
 - ✅ Multi-agent coordination with specialized nodes (Manager, Planner, Programmer, Reviewer) enhanced for Iraqi contexts
 - ✅ Conditional routing with comprehensive cultural validation, professional domain awareness, and Arabic processing
@@ -475,11 +538,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Multi-criteria routing decisions considering cultural factors, Islamic compliance, professional requirements, and Arabic processing needs
 
 ### Step 11: Claude Code Router System ✅ COMPLETED
+
 **Time Savings**: 6-9 weeks
 **Status**: ✅ Completed - Iraqi Claude Code Router System implemented
 **Location**: `examples/claude-code-router-extracted/`
 
 **What Was Extracted**:
+
 - ✅ Intelligent model routing with token optimization and Arabic text support
 - ✅ Request/response middleware patterns with cultural validation
 - ✅ Performance monitoring and caching with Iraqi-specific metrics
@@ -487,12 +552,14 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Cost optimization strategies with payment gateway integration
 
 **Key Files Created**:
+
 - ✅ `/routing/iraqi_api_router.py` - Enhanced API routing with Iraqi cultural validation, payment gateway routing, and professional domain awareness
 - ✅ `/routing/iraqi_payment_gateway_router.py` - Intelligent payment gateway routing for Iraqi payment systems with cultural validation and failover management
 - ✅ `/middleware/cultural_validation_middleware.py` - Comprehensive cultural validation middleware with Islamic compliance, professional domain validation, and Arabic content processing
 - ✅ `/providers/iraqi_provider_manager.py` - Enhanced provider management for Iraqi AI systems with cultural validation and professional domain routing
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural validation middleware with comprehensive Iraqi requirements and Islamic compliance checking
 - ✅ Arabic text token calculation with RTL support and mixed-language handling
 - ✅ Professional domain routing for Iraqi legal, medical, education, and government sectors
@@ -503,6 +570,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Intelligent failover management with cultural context preservation across all routing decisions
 
 **Technical Excellence**:
+
 - ✅ Token calculation: 95%+ accuracy with Arabic text support and mixed-language processing
 - ✅ Cultural validation: 98%+ Islamic compliance checking with comprehensive professional domain validation
 - ✅ Performance: <200ms routing decisions with intelligent caching and load balancing
@@ -512,11 +580,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ---
 
 ### Step 12: Archon Advanced RAG Systems ✅ COMPLETED
+
 **Time Savings**: 15-20 weeks
 **Status**: ✅ Completed - Iraqi Advanced RAG System implemented
 **Location**: `examples/archon-extracted/`
 
 **What Was Extracted**:
+
 - ✅ Multi-strategy RAG coordination (vector + keyword + hybrid + agentic + cultural-enhanced)
 - ✅ Advanced search orchestration with fallback mechanisms and intelligent result merging
 - ✅ Reranking patterns for result optimization with cultural criteria
@@ -524,11 +594,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Cross-encoder reranking for improved relevance with Islamic compliance
 
 **Key Files Created**:
+
 - ✅ `/rag/iraqi_rag_orchestrator.py` - Comprehensive RAG pipeline with 8-step cultural validation process, multi-strategy coordination, and performance metrics tracking
 - ✅ `/search/iraqi_hybrid_search_engine.py` - Advanced hybrid search engine with Arabic text processing, Iraqi dialect recognition, and cultural intelligence
 - ✅ `/reranking/iraqi_cultural_reranker.py` - Sophisticated reranking system with Islamic compliance validation, professional accuracy assessment, and cultural metrics
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Cultural validation middleware ensuring 95%+ Islamic compliance across all search strategies
 - ✅ Arabic text processing with Iraqi dialect recognition achieving 85%+ accuracy
 - ✅ Professional domain specialization with stringent accuracy thresholds (95% legal, 98% medical, 90% education)
@@ -539,6 +611,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Multi-strategy search coordination with cultural preference ordering and Islamic compliance validation
 
 **Technical Excellence**:
+
 - ✅ Cultural compliance: 95%+ Islamic compliance requirement with comprehensive validation framework
 - ✅ Arabic processing: 99%+ RTL accuracy with 85%+ Iraqi dialect recognition capability
 - ✅ Professional accuracy: Domain-specific thresholds ensuring professional-grade results
@@ -548,11 +621,13 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ---
 
 ### Step 13: Gemini CLI Enterprise Architecture ✅ COMPLETED
+
 **Time Savings**: 12-16 weeks
 **Status**: ✅ Completed - Iraqi Government CLI System implemented
 **Location**: `examples/gemini-cli-extracted/`
 
 **What Was Extracted**:
+
 - ✅ Enterprise CLI architecture with multi-factor authentication and biometric integration
 - ✅ Government-grade security with end-to-end encryption and audit logging
 - ✅ Comprehensive cultural intelligence with Islamic compliance validation
@@ -562,6 +637,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Performance monitoring with real-time metrics and optimization
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_government_cli.py` - Main CLI application (2,400+ lines) with comprehensive enterprise features
 - ✅ `config/iraqi_cli_config.py` - Advanced configuration management (1,100+ lines) with cultural intelligence
 - ✅ Multi-scope authentication (Iraqi ID, government login, biometric, smart card)
@@ -571,6 +647,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Session management with security-level based timeouts and comprehensive monitoring
 
 **Performance Achievements**:
+
 - ⚡ CLI Response: <100ms for command processing and cultural validation
 - 🔐 Security: 100% encryption compliance with Iraqi government standards
 - 🌐 Cultural Intelligence: 95%+ Islamic compliance, 90%+ Iraqi cultural appropriateness
@@ -580,12 +657,14 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Enterprise security patterns with PKCE, encryption, and audit logging
 
 **Key Files Created**:
+
 - ✅ `/cli-architecture/iraqi_government_cli.py` - Comprehensive government CLI with enterprise authentication, tool discovery, cultural validation, and comprehensive government service integration
 - ✅ `/enterprise-security/iraqi_oauth_provider.py` - Enterprise OAuth2 provider with PKCE support, token encryption, cultural validation, and comprehensive audit logging
 - ✅ `/tool-discovery/iraqi_government_tool_discovery.py` - Advanced tool discovery system with security validation, cultural compliance, and government service integration
 - ✅ `/cultural-validation/iraqi_cultural_compliance_system.py` - Comprehensive cultural validation framework with Islamic compliance and professional domain standards
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ Government service integration with citizen ID validation, ministry authorization, and security clearance management
 - ✅ Enterprise OAuth2 with cultural validation, Islamic compliance checking, and comprehensive audit logging
 - ✅ Advanced tool discovery with security classification, cultural sensitivity levels, and government approval workflows
@@ -594,6 +673,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 - ✅ Professional domain specialization for legal, medical, educational, and government services with appropriate validation standards
 
 **Technical Excellence**:
+
 - ✅ Authentication security: OAuth2 with PKCE, token encryption, and session management achieving enterprise security standards
 - ✅ Cultural compliance: 95%+ Islamic compliance with comprehensive validation across 10 cultural domains
 - ✅ Arabic processing: 99%+ RTL accuracy with Iraqi dialect detection and proper Arabic text handling
@@ -606,6 +686,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 #### A. Deep Planning System (`/deep-planning`)
 
 **EXTRACT FROM:**
+
 ```
 /reference/cline/docs/features/slash-commands/
 ├── deep-planning.mdx            # 4-step planning methodology
@@ -614,6 +695,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/cline-extracted/
 ├── deep-planning/
@@ -625,6 +707,7 @@ After thorough analysis of the 8 reference repositories against our existing 44 
 ```
 
 **Deep Planning Enhancement Strategy:**
+
 ```python
 # New: /examples/cline-extracted/deep-planning/iraqi_deep_planning_system.py
 from dataclasses import dataclass
@@ -645,17 +728,17 @@ class IraqiDeepPlanningConfig:
 
 class IraqiDeepPlanningSystem:
     """Revolutionary 4-step planning with Iraqi cultural and professional enhancement"""
-    
+
     def __init__(self, config: IraqiDeepPlanningConfig = None):
         self.config = config or IraqiDeepPlanningConfig()
         self.cultural_investigator = CulturalInvestigationEngine()
         self.professional_planner = ProfessionalDomainPlanner()
         self.islamic_compliance_planner = IslamicCompliancePlanner()
         self.implementation_generator = ImplementationPlanGenerator()
-        
+
     async def execute_iraqi_deep_planning(self, task_description: str) -> Dict[str, Any]:
         """Execute 4-step deep planning with Iraqi enhancements"""
-        
+
         planning_result = {
             "task": task_description,
             "planning_phases": [],
@@ -665,7 +748,7 @@ class IraqiDeepPlanningSystem:
             "implementation_plan": {},
             "focus_chain_tasks": []
         }
-        
+
         # Step 1: Silent Investigation (Enhanced with Iraqi Context)
         investigation_result = await self._execute_enhanced_investigation(task_description)
         planning_result["planning_phases"].append({
@@ -675,17 +758,17 @@ class IraqiDeepPlanningSystem:
             "cultural_discoveries": investigation_result.get("cultural_context", {}),
             "professional_patterns": investigation_result.get("professional_patterns", [])
         })
-        
+
         # Step 2: Discussion and Questions (Cultural & Professional Focus)
         discussion_result = await self._execute_cultural_discussion(task_description, investigation_result)
         planning_result["planning_phases"].append({
-            "phase": "discussion_and_questions", 
+            "phase": "discussion_and_questions",
             "status": "completed",
             "questions": discussion_result.get("questions", []),
             "cultural_clarifications": discussion_result.get("cultural_clarifications", []),
             "professional_requirements": discussion_result.get("professional_requirements", [])
         })
-        
+
         # Step 3: Implementation Plan Document (Iraqi-Enhanced)
         plan_document = await self._generate_iraqi_implementation_plan(
             task_description, investigation_result, discussion_result
@@ -693,12 +776,12 @@ class IraqiDeepPlanningSystem:
         planning_result["implementation_plan"] = plan_document
         planning_result["planning_phases"].append({
             "phase": "implementation_plan_creation",
-            "status": "completed", 
+            "status": "completed",
             "plan_path": plan_document.get("document_path"),
             "cultural_validation_score": plan_document.get("cultural_score", 0),
             "islamic_compliance_score": plan_document.get("islamic_score", 0)
         })
-        
+
         # Step 4: Focus Chain Task Creation (Iraqi Context-Aware)
         focus_chain_tasks = await self._create_iraqi_focus_chain_tasks(plan_document)
         planning_result["focus_chain_tasks"] = focus_chain_tasks
@@ -709,30 +792,30 @@ class IraqiDeepPlanningSystem:
             "cultural_task_validation": "approved",
             "professional_task_compliance": "verified"
         })
-        
+
         return planning_result
-    
+
     async def _execute_enhanced_investigation(self, task: str) -> Dict[str, Any]:
         """Enhanced silent investigation with Iraqi cultural and professional awareness"""
-        
+
         # Base codebase investigation (Cline pattern)
         base_investigation = await self._investigate_codebase_structure(task)
-        
+
         # Iraqi cultural context investigation
         cultural_investigation = await self.cultural_investigator.investigate_cultural_context(
             task, self.config.professional_domain
         )
-        
-        # Professional domain investigation  
+
+        # Professional domain investigation
         professional_investigation = await self.professional_planner.investigate_professional_requirements(
             task, self.config.professional_domain
         )
-        
+
         # Islamic compliance investigation
         islamic_investigation = await self.islamic_compliance_planner.investigate_islamic_requirements(
             task, cultural_investigation
         )
-        
+
         return {
             "base_findings": base_investigation,
             "cultural_context": cultural_investigation,
@@ -746,6 +829,7 @@ class IraqiDeepPlanningSystem:
 #### B. Focus Chain Task Management
 
 **EXTRACT FROM:**
+
 ```
 /reference/cline/docs/features/
 ├── focus-chain.mdx              # Automatic todo list management
@@ -754,6 +838,7 @@ class IraqiDeepPlanningSystem:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/cline-extracted/
 ├── focus-chain/
@@ -765,6 +850,7 @@ class IraqiDeepPlanningSystem:
 ```
 
 **Focus Chain Enhancement Strategy:**
+
 ```python
 # New: /examples/cline-extracted/focus-chain/iraqi_focus_chain_manager.py
 from typing import List, Dict, Optional, Any
@@ -772,7 +858,7 @@ from pathlib import Path
 import asyncio
 from dataclasses import dataclass
 
-@dataclass 
+@dataclass
 class IraqiTaskItem:
     """Enhanced task item with Iraqi cultural and professional context"""
     id: str
@@ -787,48 +873,48 @@ class IraqiTaskItem:
 
 class IraqiFocusChainManager:
     """Advanced task management with Iraqi cultural context and real-time tracking"""
-    
+
     def __init__(self, task_directory: Path = None):
         self.task_directory = task_directory or Path("tasks/iraqi_focus_chains")
         self.cultural_validator = CulturalTaskValidator()
-        self.arabic_processor = ArabicTodoProcessor() 
+        self.arabic_processor = ArabicTodoProcessor()
         self.progress_tracker = ProfessionalProgressTracker()
         self.islamic_compliance = IslamicTaskCompliance()
-        
-    async def generate_iraqi_todo_list(self, 
+
+    async def generate_iraqi_todo_list(self,
                                      implementation_plan: Dict[str, Any],
                                      cultural_context: Dict[str, Any]) -> List[IraqiTaskItem]:
         """Generate comprehensive todo list with Iraqi cultural validation"""
-        
+
         # Extract base tasks from implementation plan (Cline pattern)
         base_tasks = self._extract_implementation_steps(implementation_plan)
-        
+
         # Enhance each task with Iraqi context
         iraqi_tasks = []
         for i, base_task in enumerate(base_tasks):
-            
+
             # Cultural compliance validation
             cultural_result = await self.cultural_validator.validate_task(
                 base_task, cultural_context
             )
-            
+
             # Islamic approval check
             islamic_result = await self.islamic_compliance.validate_task_content(
                 base_task, cultural_context
             )
-            
+
             # Professional relevance scoring
             professional_score = await self.progress_tracker.score_professional_relevance(
                 base_task, cultural_context.get("professional_domain", "general")
             )
-            
+
             # Arabic description generation
             arabic_description = None
             if cultural_context.get("arabic_language_support", False):
                 arabic_description = await self.arabic_processor.generate_arabic_description(
                     base_task, cultural_context
                 )
-            
+
             # Create enhanced Iraqi task
             iraqi_task = IraqiTaskItem(
                 id=f"iraqi_task_{i+1:03d}",
@@ -841,41 +927,41 @@ class IraqiFocusChainManager:
                 family_context_appropriate=cultural_result.family_appropriate,
                 government_service_related=cultural_context.get("government_service_context", False)
             )
-            
+
             iraqi_tasks.append(iraqi_task)
-        
+
         # Save to markdown file with RTL support
         await self._save_iraqi_todo_markdown(iraqi_tasks, cultural_context)
-        
+
         return iraqi_tasks
-    
+
     async def track_real_time_progress(self, task_id: str) -> Dict[str, Any]:
         """Real-time progress tracking with cultural context preservation"""
-        
+
         # Load current task state
         current_tasks = await self._load_iraqi_tasks()
         task = next((t for t in current_tasks if t.id == task_id), None)
-        
+
         if not task:
             raise ValueError(f"Task {task_id} not found")
-        
+
         # Update task status with cultural validation
         if task.status == "pending":
             task.status = "in_progress"
-            
+
             # Notify cultural context manager
             await self.cultural_validator.notify_task_started(task)
-            
+
         # Track progress with professional metrics
         progress_metrics = await self.progress_tracker.calculate_progress_metrics(
             current_tasks, task
         )
-        
+
         # Generate visual progress indicators (Cline pattern enhanced)
         visual_progress = self._generate_iraqi_progress_display(
             current_tasks, task, progress_metrics
         )
-        
+
         return {
             "task_id": task_id,
             "current_status": task.status,
@@ -891,6 +977,7 @@ class IraqiFocusChainManager:
 #### C. Auto Compact Context Management
 
 **EXTRACT FROM:**
+
 ```
 /reference/cline/docs/features/
 ├── auto-compact.mdx            # Context summarization
@@ -898,6 +985,7 @@ class IraqiFocusChainManager:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/cline-extracted/
 ├── auto-compact/
@@ -908,6 +996,7 @@ class IraqiFocusChainManager:
 ```
 
 **Auto Compact Enhancement Strategy:**
+
 ```python
 # New: /examples/cline-extracted/auto-compact/iraqi_context_summarizer.py
 from typing import Dict, List, Any
@@ -915,41 +1004,41 @@ import asyncio
 
 class IraqiContextSummarizer:
     """Intelligent context summarization with Iraqi cultural context preservation"""
-    
+
     def __init__(self):
         self.cultural_preserver = CulturalContextPreserver()
         self.arabic_processor = ArabicContextProcessor()
         self.professional_manager = ProfessionalContextManager()
         self.islamic_context_tracker = IslamicContextTracker()
-        
-    async def summarize_with_cultural_preservation(self, 
+
+    async def summarize_with_cultural_preservation(self,
                                                  conversation_history: List[Dict[str, Any]],
                                                  cultural_context: Dict[str, Any]) -> Dict[str, Any]:
         """Intelligent summarization that preserves Iraqi cultural and professional context"""
-        
+
         # Extract cultural decisions and context (highest priority)
         cultural_summary = await self.cultural_preserver.extract_cultural_decisions(
             conversation_history, cultural_context
         )
-        
+
         # Preserve Arabic language context and RTL interactions
         arabic_summary = await self.arabic_processor.extract_arabic_interactions(
             conversation_history, cultural_context
         )
-        
+
         # Extract professional domain decisions and patterns
         professional_summary = await self.professional_manager.extract_professional_decisions(
             conversation_history, cultural_context.get("professional_domain", "general")
         )
-        
+
         # Preserve Islamic compliance decisions
         islamic_summary = await self.islamic_context_tracker.extract_islamic_decisions(
             conversation_history, cultural_context
         )
-        
+
         # Generate base technical summary (Cline pattern)
         technical_summary = await self._generate_technical_summary(conversation_history)
-        
+
         # Create comprehensive Iraqi summary
         iraqi_summary = {
             "technical_summary": technical_summary,
@@ -963,7 +1052,7 @@ class IraqiContextSummarizer:
             "summary_timestamp": datetime.now().isoformat(),
             "token_savings": len(conversation_history) * 0.7  # Estimated 70% reduction
         }
-        
+
         return iraqi_summary
 ```
 
@@ -978,6 +1067,7 @@ class IraqiContextSummarizer:
 #### A. Trajectory Recording System
 
 **EXTRACT FROM:**
+
 ```
 /reference/trae-agent/trae_agent/utils/
 ├── trajectory_recorder.py           # Comprehensive execution tracking
@@ -985,6 +1075,7 @@ class IraqiContextSummarizer:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/trae-agent-extracted/
 ├── trajectory-recording/
@@ -999,12 +1090,14 @@ class IraqiContextSummarizer:
 ✅ **COMPLETED**: Trae-Agent trajectory recording system successfully extracted and enhanced with Iraqi cultural compliance
 
 **Implemented Components:**
+
 - `iraqi_trajectory_recorder.py` (800+ lines) - Enhanced trajectory recording with cultural validation
-- `cultural_validation_tracker.py` (900+ lines) - Comprehensive cultural compliance monitoring  
+- `cultural_validation_tracker.py` (900+ lines) - Comprehensive cultural compliance monitoring
 - `professional_workflow_recorder.py` (1200+ lines) - Domain-specific professional tracking
 - `islamic_compliance_logger.py` (1000+ lines) - Islamic principles validation and scholar review
 
 **Key Features Implemented:**
+
 - Real-time cultural validation during trajectory execution
 - Islamic compliance tracking with scholar review system
 - Professional domain-specific workflow recording
@@ -1016,6 +1109,7 @@ class IraqiContextSummarizer:
 **STATUS**: ✅ **COMPLETED** - Iraqi sequential thinking system with cultural compliance implemented
 
 **EXTRACT FROM:**
+
 ```
 /reference/trae-agent/trae_agent/tools/
 ├── sequential_thinking_tool.py      # Advanced sequential reasoning ✅
@@ -1023,6 +1117,7 @@ class IraqiContextSummarizer:
 ```
 
 **EXTRACTED TO:**
+
 ```
 /examples/trae-agent-extracted/sequential-thinking/
 ├── iraqi_sequential_thinking_tool.py       # ✅ Enhanced thinking with cultural validation
@@ -1031,6 +1126,7 @@ class IraqiContextSummarizer:
 ```
 
 **KEY FEATURES IMPLEMENTED:**
+
 - Iraqi-enhanced sequential thinking with cultural compliance validation
 - Multi-domain cultural context analysis (10 cultural domains)
 - Professional domain-specific thinking patterns (legal, medical, educational)
@@ -1041,40 +1137,40 @@ class IraqiContextSummarizer:
 - Inter-community sensitivity analysis and sectarian neutrality
 - Professional hierarchy respect and title recognition
 - Family privacy and honor protection in thinking processes
-            if validated_input.professional_domain_relevance:
-                domain_validation = await self.professional_thought_processor.validate_professional_reasoning(
-                    validated_input.thought, validated_input.professional_domain_relevance
-                )
-                
+  if validated_input.professional_domain_relevance:
+  domain_validation = await self.professional_thought_processor.validate_professional_reasoning(
+  validated_input.thought, validated_input.professional_domain_relevance
+  )
+
                 if not domain_validation.approved:
                     return ToolExecResult(
                         error=f"Reasoning not suitable for {validated_input.professional_domain_relevance.domain}: {domain_validation.reason}",
                         error_code=-3
                     )
-            
+
             # Arabic context processing
             if validated_input.arabic_processing_context:
                 arabic_validation = await self.arabic_context_manager.validate_arabic_reasoning(
                     validated_input.thought, validated_input.arabic_processing_context
                 )
-                
+
                 if not arabic_validation.approved:
                     return ToolExecResult(
                         error=f"Arabic reasoning context issues: {arabic_validation.reason}",
                         error_code=-4
                     )
-            
+
             # Family sensitivity filtering
             family_validation = await self.family_sensitivity_filter.validate_family_appropriateness(
                 validated_input.thought, validated_input.family_sensitivity_level
             )
-            
+
             if not family_validation.approved:
                 return ToolExecResult(
                     error=f"Content not appropriate for Iraqi family context: {family_validation.reason}",
                     error_code=-5
                 )
-            
+
             # Proceed with enhanced thought processing
             return await self._process_iraqi_thought(validated_input, {
                 "cultural_validation": cultural_validation,
@@ -1083,7 +1179,7 @@ class IraqiContextSummarizer:
                 "arabic_validation": arabic_validation if validated_input.arabic_processing_context else None,
                 "family_validation": family_validation
             })
-            
+
         except Exception as e:
             error_data = {
                 "error": str(e),
@@ -1096,22 +1192,22 @@ class IraqiContextSummarizer:
                 error_code=-1,
             )
 
-    async def _process_iraqi_thought(self, thought_data: IraqiThoughtData, validation_results: dict) -> ToolExecResult:
-        """Process thought with Iraqi cultural enhancements"""
-        
+  async def \_process_iraqi_thought(self, thought_data: IraqiThoughtData, validation_results: dict) -> ToolExecResult:
+  """Process thought with Iraqi cultural enhancements"""
+
         # Adjust total thoughts based on cultural complexity
         if thought_data.cultural_context and thought_data.cultural_context.complexity_level > 0.7:
             thought_data.total_thoughts = max(thought_data.total_thoughts, thought_data.thought_number + 3)
-        
+
         # Add to enhanced thought history
         self.thought_history.append(thought_data)
-        
+
         # Handle Iraqi-specific branching
         if thought_data.branch_from_thought and thought_data.branch_id:
             if thought_data.branch_id not in self.branches:
                 self.branches[thought_data.branch_id] = []
             self.branches[thought_data.branch_id].append(thought_data)
-        
+
         # Generate comprehensive Iraqi response
         response_data = {
             "thought_number": thought_data.thought_number,
@@ -1119,7 +1215,7 @@ class IraqiContextSummarizer:
             "next_thought_needed": thought_data.next_thought_needed,
             "branches": list(self.branches.keys()),
             "thought_history_length": len(self.thought_history),
-            
+
             # Iraqi-specific response enhancements
             "cultural_validation_score": validation_results["cultural_validation"].score,
             "islamic_compliance_approved": validation_results["islamic_validation"].approved,
@@ -1128,20 +1224,23 @@ class IraqiContextSummarizer:
             "family_appropriate": validation_results["family_validation"].approved,
             "cultural_improvement_suggestions": validation_results["cultural_validation"].suggestions
         }
-        
+
         return ToolExecResult(
             output=f"Iraqi sequential thinking step completed with cultural validation.\\n\\nStatus:\\n{json.dumps(response_data, indent=2)}"
         )
+
 ```
 
 #### C. Agent Architecture Patterns ✅ COMPLETED
 
 **EXTRACT FROM:**
 ```
+
 /reference/trae-agent/trae_agent/agent/
-├── trae_agent.py                    # Main agent architecture
-├── base_agent.py                    # Base agent patterns
-└── agent_basics.py                  # Agent execution patterns
+├── trae_agent.py # Main agent architecture
+├── base_agent.py # Base agent patterns
+└── agent_basics.py # Agent execution patterns
+
 ```
 
 **STATUS**: ✅ **COMPLETED** - Iraqi Agent Architecture System implemented
@@ -1188,12 +1287,14 @@ class IraqiContextSummarizer:
 
 **NEW:**
 ```
+
 /examples/trae-agent-extracted/
 └── agent-architecture/
-    ├── iraqi_trae_agent.py                  # ✅ COMPLETED
-    ├── cultural_agent_orchestrator.py       # ✅ COMPLETED
-    ├── professional_agent_manager.py        # ✅ COMPLETED
-    └── government_service_agent.py          # ✅ COMPLETED
+├── iraqi_trae_agent.py # ✅ COMPLETED
+├── cultural_agent_orchestrator.py # ✅ COMPLETED
+├── professional_agent_manager.py # ✅ COMPLETED
+└── government_service_agent.py # ✅ COMPLETED
+
 ```
 
 #### Estimated Value: **10-14 weeks of development time saved**
@@ -1208,10 +1309,12 @@ class IraqiContextSummarizer:
 
 **EXTRACT FROM:**
 ```
+
 /reference/Roo-Code/src/core/tools/
-├── ToolRepetitionDetector.ts       # Advanced repetition detection
-├── validateToolUse.ts              # Tool validation patterns
-└── __tests__/                      # Comprehensive tool testing
+├── ToolRepetitionDetector.ts # Advanced repetition detection
+├── validateToolUse.ts # Tool validation patterns
+└── **tests**/ # Comprehensive tool testing
+
 ```
 
 **STATUS**: ✅ **COMPLETED** - Iraqi Tool Orchestration System implemented
@@ -1252,21 +1355,25 @@ class IraqiContextSummarizer:
 
 **NEW:**
 ```
+
 /examples/roo-code-extracted/
 ├── tool-orchestration/
-│   ├── iraqi_tool_repetition_detector.py    # ✅ COMPLETED
-│   ├── cultural_tool_validator.py           # ✅ COMPLETED
-│   └── tool_validation_patterns.py          # ✅ COMPLETED
+│ ├── iraqi_tool_repetition_detector.py # ✅ COMPLETED
+│ ├── cultural_tool_validator.py # ✅ COMPLETED
+│ └── tool_validation_patterns.py # ✅ COMPLETED
+
 ```
 
 #### B. MCP Integration Architecture ✅ COMPLETED
 
 **EXTRACT FROM:**
 ```
+
 /reference/Roo-Code/src/services/mcp/
-├── McpHub.ts                       # Sophisticated MCP server management ✅
-├── McpServerManager.ts             # Server lifecycle management ✅
+├── McpHub.ts # Sophisticated MCP server management ✅
+├── McpServerManager.ts # Server lifecycle management ✅
 └── types/ (MCP type definitions)
+
 ```
 
 **STATUS**: ✅ **COMPLETED** - Iraqi MCP Integration Architecture implemented
@@ -1281,7 +1388,7 @@ class IraqiContextSummarizer:
 **Iraqi Enhancements Implemented**:
 - ✅ `iraqi_mcp_hub.py` - Main MCP Hub with Cultural Integration (1,200+ lines)
   - Cultural tool validation with comprehensive scoring
-  - Islamic compliance checking for all MCP operations  
+  - Islamic compliance checking for all MCP operations
   - Professional domain awareness with Iraqi standards
   - Government service integration with ministry coordination
   - Arabic language processing with RTL support and Iraqi dialect recognition
@@ -1297,13 +1404,15 @@ class IraqiContextSummarizer:
 
 **EXTRACTED TO:**
 ```
+
 /examples/roo-code-extracted/
 ├── mcp-integration/
-│   ├── iraqi_mcp_hub.py                    # ✅ COMPLETED
-│   ├── cultural_server_manager.py          # ✅ COMPLETED
-│   ├── payment_gateway_mcp_server.py       # NEXT: To be implemented  
-│   └── government_portal_mcp_server.py     # NEXT: To be implemented
-```
+│ ├── iraqi_mcp_hub.py # ✅ COMPLETED
+│ ├── cultural_server_manager.py # ✅ COMPLETED
+│ ├── payment_gateway_mcp_server.py # NEXT: To be implemented  
+│ └── government_portal_mcp_server.py # NEXT: To be implemented
+
+````
 
 **Enhancement Strategy:**
 ```python
@@ -1368,11 +1477,12 @@ class IraqiMCPHub:
 
         # Proceed with Roo-Code's connection logic enhanced for Iraqi context
         return await self._establish_iraqi_connection(config)
-```
+````
 
 #### C. Internationalization System ✅ COMPLETED
 
 **EXTRACT FROM:**
+
 ```
 /reference/Roo-Code/src/i18n/
 ├── setup.ts                        # i18next initialization and configuration
@@ -1387,12 +1497,14 @@ class IraqiMCPHub:
 **Location**: `examples/roo-code-extracted/i18n-system/`
 
 **What Was Extracted**:
+
 - ✅ Enhanced i18n manager with Iraqi cultural validation and Arabic language processing
 - ✅ Dynamic translation loading with cultural context awareness and Islamic compliance
 - ✅ Professional domain terminology management for Iraqi sectors
 - ✅ Government service integration with official Iraqi Arabic terminology
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_i18n_manager.py` - Main I18n Manager with Cultural Integration (1,100+ lines)
   - Multi-language support: Arabic, Iraqi Arabic dialect, English, Kurdish, Turkmen, Syriac
   - Cultural context awareness with regional variations (Baghdad, Basra, Erbil)
@@ -1410,6 +1522,7 @@ class IraqiMCPHub:
   - Real-time progress tracking with comprehensive metrics and reporting
 
 **EXTRACTED TO:**
+
 ```
 /examples/roo-code-extracted/
 ├── i18n-system/
@@ -1422,6 +1535,7 @@ class IraqiMCPHub:
 #### D. Browser Automation Patterns ✅ COMPLETED
 
 **EXTRACT FROM:**
+
 ```
 /reference/Roo-Code/src/services/browser/
 ├── BrowserSession.ts              # Sophisticated browser session management ✅
@@ -1433,12 +1547,14 @@ class IraqiMCPHub:
 **Location**: `examples/roo-code-extracted/browser-automation/`
 
 **What Was Extracted**:
+
 - ✅ Enhanced browser session manager with Iraqi cultural validation and government portal integration
 - ✅ Advanced URL content fetcher with Arabic processing and Islamic compliance filtering
 - ✅ Cultural context-aware web automation with professional domain optimization
 - ✅ Government service automation with official Iraqi portal navigation patterns
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_browser_session.py` - Enhanced Browser Session with Cultural Integration (1,400+ lines)
   - Cultural browsing modes: Government, Professional, Family-Safe, Islamic Compliant
   - Iraqi government portal automation with ministry-specific navigation patterns
@@ -1456,6 +1572,7 @@ class IraqiMCPHub:
   - Performance-optimized caching with cultural context awareness and concurrent processing
 
 **EXTRACTED TO:**
+
 ```
 /examples/roo-code-extracted/
 ├── browser-automation/
@@ -1468,6 +1585,7 @@ class IraqiMCPHub:
 #### E. CLI Command System ✅ COMPLETED
 
 **EXTRACT FROM:**
+
 ```
 /reference/Roo-Code/src/services/command/
 ├── commands.ts                     # Command discovery and loading ✅
@@ -1480,6 +1598,7 @@ class IraqiMCPHub:
 **Location**: `examples/roo-code-extracted/cli-command/`
 
 **What Was Extracted**:
+
 - ✅ Sophisticated command management system with comprehensive Iraqi cultural integration
 - ✅ Advanced command validation based on longest prefix match algorithm from Roo-Code
 - ✅ Professional domain-specific command sets for Iraqi sectors (legal, medical, educational, government)
@@ -1488,6 +1607,7 @@ class IraqiMCPHub:
 - ✅ Security-first command validation with subshell detection and threat analysis
 
 **Iraqi Enhancements Implemented**:
+
 - ✅ `iraqi_command_manager.py` - Enhanced Command Management with Cultural Integration (1,500+ lines)
   - Professional domain command sets: Legal, Medical, Educational, Government, Engineering, Religious
   - Cultural command validation with Islamic compliance scoring (95%+ required)
@@ -1505,6 +1625,7 @@ class IraqiMCPHub:
   - Performance optimization with intelligent caching and validation metrics
 
 **EXTRACTED TO:**
+
 ```
 /examples/roo-code-extracted/
 ├── cli-command/
@@ -1517,6 +1638,7 @@ class IraqiMCPHub:
 #### F. Internationalization System
 
 **EXTRACT FROM:**
+
 ```
 /reference/Roo-Code/src/i18n/
 ├── setup.ts                       # i18n initialization patterns
@@ -1525,6 +1647,7 @@ class IraqiMCPHub:
 ```
 
 **NEW:**
+
 ```
 /examples/roo-code-extracted/
 └── internationalization/
@@ -1534,47 +1657,48 @@ class IraqiMCPHub:
 ```
 
 **Enhancement Strategy:**
+
 ```typescript
 // New: /examples/roo-code-extracted/internationalization/iraqi_i18n_setup.ts
 interface IraqiLocalizationConfig {
-    primaryLanguage: 'ar-IQ' | 'en-US';
-    dialectSupport: boolean;
-    islamicCalendarSupport: boolean;
-    professionalTerminology: ProfessionalDomain[];
-    governmentPortalTerminology: boolean;
-    culturalContextAwareness: boolean;
+  primaryLanguage: "ar-IQ" | "en-US";
+  dialectSupport: boolean;
+  islamicCalendarSupport: boolean;
+  professionalTerminology: ProfessionalDomain[];
+  governmentPortalTerminology: boolean;
+  culturalContextAwareness: boolean;
 }
 
 class IraqiInternationalizationManager {
-    private translations: Map<string, TranslationBundle> = new Map();
-    private dialectProcessor: IraqiDialectProcessor;
-    private culturalContextManager: CulturalContextManager;
+  private translations: Map<string, TranslationBundle> = new Map();
+  private dialectProcessor: IraqiDialectProcessor;
+  private culturalContextManager: CulturalContextManager;
 
-    constructor(config: IraqiLocalizationConfig) {
-        // Adopt Roo-Code's translation loading patterns
-        this.setupTranslationLoading(config);
+  constructor(config: IraqiLocalizationConfig) {
+    // Adopt Roo-Code's translation loading patterns
+    this.setupTranslationLoading(config);
 
-        // Iraqi-specific enhancements
-        this.dialectProcessor = new IraqiDialectProcessor();
-        this.culturalContextManager = new CulturalContextManager();
-    }
+    // Iraqi-specific enhancements
+    this.dialectProcessor = new IraqiDialectProcessor();
+    this.culturalContextManager = new CulturalContextManager();
+  }
 
-    async loadIraqiTranslations(): Promise<void> {
-        // Load standard Arabic translations
-        await this.loadTranslationBundle('ar-IQ', 'standard');
+  async loadIraqiTranslations(): Promise<void> {
+    // Load standard Arabic translations
+    await this.loadTranslationBundle("ar-IQ", "standard");
 
-        // Load Iraqi dialect translations
-        await this.loadTranslationBundle('ar-IQ', 'iraqi-dialect');
+    // Load Iraqi dialect translations
+    await this.loadTranslationBundle("ar-IQ", "iraqi-dialect");
 
-        // Load professional domain translations
-        await this.loadProfessionalDomainTranslations();
+    // Load professional domain translations
+    await this.loadProfessionalDomainTranslations();
 
-        // Load government portal terminology
-        await this.loadGovernmentPortalTranslations();
+    // Load government portal terminology
+    await this.loadGovernmentPortalTranslations();
 
-        // Load Islamic terminology and cultural references
-        await this.loadIslamicCulturalTranslations();
-    }
+    // Load Islamic terminology and cultural references
+    await this.loadIslamicCulturalTranslations();
+  }
 }
 ```
 
@@ -1589,6 +1713,7 @@ class IraqiInternationalizationManager {
 #### A. LangGraph Agent Orchestration
 
 **EXTRACT FROM:**
+
 ```
 /reference/open-swe/apps/open-swe/src/graphs/
 ├── manager/index.ts               # Manager graph orchestration
@@ -1598,12 +1723,14 @@ class IraqiInternationalizationManager {
 ```
 
 **UPDATE EXISTING:**
+
 ```
 /examples/autogen-extracted/        # Enhance agent coordination
 └── agentchat/autogen_agentchat/   # Add LangGraph patterns
 ```
 
 **NEW:**
+
 ```
 /examples/open-swe-extracted/
 ├── agent-orchestration/
@@ -1614,6 +1741,7 @@ class IraqiInternationalizationManager {
 ```
 
 **Enhancement Strategy:**
+
 ```python
 # New: /examples/open-swe-extracted/agent-orchestration/iraqi_agent_manager.py
 from langgraph import StateGraph, END, START
@@ -1701,6 +1829,7 @@ class IraqiAgentManager:
 #### B. Tool Integration Patterns
 
 **EXTRACT FROM:**
+
 ```
 /reference/open-swe/apps/open-swe/src/tools/
 ├── index.ts                       # Tool registry patterns
@@ -1710,12 +1839,14 @@ class IraqiAgentManager:
 ```
 
 **UPDATE EXISTING:**
+
 ```
 /examples/kortix-suna-extracted/backend/agent/tools/
 └── *.py                          # Enhance with Open-SWE patterns
 ```
 
 **NEW:**
+
 ```
 /examples/open-swe-extracted/
 └── tool-integration/
@@ -1736,6 +1867,7 @@ class IraqiAgentManager:
 #### A. API Routing and Middleware
 
 **EXTRACT FROM:**
+
 ```
 /reference/claude-code-router/src/
 ├── utils/router.ts                 # Advanced routing patterns
@@ -1744,6 +1876,7 @@ class IraqiAgentManager:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/claude-code-router-extracted/
 ├── routing/
@@ -1757,6 +1890,7 @@ class IraqiAgentManager:
 ```
 
 **Enhancement Strategy:**
+
 ```python
 # New: /examples/claude-code-router-extracted/routing/iraqi_api_router.py
 class IraqiAPIRouter:
@@ -1803,6 +1937,7 @@ class IraqiAPIRouter:
 #### B. Provider Management System
 
 **EXTRACT FROM:**
+
 ```
 /reference/claude-code-router/ui/src/components/
 ├── Providers.tsx                   # Provider management UI
@@ -1811,12 +1946,14 @@ class IraqiAPIRouter:
 ```
 
 **UPDATE EXISTING:**
+
 ```
 /examples/kortix-suna-extracted/frontend/agents/
 └── agent-tools-configuration.tsx  # Enhance with provider patterns
 ```
 
 **NEW:**
+
 ```
 /examples/claude-code-router-extracted/
 └── provider-management/
@@ -1836,6 +1973,7 @@ class IraqiAPIRouter:
 #### A. Memory Management System
 
 **EXTRACT FROM:**
+
 ```
 /reference/qwen-code/packages/core/src/tools/
 ├── memoryTool.ts                  # Advanced memory management
@@ -1843,12 +1981,14 @@ class IraqiAPIRouter:
 ```
 
 **UPDATE EXISTING:**
+
 ```
 /examples/praisonai-extracted/src/memory/
 └── *.py                          # Enhance memory patterns
 ```
 
 **NEW:**
+
 ```
 /examples/qwen-code-extracted/
 ├── memory-management/
@@ -1859,6 +1999,7 @@ class IraqiAPIRouter:
 ```
 
 **Enhancement Strategy:**
+
 ```python
 # New: /examples/qwen-code-extracted/memory-management/iraqi_memory_manager.py
 class IraqiMemoryManager:
@@ -1929,12 +2070,14 @@ class IraqiMemoryManager:
 #### B. Web Search Integration
 
 **EXTRACT FROM:**
+
 ```
 /reference/qwen-code/docs/tools/web-search.md
 /reference/qwen-code/packages/core/src/tools/webSearchTool.ts
 ```
 
 **UPDATE EXISTING:**
+
 ```
 /examples/main_agent_reference/        # Enhance web search patterns
 └── research_agent.py
@@ -1943,6 +2086,7 @@ class IraqiMemoryManager:
 ```
 
 **NEW:**
+
 ```
 /examples/qwen-code-extracted/
 └── web-search/
@@ -1994,37 +2138,45 @@ class IraqiMemoryManager:
 
 ### Phase 1: Foundation Enhancement (Weeks 1-8)
 
-#### Week 1-2: Trae-Agent Trajectory Recording 
+#### Week 1-2: Trae-Agent Trajectory Recording
+
 **Priority**: CRITICAL  
 **Dependencies**: None  
 **Tasks**:
+
 - Extract trajectory recording patterns from Trae-Agent
 - Create IraqiTrajectoryRecorder with cultural validation tracking
 - Implement sequential thinking with Islamic reasoning compliance
 - Test comprehensive Iraqi execution reporting
 
 #### Week 3-4: Roo-Code Tool Orchestration
+
 **Priority**: CRITICAL  
 **Dependencies**: Trajectory recording  
 **Tasks**:
+
 - Extract ToolRepetitionDetector patterns
 - Create IraqiToolRepetitionDetector with cultural validation
 - Enhance existing kortix-suna tool wrappers
 - Test with existing agent workflows
 
 #### Week 5-6: LangGraph Agent Workflows
+
 **Priority**: HIGH  
 **Dependencies**: Tool orchestration  
 **Tasks**:
+
 - Extract LangGraph patterns from Open-SWE
 - Create IraqiAgentManager with professional workflows
 - Enhance existing autogen agent coordination
 - Test legal/medical/education workflows
 
 #### Week 7-8: MCP Integration Architecture
+
 **Priority**: HIGH  
 **Dependencies**: Agent workflows  
 **Tasks**:
+
 - Extract McpHub patterns from Roo-Code
 - Create IraqiMCPHub with cultural server management
 - Integrate with existing kortix-suna MCP tools
@@ -2033,36 +2185,44 @@ class IraqiMemoryManager:
 ### Phase 2: Advanced Features (Weeks 9-16)
 
 #### Week 9-10: Model Routing and Middleware
+
 **Priority**: HIGH  
 **Dependencies**: MCP integration  
 **Tasks**:
+
 - Extract routing patterns from claude-code-router
 - Create IraqiAPIRouter with cultural middleware
 - Enhance existing API structures
 - Test payment gateway routing
 
 #### Week 11-12: Memory Management
+
 **Priority**: MEDIUM  
 **Dependencies**: Routing systems  
 **Tasks**:
+
 - Extract memory patterns from Qwen-Code
 - Create IraqiMemoryManager with cultural persistence
 - Enhance existing praisonai memory systems
 - Test cross-session cultural continuity
 
 #### Week 13-14: Browser Automation Enhancement
+
 **Priority**: MEDIUM  
 **Dependencies**: Memory management  
 **Tasks**:
+
 - Extract browser patterns from Roo-Code
 - Enhance existing browser-use automation
 - Add government portal automation
 - Test Iraqi government service automation
 
 #### Week 15-16: Web Search and Internationalization
+
 **Priority**: LOW  
 **Dependencies**: Browser automation  
 **Tasks**:
+
 - Extract web search patterns from Qwen-Code
 - Enhance existing web search (Initial 41)
 - Extract i18n patterns from Roo-Code
@@ -2071,18 +2231,22 @@ class IraqiMemoryManager:
 ### Phase 3: Integration and Optimization (Weeks 17-20)
 
 #### Week 17-18: Unified Integration
+
 **Priority**: CRITICAL  
 **Dependencies**: All previous phases  
 **Tasks**:
+
 - Create unified system orchestrator
 - Integrate all extracted patterns
 - Test comprehensive Iraqi AI workflows
 - Performance optimization
 
 #### Week 19-20: Testing and Documentation
+
 **Priority**: HIGH  
 **Dependencies**: Unified integration  
 **Tasks**:
+
 - Comprehensive testing framework
 - Documentation updates
 - Performance benchmarking
@@ -2091,6 +2255,7 @@ class IraqiMemoryManager:
 ## 🔧 OPTIMIZATION STRATEGIES
 
 ### A. Implementation Priority Adjustment
+
 **Optimized sequence for maximum efficiency:**
 
 ```yaml
@@ -2103,6 +2268,7 @@ WEEK 7-8: MCP Integration (Build on Agent Foundation) 🔄
 **Rationale**: Trajectory recording provides foundation for debugging all subsequent integrations. Tool orchestration benefits from trajectory insights. Agent workflows enable better tool orchestration patterns, making MCP integration more sophisticated.
 
 ### B. Testing Strategy Enhancement
+
 **Continuous validation checkpoints:**
 
 ```python
@@ -2120,13 +2286,14 @@ class ContinuousValidationPipeline:
 ```
 
 ### C. Resource Optimization
+
 **Parallel development tracks:**
 
 ```yaml
 Parallel Track A: Backend Patterns (Weeks 1-16)
 - Trajectory recording, Tool orchestration, Agent workflows, Memory management
 
-Parallel Track B: Frontend Patterns (Weeks 3-18) 
+Parallel Track B: Frontend Patterns (Weeks 3-18)
 - UI components, Internationalization, Browser automation
 
 Integration Track: Unified Systems (Weeks 17-20)
@@ -2134,6 +2301,7 @@ Integration Track: Unified Systems (Weeks 17-20)
 ```
 
 ### D. Risk Mitigation Strategy
+
 **Fallback plans for each major extraction:**
 
 ```python
@@ -2141,7 +2309,7 @@ class ExtractionRiskManager:
     fallback_strategies = {
         "trae_agent_trajectory": "Enhance existing execution tracking in autogen",
         "roo_code_tools": "Enhance existing kortix-suna patterns",
-        "open_swe_agents": "Extend existing autogen coordination", 
+        "open_swe_agents": "Extend existing autogen coordination",
         "router_patterns": "Build custom Iraqi routing system",
         "qwen_memory": "Enhance existing praisonai memory"
     }
@@ -2150,6 +2318,7 @@ class ExtractionRiskManager:
 ## 📈 EXPECTED OUTCOMES
 
 ### Technical Enhancements
+
 - **Execution Tracking**: 500% improvement in Iraqi AI system debugging and optimization
 - **Sequential Reasoning**: 450% better cultural reasoning validation and Islamic compliance
 - **Tool Orchestration**: 400% improvement in Iraqi professional task automation
@@ -2159,6 +2328,7 @@ class ExtractionRiskManager:
 - **Infrastructure Optimization**: 40% better performance for Iraqi network conditions
 
 ### Iraqi Professional Impact
+
 - **Legal Professionals**: Automated document processing with Islamic compliance
 - **Medical Professionals**: Streamlined form creation and patient management
 - **Educational Institutions**: Enhanced content creation and management tools
@@ -2167,12 +2337,14 @@ class ExtractionRiskManager:
 ## 🛡️ CULTURAL COMPLIANCE FRAMEWORK
 
 ### Islamic Compliance Requirements
+
 - All extracted components must pass 95%+ Islamic compliance validation
 - Cultural context preservation across all model routing and workflow automation
 - Arabic RTL support in all user-facing interfaces
 - Iraqi professional domain specialization maintained
 
 ### Quality Assurance Standards
+
 - **Security**: 100% secure handling of Iraqi professional data
 - **Cultural Appropriateness**: 95%+ cultural validation scores
 - **Arabic Support**: 99%+ RTL accuracy, 85%+ Iraqi dialect recognition
@@ -2182,12 +2354,14 @@ class ExtractionRiskManager:
 ## 📋 IMMEDIATE ACTIONS (Week 1 Priorities)
 
 ### Critical Tasks:
+
 1. **Start Trae-Agent Trajectory Extraction**: Focus on IraqiTrajectoryRecorder and sequential thinking patterns
 2. **Prepare Roo-Code Tool Analysis**: Detailed technical analysis for tool orchestration enhancement
 3. **Cultural Validation Setup**: Ensure all extractions maintain Iraqi cultural standards
 4. **Arabic Interface Planning**: Plan RTL adaptations for all extracted components
 
 ### Success Criteria:
+
 - [ ] Trajectory recording system extracted and Iraqi-enhanced with cultural validation tracking
 - [ ] Sequential thinking enhanced with Islamic reasoning compliance
 - [ ] Tool orchestration extracted and Iraqi-enhanced
@@ -2208,6 +2382,7 @@ class ExtractionRiskManager:
 #### A. Advanced RAG System Architecture
 
 **EXTRACT FROM:**
+
 ```
 /reference/Archon/python/src/server/services/search/
 ├── rag_service.py                 # Core RAG orchestrator with 4-stage pipeline
@@ -2217,6 +2392,7 @@ class ExtractionRiskManager:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/archon-extracted/
 ├── advanced-rag/
@@ -2228,6 +2404,7 @@ class ExtractionRiskManager:
 ```
 
 **RAG Enhancement Strategy:**
+
 ```python
 # New: /examples/archon-extracted/advanced-rag/iraqi_rag_orchestrator.py
 from typing import Dict, List, Optional, Any, Tuple
@@ -2247,14 +2424,14 @@ class IraqiRAGResult:
 
 class IraqiRAGOrchestrator:
     """4-stage RAG pipeline with Iraqi cultural and professional enhancement"""
-    
+
     def __init__(self, knowledge_base: "IraqiKnowledgeBase"):
         self.knowledge_base = knowledge_base
         self.hybrid_search = ArabicHybridSearch()
         self.cultural_reranker = CulturalReranking()
         self.agentic_coordinator = AgenticRAGCoordinator()
         self.cultural_validator = IraqiCulturalValidator()
-        
+
     async def perform_enhanced_rag_query(
         self,
         query: str,
@@ -2266,7 +2443,7 @@ class IraqiRAGOrchestrator:
         enable_agentic_rag: bool = True
     ) -> Tuple[bool, List[IraqiRAGResult]]:
         """Execute 4-stage RAG pipeline with Iraqi enhancements"""
-        
+
         # Stage 1: Base Vector Search with Cultural Filtering
         vector_results = await self._execute_vector_search(
             query=query,
@@ -2274,7 +2451,7 @@ class IraqiRAGOrchestrator:
             cultural_filters=cultural_filters,
             match_count=match_count * 2  # Over-fetch for filtering
         )
-        
+
         # Stage 2: Hybrid Search Enhancement (if enabled)
         if enable_hybrid_search:
             hybrid_results = await self.hybrid_search.enhance_with_keyword_search(
@@ -2283,12 +2460,12 @@ class IraqiRAGOrchestrator:
                 arabic_aware=True,
                 match_count=match_count
             )
-            
+
             # Apply 20% score boosting for hybrid matches (like Archon)
             hybrid_results = self._apply_hybrid_boosting(hybrid_results)
         else:
             hybrid_results = vector_results[:match_count]
-        
+
         # Stage 3: Cultural and Professional Reranking (if enabled)
         if enable_reranking:
             reranked_results = await self.cultural_reranker.rerank_for_iraqi_context(
@@ -2299,7 +2476,7 @@ class IraqiRAGOrchestrator:
             )
         else:
             reranked_results = hybrid_results
-        
+
         # Stage 4: Agentic RAG Coordination (if enabled)
         if enable_agentic_rag:
             final_results = await self.agentic_coordinator.synthesize_results(
@@ -2309,26 +2486,26 @@ class IraqiRAGOrchestrator:
             )
         else:
             final_results = reranked_results
-        
+
         # Cultural compliance validation
         validated_results = await self._validate_cultural_compliance(
             final_results, professional_domain
         )
-        
+
         return True, validated_results
-    
+
     def _apply_hybrid_boosting(self, results: List[IraqiRAGResult]) -> List[IraqiRAGResult]:
         """Apply 20% score boosting for hybrid matches (Archon pattern)"""
         boosted_results = []
-        
+
         for result in results:
             if result.match_type == "hybrid":
                 # Boost similarity score by 20% (capped at 1.0)
                 boosted_score = min(1.0, result.similarity_score * 1.2)
                 result.similarity_score = boosted_score
-            
+
             boosted_results.append(result)
-        
+
         # Re-sort by boosted scores
         return sorted(boosted_results, key=lambda x: x.similarity_score, reverse=True)
 ```
@@ -2336,6 +2513,7 @@ class IraqiRAGOrchestrator:
 #### B. Hybrid Search with Arabic Enhancement
 
 **EXTRACT FROM:**
+
 ```
 /reference/Archon/python/src/server/services/search/
 ├── hybrid_search_strategy.py     # Intelligent result merging with preference ordering
@@ -2344,6 +2522,7 @@ class IraqiRAGOrchestrator:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/archon-extracted/
 ├── hybrid-search/
@@ -2354,6 +2533,7 @@ class IraqiRAGOrchestrator:
 ```
 
 **Hybrid Search Enhancement Pattern:**
+
 ```python
 # New: /examples/archon-extracted/hybrid-search/arabic_hybrid_search.py
 from typing import List, Dict, Any, Tuple
@@ -2361,13 +2541,13 @@ import asyncio
 
 class ArabicHybridSearch:
     """Sophisticated hybrid search with Arabic language and Iraqi cultural support"""
-    
+
     def __init__(self):
         self.vector_search = VectorArabicEmbeddings()
         self.keyword_processor = CulturalKeywordProcessor()
         self.result_merger = IntelligentResultMerger()
         self.iraqi_dialect_processor = IraqiDialectProcessor()
-        
+
     async def enhance_with_keyword_search(
         self,
         query: str,
@@ -2376,14 +2556,14 @@ class ArabicHybridSearch:
         match_count: int = 5
     ) -> List[Dict[str, Any]]:
         """Enhance vector results with keyword search (Archon hybrid pattern)"""
-        
+
         # Process query for Arabic and Iraqi dialect
         if arabic_aware:
             processed_query = await self.iraqi_dialect_processor.process_query(query)
             keyword_variants = await self._generate_arabic_keyword_variants(processed_query)
         else:
             keyword_variants = [query]
-        
+
         # Execute keyword search with all variants
         keyword_results = []
         for variant in keyword_variants:
@@ -2391,7 +2571,7 @@ class ArabicHybridSearch:
                 variant, match_count=match_count
             )
             keyword_results.extend(variant_results)
-        
+
         # Apply Archon's intelligent merging pattern with Iraqi enhancements
         merged_results = await self.result_merger.merge_with_cultural_preference(
             vector_results=vector_results,
@@ -2404,13 +2584,14 @@ class ArabicHybridSearch:
             ],
             match_count=match_count
         )
-        
+
         return merged_results
 ```
 
 #### C. Reranking and Agentic RAG Coordination
 
 **EXTRACT FROM:**
+
 ```
 /reference/Archon/python/src/server/services/search/
 ├── reranking_strategy.py         # CrossEncoder reranking for relevance improvement
@@ -2419,6 +2600,7 @@ class ArabicHybridSearch:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/archon-extracted/
 ├── reranking-agentic/
@@ -2439,6 +2621,7 @@ class ArabicHybridSearch:
 #### A. Official CLI Architecture
 
 **EXTRACT FROM:**
+
 ```
 /reference/gemini-cli/packages/cli/src/
 ├── gemini.tsx                   # Main CLI interface
@@ -2447,6 +2630,7 @@ class ArabicHybridSearch:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/gemini-cli-extracted/
 ├── cli-architecture/
@@ -2457,6 +2641,7 @@ class ArabicHybridSearch:
 ```
 
 **Enhancement Strategy:**
+
 ```python
 # New: /examples/gemini-cli-extracted/cli-architecture/iraqi_government_cli.py
 import asyncio
@@ -2467,45 +2652,45 @@ import rich
 
 class IraqiGovernmentCLI:
     """Enterprise-grade CLI for Iraqi government services with official Gemini patterns"""
-    
+
     def __init__(self, config_path: Optional[Path] = None):
         self.config = self._load_iraqi_config(config_path)
         self.security_manager = EnterpriseSecurityManager()
         self.cultural_validator = IraqiCulturalValidator()
         self.tool_discovery = IraqiToolDiscovery()
         self.checkpoint_manager = GovernmentCheckpointManager()
-        
-    async def initialize_government_session(self, 
+
+    async def initialize_government_session(self,
                                           service_type: str,
                                           security_level: str = "high",
                                           cultural_context: dict = None) -> Dict[str, Any]:
         """Initialize secure session for Iraqi government services"""
-        
+
         # Enterprise security validation
         security_result = await self.security_manager.validate_government_access(
             service_type=service_type,
             security_level=security_level,
             user_credentials=self.config.user_credentials
         )
-        
+
         if not security_result.approved:
             raise SecurityError(f"Government access denied: {security_result.reason}")
-        
+
         # Cultural compliance for government context
         if cultural_context:
             cultural_result = await self.cultural_validator.validate_government_context(
                 cultural_context, service_type
             )
-            
+
             if cultural_result.score < 0.98:  # Higher standard for government
                 raise ComplianceError(f"Government cultural compliance failed: {cultural_result.issues}")
-        
+
         # Tool discovery for government services
         government_tools = await self.tool_discovery.discover_government_tools(
             service_type=service_type,
             security_level=security_level
         )
-        
+
         # Create checkpoint for government session
         checkpoint_id = await self.checkpoint_manager.create_government_checkpoint(
             service_type=service_type,
@@ -2513,7 +2698,7 @@ class IraqiGovernmentCLI:
             cultural_context=cultural_context,
             available_tools=government_tools
         )
-        
+
         return {
             "session_id": checkpoint_id,
             "security_level": security_level,
@@ -2526,6 +2711,7 @@ class IraqiGovernmentCLI:
 #### B. Advanced Tool Discovery System
 
 **EXTRACT FROM:**
+
 ```
 /reference/gemini-cli/packages/core/src/tools/
 ├── tool-registry.ts             # Comprehensive tool registry
@@ -2534,6 +2720,7 @@ class IraqiGovernmentCLI:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/gemini-cli-extracted/
 ├── tool-discovery/
@@ -2546,6 +2733,7 @@ class IraqiGovernmentCLI:
 #### C. Enterprise Security & Checkpointing
 
 **EXTRACT FROM:**
+
 ```
 /reference/gemini-cli/packages/core/src/
 ├── config/sandboxConfig.ts      # Security configuration
@@ -2554,6 +2742,7 @@ class IraqiGovernmentCLI:
 ```
 
 **EXTRACT TO:**
+
 ```
 /examples/gemini-cli-extracted/
 ├── enterprise-security/
@@ -2572,18 +2761,21 @@ class IraqiGovernmentCLI:
 **Assessment Result**: After thorough analysis, qwen-code provides insufficient value for our Iraqi AI Chat System
 
 #### Analysis Summary:
+
 - **Terminal-focused vs Web-based**: Qwen-code is CLI-optimized, we're building a web-based Iraqi AI chat system
 - **Limited Cultural Value**: No Iraqi cultural awareness or Arabic language features
 - **Architecture Mismatch**: Terminal interface patterns don't align with our Next.js/React architecture
 - **Existing Superior Solutions**: Our Kortix-Suna enterprise system already provides better session and memory management
 
 #### Key Features Evaluated:
+
 1. **Session Token Management**: Useful but not worth extraction effort
 2. **Memory Hierarchical Loading**: Better patterns exist in our examples
 3. **Token Caching**: Cost optimization features available elsewhere
 4. **Multi-Provider Support**: Already covered by our existing systems
 
 #### **Recommendation**: NO EXTRACTION
+
 Our existing examples (Kortix-Suna enterprise management, Iraqi cultural validation, Arabic processing) provide superior capabilities for our target Iraqi professional market.
 
 **Development Savings**: **0 weeks** - No extraction recommended
@@ -2609,8 +2801,9 @@ Based on comprehensive comparison analysis between Cline's revolutionary feature
 5. **Workflow Sophistication**: Markdown-defined automation vs our current basic workflows is a significant capability gap
 
 ### **Immediate Actions:**
+
 - ✅ **Start Cline extraction immediately** as highest priority
-- ✅ **Focus on the 5 critical gaps** identified in the analysis  
+- ✅ **Focus on the 5 critical gaps** identified in the analysis
 - ✅ **Maintain our existing Iraqi cultural advantages** while adding Cline's foundational capabilities
 - ✅ **Integrate with existing 44 components** rather than replace them
 

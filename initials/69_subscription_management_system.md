@@ -51,15 +51,18 @@
 **Subscription management documentation:**
 
 **Billing Platforms:**
+
 - **Stripe Billing:** Stripe subscription management, billing cycles, and recurring payments
 - **Paddle:** SaaS billing platform with global tax handling and subscription management
 - **Chargebee:** Subscription billing platform with advanced subscription lifecycle management
 
 **Feature Management:**
+
 - **LaunchDarkly:** Feature flags and subscription-based feature access control
 - **Split.io:** Feature flag management with subscription tier integration
 
 **Analytics and Metrics:**
+
 - **ChartMogul:** Subscription analytics, MRR tracking, and churn analysis
 - **ProfitWell:** Subscription metrics and revenue optimization
 
@@ -75,6 +78,7 @@
 - **Religious Observance:** Respect for Islamic holidays and prayer times in billing cycles and notifications
 
 **Iraqi Business Context:**
+
 - **Local Currency Support:** Primary IQD pricing with USD/EUR alternatives
 - **Economic Considerations:** Pricing tiers appropriate for Iraqi economic conditions
 - **Family Business Integration:** Support for family business accounts and shared subscriptions

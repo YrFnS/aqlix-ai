@@ -2,9 +2,11 @@ name: "Bun Workspace Setup for Iraqi AI Chat System"
 description: |
 
 ## Purpose
+
 Establish foundational Bun workspace structure for the Iraqi AI Chat System monorepo with apps/ and packages/ organization, optimized dependency management, and cross-platform workspace configuration.
 
 ## Core Principles
+
 1. **Performance First**: Leverage Bun's 30x faster installs and superior build performance
 2. **Clean Architecture**: Clear separation between applications and shared packages
 3. **Developer Experience**: Streamlined scripts and development workflow
@@ -14,9 +16,11 @@ Establish foundational Bun workspace structure for the Iraqi AI Chat System mono
 ---
 
 ## Goal
+
 Create a production-ready Bun workspace structure that establishes the monorepo foundation for the Iraqi AI Chat System, with proper dependency management, development scripts, and workspace coordination.
 
 ## Why
+
 - **Performance**: 30x faster dependency installation compared to npm/yarn
 - **Development Efficiency**: Unified workspace management for multi-package development
 - **Code Reusability**: Shared packages across web, mobile, and API applications
@@ -24,18 +28,21 @@ Create a production-ready Bun workspace structure that establishes the monorepo 
 - **Future Growth**: Foundation that scales with additional packages and applications
 
 ## What
+
 Implement Bun workspace configuration with:
+
 - Root workspace configuration (bun.json + package.json)
 - Monorepo structure with apps/ and packages/ organization
-- Cross-package dependency management using workspace:* protocol
+- Cross-package dependency management using workspace:\* protocol
 - Development scripts for concurrent development and testing
 - Build optimization with workspace-aware caching
 - Git configuration optimized for Bun workspace artifacts
 
 ### Success Criteria
+
 - [ ] Bun workspace installs all dependencies successfully with bun install
 - [ ] All packages build without errors using workspace scripts
-- [ ] Internal package references work correctly (workspace:* protocol)
+- [ ] Internal package references work correctly (workspace:\* protocol)
 - [ ] Development servers run concurrently without port conflicts
 - [ ] Build caching and optimization demonstrably faster than npm equivalent
 - [ ] TypeScript path mapping resolves across workspace packages
@@ -44,6 +51,7 @@ Implement Bun workspace configuration with:
 ## All Needed Context
 
 ### Documentation & References
+
 ```yaml
 # MUST READ - Include these in your context window
 - url: https://bun.sh/docs/install/workspaces
@@ -73,6 +81,7 @@ Implement Bun workspace configuration with:
 ```
 
 ### Current Codebase tree (project root structure)
+
 ```bash
 /
 ├── .claude/                 # AI agent configurations
@@ -92,6 +101,7 @@ Implement Bun workspace configuration with:
 ```
 
 ### Desired Codebase tree with files to be added and responsibility of file
+
 ```bash
 /
 ├── apps/                   # Applications directory
@@ -120,6 +130,7 @@ Implement Bun workspace configuration with:
 ```
 
 ### Known Gotchas of our codebase & Library Quirks
+
 ```typescript
 // CRITICAL: Current project has NO existing workspace setup
 // WARNING: Examples use npm/yarn - must convert to Bun patterns
@@ -142,6 +153,7 @@ Implement Bun workspace configuration with:
 ## Implementation Blueprint
 
 ### Data models and structure
+
 Create the core workspace configuration files that define package organization and dependency relationships.
 
 ```json
@@ -351,6 +363,7 @@ const devScript = {
 ```
 
 ### Integration Points
+
 ```yaml
 TYPESCRIPT:
   - configuration: "Workspace-wide tsconfig.json with path mapping"
@@ -376,6 +389,7 @@ DEVELOPMENT:
 ## Validation Loop
 
 ### Level 1: Syntax & Configuration
+
 ```bash
 # Verify Bun workspace setup
 bun install                           # Should install all dependencies
@@ -389,6 +403,7 @@ bun run --filter "*" --dry-run test  # Check all test scripts exist
 ```
 
 ### Level 2: Package Validation
+
 ```bash
 # Test internal package dependencies
 cd packages/types && bun run build   # Build types package
@@ -404,6 +419,7 @@ cd apps/web && bun run typecheck     # Should resolve @/* imports correctly
 ```
 
 ### Level 3: Development Workflow
+
 ```bash
 # Test concurrent development
 bun run dev:all                      # Start all development servers
@@ -421,6 +437,7 @@ echo "export const test = 'changed';" >> packages/types/src/index.ts
 ```
 
 ### Level 4: Build Performance Test
+
 ```bash
 # Measure build performance
 time bun run build                   # Full workspace build
@@ -433,12 +450,13 @@ time npm run build                   # Should be significantly slower
 ```
 
 ## Final validation Checklist
+
 - [ ] All workspace packages install: `bun install` completes successfully
 - [ ] No dependency conflicts: `bun pm ls` shows clean resolution
 - [ ] All packages build: `bun run build` completes without errors
 - [ ] TypeScript resolution works: `bun run typecheck` passes across workspace
 - [ ] Development servers start: `bun run dev:all` launches without port conflicts
-- [ ] Internal dependencies resolve: workspace:* protocol works correctly
+- [ ] Internal dependencies resolve: workspace:\* protocol works correctly
 - [ ] Build performance optimized: Demonstrably faster than npm equivalent
 - [ ] Git integration clean: Proper .gitignore, bun.lockb committed
 - [ ] Script organization logical: Clear separation of workspace vs package scripts
@@ -446,8 +464,9 @@ time npm run build                   # Should be significantly slower
 ---
 
 ## Anti-Patterns to Avoid
+
 - ❌ Don't mix npm/yarn commands with Bun workspace setup
-- ❌ Don't hardcode package versions that should use workspace:*
+- ❌ Don't hardcode package versions that should use workspace:\*
 - ❌ Don't skip bun.lockb in version control - it's essential for reproducible builds
 - ❌ Don't use relative imports across packages - use proper workspace names
 - ❌ Don't duplicate dependencies across packages without justification
@@ -462,6 +481,7 @@ time npm run build                   # Should be significantly slower
 **Confidence Level: 9/10**
 
 **Strengths:**
+
 - Comprehensive context from official Bun documentation
 - Clear understanding of target monorepo structure from app-plan.md
 - Real examples from existing package.json files in codebase
@@ -470,6 +490,7 @@ time npm run build                   # Should be significantly slower
 - Performance benchmarks and measurement criteria included
 
 **Areas of Excellence:**
+
 - Complete workspace setup from scratch (matches beginner-friendly requirement)
 - Executable validation commands for AI agent self-verification
 - Detailed gotchas and library-specific considerations documented
@@ -477,6 +498,7 @@ time npm run build                   # Should be significantly slower
 - Scalable foundation for future packages and applications
 
 **Minor Limitations:**
+
 - Some package configurations may need fine-tuning based on specific Iraqi AI requirements
 - Python backend tooling integration may require additional iteration
 - Arabic text processing packages may have unique Bun compatibility considerations

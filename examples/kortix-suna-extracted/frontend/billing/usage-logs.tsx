@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -15,23 +15,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { ExternalLink, Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import { OpenInNewWindowIcon } from '@radix-ui/react-icons';
-import { useUsageLogs } from '@/hooks/react-query/subscriptions/use-billing';
-import { UsageLogEntry } from '@/lib/api';
-
-
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { ExternalLink, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
+import { useUsageLogs } from "@/hooks/react-query/subscriptions/use-billing";
+import { UsageLogEntry } from "@/lib/api";
 
 interface DailyUsage {
   date: string;
@@ -50,11 +48,16 @@ export default function UsageLogs({ accountId }: Props) {
   const [page, setPage] = useState(0);
   const [allLogs, setAllLogs] = useState<UsageLogEntry[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  
+
   const ITEMS_PER_PAGE = 1000;
 
   // Use React Query hook for the current page
-  const { data: currentPageData, isLoading, error, refetch } = useUsageLogs(page, ITEMS_PER_PAGE);
+  const {
+    data: currentPageData,
+    isLoading,
+    error,
+    refetch,
+  } = useUsageLogs(page, ITEMS_PER_PAGE);
 
   // Update accumulated logs when new data arrives
   useEffect(() => {
@@ -64,7 +67,7 @@ export default function UsageLogs({ accountId }: Props) {
         setAllLogs(currentPageData.logs || []);
       } else {
         // Subsequent pages - append to existing logs
-        setAllLogs(prev => [...prev, ...(currentPageData.logs || [])]);
+        setAllLogs((prev) => [...prev, ...(currentPageData.logs || [])]);
       }
       setHasMore(currentPageData.has_more || false);
     }
@@ -80,25 +83,25 @@ export default function UsageLogs({ accountId }: Props) {
   };
 
   const formatCost = (cost: number | string) => {
-    if (typeof cost === 'string' || cost === 0) {
-      return typeof cost === 'string' ? cost : '$0.0000';
+    if (typeof cost === "string" || cost === 0) {
+      return typeof cost === "string" ? cost : "$0.0000";
     }
     return `$${cost.toFixed(4)}`;
   };
 
   const formatDateOnly = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return new Date(dateString).toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const handleThreadClick = (threadId: string, projectId: string) => {
     // Navigate to the thread using the correct project_id
     const threadUrl = `/projects/${projectId}/thread/${threadId}`;
-    window.open(threadUrl, '_blank');
+    window.open(threadUrl, "_blank");
   };
 
   // Group usage logs by date
@@ -121,7 +124,7 @@ export default function UsageLogs({ accountId }: Props) {
         acc[date].logs.push(log);
         acc[date].totalTokens += log.total_tokens;
         acc[date].totalCost +=
-          typeof log.estimated_cost === 'number' ? log.estimated_cost : 0;
+          typeof log.estimated_cost === "number" ? log.estimated_cost : 0;
         acc[date].requestCount += 1;
 
         if (!acc[date].models.includes(log.content.model)) {
@@ -137,8 +140,6 @@ export default function UsageLogs({ accountId }: Props) {
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
   };
-
-
 
   if (isLoading && page === 0) {
     return (
@@ -167,7 +168,7 @@ export default function UsageLogs({ accountId }: Props) {
         <CardContent>
           <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
             <p className="text-sm text-destructive">
-              Error: {error.message || 'Failed to load usage logs'}
+              Error: {error.message || "Failed to load usage logs"}
             </p>
           </div>
         </CardContent>
@@ -196,7 +197,7 @@ export default function UsageLogs({ accountId }: Props) {
   const dailyUsage = groupLogsByDate(allLogs);
   const totalUsage = allLogs.reduce(
     (sum, log) =>
-      sum + (typeof log.estimated_cost === 'number' ? log.estimated_cost : 0),
+      sum + (typeof log.estimated_cost === "number" ? log.estimated_cost : 0),
     0,
   );
 
@@ -207,11 +208,11 @@ export default function UsageLogs({ accountId }: Props) {
         <CardHeader>
           <CardTitle>Daily Usage Logs</CardTitle>
           <CardDescription>
-            <div className='flex justify-between items-center'>
+            <div className="flex justify-between items-center">
               Your token usage organized by day, sorted by most recent.{" "}
-              <Button variant='outline' asChild className='text-sm ml-4'>
+              <Button variant="outline" asChild className="text-sm ml-4">
                 <Link href="/model-pricing">
-                  View Model Pricing <OpenInNewWindowIcon className='w-4 h-4' />
+                  View Model Pricing <OpenInNewWindowIcon className="w-4 h-4" />
                 </Link>
               </Button>
             </div>
@@ -235,8 +236,8 @@ export default function UsageLogs({ accountId }: Props) {
                           </div>
                           <div className="text-sm text-muted-foreground">
                             {day.requestCount} request
-                            {day.requestCount !== 1 ? 's' : ''} •{' '}
-                            {day.models.join(', ')}
+                            {day.requestCount !== 1 ? "s" : ""} •{" "}
+                            {day.models.join(", ")}
                           </div>
                         </div>
                         <div className="text-right">
@@ -279,8 +280,8 @@ export default function UsageLogs({ accountId }: Props) {
                                   </Badge>
                                 </TableCell>
                                 <TableCell className="text-right font-mono font-medium text-sm">
-                                  {log.content.usage.prompt_tokens.toLocaleString()}{' '}
-                                  -&gt;{' '}
+                                  {log.content.usage.prompt_tokens.toLocaleString()}{" "}
+                                  -&gt;{" "}
                                   {log.content.usage.completion_tokens.toLocaleString()}
                                 </TableCell>
                                 <TableCell className="text-right font-mono font-medium text-sm">
@@ -324,7 +325,7 @@ export default function UsageLogs({ accountId }: Props) {
                         Loading...
                       </>
                     ) : (
-                      'Load More'
+                      "Load More"
                     )}
                   </Button>
                 </div>

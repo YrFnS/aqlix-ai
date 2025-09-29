@@ -1,7 +1,7 @@
 /**
  * Arabic-First Admin Interface with RTL Support
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Complete RTL layout system for admin interface
  * - Arabic-first navigation and menus
@@ -18,8 +18,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -29,7 +35,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -58,7 +64,7 @@ import {
   Sun,
   Moon,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 import { UserRole, ProfessionalDomain } from '../types/admin';
 
@@ -89,13 +95,15 @@ export const ArabicAdminProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const direction = language === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <ArabicAdminContext.Provider value={{
-      language,
-      setLanguage,
-      direction,
-      theme,
-      setTheme
-    }}>
+    <ArabicAdminContext.Provider
+      value={{
+        language,
+        setLanguage,
+        direction,
+        theme,
+        setTheme,
+      }}
+    >
       <div dir={direction} className={`arabic-admin-interface ${language}`}>
         {children}
       </div>
@@ -109,19 +117,19 @@ const NAVIGATION_ITEMS = [
     id: 'dashboard',
     icon: BarChart3,
     label: { en: 'Dashboard', ar: 'لوحة التحكم' },
-    href: '/admin'
+    href: '/admin',
   },
   {
     id: 'users',
     icon: Users,
     label: { en: 'User Management', ar: 'إدارة المستخدمين' },
-    href: '/admin/users'
+    href: '/admin/users',
   },
   {
     id: 'compliance',
     icon: Shield,
     label: { en: 'Compliance Monitoring', ar: 'مراقبة الامتثال' },
-    href: '/admin/compliance'
+    href: '/admin/compliance',
   },
   {
     id: 'domains',
@@ -131,34 +139,54 @@ const NAVIGATION_ITEMS = [
     children: [
       { icon: Scale, label: { en: 'Legal', ar: 'قانوني' }, href: '/admin/domains/legal' },
       { icon: Stethoscope, label: { en: 'Medical', ar: 'طبي' }, href: '/admin/domains/medical' },
-      { icon: GraduationCap, label: { en: 'Educational', ar: 'تعليمي' }, href: '/admin/domains/educational' },
+      {
+        icon: GraduationCap,
+        label: { en: 'Educational', ar: 'تعليمي' },
+        href: '/admin/domains/educational',
+      },
       { icon: Briefcase, label: { en: 'Business', ar: 'تجاري' }, href: '/admin/domains/business' },
-      { icon: Wrench, label: { en: 'Engineering', ar: 'هندسي' }, href: '/admin/domains/engineering' }
-    ]
+      {
+        icon: Wrench,
+        label: { en: 'Engineering', ar: 'هندسي' },
+        href: '/admin/domains/engineering',
+      },
+    ],
   },
   {
     id: 'reports',
     icon: FileText,
     label: { en: 'Reports & Analytics', ar: 'التقارير والتحليلات' },
-    href: '/admin/reports'
+    href: '/admin/reports',
   },
   {
     id: 'settings',
     icon: Settings,
     label: { en: 'System Settings', ar: 'إعدادات النظام' },
-    href: '/admin/settings'
-  }
+    href: '/admin/settings',
+  },
 ];
 
 // Role badges with Arabic translations
 const ROLE_LABELS: Record<UserRole, { en: string; ar: string; color: string }> = {
   'super-admin': { en: 'Super Admin', ar: 'مدير عام', color: 'bg-red-100 text-red-800' },
-  'organization-admin': { en: 'Organization Admin', ar: 'مدير منظمة', color: 'bg-blue-100 text-blue-800' },
-  'cultural-validator': { en: 'Cultural Validator', ar: 'محقق ثقافي', color: 'bg-green-100 text-green-800' },
+  'organization-admin': {
+    en: 'Organization Admin',
+    ar: 'مدير منظمة',
+    color: 'bg-blue-100 text-blue-800',
+  },
+  'cultural-validator': {
+    en: 'Cultural Validator',
+    ar: 'محقق ثقافي',
+    color: 'bg-green-100 text-green-800',
+  },
   'domain-expert': { en: 'Domain Expert', ar: 'خبير مختص', color: 'bg-purple-100 text-purple-800' },
-  'workspace-admin': { en: 'Workspace Admin', ar: 'مدير مساحة عمل', color: 'bg-orange-100 text-orange-800' },
-  'user': { en: 'User', ar: 'مستخدم', color: 'bg-gray-100 text-gray-800' },
-  'guest': { en: 'Guest', ar: 'ضيف', color: 'bg-gray-50 text-gray-600' }
+  'workspace-admin': {
+    en: 'Workspace Admin',
+    ar: 'مدير مساحة عمل',
+    color: 'bg-orange-100 text-orange-800',
+  },
+  user: { en: 'User', ar: 'مستخدم', color: 'bg-gray-100 text-gray-800' },
+  guest: { en: 'Guest', ar: 'ضيف', color: 'bg-gray-50 text-gray-600' },
 };
 
 interface ArabicAdminLayoutProps {
@@ -184,21 +212,17 @@ const ArabicAdminSidebar: React.FC<{ currentPath?: string }> = ({ currentPath = 
           <h2 className="text-lg font-bold">
             {isArabic ? 'النظام الذكي العراقي' : 'Iraqi AI System'}
           </h2>
-          <p className="text-sm text-gray-600">
-            {isArabic ? 'لوحة الإدارة' : 'Admin Panel'}
-          </p>
+          <p className="text-sm text-gray-600">{isArabic ? 'لوحة الإدارة' : 'Admin Panel'}</p>
         </div>
 
         {/* Navigation Menu */}
         <SidebarGroup>
-          <SidebarGroupLabel>
-            {isArabic ? 'التنقل الرئيسي' : 'Main Navigation'}
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>{isArabic ? 'التنقل الرئيسي' : 'Main Navigation'}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAVIGATION_ITEMS.map((item) => (
+              {NAVIGATION_ITEMS.map(item => (
                 <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton 
+                  <SidebarMenuButton
                     asChild
                     isActive={currentPath === item.href}
                     className={isArabic ? 'flex-row-reverse' : ''}
@@ -206,19 +230,21 @@ const ArabicAdminSidebar: React.FC<{ currentPath?: string }> = ({ currentPath = 
                     <a href={item.href} className="flex items-center gap-2">
                       <item.icon className="w-4 h-4" />
                       <span>{item.label[language]}</span>
-                      {item.children && (
-                        isArabic ? <ChevronLeft className="w-4 h-4 mr-auto" /> 
-                                : <ChevronRight className="w-4 h-4 ml-auto" />
-                      )}
+                      {item.children &&
+                        (isArabic ? (
+                          <ChevronLeft className="w-4 h-4 mr-auto" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4 ml-auto" />
+                        ))}
                     </a>
                   </SidebarMenuButton>
-                  
+
                   {/* Submenu */}
                   {item.children && (
                     <div className={`ml-4 mt-2 space-y-1 ${isArabic ? 'mr-4 ml-0' : ''}`}>
                       {item.children.map((child, index) => (
-                        <SidebarMenuButton 
-                          key={index} 
+                        <SidebarMenuButton
+                          key={index}
                           asChild
                           size="sm"
                           className={isArabic ? 'flex-row-reverse' : ''}
@@ -244,17 +270,21 @@ const ArabicAdminSidebar: React.FC<{ currentPath?: string }> = ({ currentPath = 
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="p-2 space-y-2">
-              <div className={`flex items-center justify-between ${isArabic ? 'flex-row-reverse' : ''}`}>
-                <span className="text-sm">{isArabic ? 'الامتثال الإسلامي' : 'Islamic Compliance'}</span>
-                <Badge className="bg-green-100 text-green-800">
-                  {isArabic ? 'نشط' : 'Active'}
-                </Badge>
+              <div
+                className={`flex items-center justify-between ${isArabic ? 'flex-row-reverse' : ''}`}
+              >
+                <span className="text-sm">
+                  {isArabic ? 'الامتثال الإسلامي' : 'Islamic Compliance'}
+                </span>
+                <Badge className="bg-green-100 text-green-800">{isArabic ? 'نشط' : 'Active'}</Badge>
               </div>
-              <div className={`flex items-center justify-between ${isArabic ? 'flex-row-reverse' : ''}`}>
-                <span className="text-sm">{isArabic ? 'الحياد السياسي' : 'Political Neutrality'}</span>
-                <Badge className="bg-blue-100 text-blue-800">
-                  {isArabic ? 'نشط' : 'Active'}
-                </Badge>
+              <div
+                className={`flex items-center justify-between ${isArabic ? 'flex-row-reverse' : ''}`}
+              >
+                <span className="text-sm">
+                  {isArabic ? 'الحياد السياسي' : 'Political Neutrality'}
+                </span>
+                <Badge className="bg-blue-100 text-blue-800">{isArabic ? 'نشط' : 'Active'}</Badge>
               </div>
             </div>
           </SidebarGroupContent>
@@ -265,8 +295,8 @@ const ArabicAdminSidebar: React.FC<{ currentPath?: string }> = ({ currentPath = 
 };
 
 // Arabic Admin Header
-const ArabicAdminHeader: React.FC<{ 
-  currentUser?: ArabicAdminLayoutProps['currentUser'] 
+const ArabicAdminHeader: React.FC<{
+  currentUser?: ArabicAdminLayoutProps['currentUser'];
 }> = ({ currentUser }) => {
   const { language, setLanguage, theme, setTheme } = useArabicAdmin();
   const isArabic = language === 'ar';
@@ -297,18 +327,14 @@ const ArabicAdminHeader: React.FC<{
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={isArabic ? 'start' : 'end'}>
-              <DropdownMenuItem onClick={() => setLanguage('ar')}>
-                العربية
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLanguage('en')}>
-                English
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('ar')}>العربية</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('en')}>English</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Theme Switcher */}
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="sm"
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
           >
@@ -338,9 +364,7 @@ const ArabicAdminHeader: React.FC<{
                       {isArabic ? currentUser.arabicName || currentUser.name : currentUser.name}
                     </div>
                     {roleInfo && (
-                      <Badge className={`text-xs ${roleInfo.color}`}>
-                        {roleInfo[language]}
-                      </Badge>
+                      <Badge className={`text-xs ${roleInfo.color}`}>{roleInfo[language]}</Badge>
                     )}
                   </div>
                 </Button>
@@ -368,10 +392,7 @@ const ArabicAdminHeader: React.FC<{
 };
 
 // Main Arabic Admin Layout
-export const ArabicAdminLayout: React.FC<ArabicAdminLayoutProps> = ({
-  children,
-  currentUser
-}) => {
+export const ArabicAdminLayout: React.FC<ArabicAdminLayoutProps> = ({ children, currentUser }) => {
   return (
     <ArabicAdminProvider>
       <SidebarProvider>
@@ -379,9 +400,7 @@ export const ArabicAdminLayout: React.FC<ArabicAdminLayoutProps> = ({
           <ArabicAdminSidebar />
           <main className="flex-1 flex flex-col overflow-hidden">
             <ArabicAdminHeader currentUser={currentUser} />
-            <div className="flex-1 overflow-y-auto p-6">
-              {children}
-            </div>
+            <div className="flex-1 overflow-y-auto p-6">{children}</div>
           </main>
         </div>
       </SidebarProvider>
@@ -416,21 +435,21 @@ export const ArabicAdminButton: React.FC<{
   size?: 'default' | 'sm' | 'lg' | 'icon';
   onClick?: () => void;
   className?: string;
-}> = ({ 
-  children, 
-  arabicChildren, 
-  variant = 'default', 
+}> = ({
+  children,
+  arabicChildren,
+  variant = 'default',
   size = 'default',
   onClick,
-  className = '' 
+  className = '',
 }) => {
   const { language } = useArabicAdmin();
   const isArabic = language === 'ar';
 
   return (
-    <Button 
-      variant={variant} 
-      size={size} 
+    <Button
+      variant={variant}
+      size={size}
       onClick={onClick}
       className={`arabic-admin-button ${className}`}
     >
@@ -446,14 +465,7 @@ export const ArabicAdminInput: React.FC<{
   onChange?: (value: string) => void;
   type?: string;
   className?: string;
-}> = ({ 
-  placeholder, 
-  arabicPlaceholder, 
-  value, 
-  onChange, 
-  type = 'text',
-  className = '' 
-}) => {
+}> = ({ placeholder, arabicPlaceholder, value, onChange, type = 'text', className = '' }) => {
   const { language } = useArabicAdmin();
   const isArabic = language === 'ar';
 
@@ -461,7 +473,7 @@ export const ArabicAdminInput: React.FC<{
     <Input
       type={type}
       value={value}
-      onChange={(e) => onChange?.(e.target.value)}
+      onChange={e => onChange?.(e.target.value)}
       placeholder={isArabic ? arabicPlaceholder || placeholder : placeholder}
       className={`arabic-admin-input ${isArabic ? 'text-right' : 'text-left'} ${className}`}
     />

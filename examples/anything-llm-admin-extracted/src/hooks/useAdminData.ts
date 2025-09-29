@@ -1,7 +1,7 @@
 /**
  * Iraqi AI Admin Data Hook
  * Custom hook for fetching and managing admin dashboard data
- * 
+ *
  * Features:
  * - Real-time metrics fetching
  * - Automatic refresh intervals
@@ -20,7 +20,7 @@ import {
   CulturalMetrics,
   IraqiUser,
   IraqiOrganization,
-  ApiResponse
+  ApiResponse,
 } from '../types/admin';
 import IraqiAdminService from '../services/AdminService';
 
@@ -38,22 +38,22 @@ interface UseAdminDataReturn {
   complianceMetrics: ComplianceMetrics | null;
   performanceMetrics: PerformanceMetrics | null;
   culturalMetrics: CulturalMetrics | null;
-  
+
   // Recent data
   recentUsers: IraqiUser[] | null;
   recentOrganizations: IraqiOrganization[] | null;
-  
+
   // State
   loading: boolean;
   error: string | null;
   lastUpdated: Date | null;
-  
+
   // Actions
   refreshData: () => Promise<void>;
   refreshMetrics: () => Promise<void>;
   refreshUsers: () => Promise<void>;
   refreshOrganizations: () => Promise<void>;
-  
+
   // Cache control
   clearCache: () => void;
   setCacheTimeout: (timeout: number) => void;
@@ -73,17 +73,17 @@ class AdminDataCache {
   get<T>(key: string, timeRange: string, timeout?: number): T | null {
     const cacheKey = `${key}_${timeRange}`;
     const entry = this.cache.get(cacheKey);
-    
+
     if (!entry) return null;
-    
+
     const now = Date.now();
     const cacheTimeout = timeout || this.defaultTimeout;
-    
+
     if (now - entry.timestamp > cacheTimeout) {
       this.cache.delete(cacheKey);
       return null;
     }
-    
+
     return entry.data;
   }
 
@@ -92,7 +92,7 @@ class AdminDataCache {
     this.cache.set(cacheKey, {
       data,
       timestamp: Date.now(),
-      timeRange
+      timeRange,
     });
   }
 
@@ -123,7 +123,7 @@ export const useAdminData = (
   const {
     refreshInterval = 30000, // 30 seconds
     enableAutoRefresh = true,
-    cacheTimeout = 5 * 60 * 1000 // 5 minutes
+    cacheTimeout = 5 * 60 * 1000, // 5 minutes
   } = options;
 
   // State
@@ -195,7 +195,11 @@ export const useAdminData = (
   // Fetch organization metrics with caching
   const fetchOrganizationMetrics = useCallback(async () => {
     try {
-      const cached = adminDataCache.get<OrganizationMetrics>('organizationMetrics', timeRange, cacheTimeout);
+      const cached = adminDataCache.get<OrganizationMetrics>(
+        'organizationMetrics',
+        timeRange,
+        cacheTimeout
+      );
       if (cached) {
         setOrganizationMetrics(cached);
         return;
@@ -217,7 +221,11 @@ export const useAdminData = (
   // Fetch compliance metrics with caching
   const fetchComplianceMetrics = useCallback(async () => {
     try {
-      const cached = adminDataCache.get<ComplianceMetrics>('complianceMetrics', timeRange, cacheTimeout);
+      const cached = adminDataCache.get<ComplianceMetrics>(
+        'complianceMetrics',
+        timeRange,
+        cacheTimeout
+      );
       if (cached) {
         setComplianceMetrics(cached);
         return;
@@ -239,7 +247,11 @@ export const useAdminData = (
   // Fetch performance metrics with caching
   const fetchPerformanceMetrics = useCallback(async () => {
     try {
-      const cached = adminDataCache.get<PerformanceMetrics>('performanceMetrics', timeRange, cacheTimeout);
+      const cached = adminDataCache.get<PerformanceMetrics>(
+        'performanceMetrics',
+        timeRange,
+        cacheTimeout
+      );
       if (cached) {
         setPerformanceMetrics(cached);
         return;
@@ -261,7 +273,11 @@ export const useAdminData = (
   // Fetch cultural metrics with caching
   const fetchCulturalMetrics = useCallback(async () => {
     try {
-      const cached = adminDataCache.get<CulturalMetrics>('culturalMetrics', timeRange, cacheTimeout);
+      const cached = adminDataCache.get<CulturalMetrics>(
+        'culturalMetrics',
+        timeRange,
+        cacheTimeout
+      );
       if (cached) {
         setCulturalMetrics(cached);
         return;
@@ -289,15 +305,20 @@ export const useAdminData = (
         return;
       }
 
-      const response = await adminService.getUsers(1, 10, {
-        dateRange: {
-          start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // Last 7 days
-          end: new Date().toISOString()
+      const response = await adminService.getUsers(
+        1,
+        10,
+        {
+          dateRange: {
+            start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // Last 7 days
+            end: new Date().toISOString(),
+          },
+        },
+        {
+          field: 'createdAt',
+          direction: 'desc',
         }
-      }, {
-        field: 'createdAt',
-        direction: 'desc'
-      });
+      );
 
       if (response.success && response.data) {
         setRecentUsers(response.data.items);
@@ -314,21 +335,30 @@ export const useAdminData = (
   // Fetch recent organizations
   const fetchRecentOrganizations = useCallback(async () => {
     try {
-      const cached = adminDataCache.get<IraqiOrganization[]>('recentOrganizations', 'recent', cacheTimeout);
+      const cached = adminDataCache.get<IraqiOrganization[]>(
+        'recentOrganizations',
+        'recent',
+        cacheTimeout
+      );
       if (cached) {
         setRecentOrganizations(cached);
         return;
       }
 
-      const response = await adminService.getOrganizations(1, 5, {
-        dateRange: {
-          start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-          end: new Date().toISOString()
+      const response = await adminService.getOrganizations(
+        1,
+        5,
+        {
+          dateRange: {
+            start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            end: new Date().toISOString(),
+          },
+        },
+        {
+          field: 'createdAt',
+          direction: 'desc',
         }
-      }, {
-        field: 'createdAt',
-        direction: 'desc'
-      });
+      );
 
       if (response.success && response.data) {
         setRecentOrganizations(response.data.items);
@@ -352,7 +382,7 @@ export const useAdminData = (
         fetchOrganizationMetrics(),
         fetchComplianceMetrics(),
         fetchPerformanceMetrics(),
-        fetchCulturalMetrics()
+        fetchCulturalMetrics(),
       ]);
       setLastUpdated(new Date());
     } catch (err) {
@@ -364,16 +394,13 @@ export const useAdminData = (
     fetchOrganizationMetrics,
     fetchComplianceMetrics,
     fetchPerformanceMetrics,
-    fetchCulturalMetrics
+    fetchCulturalMetrics,
   ]);
 
   // Refresh recent data
   const refreshRecentData = useCallback(async () => {
     try {
-      await Promise.all([
-        fetchRecentUsers(),
-        fetchRecentOrganizations()
-      ]);
+      await Promise.all([fetchRecentUsers(), fetchRecentOrganizations()]);
     } catch (err) {
       console.error('Error refreshing recent data:', err);
     }
@@ -385,10 +412,7 @@ export const useAdminData = (
     setError(null);
 
     try {
-      await Promise.all([
-        refreshMetrics(),
-        refreshRecentData()
-      ]);
+      await Promise.all([refreshMetrics(), refreshRecentData()]);
       setLastUpdated(new Date());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while refreshing data');
@@ -452,25 +476,25 @@ export const useAdminData = (
     complianceMetrics,
     performanceMetrics,
     culturalMetrics,
-    
+
     // Recent data
     recentUsers,
     recentOrganizations,
-    
+
     // State
     loading,
     error,
     lastUpdated,
-    
+
     // Actions
     refreshData,
     refreshMetrics,
     refreshUsers,
     refreshOrganizations,
-    
+
     // Cache control
     clearCache,
-    setCacheTimeout
+    setCacheTimeout,
   };
 };
 
@@ -487,62 +511,84 @@ export const useUserManagement = () => {
     return new IraqiAdminService(baseUrl, apiKey);
   }, []);
 
-  const refreshUsers = useCallback(async (
-    page: number = 1,
-    pageSize: number = 20,
-    filters?: any,
-    sort?: any
-  ) => {
-    setLoading(true);
-    setError(null);
+  const refreshUsers = useCallback(
+    async (page: number = 1, pageSize: number = 20, filters?: any, sort?: any) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const response = await adminService.getUsers(page, pageSize, filters, sort);
-      if (response.success && response.data) {
-        setUsers(response.data.items);
-        setTotalCount(response.data.totalCount);
-      } else {
-        throw new Error(response.error || 'Failed to fetch users');
+      try {
+        const response = await adminService.getUsers(page, pageSize, filters, sort);
+        if (response.success && response.data) {
+          setUsers(response.data.items);
+          setTotalCount(response.data.totalCount);
+        } else {
+          throw new Error(response.error || 'Failed to fetch users');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  }, [adminService]);
+    },
+    [adminService]
+  );
 
-  const createUser = useCallback(async (userData: Partial<IraqiUser>) => {
-    return await adminService.createUser(userData);
-  }, [adminService]);
+  const createUser = useCallback(
+    async (userData: Partial<IraqiUser>) => {
+      return await adminService.createUser(userData);
+    },
+    [adminService]
+  );
 
-  const updateUser = useCallback(async (userId: string, updates: Partial<IraqiUser>) => {
-    return await adminService.updateUser(userId, updates);
-  }, [adminService]);
+  const updateUser = useCallback(
+    async (userId: string, updates: Partial<IraqiUser>) => {
+      return await adminService.updateUser(userId, updates);
+    },
+    [adminService]
+  );
 
-  const deleteUser = useCallback(async (userId: string) => {
-    return await adminService.deleteUser(userId);
-  }, [adminService]);
+  const deleteUser = useCallback(
+    async (userId: string) => {
+      return await adminService.deleteUser(userId);
+    },
+    [adminService]
+  );
 
-  const activateUser = useCallback(async (userId: string) => {
-    return await adminService.activateUser(userId);
-  }, [adminService]);
+  const activateUser = useCallback(
+    async (userId: string) => {
+      return await adminService.activateUser(userId);
+    },
+    [adminService]
+  );
 
-  const deactivateUser = useCallback(async (userId: string) => {
-    return await adminService.deactivateUser(userId);
-  }, [adminService]);
+  const deactivateUser = useCallback(
+    async (userId: string) => {
+      return await adminService.deactivateUser(userId);
+    },
+    [adminService]
+  );
 
-  const assignRole = useCallback(async (userId: string, role: any, professionalRole?: any) => {
-    return await adminService.assignRole(userId, role, professionalRole);
-  }, [adminService]);
+  const assignRole = useCallback(
+    async (userId: string, role: any, professionalRole?: any) => {
+      return await adminService.assignRole(userId, role, professionalRole);
+    },
+    [adminService]
+  );
 
-  const bulkUpdateUsers = useCallback(async (userIds: string[], updates: Partial<IraqiUser>) => {
-    const promises = userIds.map(id => adminService.updateUser(id, updates));
-    return await Promise.all(promises);
-  }, [adminService]);
+  const bulkUpdateUsers = useCallback(
+    async (userIds: string[], updates: Partial<IraqiUser>) => {
+      const promises = userIds.map(id => adminService.updateUser(id, updates));
+      return await Promise.all(promises);
+    },
+    [adminService]
+  );
 
-  const exportUsers = useCallback(async (format: 'csv' | 'excel' | 'pdf', filters?: any) => {
-    return await adminService.exportUserReport(format, filters);
-  }, [adminService]);
+  const exportUsers = useCallback(
+    async (format: 'csv' | 'excel' | 'pdf', filters?: any) => {
+      return await adminService.exportUserReport(format, filters);
+    },
+    [adminService]
+  );
 
   return {
     users,
@@ -557,7 +603,7 @@ export const useUserManagement = () => {
     assignRole,
     bulkUpdateUsers,
     exportUsers,
-    refreshUsers
+    refreshUsers,
   };
 };
 

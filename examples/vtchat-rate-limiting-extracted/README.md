@@ -62,8 +62,8 @@ bun add @types/ioredis --dev
 ### 2. Set Up Redis Configuration
 
 ```typescript
-import { Redis } from 'ioredis';
-import { IraqiRateLimitService } from './services/rate-limit';
+import { Redis } from "ioredis";
+import { IraqiRateLimitService } from "./services/rate-limit";
 
 const redis = new Redis(process.env.REDIS_URL);
 const rateLimitService = new IraqiRateLimitService(redis);
@@ -95,24 +95,24 @@ FRONTEND_URL=https://yourapp.com
 ### 4. Basic Usage
 
 ```typescript
-import { IraqiRateLimitService, UserTier } from './services/rate-limit';
+import { IraqiRateLimitService, UserTier } from "./services/rate-limit";
 
 // Initialize service
 const rateLimitService = new IraqiRateLimitService(redis);
 
 // Check rate limit for user
 const userTier: UserTier = {
-  type: 'premium',
+  type: "premium",
   isProfessional: true,
-  domain: 'legal',
-  paymentGateway: 'zaincash',
-  subscriptionStatus: 'active'
+  domain: "legal",
+  paymentGateway: "zaincash",
+  subscriptionStatus: "active",
 };
 
 const result = await rateLimitService.checkRateLimit(
-  'user123',
+  "user123",
   userTier,
-  'chat'
+  "chat",
 );
 
 if (!result.success) {
@@ -126,30 +126,30 @@ if (!result.success) {
 
 ### Subscription Tiers & Pricing (IQD)
 
-| Tier | Monthly | Daily Requests | Arabic Translation | Professional Bonus |
-|------|---------|----------------|-------------------|-------------------|
-| Trial | Free | 50 | 20 | ❌ |
-| Basic | 35,000 IQD | 1,000 | 400 | ✅ |
-| Premium | 85,000 IQD | 5,000 | 1,500 | ✅ |
-| Organization | 250,000 IQD | 25,000 | 8,000 | ✅ |
+| Tier         | Monthly     | Daily Requests | Arabic Translation | Professional Bonus |
+| ------------ | ----------- | -------------- | ------------------ | ------------------ |
+| Trial        | Free        | 50             | 20                 | ❌                 |
+| Basic        | 35,000 IQD  | 1,000          | 400                | ✅                 |
+| Premium      | 85,000 IQD  | 5,000          | 1,500              | ✅                 |
+| Organization | 250,000 IQD | 25,000         | 8,000              | ✅                 |
 
 ### Payment Gateway Fees
 
-| Gateway | Transaction Fee | Speed | Iraqi Integration |
-|---------|----------------|-------|------------------|
-| **ZainCash** | 1.5% | Fast | ⭐⭐⭐⭐⭐ |
-| **FastPay** | 1.2% | Very Fast | ⭐⭐⭐⭐ |
-| **NassWallet** | 1.8% | Fast | ⭐⭐⭐⭐ |
+| Gateway        | Transaction Fee | Speed     | Iraqi Integration |
+| -------------- | --------------- | --------- | ----------------- |
+| **ZainCash**   | 1.5%            | Fast      | ⭐⭐⭐⭐⭐        |
+| **FastPay**    | 1.2%            | Very Fast | ⭐⭐⭐⭐          |
+| **NassWallet** | 1.8%            | Fast      | ⭐⭐⭐⭐          |
 
 ### Professional Domain Multipliers
 
 ```typescript
 const professionalRates = {
-  legal: 2.0,         // Legal queries cost 2x (highest expertise)
-  medical: 2.5,       // Medical queries cost 2.5x (specialized knowledge)
-  educational: 1.5,   // Educational queries cost 1.5x (community support)
-  business: 1.8,      // Business queries cost 1.8x
-  engineering: 2.2,   // Engineering queries cost 2.2x (technical depth)
+  legal: 2.0, // Legal queries cost 2x (highest expertise)
+  medical: 2.5, // Medical queries cost 2.5x (specialized knowledge)
+  educational: 1.5, // Educational queries cost 1.5x (community support)
+  business: 1.8, // Business queries cost 1.8x
+  engineering: 2.2, // Engineering queries cost 2.2x (technical depth)
 };
 ```
 
@@ -158,14 +158,14 @@ const professionalRates = {
 ### Rate Limiting Configuration
 
 ```typescript
-import { IRAQI_RATE_LIMIT_CONFIG } from './services/rate-limit';
+import { IRAQI_RATE_LIMIT_CONFIG } from "./services/rate-limit";
 
 const customConfig = {
   ...IRAQI_RATE_LIMIT_CONFIG,
-  guestLimit: 20,                    // Conservative for guests
-  registeredLimit: 150,              // Boost for registered users
-  premiumLimit: 800,                 // Higher premium limits
-  arabicTranslationLimit: 100,       // More Arabic processing
+  guestLimit: 20, // Conservative for guests
+  registeredLimit: 150, // Boost for registered users
+  premiumLimit: 800, // Higher premium limits
+  arabicTranslationLimit: 100, // More Arabic processing
   professionalDomainMultiplier: 3.0, // Higher professional bonus
 };
 ```
@@ -173,18 +173,18 @@ const customConfig = {
 ### Budget Tracking Configuration
 
 ```typescript
-import { IRAQI_BUDGET_CONFIG } from './services/budget-tracking';
+import { IRAQI_BUDGET_CONFIG } from "./services/budget-tracking";
 
 const customBudgetConfig = {
   ...IRAQI_BUDGET_CONFIG,
   costPerRequest: {
-    chat: 30,                    // 30 IQD per chat
-    translation: 60,             // 60 IQD per translation  
-    professional_query: 100,     // 100 IQD per professional query
+    chat: 30, // 30 IQD per chat
+    translation: 60, // 60 IQD per translation
+    professional_query: 100, // 100 IQD per professional query
   },
   professionalDomainMultipliers: {
-    legal: 2.5,         // Higher legal premium
-    medical: 3.0,       // Highest medical premium
+    legal: 2.5, // Higher legal premium
+    medical: 3.0, // Highest medical premium
   },
 };
 ```
@@ -193,10 +193,10 @@ const customBudgetConfig = {
 
 ```typescript
 const premiumQuotaConfig: IraqiQuotaConfig = {
-  id: 'iraqi-premium-enhanced',
-  name: 'Iraqi AI Chat - Premium Enhanced',
-  tier: 'premium',
-  
+  id: "iraqi-premium-enhanced",
+  name: "Iraqi AI Chat - Premium Enhanced",
+  tier: "premium",
+
   daily: {
     requests: {
       chat: 2000,
@@ -207,14 +207,14 @@ const premiumQuotaConfig: IraqiQuotaConfig = {
     tokens: { total: 5000000 },
     storage: { total: 5000 }, // 5GB
   },
-  
+
   arabicProcessing: {
     dialectRecognition: 3000,
     rtlProcessing: 8000,
     culturalValidation: 5000,
     mixedLanguage: 3000,
   },
-  
+
   features: {
     advancedChat: true,
     professionalAccess: true,
@@ -233,30 +233,30 @@ class IraqiRateLimitService {
   async checkRateLimit(
     identifier: string,
     userTier: UserTier,
-    requestType?: 'chat' | 'translation' | 'cultural_validation' | 'api',
-    config?: Partial<IraqiRateLimitConfig>
-  ): Promise<RateLimitResult>
+    requestType?: "chat" | "translation" | "cultural_validation" | "api",
+    config?: Partial<IraqiRateLimitConfig>,
+  ): Promise<RateLimitResult>;
 
   // Get current usage statistics
   async getUserUsage(identifier: string): Promise<{
     currentUsage: number;
     resetTime: Date;
     percentUsed: number;
-  }>
+  }>;
 
   // Professional domain rate limiting
   async checkProfessionalDomainLimit(
     identifier: string,
-    domain: 'legal' | 'medical' | 'educational' | 'business' | 'engineering',
-    userTier: UserTier
-  ): Promise<RateLimitResult>
+    domain: "legal" | "medical" | "educational" | "business" | "engineering",
+    userTier: UserTier,
+  ): Promise<RateLimitResult>;
 
   // Arabic translation specific limiting
   async checkArabicTranslationLimit(
     identifier: string,
     userTier: UserTier,
-    textLength: number
-  ): Promise<RateLimitResult>
+    textLength: number,
+  ): Promise<RateLimitResult>;
 }
 ```
 
@@ -267,18 +267,18 @@ class IraqiBudgetTrackingService {
   // Track request and deduct from budget
   async trackRequest(
     userId: string,
-    requestType: keyof IraqiBudgetConfig['costPerRequest'],
-    domain?: keyof IraqiBudgetConfig['professionalDomainMultipliers'],
-    paymentGateway?: keyof IraqiBudgetConfig['paymentGatewayFees']
+    requestType: keyof IraqiBudgetConfig["costPerRequest"],
+    domain?: keyof IraqiBudgetConfig["professionalDomainMultipliers"],
+    paymentGateway?: keyof IraqiBudgetConfig["paymentGatewayFees"],
   ): Promise<{
     success: boolean;
     cost: CostBreakdown;
     usage: BudgetUsage;
     warningLevel?: string;
-  }>
+  }>;
 
   // Get current budget usage
-  async getCurrentUsage(userId: string): Promise<BudgetUsage>
+  async getCurrentUsage(userId: string): Promise<BudgetUsage>;
 
   // Get system-wide statistics
   async getBudgetStats(): Promise<{
@@ -287,7 +287,7 @@ class IraqiBudgetTrackingService {
     averageDailySpendPerUser: number;
     topSpendingUsers: Array<{ userId: string; dailySpent: number }>;
     requestTypeBreakdown: Record<string, number>;
-  }>
+  }>;
 }
 ```
 
@@ -298,55 +298,58 @@ class IraqiPaymentGatewayIntegration {
   // Create subscription payment
   async createSubscriptionPayment(
     userId: string,
-    tier: PaymentSubscription['tier'],
-    paymentGateway: PaymentSubscription['paymentGateway'],
-    professionalDomain?: PaymentSubscription['professionalDomain']
+    tier: PaymentSubscription["tier"],
+    paymentGateway: PaymentSubscription["paymentGateway"],
+    professionalDomain?: PaymentSubscription["professionalDomain"],
   ): Promise<{
     subscriptionId: string;
     paymentUrl: string;
     amountIQD: number;
     expiresAt: Date;
-  }>
+  }>;
 
   // Verify and activate subscription
   async verifyAndActivateSubscription(
     subscriptionId: string,
-    gatewayTransactionId: string
+    gatewayTransactionId: string,
   ): Promise<{
     success: boolean;
     subscription?: PaymentSubscription;
     quotaConfigId?: string;
-  }>
+  }>;
 
   // Process overage payments
   async processOveragePayment(
     userId: string,
     overageAmount: number,
     requestType: string,
-    paymentGateway: 'zaincash' | 'fastpay' | 'nasswallet'
+    paymentGateway: "zaincash" | "fastpay" | "nasswallet",
   ): Promise<{
     transactionId: string;
     paymentUrl: string;
     amountIQD: number;
-  }>
+  }>;
 }
 ```
 
 ## 🔒 Security Considerations
 
 ### Redis Security
+
 - Use Redis AUTH for production
 - Enable TLS encryption for Redis connections
 - Implement proper key expiration policies
 - Monitor Redis performance and memory usage
 
 ### Payment Gateway Security
+
 - Never store payment credentials in code
 - Use environment variables for all API keys
 - Implement webhook signature verification
 - Log all payment transactions for audit trails
 
 ### Rate Limiting Security
+
 - Implement DDoS protection at CDN level
 - Use IP-based rate limiting for anonymous users
 - Monitor for rate limit abuse patterns
@@ -363,12 +366,12 @@ const metrics = {
   requestsDenied: 0,
   averageResponseTime: 0,
   rateLimitHitRate: 0,
-  
+
   // Budget metrics
   dailySpending: 0,
   monthlySpending: 0,
   averageCostPerRequest: 0,
-  
+
   // Payment metrics
   subscriptionConversions: 0,
   paymentSuccessRate: 0,

@@ -5,14 +5,19 @@
 
 // Document Processing Types
 export interface DocumentProcessingOptions {
-  fileType: 'pdf' | 'docx' | 'pptx' | 'xlsx' | 'txt' | 'md' | 'html';
+  fileType: "pdf" | "docx" | "pptx" | "xlsx" | "txt" | "md" | "html";
   extractImages: boolean;
   extractTables: boolean;
   extractMetadata: boolean;
   arabicTextExtraction: boolean;
   culturalValidation: boolean;
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-  outputFormat: 'text' | 'markdown' | 'structured';
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "engineering";
+  outputFormat: "text" | "markdown" | "structured";
 }
 
 export interface ProcessedDocument {
@@ -22,7 +27,7 @@ export interface ProcessedDocument {
   fileSize: number;
   processedAt: string;
   processingTime: number;
-  
+
   content: {
     text: string;
     textAr?: string;
@@ -30,7 +35,7 @@ export interface ProcessedDocument {
     tables?: ProcessedTable[];
     metadata?: DocumentMetadata;
   };
-  
+
   culturalAnalysis: {
     islamicCompliance: number; // 0-100
     politicalNeutrality: number;
@@ -43,7 +48,7 @@ export interface ProcessedDocument {
       rtlProcessed: boolean;
     };
   };
-  
+
   professionalContext?: {
     domain: string;
     confidence: number;
@@ -55,7 +60,7 @@ export interface ProcessedDocument {
       dataPrivacy: boolean;
     };
   };
-  
+
   processingStats: {
     pagesProcessed: number;
     charactersExtracted: number;
@@ -104,7 +109,7 @@ export interface DocumentMetadata {
   pageCount?: number;
   wordCount?: number;
   characterCount?: number;
-  
+
   // Iraqi-specific metadata
   culturalMetadata?: {
     islamicContent: boolean;
@@ -130,8 +135,13 @@ export interface EmbeddingMetadata {
   processedAt: string;
   userId: string;
   workspaceId: string;
-  
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
+
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "engineering";
   culturalCompliance: {
     islamicCompliance: number;
     politicalNeutrality: number;
@@ -141,15 +151,15 @@ export interface EmbeddingMetadata {
   arabicContent: {
     hasArabicText: boolean;
     arabicRatio: number;
-    dialect: 'baghdad' | 'basra' | 'mosul' | 'general' | 'standard';
+    dialect: "baghdad" | "basra" | "mosul" | "general" | "standard";
     rtlProcessed: boolean;
   };
-  
+
   legalMetadata?: {
     caseType: string;
     courtLevel: string;
     lawCategory: string;
-    urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
+    urgencyLevel: "low" | "medium" | "high" | "critical";
   };
   medicalMetadata?: {
     specialty: string;
@@ -208,8 +218,13 @@ export interface ChunkingOptions {
   preserveStructure: boolean;
   arabicAware: boolean;
   culturalContext?: {
-    professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
-    dialectPreference?: 'baghdad' | 'basra' | 'mosul' | 'general' | 'standard';
+    professionalDomain?:
+      | "legal"
+      | "medical"
+      | "educational"
+      | "business"
+      | "engineering";
+    dialectPreference?: "baghdad" | "basra" | "mosul" | "general" | "standard";
     islamicTextHandling?: boolean;
     preserveCultural?: boolean;
   };
@@ -234,27 +249,27 @@ export interface ChunkMetadata {
   documentId: string;
   totalChunks: number;
   originalLength: number;
-  
+
   arabicContent: {
     hasArabicText: boolean;
     arabicRatio: number;
     dialect: string;
     rtlHandled: boolean;
   };
-  
+
   culturalContext: {
     professionalDomain?: string;
     islamicContent: boolean;
     culturalReferences: string[];
     preservedStructure: string[];
   };
-  
+
   quality: {
     coherenceScore: number;
     completenessScore: number;
     culturalIntegrityScore: number;
   };
-  
+
   relationships: {
     previousChunkId?: string;
     nextChunkId?: string;
@@ -267,7 +282,7 @@ export interface ChunkMetadata {
 export interface CulturalFilterConfig {
   islamicCompliance: {
     enabled: boolean;
-    strictness: 'lenient' | 'moderate' | 'strict';
+    strictness: "lenient" | "moderate" | "strict";
     preserveEducationalContent: boolean;
     allowHistoricalReferences: boolean;
   };
@@ -291,7 +306,7 @@ export interface CulturalFilterConfig {
   };
   contentModeration: {
     enabled: boolean;
-    filterLevel: 'basic' | 'enhanced' | 'comprehensive';
+    filterLevel: "basic" | "enhanced" | "comprehensive";
     preserveContext: boolean;
   };
 }
@@ -307,7 +322,7 @@ export interface CulturalAnalysis {
     score: number;
     sensitivePhrases: string[];
     neutralAlternatives: string[];
-    riskLevel: 'low' | 'medium' | 'high';
+    riskLevel: "low" | "medium" | "high";
   };
   culturalSensitivity: {
     score: number;
@@ -343,7 +358,7 @@ export interface ContentModerationResult {
 
 // Domain Tagging Types
 export interface DomainTag {
-  domain: 'legal' | 'medical' | 'educational' | 'business' | 'engineering';
+  domain: "legal" | "medical" | "educational" | "business" | "engineering";
   subdomain?: string;
   confidence: number;
   evidence: string[];
@@ -360,12 +375,12 @@ export interface DocumentTagging {
   culturalTags: {
     islamicContext: boolean;
     arabicContent: boolean;
-    iraqiDialect?: 'baghdad' | 'basra' | 'mosul' | 'general' | 'standard';
+    iraqiDialect?: "baghdad" | "basra" | "mosul" | "general" | "standard";
     culturalReferences: string[];
   };
-  professionalLevel: 'basic' | 'intermediate' | 'advanced' | 'expert';
-  contentType: 'formal' | 'informal' | 'academic' | 'legal' | 'technical';
-  urgencyLevel?: 'low' | 'medium' | 'high' | 'critical';
+  professionalLevel: "basic" | "intermediate" | "advanced" | "expert";
+  contentType: "formal" | "informal" | "academic" | "legal" | "technical";
+  urgencyLevel?: "low" | "medium" | "high" | "critical";
   complianceFlags: {
     iraqiStandards: boolean;
     islamicEthics: boolean;
@@ -402,7 +417,7 @@ export interface DocumentProcessorConfig {
     arabicAware: boolean;
   };
   vectorDatabase: {
-    provider: 'pinecone' | 'weaviate' | 'chroma' | 'qdrant';
+    provider: "pinecone" | "weaviate" | "chroma" | "qdrant";
     config: Record<string, any>;
     embeddingModel: string;
     dimensions: number;
@@ -421,7 +436,7 @@ export interface ProcessingError {
   details?: Record<string, any>;
   timestamp: string;
   documentId?: string;
-  stage: 'processing' | 'chunking' | 'embedding' | 'filtering' | 'tagging';
+  stage: "processing" | "chunking" | "embedding" | "filtering" | "tagging";
 }
 
 // Stats Types

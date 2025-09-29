@@ -127,7 +127,7 @@
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [x] **Beginner-friendly** - Simple getting started patterns
-- [ ] **Intermediate** - Production-ready patterns with common features  
+- [ ] **Intermediate** - Production-ready patterns with common features
 - [ ] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

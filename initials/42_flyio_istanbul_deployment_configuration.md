@@ -21,6 +21,7 @@
 **Enterprise Fly.io deployment infrastructure:**
 
 ### Multi-Region Agent Deployment
+
 - **Agent Service Orchestration:** Deployment configuration for 21 specialized Iraqi AI agents across Fly.io regions
 - **Regional Agent Distribution:** Istanbul (primary - closest to Iraq), Frankfurt (secondary - MENA), Singapore (tertiary - global)
 - **Agent Load Balancing:** Intelligent distribution of agent workloads across Fly Machines regions
@@ -28,6 +29,7 @@
 - **Agent Scaling Policies:** Dynamic scaling of Fly Machines based on cultural validation demand
 
 ### Cultural Validation Service Scaling
+
 - **Cultural Validator Services:** Dedicated Fly Machines for iraqi-cultural-validator and iraqi-cultural-tester
 - **Islamic Compliance Scaling:** Auto-scaling Fly Machines for Islamic compliance validation with 100% uptime
 - **Arabic Processing Services:** Specialized Fly Machines for arabic-rtl-processor at Turkish edge with mixed-language handling
@@ -35,6 +37,7 @@
 - **Regional Cultural Adaptation:** Services configured for Baghdad, Basra, Mosul, Erbil cultural variations with 40-70ms latency
 
 ### Agent Communication Infrastructure
+
 - **Inter-Agent Networking:** Internal Fly.io networking optimized for agent-to-agent communication via Fly Machines
 - **Context Sharing Services:** Fly.io services for optimized context sharing achieving 35% performance gain
 - **Agent Coordination Services:** Deployment of iraqi-workflow-orchestrator and iraqi-context-manager via Fly Machines
@@ -42,6 +45,7 @@
 - **Agent Performance Monitoring:** Dedicated monitoring services for agent coordination and performance across Fly regions
 
 ### Payment Gateway Service Deployment
+
 - **Iraqi Payment Services:** Fly Machine services for ZainCash, FastPay, NassWallet integration agents
 - **Payment Security Services:** Dedicated Fly Machine deployment for payment-security-guardian and iraqi-payment-tester
 - **Financial Compliance Services:** Fly.io services ensuring Islamic finance compliance and Iraqi banking integration
@@ -49,6 +53,7 @@
 - **Payment Monitoring Services:** Real-time monitoring and alerting for payment gateway performance across Fly regions
 
 ### Multi-Service Arabic Processing
+
 - **RTL Processing Services:** Dedicated Fly Machines for Arabic RTL text processing and rendering at Turkish edge
 - **Iraqi Dialect Services:** Specialized Fly Machine services for Iraqi dialect recognition and processing
 - **Mixed Content Services:** Fly Machine services optimized for Arabic-English mixed content handling
@@ -56,6 +61,7 @@
 - **Cultural Content Services:** Fly Machine services for culturally-appropriate content generation and validation
 
 ### Enterprise Monitoring & Observability
+
 - **Agent Performance Dashboards:** Fly.io dashboard integration for 21 specialized agent monitoring via Fly Machines
 - **Cultural Compliance Metrics:** Real-time monitoring of cultural validation performance and accuracy at Turkish edge
 - **Multi-Region Performance Monitoring:** Cross-region performance tracking and optimization (Istanbul/Frankfurt/Singapore)
@@ -69,6 +75,7 @@
 **Enterprise Fly.io deployment examples:**
 
 ### Multi-Service fly.toml Configuration
+
 ```toml
 # Enterprise Iraqi AI Chat System Fly.io Configuration
 app = "aqlix-ai-chat-system"
@@ -108,7 +115,7 @@ envVars = {
 
 [deploy.arabic-processor]
 source = "apps/agents/arabic-processor"
-builder = "DOCKERFILE" 
+builder = "DOCKERFILE"
 dockerfilePath = "apps/agents/arabic-processor/Dockerfile"
 envVars = {
   AGENT_TYPE = "arabic-rtl-processor",
@@ -181,6 +188,7 @@ envVars = {
 ```
 
 ### Agent Service Scaling Configuration
+
 ```yaml
 # Fly.io Scaling Configuration for Iraqi AI Agents
 agent_scaling:
@@ -191,7 +199,7 @@ agent_scaling:
     target_memory_utilization: 80
     scale_up_cooldown: "2m"
     scale_down_cooldown: "5m"
-    
+
   arabic_processors:
     min_replicas: 2
     max_replicas: 15
@@ -201,14 +209,14 @@ agent_scaling:
         target_value: 50
       - name: "iraqi_dialect_recognition_rate"
         target_value: 0.85
-        
+
   payment_services:
     min_replicas: 2
     max_replicas: 10
     target_cpu_utilization: 60
     availability_sla: 99.9
     health_check_interval: "30s"
-    
+
   workflow_orchestrators:
     min_replicas: 1
     max_replicas: 5
@@ -217,6 +225,7 @@ agent_scaling:
 ```
 
 ### Multi-Region Agent Deployment
+
 ```bash
 #!/bin/bash
 # Deploy Iraqi AI Agents Across Fly.io Regions
@@ -247,6 +256,7 @@ flyctl scale set --count 1 --region sin  # Tertiary: 1 machine
 ```
 
 ### Agent Environment Configuration
+
 ```bash
 # Cultural Validation Environment Variables
 flyctl secrets set CULTURAL_COMPLIANCE_LEVEL=strict
@@ -255,7 +265,7 @@ flyctl secrets set IRAQI_REGIONAL_PREFERENCES="baghdad,basra,mosul,erbil"
 flyctl secrets set CULTURAL_CACHE_TTL=3600
 flyctl secrets set CULTURAL_VALIDATION_TIMEOUT=200
 
-# Arabic Processing Environment Variables  
+# Arabic Processing Environment Variables
 flyctl secrets set ARABIC_RTL_SUPPORT=enabled
 flyctl secrets set IRAQI_DIALECT_RECOGNITION=true
 flyctl secrets set MIXED_ARABIC_ENGLISH_SUPPORT=true
@@ -282,6 +292,7 @@ flyctl secrets set TARGET_LATENCY_MS=70  # Sub-70ms for Iraqi market
 ```
 
 ### Agent Health Monitoring Configuration
+
 ```yaml
 # Fly.io Health Check Configuration for Iraqi AI Agents
 health_checks:
@@ -293,7 +304,7 @@ health_checks:
     expected_response:
       status_code: 200
       body_contains: "cultural_validation_ready"
-      
+
   arabic_processor:
     endpoint: "/health/rtl-processing"
     interval: 30s
@@ -304,10 +315,10 @@ health_checks:
         threshold: 0.85
       - name: "rtl_rendering_performance"
         max_response_time: 100ms
-        
+
   payment_tester:
     endpoint: "/health/payment-gateways"
-    interval: 15s  # More frequent for critical payment services
+    interval: 15s # More frequent for critical payment services
     timeout: 5s
     retries: 2
     gateway_specific_checks:
@@ -317,7 +328,7 @@ health_checks:
         connectivity_test: true
       - gateway: "nasswallet"
         connectivity_test: true
-        
+
   workflow_orchestrator:
     endpoint: "/health/agent-coordination"
     interval: 45s
@@ -350,6 +361,7 @@ health_checks:
 **Enterprise Fly.io deployment architecture patterns:**
 
 ### Multi-Agent Service Architecture
+
 - **Agent Service Isolation:** Each of the 21 specialized agents deployed as independent Fly Machines
 - **Context-Managed vs Tool Agents:** Different deployment patterns for context-managed (13) vs specialized tool agents (8)
 - **Agent Communication Patterns:** Internal Fly.io networking optimized for agent-to-agent communication via Fly Machines
@@ -357,6 +369,7 @@ health_checks:
 - **Agent Health Monitoring:** Comprehensive health checking and automatic recovery for agent services
 
 ### Cultural Validation Service Patterns
+
 - **Cultural Compliance Pipeline:** Orchestrated deployment of cultural validation services with 95%+ accuracy targets
 - **Islamic Compliance Services:** Dedicated services ensuring 100% Islamic compliance validation
 - **Regional Cultural Adaptation:** Service deployment patterns supporting Baghdad, Basra, Mosul, Erbil variations
@@ -364,6 +377,7 @@ health_checks:
 - **Professional Domain Services:** Service patterns for Iraqi legal, medical, educational domain expertise
 
 ### Multi-Region Deployment Patterns
+
 - **Primary Region (Baghdad):** Full agent deployment with all 21 specialized services
 - **Secondary Region (Dubai):** Critical agent replication with cultural validation and payment services
 - **Tertiary Region (London):** Backup deployment with core cultural validation and Arabic processing
@@ -371,6 +385,7 @@ health_checks:
 - **Regional Failover:** Automatic failover with context preservation and cultural compliance maintenance
 
 ### Performance Optimization Patterns
+
 - **Context Sharing Optimization:** Fly.io service patterns achieving 35% performance improvement via Fly Machines
 - **Agent Coordination Scaling:** Dynamic scaling patterns for workflow orchestration and context management
 - **Cultural Validation Caching:** Service patterns for caching cultural compliance results with TTL optimization
@@ -378,6 +393,7 @@ health_checks:
 - **Payment Gateway Coordination:** Service patterns for reliable Iraqi payment gateway integration
 
 ### Monitoring & Observability Patterns
+
 - **Agent Performance Monitoring:** Real-time monitoring patterns for individual agent and workflow performance
 - **Cultural Compliance Tracking:** Service monitoring patterns for cultural validation accuracy and performance
 - **Multi-Region Performance Monitoring:** Cross-region performance tracking and optimization patterns
@@ -414,6 +430,7 @@ health_checks:
 **Enterprise Fly.io deployment validation:**
 
 ### Agent Service Deployment Testing
+
 - **Multi-Agent Coordination:** Validate deployment and coordination of 21 specialized Iraqi AI agents
 - **Agent Communication:** Test inter-agent communication and context sharing across Fly Machine services
 - **Agent Load Balancing:** Validate intelligent load balancing and failover between agent instances
@@ -421,6 +438,7 @@ health_checks:
 - **Agent Scaling:** Validate auto-scaling behavior under varying cultural validation demand
 
 ### Cultural Validation Service Testing
+
 - **Cultural Compliance Services:** Test cultural validation services achieving 95%+ appropriateness
 - **Islamic Compliance Services:** Validate 100% Islamic compliance checking across agent services
 - **Arabic Processing Services:** Test RTL processing, font optimization, and Iraqi dialect recognition
@@ -428,6 +446,7 @@ health_checks:
 - **Regional Cultural Services:** Test cultural adaptation for Baghdad, Basra, Mosul, Erbil variations
 
 ### Multi-Region Deployment Testing
+
 - **Cross-Region Communication:** Test agent coordination across Baghdad, Dubai, London regions
 - **Regional Failover:** Validate automatic failover with context preservation and cultural compliance
 - **Geographic Load Balancing:** Test intelligent routing based on latency and cultural requirements
@@ -435,6 +454,7 @@ health_checks:
 - **Multi-Region Context Sharing:** Test context optimization achieving 35% performance gain across regions
 
 ### Payment Gateway Integration Testing
+
 - **Iraqi Payment Services:** Test ZainCash, FastPay, NassWallet integration through Fly Machine services
 - **Payment Security Services:** Validate payment-security-guardian and iraqi-payment-tester deployment on Fly infrastructure
 - **Islamic Finance Compliance:** Test Sharia-compliant transaction processing through Fly Machine services
@@ -442,6 +462,7 @@ health_checks:
 - **Payment Performance:** Test payment processing performance and success rates across regions
 
 ### Performance & Scalability Testing
+
 - **Agent Performance:** Test individual agent response times and cultural validation performance
 - **Context Optimization:** Validate 35% performance improvement through optimized context sharing
 - **Multi-Agent Workflows:** Test complex workflows involving multiple agents and cultural validation
@@ -455,6 +476,7 @@ health_checks:
 **Enterprise Fly.io deployment integration points:**
 
 ### Multi-Agent System Integration
+
 - **Agent Orchestration Integration:** Fly Machine service integration with iraqi-workflow-orchestrator and coordination systems
 - **Cultural Intelligence Integration:** Integration with cultural validation pipeline and Islamic compliance services
 - **Context Management Integration:** Integration with iraqi-context-manager for 35% performance optimization
@@ -462,6 +484,7 @@ health_checks:
 - **Arabic Processing Integration:** Integration with RTL processing, font optimization, and dialect recognition services
 
 ### Multi-Region Infrastructure Integration
+
 - **Global Load Balancing:** Integration with Fly.io's Anycast routing and multi-region deployment
 - **Cross-Region Data Sync:** Integration with Supabase for consistent data across Istanbul, Frankfurt, Singapore regions
 - **Regional Cultural Services:** Integration with region-specific cultural validation and compliance services via Fly Machines
@@ -469,6 +492,7 @@ health_checks:
 - **Regional Failover Integration:** Integration with automatic failover systems maintaining cultural context
 
 ### Payment Gateway Integration
+
 - **Iraqi Payment Systems:** Fly Machine service integration with ZainCash, FastPay, NassWallet APIs
 - **Payment Security Integration:** Integration with payment-security-guardian and fraud detection services
 - **Islamic Finance Integration:** Integration with Sharia-compliant transaction validation services
@@ -476,6 +500,7 @@ health_checks:
 - **Multi-Gateway Coordination:** Integration enabling intelligent routing across Iraqi payment gateways
 
 ### Cultural Compliance Integration
+
 - **Cultural Validation Pipeline:** Integration with automated cultural compliance checking across services
 - **Islamic Compliance Integration:** Integration with comprehensive Islamic business principle validation
 - **Arabic Content Integration:** Integration with RTL content processing and mixed-language handling
@@ -483,6 +508,7 @@ health_checks:
 - **Regional Adaptation Integration:** Integration supporting cultural variations across Iraqi regions
 
 ### Performance Monitoring Integration
+
 - **Agent Performance Integration:** Integration with real-time monitoring of 21 specialized agents
 - **Cultural Metrics Integration:** Integration with cultural validation performance and accuracy tracking
 - **Multi-Region Analytics Integration:** Integration with cross-region performance analysis and optimization
@@ -505,7 +531,7 @@ health_checks:
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [ ] **Intermediate** - Production-ready patterns with common features  
+- [ ] **Intermediate** - Production-ready patterns with common features
 - [ ] **Advanced** - Comprehensive patterns including complex scenarios
 - [x] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

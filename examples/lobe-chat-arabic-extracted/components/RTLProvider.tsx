@@ -69,22 +69,22 @@ const detectIraqiDialect = (text: string): IraqiRTLConfig['dialectPreference'] =
   if (text.includes('شلونك') || text.includes('شكو ماكو') || text.includes('وين رايح')) {
     return 'baghdad';
   }
-  
+
   // Basra dialect indicators
   if (text.includes('شلونكم') || text.includes('هسة') || text.includes('وين ماشي')) {
     return 'basra';
   }
-  
+
   // Mosul dialect indicators
   if (text.includes('شلون حالك') || text.includes('كيفك') || text.includes('وين رايح')) {
     return 'mosul';
   }
-  
+
   // Kurdish-Arabic mixed indicators
   if (text.includes('سڵاو') || text.includes('چون')) {
     return 'kurdish';
   }
-  
+
   return 'standard';
 };
 
@@ -94,10 +94,10 @@ const formatMixedContent = (content: string): { direction: 'rtl' | 'ltr'; conten
   const words = content.split(/(\s+)/);
   let currentSegment = '';
   let currentDirection: 'rtl' | 'ltr' | null = null;
-  
+
   words.forEach((word) => {
     const wordDirection = detectArabicText(word) ? 'rtl' : 'ltr';
-    
+
     if (currentDirection === null) {
       currentDirection = wordDirection;
       currentSegment = word;
@@ -112,49 +112,49 @@ const formatMixedContent = (content: string): { direction: 'rtl' | 'ltr'; conten
       currentSegment = word;
     }
   });
-  
+
   // Add final segment
   if (currentSegment.trim()) {
     segments.push({ direction: currentDirection!, content: currentSegment });
   }
-  
+
   return segments;
 };
 
 // RTL Layout Classes Generator
 const generateLayoutClasses = (config: IraqiRTLConfig, baseClasses = ''): string => {
   const classes = [baseClasses];
-  
+
   // Direction classes
   classes.push(config.direction === 'rtl' ? 'rtl' : 'ltr');
-  
+
   // Text alignment based on locale and preferences
   if (config.layoutPreferences.textAlignment === 'auto') {
     classes.push(config.direction === 'rtl' ? 'text-right' : 'text-left');
   } else {
     classes.push(`text-${config.layoutPreferences.textAlignment}`);
   }
-  
+
   // Cultural adaptation classes
   if (config.culturalAdaptation.islamicCompliance) {
     classes.push('islamic-compliant');
   }
-  
+
   if (config.culturalAdaptation.professionalContext) {
     classes.push('professional-context');
   }
-  
+
   if (config.culturalAdaptation.governmentStandards) {
     classes.push('government-standards');
   }
-  
+
   // Dialect-specific classes
   classes.push(`dialect-${config.dialectPreference}`);
-  
+
   // Layout flow classes
   classes.push(`flow-${config.layoutPreferences.contentFlow}`);
   classes.push(`mixed-${config.layoutPreferences.mixedContentHandling}`);
-  
+
   return classes.filter(Boolean).join(' ');
 };
 
@@ -197,7 +197,7 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({
         console.warn('Failed to save RTL config to localStorage:', error);
       }
     }
-    
+
     onConfigChange?.(config);
   }, [config, persistSettings, onConfigChange]);
 
@@ -206,7 +206,7 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({
     if (typeof document !== 'undefined') {
       document.dir = config.direction;
       document.documentElement.lang = config.locale;
-      
+
       // Add cultural CSS classes to body
       const bodyClasses = [
         `locale-${config.locale}`,
@@ -217,12 +217,21 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({
         config.culturalAdaptation.governmentStandards ? 'government-standards' : '',
         config.culturalAdaptation.formalLanguage ? 'formal-language' : '',
       ].filter(Boolean);
-      
+
       document.body.className = document.body.className
         .split(' ')
-        .filter(cls => !cls.startsWith('locale-') && !cls.startsWith('direction-') && 
-                      !cls.startsWith('dialect-') && !['islamic-compliant', 'professional-context', 
-                      'government-standards', 'formal-language'].includes(cls))
+        .filter(
+          (cls) =>
+            !cls.startsWith('locale-') &&
+            !cls.startsWith('direction-') &&
+            !cls.startsWith('dialect-') &&
+            ![
+              'islamic-compliant',
+              'professional-context',
+              'government-standards',
+              'formal-language',
+            ].includes(cls)
+        )
         .concat(bodyClasses)
         .join(' ');
     }
@@ -233,31 +242,31 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({
     config,
     isRTL: config.direction === 'rtl',
     isArabic: config.locale.startsWith('ar'),
-    
+
     toggleDirection: () => {
-      setConfig(prev => ({
+      setConfig((prev) => ({
         ...prev,
         direction: prev.direction === 'rtl' ? 'ltr' : 'rtl',
       }));
     },
-    
+
     setLocale: (locale) => {
-      setConfig(prev => ({
+      setConfig((prev) => ({
         ...prev,
         locale,
         direction: locale.startsWith('ar') ? 'rtl' : 'ltr',
       }));
     },
-    
+
     setDialect: (dialect) => {
-      setConfig(prev => ({
+      setConfig((prev) => ({
         ...prev,
         dialectPreference: dialect,
       }));
     },
-    
+
     updateCulturalSettings: (settings) => {
-      setConfig(prev => ({
+      setConfig((prev) => ({
         ...prev,
         culturalAdaptation: {
           ...prev.culturalAdaptation,
@@ -265,16 +274,16 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({
         },
       }));
     },
-    
+
     getTextDirection: (text) => {
       if (!text) return config.direction;
       return detectArabicText(text) ? 'rtl' : 'ltr';
     },
-    
+
     getLayoutClasses: (baseClasses) => {
       return generateLayoutClasses(config, baseClasses);
     },
-    
+
     formatMixedContent: (content) => {
       return formatMixedContent(content);
     },
@@ -306,7 +315,7 @@ export const withRTL = <P extends object>(
     const rtl = useRTL();
     return <Component {...props} rtl={rtl} />;
   };
-  
+
   RTLComponent.displayName = `withRTL(${Component.displayName || Component.name})`;
   return RTLComponent;
 };
@@ -326,11 +335,11 @@ export const CulturalDirection: React.FC<CulturalDirectionProps> = ({
   className = '',
 }) => {
   const { getTextDirection, getLayoutClasses } = useRTL();
-  
+
   const direction = forceDirection || (text ? getTextDirection(text) : undefined);
   const directionClass = direction ? `dir-${direction}` : '';
   const layoutClasses = getLayoutClasses(`${className} ${directionClass}`);
-  
+
   return (
     <div className={layoutClasses} dir={direction}>
       {children}
@@ -351,10 +360,10 @@ export const MixedContent: React.FC<MixedContentProps> = ({
   segmentClassName = '',
 }) => {
   const { formatMixedContent, getLayoutClasses } = useRTL();
-  
+
   const segments = formatMixedContent(content);
   const containerClasses = getLayoutClasses(className);
-  
+
   return (
     <div className={`mixed-content ${containerClasses}`}>
       {segments.map((segment, index) => (

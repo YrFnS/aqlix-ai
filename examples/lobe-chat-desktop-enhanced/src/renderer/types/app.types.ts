@@ -4,53 +4,90 @@
  */
 
 // Core Language and Direction Types
-export type LanguageCode = 
-  | 'ar' | 'ar-IQ' | 'ar-SA' | 'ar-EG'  // Arabic variants
-  | 'en' | 'en-US' | 'en-GB'            // English variants
-  | 'ku'                                // Kurdish (Iraq)
-  | 'fa'                                // Persian (for historical/cultural context)
-  | 'tr'                                // Turkish (regional influence)
-  | 'fr' | 'de' | 'es';                 // International languages
+export type LanguageCode =
+  | "ar"
+  | "ar-IQ"
+  | "ar-SA"
+  | "ar-EG" // Arabic variants
+  | "en"
+  | "en-US"
+  | "en-GB" // English variants
+  | "ku" // Kurdish (Iraq)
+  | "fa" // Persian (for historical/cultural context)
+  | "tr" // Turkish (regional influence)
+  | "fr"
+  | "de"
+  | "es"; // International languages
 
-export type LanguageDirection = 'ltr' | 'rtl';
-export type TextAlignment = 'left' | 'right' | 'center' | 'justify' | 'start' | 'end';
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type LanguageDirection = "ltr" | "rtl";
+export type TextAlignment =
+  | "left"
+  | "right"
+  | "center"
+  | "justify"
+  | "start"
+  | "end";
+export type ThemeMode = "light" | "dark" | "system";
 
 // Cultural and Professional Types
-export type CulturalMode = 
-  | 'standard'        // Default mode
-  | 'prayer_aware'    // Respects prayer times
-  | 'ramadan_mode'    // Special Ramadan considerations
-  | 'government_mode' // Official government styling
-  | 'emergency_mode'; // Crisis communication
+export type CulturalMode =
+  | "standard" // Default mode
+  | "prayer_aware" // Respects prayer times
+  | "ramadan_mode" // Special Ramadan considerations
+  | "government_mode" // Official government styling
+  | "emergency_mode"; // Crisis communication
 
-export type ProfessionalDomain = 
-  | 'general'      // General public use
-  | 'legal'        // Legal profession
-  | 'medical'      // Healthcare
-  | 'educational'  // Education sector
-  | 'engineering'  // Engineering/technical
-  | 'business'     // Business/commerce
-  | 'government';  // Government/public sector
+export type ProfessionalDomain =
+  | "general" // General public use
+  | "legal" // Legal profession
+  | "medical" // Healthcare
+  | "educational" // Education sector
+  | "engineering" // Engineering/technical
+  | "business" // Business/commerce
+  | "government"; // Government/public sector
 
-export type IraqiGovernorate = 
-  | 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'karbala'
-  | 'sulaymaniyah' | 'duhok' | 'kirkuk' | 'anbar' | 'diyala'
-  | 'babylon' | 'wasit' | 'maysan' | 'dhi_qar' | 'muthanna'
-  | 'qadisiyyah' | 'saladin';
+export type IraqiGovernorate =
+  | "baghdad"
+  | "basra"
+  | "mosul"
+  | "erbil"
+  | "najaf"
+  | "karbala"
+  | "sulaymaniyah"
+  | "duhok"
+  | "kirkuk"
+  | "anbar"
+  | "diyala"
+  | "babylon"
+  | "wasit"
+  | "maysan"
+  | "dhi_qar"
+  | "muthanna"
+  | "qadisiyyah"
+  | "saladin";
 
 // UI and Layout Types
-export type ViewMode = 
-  | 'chat' | 'documents' | 'analytics' | 'settings' 
-  | 'profile' | 'notifications' | 'professional';
+export type ViewMode =
+  | "chat"
+  | "documents"
+  | "analytics"
+  | "settings"
+  | "profile"
+  | "notifications"
+  | "professional";
 
-export type ConnectionQuality = 'excellent' | 'good' | 'poor' | 'offline';
+export type ConnectionQuality = "excellent" | "good" | "poor" | "offline";
 
-export type NotificationPriority = 'low' | 'medium' | 'high' | 'critical';
+export type NotificationPriority = "low" | "medium" | "high" | "critical";
 
-export type NotificationType = 
-  | 'system' | 'chat' | 'cultural' | 'professional' 
-  | 'security' | 'update' | 'payment';
+export type NotificationType =
+  | "system"
+  | "chat"
+  | "cultural"
+  | "professional"
+  | "security"
+  | "update"
+  | "payment";
 
 // Chat and Communication Types
 export interface ChatMessage {
@@ -59,7 +96,7 @@ export interface ChatMessage {
   contentAr?: string;
   contentEn?: string;
   timestamp: Date;
-  type: 'user' | 'assistant' | 'system';
+  type: "user" | "assistant" | "system";
   direction: LanguageDirection;
   culturalContext?: CulturalContext;
   professionalContext?: ProfessionalContext;
@@ -109,15 +146,15 @@ export interface CulturalContext {
   dialectSupport?: IraqiDialect;
 }
 
-export type CulturalSensitivityLevel = 'low' | 'medium' | 'high' | 'maximum';
+export type CulturalSensitivityLevel = "low" | "medium" | "high" | "maximum";
 
-export type IraqiDialect = 
-  | 'baghdadi'     // Baghdad dialect
-  | 'basrawi'      // Basra dialect
-  | 'moslawi'      // Mosul dialect
-  | 'southern'     // Southern Iraq
-  | 'kurdish_arab' // Kurdish-influenced Arabic
-  | 'standard';    // Standard Arabic
+export type IraqiDialect =
+  | "baghdadi" // Baghdad dialect
+  | "basrawi" // Basra dialect
+  | "moslawi" // Mosul dialect
+  | "southern" // Southern Iraq
+  | "kurdish_arab" // Kurdish-influenced Arabic
+  | "standard"; // Standard Arabic
 
 export interface CulturalValidationResult {
   isCompliant: boolean;
@@ -129,8 +166,8 @@ export interface CulturalValidationResult {
 }
 
 export interface CulturalIssue {
-  type: 'religious' | 'political' | 'social' | 'linguistic';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "religious" | "political" | "social" | "linguistic";
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
   descriptionAr: string;
   suggestion: string;
@@ -146,7 +183,12 @@ export interface ProfessionalContext {
   ethicalGuidelines?: EthicalGuidelines;
 }
 
-export type ExpertiseLevel = 'student' | 'junior' | 'intermediate' | 'senior' | 'expert';
+export type ExpertiseLevel =
+  | "student"
+  | "junior"
+  | "intermediate"
+  | "senior"
+  | "expert";
 
 export interface ProfessionalCertification {
   type: string;
@@ -183,8 +225,8 @@ export interface ProfessionalValidationResult {
 }
 
 export interface ProfessionalIssue {
-  type: 'accuracy' | 'ethics' | 'regulation' | 'expertise';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "accuracy" | "ethics" | "regulation" | "expertise";
+  severity: "low" | "medium" | "high" | "critical";
   description: string;
   descriptionAr: string;
   reference?: string;
@@ -202,18 +244,22 @@ export interface TranslationInfo {
   culturalAdaptation?: CulturalAdaptation;
 }
 
-export type TranslationType = 
-  | 'direct' | 'cultural' | 'professional' | 'technical' | 'literary';
+export type TranslationType =
+  | "direct"
+  | "cultural"
+  | "professional"
+  | "technical"
+  | "literary";
 
 export interface DialectHandling {
   sourceDialect?: IraqiDialect;
   targetDialect?: IraqiDialect;
   preserveOriginal: boolean;
-  adaptationLevel: 'none' | 'light' | 'moderate' | 'heavy';
+  adaptationLevel: "none" | "light" | "moderate" | "heavy";
 }
 
 export interface CulturalAdaptation {
-  level: 'none' | 'minimal' | 'moderate' | 'extensive';
+  level: "none" | "minimal" | "moderate" | "extensive";
   adaptations: string[];
   preservedElements: string[];
   culturalNotes?: string;
@@ -313,7 +359,7 @@ export interface SidebarConfig {
   collapsed: boolean;
   width: number;
   collapsedWidth: number;
-  position: 'left' | 'right';
+  position: "left" | "right";
   showDomainIndicator: boolean;
   showCulturalMode: boolean;
 }
@@ -336,7 +382,7 @@ export interface ContentConfig {
 export interface AppearanceSettings {
   theme: ThemeMode;
   accentColor: string;
-  fontSize: 'small' | 'medium' | 'large' | 'extra-large';
+  fontSize: "small" | "medium" | "large" | "extra-large";
   fontFamily: string;
   arabicFont: string;
   englishFont: string;
@@ -360,7 +406,7 @@ export interface ProfessionalSettings {
   defaultDomain: ProfessionalDomain;
   autoDetectDomain: boolean;
   showCertifications: boolean;
-  complianceLevel: 'basic' | 'standard' | 'strict';
+  complianceLevel: "basic" | "standard" | "strict";
   ethicalFiltering: boolean;
   regulatoryAlerts: boolean;
 }
@@ -384,7 +430,7 @@ export interface AccessibilitySettings {
   reducedMotion: boolean;
   voiceCommands: boolean;
   rtlSupport: boolean;
-  colorBlindnessSupport: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
+  colorBlindnessSupport: "none" | "protanopia" | "deuteranopia" | "tritanopia";
 }
 
 export interface AdvancedSettings {
@@ -395,7 +441,7 @@ export interface AdvancedSettings {
   offlineMode: boolean;
   syncInterval: number; // minutes
   cacheSize: number; // MB
-  logLevel: 'error' | 'warn' | 'info' | 'debug';
+  logLevel: "error" | "warn" | "info" | "debug";
 }
 
 // Utility Types
@@ -417,7 +463,7 @@ export interface CulturalRateLimitAdjustment {
 export interface QuotaInfo {
   used: number;
   limit: number;
-  period: 'daily' | 'weekly' | 'monthly';
+  period: "daily" | "weekly" | "monthly";
   resetDate: Date;
 }
 
@@ -437,7 +483,7 @@ export interface CulturalEvent {
   name: string;
   nameAr: string;
   date: Date;
-  type: 'religious' | 'national' | 'cultural';
+  type: "religious" | "national" | "cultural";
   description?: string;
   descriptionAr?: string;
   impact?: CulturalImpact;
@@ -464,8 +510,8 @@ export interface RegionalSettings {
   timezone: string;
   currency: string;
   dateFormat: string;
-  timeFormat: '12h' | '24h';
-  weekStart: 'saturday' | 'sunday' | 'monday';
+  timeFormat: "12h" | "24h";
+  weekStart: "saturday" | "sunday" | "monday";
 }
 
 export interface Notification {
@@ -508,8 +554,8 @@ export interface NotificationSettings {
 
 export interface SyncItem {
   id: string;
-  type: 'chat' | 'settings' | 'profile' | 'document';
-  action: 'create' | 'update' | 'delete';
+  type: "chat" | "settings" | "profile" | "document";
+  action: "create" | "update" | "delete";
   data: any;
   timestamp: Date;
   retryCount: number;
@@ -522,20 +568,20 @@ export interface OfflineCapability {
   syncRequired: boolean;
 }
 
-export type SubscriptionTier = 
-  | 'guest'           // No subscription
-  | 'basic'           // Basic tier
-  | 'premium'         // Premium individual
-  | 'professional'    // Professional domain
-  | 'organization'    // Organization/enterprise
-  | 'government';     // Government/public sector
+export type SubscriptionTier =
+  | "guest" // No subscription
+  | "basic" // Basic tier
+  | "premium" // Premium individual
+  | "professional" // Professional domain
+  | "organization" // Organization/enterprise
+  | "government"; // Government/public sector
 
 // Event and Error Types
 export interface AppEvent {
   type: string;
   payload?: any;
   timestamp: Date;
-  source: 'user' | 'system' | 'cultural' | 'professional';
+  source: "user" | "system" | "cultural" | "professional";
   culturalContext?: CulturalContext;
   professionalContext?: ProfessionalContext;
 }
@@ -544,8 +590,8 @@ export interface AppError {
   code: string;
   message: string;
   messageAr?: string;
-  type: 'system' | 'user' | 'cultural' | 'professional' | 'network';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "system" | "user" | "cultural" | "professional" | "network";
+  severity: "low" | "medium" | "high" | "critical";
   timestamp: Date;
   context?: any;
   suggestion?: string;

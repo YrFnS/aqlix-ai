@@ -2,8 +2,8 @@
 
 ## Quick Start
 
-```typescript
-import { 
+````typescript
+import {
   IraqiEnterpriseAuth,
   BiometricAuthenticator,
   IslamicComplianceManager,
@@ -64,21 +64,21 @@ const biometric = new BiometricAuthenticator({
   irisEnabled: true,
   voiceEnabled: false,
   palmPrintEnabled: false,
-  
+
   fingerprintThreshold: 85,
   facialThreshold: 90,
   irisThreshold: 95,
-  
+
   minimumQuality: 75,
   livenessRequired: true,
   antiSpoofingRequired: true,
-  
+
   culturalConsiderations: {
     hijabFriendlyFacial: true,
     gloveFriendlyFingerprint: true,
     glassesOptimization: true
   },
-  
+
   encryptionEnabled: true,
   auditEnabled: true
 });
@@ -94,29 +94,29 @@ const biometricResult = await biometric.validateBiometric(user, {
 
 console.log('Biometric validation:', biometricResult.valid);
 console.log('Confidence:', biometricResult.confidence + '%');
-```
+````
 
 ## Ministry SSO Integration
 
 ```typescript
-import { MinistrySSO } from 'iraqi-enterprise-auth';
+import { MinistrySSO } from "iraqi-enterprise-auth";
 
 const sso = new MinistrySSO();
 
 // Authenticate with Health Ministry LDAP
-const ssoResult = await sso.authenticateWithMinistry('health', {
-  method: 'sso',
+const ssoResult = await sso.authenticateWithMinistry("health", {
+  method: "sso",
   primaryCredential: {
-    type: 'username_password',
-    identifier: 'ahmed.ali',
-    secret: 'password123'
+    type: "username_password",
+    identifier: "ahmed.ali",
+    secret: "password123",
   },
-  deviceInfo: deviceInfo
+  deviceInfo: deviceInfo,
 });
 
 if (ssoResult.success) {
-  console.log('✅ Ministry SSO successful');
-  console.log('User:', ssoResult.user?.name.ar);
-  console.log('Ministry validated:', ssoResult.ministryValidated);
+  console.log("✅ Ministry SSO successful");
+  console.log("User:", ssoResult.user?.name.ar);
+  console.log("Ministry validated:", ssoResult.ministryValidated);
 }
 ```

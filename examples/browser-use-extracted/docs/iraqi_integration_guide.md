@@ -9,6 +9,7 @@ This guide covers the integration of the Browser-use system into the Iraqi AI Ch
 ## 📋 Prerequisites
 
 ### System Requirements
+
 - Python 3.9+
 - Node.js 18+ (for browser automation)
 - Chrome/Chromium browser
@@ -16,6 +17,7 @@ This guide covers the integration of the Browser-use system into the Iraqi AI Ch
 - Stable internet connection
 
 ### Iraqi-Specific Requirements
+
 - Understanding of Iraqi government portal structures
 - Arabic language support in operating system
 - Iraqi timezone configuration (Asia/Baghdad)
@@ -24,6 +26,7 @@ This guide covers the integration of the Browser-use system into the Iraqi AI Ch
 ## 🚀 Installation
 
 ### 1. Install Browser Dependencies
+
 ```bash
 # Install Playwright browsers
 pip install playwright
@@ -37,6 +40,7 @@ pip install arabic-reshaper python-bidi
 ```
 
 ### 2. Install LLM Provider Dependencies
+
 ```bash
 # OpenAI integration
 pip install openai
@@ -52,6 +56,7 @@ pip install ollama
 ```
 
 ### 3. Configure Environment Variables
+
 ```bash
 # Create .env file
 cat > .env << EOF
@@ -89,7 +94,7 @@ class BrowserAutomationService:
         self.browser = None
         self.agent = None
         self.llm_router = LLMRouter()
-    
+
     async def initialize_for_iraqi_portals(self):
         """Initialize browser for Iraqi government portals"""
         config = BrowserConfig(
@@ -98,10 +103,10 @@ class BrowserAutomationService:
             iraqi_portals=True,
             cultural_validation=True
         )
-        
+
         self.browser = Browser(config)
         await self.browser.start()
-        
+
         self.agent = IraqiPortalAgent(
             browser=self.browser,
             llm_provider=self.llm_router.get_best_provider()
@@ -157,7 +162,10 @@ export class BrowserAutomationService {
 
   async renewPassport(data: PassportRenewalData): Promise<RenewalResult> {
     try {
-      const response = await this.apiClient.post('/browser/passport/renew', data);
+      const response = await this.apiClient.post(
+        "/browser/passport/renew",
+        data,
+      );
       return response.data;
     } catch (error) {
       throw new BrowserAutomationError(error.message);
@@ -165,7 +173,9 @@ export class BrowserAutomationService {
   }
 
   async checkApplicationStatus(applicationNumber: string): Promise<StatusInfo> {
-    const response = await this.apiClient.get(`/browser/status/${applicationNumber}`);
+    const response = await this.apiClient.get(
+      `/browser/status/${applicationNumber}`,
+    );
     return response.data;
   }
 }
@@ -175,9 +185,9 @@ export class BrowserAutomationService {
 
 ```tsx
 // apps/web/src/components/PassportRenewalForm.tsx
-import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import { BrowserAutomationService } from '../services/browserAutomationService';
+import { useState } from "react";
+import { useTranslation } from "next-i18next";
+import { BrowserAutomationService } from "../services/browserAutomationService";
 
 export const PassportRenewalForm: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -194,32 +204,34 @@ export const PassportRenewalForm: React.FC = () => {
       const renewalResult = await service.renewPassport(formData);
       setResult(renewalResult);
     } catch (error) {
-      console.error('Passport renewal failed:', error);
+      console.error("Passport renewal failed:", error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={`form-container ${i18n.language === 'ar' ? 'rtl' : 'ltr'}`}>
+    <div className={`form-container ${i18n.language === "ar" ? "rtl" : "ltr"}`}>
       <form onSubmit={handleSubmit}>
         <div className="field-group">
-          <label htmlFor="fullNameArabic">{t('fullNameArabic')}</label>
+          <label htmlFor="fullNameArabic">{t("fullNameArabic")}</label>
           <input
             id="fullNameArabic"
             type="text"
-            value={formData.fullNameArabic || ''}
-            onChange={(e) => setFormData({...formData, fullNameArabic: e.target.value})}
+            value={formData.fullNameArabic || ""}
+            onChange={(e) =>
+              setFormData({ ...formData, fullNameArabic: e.target.value })
+            }
             className="arabic-input"
             dir="rtl"
             required
           />
         </div>
-        
+
         {/* More form fields... */}
-        
+
         <button type="submit" disabled={loading}>
-          {loading ? t('processing') : t('renewPassport')}
+          {loading ? t("processing") : t("renewPassport")}
         </button>
       </form>
 
@@ -227,15 +239,21 @@ export const PassportRenewalForm: React.FC = () => {
         <div className="result-display">
           {result.success ? (
             <div className="success-message">
-              <h3>{t('renewalSuccessful')}</h3>
-              <p>{t('applicationNumber')}: {result.applicationNumber}</p>
-              <p>{t('appointmentDate')}: {result.appointmentDate}</p>
+              <h3>{t("renewalSuccessful")}</h3>
+              <p>
+                {t("applicationNumber")}: {result.applicationNumber}
+              </p>
+              <p>
+                {t("appointmentDate")}: {result.appointmentDate}
+              </p>
             </div>
           ) : (
             <div className="error-message">
-              <h3>{t('renewalFailed')}</h3>
+              <h3>{t("renewalFailed")}</h3>
               {result.errors?.map((error, index) => (
-                <p key={index} className="error">{error}</p>
+                <p key={index} className="error">
+                  {error}
+                </p>
               ))}
             </div>
           )}
@@ -260,7 +278,7 @@ IRAQI_PORTAL_CONFIG = BrowserConfig(
     viewport_width=1920,
     viewport_height=1080,
     timeout=60000,
-    
+
     # Iraqi-specific settings
     arabic_support=True,
     rtl_layout=True,
@@ -268,13 +286,13 @@ IRAQI_PORTAL_CONFIG = BrowserConfig(
     government_hours_check=True,
     cultural_validation=True,
     network_optimization=True,
-    
+
     # User agent for Iraqi government portals
     user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    
+
     # Downloads configuration
     downloads_path="./downloads/government_docs",
-    
+
     # Extensions for Arabic support
     extensions=[
         "arabic-font-extension",
@@ -296,18 +314,18 @@ OPENAI_CONFIG = LLMConfig(
     api_key=os.getenv("OPENAI_API_KEY"),
     max_tokens=4000,
     temperature=0.3,  # Lower temperature for government forms
-    
+
     # Iraqi cultural settings
     arabic_support=True,
     cultural_context="iraqi",
     rtl_awareness=True,
     islamic_compliance=True,
-    
+
     # Performance settings
     streaming=False,  # Disable for form filling accuracy
     cache_responses=True,
     retry_attempts=3,
-    
+
     # Security settings
     content_filtering=True,
     privacy_mode=True
@@ -339,7 +357,7 @@ IRAQI_GOVERNMENT_PORTALS = {
         'working_days': [6, 0, 1, 2, 3],  # Sunday to Thursday
         'timeout': 60000
     },
-    
+
     'ministry_of_education': {
         'base_url': 'https://mohe.gov.iq',
         'services': {
@@ -350,7 +368,7 @@ IRAQI_GOVERNMENT_PORTALS = {
         'working_hours': {'start': 8, 'end': 14},
         'timeout': 90000  # Slower portal
     },
-    
+
     'civil_status': {
         'base_url': 'https://civil.gov.iq',
         'services': {
@@ -375,7 +393,7 @@ IRAQI_UNIVERSITIES = {
             'arts': 'كلية الآداب'
         }
     },
-    
+
     'mustansiriyah': {
         'name_arabic': 'الجامعة المستنصرية',
         'name_english': 'Al-Mustansiriyah University',
@@ -400,26 +418,26 @@ async def basic_automation_example():
         iraqi_portals=True,
         cultural_validation=True
     )
-    
+
     browser = Browser(config)
     await browser.start()
-    
+
     try:
         # Navigate to Iraqi government portal
         await browser.navigate('https://passport.gov.iq')
-        
+
         # Fill form with Iraqi data validation
         form_data = {
             'national_id': '123456789012',
             'phone_number': '+964 770 123 4567',
             'email': 'user@example.com'
         }
-        
+
         await browser.fill_form(form_data)
-        
+
         # Take screenshot for verification
         screenshot = await browser.take_screenshot()
-        
+
     finally:
         await browser.close()
 
@@ -441,22 +459,22 @@ async def llm_guided_navigation():
         arabic_support=True,
         cultural_context="iraqi_government"
     )
-    
+
     llm_provider = OpenAIProvider(llm_config)
-    
+
     # Initialize content analysis agent
     agent = ContentAnalysisAgent(llm_provider=llm_provider)
-    
+
     # Analyze page content
     page_content = await browser.get_page_content()
     analysis = await agent.analyze_page_structure(page_content)
-    
+
     # Get LLM guidance for next actions
     guidance = await llm_provider.chat(
         message="How should I navigate this Iraqi passport renewal page?",
         system_prompt="You are an expert in Iraqi government portals"
     )
-    
+
     print(f"LLM Guidance: {guidance.content}")
 ```
 
@@ -468,20 +486,20 @@ from browser_use.dom import FormHandler, IraqiFormValidator
 async def form_automation_with_validation():
     browser = Browser(config)
     await browser.start()
-    
+
     form_handler = FormHandler(browser.page)
     validator = IraqiFormValidator()
-    
+
     # Analyze form structure
     form_analysis = await form_handler.analyze_form_fields()
-    
+
     # Prepare and validate data
     form_data = {
         'national_id': '123456789012',
         'passport_number': 'A1234567',
         'phone_number': '07701234567'
     }
-    
+
     # Validate each field before filling
     for field_name, value in form_data.items():
         if field_name == 'national_id':
@@ -489,12 +507,12 @@ async def form_automation_with_validation():
             if not is_valid:
                 print(f"Invalid national ID: {error}")
                 continue
-        
+
         # Similar validation for other fields...
-    
+
     # Fill form with validated data
     result = await form_handler.fill_form(form_data)
-    
+
     if result.success:
         await form_handler.submit_form()
         print("Form submitted successfully")
@@ -512,7 +530,7 @@ export const ChatMessage: React.FC<{message: Message}> = ({message}) => {
   const handleBrowserAutomation = async (automationType: string, data: any) => {
     try {
       const service = new BrowserAutomationService();
-      
+
       switch (automationType) {
         case 'passport_renewal':
           return await service.renewPassport(data);
@@ -568,14 +586,14 @@ browser_automation_agent = Agent(
     2. University applications
     3. Document status checking
     4. Form filling assistance
-    
+
     Always respect Iraqi cultural norms and Islamic values.
     Use Arabic when appropriate and ensure data privacy.
     """
 )
 
 @browser_automation_agent.tool
-async def renew_passport(ctx: RunContext[BrowserAutomationDeps], 
+async def renew_passport(ctx: RunContext[BrowserAutomationDeps],
                         renewal_data: PassportRenewalData) -> RenewalResult:
     """Automate passport renewal process"""
     automation = PassportRenewalAutomation(ctx.deps.llm_provider)
@@ -600,17 +618,17 @@ SECURITY_CONFIG = {
     'secure_credential_storage': True,
     'encrypt_form_data': True,
     'auto_clear_sensitive_data': True,
-    
+
     # Session isolation
     'isolated_browser_sessions': True,
     'clear_cookies_after_use': True,
     'disable_browser_cache': True,
-    
+
     # Network security
     'use_secure_connections_only': True,
     'validate_ssl_certificates': True,
     'block_malicious_domains': True,
-    
+
     # Iraqi compliance
     'respect_government_tos': True,
     'comply_with_iraqi_privacy_law': True,
@@ -627,12 +645,12 @@ CULTURAL_COMPLIANCE = {
     'respect_islamic_values': True,
     'avoid_non_halal_content': True,
     'respect_prayer_times': True,
-    
+
     # Iraqi cultural norms
     'use_appropriate_language': True,
     'respect_government_protocols': True,
     'honor_cultural_sensitivities': True,
-    
+
     # Privacy protection
     'protect_family_information': True,
     'respect_gender_specific_requirements': True,
@@ -654,16 +672,16 @@ metrics = MetricsCollector()
 
 async def monitor_automation_performance():
     """Monitor browser automation performance"""
-    
+
     # Track success rates
     success_rate = metrics.calculate_success_rate('passport_renewal')
-    
+
     # Monitor response times
     avg_response_time = metrics.get_average_response_time('government_portals')
-    
+
     # Track error patterns
     common_errors = metrics.get_common_errors()
-    
+
     # Log performance metrics
     logger.info(f"Success rate: {success_rate}%")
     logger.info(f"Average response time: {avg_response_time}ms")
@@ -682,22 +700,22 @@ class IraqiPortalErrorHandler:
             'invalid_data': self.handle_invalid_data,
             'captcha_required': self.handle_captcha_required
         }
-    
+
     async def handle_automation_error(self, error_type: str, context: dict):
         """Handle automation errors with Iraqi portal context"""
-        
+
         if error_type in self.retry_strategies:
             return await self.retry_strategies[error_type](context)
-        
+
         # Default error handling
         return await self.default_error_handling(error_type, context)
-    
+
     async def handle_network_timeout(self, context: dict):
         """Handle network timeouts common in Iraq"""
         # Increase timeout for Iraqi network conditions
         # Retry with exponential backoff
         pass
-    
+
     async def handle_portal_maintenance(self, context: dict):
         """Handle government portal maintenance"""
         # Check maintenance schedules
@@ -715,26 +733,26 @@ class AutomationLearningSystem:
     def __init__(self):
         self.interaction_logger = InteractionLogger()
         self.pattern_analyzer = PatternAnalyzer()
-    
-    async def learn_from_successful_automation(self, automation_type: str, 
+
+    async def learn_from_successful_automation(self, automation_type: str,
                                              interaction_data: dict):
         """Learn from successful automations to improve future performance"""
-        
+
         # Log successful patterns
         await self.interaction_logger.log_success(automation_type, interaction_data)
-        
+
         # Analyze patterns for optimization
         patterns = await self.pattern_analyzer.identify_success_patterns(automation_type)
-        
+
         # Update automation strategies
         await self.update_automation_strategies(automation_type, patterns)
-    
+
     async def adapt_to_portal_changes(self, portal_name: str):
         """Adapt to changes in government portals"""
-        
+
         # Detect UI changes
         changes = await self.detect_portal_changes(portal_name)
-        
+
         # Update selectors and strategies
         if changes:
             await self.update_portal_mappings(portal_name, changes)
@@ -745,10 +763,10 @@ class AutomationLearningSystem:
 ```python
 # Feedback system
 class CommunityFeedbackSystem:
-    async def collect_user_feedback(self, automation_result: dict, 
+    async def collect_user_feedback(self, automation_result: dict,
                                   user_rating: int, comments: str):
         """Collect feedback from Iraqi users"""
-        
+
         feedback = {
             'automation_type': automation_result['type'],
             'success': automation_result['success'],
@@ -758,19 +776,19 @@ class CommunityFeedbackSystem:
             'timestamp': datetime.now(),
             'region': 'iraq'
         }
-        
+
         await self.store_feedback(feedback)
         await self.analyze_feedback_trends()
-    
+
     async def improve_based_on_feedback(self):
         """Improve automation based on community feedback"""
-        
+
         # Analyze feedback patterns
         feedback_analysis = await self.analyze_feedback_patterns()
-        
+
         # Identify improvement areas
         improvement_areas = await self.identify_improvement_areas(feedback_analysis)
-        
+
         # Implement improvements
         for area in improvement_areas:
             await self.implement_improvement(area)
@@ -781,11 +799,12 @@ class CommunityFeedbackSystem:
 ### Common Issues and Solutions
 
 1. **Arabic Text Not Displaying Correctly**
+
    ```python
    # Ensure Arabic font support is enabled
    config.arabic_support = True
    config.rtl_layout = True
-   
+
    # Add Arabic fonts to browser
    await browser.context.add_init_script("""
        document.fonts.add(new FontFace('NotoSansArabic', 'url(fonts/NotoSansArabic.woff2)'));
@@ -793,11 +812,12 @@ class CommunityFeedbackSystem:
    ```
 
 2. **Government Portal Timeouts**
+
    ```python
    # Increase timeout for Iraqi network conditions
    config.timeout = 90000  # 90 seconds
    config.network_optimization = True
-   
+
    # Implement retry logic
    for attempt in range(3):
        try:
@@ -810,10 +830,11 @@ class CommunityFeedbackSystem:
    ```
 
 3. **Form Validation Failures**
+
    ```python
    # Use Iraqi data validators
    validator = IraqiFormValidator()
-   
+
    # Validate before filling
    is_valid, error = validator.validate_national_id(national_id)
    if not is_valid:
@@ -839,12 +860,12 @@ PERFORMANCE_CONFIG = {
     'optimize_for_iraqi_networks': True,
     'preload_arabic_fonts': True,
     'use_compression': True,
-    
+
     # Memory management
     'clear_memory_after_automation': True,
     'limit_concurrent_browsers': 2,
     'cleanup_temporary_files': True,
-    
+
     # Network optimization
     'use_iraqi_proxy_servers': False,  # Only if needed
     'optimize_image_loading': True,
@@ -861,12 +882,12 @@ LLM_OPTIMIZATION = {
     'cache_cultural_context': True,
     'preload_iraqi_terminology': True,
     'optimize_arabic_processing': True,
-    
+
     # Response optimization
     'reduce_token_usage': True,
     'cache_common_responses': True,
     'batch_similar_requests': True,
-    
+
     # Accuracy optimization
     'use_cultural_validation': True,
     'implement_feedback_loop': True,

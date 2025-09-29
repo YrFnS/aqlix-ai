@@ -21,6 +21,7 @@
 **Iraqi AI agent plugin infrastructure:**
 
 ### Agent Plugin Interfaces
+
 - **BaseAgentPlugin:** Abstract plugin interface for all Iraqi AI agent extensions
 - **CulturalValidationPlugin:** Plugin interface for cultural compliance validation across agents
 - **ProfessionalDomainPlugin:** Specialized interface for Iraqi professional domain agent plugins
@@ -28,6 +29,7 @@
 - **MultiAgentCoordinationPlugin:** Interface for cross-agent plugin coordination and workflow management
 
 ### Professional Domain Agent Plugins
+
 - **Legal Agent Plugins**: Iraqi legal research, case management, and document generation for iraqi-professional-domain-expert
 - **Medical Agent Plugins**: Iraqi healthcare protocols, medical terminology, and patient management extensions
 - **Educational Agent Plugins**: Iraqi curriculum support, academic management, and educational resources
@@ -35,6 +37,7 @@
 - **Professional Organization Plugins**: Iraqi professional procedures, organizational processes, and official documentation
 
 ### Cultural Validation Plugins
+
 - **Islamic Compliance Plugin**: Ensure all agent plugins comply with Islamic principles through iraqi-cultural-validator integration
 - **Cultural Appropriateness Plugin**: Validate agent plugin content for Iraqi cultural sensitivity
 - **Professional Ethics Plugin**: Enforce Iraqi professional ethics and standards across domain agents
@@ -42,6 +45,7 @@
 - **Arabic Language Plugin**: Native Arabic support for all agent plugin interfaces and content through arabic-rtl-processor
 
 ### Agent-Specific Plugin System
+
 - **Dynamic Agent Plugin Loading**: Runtime plugin installation and activation with multi-agent coordination
 - **Agent Integration Layer**: Direct integration with 21 specialized Iraqi AI agents for enhanced functionality
 - **Plugin Dependency Management**: Automatic handling of agent plugin dependencies and conflicts
@@ -55,6 +59,7 @@
 ## Technical Implementation
 
 ### Core Architecture
+
 ```python
 # Plugin Architecture Framework with Agent Integration
 from typing import Dict, List, Any, Optional, Type
@@ -96,7 +101,7 @@ class PluginMetadata:
 
 class IraqiBasePlugin(ABC):
     """Base class for all Iraqi professional plugins with agent integration"""
-    
+
     def __init__(self, agent_coordinator: 'IraqiAgentCoordinator'):
         self.agent_coordinator = agent_coordinator
         self.cultural_validator = agent_coordinator.get_agent('iraqi-cultural-validator')
@@ -106,30 +111,30 @@ class IraqiBasePlugin(ABC):
         self.is_active = False
         self.performance_metrics = {}
         self.agent_usage_stats = {}
-        
+
     @abstractmethod
     def get_metadata(self) -> PluginMetadata:
         """Return plugin metadata with cultural context"""
         pass
-        
+
     @abstractmethod
     async def initialize(self, context: Dict[str, Any]) -> bool:
         """Initialize plugin with Iraqi cultural context"""
         pass
-        
+
     @abstractmethod
     async def execute_action(
-        self, 
-        action: str, 
+        self,
+        action: str,
         parameters: Dict[str, Any],
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Execute plugin action with cultural validation"""
         pass
-        
+
     @abstractmethod
     async def validate_cultural_compliance(
-        self, 
+        self,
         content: Any
     ) -> Dict[str, Any]:
         """Validate content for Iraqi cultural and Islamic compliance"""
@@ -137,6 +142,7 @@ class IraqiBasePlugin(ABC):
 ```
 
 ### Plugin Manager with Multi-Agent Coordination
+
 ```python
 class IraqiPluginManager:
     def __init__(self, agent_coordinator: 'IraqiAgentCoordinator'):
@@ -147,25 +153,25 @@ class IraqiPluginManager:
         self.security_specialist = agent_coordinator.get_agent('iraqi-security-specialist')
         self.performance_monitor = PluginPerformanceMonitor()
         self.multi_agent_orchestrator = agent_coordinator.get_orchestrator()
-        
+
     async def load_plugin(
-        self, 
+        self,
         plugin_path: str,
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         try:
             # Multi-agent security validation
             security_check = await self.security_specialist.validate_plugin_security(
-                plugin_path, 
+                plugin_path,
                 iraqi_compliance_required=True
             )
             if not security_check.is_safe:
                 raise PluginSecurityError(security_check.issues)
-            
+
             # Load and initialize plugin with agent coordination
             plugin_class = await self._load_plugin_class(plugin_path)
             plugin_instance = plugin_class(self.agent_coordinator)
-            
+
             # Multi-agent cultural compliance validation
             compliance_check = await self.cultural_validator.validate_plugin_compliance(
                 plugin_instance,
@@ -174,17 +180,17 @@ class IraqiPluginManager:
             )
             if not compliance_check.is_compliant:
                 raise CulturalComplianceError(compliance_check.issues)
-                
+
             # Register and activate plugin
             await plugin_instance.initialize(user_context)
             self.plugins[plugin_instance.metadata.name] = plugin_instance
-            
+
             return {
                 "success": True,
                 "plugin_name": plugin_instance.metadata.name,
                 "cultural_compliance_score": compliance_check.score
             }
-            
+
         except Exception as e:
             return {"success": False, "error": str(e)}
 ```
@@ -192,6 +198,7 @@ class IraqiPluginManager:
 ### Professional Domain Plugins
 
 #### Iraqi Legal Plugin
+
 ```python
 class IraqiLegalPlugin(IraqiBasePlugin):
     def get_metadata(self) -> PluginMetadata:
@@ -208,10 +215,10 @@ class IraqiLegalPlugin(IraqiBasePlugin):
             dependencies=["islamic_jurisprudence", "iraqi_legal_database"],
             permissions=["legal_document_access", "case_law_search"]
         )
-        
+
     async def execute_action(
-        self, 
-        action: str, 
+        self,
+        action: str,
         parameters: Dict[str, Any],
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -223,16 +230,16 @@ class IraqiLegalPlugin(IraqiBasePlugin):
             return await self._search_case_precedents(parameters, user_context)
         else:
             raise UnsupportedActionError(f"Action '{action}' not supported")
-            
+
     async def _perform_legal_research(
-        self, 
+        self,
         parameters: Dict[str, Any],
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
         # Research Iraqi legal provisions
         research_query = parameters.get("query")
         legal_domain = parameters.get("domain")  # civil, criminal, commercial, etc.
-        
+
         # Multi-agent cultural and professional validation
         cultural_validation = await self.cultural_validator.validate_content(
             research_query,
@@ -241,23 +248,23 @@ class IraqiLegalPlugin(IraqiBasePlugin):
         )
         if not cultural_validation["is_appropriate"]:
             return {"error": "Research query violates Islamic principles"}
-            
+
         # Professional domain expertise with agent coordination
         professional_analysis = await self.professional_expert.analyze_legal_query(
-            research_query, 
+            research_query,
             legal_domain,
             iraqi_context=True
         )
-        
+
         # Perform research with Iraqi legal database
         results = await self._search_iraqi_legal_database(research_query, legal_domain)
-        
+
         # Include Islamic jurisprudence context with agent expertise
         islamic_context = await self.professional_expert.get_islamic_legal_context(
             research_query,
             legal_domain
         )
-        
+
         return {
             "legal_provisions": results["provisions"],
             "case_law": results["cases"],
@@ -267,12 +274,13 @@ class IraqiLegalPlugin(IraqiBasePlugin):
 ```
 
 #### Iraqi Medical Plugin
+
 ```python
 class IraqiMedicalPlugin(IraqiBasePlugin):
     def get_metadata(self) -> PluginMetadata:
         return PluginMetadata(
             name="iraqi_medical_assistant",
-            version="1.0.0", 
+            version="1.0.0",
             professional_domain=IraqiProfessionalDomain.MEDICAL,
             cultural_compliance_level="strict",
             islamic_compliance_required=True,
@@ -283,10 +291,10 @@ class IraqiMedicalPlugin(IraqiBasePlugin):
             dependencies=["iraqi_medical_terminology", "islamic_medical_ethics"],
             permissions=["medical_database_access", "patient_data_processing"]
         )
-        
+
     async def execute_action(
-        self, 
-        action: str, 
+        self,
+        action: str,
         parameters: Dict[str, Any],
         user_context: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -298,7 +306,7 @@ class IraqiMedicalPlugin(IraqiBasePlugin):
             return await self._provide_islamic_medical_guidance(parameters, user_context)
         else:
             raise UnsupportedActionError(f"Action '{action}' not supported")
-            
+
     async def _provide_diagnosis_assistance(
         self,
         parameters: Dict[str, Any],
@@ -306,18 +314,18 @@ class IraqiMedicalPlugin(IraqiBasePlugin):
     ) -> Dict[str, Any]:
         symptoms = parameters.get("symptoms", [])
         patient_context = parameters.get("patient_context", {})
-        
+
         # Validate medical ethics compliance
         ethics_check = await self._validate_medical_ethics(patient_context)
         if not ethics_check["is_ethical"]:
             return {"error": "Request violates Islamic medical ethics"}
-            
+
         # Provide diagnosis assistance with Iraqi medical context
         diagnosis_suggestions = await self._analyze_symptoms(symptoms, patient_context)
-        
+
         # Include Islamic medical guidance
         islamic_guidance = await self._get_islamic_medical_guidance(diagnosis_suggestions)
-        
+
         return {
             "diagnosis_suggestions": diagnosis_suggestions,
             "islamic_medical_guidance": islamic_guidance,
@@ -326,13 +334,14 @@ class IraqiMedicalPlugin(IraqiBasePlugin):
 ```
 
 ### Cultural Validation Framework
+
 ```python
 class PluginCulturalValidator:
     def __init__(self):
         self.islamic_compliance_checker = IslamicComplianceChecker()
         self.cultural_sensitivity_analyzer = CulturalSensitivityAnalyzer()
         self.professional_ethics_validator = ProfessionalEthicsValidator()
-        
+
     async def validate_plugin_compliance(
         self,
         plugin: IraqiBasePlugin
@@ -341,17 +350,17 @@ class PluginCulturalValidator:
         islamic_score = await self.islamic_compliance_checker.validate(
             plugin.metadata.description_ar + plugin.metadata.description_en
         )
-        
+
         # Check cultural sensitivity
         cultural_score = await self.cultural_sensitivity_analyzer.analyze(plugin)
-        
+
         # Check professional ethics
         ethics_score = await self.professional_ethics_validator.validate(
             plugin.metadata.professional_domain
         )
-        
+
         overall_score = (islamic_score + cultural_score + ethics_score) / 3
-        
+
         return {
             "is_compliant": overall_score >= 0.8,
             "score": overall_score,
@@ -363,23 +372,24 @@ class PluginCulturalValidator:
 ```
 
 ### Plugin Security Framework
+
 ```python
 class PluginSecurityValidator:
     def __init__(self):
         self.code_analyzer = SecureCodeAnalyzer()
         self.permission_validator = PermissionValidator()
         self.malware_scanner = MalwareScanner()
-        
+
     async def validate_plugin(self, plugin_path: str) -> SecurityValidationResult:
         # Scan for malware and malicious code
         malware_scan = await self.malware_scanner.scan(plugin_path)
-        
+
         # Analyze code for security vulnerabilities
         security_analysis = await self.code_analyzer.analyze(plugin_path)
-        
+
         # Validate requested permissions
         permission_check = await self.permission_validator.validate(plugin_path)
-        
+
         return SecurityValidationResult(
             is_safe=all([
                 not malware_scan.threats_found,
@@ -395,6 +405,7 @@ class PluginSecurityValidator:
 ## Database Integration
 
 ### Plugin Management Schema
+
 ```sql
 -- Plugin Registry
 CREATE TABLE plugins (
@@ -447,6 +458,7 @@ CREATE TABLE plugin_performance_metrics (
 ```
 
 ### Plugin Content Validation
+
 ```sql
 -- Cultural Validation History
 CREATE TABLE plugin_cultural_validations (
@@ -466,6 +478,7 @@ CREATE TABLE plugin_cultural_validations (
 ## API Integration
 
 ### Plugin Management API
+
 ```python
 @router.post("/plugins/install")
 async def install_plugin(
@@ -473,7 +486,7 @@ async def install_plugin(
     current_user: User = Depends(get_current_user)
 ) -> PluginInstallationResponse:
     """Install and activate a professional domain plugin"""
-    
+
 @router.get("/plugins/available/{domain}")
 async def get_available_plugins(
     domain: IraqiProfessionalDomain,
@@ -481,7 +494,7 @@ async def get_available_plugins(
     current_user: User = Depends(get_current_user)
 ) -> List[PluginInfo]:
     """Get available plugins for professional domain"""
-    
+
 @router.post("/plugins/{plugin_name}/execute")
 async def execute_plugin_action(
     plugin_name: str,
@@ -489,7 +502,7 @@ async def execute_plugin_action(
     current_user: User = Depends(get_current_user)
 ) -> PluginActionResponse:
     """Execute plugin action with cultural validation"""
-    
+
 @router.get("/plugins/performance/metrics")
 async def get_plugin_metrics(
     time_range: str = "7d",
@@ -501,6 +514,7 @@ async def get_plugin_metrics(
 ## Testing Strategy
 
 ### Cultural Compliance Testing
+
 - **Islamic Compliance Testing**: Validate all plugins against Islamic principles
 - **Cultural Sensitivity Testing**: Test cultural appropriateness for Iraqi context
 - **Professional Ethics Testing**: Validate professional ethics compliance
@@ -508,6 +522,7 @@ async def get_plugin_metrics(
 - **Regional Variation Testing**: Test support for different Iraqi regional contexts
 
 ### Security Testing
+
 - **Code Security Testing**: Static analysis for security vulnerabilities
 - **Permission Testing**: Validate plugin permission requests and usage
 - **Sandboxing Testing**: Test plugin isolation and containment
@@ -515,6 +530,7 @@ async def get_plugin_metrics(
 - **Data Protection Testing**: Test handling of sensitive user data
 
 ### Performance Testing
+
 - **Plugin Load Time**: <2 seconds for plugin initialization
 - **Action Execution**: <5 seconds for standard plugin actions
 - **Memory Usage**: Efficient memory utilization and cleanup
@@ -524,6 +540,7 @@ async def get_plugin_metrics(
 ## Success Metrics
 
 ### Cultural Metrics with Agent Validation
+
 - **Islamic Compliance Rate**: 95%+ plugins meet Islamic standards (validated by iraqi-cultural-validator)
 - **Cultural Appropriateness**: 90%+ culturally sensitive plugin content (multi-agent validation)
 - **Professional Standards**: 88%+ meet Iraqi professional requirements (iraqi-professional-domain-expert validation)
@@ -532,6 +549,7 @@ async def get_plugin_metrics(
 - **Agent Coordination Efficiency**: 35%+ performance improvement through intelligent agent integration
 
 ### Technical Metrics
+
 - **Plugin Installation Success**: 98%+ successful plugin installations
 - **Performance**: <2 seconds average plugin action execution
 - **Security**: 100% malicious plugin prevention
@@ -541,18 +559,21 @@ async def get_plugin_metrics(
 ## Implementation Priority
 
 ### Phase 1: Core Framework (Post-MVP)
+
 - Basic plugin architecture and management
 - Security validation framework
 - Cultural compliance validation
 - Simple plugin installation system
 
 ### Phase 2: Professional Plugins (Future)
+
 - Legal domain plugins
 - Medical domain plugins
 - Educational domain plugins
 - Advanced cultural validation
 
 ### Phase 3: Advanced Features (Future)
+
 - AI-powered plugin recommendations
 - Advanced security sandboxing
 - Plugin marketplace

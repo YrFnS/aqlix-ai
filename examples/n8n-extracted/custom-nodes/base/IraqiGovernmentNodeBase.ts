@@ -1,10 +1,10 @@
 /**
  * Iraqi Government Node Base Class
- * 
+ *
  * Foundation class for all Iraqi government custom nodes with cultural intelligence,
  * Islamic compliance validation, Arabic RTL processing, and enterprise security.
  * Built on n8n's INodeType interface with comprehensive Iraqi government enhancements.
- * 
+ *
  * Key Features:
  * - Islamic compliance validation with prayer time awareness
  * - Arabic RTL text processing with Iraqi dialect support
@@ -32,43 +32,59 @@ import {
   IWebhookFunctions,
   IHookFunctions,
   IPollFunctions,
-  ITriggerFunctions
-} from 'n8n-workflow';
+  ITriggerFunctions,
+} from "n8n-workflow";
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // ================================
 // Core Iraqi Government Interfaces
 // ================================
 
 export interface IIraqiNodeTypeDescription extends INodeTypeDescription {
-  ministry: 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'planning' | 'foreign' | 'defense' | 'general';
+  ministry:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "finance"
+    | "planning"
+    | "foreign"
+    | "defense"
+    | "general";
   descriptionArabic?: string;
   culturalIntelligence: ICulturalIntelligenceConfig;
   islamicCompliance?: IIslamicComplianceConfig;
   arabicProcessing?: IArabicProcessingConfig;
   securityRequirements?: ISecurityRequirements;
-  auditLevel?: 'basic' | 'detailed' | 'comprehensive';
+  auditLevel?: "basic" | "detailed" | "comprehensive";
   ministrySpecific?: IMinistrySpecificConfig;
   performanceRequirements?: IPerformanceRequirements;
 }
 
 export interface ICulturalIntelligenceConfig {
   arabicSupport: boolean;
-  dialectRecognition: ('baghdadi' | 'basri' | 'moslawi' | 'standard' | 'all')[];
+  dialectRecognition: ("baghdadi" | "basri" | "moslawi" | "standard" | "all")[];
   culturalValidation: boolean;
-  professionalTerminology: 'medical' | 'legal' | 'educational' | 'administrative' | 'financial' | 'technical' | 'general';
+  professionalTerminology:
+    | "medical"
+    | "legal"
+    | "educational"
+    | "administrative"
+    | "financial"
+    | "technical"
+    | "general";
   islamicCompliance: boolean;
   prayerTimeAwareness: boolean;
   ministrySpecificRules: string[];
-  culturalSensitivityLevel: 'strict' | 'moderate' | 'lenient';
+  culturalSensitivityLevel: "strict" | "moderate" | "lenient";
   rtlLayoutSupport: boolean;
   mixedContentHandling: boolean;
 }
 
 export interface IIslamicComplianceConfig {
   enabled: boolean;
-  strictness: 'strict' | 'moderate' | 'lenient';
+  strictness: "strict" | "moderate" | "lenient";
   prayerTimeValidation: boolean;
   ribaDetection: boolean;
   halalBusinessValidation: boolean;
@@ -80,7 +96,7 @@ export interface IIslamicComplianceConfig {
 export interface IArabicProcessingConfig {
   enabled: boolean;
   rtlSupport: boolean;
-  dialectSupport: ('baghdadi' | 'basri' | 'moslawi' | 'standard')[];
+  dialectSupport: ("baghdadi" | "basri" | "moslawi" | "standard")[];
   transliterationSupport: boolean;
   professionalTerminologyMapping: boolean;
   culturalContextValidation: boolean;
@@ -89,7 +105,7 @@ export interface IArabicProcessingConfig {
 }
 
 export interface ISecurityRequirements {
-  clearanceLevel: 'public' | 'restricted' | 'confidential' | 'secret';
+  clearanceLevel: "public" | "restricted" | "confidential" | "secret";
   encryptionRequired: boolean;
   auditLogging: boolean;
   biometricValidation: boolean;
@@ -124,24 +140,36 @@ export interface IPerformanceRequirements {
 export interface IIraqiExecuteFunctions extends IExecuteFunctions {
   getCulturalContext(): ICulturalContext;
   validateIslamicCompliance(data: any): Promise<IIslamicComplianceResult>;
-  processArabicText(text: string, options: IArabicProcessingOptions): Promise<IArabicResult>;
+  processArabicText(
+    text: string,
+    options: IArabicProcessingOptions,
+  ): Promise<IArabicResult>;
   checkSecurityClearance(level: string): Promise<boolean>;
   logAuditEntry(entry: IAuditEntry): Promise<void>;
   getPrayerTimes(region: string): Promise<IPrayerTimes>;
-  validateCulturalSensitivity(content: any, options: ICulturalValidationOptions): Promise<ICulturalValidationResult>;
-  mapProfessionalTerminology(text: string, options: ITerminologyMappingOptions): Promise<ITerminologyResult>;
+  validateCulturalSensitivity(
+    content: any,
+    options: ICulturalValidationOptions,
+  ): Promise<ICulturalValidationResult>;
+  mapProfessionalTerminology(
+    text: string,
+    options: ITerminologyMappingOptions,
+  ): Promise<ITerminologyResult>;
   validateMinistryAccess(ministry: string, operation: string): Promise<boolean>;
   encryptSensitiveData(data: any): Promise<string>;
   decryptSensitiveData(encryptedData: string): Promise<any>;
   isArabicText(text: string): boolean;
   isPrayerTime(region?: string): Promise<boolean>;
-  sendCulturalAlert(message: string, severity: 'low' | 'medium' | 'high'): Promise<void>;
+  sendCulturalAlert(
+    message: string,
+    severity: "low" | "medium" | "high",
+  ): Promise<void>;
 }
 
 export interface ICulturalContext {
   ministry: string;
-  language: 'ar' | 'en' | 'ar-IQ';
-  region: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'najaf' | 'general';
+  language: "ar" | "en" | "ar-IQ";
+  region: "baghdad" | "basra" | "mosul" | "erbil" | "najaf" | "general";
   userId: string;
   userRole: string;
   securityClearance: string;
@@ -156,12 +184,12 @@ export interface ICulturalContext {
 export interface ICulturalPreferences {
   language: string;
   dialect: string;
-  islamicStrictness: 'strict' | 'moderate' | 'lenient';
+  islamicStrictness: "strict" | "moderate" | "lenient";
   prayerTimeAlerts: boolean;
   culturalValidation: boolean;
   professionalDomain: string;
   rtlLayoutPreference: boolean;
-  arabicInputMethod: 'keyboard' | 'voice' | 'both';
+  arabicInputMethod: "keyboard" | "voice" | "both";
 }
 
 export interface IIslamicComplianceResult {
@@ -188,13 +216,13 @@ export interface IArabicResult {
 }
 
 export interface IArabicProcessingOptions {
-  dialect?: 'baghdadi' | 'basri' | 'moslawi' | 'standard' | 'auto';
+  dialect?: "baghdadi" | "basri" | "moslawi" | "standard" | "auto";
   rtlProcessing?: boolean;
   culturalValidation?: boolean;
   professionalDomain?: string;
   preserveDiacritics?: boolean;
   handleMixedContent?: boolean;
-  outputFormat?: 'text' | 'html' | 'json';
+  outputFormat?: "text" | "html" | "json";
 }
 
 export interface IPrayerTimes {
@@ -223,10 +251,10 @@ export interface ICulturalValidationResult {
 
 export interface ICulturalValidationOptions {
   ministry: string;
-  audience: 'citizens' | 'employees' | 'officials' | 'public';
+  audience: "citizens" | "employees" | "officials" | "public";
   islamicCompliance: boolean;
   professionalContext: string;
-  sensitivityLevel: 'strict' | 'moderate' | 'lenient';
+  sensitivityLevel: "strict" | "moderate" | "lenient";
   culturalEvents: string[];
 }
 
@@ -248,11 +276,17 @@ export interface ITerminologyMapping {
 }
 
 export interface ITerminologyMappingOptions {
-  domain: 'medical' | 'legal' | 'educational' | 'administrative' | 'financial' | 'technical';
-  sourceLanguage: 'ar' | 'en' | 'ar-IQ';
-  targetLanguage: 'ar' | 'en' | 'ar-IQ';
+  domain:
+    | "medical"
+    | "legal"
+    | "educational"
+    | "administrative"
+    | "financial"
+    | "technical";
+  sourceLanguage: "ar" | "en" | "ar-IQ";
+  targetLanguage: "ar" | "en" | "ar-IQ";
   ministryContext: string;
-  formalityLevel: 'formal' | 'informal' | 'technical';
+  formalityLevel: "formal" | "informal" | "technical";
   culturalAdaptation: boolean;
 }
 
@@ -263,7 +297,7 @@ export interface IAuditEntry {
   nodeId: string;
   userId: string;
   ministry: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  severity: "low" | "medium" | "high" | "critical";
   culturalCompliance: number;
   islamicCompliance: boolean;
   securityLevel: string;
@@ -294,10 +328,10 @@ export interface ICulturalMetrics {
 
 export interface IWorkingHours {
   start: string; // HH:MM format
-  end: string;   // HH:MM format
+  end: string; // HH:MM format
   timezone: string;
   excludePrayerTimes: boolean;
-  weekends: ('friday' | 'saturday' | 'sunday')[];
+  weekends: ("friday" | "saturday" | "sunday")[];
   holidays: string[];
 }
 
@@ -305,9 +339,12 @@ export interface IWorkingHours {
 // Main Base Class Implementation
 // ================================
 
-export abstract class IraqiGovernmentNodeBase extends EventEmitter implements INodeType {
+export abstract class IraqiGovernmentNodeBase
+  extends EventEmitter
+  implements INodeType
+{
   abstract description: IIraqiNodeTypeDescription;
-  
+
   protected culturalIntelligence: ICulturalIntelligenceEngine;
   protected islamicValidator: IIslamicComplianceValidator;
   protected arabicProcessor: IArabicTextProcessor;
@@ -324,36 +361,44 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   /**
    * Main node execution method with cultural intelligence and Islamic compliance
    */
-  abstract execute(this: IIraqiExecuteFunctions): Promise<INodeExecutionData[][]>;
+  abstract execute(
+    this: IIraqiExecuteFunctions,
+  ): Promise<INodeExecutionData[][]>;
 
   /**
    * Enhanced execute method with cultural validation wrapper
    */
   async executeWithCulturalValidation(
     this: IIraqiExecuteFunctions,
-    executionMethod: () => Promise<INodeExecutionData[][]>
+    executionMethod: () => Promise<INodeExecutionData[][]>,
   ): Promise<INodeExecutionData[][]> {
     const startTime = Date.now();
     const culturalContext = this.getCulturalContext();
-    
+
     try {
       // Pre-execution validation
       await this.performPreExecutionValidation(culturalContext);
-      
+
       // Execute main logic
       const result = await executionMethod.call(this);
-      
+
       // Post-execution validation
       await this.performPostExecutionValidation(result, culturalContext);
-      
+
       // Log successful execution
-      await this.logSuccessfulExecution(culturalContext, Date.now() - startTime);
-      
+      await this.logSuccessfulExecution(
+        culturalContext,
+        Date.now() - startTime,
+      );
+
       return result;
-      
     } catch (error) {
       // Handle execution error with cultural recovery
-      await this.handleExecutionError(error as Error, culturalContext, Date.now() - startTime);
+      await this.handleExecutionError(
+        error as Error,
+        culturalContext,
+        Date.now() - startTime,
+      );
       throw error;
     }
   }
@@ -361,10 +406,12 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   /**
    * Load options with cultural intelligence
    */
-  async loadOptions(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+  async loadOptions(
+    this: ILoadOptionsFunctions,
+  ): Promise<INodePropertyOptions[]> {
     const culturalContext = await this.getCulturalContextFromLoad();
     const options = await this.loadCulturallyAwareOptions(culturalContext);
-    
+
     // Sort and format options based on cultural preferences
     return this.formatOptionsForCulture(options, culturalContext);
   }
@@ -374,10 +421,10 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
    */
   async webhook(this: IWebhookFunctions): Promise<INodeExecutionData[][]> {
     const culturalContext = await this.getCulturalContextFromWebhook();
-    
+
     // Validate webhook security and cultural appropriateness
     await this.validateWebhookSecurity(culturalContext);
-    
+
     return await this.processWebhookWithCulturalIntelligence(culturalContext);
   }
 
@@ -386,15 +433,15 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
    */
   async trigger(this: ITriggerFunctions): Promise<INodeExecutionData[][]> {
     const culturalContext = await this.getCulturalContextFromTrigger();
-    
+
     // Check if trigger should fire based on Islamic calendar and prayer times
     const shouldFire = await this.shouldTriggerFire(culturalContext);
-    
+
     if (!shouldFire) {
       await this.scheduleTriggerForAfterPrayer(culturalContext);
       return [];
     }
-    
+
     return await this.processTriggerWithCulturalIntelligence(culturalContext);
   }
 
@@ -403,12 +450,12 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
    */
   async poll(this: IPollFunctions): Promise<INodeExecutionData[][]> {
     const culturalContext = await this.getCulturalContextFromPoll();
-    
+
     // Skip polling during prayer times if configured
     if (await this.shouldSkipDuringPrayer(culturalContext)) {
       return [];
     }
-    
+
     return await this.processPollWithCulturalIntelligence(culturalContext);
   }
 
@@ -416,14 +463,17 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   // Cultural Intelligence Methods
   // ================================
 
-  protected async performPreExecutionValidation(context: ICulturalContext): Promise<void> {
+  protected async performPreExecutionValidation(
+    context: ICulturalContext,
+  ): Promise<void> {
     // Validate Islamic compliance
     if (this.description.culturalIntelligence.islamicCompliance) {
-      const islamicValidation = await this.islamicValidator.validatePreExecution(context);
+      const islamicValidation =
+        await this.islamicValidator.validatePreExecution(context);
       if (!islamicValidation.isCompliant) {
         throw new NodeOperationError(
           this.getNodeFromContext(context),
-          `Islamic compliance validation failed: ${islamicValidation.violations.join(', ')}`
+          `Islamic compliance validation failed: ${islamicValidation.violations.join(", ")}`,
         );
       }
     }
@@ -432,12 +482,12 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     if (this.description.securityRequirements?.clearanceLevel) {
       const hasAccess = await this.securityManager.validateAccess(
         context.userId,
-        this.description.securityRequirements.clearanceLevel
+        this.description.securityRequirements.clearanceLevel,
       );
       if (!hasAccess) {
         throw new NodeOperationError(
           this.getNodeFromContext(context),
-          'Insufficient security clearance for this operation'
+          "Insufficient security clearance for this operation",
         );
       }
     }
@@ -448,21 +498,22 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
       if (isPrayerTime) {
         throw new NodeOperationError(
           this.getNodeFromContext(context),
-          'Operation paused for prayer time / تم إيقاف العملية مؤقتاً للصلاة'
+          "Operation paused for prayer time / تم إيقاف العملية مؤقتاً للصلاة",
         );
       }
     }
 
     // Validate ministry access
-    if (this.description.ministry !== 'general') {
-      const hasMinistryAccess = await this.securityManager.validateMinistryAccess(
-        context.userId,
-        this.description.ministry
-      );
+    if (this.description.ministry !== "general") {
+      const hasMinistryAccess =
+        await this.securityManager.validateMinistryAccess(
+          context.userId,
+          this.description.ministry,
+        );
       if (!hasMinistryAccess) {
         throw new NodeOperationError(
           this.getNodeFromContext(context),
-          `Access denied to ${this.description.ministry} ministry operations`
+          `Access denied to ${this.description.ministry} ministry operations`,
         );
       }
     }
@@ -470,18 +521,19 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
 
   protected async performPostExecutionValidation(
     result: INodeExecutionData[][],
-    context: ICulturalContext
+    context: ICulturalContext,
   ): Promise<void> {
     // Validate output cultural appropriateness
     if (this.description.culturalIntelligence.culturalValidation) {
       for (const resultSet of result) {
         for (const item of resultSet) {
-          const culturalValidation = await this.culturalIntelligence.validateOutput(item.json, context);
+          const culturalValidation =
+            await this.culturalIntelligence.validateOutput(item.json, context);
           if (!culturalValidation.isAppropriate) {
-            this.emit('cultural:warning', {
+            this.emit("cultural:warning", {
               nodeId: context.nodeId,
               violations: culturalValidation.violations,
-              score: culturalValidation.score
+              score: culturalValidation.score,
             });
           }
         }
@@ -494,7 +546,10 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     }
   }
 
-  protected async logSuccessfulExecution(context: ICulturalContext, executionTime: number): Promise<void> {
+  protected async logSuccessfulExecution(
+    context: ICulturalContext,
+    executionTime: number,
+  ): Promise<void> {
     const auditEntry: IAuditEntry = {
       timestamp: new Date(),
       action: `Node ${this.description.displayName} executed successfully`,
@@ -502,17 +557,19 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
       nodeId: context.nodeId,
       userId: context.userId,
       ministry: context.ministry,
-      severity: 'low',
+      severity: "low",
       culturalCompliance: 100,
       islamicCompliance: true,
-      securityLevel: this.description.securityRequirements?.clearanceLevel || 'public',
-      dataClassification: this.description.securityRequirements?.dataClassification || 'public',
+      securityLevel:
+        this.description.securityRequirements?.clearanceLevel || "public",
+      dataClassification:
+        this.description.securityRequirements?.dataClassification || "public",
       details: {
         executionTime,
         success: true,
         culturalIntelligence: this.description.culturalIntelligence,
-        performanceMetrics: await this.performanceMonitor.getMetrics()
-      }
+        performanceMetrics: await this.performanceMonitor.getMetrics(),
+      },
     };
 
     await this.auditLogger.log(auditEntry);
@@ -521,7 +578,7 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   protected async handleExecutionError(
     error: Error,
     context: ICulturalContext,
-    executionTime: number
+    executionTime: number,
   ): Promise<void> {
     // Log error with cultural context
     const auditEntry: IAuditEntry = {
@@ -531,27 +588,29 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
       nodeId: context.nodeId,
       userId: context.userId,
       ministry: context.ministry,
-      severity: 'high',
+      severity: "high",
       culturalCompliance: 0,
       islamicCompliance: false,
-      securityLevel: this.description.securityRequirements?.clearanceLevel || 'public',
-      dataClassification: this.description.securityRequirements?.dataClassification || 'public',
+      securityLevel:
+        this.description.securityRequirements?.clearanceLevel || "public",
+      dataClassification:
+        this.description.securityRequirements?.dataClassification || "public",
       details: {
         error: error.message,
         executionTime,
         success: false,
-        stack: error.stack
-      }
+        stack: error.stack,
+      },
     };
 
     await this.auditLogger.log(auditEntry);
 
     // Emit error event for monitoring
-    this.emit('execution:error', {
+    this.emit("execution:error", {
       nodeId: context.nodeId,
       ministry: context.ministry,
       error: error.message,
-      culturalContext: context
+      culturalContext: context,
     });
   }
 
@@ -559,40 +618,54 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   // Arabic Text Processing Methods
   // ================================
 
-  protected async processArabicText(text: string, options: IArabicProcessingOptions): Promise<IArabicResult> {
+  protected async processArabicText(
+    text: string,
+    options: IArabicProcessingOptions,
+  ): Promise<IArabicResult> {
     if (!this.description.culturalIntelligence.arabicSupport) {
-      throw new Error('Arabic processing not enabled for this node');
+      throw new Error("Arabic processing not enabled for this node");
     }
 
     return await this.arabicProcessor.processText(text, {
       ...options,
-      dialect: options.dialect || 'standard',
-      professionalDomain: options.professionalDomain || this.description.culturalIntelligence.professionalTerminology,
-      culturalValidation: this.description.culturalIntelligence.culturalValidation
+      dialect: options.dialect || "standard",
+      professionalDomain:
+        options.professionalDomain ||
+        this.description.culturalIntelligence.professionalTerminology,
+      culturalValidation:
+        this.description.culturalIntelligence.culturalValidation,
     });
   }
 
   protected isArabicText(text: string): boolean {
-    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const arabicRegex =
+      /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     return arabicRegex.test(text);
   }
 
-  protected async translateToArabic(text: string, context?: ICulturalContext): Promise<string> {
+  protected async translateToArabic(
+    text: string,
+    context?: ICulturalContext,
+  ): Promise<string> {
     if (!text || this.isArabicText(text)) {
       return text;
     }
 
     const result = await this.arabicProcessor.translate(text, {
-      sourceLanguage: 'en',
-      targetLanguage: 'ar-IQ',
-      professionalDomain: this.description.culturalIntelligence.professionalTerminology,
-      ministryContext: context?.ministry || this.description.ministry
+      sourceLanguage: "en",
+      targetLanguage: "ar-IQ",
+      professionalDomain:
+        this.description.culturalIntelligence.professionalTerminology,
+      ministryContext: context?.ministry || this.description.ministry,
     });
 
     return result.translatedText;
   }
 
-  protected async formatArabicOutput(data: any, rtlFormat: boolean = true): Promise<any> {
+  protected async formatArabicOutput(
+    data: any,
+    rtlFormat: boolean = true,
+  ): Promise<any> {
     if (!this.description.culturalIntelligence.rtlLayoutSupport || !rtlFormat) {
       return data;
     }
@@ -600,7 +673,8 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     return await this.arabicProcessor.formatForRTL(data, {
       preserveStructure: true,
       addDirectionMarkers: true,
-      handleMixedContent: this.description.culturalIntelligence.mixedContentHandling
+      handleMixedContent:
+        this.description.culturalIntelligence.mixedContentHandling,
     });
   }
 
@@ -608,7 +682,9 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   // Islamic Compliance Methods
   // ================================
 
-  protected async validateIslamicCompliance(data: any): Promise<IIslamicComplianceResult> {
+  protected async validateIslamicCompliance(
+    data: any,
+  ): Promise<IIslamicComplianceResult> {
     if (!this.description.culturalIntelligence.islamicCompliance) {
       return {
         isCompliant: true,
@@ -618,19 +694,20 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
         ribaDetected: false,
         halalCompliant: true,
         recommendations: [],
-        culturalNotes: []
+        culturalNotes: [],
       };
     }
 
     return await this.islamicValidator.validate(data, {
-      strictness: this.description.islamicCompliance?.strictness || 'moderate',
+      strictness: this.description.islamicCompliance?.strictness || "moderate",
       checkRiba: this.description.islamicCompliance?.ribaDetection || false,
-      validateHalal: this.description.islamicCompliance?.halalBusinessValidation || false,
-      ministryContext: this.description.ministry
+      validateHalal:
+        this.description.islamicCompliance?.halalBusinessValidation || false,
+      ministryContext: this.description.ministry,
     });
   }
 
-  protected async isPrayerTime(region: string = 'baghdad'): Promise<boolean> {
+  protected async isPrayerTime(region: string = "baghdad"): Promise<boolean> {
     if (!this.description.culturalIntelligence.prayerTimeAwareness) {
       return false;
     }
@@ -639,19 +716,28 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     return prayerTimes.isCurrentlyPrayerTime;
   }
 
-  protected async getPrayerTimes(region: string = 'baghdad'): Promise<IPrayerTimes> {
+  protected async getPrayerTimes(
+    region: string = "baghdad",
+  ): Promise<IPrayerTimes> {
     return await this.islamicValidator.getPrayerTimes(region);
   }
 
-  protected async scheduleAfterPrayer(callback: () => Promise<any>, region: string = 'baghdad'): Promise<void> {
+  protected async scheduleAfterPrayer(
+    callback: () => Promise<any>,
+    region: string = "baghdad",
+  ): Promise<void> {
     const prayerTimes = await this.getPrayerTimes(region);
-    const waitTime = prayerTimes.nextPrayerTime.getTime() - Date.now() + (30 * 60 * 1000); // 30 minutes after prayer
-    
+    const waitTime =
+      prayerTimes.nextPrayerTime.getTime() - Date.now() + 30 * 60 * 1000; // 30 minutes after prayer
+
     setTimeout(async () => {
       try {
         await callback();
       } catch (error) {
-        this.emit('scheduled:execution:error', { error: error.message, region });
+        this.emit("scheduled:execution:error", {
+          error: error.message,
+          region,
+        });
       }
     }, waitTime);
   }
@@ -667,21 +753,23 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
 
   protected async logAuditEntry(entry: Partial<IAuditEntry>): Promise<void> {
     const context = this.getCurrentContext();
-    
+
     const fullEntry: IAuditEntry = {
       timestamp: new Date(),
-      action: entry.action || 'Node operation',
-      actionArabic: entry.actionArabic || 'عملية العقدة',
+      action: entry.action || "Node operation",
+      actionArabic: entry.actionArabic || "عملية العقدة",
       nodeId: context.nodeId,
       userId: context.userId,
       ministry: context.ministry,
-      severity: entry.severity || 'low',
+      severity: entry.severity || "low",
       culturalCompliance: entry.culturalCompliance || 100,
       islamicCompliance: entry.islamicCompliance !== false,
-      securityLevel: this.description.securityRequirements?.clearanceLevel || 'public',
-      dataClassification: this.description.securityRequirements?.dataClassification || 'public',
+      securityLevel:
+        this.description.securityRequirements?.clearanceLevel || "public",
+      dataClassification:
+        this.description.securityRequirements?.dataClassification || "public",
       details: entry.details || {},
-      ...entry
+      ...entry,
     };
 
     await this.auditLogger.log(fullEntry);
@@ -709,44 +797,51 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
 
   protected async validateCulturalSensitivity(
     content: any,
-    options: ICulturalValidationOptions
+    options: ICulturalValidationOptions,
   ): Promise<ICulturalValidationResult> {
     return await this.culturalIntelligence.validateSensitivity(content, {
       ...options,
       ministry: options.ministry || this.description.ministry,
-      sensitivityLevel: options.sensitivityLevel || this.description.culturalIntelligence.culturalSensitivityLevel
+      sensitivityLevel:
+        options.sensitivityLevel ||
+        this.description.culturalIntelligence.culturalSensitivityLevel,
     });
   }
 
   protected async mapProfessionalTerminology(
     text: string,
-    options: ITerminologyMappingOptions
+    options: ITerminologyMappingOptions,
   ): Promise<ITerminologyResult> {
     return await this.culturalIntelligence.mapTerminology(text, {
       ...options,
-      domain: options.domain || this.description.culturalIntelligence.professionalTerminology as any,
-      ministryContext: options.ministryContext || this.description.ministry
+      domain:
+        options.domain ||
+        (this.description.culturalIntelligence.professionalTerminology as any),
+      ministryContext: options.ministryContext || this.description.ministry,
     });
   }
 
-  protected async sendCulturalAlert(message: string, severity: 'low' | 'medium' | 'high'): Promise<void> {
+  protected async sendCulturalAlert(
+    message: string,
+    severity: "low" | "medium" | "high",
+  ): Promise<void> {
     const context = this.getCurrentContext();
-    
-    this.emit('cultural:alert', {
+
+    this.emit("cultural:alert", {
       nodeId: context.nodeId,
       ministry: context.ministry,
       message,
       messageArabic: await this.translateToArabic(message, context),
       severity,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Log as audit entry
     await this.logAuditEntry({
-      action: 'Cultural alert sent',
-      actionArabic: 'تم إرسال تنبيه ثقافي',
+      action: "Cultural alert sent",
+      actionArabic: "تم إرسال تنبيه ثقافي",
       severity,
-      details: { alertMessage: message }
+      details: { alertMessage: message },
     });
   }
 
@@ -756,33 +851,43 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
 
   private initializeComponents(): void {
     // Initialize cultural intelligence components
-    this.culturalIntelligence = new CulturalIntelligenceEngine(this.description.culturalIntelligence);
-    this.islamicValidator = new IslamicComplianceValidator(this.description.islamicCompliance);
-    this.arabicProcessor = new ArabicTextProcessor(this.description.arabicProcessing);
-    this.securityManager = new SecurityManager(this.description.securityRequirements);
+    this.culturalIntelligence = new CulturalIntelligenceEngine(
+      this.description.culturalIntelligence,
+    );
+    this.islamicValidator = new IslamicComplianceValidator(
+      this.description.islamicCompliance,
+    );
+    this.arabicProcessor = new ArabicTextProcessor(
+      this.description.arabicProcessing,
+    );
+    this.securityManager = new SecurityManager(
+      this.description.securityRequirements,
+    );
     this.auditLogger = new AuditLogger(this.description.auditLevel);
-    this.performanceMonitor = new PerformanceMonitor(this.description.performanceRequirements);
+    this.performanceMonitor = new PerformanceMonitor(
+      this.description.performanceRequirements,
+    );
   }
 
   private setupEventHandlers(): void {
     // Cultural intelligence events
-    this.culturalIntelligence.on('validation:warning', (data) => {
-      this.emit('cultural:validation:warning', data);
+    this.culturalIntelligence.on("validation:warning", (data) => {
+      this.emit("cultural:validation:warning", data);
     });
 
     // Islamic compliance events
-    this.islamicValidator.on('prayer:time:alert', (data) => {
-      this.emit('islamic:prayer:time:alert', data);
+    this.islamicValidator.on("prayer:time:alert", (data) => {
+      this.emit("islamic:prayer:time:alert", data);
     });
 
     // Security events
-    this.securityManager.on('access:denied', (data) => {
-      this.emit('security:access:denied', data);
+    this.securityManager.on("access:denied", (data) => {
+      this.emit("security:access:denied", data);
     });
 
     // Performance monitoring events
-    this.performanceMonitor.on('performance:threshold:exceeded', (data) => {
-      this.emit('performance:threshold:exceeded', data);
+    this.performanceMonitor.on("performance:threshold:exceeded", (data) => {
+      this.emit("performance:threshold:exceeded", data);
     });
   }
 
@@ -791,26 +896,27 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     // For now, returning a mock context
     return {
       ministry: this.description.ministry,
-      language: 'ar',
-      region: 'baghdad',
-      userId: 'current-user',
-      userRole: 'operator',
-      securityClearance: 'public',
+      language: "ar",
+      region: "baghdad",
+      userId: "current-user",
+      userRole: "operator",
+      securityClearance: "public",
       culturalPreferences: {
-        language: 'ar',
-        dialect: 'standard',
-        islamicStrictness: 'moderate',
+        language: "ar",
+        dialect: "standard",
+        islamicStrictness: "moderate",
         prayerTimeAlerts: true,
         culturalValidation: true,
-        professionalDomain: this.description.culturalIntelligence.professionalTerminology,
+        professionalDomain:
+          this.description.culturalIntelligence.professionalTerminology,
         rtlLayoutPreference: true,
-        arabicInputMethod: 'keyboard'
+        arabicInputMethod: "keyboard",
       },
-      sessionId: 'session-id',
-      executionId: 'execution-id',
-      workflowId: 'workflow-id',
-      nodeId: 'node-id',
-      timestamp: new Date()
+      sessionId: "session-id",
+      executionId: "execution-id",
+      workflowId: "workflow-id",
+      nodeId: "node-id",
+      timestamp: new Date(),
     };
   }
 
@@ -820,17 +926,22 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
   }
 
   // Additional helper methods for cultural processing
-  private async loadCulturallyAwareOptions(context: ICulturalContext): Promise<INodePropertyOptions[]> {
+  private async loadCulturallyAwareOptions(
+    context: ICulturalContext,
+  ): Promise<INodePropertyOptions[]> {
     // Implementation would load options based on cultural context
     return [];
   }
 
   private async formatOptionsForCulture(
     options: INodePropertyOptions[],
-    context: ICulturalContext
+    context: ICulturalContext,
   ): Promise<INodePropertyOptions[]> {
     // Format options for Arabic RTL display if needed
-    if (context.language === 'ar' && this.description.culturalIntelligence.rtlLayoutSupport) {
+    if (
+      context.language === "ar" &&
+      this.description.culturalIntelligence.rtlLayoutSupport
+    ) {
       return await this.arabicProcessor.formatOptionsForRTL(options);
     }
     return options;
@@ -852,11 +963,15 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     return this.getCurrentContext();
   }
 
-  private async validateWebhookSecurity(context: ICulturalContext): Promise<void> {
+  private async validateWebhookSecurity(
+    context: ICulturalContext,
+  ): Promise<void> {
     // Implement webhook security validation
   }
 
-  private async processWebhookWithCulturalIntelligence(context: ICulturalContext): Promise<INodeExecutionData[][]> {
+  private async processWebhookWithCulturalIntelligence(
+    context: ICulturalContext,
+  ): Promise<INodeExecutionData[][]> {
     // Implement webhook processing with cultural intelligence
     return [[]];
   }
@@ -869,31 +984,44 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
     return true;
   }
 
-  private async scheduleTriggerForAfterPrayer(context: ICulturalContext): Promise<void> {
+  private async scheduleTriggerForAfterPrayer(
+    context: ICulturalContext,
+  ): Promise<void> {
     // Schedule trigger for after prayer time
     const prayerTimes = await this.getPrayerTimes(context.region);
-    this.emit('trigger:scheduled:prayer', {
+    this.emit("trigger:scheduled:prayer", {
       nodeId: context.nodeId,
-      nextExecutionTime: prayerTimes.nextPrayerTime
+      nextExecutionTime: prayerTimes.nextPrayerTime,
     });
   }
 
-  private async processTriggerWithCulturalIntelligence(context: ICulturalContext): Promise<INodeExecutionData[][]> {
+  private async processTriggerWithCulturalIntelligence(
+    context: ICulturalContext,
+  ): Promise<INodeExecutionData[][]> {
     // Implement trigger processing with cultural intelligence
     return [[]];
   }
 
-  private async shouldSkipDuringPrayer(context: ICulturalContext): Promise<boolean> {
-    return this.description.culturalIntelligence.prayerTimeAwareness && 
-           await this.isPrayerTime(context.region);
+  private async shouldSkipDuringPrayer(
+    context: ICulturalContext,
+  ): Promise<boolean> {
+    return (
+      this.description.culturalIntelligence.prayerTimeAwareness &&
+      (await this.isPrayerTime(context.region))
+    );
   }
 
-  private async processPollWithCulturalIntelligence(context: ICulturalContext): Promise<INodeExecutionData[][]> {
+  private async processPollWithCulturalIntelligence(
+    context: ICulturalContext,
+  ): Promise<INodeExecutionData[][]> {
     // Implement polling with cultural intelligence
     return [[]];
   }
 
-  private async encryptResultData(result: INodeExecutionData[][], context: ICulturalContext): Promise<void> {
+  private async encryptResultData(
+    result: INodeExecutionData[][],
+    context: ICulturalContext,
+  ): Promise<void> {
     // Encrypt sensitive data in results
     for (const resultSet of result) {
       for (const item of resultSet) {
@@ -906,9 +1034,15 @@ export abstract class IraqiGovernmentNodeBase extends EventEmitter implements IN
 
   private containsSensitiveData(data: any): boolean {
     // Check if data contains sensitive information
-    const sensitiveFields = ['password', 'ssn', 'nationalId', 'creditCard', 'bankAccount'];
+    const sensitiveFields = [
+      "password",
+      "ssn",
+      "nationalId",
+      "creditCard",
+      "bankAccount",
+    ];
     const dataString = JSON.stringify(data).toLowerCase();
-    return sensitiveFields.some(field => dataString.includes(field));
+    return sensitiveFields.some((field) => dataString.includes(field));
   }
 }
 
@@ -921,7 +1055,10 @@ class CulturalIntelligenceEngine extends EventEmitter {
     super();
   }
 
-  async validateSensitivity(content: any, options: ICulturalValidationOptions): Promise<ICulturalValidationResult> {
+  async validateSensitivity(
+    content: any,
+    options: ICulturalValidationOptions,
+  ): Promise<ICulturalValidationResult> {
     return {
       isAppropriate: true,
       score: 95,
@@ -930,22 +1067,28 @@ class CulturalIntelligenceEngine extends EventEmitter {
       culturalNotes: [],
       islamicCompliance: true,
       professionalAppropriate: true,
-      ministrySpecificIssues: []
+      ministrySpecificIssues: [],
     };
   }
 
-  async mapTerminology(text: string, options: ITerminologyMappingOptions): Promise<ITerminologyResult> {
+  async mapTerminology(
+    text: string,
+    options: ITerminologyMappingOptions,
+  ): Promise<ITerminologyResult> {
     return {
       mappedText: text,
       mappings: [],
       accuracy: 95,
       culturalAppropriate: true,
       professionalStandard: true,
-      recommendations: []
+      recommendations: [],
     };
   }
 
-  async validateOutput(data: any, context: ICulturalContext): Promise<ICulturalValidationResult> {
+  async validateOutput(
+    data: any,
+    context: ICulturalContext,
+  ): Promise<ICulturalValidationResult> {
     return {
       isAppropriate: true,
       score: 95,
@@ -954,7 +1097,7 @@ class CulturalIntelligenceEngine extends EventEmitter {
       culturalNotes: [],
       islamicCompliance: true,
       professionalAppropriate: true,
-      ministrySpecificIssues: []
+      ministrySpecificIssues: [],
     };
   }
 }
@@ -973,11 +1116,13 @@ class IslamicComplianceValidator extends EventEmitter {
       ribaDetected: false,
       halalCompliant: true,
       recommendations: [],
-      culturalNotes: []
+      culturalNotes: [],
     };
   }
 
-  async validatePreExecution(context: ICulturalContext): Promise<IIslamicComplianceResult> {
+  async validatePreExecution(
+    context: ICulturalContext,
+  ): Promise<IIslamicComplianceResult> {
     return {
       isCompliant: true,
       score: 100,
@@ -986,7 +1131,7 @@ class IslamicComplianceValidator extends EventEmitter {
       ribaDetected: false,
       halalCompliant: true,
       recommendations: [],
-      culturalNotes: []
+      culturalNotes: [],
     };
   }
 
@@ -1000,9 +1145,9 @@ class IslamicComplianceValidator extends EventEmitter {
       isha: new Date(now.getTime() + 20 * 60 * 60 * 1000),
       isCurrentlyPrayerTime: false,
       nextPrayerTime: new Date(now.getTime() + 2 * 60 * 60 * 1000),
-      nextPrayerName: 'Dhuhr',
+      nextPrayerName: "Dhuhr",
       region,
-      timezone: 'Asia/Baghdad'
+      timezone: "Asia/Baghdad",
     };
   }
 }
@@ -1012,21 +1157,27 @@ class ArabicTextProcessor extends EventEmitter {
     super();
   }
 
-  async processText(text: string, options: IArabicProcessingOptions): Promise<IArabicResult> {
+  async processText(
+    text: string,
+    options: IArabicProcessingOptions,
+  ): Promise<IArabicResult> {
     return {
       success: true,
       processedText: text,
       originalText: text,
-      detectedDialect: 'standard',
+      detectedDialect: "standard",
       accuracy: 95,
       rtlFormatted: true,
       culturalScore: 95,
       professionalTerminology: [],
-      warnings: []
+      warnings: [],
     };
   }
 
-  async translate(text: string, options: any): Promise<{ translatedText: string }> {
+  async translate(
+    text: string,
+    options: any,
+  ): Promise<{ translatedText: string }> {
     return { translatedText: text };
   }
 
@@ -1034,7 +1185,9 @@ class ArabicTextProcessor extends EventEmitter {
     return data;
   }
 
-  async formatOptionsForRTL(options: INodePropertyOptions[]): Promise<INodePropertyOptions[]> {
+  async formatOptionsForRTL(
+    options: INodePropertyOptions[],
+  ): Promise<INodePropertyOptions[]> {
     return options;
   }
 }
@@ -1044,7 +1197,10 @@ class SecurityManager extends EventEmitter {
     super();
   }
 
-  async validateAccess(userId: string, clearanceLevel: string): Promise<boolean> {
+  async validateAccess(
+    userId: string,
+    clearanceLevel: string,
+  ): Promise<boolean> {
     return true;
   }
 
@@ -1052,16 +1208,19 @@ class SecurityManager extends EventEmitter {
     return true;
   }
 
-  async validateMinistryAccess(userId: string, ministry: string): Promise<boolean> {
+  async validateMinistryAccess(
+    userId: string,
+    ministry: string,
+  ): Promise<boolean> {
     return true;
   }
 
   async encrypt(data: any): Promise<string> {
-    return Buffer.from(JSON.stringify(data)).toString('base64');
+    return Buffer.from(JSON.stringify(data)).toString("base64");
   }
 
   async decrypt(encryptedData: string): Promise<any> {
-    return JSON.parse(Buffer.from(encryptedData, 'base64').toString());
+    return JSON.parse(Buffer.from(encryptedData, "base64").toString());
   }
 }
 
@@ -1069,7 +1228,9 @@ class AuditLogger {
   constructor(private level?: string) {}
 
   async log(entry: IAuditEntry): Promise<void> {
-    console.log(`📋 AUDIT [${entry.severity}]: ${entry.action} - ${entry.ministry} ministry`);
+    console.log(
+      `📋 AUDIT [${entry.severity}]: ${entry.action} - ${entry.ministry} ministry`,
+    );
   }
 }
 
@@ -1086,7 +1247,7 @@ class PerformanceMonitor extends EventEmitter {
       accuracy: 95,
       culturalValidationTime: 50,
       islamicValidationTime: 30,
-      arabicProcessingTime: 75
+      arabicProcessingTime: 75,
     };
   }
 }
@@ -1107,5 +1268,5 @@ export type {
   ITerminologyResult,
   IAuditEntry,
   IPerformanceMetrics,
-  ICulturalMetrics
+  ICulturalMetrics,
 };

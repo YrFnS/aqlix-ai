@@ -21,6 +21,7 @@
 **Focused cultural state management:**
 
 ### Iraqi Cultural State Validation
+
 - **Cultural Pattern Recognition:** Real-time Iraqi cultural pattern recognition and validation
 - **Cultural Appropriateness Scoring:** Dynamic cultural appropriateness assessment and scoring
 - **Cultural State Transitions:** Managed transitions between different Iraqi cultural contexts
@@ -28,6 +29,7 @@
 - **Cultural Context Preservation:** Preservation of cultural context across state changes
 
 ### Islamic Compliance State Tracking
+
 - **Islamic Principles Validation:** Real-time validation against Islamic principles and values
 - **Sharia Compliance Checking:** Comprehensive Sharia compliance assessment for all interactions
 - **Religious Sensitivity Management:** Management of religiously sensitive topics and contexts
@@ -35,6 +37,7 @@
 - **Islamic Ethics Enforcement:** Enforcement of Islamic ethical standards in AI interactions
 
 ### Language & Regional State Management
+
 - **Arabic-English State Transitions:** Seamless transitions between Arabic and English language states
 - **Iraqi Dialect Recognition:** Recognition and validation of Iraqi Arabic dialect patterns
 - **Regional Context Coordination:** Management of regional cultural differences (Baghdad, Basra, Mosul, Erbil)
@@ -48,82 +51,88 @@
 **Cultural state management examples:**
 
 ### Cultural State Manager
+
 ```typescript
 // Iraqi Cultural State Management System
 class IraqiCulturalStateManager {
   constructor() {
-    this.contextFoundation = new ContextManagementFoundation()
-    this.culturalPatternRecognizer = new IraqiCulturalPatternRecognizer()
-    this.islamicComplianceEngine = new IslamicComplianceEngine()
-    this.regionalContextManager = new RegionalContextManager()
-    this.languageStateManager = new LanguageStateManager()
-    this.professionalCulturalValidator = new ProfessionalCulturalValidator()
+    this.contextFoundation = new ContextManagementFoundation();
+    this.culturalPatternRecognizer = new IraqiCulturalPatternRecognizer();
+    this.islamicComplianceEngine = new IslamicComplianceEngine();
+    this.regionalContextManager = new RegionalContextManager();
+    this.languageStateManager = new LanguageStateManager();
+    this.professionalCulturalValidator = new ProfessionalCulturalValidator();
   }
 
   async validateCulturalStateTransition(
     fromState: CulturalState,
     toState: CulturalState,
     transitionContext: CulturalTransitionContext,
-    userId: string
+    userId: string,
   ): Promise<CulturalStateTransitionResult> {
     // Validate structural transition compatibility
     const structuralValidation = await this.validateStructuralTransition({
       fromState,
       toState,
-      transitionContext
-    })
+      transitionContext,
+    });
 
     if (!structuralValidation.isValid) {
       return {
         success: false,
         canTransition: false,
-        error: 'Structural transition validation failed',
-        structuralIssues: structuralValidation.issues
-      }
+        error: "Structural transition validation failed",
+        structuralIssues: structuralValidation.issues,
+      };
     }
 
     // Validate Iraqi cultural appropriateness
-    const culturalValidation = await this.culturalPatternRecognizer.validateTransition({
-      fromState,
-      toState,
-      transitionReason: transitionContext.reason,
-      userRegion: transitionContext.userRegion,
-      conversationContext: transitionContext.conversationContext
-    })
-
-    // Validate Islamic compliance
-    const islamicValidation = await this.islamicComplianceEngine.validateTransition({
-      fromState,
-      toState,
-      islamicContext: transitionContext.islamicContext,
-      complianceLevel: transitionContext.islamicComplianceLevel || 'standard'
-    })
-
-    // Validate regional appropriateness
-    const regionalValidation = await this.regionalContextManager.validateTransition({
-      fromState,
-      toState,
-      fromRegion: fromState.region,
-      toRegion: toState.region,
-      preserveRegionalContext: transitionContext.preserveRegionalContext
-    })
-
-    // Validate professional cultural context if applicable
-    let professionalValidation = null
-    if (fromState.professionalContext || toState.professionalContext) {
-      professionalValidation = await this.professionalCulturalValidator.validateTransition({
+    const culturalValidation =
+      await this.culturalPatternRecognizer.validateTransition({
         fromState,
         toState,
-        professionalDomain: transitionContext.professionalDomain,
-        iraqiProfessionalStandards: true
-      })
+        transitionReason: transitionContext.reason,
+        userRegion: transitionContext.userRegion,
+        conversationContext: transitionContext.conversationContext,
+      });
+
+    // Validate Islamic compliance
+    const islamicValidation =
+      await this.islamicComplianceEngine.validateTransition({
+        fromState,
+        toState,
+        islamicContext: transitionContext.islamicContext,
+        complianceLevel: transitionContext.islamicComplianceLevel || "standard",
+      });
+
+    // Validate regional appropriateness
+    const regionalValidation =
+      await this.regionalContextManager.validateTransition({
+        fromState,
+        toState,
+        fromRegion: fromState.region,
+        toRegion: toState.region,
+        preserveRegionalContext: transitionContext.preserveRegionalContext,
+      });
+
+    // Validate professional cultural context if applicable
+    let professionalValidation = null;
+    if (fromState.professionalContext || toState.professionalContext) {
+      professionalValidation =
+        await this.professionalCulturalValidator.validateTransition({
+          fromState,
+          toState,
+          professionalDomain: transitionContext.professionalDomain,
+          iraqiProfessionalStandards: true,
+        });
     }
 
     // Calculate overall transition validity
-    const overallValid = culturalValidation.isAppropriate &&
-                        islamicValidation.isCompliant &&
-                        regionalValidation.isValid &&
-                        (!professionalValidation || professionalValidation.isValid)
+    const overallValid =
+      culturalValidation.isAppropriate &&
+      islamicValidation.isCompliant &&
+      regionalValidation.isValid &&
+      (!professionalValidation || professionalValidation.isValid);
 
     if (!overallValid) {
       return {
@@ -133,13 +142,13 @@ class IraqiCulturalStateManager {
           cultural: culturalValidation,
           islamic: islamicValidation,
           regional: regionalValidation,
-          professional: professionalValidation
+          professional: professionalValidation,
         },
         issues: this.aggregateValidationIssues({
           culturalValidation,
           islamicValidation,
           regionalValidation,
-          professionalValidation
+          professionalValidation,
         }),
         suggestedAlternative: await this.generateAlternativeTransition({
           fromState,
@@ -148,10 +157,10 @@ class IraqiCulturalStateManager {
             cultural: culturalValidation,
             islamic: islamicValidation,
             regional: regionalValidation,
-            professional: professionalValidation
-          }
-        })
-      }
+            professional: professionalValidation,
+          },
+        }),
+      };
     }
 
     // Execute cultural state transition
@@ -163,10 +172,10 @@ class IraqiCulturalStateManager {
         cultural: culturalValidation,
         islamic: islamicValidation,
         regional: regionalValidation,
-        professional: professionalValidation
+        professional: professionalValidation,
       },
-      userId
-    })
+      userId,
+    });
 
     return {
       success: true,
@@ -176,36 +185,37 @@ class IraqiCulturalStateManager {
         cultural: culturalValidation.appropriatenessScore,
         islamic: islamicValidation.complianceScore,
         regional: regionalValidation.appropriatenessScore,
-        professional: professionalValidation?.appropriatenessScore || 1.0
+        professional: professionalValidation?.appropriatenessScore || 1.0,
       },
       transitionLatency: transitionResult.latency,
-      culturalContinuityMaintained: transitionResult.culturalContinuityScore > 0.95
-    }
+      culturalContinuityMaintained:
+        transitionResult.culturalContinuityScore > 0.95,
+    };
   }
 
   async trackIslamicComplianceState(
     currentState: CulturalState,
     userAction: UserAction,
-    conversationContext: ConversationContext
+    conversationContext: ConversationContext,
   ): Promise<IslamicComplianceTrackingResult> {
     // Analyze user action for Islamic compliance
     const actionAnalysis = await this.islamicComplianceEngine.analyzeAction({
       userAction,
       currentState,
       conversationContext,
-      complianceLevel: currentState.islamicComplianceLevel
-    })
+      complianceLevel: currentState.islamicComplianceLevel,
+    });
 
     // Check for potential Islamic compliance violations
     const complianceViolations = await this.detectIslamicComplianceViolations({
       userAction,
       currentState,
       conversationContext,
-      actionAnalysis
-    })
+      actionAnalysis,
+    });
 
     // Update Islamic compliance state
-    let updatedComplianceState = currentState.islamicComplianceState
+    let updatedComplianceState = currentState.islamicComplianceState;
 
     if (complianceViolations.hasViolations) {
       // Handle compliance violations
@@ -213,8 +223,8 @@ class IraqiCulturalStateManager {
         violations: complianceViolations.violations,
         currentState,
         userAction,
-        conversationContext
-      })
+        conversationContext,
+      });
 
       if (!violationHandling.canProceed) {
         return {
@@ -222,18 +232,18 @@ class IraqiCulturalStateManager {
           complianceViolationDetected: true,
           violations: complianceViolations.violations,
           recommendedAction: violationHandling.recommendedAction,
-          userGuidanceMessage: violationHandling.userGuidanceMessage
-        }
+          userGuidanceMessage: violationHandling.userGuidanceMessage,
+        };
       }
 
-      updatedComplianceState = violationHandling.updatedComplianceState
+      updatedComplianceState = violationHandling.updatedComplianceState;
     } else {
       // Update compliance state based on positive action
       updatedComplianceState = await this.updatePositiveComplianceState({
         currentState: updatedComplianceState,
         userAction,
-        actionAnalysis
-      })
+        actionAnalysis,
+      });
     }
 
     // Track Islamic compliance metrics
@@ -242,8 +252,10 @@ class IraqiCulturalStateManager {
       currentComplianceScore: updatedComplianceState.complianceScore,
       actionType: userAction.type,
       complianceViolationDetected: complianceViolations.hasViolations,
-      complianceImprovement: updatedComplianceState.complianceScore - currentState.islamicComplianceState.complianceScore
-    })
+      complianceImprovement:
+        updatedComplianceState.complianceScore -
+        currentState.islamicComplianceState.complianceScore,
+    });
 
     return {
       success: true,
@@ -252,52 +264,60 @@ class IraqiCulturalStateManager {
       complianceLevel: updatedComplianceState.complianceLevel,
       complianceViolationDetected: false,
       islamicGuidanceProvided: actionAnalysis.guidanceProvided,
-      continuousComplianceScore: this.calculateContinuousComplianceScore(updatedComplianceState)
-    }
+      continuousComplianceScore: this.calculateContinuousComplianceScore(
+        updatedComplianceState,
+      ),
+    };
   }
 
   async manageLanguageStateTransition(
     currentLanguageState: LanguageState,
-    targetLanguage: 'ar-iq' | 'en' | 'mixed',
-    transitionReason: 'user_request' | 'cultural_context' | 'professional_need' | 'automatic',
-    culturalContext: CulturalContext
+    targetLanguage: "ar-iq" | "en" | "mixed",
+    transitionReason:
+      | "user_request"
+      | "cultural_context"
+      | "professional_need"
+      | "automatic",
+    culturalContext: CulturalContext,
   ): Promise<LanguageStateTransitionResult> {
     // Validate language transition appropriateness
-    const transitionValidation = await this.languageStateManager.validateTransition({
-      currentLanguageState,
-      targetLanguage,
-      transitionReason,
-      culturalContext,
-      iraqiDialectSupport: true
-    })
+    const transitionValidation =
+      await this.languageStateManager.validateTransition({
+        currentLanguageState,
+        targetLanguage,
+        transitionReason,
+        culturalContext,
+        iraqiDialectSupport: true,
+      });
 
     if (!transitionValidation.isValid) {
       return {
         success: false,
         canTransition: false,
-        error: 'Language transition validation failed',
+        error: "Language transition validation failed",
         validationIssues: transitionValidation.issues,
-        suggestedAlternative: transitionValidation.suggestedAlternative
-      }
+        suggestedAlternative: transitionValidation.suggestedAlternative,
+      };
     }
 
     // Check cultural appropriateness of language transition
-    const culturalAppropriatenessCheck = await this.culturalPatternRecognizer.validateLanguageTransition({
-      currentLanguageState,
-      targetLanguage,
-      culturalContext,
-      regionalContext: culturalContext.region,
-      professionalContext: culturalContext.professionalDomain
-    })
+    const culturalAppropriatenessCheck =
+      await this.culturalPatternRecognizer.validateLanguageTransition({
+        currentLanguageState,
+        targetLanguage,
+        culturalContext,
+        regionalContext: culturalContext.region,
+        professionalContext: culturalContext.professionalDomain,
+      });
 
     if (!culturalAppropriatenessCheck.isAppropriate) {
       return {
         success: false,
         canTransition: false,
-        error: 'Language transition culturally inappropriate',
+        error: "Language transition culturally inappropriate",
         culturalIssues: culturalAppropriatenessCheck.issues,
-        culturalGuidance: culturalAppropriatenessCheck.guidance
-      }
+        culturalGuidance: culturalAppropriatenessCheck.guidance,
+      };
     }
 
     // Execute language state transition
@@ -307,90 +327,99 @@ class IraqiCulturalStateManager {
       transitionReason,
       culturalContext,
       preserveDialectPreferences: true,
-      maintainCulturalExpression: true
-    })
+      maintainCulturalExpression: true,
+    });
 
     // Update cultural state to reflect language change
-    const culturalStateUpdate = await this.updateCulturalStateForLanguageTransition({
-      languageTransitionResult: transitionResult,
-      culturalContext,
-      targetLanguage
-    })
+    const culturalStateUpdate =
+      await this.updateCulturalStateForLanguageTransition({
+        languageTransitionResult: transitionResult,
+        culturalContext,
+        targetLanguage,
+      });
 
     return {
       success: true,
       canTransition: true,
       newLanguageState: transitionResult.newLanguageState,
       transitionLatency: transitionResult.latency,
-      culturalAppropriatenessScore: culturalAppropriatenessCheck.appropriatenessScore,
+      culturalAppropriatenessScore:
+        culturalAppropriatenessCheck.appropriatenessScore,
       dialectSupport: transitionResult.dialectSupport,
-      culturalExpressionMaintained: transitionResult.culturalExpressionMaintained,
-      updatedCulturalState: culturalStateUpdate.updatedState
-    }
+      culturalExpressionMaintained:
+        transitionResult.culturalExpressionMaintained,
+      updatedCulturalState: culturalStateUpdate.updatedState,
+    };
   }
 
   async coordinateRegionalCulturalContext(
     currentContext: CulturalContext,
-    targetRegion: 'baghdad' | 'basra' | 'mosul' | 'erbil' | 'iraqi_general',
-    coordinationReason: 'user_location' | 'professional_context' | 'cultural_preference',
-    preserveContext: boolean = true
+    targetRegion: "baghdad" | "basra" | "mosul" | "erbil" | "iraqi_general",
+    coordinationReason:
+      | "user_location"
+      | "professional_context"
+      | "cultural_preference",
+    preserveContext: boolean = true,
   ): Promise<RegionalContextCoordinationResult> {
     // Validate regional transition
-    const regionalValidation = await this.regionalContextManager.validateRegionalTransition({
-      currentRegion: currentContext.region,
-      targetRegion,
-      coordinationReason,
-      preserveContext
-    })
+    const regionalValidation =
+      await this.regionalContextManager.validateRegionalTransition({
+        currentRegion: currentContext.region,
+        targetRegion,
+        coordinationReason,
+        preserveContext,
+      });
 
     if (!regionalValidation.isValid) {
       return {
         success: false,
         canCoordinate: false,
-        error: 'Regional context coordination validation failed',
-        validationIssues: regionalValidation.issues
-      }
+        error: "Regional context coordination validation failed",
+        validationIssues: regionalValidation.issues,
+      };
     }
 
     // Extract regional cultural patterns
     const regionalPatterns = await this.extractRegionalCulturalPatterns({
       targetRegion,
       currentContext,
-      preserveContext
-    })
+      preserveContext,
+    });
 
     // Validate compatibility with existing cultural state
     const compatibilityCheck = await this.checkRegionalCompatibility({
       currentContext,
       targetRegionalPatterns: regionalPatterns,
-      targetRegion
-    })
+      targetRegion,
+    });
 
     if (!compatibilityCheck.isCompatible) {
       return {
         success: false,
         canCoordinate: false,
-        error: 'Regional context incompatible with current cultural state',
+        error: "Regional context incompatible with current cultural state",
         compatibilityIssues: compatibilityCheck.issues,
-        suggestedAdjustments: compatibilityCheck.suggestedAdjustments
-      }
+        suggestedAdjustments: compatibilityCheck.suggestedAdjustments,
+      };
     }
 
     // Execute regional context coordination
-    const coordinationResult = await this.regionalContextManager.executeCoordination({
-      currentContext,
-      targetRegion,
-      regionalPatterns,
-      preserveContext,
-      coordinationReason
-    })
+    const coordinationResult =
+      await this.regionalContextManager.executeCoordination({
+        currentContext,
+        targetRegion,
+        regionalPatterns,
+        preserveContext,
+        coordinationReason,
+      });
 
     // Update overall cultural state
-    const updatedCulturalContext = await this.updateCulturalContextForRegionalChange({
-      coordinationResult,
-      currentContext,
-      targetRegion
-    })
+    const updatedCulturalContext =
+      await this.updateCulturalContextForRegionalChange({
+        coordinationResult,
+        currentContext,
+        targetRegion,
+      });
 
     return {
       success: true,
@@ -400,78 +429,83 @@ class IraqiCulturalStateManager {
       culturalContinuityScore: coordinationResult.culturalContinuityScore,
       regionalAuthenticityScore: coordinationResult.regionalAuthenticityScore,
       updatedCulturalContext,
-      preservedElements: coordinationResult.preservedElements
-    }
+      preservedElements: coordinationResult.preservedElements,
+    };
   }
 }
 ```
 
 ### Islamic Compliance Engine
+
 ```typescript
 // Islamic Compliance State Tracking Engine
 class IslamicComplianceEngine {
   constructor() {
-    this.shariaComplianceChecker = new ShariaComplianceChecker()
-    this.islamicPrinciplesValidator = new IslamicPrinciplesValidator()
-    this.religiousSensitivityManager = new ReligiousSensitivityManager()
-    this.islamicEthicsEnforcer = new IslamicEthicsEnforcer()
+    this.shariaComplianceChecker = new ShariaComplianceChecker();
+    this.islamicPrinciplesValidator = new IslamicPrinciplesValidator();
+    this.religiousSensitivityManager = new ReligiousSensitivityManager();
+    this.islamicEthicsEnforcer = new IslamicEthicsEnforcer();
   }
 
-  async validateTransition(
-    options: {
-      fromState: CulturalState
-      toState: CulturalState
-      islamicContext: IslamicContext
-      complianceLevel: 'basic' | 'standard' | 'strict'
-    }
-  ): Promise<IslamicComplianceValidationResult> {
-    const { fromState, toState, islamicContext, complianceLevel } = options
+  async validateTransition(options: {
+    fromState: CulturalState;
+    toState: CulturalState;
+    islamicContext: IslamicContext;
+    complianceLevel: "basic" | "standard" | "strict";
+  }): Promise<IslamicComplianceValidationResult> {
+    const { fromState, toState, islamicContext, complianceLevel } = options;
 
     // Check Sharia compliance of transition
-    const shariaValidation = await this.shariaComplianceChecker.validateTransition({
-      fromState,
-      toState,
-      complianceLevel
-    })
+    const shariaValidation =
+      await this.shariaComplianceChecker.validateTransition({
+        fromState,
+        toState,
+        complianceLevel,
+      });
 
     // Validate against Islamic principles
-    const principlesValidation = await this.islamicPrinciplesValidator.validate({
-      proposedState: toState,
-      islamicContext,
-      complianceLevel
-    })
+    const principlesValidation = await this.islamicPrinciplesValidator.validate(
+      {
+        proposedState: toState,
+        islamicContext,
+        complianceLevel,
+      },
+    );
 
     // Check religious sensitivity
-    const sensitivityCheck = await this.religiousSensitivityManager.assessTransition({
-      fromState,
-      toState,
-      islamicContext
-    })
+    const sensitivityCheck =
+      await this.religiousSensitivityManager.assessTransition({
+        fromState,
+        toState,
+        islamicContext,
+      });
 
     // Validate Islamic ethics compliance
-    const ethicsValidation = await this.islamicEthicsEnforcer.validateTransition({
-      fromState,
-      toState,
-      islamicContext,
-      complianceLevel
-    })
+    const ethicsValidation =
+      await this.islamicEthicsEnforcer.validateTransition({
+        fromState,
+        toState,
+        islamicContext,
+        complianceLevel,
+      });
 
     // Calculate overall Islamic compliance
-    const overallCompliant = shariaValidation.isCompliant &&
-                            principlesValidation.isCompliant &&
-                            sensitivityCheck.isSensitive &&
-                            ethicsValidation.isEthical
+    const overallCompliant =
+      shariaValidation.isCompliant &&
+      principlesValidation.isCompliant &&
+      sensitivityCheck.isSensitive &&
+      ethicsValidation.isEthical;
 
     // Generate Islamic guidance if needed
-    let islamicGuidance = null
+    let islamicGuidance = null;
     if (!overallCompliant) {
       islamicGuidance = await this.generateIslamicGuidance({
         shariaValidation,
         principlesValidation,
         sensitivityCheck,
         ethicsValidation,
-        islamicContext
-      })
+        islamicContext,
+      });
     }
 
     return {
@@ -480,73 +514,74 @@ class IslamicComplianceEngine {
         shariaValidation,
         principlesValidation,
         sensitivityCheck,
-        ethicsValidation
+        ethicsValidation,
       }),
       validationResults: {
         sharia: shariaValidation,
         principles: principlesValidation,
         sensitivity: sensitivityCheck,
-        ethics: ethicsValidation
+        ethics: ethicsValidation,
       },
       islamicGuidance,
       complianceLevel,
-      recommendedCorrections: !overallCompliant ? await this.generateComplianceCorrections({
-        shariaValidation,
-        principlesValidation,
-        sensitivityCheck,
-        ethicsValidation
-      }) : null
-    }
+      recommendedCorrections: !overallCompliant
+        ? await this.generateComplianceCorrections({
+            shariaValidation,
+            principlesValidation,
+            sensitivityCheck,
+            ethicsValidation,
+          })
+        : null,
+    };
   }
 
-  async analyzeAction(
-    options: {
-      userAction: UserAction
-      currentState: CulturalState
-      conversationContext: ConversationContext
-      complianceLevel: 'basic' | 'standard' | 'strict'
-    }
-  ): Promise<IslamicActionAnalysisResult> {
-    const { userAction, currentState, conversationContext, complianceLevel } = options
+  async analyzeAction(options: {
+    userAction: UserAction;
+    currentState: CulturalState;
+    conversationContext: ConversationContext;
+    complianceLevel: "basic" | "standard" | "strict";
+  }): Promise<IslamicActionAnalysisResult> {
+    const { userAction, currentState, conversationContext, complianceLevel } =
+      options;
 
     // Analyze action content for Islamic compliance
     const contentAnalysis = await this.analyzeActionContent({
       userAction,
-      complianceLevel
-    })
+      complianceLevel,
+    });
 
     // Check action intent against Islamic principles
     const intentAnalysis = await this.analyzeActionIntent({
       userAction,
       currentState,
       conversationContext,
-      complianceLevel
-    })
+      complianceLevel,
+    });
 
     // Assess potential religious implications
     const religiousImplications = await this.assessReligiousImplications({
       userAction,
       currentState,
-      conversationContext
-    })
+      conversationContext,
+    });
 
     // Generate Islamic guidance if appropriate
     const guidanceGenerated = await this.shouldProvideIslamicGuidance({
       contentAnalysis,
       intentAnalysis,
       religiousImplications,
-      currentState
-    })
+      currentState,
+    });
 
-    let islamicGuidance = null
+    let islamicGuidance = null;
     if (guidanceGenerated.shouldProvide) {
       islamicGuidance = await this.generateActionGuidance({
         userAction,
         contentAnalysis,
         intentAnalysis,
         religiousImplications,
-        guidanceLevel: guidanceGenerated.guidanceLevel
-      })
+        guidanceLevel: guidanceGenerated.guidanceLevel,
+      });
     }
 
     return {
@@ -554,12 +589,12 @@ class IslamicComplianceEngine {
       complianceScore: this.calculateActionComplianceScore({
         contentAnalysis,
         intentAnalysis,
-        religiousImplications
+        religiousImplications,
       }),
       analysisResults: {
         content: contentAnalysis,
         intent: intentAnalysis,
-        religious: religiousImplications
+        religious: religiousImplications,
       },
       guidanceProvided: guidanceGenerated.shouldProvide,
       islamicGuidance,
@@ -568,11 +603,11 @@ class IslamicComplianceEngine {
         analysisResults: {
           content: contentAnalysis,
           intent: intentAnalysis,
-          religious: religiousImplications
+          religious: religiousImplications,
         },
-        currentState
-      })
-    }
+        currentState,
+      }),
+    };
   }
 }
 ```
@@ -797,6 +832,7 @@ CREATE TABLE cultural_state_performance_analytics (
 **Cultural state management architecture patterns:**
 
 ### Cultural Validation Patterns
+
 - **Pattern Recognition:** Iraqi cultural pattern recognition and validation algorithms
 - **Compliance Checking:** Islamic compliance checking with Sharia validation
 - **Appropriateness Scoring:** Dynamic cultural appropriateness assessment
@@ -804,6 +840,7 @@ CREATE TABLE cultural_state_performance_analytics (
 - **Authenticity Maintenance:** Cultural authenticity preservation and validation
 
 ### State Transition Patterns
+
 - **Validation Pipeline:** Multi-level validation pipeline for cultural state transitions
 - **Conflict Resolution:** Cultural conflict resolution with priority algorithms
 - **Context Preservation:** Cultural context preservation during state changes
@@ -817,6 +854,7 @@ CREATE TABLE cultural_state_performance_analytics (
 **Cultural state management validation:**
 
 ### Cultural Validation Testing
+
 - **Cultural Pattern Recognition:** >95% Iraqi cultural pattern recognition accuracy testing
 - **Islamic Compliance Checking:** >98% Islamic compliance validation accuracy testing
 - **Language State Transitions:** Arabic-English language transition accuracy testing
@@ -824,6 +862,7 @@ CREATE TABLE cultural_state_performance_analytics (
 - **Professional Cultural Validation:** Professional domain cultural compliance testing
 
 ### Performance Testing
+
 - **Cultural Validation Latency:** <200ms cultural validation response time testing
 - **State Transition Performance:** <150ms cultural state transition time testing
 - **Islamic Compliance Speed:** <100ms Islamic compliance checking time testing
@@ -837,12 +876,14 @@ CREATE TABLE cultural_state_performance_analytics (
 **Cultural state management integration points:**
 
 ### Foundation Integration
+
 - **Context Management Foundation:** Integration with shared context validation and cultural services
 - **Cultural Pattern Recognition:** Integration with Iraqi cultural pattern recognition services
 - **Islamic Compliance Services:** Integration with Islamic compliance and Sharia validation
 - **Language Processing:** Integration with Arabic-English language processing services
 
 ### Component Integration
+
 - **WebSocket Management:** Cultural state integration with real-time WebSocket connections
 - **Context Persistence:** Cultural state integration with cross-session context persistence
 - **Multi-device Sync:** Cultural state integration with cross-device synchronization

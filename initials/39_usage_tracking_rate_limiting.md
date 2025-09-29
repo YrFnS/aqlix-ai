@@ -21,6 +21,7 @@
 **Essential usage tracking and rate limiting infrastructure:**
 
 ### Subscription Tier Management
+
 - **Tier-Based Rate Limits:** Different rate limits for Free, Starter, Pro, Enterprise tiers
 - **Feature Access Control:** Subscription-based feature availability and access management
 - **Upgrade/Downgrade Management:** Seamless subscription tier transitions with usage preservation
@@ -29,6 +30,7 @@
 - **Professional Domain Pricing:** Specialized pricing for Iraqi legal, medical, educational domains
 
 ### Cultural Timing-Aware Rate Limiting
+
 - **Prayer Time Adjustments:** Reduced rate limiting during Islamic prayer times
 - **Ramadan Adaptations:** Special rate limiting patterns during Ramadan month
 - **Iraqi Weekend Patterns:** Adjusted limits for Iraqi weekends (Friday-Saturday)
@@ -37,6 +39,7 @@
 - **Regional Timing Variations:** Different timing adaptations for Baghdad, Basra, Mosul, Erbil
 
 ### AI Token Consumption Tracking
+
 - **Real-time Token Monitoring:** Live tracking of AI token consumption across all interactions
 - **Model-Specific Tracking:** Separate tracking for different AI models and services
 - **Cultural Validation Token Costs:** Tracking token usage for Iraqi cultural validation processes
@@ -45,6 +48,7 @@
 - **Token Usage Optimization:** Intelligent token usage optimization and cost reduction recommendations
 
 ### Cost Calculation & Billing Integration
+
 - **Iraqi Dinar Cost Calculation:** Real-time conversion and cost calculation in IQD
 - **Islamic Finance Compliance:** Billing cycles and payment terms compliant with Islamic finance principles
 - **Professional Domain Pricing:** Specialized pricing models for Iraqi professional services
@@ -59,62 +63,71 @@
 **Comprehensive usage tracking and rate limiting examples:**
 
 ### Cultural Rate Limiting Engine
+
 ```typescript
 // Iraqi Cultural Rate Limiting System
 interface CulturalRateLimitConfig {
-  subscriptionTier: 'free' | 'starter' | 'pro' | 'enterprise'
-  resourceType: 'api_calls' | 'ai_tokens' | 'file_uploads' | 'document_generation'
-  baseLimit: number
+  subscriptionTier: "free" | "starter" | "pro" | "enterprise";
+  resourceType:
+    | "api_calls"
+    | "ai_tokens"
+    | "file_uploads"
+    | "document_generation";
+  baseLimit: number;
   culturalAdjustments: {
-    prayerTimeFactor: number // 1.5x during prayer times
-    ramadanFactor: number // 2x during Ramadan
-    businessHoursFactor: number // 1.2x during business hours
-    weekendFactor: number // 0.8x during weekends
-    culturalEventFactor: number // 3x during cultural events
-  }
+    prayerTimeFactor: number; // 1.5x during prayer times
+    ramadanFactor: number; // 2x during Ramadan
+    businessHoursFactor: number; // 1.2x during business hours
+    weekendFactor: number; // 0.8x during weekends
+    culturalEventFactor: number; // 3x during cultural events
+  };
   regionalVariations: {
-    region: string
-    adjustmentFactor: number
-  }[]
+    region: string;
+    adjustmentFactor: number;
+  }[];
 }
 
 class IraqiCulturalRateLimiter {
   constructor() {
-    this.redisClient = new Redis(process.env.REDIS_URL)
-    this.culturalTimingService = new CulturalTimingService()
-    this.islamicCalendarService = new IslamicCalendarService()
-    this.subscriptionManager = new SubscriptionManager()
+    this.redisClient = new Redis(process.env.REDIS_URL);
+    this.culturalTimingService = new CulturalTimingService();
+    this.islamicCalendarService = new IslamicCalendarService();
+    this.subscriptionManager = new SubscriptionManager();
   }
 
   async checkRateLimit(request: RateLimitRequest): Promise<RateLimitResult> {
-    const { userId, resourceType, userRegion, currentTime } = request
+    const { userId, resourceType, userRegion, currentTime } = request;
 
     // Get user subscription and base limits
-    const subscription = await this.subscriptionManager.getUserSubscription(userId)
-    const baseConfig = await this.getRateLimitConfig(subscription.tier, resourceType)
+    const subscription =
+      await this.subscriptionManager.getUserSubscription(userId);
+    const baseConfig = await this.getRateLimitConfig(
+      subscription.tier,
+      resourceType,
+    );
 
     // Calculate cultural adjustments
     const culturalContext = await this.culturalTimingService.getCurrentContext({
       region: userRegion,
       currentTime,
-      islamicCalendar: true
-    })
+      islamicCalendar: true,
+    });
 
     const adjustedLimit = await this.calculateCulturallyAdjustedLimit({
       baseLimit: baseConfig.baseLimit,
       culturalContext,
       regionalVariations: baseConfig.regionalVariations,
-      subscriptionTier: subscription.tier
-    })
+      subscriptionTier: subscription.tier,
+    });
 
     // Check current usage
     const currentUsage = await this.getCurrentUsage({
       userId,
       resourceType,
-      timeWindow: baseConfig.windowDuration
-    })
+      timeWindow: baseConfig.windowDuration,
+    });
 
-    const allowed = currentUsage < adjustedLimit.finalLimit
+    const allowed = currentUsage < adjustedLimit.finalLimit;
 
     if (allowed) {
       // Increment usage counter
@@ -122,8 +135,8 @@ class IraqiCulturalRateLimiter {
         userId,
         resourceType,
         increment: 1,
-        culturalContext: culturalContext.summary
-      })
+        culturalContext: culturalContext.summary,
+      });
     }
 
     return {
@@ -133,71 +146,79 @@ class IraqiCulturalRateLimiter {
       resetTime: adjustedLimit.resetTime,
       culturalAdjustments: adjustedLimit.appliedAdjustments,
       nextIncreasePeriod: culturalContext.nextEnhancementPeriod,
-      culturalMessage: allowed ? null : await this.getCulturalRateLimitMessage(culturalContext)
-    }
+      culturalMessage: allowed
+        ? null
+        : await this.getCulturalRateLimitMessage(culturalContext),
+    };
   }
 
-  async calculateCulturallyAdjustedLimit(params: CulturalAdjustmentParams): Promise<AdjustedLimit> {
-    const { baseLimit, culturalContext, regionalVariations, subscriptionTier } = params
-    let adjustedLimit = baseLimit
-    const appliedAdjustments = []
+  async calculateCulturallyAdjustedLimit(
+    params: CulturalAdjustmentParams,
+  ): Promise<AdjustedLimit> {
+    const { baseLimit, culturalContext, regionalVariations, subscriptionTier } =
+      params;
+    let adjustedLimit = baseLimit;
+    const appliedAdjustments = [];
 
     // Prayer time adjustment
     if (culturalContext.isPrayerTime || culturalContext.nearPrayerTime) {
-      const prayerAdjustment = this.getPrayerTimeAdjustment(subscriptionTier)
-      adjustedLimit *= prayerAdjustment
+      const prayerAdjustment = this.getPrayerTimeAdjustment(subscriptionTier);
+      adjustedLimit *= prayerAdjustment;
       appliedAdjustments.push({
-        type: 'prayer_time',
+        type: "prayer_time",
         factor: prayerAdjustment,
-        reason: 'Increased flexibility during prayer times'
-      })
+        reason: "Increased flexibility during prayer times",
+      });
     }
 
     // Ramadan adjustment
     if (culturalContext.isRamadan) {
-      const ramadanAdjustment = this.getRamadanAdjustment(subscriptionTier)
-      adjustedLimit *= ramadanAdjustment
+      const ramadanAdjustment = this.getRamadanAdjustment(subscriptionTier);
+      adjustedLimit *= ramadanAdjustment;
       appliedAdjustments.push({
-        type: 'ramadan',
+        type: "ramadan",
         factor: ramadanAdjustment,
-        reason: 'Enhanced limits during Ramadan month'
-      })
+        reason: "Enhanced limits during Ramadan month",
+      });
     }
 
     // Business hours adjustment
     if (culturalContext.isBusinessHours) {
-      const businessHoursAdjustment = this.getBusinessHoursAdjustment(subscriptionTier)
-      adjustedLimit *= businessHoursAdjustment
+      const businessHoursAdjustment =
+        this.getBusinessHoursAdjustment(subscriptionTier);
+      adjustedLimit *= businessHoursAdjustment;
       appliedAdjustments.push({
-        type: 'business_hours',
+        type: "business_hours",
         factor: businessHoursAdjustment,
-        reason: 'Enhanced limits during Iraqi business hours'
-      })
+        reason: "Enhanced limits during Iraqi business hours",
+      });
     }
 
     // Regional variation adjustment
-    const regionalAdjustment = regionalVariations.find(r => r.region === culturalContext.region)
+    const regionalAdjustment = regionalVariations.find(
+      (r) => r.region === culturalContext.region,
+    );
     if (regionalAdjustment) {
-      adjustedLimit *= regionalAdjustment.adjustmentFactor
+      adjustedLimit *= regionalAdjustment.adjustmentFactor;
       appliedAdjustments.push({
-        type: 'regional',
+        type: "regional",
         factor: regionalAdjustment.adjustmentFactor,
-        reason: `Regional adjustment for ${culturalContext.region}`
-      })
+        reason: `Regional adjustment for ${culturalContext.region}`,
+      });
     }
 
     // Cultural event adjustment
     if (culturalContext.isCulturalEvent) {
       const eventAdjustment = this.getCulturalEventAdjustment(
         culturalContext.culturalEvent,
-        subscriptionTier
-      )
-      adjustedLimit *= eventAdjustment
+        subscriptionTier,
+      );
+      adjustedLimit *= eventAdjustment;
       appliedAdjustments.push({
-        type: 'cultural_event',
+        type: "cultural_event",
         factor: eventAdjustment,
-        reason: `Enhanced limits for ${culturalContext.culturalEvent.name}`
-      })
+        reason: `Enhanced limits for ${culturalContext.culturalEvent.name}`,
+      });
     }
 
     return {
@@ -205,21 +226,22 @@ class IraqiCulturalRateLimiter {
       baseLimit,
       appliedAdjustments,
       resetTime: await this.calculateResetTime(culturalContext),
-      culturallyOptimized: appliedAdjustments.length > 0
-    }
+      culturallyOptimized: appliedAdjustments.length > 0,
+    };
   }
 }
 ```
 
 ### AI Token Consumption Tracking
+
 ```typescript
 // AI Token Usage Tracking System
 class AITokenUsageTracker {
   constructor() {
-    this.costCalculator = new IraqiDinarCostCalculator()
-    this.islamicBillingManager = new IslamicBillingManager()
-    this.professionalDomainPricing = new ProfessionalDomainPricing()
-    this.multiAgentTokenCoordinator = new MultiAgentTokenCoordinator()
+    this.costCalculator = new IraqiDinarCostCalculator();
+    this.islamicBillingManager = new IslamicBillingManager();
+    this.professionalDomainPricing = new ProfessionalDomainPricing();
+    this.multiAgentTokenCoordinator = new MultiAgentTokenCoordinator();
   }
 
   async trackTokenUsage(usage: TokenUsageEvent): Promise<TokenTrackingResult> {
@@ -231,39 +253,42 @@ class AITokenUsageTracker {
       operationType,
       culturalValidationRequired,
       professionalDomain,
-      conversationId
-    } = usage
+      conversationId,
+    } = usage;
 
     // Calculate base cost
     const baseCost = await this.costCalculator.calculateTokenCost({
       modelUsed,
       tokensConsumed,
-      operationType
-    })
+      operationType,
+    });
 
     // Apply professional domain pricing
-    let adjustedCost = baseCost
+    let adjustedCost = baseCost;
     if (professionalDomain) {
-      const professionalAdjustment = await this.professionalDomainPricing.getAdjustment({
-        domain: professionalDomain,
-        operationType,
-        userRegion: await this.getUserRegion(userId)
-      })
-      adjustedCost = baseCost * professionalAdjustment.factor
+      const professionalAdjustment =
+        await this.professionalDomainPricing.getAdjustment({
+          domain: professionalDomain,
+          operationType,
+          userRegion: await this.getUserRegion(userId),
+        });
+      adjustedCost = baseCost * professionalAdjustment.factor;
     }
 
     // Apply cultural validation cost if required
     if (culturalValidationRequired) {
-      const culturalValidationCost = await this.costCalculator.calculateCulturalValidationCost({
-        tokensConsumed,
-        agentType,
-        validationComplexity: usage.culturalValidationComplexity || 'standard'
-      })
-      adjustedCost += culturalValidationCost
+      const culturalValidationCost =
+        await this.costCalculator.calculateCulturalValidationCost({
+          tokensConsumed,
+          agentType,
+          validationComplexity:
+            usage.culturalValidationComplexity || "standard",
+        });
+      adjustedCost += culturalValidationCost;
     }
 
     // Convert to Iraqi Dinar
-    const costInIQD = await this.costCalculator.convertToIQD(adjustedCost)
+    const costInIQD = await this.costCalculator.convertToIQD(adjustedCost);
 
     // Track usage in database
     const trackingRecord = await this.recordTokenUsage({
@@ -278,23 +303,23 @@ class AITokenUsageTracker {
       operationType,
       professionalDomain,
       culturalValidationRequired,
-      timestamp: new Date()
-    })
+      timestamp: new Date(),
+    });
 
     // Update user subscription usage
     await this.updateSubscriptionUsage({
       userId,
       tokensUsed: tokensConsumed,
       costAccumulated: costInIQD,
-      resourceType: operationType
-    })
+      resourceType: operationType,
+    });
 
     // Check if approaching limits
     const limitCheck = await this.checkTokenLimits({
       userId,
       currentUsage: trackingRecord.cumulativeUsage,
-      costAccumulated: trackingRecord.cumulativeCost
-    })
+      costAccumulated: trackingRecord.cumulativeCost,
+    });
 
     return {
       success: true,
@@ -305,64 +330,72 @@ class AITokenUsageTracker {
       cumulativeTokens: trackingRecord.cumulativeUsage,
       cumulativeCostIQD: trackingRecord.cumulativeCost,
       limitStatus: limitCheck,
-      culturalValidationCost: culturalValidationRequired ?
-        await this.costCalculator.calculateCulturalValidationCost({
-          tokensConsumed,
-          agentType,
-          validationComplexity: usage.culturalValidationComplexity || 'standard'
-        }) : 0,
-      professionalDomainDiscount: professionalDomain ?
-        await this.professionalDomainPricing.getDiscount(professionalDomain) : null
-    }
+      culturalValidationCost: culturalValidationRequired
+        ? await this.costCalculator.calculateCulturalValidationCost({
+            tokensConsumed,
+            agentType,
+            validationComplexity:
+              usage.culturalValidationComplexity || "standard",
+          })
+        : 0,
+      professionalDomainDiscount: professionalDomain
+        ? await this.professionalDomainPricing.getDiscount(professionalDomain)
+        : null,
+    };
   }
 
   async generateUsageAnalytics(
     userId: string,
-    period: 'daily' | 'weekly' | 'monthly',
-    includeProjections: boolean = true
+    period: "daily" | "weekly" | "monthly",
+    includeProjections: boolean = true,
   ): Promise<UsageAnalytics> {
-    const usage = await this.getUsageData(userId, period)
+    const usage = await this.getUsageData(userId, period);
 
     // Calculate usage patterns
     const patterns = await this.analyzeUsagePatterns({
       usage,
       period,
       includeCulturalPatterns: true,
-      includeProfessionalPatterns: true
-    })
+      includeProfessionalPatterns: true,
+    });
 
     // Generate cost breakdown
     const costBreakdown = await this.generateCostBreakdown({
       usage,
       includeAgentSpecificCosts: true,
       includeCulturalValidationCosts: true,
-      includeProfessionalDomainCosts: true
-    })
+      includeProfessionalDomainCosts: true,
+    });
 
     // Calculate Islamic finance compliance metrics
-    const islamicComplianceMetrics = await this.islamicBillingManager.calculateComplianceMetrics({
-      usage,
-      costBreakdown,
-      billingPeriod: period
-    })
+    const islamicComplianceMetrics =
+      await this.islamicBillingManager.calculateComplianceMetrics({
+        usage,
+        costBreakdown,
+        billingPeriod: period,
+      });
 
     // Generate optimization recommendations
-    const optimizationRecommendations = await this.generateOptimizationRecommendations({
-      usage,
-      patterns,
-      costBreakdown,
-      userSubscription: await this.subscriptionManager.getUserSubscription(userId)
-    })
+    const optimizationRecommendations =
+      await this.generateOptimizationRecommendations({
+        usage,
+        patterns,
+        costBreakdown,
+        userSubscription:
+          await this.subscriptionManager.getUserSubscription(userId),
+      });
 
     // Future usage projections
-    let projections = null
+    let projections = null;
     if (includeProjections) {
       projections = await this.generateUsageProjections({
         historicalUsage: usage,
         patterns,
         culturalEvents: await this.getCulturalEventCalendar(),
-        professionalSeasonality: await this.getProfessionalSeasonality(usage.professionalDomain)
-      })
+        professionalSeasonality: await this.getProfessionalSeasonality(
+          usage.professionalDomain,
+        ),
+      });
     }
 
     return {
@@ -379,59 +412,63 @@ class AITokenUsageTracker {
       optimizationRecommendations,
       projections,
       culturalTimingImpact: patterns.culturalTimingImpact,
-      professionalUsageInsights: patterns.professionalInsights
-    }
+      professionalUsageInsights: patterns.professionalInsights,
+    };
   }
 }
 ```
 
 ### Islamic Finance-Compliant Billing System
+
 ```typescript
 // Islamic Finance Compliant Billing Manager
 class IslamicBillingManager {
   constructor() {
-    this.zakatCalculator = new ZakatCalculator()
-    this.islamicCalendar = new IslamicCalendarService()
-    this.transparencyManager = new BillingTransparencyManager()
-    this.riba_avoidance = new RibaAvoidanceManager()
+    this.zakatCalculator = new ZakatCalculator();
+    this.islamicCalendar = new IslamicCalendarService();
+    this.transparencyManager = new BillingTransparencyManager();
+    this.riba_avoidance = new RibaAvoidanceManager();
   }
 
   async generateIslamicCompliantBill(
     userId: string,
     billingPeriod: BillingPeriod,
-    usage: UsageData
+    usage: UsageData,
   ): Promise<IslamicCompliantBill> {
     // Ensure transparent pricing without hidden fees
-    const transparentCosts = await this.transparencyManager.calculateTransparentCosts({
-      baseUsage: usage.baseUsage,
-      culturalValidationCosts: usage.culturalValidationCosts,
-      professionalDomainCosts: usage.professionalDomainCosts,
-      noHiddenFees: true,
-      clarityRequired: true
-    })
+    const transparentCosts =
+      await this.transparencyManager.calculateTransparentCosts({
+        baseUsage: usage.baseUsage,
+        culturalValidationCosts: usage.culturalValidationCosts,
+        professionalDomainCosts: usage.professionalDomainCosts,
+        noHiddenFees: true,
+        clarityRequired: true,
+      });
 
     // Avoid any Riba (interest-based) charges
     const ribaFreeCosts = await this.riba_avoidance.ensureRibaFreeCalculation({
       costs: transparentCosts,
       subscriptionType: await this.getSubscriptionType(userId),
-      paymentTerms: 'immediate', // No interest-based payment terms
-      lateFeeStructure: 'service_based' // Service-based, not interest-based late fees
-    })
+      paymentTerms: "immediate", // No interest-based payment terms
+      lateFeeStructure: "service_based", // Service-based, not interest-based late fees
+    });
 
     // Calculate Islamic calendar-aligned billing
-    const islamicBillingDates = await this.islamicCalendar.calculateBillingDates({
-      billingPeriod,
-      avoidFridayBilling: true, // Respect Jumu'ah day
-      considerRamadanSchedule: true,
-      alignWithIslamicMonths: true
-    })
+    const islamicBillingDates =
+      await this.islamicCalendar.calculateBillingDates({
+        billingPeriod,
+        avoidFridayBilling: true, // Respect Jumu'ah day
+        considerRamadanSchedule: true,
+        alignWithIslamicMonths: true,
+      });
 
     // Generate Zakat-aware billing information
-    const zakatInformation = await this.zakatCalculator.calculateZakatInformation({
-      totalBilling: ribaFreeCosts.totalAmount,
-      userBusinessType: await this.getUserBusinessType(userId),
-      providedAsInformation: true // Zakat calculation provided as information, not requirement
-    })
+    const zakatInformation =
+      await this.zakatCalculator.calculateZakatInformation({
+        totalBilling: ribaFreeCosts.totalAmount,
+        userBusinessType: await this.getUserBusinessType(userId),
+        providedAsInformation: true, // Zakat calculation provided as information, not requirement
+      });
 
     // Create detailed, transparent billing breakdown
     const billingBreakdown = await this.createDetailedBreakdown({
@@ -439,9 +476,9 @@ class IslamicBillingManager {
       culturalValidationCosts: ribaFreeCosts.culturalCosts,
       professionalDomainCosts: ribaFreeCosts.professionalCosts,
       subscriptionFees: ribaFreeCosts.subscriptionFees,
-      transparencyLevel: 'full',
-      islamicPrinciplesCompliance: true
-    })
+      transparencyLevel: "full",
+      islamicPrinciplesCompliance: true,
+    });
 
     return {
       billId: generateBillId(),
@@ -456,7 +493,7 @@ class IslamicBillingManager {
       // Islamic compliance features
       ribaFreeConfirmation: true,
       transparencyCompliance: true,
-      hiddenFeesConfirmation: 'no_hidden_fees',
+      hiddenFeesConfirmation: "no_hidden_fees",
 
       // Islamic calendar integration
       billingDate: islamicBillingDates.billingDate,
@@ -469,7 +506,7 @@ class IslamicBillingManager {
         zakatRate: zakatInformation.rate,
         estimatedZakatIQD: zakatInformation.estimatedZakat,
         informationalOnly: true,
-        zakatCalculationBasis: zakatInformation.basis
+        zakatCalculationBasis: zakatInformation.basis,
       },
 
       // Payment terms
@@ -477,38 +514,41 @@ class IslamicBillingManager {
         immediatePayment: true,
         noInterestCharges: true,
         noCompoundingFees: true,
-        lateFeeStructure: 'service_based',
-        islamicCompliant: true
+        lateFeeStructure: "service_based",
+        islamicCompliant: true,
       },
 
       // Professional domain considerations
-      professionalDomainBilling: usage.professionalDomain ? {
-        domain: usage.professionalDomain,
-        specializedServices: billingBreakdown.professionalServices,
-        professionalDiscount: billingBreakdown.professionalDiscount,
-        institutionalBilling: await this.checkInstitutionalBilling(userId)
-      } : null,
+      professionalDomainBilling: usage.professionalDomain
+        ? {
+            domain: usage.professionalDomain,
+            specializedServices: billingBreakdown.professionalServices,
+            professionalDiscount: billingBreakdown.professionalDiscount,
+            institutionalBilling: await this.checkInstitutionalBilling(userId),
+          }
+        : null,
 
       createdAt: new Date(),
-      islamicComplianceVerified: true
-    }
+      islamicComplianceVerified: true,
+    };
   }
 
   async processIslamicCompliantPayment(
     billId: string,
     paymentMethod: IslamicPaymentMethod,
-    paymentAmount: number
+    paymentAmount: number,
   ): Promise<IslamicPaymentResult> {
     // Verify payment method is Islamic-compliant
-    const paymentMethodValidation = await this.validateIslamicPaymentMethod(paymentMethod)
+    const paymentMethodValidation =
+      await this.validateIslamicPaymentMethod(paymentMethod);
 
     if (!paymentMethodValidation.isCompliant) {
       return {
         success: false,
-        error: 'Payment method not Islamic-compliant',
+        error: "Payment method not Islamic-compliant",
         islamicIssues: paymentMethodValidation.issues,
-        suggestedAlternatives: paymentMethodValidation.alternatives
-      }
+        suggestedAlternatives: paymentMethodValidation.alternatives,
+      };
     }
 
     // Process payment with Iraqi gateways (ZainCash, FastPay, NassWallet)
@@ -517,41 +557,41 @@ class IslamicBillingManager {
       amount: paymentAmount,
       paymentMethod,
       islamicCompliance: true,
-      transparentProcessing: true
-    })
+      transparentProcessing: true,
+    });
 
     if (paymentResult.success) {
       // Update billing status
       await this.updateBillStatus({
         billId,
-        status: 'paid',
+        status: "paid",
         paymentDate: new Date(),
         paymentMethod: paymentMethod.type,
-        islamicCompliant: true
-      })
+        islamicCompliant: true,
+      });
 
       // Generate Islamic-compliant receipt
       const receipt = await this.generateIslamicCompliantReceipt({
         billId,
         paymentResult,
         includeZakatInformation: true,
-        transparencyLevel: 'full'
-      })
+        transparencyLevel: "full",
+      });
 
       return {
         success: true,
         paymentId: paymentResult.paymentId,
         receipt,
         islamicComplianceConfirmed: true,
-        zakatInformationProvided: true
-      }
+        zakatInformationProvided: true,
+      };
     }
 
     return {
       success: false,
       error: paymentResult.error,
-      islamicComplianceIssues: paymentResult.islamicIssues
-    }
+      islamicComplianceIssues: paymentResult.islamicIssues,
+    };
   }
 }
 ```
@@ -834,6 +874,7 @@ CREATE TABLE cultural_timing_events (
 **Usage tracking and rate limiting validation:**
 
 ### Rate Limiting Testing
+
 - **Cultural Timing Validation:** Test prayer time, Ramadan, and cultural event rate limit adjustments
 - **Subscription Tier Testing:** Test rate limiting across Free, Starter, Pro, Enterprise tiers
 - **Regional Variation Testing:** Test rate limiting for Baghdad, Basra, Mosul, Erbil regions
@@ -841,6 +882,7 @@ CREATE TABLE cultural_timing_events (
 - **Cultural Edge Cases:** Test rate limiting during overlapping cultural events
 
 ### Token Usage Tracking Testing
+
 - **Real-time Tracking:** Test real-time token consumption tracking accuracy
 - **Multi-Agent Coordination:** Test token tracking across 21 specialized Iraqi AI agents
 - **Cost Calculation:** Test accurate cost calculation in USD and Iraqi Dinar
@@ -848,6 +890,7 @@ CREATE TABLE cultural_timing_events (
 - **Cultural Validation Costs:** Test token cost tracking for cultural validation processes
 
 ### Islamic Finance Compliance Testing
+
 - **Riba-Free Validation:** Test billing system for complete absence of interest-based charges
 - **Transparency Testing:** Test billing transparency and hidden fee elimination
 - **Zakat Information Testing:** Test accurate Zakat information calculation and provision
@@ -861,18 +904,21 @@ CREATE TABLE cultural_timing_events (
 **Usage tracking and rate limiting integration points:**
 
 ### Core System Integration
+
 - **Authentication Integration:** Usage tracking integration with Iraqi authentication system
 - **Subscription Management Integration:** Rate limiting integration with subscription tier management
 - **Cultural System Integration:** Deep integration with Iraqi cultural timing and Islamic compliance
 - **Payment Gateway Integration:** Islamic-compliant billing integration with ZainCash, FastPay, NassWallet
 
 ### Agent Ecosystem Integration
+
 - **Multi-Agent Token Coordination:** Token tracking across 21 specialized Iraqi AI agents
 - **Agent Performance Integration:** Usage tracking integration with agent performance monitoring
 - **Cultural Validation Integration:** Token cost tracking for Iraqi cultural validation processes
 - **Professional Domain Integration:** Usage tracking for Iraqi professional domain services
 
 ### Analytics and Monitoring Integration
+
 - **Real-time Analytics:** Usage analytics integration with real-time monitoring systems
 - **Cost Optimization Integration:** Usage pattern analysis for cost optimization recommendations
 - **Cultural Usage Insights:** Integration with cultural timing analytics and pattern recognition
@@ -885,18 +931,21 @@ CREATE TABLE cultural_timing_events (
 **Iraqi AI usage tracking and rate limiting considerations:**
 
 ### Implementation Priorities
+
 - **Cultural sensitivity first** - All rate limiting must respect Iraqi cultural values and Islamic timing
 - **Islamic finance compliance** - Complete adherence to Sharia-compliant billing and payment principles
 - **Professional domain optimization** - Specialized usage tracking for Iraqi professional contexts
 - **Transparent cost management** - Clear, honest cost tracking respecting Islamic transparency principles
 
 ### Performance and Scalability
+
 - **<10ms rate limiting decisions** for immediate user feedback
 - **<50ms usage tracking updates** for real-time usage monitoring
 - **<100ms cost calculations** for responsive billing and analytics
 - **Scalable architecture** supporting 100,000+ concurrent usage tracking processes
 
 ### Cultural and Professional Focus
+
 - **Prayer time consideration** - Enhanced rate limits during Islamic prayer times
 - **Ramadan adaptations** - Special usage patterns and limits during Ramadan month
 - **Professional domain expertise** - Specialized usage tracking for Iraqi legal, medical, educational contexts

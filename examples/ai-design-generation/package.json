@@ -185,7 +185,11 @@
     },
     "ai_models": {
       "primary_model": "claude-3-5-sonnet",
-      "fallback_models": ["gpt-4-vision", "gemini-pro", "local-llm"],
+      "fallback_models": [
+        "gpt-4-vision",
+        "gemini-pro",
+        "local-llm"
+      ],
       "cultural_validation_model": "claude-3-5-sonnet",
       "typography_optimization_model": "gpt-4-vision",
       "ministry_branding_model": "claude-3-5-sonnet",
@@ -220,14 +224,22 @@
         "ai_specialization": "medical-design",
         "cultural_focus": "patient-care",
         "islamic_level": "moderate",
-        "colors": ["emerald-600", "teal-700", "green-500"]
+        "colors": [
+          "emerald-600",
+          "teal-700",
+          "green-500"
+        ]
       },
       "education": {
         "enabled": true,
         "ai_specialization": "educational-design",
         "cultural_focus": "family-values",
         "islamic_level": "strict",
-        "colors": ["blue-600", "indigo-700", "sky-500"]
+        "colors": [
+          "blue-600",
+          "indigo-700",
+          "sky-500"
+        ]
       },
       "interior": {
         "enabled": true,
@@ -235,7 +247,11 @@
         "cultural_focus": "national-identity",
         "islamic_level": "moderate",
         "security": "classified",
-        "colors": ["slate-600", "gray-700", "zinc-600"]
+        "colors": [
+          "slate-600",
+          "gray-700",
+          "zinc-600"
+        ]
       },
       "justice": {
         "enabled": true,
@@ -243,7 +259,11 @@
         "cultural_focus": "islamic-law",
         "islamic_level": "strict",
         "security": "high",
-        "colors": ["purple-600", "indigo-700", "violet-600"]
+        "colors": [
+          "purple-600",
+          "indigo-700",
+          "violet-600"
+        ]
       },
       "general_government": true
     },
@@ -320,7 +340,7 @@
     "ministry_compliance": "100%",
     "ai_models_supported": [
       "claude-3-5-sonnet",
-      "gpt-4-vision", 
+      "gpt-4-vision",
       "gemini-pro",
       "local-llm"
     ],

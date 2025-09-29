@@ -13,7 +13,7 @@ Comprehensive multi-ministry project coordination system designed specifically f
 - **🏛️ Multi-Ministry Coordination**: Hierarchical approval workflows reflecting Iraqi government structure
 - **🕌 Islamic Compliance**: Automated Sharia validation with Shura consultation principles
 - **🔤 Arabic-First Experience**: RTL diff visualization and bidirectional text support
-- **⏰ Prayer Time Awareness**: Intelligent scheduling with Ramadan and Islamic holiday considerations  
+- **⏰ Prayer Time Awareness**: Intelligent scheduling with Ramadan and Islamic holiday considerations
 - **📋 Government Audit Trails**: Comprehensive documentation and compliance tracking
 - **🔄 Real-Time Collaboration**: Cultural context preservation across distributed teams
 - **🛡️ Security Integration**: Classified project handling with comprehensive access control
@@ -82,11 +82,11 @@ bun run dev
 ### Basic Usage
 
 ```typescript
-import { 
+import {
   IraqiProjectManagementEngine,
   MinistryCoordinationManager,
-  ArabicVersionControlEngine 
-} from '@onlook/iraqi-project-management';
+  ArabicVersionControlEngine,
+} from "@onlook/iraqi-project-management";
 
 // Initialize project management engine
 const config = {
@@ -95,7 +95,7 @@ const config = {
   culturalValidationEnabled: true,
   arabicContentSupport: true,
   prayerTimeAwareness: true,
-  governmentProtocolEnforcement: true
+  governmentProtocolEnforcement: true,
 };
 
 const projectEngine = new IraqiProjectManagementEngine(config);
@@ -110,10 +110,10 @@ const project = await projectEngine.createProject({
   secondaryMinistries: ["finance", "communications"],
   culturalValidationRequired: true,
   islamicComplianceRequired: true,
-  shuraConsultationRequired: true
+  shuraConsultationRequired: true,
 });
 
-console.log('Project created:', project.id);
+console.log("Project created:", project.id);
 ```
 
 ## 🏛️ Ministry Coordination
@@ -121,43 +121,44 @@ console.log('Project created:', project.id);
 ### Multi-Ministry Project Workflow
 
 ```typescript
-import { MinistryCoordinationManager } from './src/ministry/MinistryCoordinationManager';
+import { MinistryCoordinationManager } from "./src/ministry/MinistryCoordinationManager";
 
 const coordinationManager = new MinistryCoordinationManager({
   enableInterMinistryWorkflows: true,
   hierarchicalApprovalRequired: true,
   shuraConsultationMandatory: true,
-  culturalValidationRequired: true
+  culturalValidationRequired: true,
 });
 
 // Initiate inter-ministry coordination
-const coordination = await coordinationManager.initiateInterMinistryCoordination(
-  project,
-  {
+const coordination =
+  await coordinationManager.initiateInterMinistryCoordination(project, {
     coordinationType: "policy-coordination",
     participatingMinistries: ["health", "education", "finance"],
     urgencyLevel: "important",
     culturalSensitivityRequired: true,
-    islamicConsultationRequired: true
-  }
-);
+    islamicConsultationRequired: true,
+  });
 ```
 
 ### Ministry-Specific Features
 
 #### Health Ministry Integration
+
 - **Medical Ethics Validation**: Islamic medical ethics compliance
 - **Prayer Time Scheduling**: Healthcare worker prayer schedules
 - **Cultural Sensitivity**: Patient care cultural requirements
 - **Halal Compliance**: Pharmaceutical and treatment validation
 
-#### Education Ministry Integration  
+#### Education Ministry Integration
+
 - **Islamic Curriculum Validation**: Educational content review
 - **Prayer Time Integration**: School schedule optimization
 - **Cultural Content Review**: Educational material appropriateness
 - **Community Engagement**: Parent and community consultation
 
 #### Interior Ministry Integration
+
 - **Security Classification**: Document and project security levels
 - **Access Control**: Personnel security clearance verification
 - **Audit Compliance**: Government protocol enforcement
@@ -169,26 +170,23 @@ const coordination = await coordinationManager.initiateInterMinistryCoordination
 
 ```typescript
 // Conduct Shura consultation for critical decisions
-const shuraResult = await projectEngine.conductShuraConsultation(
-  project.id,
-  {
-    participants: [
-      { id: "scholar-1", expertise: ["islamic-law", "medical-ethics"] },
-      { id: "scholar-2", expertise: ["social-welfare", "community-benefit"] }
-    ],
-    consultationTopics: [
-      "community-welfare-impact",
-      "islamic-principle-alignment",
-      "social-justice-considerations"
-    ],
-    consensusRequired: true
-  }
-);
+const shuraResult = await projectEngine.conductShuraConsultation(project.id, {
+  participants: [
+    { id: "scholar-1", expertise: ["islamic-law", "medical-ethics"] },
+    { id: "scholar-2", expertise: ["social-welfare", "community-benefit"] },
+  ],
+  consultationTopics: [
+    "community-welfare-impact",
+    "islamic-principle-alignment",
+    "social-justice-considerations",
+  ],
+  consensusRequired: true,
+});
 
-if (shuraResult.decision === 'approve') {
+if (shuraResult.decision === "approve") {
   await projectEngine.updateProject(project.id, {
-    status: 'approved',
-    shuraConsultation: shuraResult
+    status: "approved",
+    shuraConsultation: shuraResult,
   });
 }
 ```
@@ -196,26 +194,26 @@ if (shuraResult.decision === 'approve') {
 ### Prayer Time-Aware Scheduling
 
 ```typescript
-import { TimelineManager } from './src/timeline/TimelineManager';
+import { TimelineManager } from "./src/timeline/TimelineManager";
 
 const timeline = new TimelineManager({
   prayerTimeAwareness: true,
   ramadanSchedulingEnabled: true,
-  islamicHolidaySupport: true
+  islamicHolidaySupport: true,
 });
 
 // Create timeline with prayer time considerations
 const projectTimeline = await timeline.createTimeline({
-  startDate: new Date('2025-01-01'),
-  endDate: new Date('2025-12-31'),
+  startDate: new Date("2025-01-01"),
+  endDate: new Date("2025-12-31"),
   prayerTimeBuffers: true,
   ramadanAdjustments: true,
   islamicHolidayExclusions: [
-    'eid-al-fitr',
-    'eid-al-adha',
-    'islamic-new-year',
-    'mawlid-al-nabi'
-  ]
+    "eid-al-fitr",
+    "eid-al-adha",
+    "islamic-new-year",
+    "mawlid-al-nabi",
+  ],
 });
 ```
 
@@ -224,14 +222,14 @@ const projectTimeline = await timeline.createTimeline({
 ### RTL Diff Visualization
 
 ```typescript
-import { ArabicVersionControlEngine } from './src/version-control/ArabicVersionControlEngine';
+import { ArabicVersionControlEngine } from "./src/version-control/ArabicVersionControlEngine";
 
 const versionControl = new ArabicVersionControlEngine({
   rtlDiffVisualization: true,
   bidirectionalTextSupport: true,
   culturalContextTracking: true,
   islamicContentValidation: true,
-  arabicFontOptimization: true
+  arabicFontOptimization: true,
 });
 
 // Create Arabic document with cultural validation
@@ -241,7 +239,7 @@ const document = await versionControl.createDocument({
   content: "Project objectives and scope...",
   contentArabic: "أهداف المشروع ونطاقه...",
   culturalValidationRequired: true,
-  islamicComplianceRequired: true
+  islamicComplianceRequired: true,
 });
 
 // Generate RTL-aware diff
@@ -249,7 +247,7 @@ const diff = await versionControl.generateArabicDiff(
   document.id,
   "1.0.0",
   document.id,
-  "1.1.0"
+  "1.1.0",
 );
 
 // Visualize diff with Arabic typography
@@ -260,8 +258,8 @@ const visualDiff = await versionControl.generateVisualDiff(
     rtlSupport: true,
     arabicTypography: true,
     culturalHighlighting: true,
-    islamicHighlighting: true
-  }
+    islamicHighlighting: true,
+  },
 );
 ```
 
@@ -273,10 +271,11 @@ const mixedContent = {
   content: "The project budget is 1,000,000 IQD الميزانية المخصصة للمشروع",
   contentType: "mixed",
   textDirection: "auto", // Automatic RTL/LTR detection
-  bidiContent: true
+  bidiContent: true,
 };
 
-const processedDocument = await versionControl.rtlProcessor.processDocument(mixedContent);
+const processedDocument =
+  await versionControl.rtlProcessor.processDocument(mixedContent);
 ```
 
 ## 🔄 Workflow Automation
@@ -287,11 +286,11 @@ const processedDocument = await versionControl.rtlProcessor.processDocument(mixe
 // Setup hierarchical approval workflow
 const approvalChain = await projectEngine.createProjectApprovalChain({
   levels: [
-    "department",      // Department head approval
-    "directorate",     // Directorate General approval  
-    "ministry",        // Ministerial approval
-    "council",         // Council of Ministers (if required)
-    "parliament"       // Parliamentary oversight (if required)
+    "department", // Department head approval
+    "directorate", // Directorate General approval
+    "ministry", // Ministerial approval
+    "council", // Council of Ministers (if required)
+    "parliament", // Parliamentary oversight (if required)
   ],
   culturalValidation: true,
   islamicConsultation: true,
@@ -299,8 +298,8 @@ const approvalChain = await projectEngine.createProjectApprovalChain({
   emergencyBypass: {
     enabled: true,
     authorizedBy: ["minister", "deputy-minister"],
-    auditRequired: true
-  }
+    auditRequired: true,
+  },
 });
 ```
 
@@ -312,7 +311,7 @@ const culturalValidator = new CulturalValidationService({
   iraqiContextValidation: true,
   islamicContentChecking: true,
   tribalSensitivityAware: true,
-  regionalCustomsValidation: true
+  regionalCustomsValidation: true,
 });
 
 const validationResult = await culturalValidator.validateContent({
@@ -320,15 +319,15 @@ const validationResult = await culturalValidator.validateContent({
   contentArabic: arabicContent,
   projectType: "public-service",
   ministryContext: "health",
-  securityLevel: "internal"
+  securityLevel: "internal",
 });
 
 if (!validationResult.valid) {
-  console.warn('Cultural validation issues:', validationResult.issues);
+  console.warn("Cultural validation issues:", validationResult.issues);
   // Apply automatic cultural corrections
   const correctedContent = await culturalValidator.applyAutoFixes(
     documentContent,
-    validationResult.autoFixes
+    validationResult.autoFixes,
   );
 }
 ```
@@ -341,12 +340,13 @@ if (!validationResult.valid) {
 // Monitor system performance with cultural metrics
 const performance = await projectEngine.getSystemPerformance();
 
-console.log('System Performance:', {
+console.log("System Performance:", {
   activeProjects: performance.projectStatistics.totalProjects,
   culturalComplianceRate: performance.culturalMetrics.complianceScore,
   islamicComplianceRate: performance.culturalMetrics.islamicComplianceRate,
   averageApprovalTime: performance.performanceMetrics.averageApprovalTime,
-  ministryCoordinationEfficiency: performance.performanceMetrics.coordinationEfficiency
+  ministryCoordinationEfficiency:
+    performance.performanceMetrics.coordinationEfficiency,
 });
 ```
 
@@ -354,14 +354,15 @@ console.log('System Performance:', {
 
 ```typescript
 // Generate ministry-specific performance reports
-const healthMinistryReport = await coordinationManager.getMinistryPerformance("health");
+const healthMinistryReport =
+  await coordinationManager.getMinistryPerformance("health");
 
-console.log('Health Ministry Performance:', {
+console.log("Health Ministry Performance:", {
   activeProjects: healthMinistryReport.activeProjects,
   approvalEfficiency: healthMinistryReport.approvalEfficiency,
   culturalComplianceRate: healthMinistryReport.culturalComplianceRate,
   budgetUtilization: healthMinistryReport.budgetUtilization,
-  stakeholderSatisfaction: healthMinistryReport.stakeholderSatisfaction
+  stakeholderSatisfaction: healthMinistryReport.stakeholderSatisfaction,
 });
 ```
 
@@ -383,8 +384,8 @@ const classifiedProject = await projectEngine.createProject({
     securityClearanceRequired: "secret",
     ministryRestriction: ["interior", "defense"],
     departmentRestriction: ["security", "intelligence"],
-    culturalSensitivityLevel: "high"
-  }
+    culturalSensitivityLevel: "high",
+  },
 });
 ```
 
@@ -399,16 +400,16 @@ const accessControl = {
       nameArabic: "مدير المشروع",
       permissions: ["read", "write", "approve"],
       culturalAuthority: ["content-review", "cultural-validation"],
-      islamicAuthority: ["islamic-compliance-check"]
+      islamicAuthority: ["islamic-compliance-check"],
     },
     {
-      name: "cultural-advisor", 
+      name: "cultural-advisor",
       nameArabic: "المستشار الثقافي",
       permissions: ["read", "cultural-review"],
       culturalAuthority: ["cultural-validation", "cultural-annotation"],
-      specializations: ["iraqi-customs", "tribal-relations", "social-norms"]
-    }
-  ]
+      specializations: ["iraqi-customs", "tribal-relations", "social-norms"],
+    },
+  ],
 };
 ```
 
@@ -437,21 +438,21 @@ bun run test:coverage
 
 ```typescript
 // Cultural validation tests
-describe('Cultural Validation', () => {
-  test('should validate Iraqi cultural context', async () => {
+describe("Cultural Validation", () => {
+  test("should validate Iraqi cultural context", async () => {
     const content = "الحمد لله، نبدأ هذا المشروع بتوفيق من الله";
     const result = await culturalValidator.validate(content);
-    
+
     expect(result.valid).toBe(true);
     expect(result.culturalSensitivity).toBe(true);
     expect(result.religiousRespect).toBe(true);
     expect(result.score).toBeGreaterThan(0.95);
   });
 
-  test('should detect cultural sensitivity issues', async () => {
+  test("should detect cultural sensitivity issues", async () => {
     const sensitiveContent = "Content that might be culturally inappropriate";
     const result = await culturalValidator.validate(sensitiveContent);
-    
+
     if (!result.valid) {
       expect(result.issues).toHaveLength(greaterThan(0));
       expect(result.recommendations).toHaveLength(greaterThan(0));
@@ -460,12 +461,12 @@ describe('Cultural Validation', () => {
 });
 
 // Arabic RTL testing
-describe('Arabic RTL Support', () => {
-  test('should handle bidirectional text correctly', async () => {
+describe("Arabic RTL Support", () => {
+  test("should handle bidirectional text correctly", async () => {
     const mixedText = "The budget is 1,000,000 دينار عراقي for this project";
     const processed = await rtlProcessor.processBidirectionalText(mixedText);
-    
-    expect(processed.textDirection).toBe('auto');
+
+    expect(processed.textDirection).toBe("auto");
     expect(processed.bidiSegments).toHaveLength(3);
     expect(processed.renderingOptimized).toBe(true);
   });
@@ -479,21 +480,21 @@ describe('Arabic RTL Support', () => {
 ```typescript
 // Configure Arabic-first localization
 const localization = {
-  defaultLanguage: 'arabic',
-  supportedLanguages: ['arabic', 'english'],
+  defaultLanguage: "arabic",
+  supportedLanguages: ["arabic", "english"],
   rtlSupport: true,
   culturalAdaptation: true,
-  regionalDialects: ['iraqi', 'baghdadi', 'basrawi'],
-  formalityLevels: ['casual', 'formal', 'official', 'ceremonial']
+  regionalDialects: ["iraqi", "baghdadi", "basrawi"],
+  formalityLevels: ["casual", "formal", "official", "ceremonial"],
 };
 
 // Generate culturally appropriate translations
 const translation = await translationService.translate({
   text: "Project approved by ministry",
-  targetLanguage: 'arabic',
-  formality: 'official',
-  culturalContext: 'government',
-  islamicTerminology: true
+  targetLanguage: "arabic",
+  formality: "official",
+  culturalContext: "government",
+  islamicTerminology: true,
 });
 
 console.log(translation.text); // "تمت الموافقة على المشروع من قبل الوزارة"
@@ -502,22 +503,22 @@ console.log(translation.text); // "تمت الموافقة على المشروع
 ### Islamic Calendar Integration
 
 ```typescript
-import { IslamicCalendar } from './src/utils/IslamicCalendar';
+import { IslamicCalendar } from "./src/utils/IslamicCalendar";
 
 // Convert Gregorian to Hijri dates
 const islamicCalendar = new IslamicCalendar();
-const hijriDate = islamicCalendar.toHijri(new Date('2025-01-01'));
+const hijriDate = islamicCalendar.toHijri(new Date("2025-01-01"));
 
 console.log(`Gregorian: 2025-01-01`);
 console.log(`Hijri: ${hijriDate.year}/${hijriDate.month}/${hijriDate.day}`);
 
 // Schedule around Islamic holidays
 const projectTimeline = await timeline.createTimelineWithIslamicConsiderations({
-  startDate: new Date('2025-01-01'),
-  endDate: new Date('2025-12-31'),
+  startDate: new Date("2025-01-01"),
+  endDate: new Date("2025-12-31"),
   excludeIslamicHolidays: true,
   ramadanAdjustments: true,
-  prayerTimeBuffers: 30 // minutes
+  prayerTimeBuffers: 30, // minutes
 });
 ```
 
@@ -560,19 +561,19 @@ const healthMinistryConfig = {
     medicalEthicsCompliance: true,
     islamicMedicalPrinciples: true,
     patientCulturalSensitivity: true,
-    halalPharmaceuticalValidation: true
+    halalPharmaceuticalValidation: true,
   },
   workflowTemplates: [
     "medical-equipment-procurement",
-    "healthcare-policy-development", 
+    "healthcare-policy-development",
     "hospital-construction-project",
-    "medical-research-approval"
+    "medical-research-approval",
   ],
   approvalChain: {
     levels: ["department", "directorate", "ministry", "health-council"],
     islamicMedicalEthicsReview: true,
-    publicHealthConsultation: true
-  }
+    publicHealthConsultation: true,
+  },
 };
 ```
 
@@ -587,12 +588,19 @@ interface IProjectManagementEngine {
   updateProject(request: ProjectUpdateRequest): Promise<IraqiProject>;
   getProject(projectId: string): Promise<IraqiProject | null>;
   getProjectsByMinistry(ministry: MinistryType): Promise<IraqiProject[]>;
-  
+
   // Cultural validation
-  validateProjectCulturally(projectId: string): Promise<CulturalValidationResult>;
-  validateProjectIslamically(projectId: string): Promise<IslamicComplianceResult>;
-  conductShuraConsultation(projectId: string, request: ShuraConsultationRequest): Promise<ShuraConsultationResult>;
-  
+  validateProjectCulturally(
+    projectId: string,
+  ): Promise<CulturalValidationResult>;
+  validateProjectIslamically(
+    projectId: string,
+  ): Promise<IslamicComplianceResult>;
+  conductShuraConsultation(
+    projectId: string,
+    request: ShuraConsultationRequest,
+  ): Promise<ShuraConsultationResult>;
+
   // Performance monitoring
   getSystemPerformance(): Promise<SystemPerformanceReport>;
   optimizePerformance(): Promise<PerformanceOptimizationResult>;
@@ -604,16 +612,33 @@ interface IProjectManagementEngine {
 ```typescript
 interface IMinistryCoordination {
   // Inter-ministry coordination
-  initiateInterMinistryCoordination(project: IraqiProject, request: CoordinationRequest): Promise<InterMinistryCoordination>;
-  updateCoordinationStatus(coordinationId: string, update: CoordinationStatusUpdate): Promise<InterMinistryCoordination>;
-  
+  initiateInterMinistryCoordination(
+    project: IraqiProject,
+    request: CoordinationRequest,
+  ): Promise<InterMinistryCoordination>;
+  updateCoordinationStatus(
+    coordinationId: string,
+    update: CoordinationStatusUpdate,
+  ): Promise<InterMinistryCoordination>;
+
   // Approval processing
-  processMinistryApproval(coordinationId: string, ministry: MinistryType, decision: ApprovalDecision): Promise<ApprovalResult>;
-  escalateCoordination(coordinationId: string, request: EscalationRequest): Promise<EscalationResult>;
-  
+  processMinistryApproval(
+    coordinationId: string,
+    ministry: MinistryType,
+    decision: ApprovalDecision,
+  ): Promise<ApprovalResult>;
+  escalateCoordination(
+    coordinationId: string,
+    request: EscalationRequest,
+  ): Promise<EscalationResult>;
+
   // Performance analytics
-  getMinistryPerformance(ministry: MinistryType): Promise<MinistryPerformanceReport>;
-  getCoordinationAnalytics(timeframe: AnalyticsTimeframe): Promise<CoordinationAnalytics>;
+  getMinistryPerformance(
+    ministry: MinistryType,
+  ): Promise<MinistryPerformanceReport>;
+  getCoordinationAnalytics(
+    timeframe: AnalyticsTimeframe,
+  ): Promise<CoordinationAnalytics>;
 }
 ```
 
@@ -623,16 +648,30 @@ interface IMinistryCoordination {
 interface IArabicVersionControl {
   // Document management
   createDocument(request: DocumentCreateRequest): Promise<ArabicDocument>;
-  updateDocument(documentId: string, request: DocumentUpdateRequest): Promise<ArabicDocument>;
-  
+  updateDocument(
+    documentId: string,
+    request: DocumentUpdateRequest,
+  ): Promise<ArabicDocument>;
+
   // Version control
   generateArabicDiff(sourceId: string, targetId: string): Promise<ArabicDiff>;
-  generateVisualDiff(sourceId: string, targetId: string, options: VisualDiffOptions): Promise<VisualDiffResult>;
-  
+  generateVisualDiff(
+    sourceId: string,
+    targetId: string,
+    options: VisualDiffOptions,
+  ): Promise<VisualDiffResult>;
+
   // Merge operations
-  mergeDocuments(baseBranch: string, sourceBranch: string, request: MergeRequest): Promise<ArabicMerge>;
-  resolveConflicts(mergeId: string, resolutions: ConflictResolution[]): Promise<ConflictResolutionResult>;
-  
+  mergeDocuments(
+    baseBranch: string,
+    sourceBranch: string,
+    request: MergeRequest,
+  ): Promise<ArabicMerge>;
+  resolveConflicts(
+    mergeId: string,
+    resolutions: ConflictResolution[],
+  ): Promise<ConflictResolutionResult>;
+
   // Search and indexing
   searchDocuments(query: ArabicSearchQuery): Promise<ArabicSearchResult[]>;
   indexDocument(document: ArabicDocument): Promise<IndexingResult>;
@@ -657,24 +696,34 @@ interface IArabicVersionControl {
 /**
  * Cultural Validation Function
  * تحقق من المحتوى الثقافي
- * 
+ *
  * @param content - Content to validate
  * @param culturalContext - Iraqi cultural context
  * @returns Validation result with cultural appropriateness score
  */
 async function validateCulturalContent(
   content: string,
-  culturalContext: IraqiCulturalContext
+  culturalContext: IraqiCulturalContext,
 ): Promise<CulturalValidationResult> {
   // Implementation with Islamic principles consideration
   const islamicValidation = await validateIslamicCompliance(content);
-  const tribalSensitivity = await checkTribalSensitivity(content, culturalContext);
+  const tribalSensitivity = await checkTribalSensitivity(
+    content,
+    culturalContext,
+  );
   const socialNorms = await validateSocialNorms(content);
-  
+
   return {
-    valid: islamicValidation.compliant && tribalSensitivity.appropriate && socialNorms.appropriate,
-    score: calculateCulturalScore(islamicValidation, tribalSensitivity, socialNorms),
-    recommendations: generateCulturalRecommendations(content, culturalContext)
+    valid:
+      islamicValidation.compliant &&
+      tribalSensitivity.appropriate &&
+      socialNorms.appropriate,
+    score: calculateCulturalScore(
+      islamicValidation,
+      tribalSensitivity,
+      socialNorms,
+    ),
+    recommendations: generateCulturalRecommendations(content, culturalContext),
   };
 }
 ```
@@ -688,7 +737,7 @@ bun test
 # Cultural compliance tests (95% compliance required)
 bun run test:cultural
 
-# Islamic validation tests (90% compliance required)  
+# Islamic validation tests (90% compliance required)
 bun run test:islamic
 
 # Arabic RTL tests (99% accuracy required)
@@ -704,6 +753,7 @@ bun run test:performance
 ## 📈 Performance Benchmarks
 
 ### Response Time Requirements
+
 - **Project Creation**: <150ms (with cultural validation)
 - **Document Diff Generation**: <100ms (RTL-aware)
 - **Arabic Search**: <50ms (semantic search)
@@ -711,6 +761,7 @@ bun run test:performance
 - **Real-Time Sync**: <30ms latency
 
 ### Cultural Compliance Metrics
+
 - **Cultural Validation Accuracy**: 95%+
 - **Islamic Compliance Rate**: 90%+
 - **Arabic RTL Accuracy**: 99%+
@@ -720,6 +771,7 @@ bun run test:performance
 ## 🔒 Security & Compliance
 
 ### Government Security Standards
+
 - **Classification Levels**: Public, Internal, Confidential, Secret, Top Secret
 - **Access Control**: Role-based with ministry and department restrictions
 - **Audit Trails**: Comprehensive logging with integrity verification
@@ -727,6 +779,7 @@ bun run test:performance
 - **Digital Signatures**: PKI-based document signing
 
 ### Islamic Compliance Framework
+
 - **Shura Consultation**: Mandatory for critical projects
 - **Halal Validation**: Content and procurement compliance
 - **Prayer Time Integration**: Scheduling with Islamic observance
@@ -736,6 +789,7 @@ bun run test:performance
 ## 📞 Support & Documentation
 
 ### Getting Help
+
 - **Documentation**: [Full API Documentation](./docs/api/)
 - **Cultural Guidelines**: [Iraqi Cultural Compliance Guide](./docs/cultural/)
 - **Islamic Compliance**: [Islamic Validation Framework](./docs/islamic/)
@@ -743,6 +797,7 @@ bun run test:performance
 - **Ministry Integration**: [Government Integration Guide](./docs/ministry/)
 
 ### Community Resources
+
 - **GitHub Discussions**: Technical questions and feature requests
 - **Cultural Advisory Board**: Cultural and Islamic compliance guidance
 - **Ministry Liaisons**: Government protocol and compliance support

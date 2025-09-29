@@ -4,17 +4,17 @@
  * Enhanced with Iraqi cultural context and agent coordination
  */
 
-import { IraqiCulturalContext } from '@aqlix-ai/types';
+import { IraqiCulturalContext } from "@aqlix-ai/types";
 
 /**
  * Status of a response or action that requires user input with Iraqi cultural context
  */
-export type IraqiCrewsResponseStatus = 
-  | "inProgress" 
-  | "complete" 
+export type IraqiCrewsResponseStatus =
+  | "inProgress"
+  | "complete"
   | "executing"
-  | "culturalValidation" 
-  | "islamicCompliance" 
+  | "culturalValidation"
+  | "islamicCompliance"
   | "arabicProcessing";
 
 /**
@@ -47,21 +47,27 @@ export interface IraqiCrewsResponse {
   culturalScore?: number;
 
   /**
-   * Islamic compliance score (0-100)  
+   * Islamic compliance score (0-100)
    */
   islamicComplianceScore?: number;
 
   /**
    * Professional domain this response relates to
    */
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'government' | 'general';
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "government"
+    | "general";
 
   /**
    * Optional metadata for the response with Iraqi context
    */
   metadata?: {
-    language?: 'arabic' | 'english' | 'mixed';
-    dialect?: 'iraqi' | 'standard' | 'gulf' | 'levantine';
+    language?: "arabic" | "english" | "mixed";
+    dialect?: "iraqi" | "standard" | "gulf" | "levantine";
     rtlLayout?: boolean;
     culturallyValidated?: boolean;
     islamicCompliance?: boolean;
@@ -97,7 +103,11 @@ export interface IraqiCrewsStateItem {
   /**
    * Agent type (Iraqi specialized agent)
    */
-  agentType?: 'iraqi-cultural-validator' | 'arabic-rtl-processor' | 'iraqi-professional-domain-expert' | 'general';
+  agentType?:
+    | "iraqi-cultural-validator"
+    | "arabic-rtl-processor"
+    | "iraqi-professional-domain-expert"
+    | "general";
 }
 
 /**
@@ -182,17 +192,24 @@ export interface IraqiCrewsTaskStateItem extends IraqiCrewsStateItem {
   /**
    * Professional domain this task belongs to
    */
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'government' | 'technology' | 'general';
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "government"
+    | "technology"
+    | "general";
 
   /**
    * Priority level for Iraqi context
    */
-  priority?: 'low' | 'medium' | 'high' | 'critical';
+  priority?: "low" | "medium" | "high" | "critical";
 
   /**
    * Cultural sensitivity level required
    */
-  culturalSensitivity?: 'low' | 'medium' | 'high';
+  culturalSensitivity?: "low" | "medium" | "high";
 
   /**
    * Whether Islamic compliance validation is required
@@ -202,7 +219,13 @@ export interface IraqiCrewsTaskStateItem extends IraqiCrewsStateItem {
   /**
    * Task status with Iraqi cultural validation states
    */
-  status?: 'pending' | 'in_progress' | 'cultural_validation' | 'islamic_compliance' | 'completed' | 'failed';
+  status?:
+    | "pending"
+    | "in_progress"
+    | "cultural_validation"
+    | "islamic_compliance"
+    | "completed"
+    | "failed";
 
   /**
    * Task assignee (Iraqi agent type)
@@ -247,12 +270,19 @@ export interface IraqiCrewsAgentState {
   /**
    * Active professional domain
    */
-  activeProfessionalDomain?: 'legal' | 'medical' | 'educational' | 'business' | 'government' | 'technology' | 'general';
+  activeProfessionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "government"
+    | "technology"
+    | "general";
 
   /**
    * Language preference for this agent state
    */
-  languagePreference?: 'arabic' | 'english' | 'mixed';
+  languagePreference?: "arabic" | "english" | "mixed";
 
   /**
    * RTL layout enabled for UI rendering
@@ -265,7 +295,7 @@ export interface IraqiCrewsAgentState {
   coordination?: {
     primaryAgent?: string;
     collaboratingAgents?: string[];
-    coordinationStrategy?: 'sequential' | 'parallel' | 'conditional';
+    coordinationStrategy?: "sequential" | "parallel" | "conditional";
   };
 
   /**
@@ -293,12 +323,16 @@ export interface IraqiCrewsStateManager {
   /**
    * Add a new step to the agent state with cultural validation
    */
-  addStep(step: Omit<IraqiCrewsToolStateItem, 'id' | 'timestamp'>): Promise<IraqiCrewsToolStateItem>;
+  addStep(
+    step: Omit<IraqiCrewsToolStateItem, "id" | "timestamp">,
+  ): Promise<IraqiCrewsToolStateItem>;
 
   /**
    * Add a new task with Iraqi professional domain context
    */
-  addTask(task: Omit<IraqiCrewsTaskStateItem, 'id' | 'timestamp'>): Promise<IraqiCrewsTaskStateItem>;
+  addTask(
+    task: Omit<IraqiCrewsTaskStateItem, "id" | "timestamp">,
+  ): Promise<IraqiCrewsTaskStateItem>;
 
   /**
    * Update cultural context for the entire agent state

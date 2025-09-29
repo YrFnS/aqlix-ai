@@ -9,12 +9,12 @@ export interface MinistryConfiguration {
   name: string;
   arabicName: string;
   englishName: string;
-  
+
   // Ministry identification
   code: string; // e.g., 'MOH', 'MOE', 'MOI', 'MOJ'
-  type: 'service' | 'regulatory' | 'security' | 'economic' | 'social';
-  level: 'federal' | 'regional' | 'local';
-  
+  type: "service" | "regulatory" | "security" | "economic" | "social";
+  level: "federal" | "regional" | "local";
+
   // Organizational structure
   structure: {
     departments: MinistryDepartment[];
@@ -22,16 +22,21 @@ export interface MinistryConfiguration {
     offices: MinistryOffice[];
     regions?: MinistryRegion[];
   };
-  
+
   // Security and compliance
   security: {
     clearanceRequired: boolean;
-    minimumLevel: 'public' | 'internal' | 'confidential' | 'secret' | 'top-secret';
+    minimumLevel:
+      | "public"
+      | "internal"
+      | "confidential"
+      | "secret"
+      | "top-secret";
     backgroundCheckRequired: boolean;
     islamicComplianceRequired: boolean;
     culturalSensitivityRequired: boolean;
   };
-  
+
   // Operational parameters
   operations: {
     businessHours: { start: string; end: string };
@@ -41,16 +46,16 @@ export interface MinistryConfiguration {
     ramadanSchedule?: { start: string; end: string };
     prayerTimeAccommodations: boolean;
   };
-  
+
   // Cultural and linguistic requirements
   cultural: {
     arabicMandatory: boolean;
     englishRequired: boolean;
-    dialectPreference: 'baghdadi' | 'standard' | 'mixed';
-    islamicComplianceLevel: 'basic' | 'standard' | 'strict';
-    culturalSensitivityLevel: 'standard' | 'high' | 'maximum';
+    dialectPreference: "baghdadi" | "standard" | "mixed";
+    islamicComplianceLevel: "basic" | "standard" | "strict";
+    culturalSensitivityLevel: "standard" | "high" | "maximum";
   };
-  
+
   // Contact and location
   contact: {
     headquarters: MinistryLocation;
@@ -65,19 +70,19 @@ export interface MinistryDepartment {
   name: string;
   arabicName: string;
   code: string;
-  
+
   // Department specifics
   responsibilities: string[];
   arabicResponsibilities?: string[];
   serviceTypes: ServiceType[];
-  
+
   // Staff and structure
   leadership: {
     director: string;
     deputyDirector?: string;
     departmentHead?: string;
   };
-  
+
   // Operational details
   operations: {
     publicFacing: boolean;
@@ -85,10 +90,10 @@ export interface MinistryDepartment {
     emergencyServices: boolean;
     businessHours?: { start: string; end: string };
   };
-  
+
   // Security and access
   security: {
-    accessLevel: 'public' | 'restricted' | 'classified';
+    accessLevel: "public" | "restricted" | "classified";
     clearanceRequired: boolean;
     visitorAccess: boolean;
   };
@@ -99,12 +104,12 @@ export interface MinistryDivision {
   name: string;
   arabicName: string;
   departmentId: string;
-  
+
   // Division details
   specialization: string;
   arabicSpecialization?: string;
   serviceAreas: string[];
-  
+
   // Staff structure
   staff: {
     supervisor: string;
@@ -112,7 +117,7 @@ export interface MinistryDivision {
     technicians: number;
     support: number;
   };
-  
+
   // Service delivery
   services: {
     direct: boolean;
@@ -126,11 +131,11 @@ export interface MinistryOffice {
   id: string;
   name: string;
   arabicName: string;
-  type: 'headquarters' | 'regional' | 'district' | 'local' | 'field';
-  
+  type: "headquarters" | "regional" | "district" | "local" | "field";
+
   // Location details
   location: MinistryLocation;
-  
+
   // Service capabilities
   capabilities: {
     citizenServices: boolean;
@@ -138,7 +143,7 @@ export interface MinistryOffice {
     emergencyResponse: boolean;
     onlineServices: boolean;
   };
-  
+
   // Operating schedule
   schedule: {
     standardHours: { start: string; end: string };
@@ -153,7 +158,7 @@ export interface MinistryRegion {
   name: string;
   arabicName: string;
   governorate: string;
-  
+
   // Geographic coverage
   coverage: {
     cities: string[];
@@ -161,15 +166,20 @@ export interface MinistryRegion {
     population: number;
     area: number; // km²
   };
-  
+
   // Regional characteristics
   characteristics: {
-    predominantDialect: 'baghdadi' | 'basri' | 'moslawi' | 'kurdish' | 'mixed';
+    predominantDialect: "baghdadi" | "basri" | "moslawi" | "kurdish" | "mixed";
     tribalConsiderations: boolean;
-    securityLevel: 'normal' | 'elevated' | 'high' | 'critical';
-    economicProfile: 'agricultural' | 'industrial' | 'commercial' | 'oil' | 'mixed';
+    securityLevel: "normal" | "elevated" | "high" | "critical";
+    economicProfile:
+      | "agricultural"
+      | "industrial"
+      | "commercial"
+      | "oil"
+      | "mixed";
   };
-  
+
   // Service delivery
   serviceDelivery: {
     physicalOffices: number;
@@ -186,7 +196,7 @@ export interface MinistryLocation {
   governorate: string;
   postalCode?: string;
   coordinates: { lat: number; lng: number };
-  
+
   // Accessibility
   accessibility: {
     publicTransport: boolean;
@@ -194,7 +204,7 @@ export interface MinistryLocation {
     disabilityAccess: boolean;
     securityPerimeter: boolean;
   };
-  
+
   // Contact details
   contact: {
     phone: string;
@@ -210,16 +220,16 @@ export interface ServiceType {
   name: string;
   arabicName: string;
   category: ServiceCategory;
-  
+
   // Service characteristics
   characteristics: {
-    complexity: 'simple' | 'moderate' | 'complex';
+    complexity: "simple" | "moderate" | "complex";
     duration: string; // estimated completion time
     cost: number; // IQD
     documentsRequired: string[];
     arabicDocumentsRequired?: string[];
   };
-  
+
   // Delivery methods
   delivery: {
     inPerson: boolean;
@@ -228,7 +238,7 @@ export interface ServiceType {
     phone: boolean;
     mail: boolean;
   };
-  
+
   // Requirements and eligibility
   requirements: {
     citizenshipRequired: boolean;
@@ -237,7 +247,7 @@ export interface ServiceType {
     documentationRequired: string[];
     feesRequired: boolean;
   };
-  
+
   // Cultural and religious considerations
   cultural: {
     genderSpecificService: boolean;
@@ -245,7 +255,7 @@ export interface ServiceType {
     culturalSensitivityRequired: boolean;
     languagePreferences: string[];
   };
-  
+
   // Service quality metrics
   quality: {
     averageProcessingTime: number; // days
@@ -255,17 +265,17 @@ export interface ServiceType {
   };
 }
 
-export type ServiceCategory = 
-  | 'identity-documents'
-  | 'civil-registration'
-  | 'business-licensing'
-  | 'health-services'
-  | 'education-services'
-  | 'legal-services'
-  | 'social-services'
-  | 'security-services'
-  | 'emergency-services'
-  | 'information-services';
+export type ServiceCategory =
+  | "identity-documents"
+  | "civil-registration"
+  | "business-licensing"
+  | "health-services"
+  | "education-services"
+  | "legal-services"
+  | "social-services"
+  | "security-services"
+  | "emergency-services"
+  | "information-services";
 
 // Specific Ministry Configurations
 export interface HealthMinistryConfig extends MinistryConfiguration {
@@ -273,16 +283,16 @@ export interface HealthMinistryConfig extends MinistryConfiguration {
     hospitalNetworks: HealthFacility[];
     specializedCenters: SpecializedHealthCenter[];
     emergencyServices: EmergencyHealthService[];
-    
+
     // Health system parameters
     systemParameters: {
-      patientPrivacyLevel: 'standard' | 'enhanced' | 'maximum';
+      patientPrivacyLevel: "standard" | "enhanced" | "maximum";
       familyConsentRequired: boolean;
       genderSeparatedServices: boolean;
       islamicMedicalEthics: boolean;
       traditionalMedicineIntegration: boolean;
     };
-    
+
     // Public health initiatives
     publicHealth: {
       vaccinationPrograms: string[];
@@ -299,16 +309,16 @@ export interface EducationMinistryConfig extends MinistryConfiguration {
   educationSpecific: {
     institutions: EducationalInstitution[];
     programs: EducationalProgram[];
-    
+
     // Educational system parameters
     systemParameters: {
-      curriculumStandards: 'national' | 'international' | 'mixed';
-      languageOfInstruction: 'arabic' | 'kurdish' | 'bilingual';
+      curriculumStandards: "national" | "international" | "mixed";
+      languageOfInstruction: "arabic" | "kurdish" | "bilingual";
       islamicEducationRequired: boolean;
       genderSeparatedEducation: boolean;
       specialNeedsSupport: boolean;
     };
-    
+
     // Student services
     studentServices: {
       scholarships: boolean;
@@ -326,7 +336,7 @@ export interface InteriorMinistryConfig extends MinistryConfiguration {
     securityServices: SecurityService[];
     civilServices: CivilService[];
     emergencyServices: EmergencyService[];
-    
+
     // Security and public safety
     security: {
       policeStations: number;
@@ -335,7 +345,7 @@ export interface InteriorMinistryConfig extends MinistryConfiguration {
       tribalLiaison: boolean;
       culturalMediation: boolean;
     };
-    
+
     // Civil administration
     civilAdministration: {
       citizenshipServices: boolean;
@@ -352,7 +362,7 @@ export interface JusticeMinistryConfig extends MinistryConfiguration {
     courts: JudiciaryFacility[];
     legalServices: LegalService[];
     correctionalFacilities: CorrectionalFacility[];
-    
+
     // Legal system parameters
     legalSystem: {
       islamicJurisprudence: boolean;
@@ -361,7 +371,7 @@ export interface JusticeMinistryConfig extends MinistryConfiguration {
       tribalMeditation: boolean;
       familyCourtSpecialization: boolean;
     };
-    
+
     // Justice delivery
     justiceDelivery: {
       courtInterpreting: boolean;
@@ -378,8 +388,8 @@ export interface HealthFacility {
   id: string;
   name: string;
   arabicName: string;
-  type: 'hospital' | 'clinic' | 'health-center' | 'specialized-center';
-  level: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
+  type: "hospital" | "clinic" | "health-center" | "specialized-center";
+  level: "primary" | "secondary" | "tertiary" | "quaternary";
   location: MinistryLocation;
   capacity: number;
   specializations: string[];
@@ -394,35 +404,41 @@ export interface SpecializedHealthCenter {
   services: string[];
   location: MinistryLocation;
   capacity: number;
-  islamicComplianceLevel: 'standard' | 'certified';
+  islamicComplianceLevel: "standard" | "certified";
 }
 
 export interface EmergencyHealthService {
   id: string;
   name: string;
-  type: 'ambulance' | 'emergency-room' | 'trauma-center' | 'poison-control';
+  type: "ambulance" | "emergency-room" | "trauma-center" | "poison-control";
   coverage: string[];
   responseTime: number; // minutes
-  availability: '24/7' | 'business-hours' | 'on-call';
+  availability: "24/7" | "business-hours" | "on-call";
 }
 
 export interface EducationalInstitution {
   id: string;
   name: string;
   arabicName: string;
-  type: 'kindergarten' | 'primary' | 'secondary' | 'university' | 'technical' | 'vocational';
+  type:
+    | "kindergarten"
+    | "primary"
+    | "secondary"
+    | "university"
+    | "technical"
+    | "vocational";
   level: string;
   location: MinistryLocation;
   capacity: number;
   specializations?: string[];
-  languageOfInstruction: 'arabic' | 'kurdish' | 'english' | 'bilingual';
+  languageOfInstruction: "arabic" | "kurdish" | "english" | "bilingual";
 }
 
 export interface EducationalProgram {
   id: string;
   name: string;
   arabicName: string;
-  type: 'degree' | 'diploma' | 'certificate' | 'training';
+  type: "degree" | "diploma" | "certificate" | "training";
   duration: string;
   requirements: string[];
   islamicContent: boolean;
@@ -433,7 +449,7 @@ export interface SecurityService {
   id: string;
   name: string;
   arabicName: string;
-  type: 'police' | 'civil-defense' | 'border' | 'intelligence' | 'emergency';
+  type: "police" | "civil-defense" | "border" | "intelligence" | "emergency";
   jurisdiction: string[];
   capabilities: string[];
   responseTime: number; // minutes
@@ -443,7 +459,7 @@ export interface CivilService {
   id: string;
   name: string;
   arabicName: string;
-  type: 'documentation' | 'registration' | 'licensing' | 'certification';
+  type: "documentation" | "registration" | "licensing" | "certification";
   processingTime: number; // days
   fees: number; // IQD
   requirements: string[];
@@ -454,7 +470,7 @@ export interface EmergencyService {
   id: string;
   name: string;
   arabicName: string;
-  type: 'fire' | 'medical' | 'police' | 'disaster' | 'rescue';
+  type: "fire" | "medical" | "police" | "disaster" | "rescue";
   coverage: string[];
   responseTime: number; // minutes
   equipment: string[];
@@ -465,7 +481,7 @@ export interface JudiciaryFacility {
   id: string;
   name: string;
   arabicName: string;
-  type: 'court' | 'tribunal' | 'appeals-court' | 'supreme-court';
+  type: "court" | "tribunal" | "appeals-court" | "supreme-court";
   jurisdiction: string[];
   specializations: string[];
   islamicJurisprudence: boolean;
@@ -476,7 +492,7 @@ export interface LegalService {
   id: string;
   name: string;
   arabicName: string;
-  type: 'legal-aid' | 'mediation' | 'arbitration' | 'notary' | 'certification';
+  type: "legal-aid" | "mediation" | "arbitration" | "notary" | "certification";
   eligibility: string[];
   cost: number; // IQD
   processingTime: number; // days
@@ -487,9 +503,9 @@ export interface CorrectionalFacility {
   id: string;
   name: string;
   arabicName: string;
-  type: 'prison' | 'detention' | 'rehabilitation' | 'juvenile';
+  type: "prison" | "detention" | "rehabilitation" | "juvenile";
   capacity: number;
-  securityLevel: 'minimum' | 'medium' | 'maximum' | 'super-maximum';
+  securityLevel: "minimum" | "medium" | "maximum" | "super-maximum";
   programs: string[];
   location: MinistryLocation;
 }
@@ -501,11 +517,16 @@ export interface MinistryWorkflowTemplate {
   arabicName: string;
   ministryId: string;
   departmentId?: string;
-  
+
   // Template categorization
-  category: 'citizen-service' | 'internal-process' | 'inter-ministry' | 'emergency' | 'regulatory';
-  complexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
-  
+  category:
+    | "citizen-service"
+    | "internal-process"
+    | "inter-ministry"
+    | "emergency"
+    | "regulatory";
+  complexity: "simple" | "moderate" | "complex" | "enterprise";
+
   // Service details
   service: {
     type: ServiceType;
@@ -514,7 +535,7 @@ export interface MinistryWorkflowTemplate {
     documentsNeeded: string[];
     fees: number; // IQD
   };
-  
+
   // Cultural and compliance requirements
   compliance: {
     islamicCompliant: boolean;
@@ -523,7 +544,7 @@ export interface MinistryWorkflowTemplate {
     privacyCompliant: boolean;
     tribalSensitive: boolean;
   };
-  
+
   // Workflow structure
   workflow: {
     nodes: any[]; // Will use IraqiWorkflowNode from workflow.types.ts
@@ -531,7 +552,7 @@ export interface MinistryWorkflowTemplate {
     estimatedSteps: number;
     automationLevel: number; // 0-100 percentage
   };
-  
+
   // Usage and performance metrics
   metrics: {
     adoptionRate: number; // percentage of eligible cases using this template
@@ -540,23 +561,42 @@ export interface MinistryWorkflowTemplate {
     citizenSatisfaction: number; // 0-100
     costSavings: number; // IQD per use
   };
-  
+
   // Maintenance and updates
   maintenance: {
     lastUpdated: Date;
     version: string;
-    updateFrequency: 'weekly' | 'monthly' | 'quarterly' | 'annually';
+    updateFrequency: "weekly" | "monthly" | "quarterly" | "annually";
     responsibleDepartment: string;
     reviewSchedule: Date;
   };
 }
 
 // Export utility types
-export type MinistryType = 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'defense' | 'foreign' | 'agriculture' | 'industry' | 'transport';
-export type SecurityLevel = 'public' | 'internal' | 'confidential' | 'secret' | 'top-secret';
-export type ComplianceLevel = 'basic' | 'standard' | 'enhanced' | 'maximum';
-export type ServiceComplexity = 'simple' | 'moderate' | 'complex' | 'enterprise';
-export type CulturalSensitivity = 'standard' | 'high' | 'maximum';
+export type MinistryType =
+  | "health"
+  | "education"
+  | "interior"
+  | "justice"
+  | "finance"
+  | "defense"
+  | "foreign"
+  | "agriculture"
+  | "industry"
+  | "transport";
+export type SecurityLevel =
+  | "public"
+  | "internal"
+  | "confidential"
+  | "secret"
+  | "top-secret";
+export type ComplianceLevel = "basic" | "standard" | "enhanced" | "maximum";
+export type ServiceComplexity =
+  | "simple"
+  | "moderate"
+  | "complex"
+  | "enterprise";
+export type CulturalSensitivity = "standard" | "high" | "maximum";
 
 // Ministry configuration factory types
 export interface MinistryConfigurationFactory {
@@ -571,5 +611,7 @@ export interface MinistryServiceRegistry {
   getServicesByMinistry(ministryId: string): ServiceType[];
   getServicesByCategory(category: ServiceCategory): ServiceType[];
   getServiceByComplexity(complexity: ServiceComplexity): ServiceType[];
-  getCulturallyAppropriateeServices(culturalLevel: CulturalSensitivity): ServiceType[];
+  getCulturallyAppropriateeServices(
+    culturalLevel: CulturalSensitivity,
+  ): ServiceType[];
 }

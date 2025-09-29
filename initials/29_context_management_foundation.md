@@ -21,6 +21,7 @@
 **Shared context management foundation:**
 
 ### Context Validation Foundation
+
 - **Core Validation Engine:** Base context validation algorithms and validation pipelines
 - **Cultural Context Validation:** Iraqi cultural context validation with Islamic compliance checking
 - **Professional Context Validation:** Professional domain context validation for Iraqi domains
@@ -28,6 +29,7 @@
 - **Validation Result Management:** Standardized validation result handling and reporting
 
 ### Context Compression & Storage
+
 - **Compression Algorithms:** Cultural-aware context compression for efficient storage
 - **Context Serialization:** Standardized context serialization and deserialization
 - **Vector Embeddings:** Context vector generation for semantic similarity matching
@@ -35,6 +37,7 @@
 - **Storage Optimization:** Efficient context storage patterns and cleanup strategies
 
 ### Cultural Context Foundation
+
 - **Iraqi Cultural Patterns:** Base Iraqi cultural pattern recognition and validation
 - **Islamic Compliance Foundation:** Core Islamic compliance checking algorithms
 - **Regional Context Management:** Iraqi regional context (Baghdad, Basra, Mosul, Erbil) handling
@@ -48,73 +51,77 @@
 **Shared context management foundation examples:**
 
 ### Core Context Manager
+
 ```typescript
 // Context Management Foundation
 class ContextManagementFoundation {
   constructor() {
-    this.validationEngine = new ContextValidationEngine()
-    this.compressionEngine = new ContextCompressionEngine()
-    this.culturalValidator = new IraqiCulturalValidator()
-    this.islamicComplianceChecker = new IslamicComplianceChecker()
-    this.vectorEmbeddingGenerator = new ContextVectorGenerator()
+    this.validationEngine = new ContextValidationEngine();
+    this.compressionEngine = new ContextCompressionEngine();
+    this.culturalValidator = new IraqiCulturalValidator();
+    this.islamicComplianceChecker = new IslamicComplianceChecker();
+    this.vectorEmbeddingGenerator = new ContextVectorGenerator();
   }
 
   async validateContext(
     context: Context,
-    validationType: 'cultural' | 'islamic' | 'professional' | 'technical'
+    validationType: "cultural" | "islamic" | "professional" | "technical",
   ): Promise<ContextValidationResult> {
     // Core context validation foundation
-    const baseValidation = await this.validationEngine.validateStructure(context)
+    const baseValidation =
+      await this.validationEngine.validateStructure(context);
 
     if (!baseValidation.isValid) {
       return {
         isValid: false,
         errors: baseValidation.errors,
-        validationType: 'structural'
-      }
+        validationType: "structural",
+      };
     }
 
     // Cultural validation if required
-    let culturalValidation = null
-    if (validationType === 'cultural' || context.requiresCulturalValidation) {
+    let culturalValidation = null;
+    if (validationType === "cultural" || context.requiresCulturalValidation) {
       culturalValidation = await this.culturalValidator.validate({
         context,
-        region: context.region || 'iraqi_general',
-        islamicComplianceRequired: context.islamicComplianceRequired || true
-      })
+        region: context.region || "iraqi_general",
+        islamicComplianceRequired: context.islamicComplianceRequired || true,
+      });
     }
 
     // Islamic compliance validation
-    let islamicValidation = null
+    let islamicValidation = null;
     if (context.islamicComplianceRequired) {
       islamicValidation = await this.islamicComplianceChecker.validate({
         context,
-        complianceLevel: context.islamicComplianceLevel || 'standard'
-      })
+        complianceLevel: context.islamicComplianceLevel || "standard",
+      });
     }
 
     return {
-      isValid: culturalValidation?.isValid !== false && islamicValidation?.isValid !== false,
+      isValid:
+        culturalValidation?.isValid !== false &&
+        islamicValidation?.isValid !== false,
       structuralValidation: baseValidation,
       culturalValidation,
       islamicValidation,
       overallScore: this.calculateOverallValidationScore({
         structural: baseValidation,
         cultural: culturalValidation,
-        islamic: islamicValidation
-      })
-    }
+        islamic: islamicValidation,
+      }),
+    };
   }
 
   async compressContext(
     context: Context,
-    compressionLevel: 'light' | 'standard' | 'aggressive',
-    preserveCulturalContext: boolean = true
+    compressionLevel: "light" | "standard" | "aggressive",
+    preserveCulturalContext: boolean = true,
   ): Promise<CompressedContext> {
     // Cultural-aware compression
     const culturalElements = preserveCulturalContext
       ? await this.extractCulturalElements(context)
-      : null
+      : null;
 
     // Apply compression with cultural preservation
     const compressed = await this.compressionEngine.compress({
@@ -122,16 +129,16 @@ class ContextManagementFoundation {
       level: compressionLevel,
       preserveElements: culturalElements,
       preserveIslamic: context.islamicComplianceRequired || false,
-      preserveProfessional: context.professionalDomain ? true : false
-    })
+      preserveProfessional: context.professionalDomain ? true : false,
+    });
 
     // Generate vector embedding for semantic matching
     const contextVector = await this.vectorEmbeddingGenerator.generate({
       originalContext: context,
       compressedContext: compressed,
       culturalElements,
-      region: context.region
-    })
+      region: context.region,
+    });
 
     return {
       id: compressed.id,
@@ -145,55 +152,59 @@ class ContextManagementFoundation {
         compressedSize: compressed.size,
         compressionLevel,
         preservedCulturalElements: culturalElements?.length || 0,
-        timestamp: new Date()
-      }
-    }
+        timestamp: new Date(),
+      },
+    };
   }
 }
 ```
 
 ### Cultural Context Foundation
+
 ```typescript
 // Iraqi Cultural Context Foundation
 class IraqiCulturalContextFoundation {
   constructor() {
-    this.culturalPatterns = new IraqiCulturalPatterns()
-    this.regionalContexts = new RegionalContextManager()
-    this.professionalDomains = new IraqiProfessionalDomains()
-    this.islamicGuidelines = new IslamicGuidelinesEngine()
+    this.culturalPatterns = new IraqiCulturalPatterns();
+    this.regionalContexts = new RegionalContextManager();
+    this.professionalDomains = new IraqiProfessionalDomains();
+    this.islamicGuidelines = new IslamicGuidelinesEngine();
   }
 
   async extractCulturalContext(
     content: any,
-    contextType: 'conversation' | 'professional' | 'personal'
+    contextType: "conversation" | "professional" | "personal",
   ): Promise<CulturalContext> {
     // Analyze content for Iraqi cultural patterns
     const culturalAnalysis = await this.culturalPatterns.analyze({
       content,
       contextType,
-      region: 'iraqi_general'
-    })
+      region: "iraqi_general",
+    });
 
     // Extract Islamic compliance elements
     const islamicElements = await this.islamicGuidelines.extractElements({
       content,
       contextType,
-      complianceLevel: 'standard'
-    })
+      complianceLevel: "standard",
+    });
 
     // Determine regional context
     const regionalContext = await this.regionalContexts.determineRegion({
       content,
-      culturalIndicators: culturalAnalysis.indicators
-    })
+      culturalIndicators: culturalAnalysis.indicators,
+    });
 
     // Extract professional domain if applicable
-    let professionalContext = null
-    if (contextType === 'professional' || culturalAnalysis.hasProfessionalContext) {
+    let professionalContext = null;
+    if (
+      contextType === "professional" ||
+      culturalAnalysis.hasProfessionalContext
+    ) {
       professionalContext = await this.professionalDomains.extractContext({
         content,
-        region: regionalContext.region
-      })
+        region: regionalContext.region,
+      });
     }
 
     return {
@@ -204,47 +215,48 @@ class IraqiCulturalContextFoundation {
       culturalScore: culturalAnalysis.score,
       islamicComplianceScore: islamicElements.complianceScore,
       regionalRelevance: regionalContext.relevanceScore,
-      extractedAt: new Date()
-    }
+      extractedAt: new Date(),
+    };
   }
 
   async preserveCulturalContinuity(
     fromContext: CulturalContext,
-    toContext: CulturalContext
+    toContext: CulturalContext,
   ): Promise<CulturalContinuityResult> {
     // Analyze cultural continuity between contexts
     const continuityAnalysis = await this.analyzeCulturalContinuity({
       fromContext,
-      toContext
-    })
+      toContext,
+    });
 
     // Check Islamic compliance continuity
     const islamicContinuity = await this.checkIslamicContinuity({
       fromContext,
-      toContext
-    })
+      toContext,
+    });
 
     // Validate professional context continuity
-    let professionalContinuity = null
+    let professionalContinuity = null;
     if (fromContext.professionalContext || toContext.professionalContext) {
       professionalContinuity = await this.checkProfessionalContinuity({
         fromContext,
-        toContext
-      })
+        toContext,
+      });
     }
 
     return {
       continuityMaintained: continuityAnalysis.maintained,
       culturalDrift: continuityAnalysis.drift,
       islamicContinuityMaintained: islamicContinuity.maintained,
-      professionalContinuityMaintained: professionalContinuity?.maintained || true,
+      professionalContinuityMaintained:
+        professionalContinuity?.maintained || true,
       overallContinuityScore: this.calculateContinuityScore({
         cultural: continuityAnalysis,
         islamic: islamicContinuity,
-        professional: professionalContinuity
+        professional: professionalContinuity,
       }),
-      recommendations: continuityAnalysis.recommendations
-    }
+      recommendations: continuityAnalysis.recommendations,
+    };
   }
 }
 ```
@@ -338,6 +350,7 @@ CREATE TABLE iraqi_cultural_pattern_registry (
 **Context management foundation architecture patterns:**
 
 ### Foundation Service Patterns
+
 - **Shared Validation:** Common validation services used across all context management components
 - **Compression Foundation:** Reusable compression algorithms with cultural awareness
 - **Cultural Pattern Recognition:** Shared Iraqi cultural pattern recognition services
@@ -345,6 +358,7 @@ CREATE TABLE iraqi_cultural_pattern_registry (
 - **Vector Embedding Services:** Shared context vector generation for semantic matching
 
 ### Integration Patterns
+
 - **Foundation Injection:** Dependency injection of foundation services into specialized components
 - **Service Registration:** Dynamic registration of validators and compression algorithms
 - **Pattern Registry:** Centralized Iraqi cultural pattern registry for consistent recognition
@@ -358,6 +372,7 @@ CREATE TABLE iraqi_cultural_pattern_registry (
 **Context management foundation validation:**
 
 ### Foundation Service Testing
+
 - **Validation Engine Testing:** Core context validation accuracy and performance testing
 - **Compression Testing:** Compression algorithm effectiveness and cultural preservation testing
 - **Cultural Pattern Testing:** Iraqi cultural pattern recognition accuracy testing
@@ -365,6 +380,7 @@ CREATE TABLE iraqi_cultural_pattern_registry (
 - **Performance Testing:** Foundation service performance and scalability testing
 
 ### Integration Testing
+
 - **Service Integration:** Foundation service integration with specialized components testing
 - **Cross-Component Validation:** Consistent validation across all context management components
 - **Cultural Consistency:** Cultural validation consistency across all foundation services
@@ -377,12 +393,14 @@ CREATE TABLE iraqi_cultural_pattern_registry (
 **Context management foundation integration points:**
 
 ### Component Integration
+
 - **WebSocket Management:** Foundation services integration with real-time WebSocket management
 - **Context Persistence:** Foundation services integration with cross-session context persistence
 - **Multi-device Sync:** Foundation services integration with multi-device synchronization
 - **Cultural State Management:** Foundation services integration with cultural state management
 
 ### System Integration
+
 - **Database Integration:** Foundation services integration with database operations
 - **Agent Integration:** Foundation services integration with PydanticAI agents
 - **Authentication Integration:** Foundation services integration with user authentication

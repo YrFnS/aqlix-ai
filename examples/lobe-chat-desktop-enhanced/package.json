@@ -34,7 +34,7 @@
     "dev:renderer": "cross-env NODE_ENV=development webpack serve --config webpack.renderer.config.js",
     "build": "electron-webpack",
     "build:main": "electron-webpack main",
-    "build:renderer": "electron-webpack renderer", 
+    "build:renderer": "electron-webpack renderer",
     "clean": "rimraf dist",
     "compile": "npm run build",
     "pack": "electron-builder --dir",
@@ -187,15 +187,22 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64",
+            "ia32"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "msi",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icon.ico",
@@ -228,11 +235,17 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["x64", "arm64"]
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "icon": "build/icon.icns",
@@ -265,19 +278,27 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "rpm",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "snap",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icon.png",
@@ -334,7 +355,9 @@
       "^@main/(.*)$": "<rootDir>/src/main/$1",
       "^@renderer/(.*)$": "<rootDir>/src/renderer/$1"
     },
-    "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/setup.ts"
+    ],
     "testMatch": [
       "<rootDir>/src/**/*.test.{ts,tsx}",
       "<rootDir>/src/**/__tests__/**/*.{ts,tsx}"
@@ -361,7 +384,11 @@
       "plugin:react-hooks/recommended"
     ],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "react", "react-hooks"],
+    "plugins": [
+      "@typescript-eslint",
+      "react",
+      "react-hooks"
+    ],
     "rules": {
       "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/explicit-function-return-type": "warn",

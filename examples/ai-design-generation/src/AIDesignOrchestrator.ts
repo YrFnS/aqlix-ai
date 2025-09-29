@@ -1,43 +1,54 @@
 /**
  * AI Design Orchestrator - Main AI Design Engine
- * 
+ *
  * Revolutionary AI-powered design generation system with comprehensive Iraqi cultural intelligence,
  * Islamic compliance validation, and ministry-specific automation for government applications.
- * 
+ *
  * Key Features:
  * - LLM-powered design generation with Claude 3.5 Sonnet
  * - Real-time cultural validation with <100ms response times
  * - Ministry-specific intelligence and branding automation
  * - Islamic design compliance with 98.9% accuracy
  * - Arabic-first typography and RTL optimization
- * 
+ *
  * Enhanced from Onlook's AI tools for Iraqi government deployment
  */
 
-import { tool } from 'ai';
-import { z } from 'zod';
-import { IslamicDesignAI } from './IslamicDesignAI';
-import { ArabicTypographyAI } from './ArabicTypographyAI';
-import { CulturalDesignValidator } from './CulturalDesignValidator';
-import { MinistryBrandingAI } from './MinistryBrandingAI';
+import { tool } from "ai";
+import { z } from "zod";
+import { IslamicDesignAI } from "./IslamicDesignAI";
+import { ArabicTypographyAI } from "./ArabicTypographyAI";
+import { CulturalDesignValidator } from "./CulturalDesignValidator";
+import { MinistryBrandingAI } from "./MinistryBrandingAI";
 
 export interface AIDesignConfig {
-  ministry?: 'health' | 'education' | 'interior' | 'justice';
-  aiModel: 'claude-3-5-sonnet' | 'gpt-4-vision' | 'gemini-pro' | 'local-llm';
+  ministry?: "health" | "education" | "interior" | "justice";
+  aiModel: "claude-3-5-sonnet" | "gpt-4-vision" | "gemini-pro" | "local-llm";
   islamicCompliance: boolean;
   arabicFirst: boolean;
   culturalValidation: boolean;
   realTimeGeneration: boolean;
-  securityLevel: 'public' | 'internal' | 'confidential' | 'classified';
-  accessibilityLevel: 'basic' | 'enhanced' | 'wcag-aa' | 'government-standard';
+  securityLevel: "public" | "internal" | "confidential" | "classified";
+  accessibilityLevel: "basic" | "enhanced" | "wcag-aa" | "government-standard";
 }
 
 export interface MinistryDesignRequest {
-  componentType: 'dashboard' | 'form' | 'navigation' | 'card' | 'modal' | 'table' | 'chart';
+  componentType:
+    | "dashboard"
+    | "form"
+    | "navigation"
+    | "card"
+    | "modal"
+    | "table"
+    | "chart";
   requirements: string;
   culturalContext: string;
-  targetAudience: 'citizens' | 'government-employees' | 'ministry-officials' | 'mixed';
-  dataType?: 'public' | 'sensitive' | 'classified' | 'personal';
+  targetAudience:
+    | "citizens"
+    | "government-employees"
+    | "ministry-officials"
+    | "mixed";
+  dataType?: "public" | "sensitive" | "classified" | "personal";
   accessibility?: boolean;
   bilingualSupport?: boolean;
 }
@@ -111,199 +122,257 @@ export class AIDesignOrchestrator {
   private typographyAI: ArabicTypographyAI;
   private culturalValidator: CulturalDesignValidator;
   private brandingAI: MinistryBrandingAI;
-  
+
   // Performance tracking
   private performanceCache: Map<string, any> = new Map();
   private designPatternCache: Map<string, string> = new Map();
-  
+
   // Ministry-specific design templates with enhanced AI integration
   private readonly MINISTRY_AI_TEMPLATES = {
     health: {
       colors: {
-        primary: '#059669', // Therapeutic emerald green
-        secondary: '#0d9488', // Calming teal
-        accent: '#10b981', // Wellness green
-        background: '#ecfdf5', // Light green background
-        text: '#064e3b' // Dark green text
+        primary: "#059669", // Therapeutic emerald green
+        secondary: "#0d9488", // Calming teal
+        accent: "#10b981", // Wellness green
+        background: "#ecfdf5", // Light green background
+        text: "#064e3b", // Dark green text
       },
       aiPrompts: {
-        context: 'Iraqi healthcare system with Islamic values',
-        focus: 'patient care, medical data privacy, therapeutic design',
-        culturalConsiderations: 'modest design, family-friendly, prayer time awareness'
+        context: "Iraqi healthcare system with Islamic values",
+        focus: "patient care, medical data privacy, therapeutic design",
+        culturalConsiderations:
+          "modest design, family-friendly, prayer time awareness",
       },
       accessibility: {
         contrast: 7.0, // Enhanced medical accessibility
-        fontSize: 'large',
-        spacing: 'comfortable'
-      }
+        fontSize: "large",
+        spacing: "comfortable",
+      },
     },
     education: {
       colors: {
-        primary: '#2563eb', // Learning-focused blue
-        secondary: '#3b82f6', // Educational blue
-        accent: '#60a5fa', // Student-friendly blue
-        background: '#eff6ff', // Light blue background
-        text: '#1e3a8a' // Dark blue text
+        primary: "#2563eb", // Learning-focused blue
+        secondary: "#3b82f6", // Educational blue
+        accent: "#60a5fa", // Student-friendly blue
+        background: "#eff6ff", // Light blue background
+        text: "#1e3a8a", // Dark blue text
       },
       aiPrompts: {
-        context: 'Iraqi educational system with Islamic curriculum support',
-        focus: 'student learning, academic achievement, family engagement',
-        culturalConsiderations: 'age-appropriate, Islamic values, bilingual support'
+        context: "Iraqi educational system with Islamic curriculum support",
+        focus: "student learning, academic achievement, family engagement",
+        culturalConsiderations:
+          "age-appropriate, Islamic values, bilingual support",
       },
       accessibility: {
         contrast: 6.0, // Student-friendly accessibility
-        fontSize: 'medium',
-        spacing: 'standard'
-      }
+        fontSize: "medium",
+        spacing: "standard",
+      },
     },
     interior: {
       colors: {
-        primary: '#374151', // Official authority slate
-        secondary: '#4b5563', // Government gray
-        accent: '#6b7280', // Professional gray
-        background: '#f9fafb', // Light gray background
-        text: '#111827' // Dark text
+        primary: "#374151", // Official authority slate
+        secondary: "#4b5563", // Government gray
+        accent: "#6b7280", // Professional gray
+        background: "#f9fafb", // Light gray background
+        text: "#111827", // Dark text
       },
       aiPrompts: {
-        context: 'Iraqi government citizen services with national identity',
-        focus: 'official authority, citizen trust, service efficiency',
-        culturalConsiderations: 'formal design, cultural symbols, security awareness'
+        context: "Iraqi government citizen services with national identity",
+        focus: "official authority, citizen trust, service efficiency",
+        culturalConsiderations:
+          "formal design, cultural symbols, security awareness",
       },
       accessibility: {
         contrast: 8.0, // Government standard accessibility
-        fontSize: 'medium',
-        spacing: 'formal'
-      }
+        fontSize: "medium",
+        spacing: "formal",
+      },
     },
     justice: {
       colors: {
-        primary: '#7c3aed', // Judicial authority purple
-        secondary: '#8b5cf6', // Legal violet
-        accent: '#a78bfa', // Court purple
-        background: '#f5f3ff', // Light purple background
-        text: '#3730a3' // Dark purple text
+        primary: "#7c3aed", // Judicial authority purple
+        secondary: "#8b5cf6", // Legal violet
+        accent: "#a78bfa", // Court purple
+        background: "#f5f3ff", // Light purple background
+        text: "#3730a3", // Dark purple text
       },
       aiPrompts: {
-        context: 'Iraqi legal system with Islamic law compliance',
-        focus: 'judicial authority, legal compliance, document security',
-        culturalConsiderations: 'Islamic law respect, formal authority, document authenticity'
+        context: "Iraqi legal system with Islamic law compliance",
+        focus: "judicial authority, legal compliance, document security",
+        culturalConsiderations:
+          "Islamic law respect, formal authority, document authenticity",
       },
       accessibility: {
         contrast: 7.5, // Legal standard accessibility
-        fontSize: 'medium',
-        spacing: 'formal'
-      }
-    }
+        fontSize: "medium",
+        spacing: "formal",
+      },
+    },
   };
 
   // AI model configurations for different design tasks
   private readonly AI_MODEL_CONFIGS = {
-    'claude-3-5-sonnet': {
-      strengths: ['cultural understanding', 'contextual reasoning', 'Islamic knowledge'],
-      use_cases: ['complex design decisions', 'cultural validation', 'ministry-specific requirements'],
-      performance: { speed: 'fast', accuracy: 'high', cultural_knowledge: 'excellent' }
+    "claude-3-5-sonnet": {
+      strengths: [
+        "cultural understanding",
+        "contextual reasoning",
+        "Islamic knowledge",
+      ],
+      use_cases: [
+        "complex design decisions",
+        "cultural validation",
+        "ministry-specific requirements",
+      ],
+      performance: {
+        speed: "fast",
+        accuracy: "high",
+        cultural_knowledge: "excellent",
+      },
     },
-    'gpt-4-vision': {
-      strengths: ['visual analysis', 'component generation', 'accessibility evaluation'],
-      use_cases: ['visual design analysis', 'UI component creation', 'accessibility validation'],
-      performance: { speed: 'medium', accuracy: 'high', visual_understanding: 'excellent' }
+    "gpt-4-vision": {
+      strengths: [
+        "visual analysis",
+        "component generation",
+        "accessibility evaluation",
+      ],
+      use_cases: [
+        "visual design analysis",
+        "UI component creation",
+        "accessibility validation",
+      ],
+      performance: {
+        speed: "medium",
+        accuracy: "high",
+        visual_understanding: "excellent",
+      },
     },
-    'gemini-pro': {
-      strengths: ['multi-modal reasoning', 'cultural validation', 'performance optimization'],
-      use_cases: ['complex cultural validation', 'multi-step design processes', 'optimization'],
-      performance: { speed: 'fast', accuracy: 'high', reasoning: 'excellent' }
+    "gemini-pro": {
+      strengths: [
+        "multi-modal reasoning",
+        "cultural validation",
+        "performance optimization",
+      ],
+      use_cases: [
+        "complex cultural validation",
+        "multi-step design processes",
+        "optimization",
+      ],
+      performance: { speed: "fast", accuracy: "high", reasoning: "excellent" },
     },
-    'local-llm': {
-      strengths: ['data privacy', 'government security', 'offline processing'],
-      use_cases: ['classified data', 'sensitive government applications', 'offline design'],
-      performance: { speed: 'variable', accuracy: 'medium', security: 'maximum' }
-    }
+    "local-llm": {
+      strengths: ["data privacy", "government security", "offline processing"],
+      use_cases: [
+        "classified data",
+        "sensitive government applications",
+        "offline design",
+      ],
+      performance: {
+        speed: "variable",
+        accuracy: "medium",
+        security: "maximum",
+      },
+    },
   };
 
   constructor(config: AIDesignConfig) {
     this.config = config;
-    
+
     // Initialize AI sub-systems
     this.islamicAI = new IslamicDesignAI({
-      complianceLevel: 'strict',
+      complianceLevel: "strict",
       ministry: config.ministry,
       prayerTimeAware: true,
-      culturalAdaptation: true
+      culturalAdaptation: true,
     });
-    
+
     this.typographyAI = new ArabicTypographyAI({
-      dialectSupport: 'iraqi',
+      dialectSupport: "iraqi",
       rtlOptimization: true,
       culturalFonts: true,
-      bilingualIntelligence: config.arabicFirst
+      bilingualIntelligence: config.arabicFirst,
     });
-    
+
     this.culturalValidator = new CulturalDesignValidator({
       ministry: config.ministry,
-      culturalSensitivity: 'high',
+      culturalSensitivity: "high",
       islamicCompliance: config.islamicCompliance,
-      governmentStandards: true
+      governmentStandards: true,
     });
-    
+
     this.brandingAI = new MinistryBrandingAI({
       ministry: config.ministry,
       officialColors: true,
       governmentLogos: true,
-      accessibilityCompliance: true
+      accessibilityCompliance: true,
     });
   }
 
   /**
    * Generate ministry-specific design with AI intelligence
    */
-  async generateMinistryDesign(request: MinistryDesignRequest): Promise<AIDesignResult> {
+  async generateMinistryDesign(
+    request: MinistryDesignRequest,
+  ): Promise<AIDesignResult> {
     const startTime = Date.now();
-    
+
     try {
       // Step 1: Generate AI-powered design with cultural context
       const aiDesign = await this.generateAIDesign(request);
-      
+
       // Step 2: Apply Islamic compliance validation and improvements
-      const islamicValidation = await this.islamicAI.validateAndImproveDesign(aiDesign, request);
-      
+      const islamicValidation = await this.islamicAI.validateAndImproveDesign(
+        aiDesign,
+        request,
+      );
+
       // Step 3: Optimize Arabic typography and RTL layout
-      const typographyOptimization = await this.typographyAI.optimizeDesign(aiDesign, request);
-      
+      const typographyOptimization = await this.typographyAI.optimizeDesign(
+        aiDesign,
+        request,
+      );
+
       // Step 4: Validate cultural appropriateness
-      const culturalValidation = await this.culturalValidator.validateDesign(aiDesign, request);
-      
+      const culturalValidation = await this.culturalValidator.validateDesign(
+        aiDesign,
+        request,
+      );
+
       // Step 5: Apply ministry-specific branding
-      const brandingResult = await this.brandingAI.applyMinistryBranding(aiDesign, request);
-      
+      const brandingResult = await this.brandingAI.applyMinistryBranding(
+        aiDesign,
+        request,
+      );
+
       // Step 6: Generate final optimized code
       const finalCode = this.synthesizeDesign(
         aiDesign,
         islamicValidation,
         typographyOptimization,
         culturalValidation,
-        brandingResult
+        brandingResult,
       );
-      
+
       const endTime = Date.now();
       const totalTime = endTime - startTime;
-      
+
       // Step 7: Generate comprehensive explanation
       const explanation = this.generateAIExplanation(request, {
         islamicValidation,
         typographyOptimization,
         culturalValidation,
-        brandingResult
+        brandingResult,
       });
-      
+
       // Step 8: Performance metrics and recommendations
       const performance = this.calculatePerformanceMetrics(totalTime, request);
       const recommendations = this.generateAIRecommendations(
         islamicValidation,
         typographyOptimization,
         culturalValidation,
-        brandingResult
+        brandingResult,
       );
-      
+
       return {
         code: finalCode,
         explanation,
@@ -314,9 +383,8 @@ export class AIDesignOrchestrator {
         performance,
         recommendations,
         testingInstructions: this.generateTestingInstructions(request),
-        deploymentNotes: this.generateDeploymentNotes(request)
+        deploymentNotes: this.generateDeploymentNotes(request),
       };
-      
     } catch (error) {
       throw new Error(`AI Design generation failed: ${error.message}`);
     }
@@ -335,11 +403,11 @@ export class AIDesignOrchestrator {
       componentType: request.type as any,
       requirements: request.requirements,
       culturalContext: request.culturalContext,
-      targetAudience: 'mixed',
+      targetAudience: "mixed",
       accessibility: true,
-      bilingualSupport: this.config.arabicFirst
+      bilingualSupport: this.config.arabicFirst,
     };
-    
+
     return this.generateMinistryDesign(ministryRequest);
   }
 
@@ -353,14 +421,14 @@ export class AIDesignOrchestrator {
     arabicSupport: boolean;
   }): Promise<AIDesignResult> {
     const ministryRequest: MinistryDesignRequest = {
-      componentType: 'dashboard',
+      componentType: "dashboard",
       requirements: `AI agent interface for ${request.agentType} with ${request.interfaceStyle} styling`,
-      culturalContext: 'Iraqi AI agent system with cultural compliance',
-      targetAudience: 'government-employees',
+      culturalContext: "Iraqi AI agent system with cultural compliance",
+      targetAudience: "government-employees",
       accessibility: true,
-      bilingualSupport: request.arabicSupport
+      bilingualSupport: request.arabicSupport,
     };
-    
+
     return this.generateMinistryDesign(ministryRequest);
   }
 
@@ -373,52 +441,62 @@ export class AIDesignOrchestrator {
     culturalRequirements: string;
   }): Promise<AIDesignResult> {
     const ministryRequest: MinistryDesignRequest = {
-      componentType: 'dashboard',
+      componentType: "dashboard",
       requirements: `Workflow interface for ${request.workflowType} with ${request.nodes.length} nodes`,
       culturalContext: request.culturalRequirements,
-      targetAudience: 'government-employees',
+      targetAudience: "government-employees",
       accessibility: true,
-      bilingualSupport: true
+      bilingualSupport: true,
     };
-    
+
     return this.generateMinistryDesign(ministryRequest);
   }
 
   /**
    * Private: Generate AI-powered design with LLM intelligence
    */
-  private async generateAIDesign(request: MinistryDesignRequest): Promise<string> {
+  private async generateAIDesign(
+    request: MinistryDesignRequest,
+  ): Promise<string> {
     const cacheKey = this.generateCacheKey(request);
-    
+
     // Check cache first for performance
     if (this.designPatternCache.has(cacheKey)) {
       return this.designPatternCache.get(cacheKey)!;
     }
-    
-    const ministryTemplate = this.MINISTRY_AI_TEMPLATES[this.config.ministry || 'interior'];
+
+    const ministryTemplate =
+      this.MINISTRY_AI_TEMPLATES[this.config.ministry || "interior"];
     const aiModelConfig = this.AI_MODEL_CONFIGS[this.config.aiModel];
-    
+
     // Construct AI prompt with cultural intelligence
     const culturalPrompt = this.buildCulturalPrompt(request, ministryTemplate);
-    
+
     // Generate design with AI model
     const aiResponse = await this.callAIModel(culturalPrompt, request);
-    
+
     // Apply initial cultural enhancements
-    const enhancedDesign = this.applyCulturalEnhancements(aiResponse, request, ministryTemplate);
-    
+    const enhancedDesign = this.applyCulturalEnhancements(
+      aiResponse,
+      request,
+      ministryTemplate,
+    );
+
     // Cache the result
     this.designPatternCache.set(cacheKey, enhancedDesign);
-    
+
     return enhancedDesign;
   }
 
   /**
    * Private: Build culturally intelligent AI prompt
    */
-  private buildCulturalPrompt(request: MinistryDesignRequest, ministryTemplate: any): string {
+  private buildCulturalPrompt(
+    request: MinistryDesignRequest,
+    ministryTemplate: any,
+  ): string {
     const basePrompt = `
-Generate a ${request.componentType} component for the Iraqi ${this.config.ministry || 'government'} ministry with the following requirements:
+Generate a ${request.componentType} component for the Iraqi ${this.config.ministry || "government"} ministry with the following requirements:
 
 REQUIREMENTS:
 ${request.requirements}
@@ -481,13 +559,17 @@ Provide a complete React TypeScript component with:
   /**
    * Private: Call AI model with prompt
    */
-  private async callAIModel(prompt: string, request: MinistryDesignRequest): Promise<string> {
+  private async callAIModel(
+    prompt: string,
+    request: MinistryDesignRequest,
+  ): Promise<string> {
     // This would integrate with actual AI models
     // For now, return a template-based response
-    
+
     const componentTemplate = this.getComponentTemplate(request.componentType);
-    const ministryTemplate = this.MINISTRY_AI_TEMPLATES[this.config.ministry || 'interior'];
-    
+    const ministryTemplate =
+      this.MINISTRY_AI_TEMPLATES[this.config.ministry || "interior"];
+
     // Apply ministry colors and styling
     let generatedCode = componentTemplate
       .replace(/\{COMPONENT_NAME\}/g, this.generateComponentName(request))
@@ -497,7 +579,7 @@ Provide a complete React TypeScript component with:
       .replace(/\{TEXT_COLOR\}/g, ministryTemplate.colors.text)
       .replace(/\{MINISTRY_CONTEXT\}/g, ministryTemplate.aiPrompts.context)
       .replace(/\{REQUIREMENTS\}/g, request.requirements);
-    
+
     return generatedCode;
   }
 
@@ -505,28 +587,28 @@ Provide a complete React TypeScript component with:
    * Private: Apply cultural enhancements to AI-generated design
    */
   private applyCulturalEnhancements(
-    design: string, 
-    request: MinistryDesignRequest, 
-    ministryTemplate: any
+    design: string,
+    request: MinistryDesignRequest,
+    ministryTemplate: any,
   ): string {
     let enhanced = design;
-    
+
     // Add RTL support
     enhanced = enhanced.replace(/className="/g, 'className="dir-rtl ');
-    
+
     // Add Arabic font classes
-    enhanced = enhanced.replace(/font-medium/g, 'font-medium font-arabic');
-    enhanced = enhanced.replace(/font-bold/g, 'font-bold font-arabic');
-    
+    enhanced = enhanced.replace(/font-medium/g, "font-medium font-arabic");
+    enhanced = enhanced.replace(/font-bold/g, "font-bold font-arabic");
+
     // Add Islamic design elements
-    enhanced = enhanced.replace(/rounded-md/g, 'rounded-lg shadow-md');
-    
+    enhanced = enhanced.replace(/rounded-md/g, "rounded-lg shadow-md");
+
     // Add ministry-specific attributes
     enhanced = enhanced.replace(
-      /<div/g, 
-      `<div data-ministry="${this.config.ministry}" data-islamic-compliant="true"`
+      /<div/g,
+      `<div data-ministry="${this.config.ministry}" data-islamic-compliant="true"`,
     );
-    
+
     return enhanced;
   }
 
@@ -538,30 +620,36 @@ Provide a complete React TypeScript component with:
     islamicValidation: any,
     typographyOptimization: any,
     culturalValidation: any,
-    brandingResult: any
+    brandingResult: any,
   ): string {
     let finalDesign = baseDesign;
-    
+
     // Apply Islamic compliance improvements
     if (islamicValidation.improvements?.length > 0) {
-      finalDesign = this.applyIslamicImprovements(finalDesign, islamicValidation.improvements);
+      finalDesign = this.applyIslamicImprovements(
+        finalDesign,
+        islamicValidation.improvements,
+      );
     }
-    
+
     // Apply typography optimizations
     if (typographyOptimization.recommendations?.length > 0) {
-      finalDesign = this.applyTypographyOptimizations(finalDesign, typographyOptimization);
+      finalDesign = this.applyTypographyOptimizations(
+        finalDesign,
+        typographyOptimization,
+      );
     }
-    
+
     // Apply cultural validation fixes
     if (culturalValidation.issues?.length > 0) {
       finalDesign = this.applyCulturalFixes(finalDesign, culturalValidation);
     }
-    
+
     // Apply ministry branding
     if (brandingResult.recommendations?.length > 0) {
       finalDesign = this.applyBrandingEnhancements(finalDesign, brandingResult);
     }
-    
+
     return finalDesign;
   }
 
@@ -570,28 +658,28 @@ Provide a complete React TypeScript component with:
    */
   private generateAIExplanation(
     request: MinistryDesignRequest,
-    validations: any
+    validations: any,
   ): string {
     const ministryNames = {
-      health: 'وزارة الصحة',
-      education: 'وزارة التربية',
-      interior: 'وزارة الداخلية',
-      justice: 'وزارة العدل'
+      health: "وزارة الصحة",
+      education: "وزارة التربية",
+      interior: "وزارة الداخلية",
+      justice: "وزارة العدل",
     };
-    
+
     const componentNames = {
-      dashboard: 'لوحة تحكم',
-      form: 'نموذج',
-      navigation: 'شريط التنقل',
-      card: 'بطاقة',
-      modal: 'نافذة منبثقة',
-      table: 'جدول',
-      chart: 'مخطط بياني'
+      dashboard: "لوحة تحكم",
+      form: "نموذج",
+      navigation: "شريط التنقل",
+      card: "بطاقة",
+      modal: "نافذة منبثقة",
+      table: "جدول",
+      chart: "مخطط بياني",
     };
-    
-    const ministryName = ministryNames[this.config.ministry || 'interior'];
+
+    const ministryName = ministryNames[this.config.ministry || "interior"];
     const componentName = componentNames[request.componentType];
-    
+
     return `
 تم إنشاء ${componentName} مخصص لـ ${ministryName} باستخدام الذكاء الاصطناعي المتقدم مع الامتثال الثقافي الشامل:
 
@@ -599,7 +687,7 @@ Provide a complete React TypeScript component with:
 🕌 **الامتثال الإسلامي**: ${(validations.islamicValidation.score * 100).toFixed(1)}%
 🌍 **الدقة الثقافية**: ${(validations.culturalValidation.overallScore * 100).toFixed(1)}%
 📝 **دقة اللغة العربية**: ${(validations.typographyOptimization.rtlAccuracy * 100).toFixed(1)}%
-🏛️ **امتثال الوزارة**: ${validations.brandingResult.brandCompliance ? '100%' : 'يحتاج تحسين'}
+🏛️ **امتثال الوزارة**: ${validations.brandingResult.brandCompliance ? "100%" : "يحتاج تحسين"}
 
 **المميزات الذكية المطبقة:**
 - توليد التصميم بالذكاء الاصطناعي مع الفهم الثقافي العميق
@@ -617,18 +705,18 @@ Provide a complete React TypeScript component with:
    */
   private calculatePerformanceMetrics(
     totalTime: number,
-    request: MinistryDesignRequest
+    request: MinistryDesignRequest,
   ): PerformanceMetrics {
     const cacheKey = this.generateCacheKey(request);
     const cacheHit = this.designPatternCache.has(cacheKey);
-    
+
     return {
       generationTime: totalTime * 0.6, // Estimated AI generation time
       culturalValidationTime: totalTime * 0.15, // Cultural validation time
       islamicComplianceTime: totalTime * 0.1, // Islamic compliance time
       totalResponseTime: totalTime,
       cacheHitRate: cacheHit ? 1.0 : 0.0,
-      optimizationSuggestions: this.generateOptimizationSuggestions(totalTime)
+      optimizationSuggestions: this.generateOptimizationSuggestions(totalTime),
     };
   }
 
@@ -639,38 +727,40 @@ Provide a complete React TypeScript component with:
     islamicValidation: any,
     typographyOptimization: any,
     culturalValidation: any,
-    brandingResult: any
+    brandingResult: any,
   ): string[] {
     const recommendations: string[] = [];
-    
+
     // Islamic compliance recommendations
     if (islamicValidation.score < 0.95) {
-      recommendations.push('تحسين الامتثال للمبادئ الإسلامية في التصميم');
-      recommendations.push('مراجعة الألوان والعناصر المرئية للتأكد من الملاءمة الثقافية');
+      recommendations.push("تحسين الامتثال للمبادئ الإسلامية في التصميم");
+      recommendations.push(
+        "مراجعة الألوان والعناصر المرئية للتأكد من الملاءمة الثقافية",
+      );
     }
-    
+
     // Typography recommendations
     if (typographyOptimization.rtlAccuracy < 0.98) {
-      recommendations.push('تحسين دعم اتجاه RTL للنصوص العربية');
-      recommendations.push('تحسين اختيار الخطوط للقراءة الأمثل');
+      recommendations.push("تحسين دعم اتجاه RTL للنصوص العربية");
+      recommendations.push("تحسين اختيار الخطوط للقراءة الأمثل");
     }
-    
+
     // Cultural validation recommendations
     if (culturalValidation.overallScore < 0.95) {
-      recommendations.push('تحسين الحساسية الثقافية والملاءمة للسياق العراقي');
-      recommendations.push('مراجعة المحتوى للتأكد من الملاءمة الثقافية');
+      recommendations.push("تحسين الحساسية الثقافية والملاءمة للسياق العراقي");
+      recommendations.push("مراجعة المحتوى للتأكد من الملاءمة الثقافية");
     }
-    
+
     // Branding recommendations
     if (!brandingResult.brandCompliance) {
-      recommendations.push('تطبيق المعايير الوزارية الرسمية بشكل كامل');
-      recommendations.push('تحسين استخدام الألوان والشعارات الحكومية');
+      recommendations.push("تطبيق المعايير الوزارية الرسمية بشكل كامل");
+      recommendations.push("تحسين استخدام الألوان والشعارات الحكومية");
     }
-    
+
     // Performance recommendations
-    recommendations.push('تفعيل التخزين المؤقت لتحسين الأداء');
-    recommendations.push('تحسين إمكانية الوصول للمعايير الحكومية');
-    
+    recommendations.push("تفعيل التخزين المؤقت لتحسين الأداء");
+    recommendations.push("تحسين إمكانية الوصول للمعايير الحكومية");
+
     return recommendations;
   }
 
@@ -683,19 +773,20 @@ Provide a complete React TypeScript component with:
 
   private generateComponentName(request: MinistryDesignRequest): string {
     const baseNames = {
-      dashboard: 'Dashboard',
-      form: 'Form',
-      navigation: 'Navigation',
-      card: 'Card',
-      modal: 'Modal',
-      table: 'Table',
-      chart: 'Chart'
+      dashboard: "Dashboard",
+      form: "Form",
+      navigation: "Navigation",
+      card: "Card",
+      modal: "Modal",
+      table: "Table",
+      chart: "Chart",
     };
-    
-    const ministryPrefix = this.config.ministry ? 
-      this.config.ministry.charAt(0).toUpperCase() + this.config.ministry.slice(1) : 
-      'Government';
-    
+
+    const ministryPrefix = this.config.ministry
+      ? this.config.ministry.charAt(0).toUpperCase() +
+        this.config.ministry.slice(1)
+      : "Government";
+
     return `${ministryPrefix}${baseNames[request.componentType]}`;
   }
 
@@ -997,18 +1088,24 @@ const {COMPONENT_NAME}: React.FC<{COMPONENT_NAME}Props> = ({
   );
 };
 
-export default {COMPONENT_NAME};`
+export default {COMPONENT_NAME};`,
     };
 
     return templates[componentType] || templates.dashboard;
   }
 
-  private applyIslamicImprovements(design: string, improvements: string[]): string {
+  private applyIslamicImprovements(
+    design: string,
+    improvements: string[],
+  ): string {
     // Apply Islamic compliance improvements
     return design;
   }
 
-  private applyTypographyOptimizations(design: string, optimization: any): string {
+  private applyTypographyOptimizations(
+    design: string,
+    optimization: any,
+  ): string {
     // Apply Arabic typography optimizations
     return design;
   }
@@ -1025,39 +1122,41 @@ export default {COMPONENT_NAME};`
 
   private generateOptimizationSuggestions(totalTime: number): string[] {
     const suggestions: string[] = [];
-    
+
     if (totalTime > 1000) {
-      suggestions.push('Consider enabling caching for better performance');
+      suggestions.push("Consider enabling caching for better performance");
     }
-    
+
     if (totalTime > 2000) {
-      suggestions.push('Optimize AI model selection for faster generation');
+      suggestions.push("Optimize AI model selection for faster generation");
     }
-    
+
     return suggestions;
   }
 
-  private generateTestingInstructions(request: MinistryDesignRequest): string[] {
+  private generateTestingInstructions(
+    request: MinistryDesignRequest,
+  ): string[] {
     return [
       `اختبار المكون ${request.componentType} في المتصفحات المختلفة`,
-      'التحقق من دعم اللغة العربية والاتجاه RTL',
-      'اختبار إمكانية الوصول حسب معايير WCAG 2.1 AA',
-      'التحقق من الامتثال الثقافي والإسلامي',
-      'اختبار الأمان على مستوى المؤسسة الحكومية',
-      'التحقق من العلامة التجارية الوزارية',
-      'اختبار الأداء والاستجابة'
+      "التحقق من دعم اللغة العربية والاتجاه RTL",
+      "اختبار إمكانية الوصول حسب معايير WCAG 2.1 AA",
+      "التحقق من الامتثال الثقافي والإسلامي",
+      "اختبار الأمان على مستوى المؤسسة الحكومية",
+      "التحقق من العلامة التجارية الوزارية",
+      "اختبار الأداء والاستجابة",
     ];
   }
 
   private generateDeploymentNotes(request: MinistryDesignRequest): string[] {
     return [
-      'التأكد من تكوين خادم الويب لدعم RTL والخطوط العربية',
-      'تحميل خطوط اللغة العربية المطلوبة (Amiri, Cairo, Noto Sans Arabic)',
-      'تفعيل إعدادات الأمان الحكومية والتشفير',
-      'التحقق من شهادات SSL للنشر الآمن',
-      'مراجعة متطلبات الامتثال الوزاري والثقافي',
-      'إعداد مراقبة الأداء والتحليلات',
-      'تكوين النسخ الاحتياطية والاسترداد'
+      "التأكد من تكوين خادم الويب لدعم RTL والخطوط العربية",
+      "تحميل خطوط اللغة العربية المطلوبة (Amiri, Cairo, Noto Sans Arabic)",
+      "تفعيل إعدادات الأمان الحكومية والتشفير",
+      "التحقق من شهادات SSL للنشر الآمن",
+      "مراجعة متطلبات الامتثال الوزاري والثقافي",
+      "إعداد مراقبة الأداء والتحليلات",
+      "تكوين النسخ الاحتياطية والاسترداد",
     ];
   }
 
@@ -1066,23 +1165,23 @@ export default {COMPONENT_NAME};`
    */
   updateConfiguration(newConfig: Partial<AIDesignConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    
+
     // Update sub-systems
     if (newConfig.ministry || newConfig.islamicCompliance) {
       this.islamicAI = new IslamicDesignAI({
-        complianceLevel: 'strict',
+        complianceLevel: "strict",
         ministry: this.config.ministry,
         prayerTimeAware: true,
-        culturalAdaptation: true
+        culturalAdaptation: true,
       });
     }
-    
+
     if (newConfig.arabicFirst) {
       this.typographyAI = new ArabicTypographyAI({
-        dialectSupport: 'iraqi',
+        dialectSupport: "iraqi",
         rtlOptimization: true,
         culturalFonts: true,
-        bilingualIntelligence: newConfig.arabicFirst
+        bilingualIntelligence: newConfig.arabicFirst,
       });
     }
   }
@@ -1099,8 +1198,11 @@ export default {COMPONENT_NAME};`
   getPerformanceStats(): any {
     return {
       cacheSize: this.designPatternCache.size,
-      averageResponseTime: Array.from(this.performanceCache.values())
-        .reduce((avg, metric: any) => avg + metric.totalResponseTime, 0) / this.performanceCache.size || 0
+      averageResponseTime:
+        Array.from(this.performanceCache.values()).reduce(
+          (avg, metric: any) => avg + metric.totalResponseTime,
+          0,
+        ) / this.performanceCache.size || 0,
     };
   }
 }

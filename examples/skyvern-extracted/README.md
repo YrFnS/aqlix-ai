@@ -7,30 +7,35 @@ Complete extraction of Skyvern-AI/skyvern system for Iraqi AI Chat System integr
 ## Key Components Extracted
 
 ### 1. Browser Automation Engine (`webeye/`)
+
 - AI-powered web interactions using LLMs and computer vision
 - Advanced DOM manipulation and element detection
 - Form filling with data validation patterns
 - Iraqi government portal workflow templates
 
 ### 2. Enterprise Workflows (`forge/sdk/workflow/`)
+
 - Complex workflow orchestration and execution
 - Iraqi business process automation templates
 - Government service workflow integration
 - Multi-ministry coordination workflows
 
 ### 3. Authentication & Security (`forge/sdk/services/`)
+
 - Enterprise authentication for Iraqi institutions
 - Secure credential management and storage
 - Audit logging and compliance reporting
 - Islamic business process compliance validation
 
 ### 4. Task Management (`forge/sdk/`)
+
 - Advanced task scheduling and execution
 - Priority-based task queuing
 - Iraqi business hours scheduling
 - Performance monitoring and optimization
 
 ### 5. Integration APIs (`forge/api/`)
+
 - RESTful APIs for workflow management
 - Integration with Iraqi government systems
 - Cultural validation API endpoints
@@ -64,6 +69,7 @@ Complete extraction of Skyvern-AI/skyvern system for Iraqi AI Chat System integr
 ## Development Value
 
 **Estimated Development Value**: 14-21 weeks
+
 - Browser automation engine: 4-6 weeks
 - Enterprise workflows: 3-4 weeks
 - Authentication & security: 2-3 weeks
@@ -104,6 +110,7 @@ CULTURAL_VALIDATION_ENABLED = True
 ## Integration Examples
 
 ### Government Portal Automation
+
 ```python
 from skyvern.forge.workflow import IraqiGovWorkflow
 
@@ -115,6 +122,7 @@ workflow = IraqiGovWorkflow(
 ```
 
 ### Business Process Automation
+
 ```python
 from skyvern.forge.sdk import IraqiTaskManager
 

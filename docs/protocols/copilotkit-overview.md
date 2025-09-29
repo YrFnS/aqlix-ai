@@ -119,7 +119,7 @@ Deploy culturally-intelligent AI assistants that work alongside Iraqi profession
 
 ```typescript
 // Iraqi legal consultation chat with cultural validation
-<IraqiCopilotPopup 
+<IraqiCopilotPopup
   instructions={{
     primary: "You are an Iraqi legal consultant. Provide advice according to Iraqi civil law and Islamic jurisprudence.",
     cultural: "Maintain high cultural sensitivity and Islamic compliance in all responses.",
@@ -159,7 +159,7 @@ useIraqiCopilotAction({
     { name: "patientGender", type: "string", enum: ["male", "female"], islamicPrivacyCompliant: true }
   ],
   render: ({ status, args }) => (
-    <IraqiMedicalConsultationCard 
+    <IraqiMedicalConsultationCard
       symptoms={args.symptoms}
       urgency={args.urgency}
       islamicEthicsCompliant={true}
@@ -173,11 +173,11 @@ useIraqiCopilotAction({
       patientGender,
       culturalSensitivity: 'high'
     });
-    
+
     if (!ethicsValidation.compliant) {
       throw new IslamicComplianceError('Medical consultation violates Islamic principles');
     }
-    
+
     // Route to appropriate Iraqi medical specialist
     return await routeToIraqiMedicalSpecialist({
       symptoms,
@@ -219,11 +219,11 @@ useIraqiPaymentAction({
       description,
       transactionType: 'service_payment'
     });
-    
+
     if (!islamicValidation.halal) {
       throw new IslamicFinanceViolationError('Transaction not Sharia-compliant');
     }
-    
+
     // Process through Iraqi payment gateway
     return await processPaymentThroughIraqiGateway({
       amount,
@@ -245,46 +245,46 @@ const iraqiIslamicTheme = {
   colors: {
     primary: {
       // Traditional Iraqi green with Islamic significance
-      50: '#f0f9f0',
-      100: '#dcf2dc',
-      500: '#228B22', // Forest green - symbol of paradise
-      600: '#1a6b1a',
-      900: '#0d350d'
+      50: "#f0f9f0",
+      100: "#dcf2dc",
+      500: "#228B22", // Forest green - symbol of paradise
+      600: "#1a6b1a",
+      900: "#0d350d",
     },
     secondary: {
       // Traditional Iraqi gold
-      500: '#DAA520', // Goldenrod - symbol of prosperity
-      600: '#B8860B'  // Dark goldenrod
+      500: "#DAA520", // Goldenrod - symbol of prosperity
+      600: "#B8860B", // Dark goldenrod
     },
     cultural: {
       // Culturally significant colors
-      calligraphy: '#2F4F4F',  // Dark slate gray for Arabic text
-      heritage: '#CD853F',      // Peru - traditional Iraqi architecture
-      wisdom: '#4682B4'         // Steel blue - symbol of knowledge
-    }
+      calligraphy: "#2F4F4F", // Dark slate gray for Arabic text
+      heritage: "#CD853F", // Peru - traditional Iraqi architecture
+      wisdom: "#4682B4", // Steel blue - symbol of knowledge
+    },
   },
   typography: {
     arabic: {
-      fontFamily: 'Amiri, Traditional Arabic, serif', // Traditional Arabic calligraphy
+      fontFamily: "Amiri, Traditional Arabic, serif", // Traditional Arabic calligraphy
       fontWeight: 400,
-      letterSpacing: '0.02em'
+      letterSpacing: "0.02em",
     },
     headings: {
-      fontFamily: 'Noto Sans Arabic, sans-serif',
-      fontWeight: 600
-    }
+      fontFamily: "Noto Sans Arabic, sans-serif",
+      fontWeight: 600,
+    },
   },
   spacing: {
     // Respects Islamic geometric proportions
     unit: 8, // Based on traditional Islamic mathematical principles
-    golden: 1.618 // Golden ratio used in Islamic architecture
+    golden: 1.618, // Golden ratio used in Islamic architecture
   },
   culturalElements: {
-    islamicPatterns: true,      // Geometric patterns in borders
-    rightToLeftLayout: true,    // RTL layout support
-    culturalSpacing: true,      // Culturally-appropriate spacing
-    religiousSymbols: false     // Avoid religious imagery per Islamic principles
-  }
+    islamicPatterns: true, // Geometric patterns in borders
+    rightToLeftLayout: true, // RTL layout support
+    culturalSpacing: true, // Culturally-appropriate spacing
+    religiousSymbols: false, // Avoid religious imagery per Islamic principles
+  },
 };
 ```
 
@@ -298,9 +298,9 @@ const IraqiTextDisplay = ({ content, language = 'mixed' }) => {
     mixedContentSupport: true,
     culturalTerminology: true
   });
-  
+
   return (
-    <div 
+    <div
       dir={direction}
       className={`
         ${direction === 'rtl' ? 'text-right font-arabic' : 'text-left'}
@@ -321,27 +321,27 @@ const IraqiTextDisplay = ({ content, language = 'mixed' }) => {
 const culturalPrivacyConfig = {
   // Islamic privacy principles
   islamicPrivacy: {
-    genderSeparation: true,        // Respect gender privacy requirements
-    familyPrivacy: true,           // Protect family information
-    religiousPrivacy: true,        // Protect religious practice information
-    personalDataMinimization: true // Collect only necessary data
+    genderSeparation: true, // Respect gender privacy requirements
+    familyPrivacy: true, // Protect family information
+    religiousPrivacy: true, // Protect religious practice information
+    personalDataMinimization: true, // Collect only necessary data
   },
-  
+
   // Iraqi data protection compliance
   iraqiDataProtection: {
-    localStorageRequired: true,    // Data must remain in Iraq when required
-    governmentCompliance: true,    // Compliance with Iraqi regulations
+    localStorageRequired: true, // Data must remain in Iraq when required
+    governmentCompliance: true, // Compliance with Iraqi regulations
     culturalSensitivityFiltering: true,
-    arabicDataProcessing: true     // Proper handling of Arabic data
+    arabicDataProcessing: true, // Proper handling of Arabic data
   },
-  
+
   // Cultural content filtering
   culturalFiltering: {
     inappropriateContentBlocking: true,
     islamicComplianceValidation: true,
     culturalSensitivityScoring: true, // 95%+ required
-    professionalStandardsEnforcement: true
-  }
+    professionalStandardsEnforcement: true,
+  },
 };
 ```
 
@@ -365,7 +365,7 @@ const IraqiMultiAgentInterface = () => {
     professionalDomains: ['legal', 'medical', 'educational'],
     islamicCompliance: true
   });
-  
+
   return (
     <IraqiAgentCoordinationPanel
       agents={agents}
@@ -384,7 +384,7 @@ const IraqiMultiAgentInterface = () => {
 // Specialized interface for Iraqi professional domains
 const IraqiProfessionalDomainInterface = ({ domain }) => {
   const { specialist, culturalValidation, capabilities } = useIraqiProfessionalAgent(domain);
-  
+
   return (
     <div className="iraqi-professional-interface">
       <IraqiCulturalHeader domain={domain} />
@@ -446,7 +446,7 @@ const { culturalContext, preserveContext } = useIraqiCulturalContext({
 const { validate, isValid, culturalScore } = useRealTimeCulturalValidation({
   minimumScore: 95,
   islamicCompliance: true,
-  professionalStandards: true
+  professionalStandards: true,
 });
 
 // Automatic validation on user input

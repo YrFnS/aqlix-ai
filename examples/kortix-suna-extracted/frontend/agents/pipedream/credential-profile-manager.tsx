@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog,
   DialogContent,
@@ -14,13 +14,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,7 +30,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 import {
   Plus,
   MoreVertical,
@@ -45,15 +45,18 @@ import {
   Loader2,
   User,
   Link2,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   usePipedreamProfiles,
   useCreatePipedreamProfile,
   useUpdatePipedreamProfile,
   useDeletePipedreamProfile,
   useConnectPipedreamProfile,
-} from '@/hooks/react-query/pipedream/use-pipedream-profiles';
-import type { PipedreamProfile, CreateProfileRequest } from '@/components/agents/pipedream/pipedream-types';
+} from "@/hooks/react-query/pipedream/use-pipedream-profiles";
+import type {
+  PipedreamProfile,
+  CreateProfileRequest,
+} from "@/components/agents/pipedream/pipedream-types";
 
 interface CredentialProfileManagerProps {
   appSlug?: string;
@@ -62,19 +65,23 @@ interface CredentialProfileManagerProps {
   className?: string;
 }
 
-export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> = ({
-  appSlug,
-  appName,
-  onProfileSelect,
-  className,
-}) => {
+export const CredentialProfileManager: React.FC<
+  CredentialProfileManagerProps
+> = ({ appSlug, appName, onProfileSelect, className }) => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [editingProfile, setEditingProfile] = useState<PipedreamProfile | null>(null);
-  const [deletingProfile, setDeletingProfile] = useState<PipedreamProfile | null>(null);
-  const [newProfileName, setNewProfileName] = useState('');
+  const [editingProfile, setEditingProfile] = useState<PipedreamProfile | null>(
+    null,
+  );
+  const [deletingProfile, setDeletingProfile] =
+    useState<PipedreamProfile | null>(null);
+  const [newProfileName, setNewProfileName] = useState("");
   const [isDefault, setIsDefault] = useState(false);
 
-  const { data: profiles, isLoading, refetch } = usePipedreamProfiles({ app_slug: appSlug });
+  const {
+    data: profiles,
+    isLoading,
+    refetch,
+  } = usePipedreamProfiles({ app_slug: appSlug });
   const createProfile = useCreatePipedreamProfile();
   const updateProfile = useUpdatePipedreamProfile();
   const deleteProfile = useDeletePipedreamProfile();
@@ -85,38 +92,39 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
 
     const request: CreateProfileRequest = {
       profile_name: newProfileName.trim(),
-      app_slug: appSlug || '',
-      app_name: appName || appSlug || '',
+      app_slug: appSlug || "",
+      app_name: appName || appSlug || "",
       is_default: isDefault,
     };
 
     try {
       await createProfile.mutateAsync(request);
       setShowCreateDialog(false);
-      setNewProfileName('');
+      setNewProfileName("");
       setIsDefault(false);
     } catch (error) {
       // Error is handled by the mutation hook
     }
   };
 
-  const handleUpdateProfile = async (profile: PipedreamProfile, updates: any) => {
+  const handleUpdateProfile = async (
+    profile: PipedreamProfile,
+    updates: any,
+  ) => {
     try {
       await updateProfile.mutateAsync({
         profileId: profile.profile_id,
         request: updates,
       });
       setEditingProfile(null);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleDeleteProfile = async (profile: PipedreamProfile) => {
     try {
       await deleteProfile.mutateAsync(profile.profile_id);
       setDeletingProfile(null);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   const handleConnectProfile = async (profile: PipedreamProfile) => {
@@ -125,8 +133,7 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
         profileId: profile.profile_id,
         app: appSlug,
       });
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   if (isLoading) {
@@ -137,7 +144,8 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
     );
   }
 
-  const profilesForApp = profiles?.filter(p => !appSlug || p.app_slug === appSlug) || [];
+  const profilesForApp =
+    profiles?.filter((p) => !appSlug || p.app_slug === appSlug) || [];
 
   return (
     <div className={className}>
@@ -147,7 +155,8 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
             <User className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h4 className="font-medium mb-2">No credential profiles yet</h4>
             <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-              Create credential profiles to manage multiple accounts or configurations for {appName || 'your apps'}.
+              Create credential profiles to manage multiple accounts or
+              configurations for {appName || "your apps"}.
             </p>
             <Button onClick={() => setShowCreateDialog(true)} variant="outline">
               <Plus className="h-4 w-4" />
@@ -207,19 +216,25 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setEditingProfile(profile)}>
+                        <DropdownMenuItem
+                          onClick={() => setEditingProfile(profile)}
+                        >
                           <Settings className="h-4 w-4" />
                           Edit Profile
                         </DropdownMenuItem>
                         {profile.is_connected && (
-                          <DropdownMenuItem onClick={() => handleConnectProfile(profile)}>
+                          <DropdownMenuItem
+                            onClick={() => handleConnectProfile(profile)}
+                          >
                             <RefreshCw className="h-4 w-4" />
                             Reconnect
                           </DropdownMenuItem>
                         )}
                         {!profile.is_default && (
                           <DropdownMenuItem
-                            onClick={() => handleUpdateProfile(profile, { is_default: true })}
+                            onClick={() =>
+                              handleUpdateProfile(profile, { is_default: true })
+                            }
                           >
                             <Star className="h-4 w-4" />
                             Set as Default
@@ -227,7 +242,11 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                         )}
                         {profile.is_default && (
                           <DropdownMenuItem
-                            onClick={() => handleUpdateProfile(profile, { is_default: false })}
+                            onClick={() =>
+                              handleUpdateProfile(profile, {
+                                is_default: false,
+                              })
+                            }
                           >
                             <StarOff className="h-4 w-4" />
                             Remove Default
@@ -248,7 +267,12 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
             </Card>
           ))}
           <div className="w-full rounded-lg h-24 bg-muted border-dashed border-muted flex items-center justify-center">
-            <Button onClick={() => setShowCreateDialog(true)} size="sm" variant="outline" className="w-full h-full">
+            <Button
+              onClick={() => setShowCreateDialog(true)}
+              size="sm"
+              variant="outline"
+              className="w-full h-full"
+            >
               <div className="flex bg-primary/10 items-center justify-center h-10 w-10 rounded-full">
                 <Plus className="h-4 w-4" />
               </div>
@@ -261,10 +285,10 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
           <DialogHeader>
             <DialogTitle>Create Credential Profile</DialogTitle>
             <DialogDescription>
-              Create a new credential profile for {appName || 'your app'}.
+              Create a new credential profile for {appName || "your app"}.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="profile-name">Profile Name</Label>
@@ -275,7 +299,7 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                 onChange={(e) => setNewProfileName(e.target.value)}
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="is-default"
@@ -287,7 +311,10 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setShowCreateDialog(false)}
+            >
               Cancel
             </Button>
             <Button
@@ -300,14 +327,17 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                   Creating...
                 </>
               ) : (
-                'Create Profile'
+                "Create Profile"
               )}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
       {editingProfile && (
-        <Dialog open={!!editingProfile} onOpenChange={() => setEditingProfile(null)}>
+        <Dialog
+          open={!!editingProfile}
+          onOpenChange={() => setEditingProfile(null)}
+        >
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Edit Profile</DialogTitle>
@@ -315,7 +345,7 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                 Update the settings for {editingProfile.profile_name}.
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-profile-name">Profile Name</Label>
@@ -324,17 +354,23 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                   defaultValue={editingProfile.profile_name}
                   onChange={(e) => {
                     const value = e.target.value;
-                    setEditingProfile({ ...editingProfile, profile_name: value });
+                    setEditingProfile({
+                      ...editingProfile,
+                      profile_name: value,
+                    });
                   }}
                 />
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 <Switch
                   id="edit-is-active"
                   checked={editingProfile.is_active}
                   onCheckedChange={(checked) => {
-                    setEditingProfile({ ...editingProfile, is_active: checked });
+                    setEditingProfile({
+                      ...editingProfile,
+                      is_active: checked,
+                    });
                   }}
                 />
                 <Label htmlFor="edit-is-active">Active</Label>
@@ -346,10 +382,12 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                 Cancel
               </Button>
               <Button
-                onClick={() => handleUpdateProfile(editingProfile, {
-                  profile_name: editingProfile.profile_name,
-                  is_active: editingProfile.is_active,
-                })}
+                onClick={() =>
+                  handleUpdateProfile(editingProfile, {
+                    profile_name: editingProfile.profile_name,
+                    is_active: editingProfile.is_active,
+                  })
+                }
                 disabled={updateProfile.isPending}
               >
                 {updateProfile.isPending ? (
@@ -358,7 +396,7 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
                     Saving...
                   </>
                 ) : (
-                  'Save Changes'
+                  "Save Changes"
                 )}
               </Button>
             </DialogFooter>
@@ -367,19 +405,24 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
       )}
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={!!deletingProfile} onOpenChange={() => setDeletingProfile(null)}>
+      <AlertDialog
+        open={!!deletingProfile}
+        onOpenChange={() => setDeletingProfile(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Profile</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the profile "{deletingProfile?.profile_name}"? 
-              This action cannot be undone.
+              Are you sure you want to delete the profile "
+              {deletingProfile?.profile_name}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deletingProfile && handleDeleteProfile(deletingProfile)}
+              onClick={() =>
+                deletingProfile && handleDeleteProfile(deletingProfile)
+              }
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete Profile
@@ -389,4 +432,4 @@ export const CredentialProfileManager: React.FC<CredentialProfileManagerProps> =
       </AlertDialog>
     </div>
   );
-}; 
+};

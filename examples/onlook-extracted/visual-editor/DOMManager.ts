@@ -2,7 +2,7 @@
  * Iraqi AI System - Enhanced DOM Manager
  * Real-time DOM manipulation with comprehensive Arabic RTL support
  * Extracted and enhanced from Onlook visual editor
- * 
+ *
  * Key Features:
  * - Real-time DOM manipulation with Arabic text support
  * - RTL layout handling for Iraqi government interfaces
@@ -12,13 +12,13 @@
  * - Prayer time-aware interface updates
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 export interface ArabicDOMConfig {
   rtlSupport: boolean;
   arabicTypography: boolean;
   islamicCompliance: boolean;
-  ministryTheme?: 'health' | 'education' | 'interior' | 'justice';
+  ministryTheme?: "health" | "education" | "interior" | "justice";
   prayerTimeAware: boolean;
   culturalValidation: boolean;
 }
@@ -57,7 +57,7 @@ export interface PrayerTimeEvent {
 
 export interface VisualEditingContext {
   selectedElement: HTMLElement | null;
-  editingMode: 'visual' | 'code' | 'hybrid';
+  editingMode: "visual" | "code" | "hybrid";
   culturalValidation: boolean;
   rtlMode: boolean;
   ministryContext?: string;
@@ -72,59 +72,60 @@ export class IraqiDOMManager extends EventEmitter {
   private performanceMonitor: PerformanceObserver | null = null;
 
   // Arabic text and RTL detection patterns
-  private readonly ARABIC_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
-  private readonly RTL_LANGUAGES = ['ar', 'he', 'fa', 'ur'];
+  private readonly ARABIC_REGEX =
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  private readonly RTL_LANGUAGES = ["ar", "he", "fa", "ur"];
   private readonly ARABIC_FONTS = [
-    'Noto Sans Arabic',
-    'Cairo',
-    'Amiri',
-    'Scheherazade New',
-    'Markazi Text',
-    'IBM Plex Sans Arabic'
+    "Noto Sans Arabic",
+    "Cairo",
+    "Amiri",
+    "Scheherazade New",
+    "Markazi Text",
+    "IBM Plex Sans Arabic",
   ];
 
   // Islamic design compliance
   private readonly ISLAMIC_COMPLIANT_COLORS = {
-    primary: ['#059669', '#0d9488', '#2563eb', '#4f46e5', '#7c3aed'],
-    secondary: ['#64748b', '#6b7280', '#71717a'],
-    accent: ['#10b981', '#06b6d4', '#3b82f6'],
-    forbidden: ['#dc2626', '#ea580c', '#ec4899'] // Colors to avoid
+    primary: ["#059669", "#0d9488", "#2563eb", "#4f46e5", "#7c3aed"],
+    secondary: ["#64748b", "#6b7280", "#71717a"],
+    accent: ["#10b981", "#06b6d4", "#3b82f6"],
+    forbidden: ["#dc2626", "#ea580c", "#ec4899"], // Colors to avoid
   };
 
   // Ministry-specific design systems
   private readonly MINISTRY_THEMES = {
     health: {
-      primary: '#059669', // Emerald
-      secondary: '#0d9488', // Teal
-      accent: '#10b981',
-      typography: 'clean-medical',
-      iconStyle: 'medical',
-      accessibility: 'enhanced'
+      primary: "#059669", // Emerald
+      secondary: "#0d9488", // Teal
+      accent: "#10b981",
+      typography: "clean-medical",
+      iconStyle: "medical",
+      accessibility: "enhanced",
     },
     education: {
-      primary: '#2563eb', // Blue
-      secondary: '#4f46e5', // Indigo
-      accent: '#3b82f6',
-      typography: 'academic',
-      iconStyle: 'educational',
-      accessibility: 'student-friendly'
+      primary: "#2563eb", // Blue
+      secondary: "#4f46e5", // Indigo
+      accent: "#3b82f6",
+      typography: "academic",
+      iconStyle: "educational",
+      accessibility: "student-friendly",
     },
     interior: {
-      primary: '#374151', // Gray
-      secondary: '#4b5563',
-      accent: '#6b7280',
-      typography: 'official-formal',
-      iconStyle: 'governmental',
-      accessibility: 'citizen-service'
+      primary: "#374151", // Gray
+      secondary: "#4b5563",
+      accent: "#6b7280",
+      typography: "official-formal",
+      iconStyle: "governmental",
+      accessibility: "citizen-service",
     },
     justice: {
-      primary: '#7c3aed', // Purple
-      secondary: '#6366f1', // Indigo
-      accent: '#8b5cf6',
-      typography: 'legal-formal',
-      iconStyle: 'legal',
-      accessibility: 'legal-compliance'
-    }
+      primary: "#7c3aed", // Purple
+      secondary: "#6366f1", // Indigo
+      accent: "#8b5cf6",
+      typography: "legal-formal",
+      iconStyle: "legal",
+      accessibility: "legal-compliance",
+    },
   };
 
   constructor(config: ArabicDOMConfig) {
@@ -132,10 +133,10 @@ export class IraqiDOMManager extends EventEmitter {
     this.config = config;
     this.editingContext = {
       selectedElement: null,
-      editingMode: 'visual',
+      editingMode: "visual",
       culturalValidation: config.culturalValidation,
       rtlMode: config.rtlSupport,
-      ministryContext: config.ministryTheme
+      ministryContext: config.ministryTheme,
     };
 
     this.initializeObservers();
@@ -162,11 +163,13 @@ export class IraqiDOMManager extends EventEmitter {
     });
 
     // Performance observer for monitoring
-    if ('PerformanceObserver' in window) {
+    if ("PerformanceObserver" in window) {
       this.performanceMonitor = new PerformanceObserver((list) => {
         this.handlePerformanceEntries(list.getEntries());
       });
-      this.performanceMonitor.observe({ entryTypes: ['measure', 'navigation'] });
+      this.performanceMonitor.observe({
+        entryTypes: ["measure", "navigation"],
+      });
     }
   }
 
@@ -181,19 +184,19 @@ export class IraqiDOMManager extends EventEmitter {
         attributes: true,
         attributeOldValue: true,
         characterData: true,
-        characterDataOldValue: true
+        characterDataOldValue: true,
       });
     }
 
     // Observe all elements for intersection
     if (this.intersectionObserver) {
-      const allElements = target.querySelectorAll('*');
-      allElements.forEach(el => {
+      const allElements = target.querySelectorAll("*");
+      allElements.forEach((el) => {
         this.intersectionObserver!.observe(el);
       });
     }
 
-    this.emit('observing-started', { target });
+    this.emit("observing-started", { target });
   }
 
   /**
@@ -210,7 +213,7 @@ export class IraqiDOMManager extends EventEmitter {
       this.performanceMonitor.disconnect();
     }
 
-    this.emit('observing-stopped');
+    this.emit("observing-stopped");
   }
 
   /**
@@ -221,7 +224,8 @@ export class IraqiDOMManager extends EventEmitter {
 
     try {
       // Validate element for cultural compliance
-      const culturalValidation = this.validateElementCulturalCompliance(element);
+      const culturalValidation =
+        this.validateElementCulturalCompliance(element);
 
       // Highlight selected element with cultural indicators
       this.highlightElement(element, culturalValidation);
@@ -231,7 +235,7 @@ export class IraqiDOMManager extends EventEmitter {
 
       // Determine if element contains Arabic content
       const hasArabicContent = this.detectArabicContent(element);
-      
+
       // Apply Arabic-specific enhancements if needed
       if (hasArabicContent && this.config.rtlSupport) {
         this.enhanceElementForArabic(element);
@@ -246,42 +250,41 @@ export class IraqiDOMManager extends EventEmitter {
         arabicSupport: {
           rtlLayout: hasArabicContent && this.config.rtlSupport,
           arabicText: hasArabicContent,
-          properTypography: this.config.arabicTypography
+          properTypography: this.config.arabicTypography,
         },
         performanceMetrics: {
           manipulationTime: endTime - startTime,
           renderTime: 0, // Will be measured separately
-          validationTime: culturalValidation.complianceScore * 10 // Approximate
-        }
+          validationTime: culturalValidation.complianceScore * 10, // Approximate
+        },
       };
 
-      this.emit('element-selected', result);
+      this.emit("element-selected", result);
       return result;
-
     } catch (error) {
       const endTime = performance.now();
-      
+
       return {
         success: false,
         element,
         culturalCompliance: {
           isValid: false,
           issues: [`Selection error: ${error.message}`],
-          recommendations: ['Verify element is valid and try again'],
+          recommendations: ["Verify element is valid and try again"],
           complianceScore: 0,
           islamicCompliance: false,
-          ministryAlignment: false
+          ministryAlignment: false,
         },
         arabicSupport: {
           rtlLayout: false,
           arabicText: false,
-          properTypography: false
+          properTypography: false,
         },
         performanceMetrics: {
           manipulationTime: endTime - startTime,
           renderTime: 0,
-          validationTime: 0
-        }
+          validationTime: 0,
+        },
       };
     }
   }
@@ -297,13 +300,17 @@ export class IraqiDOMManager extends EventEmitter {
       culturalValidation?: boolean;
       rtlAware?: boolean;
       ministryTheme?: string;
-    }
+    },
   ): DOMManipulationResult {
     const startTime = performance.now();
 
     try {
       // Apply cultural transformations to value
-      const enhancedValue = this.applyCulturalTransformation(property, value, options);
+      const enhancedValue = this.applyCulturalTransformation(
+        property,
+        value,
+        options,
+      );
 
       // Store original value for potential rollback
       const originalValue = (element as any)[property];
@@ -312,15 +319,23 @@ export class IraqiDOMManager extends EventEmitter {
       (element as any)[property] = enhancedValue;
 
       // Handle special property cases
-      this.handleSpecialPropertyCases(element, property, enhancedValue, options);
+      this.handleSpecialPropertyCases(
+        element,
+        property,
+        enhancedValue,
+        options,
+      );
 
       // Validate cultural compliance after change
-      const culturalValidation = this.validateElementCulturalCompliance(element);
+      const culturalValidation =
+        this.validateElementCulturalCompliance(element);
 
       // If validation fails and rollback is needed
       if (!culturalValidation.isValid && options?.culturalValidation) {
         (element as any)[property] = originalValue;
-        culturalValidation.issues.push('Change rolled back due to cultural compliance failure');
+        culturalValidation.issues.push(
+          "Change rolled back due to cultural compliance failure",
+        );
       }
 
       const endTime = performance.now();
@@ -332,22 +347,29 @@ export class IraqiDOMManager extends EventEmitter {
         arabicSupport: {
           rtlLayout: this.hasRTLAttributes(element),
           arabicText: this.detectArabicContent(element),
-          properTypography: this.hasArabicTypography(element)
+          properTypography: this.hasArabicTypography(element),
         },
         performanceMetrics: {
           manipulationTime: endTime - startTime,
           renderTime: 0,
-          validationTime: culturalValidation.complianceScore * 5
-        }
+          validationTime: culturalValidation.complianceScore * 5,
+        },
       };
 
-      this.emit('property-modified', { property, value: enhancedValue, result });
+      this.emit("property-modified", {
+        property,
+        value: enhancedValue,
+        result,
+      });
       return result;
-
     } catch (error) {
       const endTime = performance.now();
-      
-      return this.createErrorResult(element, error.message, endTime - startTime);
+
+      return this.createErrorResult(
+        element,
+        error.message,
+        endTime - startTime,
+      );
     }
   }
 
@@ -361,7 +383,7 @@ export class IraqiDOMManager extends EventEmitter {
       rtlSupport?: boolean;
       ministryTheme?: string;
       islamicCompliance?: boolean;
-    }
+    },
   ): DOMManipulationResult {
     const startTime = performance.now();
 
@@ -381,19 +403,21 @@ export class IraqiDOMManager extends EventEmitter {
 
       // Apply Islamic compliance filters
       if (options?.islamicCompliance) {
-        const compliantClasses = this.filterIslamicCompliantClasses(enhancedClasses);
+        const compliantClasses =
+          this.filterIslamicCompliantClasses(enhancedClasses);
         enhancedClasses.splice(0, enhancedClasses.length, ...compliantClasses);
       }
 
       // Apply classes to element
-      enhancedClasses.forEach(className => {
+      enhancedClasses.forEach((className) => {
         element.classList.add(className);
       });
 
       // Add cultural metadata
       this.addCulturalMetadata(element, options);
 
-      const culturalValidation = this.validateElementCulturalCompliance(element);
+      const culturalValidation =
+        this.validateElementCulturalCompliance(element);
       const endTime = performance.now();
 
       const result: DOMManipulationResult = {
@@ -403,21 +427,24 @@ export class IraqiDOMManager extends EventEmitter {
         arabicSupport: {
           rtlLayout: this.hasRTLAttributes(element),
           arabicText: this.detectArabicContent(element),
-          properTypography: this.hasArabicTypography(element)
+          properTypography: this.hasArabicTypography(element),
         },
         performanceMetrics: {
           manipulationTime: endTime - startTime,
           renderTime: 0,
-          validationTime: culturalValidation.complianceScore * 3
-        }
+          validationTime: culturalValidation.complianceScore * 3,
+        },
       };
 
-      this.emit('classes-added', { classes: enhancedClasses, result });
+      this.emit("classes-added", { classes: enhancedClasses, result });
       return result;
-
     } catch (error) {
       const endTime = performance.now();
-      return this.createErrorResult(element, error.message, endTime - startTime);
+      return this.createErrorResult(
+        element,
+        error.message,
+        endTime - startTime,
+      );
     }
   }
 
@@ -434,7 +461,7 @@ export class IraqiDOMManager extends EventEmitter {
       ministryTheme?: string;
       rtlSupport?: boolean;
       islamicCompliance?: boolean;
-    } = {}
+    } = {},
   ): DOMManipulationResult {
     const startTime = performance.now();
 
@@ -444,12 +471,16 @@ export class IraqiDOMManager extends EventEmitter {
 
       // Apply cultural classes
       if (options.classes) {
-        const classResult = this.addCulturallyAwareClasses(element, options.classes, {
-          rtlSupport: options.rtlSupport,
-          ministryTheme: options.ministryTheme,
-          islamicCompliance: options.islamicCompliance
-        });
-        
+        const classResult = this.addCulturallyAwareClasses(
+          element,
+          options.classes,
+          {
+            rtlSupport: options.rtlSupport,
+            ministryTheme: options.ministryTheme,
+            islamicCompliance: options.islamicCompliance,
+          },
+        );
+
         if (!classResult.success) {
           return classResult;
         }
@@ -458,7 +489,11 @@ export class IraqiDOMManager extends EventEmitter {
       // Apply attributes with cultural awareness
       if (options.attributes) {
         for (const [key, value] of Object.entries(options.attributes)) {
-          const enhancedValue = this.applyCulturalTransformation(key, value, options);
+          const enhancedValue = this.applyCulturalTransformation(
+            key,
+            value,
+            options,
+          );
           element.setAttribute(key, enhancedValue);
         }
       }
@@ -470,8 +505,8 @@ export class IraqiDOMManager extends EventEmitter {
 
         // Add RTL support if Arabic content detected
         if (this.detectArabicContent(element) && options.rtlSupport !== false) {
-          element.setAttribute('dir', 'rtl');
-          element.classList.add('text-right');
+          element.setAttribute("dir", "rtl");
+          element.classList.add("text-right");
         }
       }
 
@@ -483,16 +518,17 @@ export class IraqiDOMManager extends EventEmitter {
 
       // Apply ministry-specific attributes
       if (options.ministryTheme) {
-        element.setAttribute('data-ministry', options.ministryTheme);
+        element.setAttribute("data-ministry", options.ministryTheme);
         this.applyMinistryTheme(element, options.ministryTheme);
       }
 
       // Add cultural compliance metadata
       if (options.islamicCompliance) {
-        element.setAttribute('data-islamic-compliant', 'true');
+        element.setAttribute("data-islamic-compliant", "true");
       }
 
-      const culturalValidation = this.validateElementCulturalCompliance(element);
+      const culturalValidation =
+        this.validateElementCulturalCompliance(element);
       const endTime = performance.now();
 
       const result: DOMManipulationResult = {
@@ -502,22 +538,25 @@ export class IraqiDOMManager extends EventEmitter {
         arabicSupport: {
           rtlLayout: this.hasRTLAttributes(element),
           arabicText: this.detectArabicContent(element),
-          properTypography: this.hasArabicTypography(element)
+          properTypography: this.hasArabicTypography(element),
         },
         performanceMetrics: {
           manipulationTime: endTime - startTime,
           renderTime: 0,
-          validationTime: culturalValidation.complianceScore * 8
-        }
+          validationTime: culturalValidation.complianceScore * 8,
+        },
       };
 
-      this.emit('element-created', { tagName, options, result });
+      this.emit("element-created", { tagName, options, result });
       return result;
-
     } catch (error) {
       const endTime = performance.now();
-      const mockElement = document.createElement('div');
-      return this.createErrorResult(mockElement, error.message, endTime - startTime);
+      const mockElement = document.createElement("div");
+      return this.createErrorResult(
+        mockElement,
+        error.message,
+        endTime - startTime,
+      );
     }
   }
 
@@ -528,28 +567,27 @@ export class IraqiDOMManager extends EventEmitter {
     try {
       // Check if element has critical cultural significance
       const isCritical = this.isElementCulturallySignificant(element);
-      
+
       if (isCritical) {
-        this.emit('delete-warning', { 
-          element, 
-          reason: 'Element has cultural significance and should not be deleted'
+        this.emit("delete-warning", {
+          element,
+          reason: "Element has cultural significance and should not be deleted",
         });
         return false;
       }
 
       // Remove element
       element.remove();
-      
+
       // Update editing context if this was the selected element
       if (this.editingContext.selectedElement === element) {
         this.editingContext.selectedElement = null;
       }
 
-      this.emit('element-deleted', { element });
+      this.emit("element-deleted", { element });
       return true;
-
     } catch (error) {
-      this.emit('delete-error', { element, error: error.message });
+      this.emit("delete-error", { element, error: error.message });
       return false;
     }
   }
@@ -561,13 +599,13 @@ export class IraqiDOMManager extends EventEmitter {
   private handleDOMChange(mutation: MutationRecord): void {
     // Handle different types of mutations with cultural awareness
     switch (mutation.type) {
-      case 'attributes':
+      case "attributes":
         this.handleAttributeChange(mutation);
         break;
-      case 'childList':
+      case "childList":
         this.handleChildListChange(mutation);
         break;
-      case 'characterData':
+      case "characterData":
         this.handleTextChange(mutation);
         break;
     }
@@ -578,7 +616,7 @@ export class IraqiDOMManager extends EventEmitter {
     const attributeName = mutation.attributeName!;
 
     // Special handling for direction and language attributes
-    if (attributeName === 'dir' || attributeName === 'lang') {
+    if (attributeName === "dir" || attributeName === "lang") {
       this.handleDirectionOrLanguageChange(element, attributeName);
     }
 
@@ -586,14 +624,14 @@ export class IraqiDOMManager extends EventEmitter {
     if (this.config.culturalValidation) {
       const validation = this.validateElementCulturalCompliance(element);
       if (!validation.isValid) {
-        this.emit('cultural-compliance-warning', { element, validation });
+        this.emit("cultural-compliance-warning", { element, validation });
       }
     }
   }
 
   private handleChildListChange(mutation: MutationRecord): void {
     // Process added nodes
-    mutation.addedNodes.forEach(node => {
+    mutation.addedNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         const element = node as HTMLElement;
         this.processNewElement(element);
@@ -601,7 +639,7 @@ export class IraqiDOMManager extends EventEmitter {
     });
 
     // Clean up removed nodes
-    mutation.removedNodes.forEach(node => {
+    mutation.removedNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         this.cleanupRemovedElement(node as HTMLElement);
       }
@@ -633,21 +671,24 @@ export class IraqiDOMManager extends EventEmitter {
   }
 
   private handlePerformanceEntries(entries: PerformanceEntry[]): void {
-    entries.forEach(entry => {
-      if (entry.name.includes('dom-manipulation')) {
-        this.emit('performance-metric', {
+    entries.forEach((entry) => {
+      if (entry.name.includes("dom-manipulation")) {
+        this.emit("performance-metric", {
           name: entry.name,
           duration: entry.duration,
-          startTime: entry.startTime
+          startTime: entry.startTime,
         });
       }
     });
   }
 
-  private handleDirectionOrLanguageChange(element: HTMLElement, attributeName: string): void {
-    if (attributeName === 'dir') {
-      const direction = element.getAttribute('dir');
-      if (direction === 'rtl') {
+  private handleDirectionOrLanguageChange(
+    element: HTMLElement,
+    attributeName: string,
+  ): void {
+    if (attributeName === "dir") {
+      const direction = element.getAttribute("dir");
+      if (direction === "rtl") {
         this.enhanceElementForArabic(element);
       }
     }
@@ -693,17 +734,17 @@ export class IraqiDOMManager extends EventEmitter {
   }
 
   private detectArabicContent(element: HTMLElement): boolean {
-    const text = element.textContent || element.innerText || '';
+    const text = element.textContent || element.innerText || "";
     return this.ARABIC_REGEX.test(text);
   }
 
   private enhanceElementForArabic(element: HTMLElement): void {
     // Add RTL classes
-    element.classList.add('dir-rtl', 'text-right');
-    
+    element.classList.add("dir-rtl", "text-right");
+
     // Set direction attribute
-    if (!element.getAttribute('dir')) {
-      element.setAttribute('dir', 'rtl');
+    if (!element.getAttribute("dir")) {
+      element.setAttribute("dir", "rtl");
     }
 
     // Apply Arabic typography
@@ -713,8 +754,8 @@ export class IraqiDOMManager extends EventEmitter {
   }
 
   private applyArabicTypography(element: HTMLElement): void {
-    element.classList.add('font-arabic', 'leading-relaxed');
-    
+    element.classList.add("font-arabic", "leading-relaxed");
+
     // Ensure Arabic font is loaded
     this.ensureArabicFontLoading(element);
   }
@@ -725,12 +766,14 @@ export class IraqiDOMManager extends EventEmitter {
     element.style.fontFamily = `"${fontFamily}", sans-serif`;
 
     // Trigger font loading
-    if ('fonts' in document) {
+    if ("fonts" in document) {
       document.fonts.load(`16px "${fontFamily}"`);
     }
   }
 
-  private validateElementCulturalCompliance(element: HTMLElement): CulturalValidationResult {
+  private validateElementCulturalCompliance(
+    element: HTMLElement,
+  ): CulturalValidationResult {
     const issues: string[] = [];
     const recommendations: string[] = [];
     let score = 1.0;
@@ -741,8 +784,10 @@ export class IraqiDOMManager extends EventEmitter {
     if (this.config.islamicCompliance) {
       const nonCompliantColors = this.detectNonCompliantColors(element);
       if (nonCompliantColors.length > 0) {
-        issues.push(`Non-compliant colors detected: ${nonCompliantColors.join(', ')}`);
-        recommendations.push('Replace with Islamic-compliant color palette');
+        issues.push(
+          `Non-compliant colors detected: ${nonCompliantColors.join(", ")}`,
+        );
+        recommendations.push("Replace with Islamic-compliant color palette");
         score -= 0.3;
         islamicCompliance = false;
       }
@@ -751,7 +796,7 @@ export class IraqiDOMManager extends EventEmitter {
     // Check RTL support for Arabic content
     if (this.config.rtlSupport && this.detectArabicContent(element)) {
       if (!this.hasRTLAttributes(element)) {
-        issues.push('Arabic content detected but no RTL support');
+        issues.push("Arabic content detected but no RTL support");
         recommendations.push('Add dir="rtl" attribute and RTL CSS classes');
         score -= 0.2;
       }
@@ -759,9 +804,11 @@ export class IraqiDOMManager extends EventEmitter {
 
     // Check ministry theme compliance
     if (this.config.ministryTheme) {
-      const hasMinistryAttributes = element.hasAttribute('data-ministry');
+      const hasMinistryAttributes = element.hasAttribute("data-ministry");
       if (!hasMinistryAttributes) {
-        recommendations.push(`Consider adding ministry-specific styling for ${this.config.ministryTheme}`);
+        recommendations.push(
+          `Consider adding ministry-specific styling for ${this.config.ministryTheme}`,
+        );
         score -= 0.1;
         ministryAlignment = false;
       }
@@ -773,7 +820,7 @@ export class IraqiDOMManager extends EventEmitter {
       recommendations,
       complianceScore: Math.max(0, score),
       islamicCompliance,
-      ministryAlignment
+      ministryAlignment,
     };
   }
 
@@ -799,30 +846,39 @@ export class IraqiDOMManager extends EventEmitter {
   private isColorNonCompliant(color: string): boolean {
     // Convert RGB to hex and check against forbidden colors
     // This is a simplified check - in production would be more sophisticated
-    return color.includes('rgb(220, 38, 38)') || // Red
-           color.includes('rgb(234, 88, 12)') ||   // Orange
-           color.includes('rgb(236, 72, 153)');    // Pink
+    return (
+      color.includes("rgb(220, 38, 38)") || // Red
+      color.includes("rgb(234, 88, 12)") || // Orange
+      color.includes("rgb(236, 72, 153)")
+    ); // Pink
   }
 
   private hasRTLAttributes(element: HTMLElement): boolean {
-    return element.getAttribute('dir') === 'rtl' ||
-           element.classList.contains('dir-rtl') ||
-           element.classList.contains('text-right');
+    return (
+      element.getAttribute("dir") === "rtl" ||
+      element.classList.contains("dir-rtl") ||
+      element.classList.contains("text-right")
+    );
   }
 
   private hasArabicTypography(element: HTMLElement): boolean {
-    return element.classList.contains('font-arabic') ||
-           element.style.fontFamily.includes('Arabic');
+    return (
+      element.classList.contains("font-arabic") ||
+      element.style.fontFamily.includes("Arabic")
+    );
   }
 
-  private highlightElement(element: HTMLElement, validation: CulturalValidationResult): void {
+  private highlightElement(
+    element: HTMLElement,
+    validation: CulturalValidationResult,
+  ): void {
     // Add visual highlighting with cultural compliance indicators
-    element.classList.add('onlook-selected');
-    
+    element.classList.add("onlook-selected");
+
     if (validation.isValid) {
-      element.classList.add('cultural-compliant');
+      element.classList.add("cultural-compliant");
     } else {
-      element.classList.add('cultural-warning');
+      element.classList.add("cultural-warning");
     }
 
     // Add ministry-specific highlighting
@@ -831,16 +887,20 @@ export class IraqiDOMManager extends EventEmitter {
     }
   }
 
-  private applyCulturalTransformation(property: string, value: any, options?: any): any {
+  private applyCulturalTransformation(
+    property: string,
+    value: any,
+    options?: any,
+  ): any {
     // Transform values for cultural compliance
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // Process text for Arabic content
       if (this.ARABIC_REGEX.test(value)) {
         return this.processArabicText(value);
       }
 
       // Transform color values for Islamic compliance
-      if (property.includes('color') || property.includes('Color')) {
+      if (property.includes("color") || property.includes("Color")) {
         return this.ensureIslamicCompliantColor(value);
       }
     }
@@ -850,19 +910,19 @@ export class IraqiDOMManager extends EventEmitter {
 
   private processArabicText(text: string): string {
     // Apply Arabic text processing
-    // In production, this would include proper RTL processing, 
+    // In production, this would include proper RTL processing,
     // Arabic shaping, and cultural formatting
     return text;
   }
 
   private ensureIslamicCompliantColor(color: string): string {
     // Replace non-compliant colors with alternatives
-    const forbiddenColors = ['red', 'orange', 'pink'];
+    const forbiddenColors = ["red", "orange", "pink"];
     let compliantColor = color;
 
-    forbiddenColors.forEach(forbidden => {
+    forbiddenColors.forEach((forbidden) => {
       if (color.includes(forbidden)) {
-        compliantColor = color.replace(forbidden, 'blue');
+        compliantColor = color.replace(forbidden, "blue");
       }
     });
 
@@ -870,18 +930,18 @@ export class IraqiDOMManager extends EventEmitter {
   }
 
   private handleSpecialPropertyCases(
-    element: HTMLElement, 
-    property: string, 
-    value: any, 
-    options?: any
+    element: HTMLElement,
+    property: string,
+    value: any,
+    options?: any,
   ): void {
     // Handle special cases like innerHTML, textContent, etc.
-    if (property === 'innerHTML' && typeof value === 'string') {
+    if (property === "innerHTML" && typeof value === "string") {
       const validatedHTML = this.validateAndSanitizeHTML(value);
       element.innerHTML = validatedHTML;
     }
 
-    if (property === 'textContent' && this.detectArabicContent(element)) {
+    if (property === "textContent" && this.detectArabicContent(element)) {
       this.enhanceElementForArabic(element);
     }
   }
@@ -897,7 +957,7 @@ export class IraqiDOMManager extends EventEmitter {
 
     // Add Islamic compliance classes
     if (options?.islamicCompliance) {
-      processed.push('islamic-compliant');
+      processed.push("islamic-compliant");
     }
 
     // Add ministry-specific classes
@@ -909,69 +969,78 @@ export class IraqiDOMManager extends EventEmitter {
   }
 
   private getRTLClasses(): string[] {
-    return ['dir-rtl', 'text-right', 'rtl-layout'];
+    return ["dir-rtl", "text-right", "rtl-layout"];
   }
 
   private getMinistryClasses(ministry: string): string[] {
-    const theme = this.MINISTRY_THEMES[ministry as keyof typeof this.MINISTRY_THEMES];
+    const theme =
+      this.MINISTRY_THEMES[ministry as keyof typeof this.MINISTRY_THEMES];
     if (!theme) return [];
 
     return [
       `ministry-${ministry}`,
       `typography-${theme.typography}`,
-      `accessibility-${theme.accessibility}`
+      `accessibility-${theme.accessibility}`,
     ];
   }
 
   private filterIslamicCompliantClasses(classes: string[]): string[] {
     // Filter out non-compliant classes
-    return classes.filter(className => {
-      return !className.includes('red-') &&
-             !className.includes('orange-') &&
-             !className.includes('pink-');
+    return classes.filter((className) => {
+      return (
+        !className.includes("red-") &&
+        !className.includes("orange-") &&
+        !className.includes("pink-")
+      );
     });
   }
 
   private addCulturalMetadata(element: HTMLElement, options?: any): void {
     if (options?.ministryTheme) {
-      element.setAttribute('data-ministry', options.ministryTheme);
+      element.setAttribute("data-ministry", options.ministryTheme);
     }
 
     if (options?.islamicCompliance) {
-      element.setAttribute('data-islamic-compliant', 'true');
+      element.setAttribute("data-islamic-compliant", "true");
     }
 
     if (this.detectArabicContent(element)) {
-      element.setAttribute('data-arabic-content', 'true');
+      element.setAttribute("data-arabic-content", "true");
     }
   }
 
   private applyMinistryTheme(element: HTMLElement, ministry: string): void {
-    const theme = this.MINISTRY_THEMES[ministry as keyof typeof this.MINISTRY_THEMES];
+    const theme =
+      this.MINISTRY_THEMES[ministry as keyof typeof this.MINISTRY_THEMES];
     if (!theme) return;
 
     // Apply theme colors via CSS custom properties
-    element.style.setProperty('--ministry-primary', theme.primary);
-    element.style.setProperty('--ministry-secondary', theme.secondary);
-    element.style.setProperty('--ministry-accent', theme.accent);
+    element.style.setProperty("--ministry-primary", theme.primary);
+    element.style.setProperty("--ministry-secondary", theme.secondary);
+    element.style.setProperty("--ministry-accent", theme.accent);
   }
 
   private isElementCulturallySignificant(element: HTMLElement): boolean {
     // Check if element has cultural or religious significance
-    return element.hasAttribute('data-islamic-compliant') ||
-           element.hasAttribute('data-ministry') ||
-           element.classList.contains('prayer-time-indicator') ||
-           element.classList.contains('arabic-content');
+    return (
+      element.hasAttribute("data-islamic-compliant") ||
+      element.hasAttribute("data-ministry") ||
+      element.classList.contains("prayer-time-indicator") ||
+      element.classList.contains("arabic-content")
+    );
   }
 
-  private applyCulturalFixes(element: HTMLElement, validation: CulturalValidationResult): void {
+  private applyCulturalFixes(
+    element: HTMLElement,
+    validation: CulturalValidationResult,
+  ): void {
     // Apply automatic fixes based on validation results
-    validation.recommendations.forEach(recommendation => {
-      if (recommendation.includes('RTL')) {
+    validation.recommendations.forEach((recommendation) => {
+      if (recommendation.includes("RTL")) {
         this.enhanceElementForArabic(element);
       }
 
-      if (recommendation.includes('ministry-specific')) {
+      if (recommendation.includes("ministry-specific")) {
         if (this.config.ministryTheme) {
           this.applyMinistryTheme(element, this.config.ministryTheme);
         }
@@ -979,28 +1048,32 @@ export class IraqiDOMManager extends EventEmitter {
     });
   }
 
-  private createErrorResult(element: HTMLElement, message: string, executionTime: number): DOMManipulationResult {
+  private createErrorResult(
+    element: HTMLElement,
+    message: string,
+    executionTime: number,
+  ): DOMManipulationResult {
     return {
       success: false,
       element,
       culturalCompliance: {
         isValid: false,
         issues: [message],
-        recommendations: ['Check element and try again'],
+        recommendations: ["Check element and try again"],
         complianceScore: 0,
         islamicCompliance: false,
-        ministryAlignment: false
+        ministryAlignment: false,
       },
       arabicSupport: {
         rtlLayout: false,
         arabicText: false,
-        properTypography: false
+        properTypography: false,
       },
       performanceMetrics: {
         manipulationTime: executionTime,
         renderTime: 0,
-        validationTime: 0
-      }
+        validationTime: 0,
+      },
     };
   }
 
@@ -1010,39 +1083,69 @@ export class IraqiDOMManager extends EventEmitter {
     // Set up prayer time monitoring
     // This would integrate with a prayer time API or service
     this.updatePrayerTimes();
-    
+
     // Update prayer times daily
-    setInterval(() => {
-      this.updatePrayerTimes();
-    }, 24 * 60 * 60 * 1000);
+    setInterval(
+      () => {
+        this.updatePrayerTimes();
+      },
+      24 * 60 * 60 * 1000,
+    );
   }
 
   private updatePrayerTimes(): void {
     // In production, this would fetch from a prayer time API
     const now = new Date();
     this.prayerTimes = [
-      { name: 'Fajr', time: new Date(now.setHours(5, 30)), isActive: false, duration: 20 },
-      { name: 'Dhuhr', time: new Date(now.setHours(12, 30)), isActive: false, duration: 20 },
-      { name: 'Asr', time: new Date(now.setHours(15, 30)), isActive: false, duration: 20 },
-      { name: 'Maghrib', time: new Date(now.setHours(18, 0)), isActive: false, duration: 20 },
-      { name: 'Isha', time: new Date(now.setHours(19, 30)), isActive: false, duration: 20 }
+      {
+        name: "Fajr",
+        time: new Date(now.setHours(5, 30)),
+        isActive: false,
+        duration: 20,
+      },
+      {
+        name: "Dhuhr",
+        time: new Date(now.setHours(12, 30)),
+        isActive: false,
+        duration: 20,
+      },
+      {
+        name: "Asr",
+        time: new Date(now.setHours(15, 30)),
+        isActive: false,
+        duration: 20,
+      },
+      {
+        name: "Maghrib",
+        time: new Date(now.setHours(18, 0)),
+        isActive: false,
+        duration: 20,
+      },
+      {
+        name: "Isha",
+        time: new Date(now.setHours(19, 30)),
+        isActive: false,
+        duration: 20,
+      },
     ];
 
-    this.emit('prayer-times-updated', this.prayerTimes);
+    this.emit("prayer-times-updated", this.prayerTimes);
   }
 
   private applyGlobalCulturalStyles(): void {
     // Apply global cultural styles to the document
     if (this.config.rtlSupport) {
-      document.documentElement.classList.add('rtl-support');
+      document.documentElement.classList.add("rtl-support");
     }
 
     if (this.config.islamicCompliance) {
-      document.documentElement.classList.add('islamic-compliant');
+      document.documentElement.classList.add("islamic-compliant");
     }
 
     if (this.config.ministryTheme) {
-      document.documentElement.classList.add(`ministry-${this.config.ministryTheme}`);
+      document.documentElement.classList.add(
+        `ministry-${this.config.ministryTheme}`,
+      );
     }
   }
 
@@ -1054,19 +1157,22 @@ export class IraqiDOMManager extends EventEmitter {
     return { ...this.editingContext };
   }
 
-  public setEditingMode(mode: 'visual' | 'code' | 'hybrid'): void {
+  public setEditingMode(mode: "visual" | "code" | "hybrid"): void {
     this.editingContext.editingMode = mode;
-    this.emit('editing-mode-changed', mode);
+    this.emit("editing-mode-changed", mode);
   }
 
   public toggleRTLMode(): void {
     this.editingContext.rtlMode = !this.editingContext.rtlMode;
     this.config.rtlSupport = this.editingContext.rtlMode;
-    this.emit('rtl-mode-toggled', this.editingContext.rtlMode);
+    this.emit("rtl-mode-toggled", this.editingContext.rtlMode);
   }
 
-  public getCulturalValidationReport(element?: HTMLElement): CulturalValidationResult {
-    const target = element || this.editingContext.selectedElement || document.body;
+  public getCulturalValidationReport(
+    element?: HTMLElement,
+  ): CulturalValidationResult {
+    const target =
+      element || this.editingContext.selectedElement || document.body;
     return this.validateElementCulturalCompliance(target);
   }
 
@@ -1076,8 +1182,10 @@ export class IraqiDOMManager extends EventEmitter {
 
   public isInPrayerTime(): boolean {
     const now = new Date();
-    return this.prayerTimes.some(prayer => {
-      const prayerEnd = new Date(prayer.time.getTime() + prayer.duration * 60000);
+    return this.prayerTimes.some((prayer) => {
+      const prayerEnd = new Date(
+        prayer.time.getTime() + prayer.duration * 60000,
+      );
       return now >= prayer.time && now <= prayerEnd;
     });
   }
@@ -1088,7 +1196,7 @@ export class IraqiDOMManager extends EventEmitter {
 
   public updateConfiguration(newConfig: Partial<ArabicDOMConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    this.emit('configuration-updated', this.config);
+    this.emit("configuration-updated", this.config);
   }
 
   public destroy(): void {

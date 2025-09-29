@@ -2,7 +2,7 @@
  * Iraqi AI System - Arabic Collaborative Text Engine
  * Advanced Arabic text processing for real-time multi-user collaboration
  * Enhanced for Iraqi government deployment with RTL conflict resolution
- * 
+ *
  * Key Features:
  * - Real-time Arabic RTL text synchronization with conflict resolution
  * - Iraqi dialect processing with contextual understanding
@@ -25,24 +25,24 @@ export interface ArabicTextConfig {
   primaryDialect: ArabicDialect;
   rtlProcessing: boolean;
   mixedDirectionSupport: boolean;
-  
+
   // Cultural validation settings
   islamicContentValidation: boolean;
   culturalTermValidation: boolean;
   governmentTerminologyCheck: boolean;
   professionalLanguageRequired: boolean;
-  
+
   // Collaboration settings
   realTimeSync: boolean;
   conflictResolution: boolean;
   multiUserEditing: boolean;
   cursorSynchronization: boolean;
-  
+
   // Performance settings
   processingLatencyTarget: number; // milliseconds
   cachingEnabled: boolean;
   optimizedRendering: boolean;
-  
+
   // Security settings
   contentFiltering: boolean;
   auditLogging: boolean;
@@ -54,23 +54,23 @@ export interface ArabicTextOperation {
   userId: string;
   timestamp: Date;
   operation: CollaborativeOperation;
-  
+
   // Text content
   position: TextPosition;
   content: string;
   contentDirection: TextDirection;
-  
+
   // Cultural context
   dialectUsed: ArabicDialect;
   culturallyValidated: boolean;
   islamicCompliant: boolean;
   governmentAppropriate: boolean;
-  
+
   // Collaboration context
   conflictsWith: string[]; // Other operation IDs
   mergedWith: string[]; // Operations merged with this one
   priority: number; // 1-10, higher = more priority
-  
+
   // Technical details
   processingLatency: number;
   renderingComplexity: number;
@@ -81,7 +81,7 @@ export interface TextPosition {
   line: number;
   column: number;
   offset: number;
-  
+
   // RTL-specific positioning
   visualColumn: number; // Visual position for RTL
   logicalColumn: number; // Logical position in text
@@ -91,26 +91,26 @@ export interface TextPosition {
 export interface ArabicTextState {
   documentId: string;
   content: string;
-  
+
   // Text structure
   lines: TextLine[];
   paragraphs: TextParagraph[];
   sections: TextSection[];
-  
+
   // Collaborative state
   activeOperations: Map<string, ArabicTextOperation>;
   pendingOperations: ArabicTextOperation[];
   operationHistory: ArabicTextOperation[];
-  
+
   // User cursors and selections
   userCursors: Map<string, UserCursor>;
   userSelections: Map<string, UserSelection>;
-  
+
   // Cultural validation state
   validationResults: Map<string, TextValidationResult>;
   flaggedContent: FlaggedContent[];
   approvedTerms: Set<string>;
-  
+
   // Performance metrics
   processingTime: number;
   renderingTime: number;
@@ -123,17 +123,17 @@ export interface TextLine {
   content: string;
   direction: TextDirection;
   dialectUsed: ArabicDialect;
-  
+
   // Bidirectional text information
   bidiRuns: BidiRun[];
   visualOrder: number[];
   logicalOrder: number[];
-  
+
   // Cultural validation
   culturalScore: number; // 0-1
   islamicCompliant: boolean;
   flaggedTerms: FlaggedTerm[];
-  
+
   // Collaboration metadata
   lastModified: Date;
   lastModifiedBy: string;
@@ -153,17 +153,17 @@ export interface TextParagraph {
   startLine: number;
   endLine: number;
   direction: TextDirection;
-  
+
   // Content analysis
   primaryLanguage: 'arabic' | 'english' | 'mixed';
   dialectAnalysis: DialectAnalysis;
   topicClassification: string[];
-  
+
   // Cultural context
   culturalContext: CulturalContext;
   islamicContentAnalysis: IslamicContentAnalysis;
   governmentRelevance: GovernmentRelevance;
-  
+
   // Collaboration metadata
   collaborators: string[]; // User IDs
   approvalRequired: boolean;
@@ -176,17 +176,17 @@ export interface TextSection {
   titleArabic: string;
   startParagraph: number;
   endParagraph: number;
-  
+
   // Ministry context
   ministry: 'health' | 'education' | 'interior' | 'justice';
   department: string;
   securityLevel: string;
-  
+
   // Workflow integration
   workflowStage: string;
   approvalChain: string[];
   reviewComments: ReviewComment[];
-  
+
   // Cultural compliance
   culturalValidationRequired: boolean;
   islamicReviewRequired: boolean;
@@ -197,16 +197,16 @@ export interface UserCursor {
   userId: string;
   position: TextPosition;
   lastUpdate: Date;
-  
+
   // Visual representation
   color: string;
   name: string;
   nameArabic: string;
-  
+
   // Cultural context
   preferredLanguage: 'arabic' | 'english' | 'bilingual';
   culturalPreferences: CulturalPreferences;
-  
+
   // Technical state
   inputMode: 'arabic' | 'english' | 'auto';
   keyboardLayout: 'arabic' | 'english' | 'bilingual';
@@ -217,11 +217,11 @@ export interface UserSelection {
   startPosition: TextPosition;
   endPosition: TextPosition;
   direction: TextDirection;
-  
+
   // Selection metadata
   selectedText: string;
   selectionPurpose: 'edit' | 'comment' | 'format' | 'translate';
-  
+
   // Cultural context
   culturalValidation: boolean;
   islamicCompliant: boolean;
@@ -235,12 +235,12 @@ export interface FlaggedContent {
   reason: string;
   reasonArabic: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  
+
   // Cultural context
   culturalConcern: boolean;
   islamicConcern: boolean;
   governmentConcern: boolean;
-  
+
   // Resolution
   flaggedBy: string;
   reviewedBy?: string;
@@ -330,22 +330,22 @@ export interface CollaborativeTextResult {
   success: boolean;
   operationId: string;
   processingLatency: number;
-  
+
   // Text processing results
   textState: ArabicTextState;
   validationResults: TextValidationResult[];
   conflictsResolved: ConflictResolution[];
-  
+
   // Cultural compliance
   culturalScore: number; // 0-1
   islamicCompliance: number; // 0-1
   governmentCompliance: number; // 0-1
-  
+
   // Performance metrics
   renderingTime: number;
   syncLatency: number;
   memoryUsage: number;
-  
+
   // User experience
   userNotifications: UserNotification[];
   suggestedImprovements: TextImprovement[];
@@ -379,13 +379,13 @@ export interface TextImprovement {
 export class ArabicCollaborativeTextEngine extends EventEmitter {
   private config: ArabicTextConfig;
   private textState: ArabicTextState;
-  
+
   // Processing engines
   private dialectProcessor: any;
   private culturalValidator: any;
   private conflictResolver: any;
   private bidiProcessor: any;
-  
+
   // Performance monitoring
   private performanceMetrics = {
     totalOperations: 0,
@@ -393,9 +393,9 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
     conflictsResolved: 0,
     culturalValidations: 0,
     dialectDetections: 0,
-    rtlProcessingTime: 0
+    rtlProcessingTime: 0,
   };
-  
+
   // Caching for performance
   private validationCache: Map<string, TextValidationResult> = new Map();
   private dialectCache: Map<string, DialectAnalysis> = new Map();
@@ -429,7 +429,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       processingTime: 0,
       renderingTime: 0,
       syncLatency: 0,
-      conflictsResolved: 0
+      conflictsResolved: 0,
     };
 
     // Initialize processing engines
@@ -447,7 +447,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
    */
   async processTextOperation(operation: ArabicTextOperation): Promise<CollaborativeTextResult> {
     const startTime = Date.now();
-    
+
     try {
       // Validate operation
       const validationResult = await this.validateTextOperation(operation);
@@ -458,7 +458,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       // Check for conflicts
       const conflicts = await this.detectConflicts(operation);
       let conflictResolutions: ConflictResolution[] = [];
-      
+
       if (conflicts.length > 0) {
         conflictResolutions = await this.resolveConflicts(operation, conflicts);
       }
@@ -480,7 +480,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       this.emit('text-operation-processed', {
         operationId: operation.id,
         userId: operation.userId,
-        processingLatency
+        processingLatency,
       });
 
       return {
@@ -497,9 +497,8 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
         syncLatency: analysisResult.syncLatency,
         memoryUsage: this.calculateMemoryUsage(),
         userNotifications: await this.generateUserNotifications(operation),
-        suggestedImprovements: await this.generateTextImprovements(operation)
+        suggestedImprovements: await this.generateTextImprovements(operation),
       };
-
     } catch (error) {
       this.emit('text-processing-error', { operation, error: error.message });
       return this.createErrorResult(operation, error.message);
@@ -509,7 +508,11 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   /**
    * Update user cursor position with RTL support
    */
-  async updateUserCursor(userId: string, position: TextPosition, preferences: CulturalPreferences): Promise<void> {
+  async updateUserCursor(
+    userId: string,
+    position: TextPosition,
+    preferences: CulturalPreferences
+  ): Promise<void> {
     const cursor: UserCursor = {
       userId,
       position: await this.calculateRTLPosition(position),
@@ -520,11 +523,11 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       preferredLanguage: preferences.islamicGreetings ? 'arabic' : 'bilingual',
       culturalPreferences: preferences,
       inputMode: 'auto',
-      keyboardLayout: 'bilingual'
+      keyboardLayout: 'bilingual',
     };
 
     this.textState.userCursors.set(userId, cursor);
-    
+
     // Broadcast cursor update to other collaborators
     this.emit('cursor-updated', { userId, cursor });
   }
@@ -532,14 +535,18 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   /**
    * Process Arabic text selection with bidirectional text support
    */
-  async processTextSelection(userId: string, startPos: TextPosition, endPos: TextPosition): Promise<UserSelection> {
+  async processTextSelection(
+    userId: string,
+    startPos: TextPosition,
+    endPos: TextPosition
+  ): Promise<UserSelection> {
     // Calculate RTL-aware positions
     const rtlStartPos = await this.calculateRTLPosition(startPos);
     const rtlEndPos = await this.calculateRTLPosition(endPos);
 
     // Extract selected text
     const selectedText = this.extractTextBetweenPositions(rtlStartPos, rtlEndPos);
-    
+
     // Determine text direction
     const direction = this.analyzeTextDirection(selectedText);
 
@@ -555,7 +562,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       selectionPurpose: 'edit',
       culturalValidation: culturalValidation.approved,
       islamicCompliant: culturalValidation.islamicCompliant,
-      requiresReview: culturalValidation.requiresReview
+      requiresReview: culturalValidation.requiresReview,
     };
 
     this.textState.userSelections.set(userId, selection);
@@ -578,12 +585,12 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       dialectConfidence: await this.calculateDialectConfidence(text),
       dialectFeatures: await this.extractDialectFeatures(text),
       mixedDialects: await this.detectMixedDialects(text),
-      standardArabicPercentage: await this.calculateStandardArabicPercentage(text)
+      standardArabicPercentage: await this.calculateStandardArabicPercentage(text),
     };
 
     // Cache result for performance
     this.dialectCache.set(text, analysis);
-    
+
     this.performanceMetrics.dialectDetections++;
     this.emit('dialect-analyzed', { text: text.substring(0, 50), analysis });
 
@@ -593,9 +600,9 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   /**
    * Validate text for cultural and Islamic compliance
    */
-  async validateCulturalContent(text: string): Promise<{ 
-    culturalScore: number; 
-    islamicCompliance: number; 
+  async validateCulturalContent(text: string): Promise<{
+    culturalScore: number;
+    islamicCompliance: number;
     flaggedTerms: FlaggedTerm[];
     recommendations: string[];
   }> {
@@ -608,7 +615,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
           culturalScore: 1.0,
           islamicCompliance: 1.0,
           flaggedTerms: [],
-          recommendations: []
+          recommendations: [],
         };
       }
     }
@@ -620,7 +627,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
     const recommendations = await this.generateCulturalRecommendations(text, flaggedTerms);
 
     // Cache result
-    const validationResult: TextValidationResult = 
+    const validationResult: TextValidationResult =
       culturalScore >= 0.8 && islamicCompliance >= 0.9 ? 'approved' : 'flagged';
     this.validationCache.set(cacheKey, validationResult);
 
@@ -630,7 +637,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       culturalScore,
       islamicCompliance,
       flaggedTerms,
-      recommendations
+      recommendations,
     };
   }
 
@@ -667,7 +674,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
           start: i,
           direction: charDirection,
           level: this.calculateBidiLevel(charDirection),
-          script: charScript
+          script: charScript,
         };
         currentScript = charScript;
       }
@@ -681,7 +688,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
 
     // Cache result
     this.bidiCache.set(text, bidiRuns);
-    
+
     const processingTime = Date.now() - startTime;
     this.performanceMetrics.rtlProcessingTime += processingTime;
 
@@ -691,7 +698,10 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   /**
    * Resolve conflicts in collaborative Arabic text editing
    */
-  private async resolveConflicts(operation: ArabicTextOperation, conflicts: ArabicTextOperation[]): Promise<ConflictResolution[]> {
+  private async resolveConflicts(
+    operation: ArabicTextOperation,
+    conflicts: ArabicTextOperation[]
+  ): Promise<ConflictResolution[]> {
     const resolutions: ConflictResolution[] = [];
 
     for (const conflict of conflicts) {
@@ -706,18 +716,24 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   /**
    * Resolve individual text conflict with cultural considerations
    */
-  private async resolveTextConflict(op1: ArabicTextOperation, op2: ArabicTextOperation): Promise<ConflictResolution> {
+  private async resolveTextConflict(
+    op1: ArabicTextOperation,
+    op2: ArabicTextOperation
+  ): Promise<ConflictResolution> {
     let resolutionStrategy: 'merge' | 'priority' | 'cultural-mediation' | 'manual' = 'merge';
-    
+
     // Consider cultural factors in conflict resolution
     const culturalConsiderations: string[] = [];
-    
+
     if (op1.islamicCompliant && !op2.islamicCompliant) {
       resolutionStrategy = 'priority';
       culturalConsiderations.push('Islamic compliance prioritized');
     }
-    
-    if (op1.dialectUsed === this.config.primaryDialect && op2.dialectUsed !== this.config.primaryDialect) {
+
+    if (
+      op1.dialectUsed === this.config.primaryDialect &&
+      op2.dialectUsed !== this.config.primaryDialect
+    ) {
       resolutionStrategy = 'priority';
       culturalConsiderations.push('Primary dialect prioritized');
     }
@@ -731,7 +747,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       resolutionStrategy,
       resolvedBy: 'system',
       culturalConsiderations,
-      finalOperation
+      finalOperation,
     };
   }
 
@@ -759,7 +775,9 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
     }, 5000);
   }
 
-  private async validateTextOperation(operation: ArabicTextOperation): Promise<TextValidationResult> {
+  private async validateTextOperation(
+    operation: ArabicTextOperation
+  ): Promise<TextValidationResult> {
     // Validate operation parameters and content
     return 'approved';
   }
@@ -781,7 +799,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       islamicCompliance: 0.98,
       governmentCompliance: 0.92,
       renderingTime: 15,
-      syncLatency: 25
+      syncLatency: 25,
     };
   }
 
@@ -791,11 +809,13 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
 
   private updatePerformanceMetrics(latency: number): void {
     this.performanceMetrics.totalOperations++;
-    this.performanceMetrics.averageLatency = 
-      (this.performanceMetrics.averageLatency + latency) / 2;
+    this.performanceMetrics.averageLatency = (this.performanceMetrics.averageLatency + latency) / 2;
   }
 
-  private createErrorResult(operation: ArabicTextOperation, error: string): CollaborativeTextResult {
+  private createErrorResult(
+    operation: ArabicTextOperation,
+    error: string
+  ): CollaborativeTextResult {
     return {
       success: false,
       operationId: operation.id,
@@ -809,14 +829,16 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
       renderingTime: 0,
       syncLatency: 0,
       memoryUsage: 0,
-      userNotifications: [{
-        userId: operation.userId,
-        type: 'error',
-        message: `Operation failed: ${error}`,
-        messageArabic: `فشل في العملية: ${error}`,
-        actionRequired: true
-      }],
-      suggestedImprovements: []
+      userNotifications: [
+        {
+          userId: operation.userId,
+          type: 'error',
+          message: `Operation failed: ${error}`,
+          messageArabic: `فشل في العملية: ${error}`,
+          actionRequired: true,
+        },
+      ],
+      suggestedImprovements: [],
     };
   }
 
@@ -850,7 +872,7 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
   private analyzeTextDirection(text: string): TextDirection {
     const arabicChars = (text.match(/[\u0600-\u06FF]/g) || []).length;
     const latinChars = (text.match(/[a-zA-Z]/g) || []).length;
-    
+
     if (arabicChars > latinChars) return 'rtl';
     if (latinChars > arabicChars) return 'ltr';
     return 'mixed';
@@ -864,32 +886,73 @@ export class ArabicCollaborativeTextEngine extends EventEmitter {
     return {
       approved: true,
       islamicCompliant: true,
-      requiresReview: false
+      requiresReview: false,
     };
   }
 
   // Additional helper methods would be implemented...
-  private async detectPrimaryDialect(text: string): Promise<ArabicDialect> { return 'iraqi'; }
-  private async calculateDialectConfidence(text: string): Promise<number> { return 0.85; }
-  private async extractDialectFeatures(text: string): Promise<DialectFeature[]> { return []; }
-  private async detectMixedDialects(text: string): Promise<ArabicDialect[]> { return []; }
-  private async calculateStandardArabicPercentage(text: string): Promise<number> { return 0.7; }
-  private generateTextHash(text: string): string { return text.length.toString(); }
-  private async calculateCulturalScore(text: string): Promise<number> { return 0.9; }
-  private async calculateIslamicCompliance(text: string): Promise<number> { return 0.95; }
-  private async identifyFlaggedTerms(text: string): Promise<FlaggedTerm[]> { return []; }
-  private async generateCulturalRecommendations(text: string, terms: FlaggedTerm[]): Promise<string[]> { return []; }
-  private detectCharacterScript(char: string): 'arabic' | 'latin' | 'mixed' { 
-    return /[\u0600-\u06FF]/.test(char) ? 'arabic' : 'latin'; 
+  private async detectPrimaryDialect(text: string): Promise<ArabicDialect> {
+    return 'iraqi';
+  }
+  private async calculateDialectConfidence(text: string): Promise<number> {
+    return 0.85;
+  }
+  private async extractDialectFeatures(text: string): Promise<DialectFeature[]> {
+    return [];
+  }
+  private async detectMixedDialects(text: string): Promise<ArabicDialect[]> {
+    return [];
+  }
+  private async calculateStandardArabicPercentage(text: string): Promise<number> {
+    return 0.7;
+  }
+  private generateTextHash(text: string): string {
+    return text.length.toString();
+  }
+  private async calculateCulturalScore(text: string): Promise<number> {
+    return 0.9;
+  }
+  private async calculateIslamicCompliance(text: string): Promise<number> {
+    return 0.95;
+  }
+  private async identifyFlaggedTerms(text: string): Promise<FlaggedTerm[]> {
+    return [];
+  }
+  private async generateCulturalRecommendations(
+    text: string,
+    terms: FlaggedTerm[]
+  ): Promise<string[]> {
+    return [];
+  }
+  private detectCharacterScript(char: string): 'arabic' | 'latin' | 'mixed' {
+    return /[\u0600-\u06FF]/.test(char) ? 'arabic' : 'latin';
   }
   private getCharacterDirection(char: string): TextDirection {
     return /[\u0600-\u06FF]/.test(char) ? 'rtl' : 'ltr';
   }
-  private calculateBidiLevel(direction: TextDirection): number { return direction === 'rtl' ? 1 : 0; }
-  private async mergeOperations(op1: ArabicTextOperation, op2: ArabicTextOperation, strategy: string): Promise<ArabicTextOperation> { return op1; }
-  private calculateMemoryUsage(): number { return 1024 * 1024; } // 1MB
-  private async generateUserNotifications(operation: ArabicTextOperation): Promise<UserNotification[]> { return []; }
-  private async generateTextImprovements(operation: ArabicTextOperation): Promise<TextImprovement[]> { return []; }
+  private calculateBidiLevel(direction: TextDirection): number {
+    return direction === 'rtl' ? 1 : 0;
+  }
+  private async mergeOperations(
+    op1: ArabicTextOperation,
+    op2: ArabicTextOperation,
+    strategy: string
+  ): Promise<ArabicTextOperation> {
+    return op1;
+  }
+  private calculateMemoryUsage(): number {
+    return 1024 * 1024;
+  } // 1MB
+  private async generateUserNotifications(
+    operation: ArabicTextOperation
+  ): Promise<UserNotification[]> {
+    return [];
+  }
+  private async generateTextImprovements(
+    operation: ArabicTextOperation
+  ): Promise<TextImprovement[]> {
+    return [];
+  }
 
   /**
    * Get current text state for synchronization

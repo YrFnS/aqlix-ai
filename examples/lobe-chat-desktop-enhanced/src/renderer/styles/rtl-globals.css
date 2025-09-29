@@ -10,13 +10,13 @@
   --iraqi-white: #ffffff;
   --iraqi-black: #000000;
   --iraqi-green: #22b14c;
-  
+
   /* Cultural Colors */
   --mesopotamian-gold: #daa520;
   --tigris-blue: #1e6091;
   --date-palm-brown: #8b4513;
   --desert-beige: #f5f5dc;
-  
+
   /* UI Color System */
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
@@ -25,20 +25,20 @@
   --text-secondary: #6b7280;
   --accent-primary: var(--tigris-blue);
   --accent-secondary: var(--mesopotamian-gold);
-  
+
   /* Dark Mode */
   --dark-bg-primary: #1a1d23;
   --dark-bg-secondary: #2d3748;
   --dark-bg-tertiary: #4a5568;
   --dark-text-primary: #f7fafc;
   --dark-text-secondary: #a0aec0;
-  
+
   /* Semantic Colors */
   --success: var(--iraqi-green);
   --warning: var(--mesopotamian-gold);
   --error: var(--iraqi-red);
   --info: var(--tigris-blue);
-  
+
   /* Spacing System */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -46,13 +46,13 @@
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -61,13 +61,15 @@
 }
 
 /* Arabic Font Loading */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap");
 
 /* Font Family Definitions */
 .font-arabic {
-  font-family: 'Noto Sans Arabic', 'IBM Plex Sans Arabic', 'Segoe UI Arabic', 'Tahoma', 'Traditional Arabic', 'Arial Unicode MS', sans-serif;
-  font-feature-settings: 
+  font-family:
+    "Noto Sans Arabic", "IBM Plex Sans Arabic", "Segoe UI Arabic", "Tahoma",
+    "Traditional Arabic", "Arial Unicode MS", sans-serif;
+  font-feature-settings:
     "liga" 1,
     "kern" 1,
     "calt" 1,
@@ -81,8 +83,9 @@
 }
 
 .font-english {
-  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  font-feature-settings: 
+  font-family:
+    "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+  font-feature-settings:
     "liga" 1,
     "kern" 1,
     "calt" 1;
@@ -110,7 +113,9 @@ body {
   font-family: var(--font-arabic);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 /* RTL-Aware Layout */
@@ -345,7 +350,7 @@ body {
   .iraqi-card {
     border-width: 2px;
   }
-  
+
   .iraqi-button {
     border: 2px solid currentColor;
   }
@@ -383,13 +388,13 @@ body {
   .no-print {
     display: none !important;
   }
-  
+
   body {
     background: white !important;
     color: black !important;
     font-size: 12pt;
   }
-  
+
   .iraqi-card {
     border: 1px solid black;
     box-shadow: none;
@@ -401,11 +406,11 @@ body {
   .text-arabic-4xl {
     font-size: 1.875rem;
   }
-  
+
   .text-arabic-3xl {
     font-size: 1.5rem;
   }
-  
+
   .text-arabic-2xl {
     font-size: 1.25rem;
   }
@@ -413,7 +418,7 @@ body {
 
 /* Cultural Animation Easing */
 :root {
-  --ease-mesopotamian: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-mesopotamian: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-tigris: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --ease-euphrates: cubic-bezier(0.23, 1, 0.320, 1);
+  --ease-euphrates: cubic-bezier(0.23, 1, 0.32, 1);
 }

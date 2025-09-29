@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,24 +7,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import Link from 'next/link';
-import { UserIcon } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { UserIcon } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function UserAccountButton() {
   const supabaseClient = await createClient();
   const { data: personalAccount } = await supabaseClient.rpc(
-    'get_personal_account',
+    "get_personal_account",
   );
 
   const signOut = async () => {
-    'use server';
+    "use server";
 
     const supabase = await createClient();
     await supabase.auth.signOut();
-    return redirect('/');
+    return redirect("/");
   };
 
   return (

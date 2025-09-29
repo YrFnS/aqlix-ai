@@ -2,7 +2,7 @@
  * Iraqi Advanced Project Management Engine
  * Comprehensive multi-ministry project coordination system
  * Enhanced for Iraqi government deployment with cultural intelligence
- * 
+ *
  * Key Features:
  * - Multi-ministry project coordination with hierarchical approval
  * - Islamic compliance tracking with automated Sharia validation
@@ -16,12 +16,12 @@
  * - Automated workflow orchestration with Islamic principles
  */
 
-import { EventEmitter } from 'events';
-import { v4 as uuidv4 } from 'uuid';
-import { 
-  IraqiProject, 
-  ProjectConfig, 
-  ProjectParticipant, 
+import { EventEmitter } from "events";
+import { v4 as uuidv4 } from "uuid";
+import {
+  IraqiProject,
+  ProjectConfig,
+  ProjectParticipant,
   ProjectStatus,
   ProjectPriority,
   MinistryType,
@@ -35,8 +35,8 @@ import {
   ProjectApprovalChain,
   AuditTrailEntry,
   ProjectSecurity,
-  AccessControlMatrix
-} from '@/types';
+  AccessControlMatrix,
+} from "@/types";
 
 // ============================================================================
 // PROJECT MANAGEMENT ENGINE CONFIGURATION
@@ -49,35 +49,35 @@ export interface ProjectManagementConfig {
   culturalValidationEnabled: boolean;
   arabicContentSupport: boolean;
   rtlVisualizationEnabled: boolean;
-  
+
   // Performance settings
   maxConcurrentProjects: number;
   cacheTimeout: number; // milliseconds
   syncInterval: number; // milliseconds
   performanceMonitoringEnabled: boolean;
   distributedTeamOptimization: boolean;
-  
+
   // Cultural settings
   prayerTimeAwareness: boolean;
   ramadanSchedulingEnabled: boolean;
   islamicHolidaySupport: boolean;
   culturalEventTracking: boolean;
   shuraConsultationEnabled: boolean;
-  
+
   // Government settings
   governmentProtocolEnforcement: boolean;
   auditTrailMandatory: boolean;
   transparencyReportingEnabled: boolean;
   parliamentaryOversight: boolean;
   citizenEngagementEnabled: boolean;
-  
+
   // Security settings
   securityClassificationEnabled: boolean;
   encryptionRequired: boolean;
   accessControlEnforced: boolean;
   securityAuditingEnabled: boolean;
   dataProtectionCompliance: boolean;
-  
+
   // Integration settings
   externalSystemIntegration: boolean;
   realTimeCollaboration: boolean;
@@ -91,30 +91,30 @@ export interface ProjectManagementState {
   activeProjects: Map<string, IraqiProject>;
   projectParticipants: Map<string, ProjectParticipant>;
   ministryCoordination: Map<MinistryType, MinistryCoordination>;
-  
+
   // Performance and monitoring
   performanceMetrics: GlobalPerformanceMetrics;
   systemHealth: SystemHealth;
   resourceUtilization: ResourceUtilization;
-  
+
   // Cultural and Islamic tracking
   culturalValidationCache: Map<string, CulturalValidationResult>;
   islamicComplianceCache: Map<string, IslamicComplianceResult>;
   shuraConsultationHistory: Map<string, ShuraConsultationResult>;
-  
+
   // Security and access
   securityContext: SecurityContext;
   accessControlState: AccessControlState;
   auditEventQueue: AuditTrailEntry[];
-  
+
   // Workflow and automation
   workflowQueue: WorkflowTask[];
   notificationQueue: NotificationTask[];
   scheduledTasks: ScheduledTask[];
-  
+
   // System state
   lastSyncTimestamp: Date;
-  systemStatus: 'active' | 'maintenance' | 'degraded' | 'offline';
+  systemStatus: "active" | "maintenance" | "degraded" | "offline";
   configVersion: string;
 }
 
@@ -126,30 +126,30 @@ export interface ProjectCreateRequest {
   descriptionArabic: string;
   type: ProjectType;
   priority: ProjectPriority;
-  
+
   // Organization and ministry
   primaryMinistry: MinistryType;
   secondaryMinistries?: MinistryType[];
   projectManagerId: string;
   sponsorId: string;
-  
+
   // Timeline and budget
   startDate: Date;
   endDate: Date;
   estimatedBudget: number; // IQD
-  
+
   // Configuration
   config: ProjectConfig;
-  
+
   // Cultural and Islamic requirements
   culturalValidationRequired?: boolean;
   islamicComplianceRequired?: boolean;
   shuraConsultationRequired?: boolean;
-  
+
   // Security and access
   securityClassification?: string;
   restrictedAccess?: boolean;
-  
+
   // Initial documents and resources
   initialDocuments?: any[];
   initialResources?: any[];
@@ -162,12 +162,12 @@ export interface ProjectUpdateRequest {
   updateReason: string;
   updateReasonArabic: string;
   updatedBy: string;
-  
+
   // Validation requirements
   culturalValidationRequired?: boolean;
   islamicComplianceRequired?: boolean;
   approvalRequired?: boolean;
-  
+
   // Change management
   changeImpactAssessment?: ChangeImpactAssessment;
   stakeholderNotification?: boolean;
@@ -181,7 +181,7 @@ export interface ProjectUpdateRequest {
 export class IraqiProjectManagementEngine extends EventEmitter {
   private config: ProjectManagementConfig;
   private state: ProjectManagementState;
-  
+
   // Core services
   private culturalValidationService: CulturalValidationService;
   private islamicComplianceService: IslamicComplianceService;
@@ -192,21 +192,22 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   private auditService: AuditService;
   private securityManager: SecurityManager;
   private performanceMonitor: PerformanceMonitor;
-  
+
   // Ministry coordination
-  private ministryCoordinators: Map<MinistryType, MinistryCoordinator> = new Map();
+  private ministryCoordinators: Map<MinistryType, MinistryCoordinator> =
+    new Map();
   private interMinistryBridge: InterMinistryBridge;
-  
+
   // Real-time services
   private realTimeSync: RealTimeSync;
   private notificationService: NotificationService;
   private collaborationManager: CollaborationManager;
-  
+
   // Automation and AI
   private workflowAutomation: WorkflowAutomation;
   private intelligentScheduling: IntelligentScheduling;
   private predictiveAnalytics: PredictiveAnalytics;
-  
+
   constructor(config: ProjectManagementConfig) {
     super();
     this.config = config;
@@ -220,25 +221,25 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   private initializeEngine(): void {
     // Initialize state
     this.state = this.createInitialState();
-    
+
     // Initialize core services
     this.initializeCoreServices();
-    
+
     // Setup ministry coordination
     this.initializeMinistryCoordination();
-    
+
     // Setup real-time services
     this.initializeRealTimeServices();
-    
+
     // Setup automation and AI
     this.initializeAutomationServices();
-    
+
     // Start monitoring and maintenance
     this.startSystemMonitoring();
-    
-    this.emit('engine-initialized', { 
+
+    this.emit("engine-initialized", {
       config: this.config,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 
@@ -260,8 +261,8 @@ export class IraqiProjectManagementEngine extends EventEmitter {
       notificationQueue: [],
       scheduledTasks: [],
       lastSyncTimestamp: new Date(),
-      systemStatus: 'active',
-      configVersion: '1.0.0'
+      systemStatus: "active",
+      configVersion: "1.0.0",
     };
   }
 
@@ -280,15 +281,27 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   private initializeMinistryCoordination(): void {
     // Initialize coordinators for each ministry
     const ministries: MinistryType[] = [
-      'health', 'education', 'interior', 'justice', 'finance', 
-      'defense', 'foreign-affairs', 'communications', 'transportation',
-      'agriculture', 'oil', 'electricity', 'trade', 'labor', 'planning'
+      "health",
+      "education",
+      "interior",
+      "justice",
+      "finance",
+      "defense",
+      "foreign-affairs",
+      "communications",
+      "transportation",
+      "agriculture",
+      "oil",
+      "electricity",
+      "trade",
+      "labor",
+      "planning",
     ];
 
-    ministries.forEach(ministry => {
+    ministries.forEach((ministry) => {
       const coordinator = new MinistryCoordinator(ministry, this.config);
       this.ministryCoordinators.set(ministry, coordinator);
-      
+
       // Setup ministry-specific state
       this.state.ministryCoordination.set(ministry, {
         coordinator,
@@ -296,14 +309,14 @@ export class IraqiProjectManagementEngine extends EventEmitter {
         approvalQueue: [],
         performanceMetrics: this.createMinistryPerformanceMetrics(ministry),
         culturalContext: this.createMinistryCulturalContext(ministry),
-        workflowTemplates: new Map()
+        workflowTemplates: new Map(),
       });
     });
 
     // Initialize inter-ministry bridge
     this.interMinistryBridge = new InterMinistryBridge(
       this.ministryCoordinators,
-      this.config
+      this.config,
     );
   }
 
@@ -311,7 +324,7 @@ export class IraqiProjectManagementEngine extends EventEmitter {
     if (this.config.realTimeCollaboration) {
       this.realTimeSync = new RealTimeSync(this.config);
       this.collaborationManager = new CollaborationManager(this.config);
-      
+
       // Setup real-time event handlers
       this.setupRealTimeEventHandlers();
     }
@@ -335,97 +348,99 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async createProject(request: ProjectCreateRequest): Promise<IraqiProject> {
     const startTime = performance.now();
-    
+
     try {
       // Validate request
       await this.validateProjectRequest(request);
-      
+
       // Create project instance
       const project = await this.buildProjectFromRequest(request);
-      
+
       // Perform cultural validation
       if (request.culturalValidationRequired !== false) {
-        const culturalValidation = await this.culturalValidationService
-          .validateProject(project);
+        const culturalValidation =
+          await this.culturalValidationService.validateProject(project);
         project.culturalValidation = culturalValidation;
       }
-      
+
       // Perform Islamic compliance check
       if (request.islamicComplianceRequired !== false) {
-        const islamicCompliance = await this.islamicComplianceService
-          .validateProject(project);
+        const islamicCompliance =
+          await this.islamicComplianceService.validateProject(project);
         project.islamicCompliance = islamicCompliance;
       }
-      
+
       // Setup Shura consultation if required
-      if (request.shuraConsultationRequired || this.requiresShuraConsultation(project)) {
+      if (
+        request.shuraConsultationRequired ||
+        this.requiresShuraConsultation(project)
+      ) {
         const shuraConsultation = await this.setupShuraConsultation(project);
         project.shuraConsultation = shuraConsultation;
       }
-      
+
       // Initialize project governance
       const approvalChain = await this.createProjectApprovalChain(project);
       project.approvalChain = approvalChain;
-      
+
       // Setup security and access control
       const security = await this.setupProjectSecurity(project);
       project.security = security;
-      
+
       const accessControl = await this.setupAccessControl(project);
       project.accessControl = accessControl;
-      
+
       // Initialize workflow automation
       if (this.config.workflowAutomation) {
         await this.workflowAutomation.initializeProject(project);
       }
-      
+
       // Setup timeline with cultural considerations
       await this.timelineManager.initializeProjectTimeline(project);
-      
+
       // Initialize resource allocation
       await this.resourceManager.allocateInitialResources(project);
-      
+
       // Register project in state
       this.state.activeProjects.set(project.id, project);
-      
+
       // Update ministry coordination
       await this.updateMinistryCoordination(project);
-      
+
       // Record audit trail
       await this.auditService.recordProjectCreation(project, request);
-      
+
       // Start real-time sync if enabled
       if (this.realTimeSync) {
         await this.realTimeSync.registerProject(project);
       }
-      
+
       // Calculate performance metrics
       const processingTime = performance.now() - startTime;
       await this.performanceMonitor.recordOperation(
-        'create-project',
+        "create-project",
         processingTime,
-        project.id
+        project.id,
       );
-      
+
       // Emit creation event
-      this.emit('project-created', {
+      this.emit("project-created", {
         project,
         processingTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
+
       // Schedule initial notifications
       if (this.notificationService) {
         await this.notificationService.scheduleProjectNotifications(project);
       }
-      
-      return project;
 
+      return project;
     } catch (error) {
-      this.emit('project-creation-error', {
+      this.emit("project-creation-error", {
         request,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw new Error(`Failed to create project: ${error.message}`);
     }
@@ -433,108 +448,122 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async updateProject(request: ProjectUpdateRequest): Promise<IraqiProject> {
     const startTime = performance.now();
-    
+
     try {
       const project = this.state.activeProjects.get(request.projectId);
       if (!project) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
-      
+
       // Validate update permissions
       await this.validateUpdatePermissions(project, request.updatedBy);
-      
+
       // Perform change impact assessment
-      const changeImpact = await this.assessChangeImpact(project, request.updates);
-      
+      const changeImpact = await this.assessChangeImpact(
+        project,
+        request.updates,
+      );
+
       // Cultural validation if required
       if (request.culturalValidationRequired) {
         const updatedProject = { ...project, ...request.updates };
-        const culturalValidation = await this.culturalValidationService
-          .validateProject(updatedProject);
-        
+        const culturalValidation =
+          await this.culturalValidationService.validateProject(updatedProject);
+
         if (!culturalValidation.valid) {
-          throw new Error('Cultural validation failed');
+          throw new Error("Cultural validation failed");
         }
       }
-      
+
       // Islamic compliance check if required
       if (request.islamicComplianceRequired) {
         const updatedProject = { ...project, ...request.updates };
-        const islamicCompliance = await this.islamicComplianceService
-          .validateProject(updatedProject);
-        
+        const islamicCompliance =
+          await this.islamicComplianceService.validateProject(updatedProject);
+
         if (!islamicCompliance.compliant) {
-          throw new Error('Islamic compliance check failed');
+          throw new Error("Islamic compliance check failed");
         }
       }
-      
+
       // Apply updates
       const updatedProject = await this.applyProjectUpdates(project, request);
-      
+
       // Update ministry coordination if ministry changed
-      if (request.updates.primaryMinistry || request.updates.secondaryMinistries) {
+      if (
+        request.updates.primaryMinistry ||
+        request.updates.secondaryMinistries
+      ) {
         await this.updateMinistryCoordination(updatedProject);
       }
-      
+
       // Update timeline if schedule changed
       if (this.hasScheduleChanges(request.updates)) {
-        await this.timelineManager.updateProjectTimeline(updatedProject, changeImpact);
+        await this.timelineManager.updateProjectTimeline(
+          updatedProject,
+          changeImpact,
+        );
       }
-      
+
       // Update resources if resource changes
       if (this.hasResourceChanges(request.updates)) {
-        await this.resourceManager.updateResourceAllocation(updatedProject, changeImpact);
+        await this.resourceManager.updateResourceAllocation(
+          updatedProject,
+          changeImpact,
+        );
       }
-      
+
       // Record audit trail
       await this.auditService.recordProjectUpdate(
         project,
         updatedProject,
         request,
-        changeImpact
+        changeImpact,
       );
-      
+
       // Sync real-time changes
       if (this.realTimeSync) {
-        await this.realTimeSync.syncProjectChanges(updatedProject, changeImpact);
+        await this.realTimeSync.syncProjectChanges(
+          updatedProject,
+          changeImpact,
+        );
       }
-      
+
       // Update state
       this.state.activeProjects.set(request.projectId, updatedProject);
-      
+
       // Send notifications if required
       if (request.stakeholderNotification && this.notificationService) {
         await this.notificationService.notifyProjectUpdate(
           updatedProject,
           changeImpact,
-          request.updatedBy
+          request.updatedBy,
         );
       }
-      
+
       // Calculate performance metrics
       const processingTime = performance.now() - startTime;
       await this.performanceMonitor.recordOperation(
-        'update-project',
+        "update-project",
         processingTime,
-        request.projectId
+        request.projectId,
       );
-      
+
       // Emit update event
-      this.emit('project-updated', {
+      this.emit("project-updated", {
         project: updatedProject,
         previousProject: project,
         changeImpact,
         processingTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
-      
-      return updatedProject;
 
+      return updatedProject;
     } catch (error) {
-      this.emit('project-update-error', {
+      this.emit("project-update-error", {
         request,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw new Error(`Failed to update project: ${error.message}`);
     }
@@ -542,33 +571,32 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async getProject(projectId: string): Promise<IraqiProject | null> {
     const startTime = performance.now();
-    
+
     try {
       const project = this.state.activeProjects.get(projectId);
-      
+
       if (project) {
         // Update last accessed timestamp
         project.lastAccessedAt = new Date();
-        
+
         // Record access in audit trail
-        await this.auditService.recordProjectAccess(project, 'system');
-        
+        await this.auditService.recordProjectAccess(project, "system");
+
         // Update performance metrics
         const processingTime = performance.now() - startTime;
         await this.performanceMonitor.recordOperation(
-          'get-project',
+          "get-project",
           processingTime,
-          projectId
+          projectId,
         );
       }
-      
-      return project || null;
 
+      return project || null;
     } catch (error) {
-      this.emit('project-retrieval-error', {
+      this.emit("project-retrieval-error", {
         projectId,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       return null;
     }
@@ -576,46 +604,51 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async getProjectsByMinistry(ministry: MinistryType): Promise<IraqiProject[]> {
     const startTime = performance.now();
-    
+
     try {
       const projects = Array.from(this.state.activeProjects.values())
-        .filter(project => 
-          project.primaryMinistry === ministry || 
-          project.secondaryMinistries.includes(ministry)
+        .filter(
+          (project) =>
+            project.primaryMinistry === ministry ||
+            project.secondaryMinistries.includes(ministry),
         )
         .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-      
+
       // Update performance metrics
       const processingTime = performance.now() - startTime;
       await this.performanceMonitor.recordOperation(
-        'get-projects-by-ministry',
+        "get-projects-by-ministry",
         processingTime,
-        ministry
+        ministry,
       );
-      
-      return projects;
 
+      return projects;
     } catch (error) {
-      this.emit('projects-retrieval-error', {
+      this.emit("projects-retrieval-error", {
         ministry,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       return [];
     }
   }
 
-  async getProjectsByParticipant(participantId: string): Promise<IraqiProject[]> {
+  async getProjectsByParticipant(
+    participantId: string,
+  ): Promise<IraqiProject[]> {
     try {
       const projects = Array.from(this.state.activeProjects.values())
-        .filter(project =>
-          project.projectManager.id === participantId ||
-          project.sponsor.id === participantId ||
-          project.teamMembers.some(member => member.id === participantId) ||
-          project.stakeholders.some(stakeholder => stakeholder.id === participantId)
+        .filter(
+          (project) =>
+            project.projectManager.id === participantId ||
+            project.sponsor.id === participantId ||
+            project.teamMembers.some((member) => member.id === participantId) ||
+            project.stakeholders.some(
+              (stakeholder) => stakeholder.id === participantId,
+            ),
         )
         .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-      
+
       return projects;
     } catch (error) {
       return [];
@@ -628,20 +661,20 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async coordinateInterMinistryProject(
     projectId: string,
-    coordinationRequest: InterMinistryCoordinationRequest
+    coordinationRequest: InterMinistryCoordinationRequest,
   ): Promise<CoordinationResult> {
     try {
       const project = await this.getProject(projectId);
       if (!project) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
-      
+
       // Delegate to inter-ministry bridge
       const result = await this.interMinistryBridge.coordinateProject(
         project,
-        coordinationRequest
+        coordinationRequest,
       );
-      
+
       // Update project with coordination results
       if (result.success) {
         project.secondaryMinistries = result.involvedMinistries;
@@ -650,46 +683,51 @@ export class IraqiProjectManagementEngine extends EventEmitter {
           projectId,
           updates: {
             secondaryMinistries: result.involvedMinistries,
-            approvalChain: result.updatedApprovalChain
+            approvalChain: result.updatedApprovalChain,
           },
-          updateReason: 'Inter-ministry coordination completed',
-          updateReasonArabic: 'تم إكمال التنسيق بين الوزارات',
-          updatedBy: 'system'
+          updateReason: "Inter-ministry coordination completed",
+          updateReasonArabic: "تم إكمال التنسيق بين الوزارات",
+          updatedBy: "system",
         });
       }
-      
+
       return result;
-      
     } catch (error) {
       throw new Error(`Inter-ministry coordination failed: ${error.message}`);
     }
   }
 
-  async getMinistryPerformance(ministry: MinistryType): Promise<MinistryPerformanceReport> {
+  async getMinistryPerformance(
+    ministry: MinistryType,
+  ): Promise<MinistryPerformanceReport> {
     try {
-      const ministryCoordination = this.state.ministryCoordination.get(ministry);
+      const ministryCoordination =
+        this.state.ministryCoordination.get(ministry);
       if (!ministryCoordination) {
-        throw new Error('Ministry coordination not found');
+        throw new Error("Ministry coordination not found");
       }
-      
+
       const projects = await this.getProjectsByMinistry(ministry);
-      
+
       return {
         ministry,
         totalProjects: projects.length,
-        activeProjects: projects.filter(p => p.status === 'in-progress').length,
-        completedProjects: projects.filter(p => p.status === 'completed').length,
+        activeProjects: projects.filter((p) => p.status === "in-progress")
+          .length,
+        completedProjects: projects.filter((p) => p.status === "completed")
+          .length,
         performanceMetrics: ministryCoordination.performanceMetrics,
         culturalContext: ministryCoordination.culturalContext,
         approvalEfficiency: this.calculateApprovalEfficiency(projects),
         budgetUtilization: this.calculateBudgetUtilization(projects),
         timelinePerformance: this.calculateTimelinePerformance(projects),
         qualityMetrics: this.calculateQualityMetrics(projects),
-        generatedAt: new Date()
+        generatedAt: new Date(),
       };
-      
     } catch (error) {
-      throw new Error(`Failed to generate ministry performance: ${error.message}`);
+      throw new Error(
+        `Failed to generate ministry performance: ${error.message}`,
+      );
     }
   }
 
@@ -697,59 +735,63 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   // CULTURAL AND ISLAMIC SERVICES
   // ============================================================================
 
-  async validateProjectCulturally(projectId: string): Promise<CulturalValidationResult> {
+  async validateProjectCulturally(
+    projectId: string,
+  ): Promise<CulturalValidationResult> {
     try {
       const project = await this.getProject(projectId);
       if (!project) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
-      
-      const result = await this.culturalValidationService.validateProject(project);
-      
+
+      const result =
+        await this.culturalValidationService.validateProject(project);
+
       // Cache the result
       this.state.culturalValidationCache.set(projectId, result);
-      
+
       // Update project
       project.culturalValidation = result;
       await this.updateProject({
         projectId,
         updates: { culturalValidation: result },
-        updateReason: 'Cultural validation completed',
-        updateReasonArabic: 'تم إكمال التحقق الثقافي',
-        updatedBy: 'cultural-validation-service'
+        updateReason: "Cultural validation completed",
+        updateReasonArabic: "تم إكمال التحقق الثقافي",
+        updatedBy: "cultural-validation-service",
       });
-      
+
       return result;
-      
     } catch (error) {
       throw new Error(`Cultural validation failed: ${error.message}`);
     }
   }
 
-  async validateProjectIslamically(projectId: string): Promise<IslamicComplianceResult> {
+  async validateProjectIslamically(
+    projectId: string,
+  ): Promise<IslamicComplianceResult> {
     try {
       const project = await this.getProject(projectId);
       if (!project) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
-      
-      const result = await this.islamicComplianceService.validateProject(project);
-      
+
+      const result =
+        await this.islamicComplianceService.validateProject(project);
+
       // Cache the result
       this.state.islamicComplianceCache.set(projectId, result);
-      
+
       // Update project
       project.islamicCompliance = result;
       await this.updateProject({
         projectId,
         updates: { islamicCompliance: result },
-        updateReason: 'Islamic compliance validation completed',
-        updateReasonArabic: 'تم إكمال التحقق من الامتثال الإسلامي',
-        updatedBy: 'islamic-compliance-service'
+        updateReason: "Islamic compliance validation completed",
+        updateReasonArabic: "تم إكمال التحقق من الامتثال الإسلامي",
+        updatedBy: "islamic-compliance-service",
       });
-      
+
       return result;
-      
     } catch (error) {
       throw new Error(`Islamic compliance validation failed: ${error.message}`);
     }
@@ -757,34 +799,34 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async conductShuraConsultation(
     projectId: string,
-    consultationRequest: ShuraConsultationRequest
+    consultationRequest: ShuraConsultationRequest,
   ): Promise<ShuraConsultationResult> {
     try {
       const project = await this.getProject(projectId);
       if (!project) {
-        throw new Error('Project not found');
+        throw new Error("Project not found");
       }
-      
+
       // Conduct Shura consultation through Islamic compliance service
-      const result = await this.islamicComplianceService.conductShuraConsultation(
-        project,
-        consultationRequest
-      );
-      
+      const result =
+        await this.islamicComplianceService.conductShuraConsultation(
+          project,
+          consultationRequest,
+        );
+
       // Cache and update project
       this.state.shuraConsultationHistory.set(projectId, result);
       project.shuraConsultation = result;
-      
+
       await this.updateProject({
         projectId,
         updates: { shuraConsultation: result },
-        updateReason: 'Shura consultation completed',
-        updateReasonArabic: 'تم إكمال الاستشارة الشورية',
-        updatedBy: 'shura-consultation-service'
+        updateReason: "Shura consultation completed",
+        updateReasonArabic: "تم إكمال الاستشارة الشورية",
+        updatedBy: "shura-consultation-service",
       });
-      
+
       return result;
-      
     } catch (error) {
       throw new Error(`Shura consultation failed: ${error.message}`);
     }
@@ -797,7 +839,7 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   async getSystemPerformance(): Promise<SystemPerformanceReport> {
     try {
       const activeProjects = Array.from(this.state.activeProjects.values());
-      
+
       return {
         systemHealth: this.state.systemHealth,
         performanceMetrics: this.state.performanceMetrics,
@@ -806,63 +848,63 @@ export class IraqiProjectManagementEngine extends EventEmitter {
           totalProjects: activeProjects.length,
           projectsByStatus: this.groupProjectsByStatus(activeProjects),
           projectsByMinistry: this.groupProjectsByMinistry(activeProjects),
-          projectsByPriority: this.groupProjectsByPriority(activeProjects)
+          projectsByPriority: this.groupProjectsByPriority(activeProjects),
         },
         culturalMetrics: {
           validationRate: this.calculateCulturalValidationRate(),
           complianceScore: this.calculateCulturalComplianceScore(),
           islamicComplianceRate: this.calculateIslamicComplianceRate(),
-          shuraConsultationRate: this.calculateShuraConsultationRate()
+          shuraConsultationRate: this.calculateShuraConsultationRate(),
         },
         systemStatus: this.state.systemStatus,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       };
-      
     } catch (error) {
-      throw new Error(`Failed to generate system performance report: ${error.message}`);
+      throw new Error(
+        `Failed to generate system performance report: ${error.message}`,
+      );
     }
   }
 
   async optimizePerformance(): Promise<PerformanceOptimizationResult> {
     try {
       const startTime = performance.now();
-      
+
       // Cache optimization
       await this.optimizeCaches();
-      
+
       // Resource reallocation
       await this.optimizeResourceAllocation();
-      
+
       // Workflow optimization
       if (this.workflowAutomation) {
         await this.workflowAutomation.optimizeWorkflows();
       }
-      
+
       // Memory cleanup
       await this.performMemoryCleanup();
-      
+
       const optimizationTime = performance.now() - startTime;
-      
+
       return {
         success: true,
         optimizationTime,
         improvementsApplied: [
-          'cache-optimization',
-          'resource-reallocation',
-          'workflow-optimization',
-          'memory-cleanup'
+          "cache-optimization",
+          "resource-reallocation",
+          "workflow-optimization",
+          "memory-cleanup",
         ],
         performanceGain: this.calculatePerformanceGain(),
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      
     } catch (error) {
       return {
         success: false,
         optimizationTime: 0,
         improvementsApplied: [],
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
     }
   }
@@ -873,35 +915,34 @@ export class IraqiProjectManagementEngine extends EventEmitter {
 
   async shutdown(): Promise<void> {
     try {
-      this.emit('system-shutdown-initiated');
-      
+      this.emit("system-shutdown-initiated");
+
       // Stop real-time services
       if (this.realTimeSync) {
         await this.realTimeSync.disconnect();
       }
-      
+
       // Complete pending workflows
       await this.completePendingWorkflows();
-      
+
       // Flush audit logs
       await this.auditService.flushLogs();
-      
+
       // Save system state
       await this.saveSystemState();
-      
+
       // Clear caches
       this.state.culturalValidationCache.clear();
       this.state.islamicComplianceCache.clear();
       this.state.shuraConsultationHistory.clear();
-      
+
       // Remove all listeners
       this.removeAllListeners();
-      
-      this.state.systemStatus = 'offline';
-      this.emit('system-shutdown-complete');
-      
+
+      this.state.systemStatus = "offline";
+      this.emit("system-shutdown-complete");
     } catch (error) {
-      this.emit('system-shutdown-error', { error: error.message });
+      this.emit("system-shutdown-error", { error: error.message });
     }
   }
 
@@ -909,35 +950,41 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   // PRIVATE HELPER METHODS
   // ============================================================================
 
-  private async validateProjectRequest(request: ProjectCreateRequest): Promise<void> {
+  private async validateProjectRequest(
+    request: ProjectCreateRequest,
+  ): Promise<void> {
     if (!request.title || !request.titleArabic) {
-      throw new Error('Project title required in both English and Arabic');
+      throw new Error("Project title required in both English and Arabic");
     }
-    
+
     if (!request.primaryMinistry) {
-      throw new Error('Primary ministry is required');
+      throw new Error("Primary ministry is required");
     }
-    
+
     if (!request.projectManagerId || !request.sponsorId) {
-      throw new Error('Project manager and sponsor are required');
+      throw new Error("Project manager and sponsor are required");
     }
-    
+
     if (request.startDate >= request.endDate) {
-      throw new Error('Invalid project timeline');
+      throw new Error("Invalid project timeline");
     }
-    
+
     if (request.estimatedBudget <= 0) {
-      throw new Error('Valid budget is required');
+      throw new Error("Valid budget is required");
     }
   }
 
-  private async buildProjectFromRequest(request: ProjectCreateRequest): Promise<IraqiProject> {
+  private async buildProjectFromRequest(
+    request: ProjectCreateRequest,
+  ): Promise<IraqiProject> {
     const projectId = uuidv4();
-    
+
     // Get participants
     const projectManager = await this.getParticipant(request.projectManagerId);
-    const sponsor = await this.getParticipant(request.sponsorId) as ProjectSponsor;
-    
+    const sponsor = (await this.getParticipant(
+      request.sponsorId,
+    )) as ProjectSponsor;
+
     return {
       id: projectId,
       title: request.title,
@@ -945,58 +992,60 @@ export class IraqiProjectManagementEngine extends EventEmitter {
       description: request.description,
       descriptionArabic: request.descriptionArabic,
       type: request.type,
-      status: 'planning',
+      status: "planning",
       priority: request.priority,
-      
+
       primaryMinistry: request.primaryMinistry,
       secondaryMinistries: request.secondaryMinistries || [],
       projectManager,
       sponsor,
       stakeholders: [],
-      
+
       timeline: await this.createInitialTimeline(request),
       milestones: [],
       dependencies: [],
       criticalPath: [],
-      
+
       budget: await this.createInitialBudget(request),
       resources: [],
       teamMembers: [],
-      
+
       approvalChain: {} as ProjectApprovalChain, // Will be set later
       governanceStructure: await this.createGovernanceStructure(request),
       complianceRequirements: await this.createComplianceRequirements(request),
-      
+
       documents: [],
       versionHistory: [],
       arabicContent: await this.createArabicContentManagement(),
-      
+
       culturalValidation: {} as CulturalValidationResult, // Will be set later
       islamicCompliance: {} as IslamicComplianceResult, // Will be set later
-      
+
       security: {} as ProjectSecurity, // Will be set later
       accessControl: {} as AccessControlMatrix, // Will be set later
       auditTrail: [],
-      
+
       performanceMetrics: this.createInitialProjectPerformanceMetrics(),
       riskAssessment: await this.createInitialRiskAssessment(request),
       qualityMetrics: this.createInitialQualityMetrics(),
-      
+
       config: request.config,
-      
+
       createdAt: new Date(),
       updatedAt: new Date(),
-      lastAccessedAt: new Date()
+      lastAccessedAt: new Date(),
     };
   }
 
   // Additional helper methods would continue...
   private requiresShuraConsultation(project: IraqiProject): boolean {
-    return project.priority === 'critical' || 
-           project.priority === 'emergency' ||
-           project.type === 'policy-development' ||
-           project.secondaryMinistries.length > 2 ||
-           project.config.citizenFacing;
+    return (
+      project.priority === "critical" ||
+      project.priority === "emergency" ||
+      project.type === "policy-development" ||
+      project.secondaryMinistries.length > 2 ||
+      project.config.citizenFacing
+    );
   }
 
   private startSystemMonitoring(): void {
@@ -1004,12 +1053,12 @@ export class IraqiProjectManagementEngine extends EventEmitter {
     setInterval(() => {
       this.performanceMonitor.collectMetrics();
     }, this.config.syncInterval);
-    
+
     // Start health checks
     setInterval(() => {
       this.performHealthCheck();
     }, this.config.syncInterval * 2);
-    
+
     // Start cache cleanup
     setInterval(() => {
       this.performCacheCleanup();
@@ -1022,7 +1071,7 @@ export class IraqiProjectManagementEngine extends EventEmitter {
       cpuUsage: this.getCpuUsage(),
       memoryUsage: this.getMemoryUsage(),
       activeConnections: this.getActiveConnections(),
-      lastCheck: new Date()
+      lastCheck: new Date(),
     };
   }
 
@@ -1030,14 +1079,14 @@ export class IraqiProjectManagementEngine extends EventEmitter {
     // Remove expired cache entries
     const now = Date.now();
     const cacheTimeout = this.config.cacheTimeout;
-    
+
     // Clean cultural validation cache
     for (const [key, value] of this.state.culturalValidationCache.entries()) {
       if (now - value.validatedAt.getTime() > cacheTimeout) {
         this.state.culturalValidationCache.delete(key);
       }
     }
-    
+
     // Clean Islamic compliance cache
     for (const [key, value] of this.state.islamicComplianceCache.entries()) {
       if (now - value.validatedAt.getTime() > cacheTimeout) {
@@ -1047,54 +1096,163 @@ export class IraqiProjectManagementEngine extends EventEmitter {
   }
 
   // Placeholder implementations for helper methods
-  private createInitialPerformanceMetrics(): GlobalPerformanceMetrics { return {} as any; }
-  private createInitialSystemHealth(): SystemHealth { return {} as any; }
-  private createInitialResourceUtilization(): ResourceUtilization { return {} as any; }
-  private createInitialSecurityContext(): SecurityContext { return {} as any; }
-  private createInitialAccessControlState(): AccessControlState { return {} as any; }
-  private createMinistryPerformanceMetrics(ministry: MinistryType): any { return {}; }
-  private createMinistryCulturalContext(ministry: MinistryType): any { return {}; }
+  private createInitialPerformanceMetrics(): GlobalPerformanceMetrics {
+    return {} as any;
+  }
+  private createInitialSystemHealth(): SystemHealth {
+    return {} as any;
+  }
+  private createInitialResourceUtilization(): ResourceUtilization {
+    return {} as any;
+  }
+  private createInitialSecurityContext(): SecurityContext {
+    return {} as any;
+  }
+  private createInitialAccessControlState(): AccessControlState {
+    return {} as any;
+  }
+  private createMinistryPerformanceMetrics(ministry: MinistryType): any {
+    return {};
+  }
+  private createMinistryCulturalContext(ministry: MinistryType): any {
+    return {};
+  }
   private setupRealTimeEventHandlers(): void {}
-  private async getParticipant(id: string): Promise<ProjectParticipant> { return {} as any; }
-  private async createInitialTimeline(request: ProjectCreateRequest): Promise<any> { return {}; }
-  private async createInitialBudget(request: ProjectCreateRequest): Promise<any> { return {}; }
-  private async createGovernanceStructure(request: ProjectCreateRequest): Promise<any> { return {}; }
-  private async createComplianceRequirements(request: ProjectCreateRequest): Promise<any> { return []; }
-  private async createArabicContentManagement(): Promise<any> { return {}; }
-  private createInitialProjectPerformanceMetrics(): ProjectPerformanceMetrics { return {} as any; }
-  private async createInitialRiskAssessment(request: ProjectCreateRequest): Promise<RiskAssessment> { return {} as any; }
-  private createInitialQualityMetrics(): QualityMetrics { return {} as any; }
-  private async setupShuraConsultation(project: IraqiProject): Promise<ShuraConsultationResult> { return {} as any; }
-  private async createProjectApprovalChain(project: IraqiProject): Promise<ProjectApprovalChain> { return {} as any; }
-  private async setupProjectSecurity(project: IraqiProject): Promise<ProjectSecurity> { return {} as any; }
-  private async setupAccessControl(project: IraqiProject): Promise<AccessControlMatrix> { return {} as any; }
-  private async updateMinistryCoordination(project: IraqiProject): Promise<void> {}
-  private async validateUpdatePermissions(project: IraqiProject, userId: string): Promise<void> {}
-  private async assessChangeImpact(project: IraqiProject, updates: any): Promise<ChangeImpactAssessment> { return {} as any; }
-  private async applyProjectUpdates(project: IraqiProject, request: ProjectUpdateRequest): Promise<IraqiProject> { return project; }
-  private hasScheduleChanges(updates: any): boolean { return false; }
-  private hasResourceChanges(updates: any): boolean { return false; }
-  private groupProjectsByStatus(projects: IraqiProject[]): any { return {}; }
-  private groupProjectsByMinistry(projects: IraqiProject[]): any { return {}; }
-  private groupProjectsByPriority(projects: IraqiProject[]): any { return {}; }
-  private calculateCulturalValidationRate(): number { return 0.9; }
-  private calculateCulturalComplianceScore(): number { return 0.85; }
-  private calculateIslamicComplianceRate(): number { return 0.95; }
-  private calculateShuraConsultationRate(): number { return 0.75; }
-  private calculateApprovalEfficiency(projects: IraqiProject[]): number { return 0.8; }
-  private calculateBudgetUtilization(projects: IraqiProject[]): number { return 0.75; }
-  private calculateTimelinePerformance(projects: IraqiProject[]): number { return 0.85; }
-  private calculateQualityMetrics(projects: IraqiProject[]): any { return {}; }
+  private async getParticipant(id: string): Promise<ProjectParticipant> {
+    return {} as any;
+  }
+  private async createInitialTimeline(
+    request: ProjectCreateRequest,
+  ): Promise<any> {
+    return {};
+  }
+  private async createInitialBudget(
+    request: ProjectCreateRequest,
+  ): Promise<any> {
+    return {};
+  }
+  private async createGovernanceStructure(
+    request: ProjectCreateRequest,
+  ): Promise<any> {
+    return {};
+  }
+  private async createComplianceRequirements(
+    request: ProjectCreateRequest,
+  ): Promise<any> {
+    return [];
+  }
+  private async createArabicContentManagement(): Promise<any> {
+    return {};
+  }
+  private createInitialProjectPerformanceMetrics(): ProjectPerformanceMetrics {
+    return {} as any;
+  }
+  private async createInitialRiskAssessment(
+    request: ProjectCreateRequest,
+  ): Promise<RiskAssessment> {
+    return {} as any;
+  }
+  private createInitialQualityMetrics(): QualityMetrics {
+    return {} as any;
+  }
+  private async setupShuraConsultation(
+    project: IraqiProject,
+  ): Promise<ShuraConsultationResult> {
+    return {} as any;
+  }
+  private async createProjectApprovalChain(
+    project: IraqiProject,
+  ): Promise<ProjectApprovalChain> {
+    return {} as any;
+  }
+  private async setupProjectSecurity(
+    project: IraqiProject,
+  ): Promise<ProjectSecurity> {
+    return {} as any;
+  }
+  private async setupAccessControl(
+    project: IraqiProject,
+  ): Promise<AccessControlMatrix> {
+    return {} as any;
+  }
+  private async updateMinistryCoordination(
+    project: IraqiProject,
+  ): Promise<void> {}
+  private async validateUpdatePermissions(
+    project: IraqiProject,
+    userId: string,
+  ): Promise<void> {}
+  private async assessChangeImpact(
+    project: IraqiProject,
+    updates: any,
+  ): Promise<ChangeImpactAssessment> {
+    return {} as any;
+  }
+  private async applyProjectUpdates(
+    project: IraqiProject,
+    request: ProjectUpdateRequest,
+  ): Promise<IraqiProject> {
+    return project;
+  }
+  private hasScheduleChanges(updates: any): boolean {
+    return false;
+  }
+  private hasResourceChanges(updates: any): boolean {
+    return false;
+  }
+  private groupProjectsByStatus(projects: IraqiProject[]): any {
+    return {};
+  }
+  private groupProjectsByMinistry(projects: IraqiProject[]): any {
+    return {};
+  }
+  private groupProjectsByPriority(projects: IraqiProject[]): any {
+    return {};
+  }
+  private calculateCulturalValidationRate(): number {
+    return 0.9;
+  }
+  private calculateCulturalComplianceScore(): number {
+    return 0.85;
+  }
+  private calculateIslamicComplianceRate(): number {
+    return 0.95;
+  }
+  private calculateShuraConsultationRate(): number {
+    return 0.75;
+  }
+  private calculateApprovalEfficiency(projects: IraqiProject[]): number {
+    return 0.8;
+  }
+  private calculateBudgetUtilization(projects: IraqiProject[]): number {
+    return 0.75;
+  }
+  private calculateTimelinePerformance(projects: IraqiProject[]): number {
+    return 0.85;
+  }
+  private calculateQualityMetrics(projects: IraqiProject[]): any {
+    return {};
+  }
   private async optimizeCaches(): Promise<void> {}
   private async optimizeResourceAllocation(): Promise<void> {}
   private async performMemoryCleanup(): Promise<void> {}
-  private calculatePerformanceGain(): number { return 0.15; }
+  private calculatePerformanceGain(): number {
+    return 0.15;
+  }
   private async completePendingWorkflows(): Promise<void> {}
   private async saveSystemState(): Promise<void> {}
-  private calculateSystemStatus(): string { return 'healthy'; }
-  private getCpuUsage(): number { return 45; }
-  private getMemoryUsage(): number { return 60; }
-  private getActiveConnections(): number { return 150; }
+  private calculateSystemStatus(): string {
+    return "healthy";
+  }
+  private getCpuUsage(): number {
+    return 45;
+  }
+  private getMemoryUsage(): number {
+    return 60;
+  }
+  private getActiveConnections(): number {
+    return 150;
+  }
 }
 
 // ============================================================================
@@ -1108,7 +1266,10 @@ interface CulturalValidationService {
 
 interface IslamicComplianceService {
   validateProject(project: IraqiProject): Promise<IslamicComplianceResult>;
-  conductShuraConsultation(project: IraqiProject, request: ShuraConsultationRequest): Promise<ShuraConsultationResult>;
+  conductShuraConsultation(
+    project: IraqiProject,
+    request: ShuraConsultationRequest,
+  ): Promise<ShuraConsultationResult>;
 }
 
 interface ArabicContentManager {
@@ -1117,12 +1278,18 @@ interface ArabicContentManager {
 
 interface TimelineManager {
   initializeProjectTimeline(project: IraqiProject): Promise<void>;
-  updateProjectTimeline(project: IraqiProject, changeImpact: ChangeImpactAssessment): Promise<void>;
+  updateProjectTimeline(
+    project: IraqiProject,
+    changeImpact: ChangeImpactAssessment,
+  ): Promise<void>;
 }
 
 interface ResourceManager {
   allocateInitialResources(project: IraqiProject): Promise<void>;
-  updateResourceAllocation(project: IraqiProject, changeImpact: ChangeImpactAssessment): Promise<void>;
+  updateResourceAllocation(
+    project: IraqiProject,
+    changeImpact: ChangeImpactAssessment,
+  ): Promise<void>;
 }
 
 interface WorkflowEngine {
@@ -1130,8 +1297,16 @@ interface WorkflowEngine {
 }
 
 interface AuditService {
-  recordProjectCreation(project: IraqiProject, request: ProjectCreateRequest): Promise<void>;
-  recordProjectUpdate(oldProject: IraqiProject, newProject: IraqiProject, request: ProjectUpdateRequest, impact: ChangeImpactAssessment): Promise<void>;
+  recordProjectCreation(
+    project: IraqiProject,
+    request: ProjectCreateRequest,
+  ): Promise<void>;
+  recordProjectUpdate(
+    oldProject: IraqiProject,
+    newProject: IraqiProject,
+    request: ProjectUpdateRequest,
+    impact: ChangeImpactAssessment,
+  ): Promise<void>;
   recordProjectAccess(project: IraqiProject, userId: string): Promise<void>;
   flushLogs(): Promise<void>;
 }
@@ -1141,7 +1316,11 @@ interface SecurityManager {
 }
 
 interface PerformanceMonitor {
-  recordOperation(operation: string, duration: number, entityId: string): Promise<void>;
+  recordOperation(
+    operation: string,
+    duration: number,
+    entityId: string,
+  ): Promise<void>;
   collectMetrics(): void;
 }
 
@@ -1150,18 +1329,28 @@ interface MinistryCoordinator {
 }
 
 interface InterMinistryBridge {
-  coordinateProject(project: IraqiProject, request: InterMinistryCoordinationRequest): Promise<CoordinationResult>;
+  coordinateProject(
+    project: IraqiProject,
+    request: InterMinistryCoordinationRequest,
+  ): Promise<CoordinationResult>;
 }
 
 interface RealTimeSync {
   registerProject(project: IraqiProject): Promise<void>;
-  syncProjectChanges(project: IraqiProject, changeImpact: ChangeImpactAssessment): Promise<void>;
+  syncProjectChanges(
+    project: IraqiProject,
+    changeImpact: ChangeImpactAssessment,
+  ): Promise<void>;
   disconnect(): Promise<void>;
 }
 
 interface NotificationService {
   scheduleProjectNotifications(project: IraqiProject): Promise<void>;
-  notifyProjectUpdate(project: IraqiProject, changeImpact: ChangeImpactAssessment, updatedBy: string): Promise<void>;
+  notifyProjectUpdate(
+    project: IraqiProject,
+    changeImpact: ChangeImpactAssessment,
+    updatedBy: string,
+  ): Promise<void>;
 }
 
 interface CollaborationManager {

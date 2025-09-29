@@ -1,7 +1,7 @@
 /**
  * Iraqi Persona Creation Wizard
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Step-by-step persona creation with cultural guidance
  * - Iraqi professional domain selection
@@ -18,7 +18,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,19 +32,19 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  User, 
-  Briefcase, 
-  Heart, 
-  MessageCircle, 
-  Brain, 
+import {
+  User,
+  Briefcase,
+  Heart,
+  MessageCircle,
+  Brain,
   Settings,
   CheckCircle,
   ArrowLeft,
   ArrowRight,
   Sparkles,
   Globe,
-  Shield
+  Shield,
 } from 'lucide-react';
 
 import {
@@ -49,7 +55,7 @@ import {
   IraqiCulturalTraits,
   PersonaResponsePattern,
   IraqiDialect,
-  IRAQI_PERSONA_TEMPLATES
+  IRAQI_PERSONA_TEMPLATES,
 } from '../types/persona';
 import { personaService, CulturalComplianceService } from '../services/personaService';
 
@@ -77,7 +83,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
   onCancel,
   initialData,
   className = '',
-  showArabicLabels = false
+  showArabicLabels = false,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [personaData, setPersonaData] = useState<Partial<IraqiPersona>>({
@@ -102,7 +108,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       authorityRespect: 'moderate',
       wisdomSharing: true,
       patientGuidance: true,
-      moralGuidance: false
+      moralGuidance: false,
     },
     responsePatterns: {
       greetingStyle: 'professional',
@@ -113,21 +119,21 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       culturalReferences: true,
       islamicPrinciples: false,
       historicalContext: false,
-      modernAdaptation: true
+      modernAdaptation: true,
     },
     memoryConfig: {
       retainPersonalDetails: true,
       culturalPreferences: true,
       professionalContext: true,
       conversationHistory: 'medium',
-      culturalSensitivity: true
+      culturalSensitivity: true,
     },
     knowledgeAreas: [],
     tags: [],
     isActive: true,
     isDefault: false,
     visibility: 'public',
-    ...initialData
+    ...initialData,
   });
 
   const [validationResults, setValidationResults] = useState<any>(null);
@@ -142,7 +148,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       arabicDescription: 'ابدأ بشخصية مهنية عراقية جاهزة',
       icon: <Sparkles className="w-5 h-5" />,
       isComplete: !!selectedTemplate || (personaData.name && personaData.domain),
-      isRequired: false
+      isRequired: false,
     },
     {
       id: 'basic',
@@ -152,7 +158,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       arabicDescription: 'تحديد هوية الشخصية والمجال المهني',
       icon: <User className="w-5 h-5" />,
       isComplete: !!(personaData.name && personaData.arabicName && personaData.domain),
-      isRequired: true
+      isRequired: true,
     },
     {
       id: 'cultural',
@@ -162,7 +168,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       arabicDescription: 'تكوين الامتثال الإسلامي والسلوك الثقافي',
       icon: <Heart className="w-5 h-5" />,
       isComplete: !!(personaData.islamicCompliance && personaData.culturalTraits),
-      isRequired: true
+      isRequired: true,
     },
     {
       id: 'communication',
@@ -171,8 +177,11 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       description: 'Set response patterns and interaction preferences',
       arabicDescription: 'تعيين أنماط الاستجابة وتفضيلات التفاعل',
       icon: <MessageCircle className="w-5 h-5" />,
-      isComplete: !!(personaData.responsePatterns?.greetingStyle && personaData.responsePatterns?.explanationStyle),
-      isRequired: true
+      isComplete: !!(
+        personaData.responsePatterns?.greetingStyle &&
+        personaData.responsePatterns?.explanationStyle
+      ),
+      isRequired: true,
     },
     {
       id: 'expertise',
@@ -182,7 +191,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       arabicDescription: 'تحديد مجالات المعرفة والتخصصات',
       icon: <Briefcase className="w-5 h-5" />,
       isComplete: !!(personaData.knowledgeAreas && personaData.knowledgeAreas.length > 0),
-      isRequired: true
+      isRequired: true,
     },
     {
       id: 'memory',
@@ -191,8 +200,8 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       description: 'Configure memory settings and behavioral preferences',
       arabicDescription: 'تكوين إعدادات الذاكرة والتفضيلات السلوكية',
       icon: <Brain className="w-5 h-5" />,
-      isComplete: !!(personaData.memoryConfig),
-      isRequired: false
+      isComplete: !!personaData.memoryConfig,
+      isRequired: false,
     },
     {
       id: 'review',
@@ -202,34 +211,37 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       arabicDescription: 'مراجعة التكوين وإنشاء الشخصية',
       icon: <CheckCircle className="w-5 h-5" />,
       isComplete: validationResults?.isValid || false,
-      isRequired: true
-    }
+      isRequired: true,
+    },
   ];
 
   const completedSteps = wizardSteps.filter(step => step.isComplete).length;
   const progressPercentage = (completedSteps / wizardSteps.length) * 100;
 
-  const handleTemplateSelect = useCallback((template: PersonaTemplate) => {
-    setSelectedTemplate(template);
-    setPersonaData({
-      ...personaData,
-      name: template.name,
-      arabicName: template.arabicName,
-      domain: template.domain,
-      description: template.description,
-      arabicDescription: template.arabicDescription,
-      culturalTraits: {
-        ...personaData.culturalTraits,
-        ...template.defaultTraits
-      },
-      responsePatterns: {
-        ...personaData.responsePatterns,
-        ...template.defaultPatterns
-      },
-      knowledgeAreas: template.suggestedKnowledge,
-      tags: [template.domain, 'iraqi', 'professional']
-    });
-  }, [personaData]);
+  const handleTemplateSelect = useCallback(
+    (template: PersonaTemplate) => {
+      setSelectedTemplate(template);
+      setPersonaData({
+        ...personaData,
+        name: template.name,
+        arabicName: template.arabicName,
+        domain: template.domain,
+        description: template.description,
+        arabicDescription: template.arabicDescription,
+        culturalTraits: {
+          ...personaData.culturalTraits,
+          ...template.defaultTraits,
+        },
+        responsePatterns: {
+          ...personaData.responsePatterns,
+          ...template.defaultPatterns,
+        },
+        knowledgeAreas: template.suggestedKnowledge,
+        tags: [template.domain, 'iraqi', 'professional'],
+      });
+    },
+    [personaData]
+  );
 
   const handleDataUpdate = useCallback((updates: Partial<IraqiPersona>) => {
     setPersonaData(prev => ({ ...prev, ...updates }));
@@ -279,7 +291,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
 
   const validatePersonaData = async (data: Partial<IraqiPersona>) => {
     const issues: string[] = [];
-    
+
     if (!data.name) issues.push('Name is required');
     if (!data.arabicName) issues.push('Arabic name is required');
     if (!data.domain) issues.push('Professional domain is required');
@@ -290,7 +302,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
 
     return {
       isValid: issues.length === 0,
-      issues
+      issues,
     };
   };
 
@@ -301,17 +313,16 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           {showArabicLabels ? 'اختر قالبًا للبدء' : 'Choose a template to get started'}
         </h3>
         <p className={`text-gray-600 ${showArabicLabels ? 'text-right' : ''}`}>
-          {showArabicLabels 
+          {showArabicLabels
             ? 'أو ابدأ من الصفر لإنشاء شخصية مخصصة'
-            : 'Or start from scratch to create a custom persona'
-          }
+            : 'Or start from scratch to create a custom persona'}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {IRAQI_PERSONA_TEMPLATES.map((template) => (
-          <Card 
-            key={template.id} 
+        {IRAQI_PERSONA_TEMPLATES.map(template => (
+          <Card
+            key={template.id}
             className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
               selectedTemplate?.id === template.id ? 'ring-2 ring-blue-500 bg-blue-50' : ''
             }`}
@@ -356,7 +367,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
         ))}
 
         {/* Custom Option */}
-        <Card 
+        <Card
           className={`cursor-pointer transition-all duration-200 hover:shadow-md border-dashed ${
             !selectedTemplate ? 'ring-2 ring-blue-500 bg-blue-50' : ''
           }`}
@@ -372,10 +383,9 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-sm text-gray-600">
-              {showArabicLabels 
+              {showArabicLabels
                 ? 'إنشاء شخصية مخصصة من الصفر'
-                : 'Create a custom persona from scratch'
-              }
+                : 'Create a custom persona from scratch'}
             </p>
           </CardContent>
         </Card>
@@ -393,8 +403,10 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Input
             id="name"
             value={personaData.name || ''}
-            onChange={(e) => handleDataUpdate({ name: e.target.value })}
-            placeholder={showArabicLabels ? 'مثال: Iraqi Legal Advisor' : 'e.g., Iraqi Legal Advisor'}
+            onChange={e => handleDataUpdate({ name: e.target.value })}
+            placeholder={
+              showArabicLabels ? 'مثال: Iraqi Legal Advisor' : 'e.g., Iraqi Legal Advisor'
+            }
           />
         </div>
 
@@ -405,8 +417,12 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Input
             id="arabicName"
             value={personaData.arabicName || ''}
-            onChange={(e) => handleDataUpdate({ arabicName: e.target.value })}
-            placeholder={showArabicLabels ? 'مثال: المستشار القانوني العراقي' : 'e.g., المستشار القانوني العراقي'}
+            onChange={e => handleDataUpdate({ arabicName: e.target.value })}
+            placeholder={
+              showArabicLabels
+                ? 'مثال: المستشار القانوني العراقي'
+                : 'e.g., المستشار القانوني العراقي'
+            }
             dir="rtl"
             className="text-right font-arabic"
           />
@@ -421,8 +437,10 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Input
             id="title"
             value={personaData.title || ''}
-            onChange={(e) => handleDataUpdate({ title: e.target.value })}
-            placeholder={showArabicLabels ? 'مثال: Senior Legal Consultant' : 'e.g., Senior Legal Consultant'}
+            onChange={e => handleDataUpdate({ title: e.target.value })}
+            placeholder={
+              showArabicLabels ? 'مثال: Senior Legal Consultant' : 'e.g., Senior Legal Consultant'
+            }
           />
         </div>
 
@@ -433,7 +451,7 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Input
             id="arabicTitle"
             value={personaData.arabicTitle || ''}
-            onChange={(e) => handleDataUpdate({ arabicTitle: e.target.value })}
+            onChange={e => handleDataUpdate({ arabicTitle: e.target.value })}
             placeholder={showArabicLabels ? 'مثال: مستشار قانوني أول' : 'e.g., مستشار قانوني أول'}
             dir="rtl"
             className="text-right font-arabic"
@@ -442,15 +460,15 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="domain">
-          {showArabicLabels ? 'المجال المهني' : 'Professional Domain'}
-        </Label>
+        <Label htmlFor="domain">{showArabicLabels ? 'المجال المهني' : 'Professional Domain'}</Label>
         <Select
           value={personaData.domain || 'general'}
-          onValueChange={(value) => handleDataUpdate({ domain: value as IraqiProfessionalDomain })}
+          onValueChange={value => handleDataUpdate({ domain: value as IraqiProfessionalDomain })}
         >
           <SelectTrigger>
-            <SelectValue placeholder={showArabicLabels ? 'اختر المجال المهني' : 'Select professional domain'} />
+            <SelectValue
+              placeholder={showArabicLabels ? 'اختر المجال المهني' : 'Select professional domain'}
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="legal">
@@ -492,10 +510,11 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Textarea
             id="description"
             value={personaData.description || ''}
-            onChange={(e) => handleDataUpdate({ description: e.target.value })}
-            placeholder={showArabicLabels 
-              ? 'وصف مفصل للشخصية وخبرتها'
-              : 'Detailed description of persona and expertise'
+            onChange={e => handleDataUpdate({ description: e.target.value })}
+            placeholder={
+              showArabicLabels
+                ? 'وصف مفصل للشخصية وخبرتها'
+                : 'Detailed description of persona and expertise'
             }
             rows={4}
           />
@@ -508,10 +527,11 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           <Textarea
             id="arabicDescription"
             value={personaData.arabicDescription || ''}
-            onChange={(e) => handleDataUpdate({ arabicDescription: e.target.value })}
-            placeholder={showArabicLabels 
-              ? 'وصف مفصل للشخصية وخبرتها باللغة العربية'
-              : 'Detailed description in Arabic'
+            onChange={e => handleDataUpdate({ arabicDescription: e.target.value })}
+            placeholder={
+              showArabicLabels
+                ? 'وصف مفصل للشخصية وخبرتها باللغة العربية'
+                : 'Detailed description in Arabic'
             }
             dir="rtl"
             className="text-right font-arabic"
@@ -546,12 +566,10 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
               {currentStep + 1} / {wizardSteps.length}
             </Badge>
           </div>
-          
+
           <div className="mt-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>
-                {showArabicLabels ? 'التقدم' : 'Progress'}
-              </span>
+              <span>{showArabicLabels ? 'التقدم' : 'Progress'}</span>
               <span>{Math.round(progressPercentage)}%</span>
             </div>
             <Progress value={progressPercentage} className="w-full" />
@@ -576,20 +594,26 @@ export const PersonaCreationWizard: React.FC<PersonaCreationWizardProps> = ({
           disabled={currentStep === 0}
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          {currentStep === 0 
-            ? (showArabicLabels ? 'إلغاء' : 'Cancel')
-            : (showArabicLabels ? 'السابق' : 'Previous')
-          }
+          {currentStep === 0
+            ? showArabicLabels
+              ? 'إلغاء'
+              : 'Cancel'
+            : showArabicLabels
+              ? 'السابق'
+              : 'Previous'}
         </Button>
 
         <Button
           onClick={currentStep === wizardSteps.length - 1 ? handleCreatePersona : nextStep}
           disabled={!wizardSteps[currentStep].isComplete}
         >
-          {currentStep === wizardSteps.length - 1 
-            ? (showArabicLabels ? 'إنشاء الشخصية' : 'Create Persona')
-            : (showArabicLabels ? 'التالي' : 'Next')
-          }
+          {currentStep === wizardSteps.length - 1
+            ? showArabicLabels
+              ? 'إنشاء الشخصية'
+              : 'Create Persona'
+            : showArabicLabels
+              ? 'التالي'
+              : 'Next'}
           {currentStep < wizardSteps.length - 1 && <ArrowRight className="w-4 h-4 ml-2" />}
         </Button>
       </div>

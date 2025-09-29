@@ -51,6 +51,7 @@
 **Global payment gateway documentation:**
 
 **Unified Payment Gateway Options:**
+
 - **Paddle:** Global payment processing with tax handling for 200+ countries
 - **Lemonsqueezy:** International payment gateway with global coverage and simple integration
 - **2Checkout (Verifone):** Global payment platform supporting 200+ countries and territories
@@ -137,7 +138,7 @@
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [x] **Intermediate** - Production-ready patterns with common features  
+- [x] **Intermediate** - Production-ready patterns with common features
 - [ ] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

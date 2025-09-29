@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Task } from '@/tools/task';
+import { Task } from "@/tools/task";
 
 // Types for agent responses
 interface AgentResponse<T = any> {
@@ -26,14 +26,14 @@ interface ArabicProcessingResult {
   rtl_optimized: boolean;
   dialect_detected: string;
   confidence: number;
-  text_direction: 'ltr' | 'rtl' | 'mixed';
+  text_direction: "ltr" | "rtl" | "mixed";
   translation?: string;
   pronunciation_guide?: string;
 }
 
 interface PaymentSecurityResult {
   secure: boolean;
-  risk_level: 'low' | 'medium' | 'high' | 'critical';
+  risk_level: "low" | "medium" | "high" | "critical";
   compliance_issues: string[];
   recommendations: string[];
   fraud_indicators: string[];
@@ -42,7 +42,7 @@ interface PaymentSecurityResult {
 interface AccessibilityResult {
   wcag_compliance: number; // 0-1 score
   issues: Array<{
-    level: 'A' | 'AA' | 'AAA';
+    level: "A" | "AA" | "AAA";
     description: string;
     suggestion: string;
   }>;
@@ -65,7 +65,12 @@ export class IraqiAgentCoordinator {
   private config: AgentCoordinationConfig;
   private activeRequests: Map<string, Promise<AgentResponse>>;
   private cache: Map<string, { data: any; timestamp: number }>;
-  private requestQueue: Array<{ agentType: string; params: any; resolve: Function; reject: Function }>;
+  private requestQueue: Array<{
+    agentType: string;
+    params: any;
+    resolve: Function;
+    reject: Function;
+  }>;
   private processing: boolean;
 
   constructor(config?: Partial<AgentCoordinationConfig>) {
@@ -78,7 +83,7 @@ export class IraqiAgentCoordinator {
       cultural_validation_required: true,
       arabic_processing_required: true,
       security_validation_required: true,
-      ...config
+      ...config,
     };
 
     this.activeRequests = new Map();
@@ -106,7 +111,7 @@ export class IraqiAgentCoordinator {
       prompt: `Validate the following content for Iraqi cultural appropriateness and Islamic compliance:
 
 Content: "${params.content}"
-Professional Domain: ${params.professional_domain || 'general'}
+Professional Domain: ${params.professional_domain || "general"}
 Islamic Compliance Required: ${params.islamic_compliance !== false}
 
 Please analyze and provide:
@@ -118,7 +123,7 @@ Please analyze and provide:
 6. Cultural improvement suggestions
 
 Context: This is for the Iraqi AI Chat System's image generation feature.
-User Context: ${JSON.stringify(params.user_context || {})}`
+User Context: ${JSON.stringify(params.user_context || {})}`,
     });
 
     try {
@@ -131,10 +136,10 @@ User Context: ${JSON.stringify(params.user_context || {})}`
           professional_appropriate: true,
           recommendations: [],
           blocked_content: false,
-          improvement_suggestions: []
+          improvement_suggestions: [],
         },
-        agent_id: 'iraqi-cultural-validator',
-        request_id: this.generateRequestId()
+        agent_id: "iraqi-cultural-validator",
+        request_id: this.generateRequestId(),
       };
 
       // Cache successful results
@@ -143,9 +148,9 @@ User Context: ${JSON.stringify(params.user_context || {})}`
     } catch (error) {
       return {
         success: false,
-        error: `Cultural validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        agent_id: 'iraqi-cultural-validator',
-        request_id: this.generateRequestId()
+        error: `Cultural validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        agent_id: "iraqi-cultural-validator",
+        request_id: this.generateRequestId(),
       };
     }
   }
@@ -169,7 +174,7 @@ User Context: ${JSON.stringify(params.user_context || {})}`
       prompt: `Process the following Arabic text for RTL optimization and dialect analysis:
 
 Text: "${params.text}"
-Target Dialect: ${params.target_dialect || 'iraqi'}
+Target Dialect: ${params.target_dialect || "iraqi"}
 Mixed Language Support: ${params.mixed_language || false}
 Translation Required: ${params.translation_required || false}
 
@@ -181,7 +186,7 @@ Please provide:
 5. Pronunciation guide for Iraqi dialect
 6. RTL layout recommendations
 
-Context: This is for image generation prompts in the Iraqi AI Chat System.`
+Context: This is for image generation prompts in the Iraqi AI Chat System.`,
     });
 
     try {
@@ -189,14 +194,14 @@ Context: This is for image generation prompts in the Iraqi AI Chat System.`
         success: true,
         data: {
           rtl_optimized: true,
-          dialect_detected: 'iraqi',
+          dialect_detected: "iraqi",
           confidence: 0.85,
-          text_direction: 'rtl',
+          text_direction: "rtl",
           translation: undefined,
-          pronunciation_guide: undefined
+          pronunciation_guide: undefined,
         },
-        agent_id: 'arabic-rtl-processor',
-        request_id: this.generateRequestId()
+        agent_id: "arabic-rtl-processor",
+        request_id: this.generateRequestId(),
       };
 
       this.setCached(cacheKey, response);
@@ -204,9 +209,9 @@ Context: This is for image generation prompts in the Iraqi AI Chat System.`
     } catch (error) {
       return {
         success: false,
-        error: `Arabic processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        agent_id: 'arabic-rtl-processor',
-        request_id: this.generateRequestId()
+        error: `Arabic processing failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        agent_id: "arabic-rtl-processor",
+        request_id: this.generateRequestId(),
       };
     }
   }
@@ -217,7 +222,7 @@ Context: This is for image generation prompts in the Iraqi AI Chat System.`
   async validatePaymentSecurity(params: {
     operation: string;
     amount?: number;
-    gateway?: 'zaincash' | 'fastpay' | 'nasswallet';
+    gateway?: "zaincash" | "fastpay" | "nasswallet";
     user_id?: string;
     metadata?: any;
   }): Promise<AgentResponse<PaymentSecurityResult>> {
@@ -228,8 +233,8 @@ Context: This is for image generation prompts in the Iraqi AI Chat System.`
 
 Operation: ${params.operation}
 Amount: ${params.amount || 0} IQD
-Gateway: ${params.gateway || 'unknown'}
-User ID: ${params.user_id || 'anonymous'}
+Gateway: ${params.gateway || "unknown"}
+User ID: ${params.user_id || "anonymous"}
 
 Please analyze:
 1. Security risk level assessment
@@ -240,7 +245,7 @@ Please analyze:
 6. Any compliance issues
 
 Context: This is for paid image generation in the Iraqi AI Chat System.
-Metadata: ${JSON.stringify(params.metadata || {})}`
+Metadata: ${JSON.stringify(params.metadata || {})}`,
     });
 
     try {
@@ -248,22 +253,22 @@ Metadata: ${JSON.stringify(params.metadata || {})}`
         success: true,
         data: {
           secure: true,
-          risk_level: 'low',
+          risk_level: "low",
           compliance_issues: [],
           recommendations: [],
-          fraud_indicators: []
+          fraud_indicators: [],
         },
-        agent_id: 'payment-security-guardian',
-        request_id: this.generateRequestId()
+        agent_id: "payment-security-guardian",
+        request_id: this.generateRequestId(),
       };
 
       return response;
     } catch (error) {
       return {
         success: false,
-        error: `Payment security validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        agent_id: 'payment-security-guardian',
-        request_id: this.generateRequestId()
+        error: `Payment security validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        agent_id: "payment-security-guardian",
+        request_id: this.generateRequestId(),
       };
     }
   }
@@ -272,7 +277,7 @@ Metadata: ${JSON.stringify(params.metadata || {})}`
    * Validate accessibility using Iraqi accessibility specialist agent
    */
   async validateAccessibility(params: {
-    content_type: 'image' | 'interface' | 'form';
+    content_type: "image" | "interface" | "form";
     rtl_context: boolean;
     arabic_content: boolean;
     professional_domain?: string;
@@ -285,7 +290,7 @@ Metadata: ${JSON.stringify(params.metadata || {})}`
 Content Type: ${params.content_type}
 RTL Context: ${params.rtl_context}
 Arabic Content: ${params.arabic_content}
-Professional Domain: ${params.professional_domain || 'general'}
+Professional Domain: ${params.professional_domain || "general"}
 
 Please assess:
 1. WCAG 2.1 compliance level (A/AA/AAA)
@@ -295,7 +300,7 @@ Please assess:
 5. Iraqi-specific accessibility needs
 6. Improvement recommendations
 
-Context: This is for image processing interface accessibility in the Iraqi AI Chat System.`
+Context: This is for image processing interface accessibility in the Iraqi AI Chat System.`,
     });
 
     try {
@@ -305,19 +310,19 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
           wcag_compliance: 0.95,
           issues: [],
           arabic_accessibility: true,
-          screen_reader_ready: true
+          screen_reader_ready: true,
         },
-        agent_id: 'iraqi-accessibility-specialist',
-        request_id: this.generateRequestId()
+        agent_id: "iraqi-accessibility-specialist",
+        request_id: this.generateRequestId(),
       };
 
       return response;
     } catch (error) {
       return {
         success: false,
-        error: `Accessibility validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        agent_id: 'iraqi-accessibility-specialist',
-        request_id: this.generateRequestId()
+        error: `Accessibility validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        agent_id: "iraqi-accessibility-specialist",
+        request_id: this.generateRequestId(),
       };
     }
   }
@@ -327,7 +332,7 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
    */
   async validateComprehensively(params: {
     content: string;
-    operation: 'generation' | 'editing' | 'admin';
+    operation: "generation" | "editing" | "admin";
     professional_domain?: string;
     payment_context?: any;
     user_context?: any;
@@ -349,24 +354,24 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
         content: params.content,
         professional_domain: params.professional_domain,
         islamic_compliance: true,
-        user_context: params.user_context
+        user_context: params.user_context,
       }),
 
       // Arabic processing (always required for Iraqi system)
       this.processArabicText({
         text: params.content,
-        target_dialect: 'iraqi',
+        target_dialect: "iraqi",
         mixed_language: true,
-        translation_required: false
+        translation_required: false,
       }),
 
       // Accessibility validation
       this.validateAccessibility({
-        content_type: params.operation === 'admin' ? 'interface' : 'image',
+        content_type: params.operation === "admin" ? "interface" : "image",
         rtl_context: true,
         arabic_content: this.containsArabic(params.content),
-        professional_domain: params.professional_domain
-      })
+        professional_domain: params.professional_domain,
+      }),
     ];
 
     // Add payment security validation if payment context provided
@@ -377,8 +382,8 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
           amount: params.payment_context.amount,
           gateway: params.payment_context.gateway,
           user_id: params.user_context?.user_id,
-          metadata: params.payment_context
-        })
+          metadata: params.payment_context,
+        }),
       );
     }
 
@@ -390,32 +395,39 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
       const scores = [
         cultural.success ? cultural.data?.cultural_score || 0 : 0,
         arabic.success ? arabic.data?.confidence || 0 : 0,
-        accessibility.success ? accessibility.data?.wcag_compliance || 0 : 0
+        accessibility.success ? accessibility.data?.wcag_compliance || 0 : 0,
       ];
 
       if (security) {
         scores.push(security.success ? (security.data?.secure ? 1 : 0) : 0);
       }
 
-      const overall_score = scores.reduce((sum, score) => sum + score, 0) / scores.length;
+      const overall_score =
+        scores.reduce((sum, score) => sum + score, 0) / scores.length;
 
       // Determine blocking issues
       const blocking_issues: string[] = [];
-      
-      if (!cultural.success || (cultural.data && !cultural.data.islamic_compliant)) {
-        blocking_issues.push('Cultural compliance failure');
+
+      if (
+        !cultural.success ||
+        (cultural.data && !cultural.data.islamic_compliant)
+      ) {
+        blocking_issues.push("Cultural compliance failure");
       }
-      
+
       if (!arabic.success) {
-        blocking_issues.push('Arabic processing failure');
+        blocking_issues.push("Arabic processing failure");
       }
-      
-      if (security && (!security.success || security.data?.risk_level === 'critical')) {
-        blocking_issues.push('Security validation failure');
+
+      if (
+        security &&
+        (!security.success || security.data?.risk_level === "critical")
+      ) {
+        blocking_issues.push("Security validation failure");
       }
 
       if (accessibility.success && accessibility.data?.wcag_compliance < 0.6) {
-        blocking_issues.push('Accessibility compliance too low');
+        blocking_issues.push("Accessibility compliance too low");
       }
 
       const approved = blocking_issues.length === 0 && overall_score >= 0.8;
@@ -426,7 +438,7 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
         overall_score,
         approved,
         blocking_issues: blocking_issues.length,
-        agents_used: validationPromises.length
+        agents_used: validationPromises.length,
       });
 
       return {
@@ -436,18 +448,33 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
         accessibility,
         overall_score,
         approved,
-        blocking_issues
+        blocking_issues,
       };
     } catch (error) {
-      console.error('Comprehensive validation failed:', error);
-      
+      console.error("Comprehensive validation failed:", error);
+
       return {
-        cultural: { success: false, error: 'Validation failed', agent_id: 'coordinator', request_id: this.generateRequestId() },
-        arabic: { success: false, error: 'Validation failed', agent_id: 'coordinator', request_id: this.generateRequestId() },
-        accessibility: { success: false, error: 'Validation failed', agent_id: 'coordinator', request_id: this.generateRequestId() },
+        cultural: {
+          success: false,
+          error: "Validation failed",
+          agent_id: "coordinator",
+          request_id: this.generateRequestId(),
+        },
+        arabic: {
+          success: false,
+          error: "Validation failed",
+          agent_id: "coordinator",
+          request_id: this.generateRequestId(),
+        },
+        accessibility: {
+          success: false,
+          error: "Validation failed",
+          agent_id: "coordinator",
+          request_id: this.generateRequestId(),
+        },
         overall_score: 0,
         approved: false,
-        blocking_issues: ['Comprehensive validation system error']
+        blocking_issues: ["Comprehensive validation system error"],
       };
     }
   }
@@ -470,11 +497,11 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
       success_rate: 0.95, // Would be calculated from historical data
       average_response_time: 250, // Would be calculated from historical data
       agent_availability: {
-        'iraqi-cultural-validator': true,
-        'arabic-rtl-processor': true,
-        'payment-security-guardian': true,
-        'iraqi-accessibility-specialist': true
-      }
+        "iraqi-cultural-validator": true,
+        "arabic-rtl-processor": true,
+        "payment-security-guardian": true,
+        "iraqi-accessibility-specialist": true,
+      },
     };
   }
 
@@ -506,15 +533,15 @@ Context: This is for image processing interface accessibility in the Iraqi AI Ch
 
   private setCached(key: string, data: any): void {
     this.cache.set(key, { data, timestamp: Date.now() });
-    
+
     // Clean up old cache entries
     if (this.cache.size > 1000) {
       const oldestKeys = Array.from(this.cache.entries())
         .sort(([, a], [, b]) => a.timestamp - b.timestamp)
         .slice(0, 200)
         .map(([key]) => key);
-      
-      oldestKeys.forEach(key => this.cache.delete(key));
+
+      oldestKeys.forEach((key) => this.cache.delete(key));
     }
   }
 
@@ -530,7 +557,7 @@ export const iraqiAgentCoordinator = new IraqiAgentCoordinator({
   security_validation_required: true,
   max_concurrent_agents: 7,
   timeout_ms: 30000,
-  cache_duration: 300000 // 5 minutes
+  cache_duration: 300000, // 5 minutes
 });
 
 // Export types for use in components
@@ -540,5 +567,5 @@ export type {
   ArabicProcessingResult,
   PaymentSecurityResult,
   AccessibilityResult,
-  AgentCoordinationConfig
+  AgentCoordinationConfig,
 };

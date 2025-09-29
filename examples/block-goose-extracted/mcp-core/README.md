@@ -13,6 +13,7 @@ Complete Model Context Protocol (MCP) implementation enabling AI agents to conne
 ### Protocol Implementation (`mcp-core/`)
 
 #### Core Protocol (`protocol.py`)
+
 ```python
 from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass, asdict
@@ -26,7 +27,7 @@ class MCPMessageType(Enum):
     INITIALIZED = "initialized"
     PING = "ping"
     PONG = "pong"
-    CALL_TOOL = "call_tool" 
+    CALL_TOOL = "call_tool"
     TOOL_RESULT = "tool_result"
     LIST_TOOLS = "list_tools"
     GET_PROMPT = "get_prompt"
@@ -45,10 +46,10 @@ class MCPMessage:
     result: Optional[Any] = None
     error: Optional[Dict[str, Any]] = None
     cultural_context: Optional[Dict[str, Any]] = None  # Iraqi enhancement
-    
+
     def to_dict(self) -> Dict:
         return {k: v for k, v in asdict(self).items() if v is not None}
-    
+
     @classmethod
     def from_dict(cls, data: Dict) -> 'MCPMessage':
         return cls(**data)
@@ -68,17 +69,17 @@ class MCPProtocol:
     Core MCP protocol implementation for Iraqi AI Chat System
     Handles tool registration, execution, and cultural validation
     """
-    
+
     def __init__(self):
         self.tools: Dict[str, Dict] = {}
         self.resources: Dict[str, Dict] = {}
         self.prompts: Dict[str, Dict] = {}
         self.cultural_validators: List[callable] = []
-        
+
     def register_tool(
-        self, 
-        name: str, 
-        description: str, 
+        self,
+        name: str,
+        description: str,
         parameters: Dict,
         handler: callable,
         iraqi_compatible: bool = True,
@@ -94,20 +95,20 @@ class MCPProtocol:
             'security_level': security_level,
             'cultural_validation_required': iraqi_compatible
         }
-    
+
     async def execute_tool(
-        self, 
-        tool_name: str, 
+        self,
+        tool_name: str,
         parameters: Dict,
         context: IraqiToolContext
     ) -> Dict:
         """Execute tool with Iraqi cultural context validation"""
-        
+
         if tool_name not in self.tools:
             raise ValueError(f"Tool {tool_name} not found")
-        
+
         tool = self.tools[tool_name]
-        
+
         # Cultural validation for Iraqi tools
         if tool['cultural_validation_required']:
             validation_result = await self._validate_cultural_context(
@@ -119,7 +120,7 @@ class MCPProtocol:
                     'error': f"Cultural validation failed: {validation_result['reason']}",
                     'cultural_guidance': validation_result.get('guidance')
                 }
-        
+
         # Security check for government tools
         if context.government_security_level:
             security_check = await self._validate_security_clearance(
@@ -130,22 +131,22 @@ class MCPProtocol:
                     'success': False,
                     'error': "Insufficient security clearance for this tool"
                 }
-        
+
         try:
             # Execute tool with Iraqi context
             result = await tool['handler'](parameters, context)
-            
+
             # Post-execution cultural validation
             if tool['cultural_validation_required']:
                 result = await self._validate_tool_output(result, context)
-            
+
             return {
                 'success': True,
                 'result': result,
                 'cultural_compliance': True,
                 'execution_context': asdict(context)
             }
-            
+
         except Exception as e:
             return {
                 'success': False,
@@ -153,45 +154,45 @@ class MCPProtocol:
                 'tool': tool_name,
                 'context': asdict(context)
             }
-    
+
     async def _validate_cultural_context(
-        self, 
-        tool_name: str, 
-        parameters: Dict, 
+        self,
+        tool_name: str,
+        parameters: Dict,
         context: IraqiToolContext
     ) -> Dict:
         """Validate tool execution against Iraqi cultural norms"""
-        
+
         validation_rules = {
             'islamic_compliance': context.islamic_compliance_required,
             'language_appropriate': context.language in ['arabic', 'english'],
             'professional_context': context.formality_level == 'professional',
             'domain_appropriate': context.user_domain in ['legal', 'medical', 'educational', 'government', 'general']
         }
-        
+
         # Tool-specific cultural validation
         cultural_issues = []
-        
+
         # Check for sensitive content in parameters
         for param_name, param_value in parameters.items():
             if isinstance(param_value, str):
                 if await self._contains_culturally_inappropriate_content(param_value):
                     cultural_issues.append(f"Parameter '{param_name}' contains inappropriate content")
-        
+
         # Domain-specific validation
         if context.user_domain == 'legal' and tool_name.startswith('document_'):
             if not await self._validate_legal_document_appropriateness(parameters):
                 cultural_issues.append("Legal document parameters not compliant with Iraqi law")
-        
+
         if cultural_issues:
             return {
                 'valid': False,
                 'reason': '; '.join(cultural_issues),
                 'guidance': self._get_cultural_guidance(context.user_domain)
             }
-        
+
         return {'valid': True}
-    
+
     async def _contains_culturally_inappropriate_content(self, content: str) -> bool:
         """Check content for cultural appropriateness"""
         # Implementation would include:
@@ -199,25 +200,25 @@ class MCPProtocol:
         # - Iraqi social norms validation
         # - Political neutrality verification
         # - Professional appropriateness
-        
+
         inappropriate_indicators = [
             # Religious sensitivity
             'blasphemy', 'religious_mockery',
-            # Political sensitivity  
+            # Political sensitivity
             'sectarian_bias', 'political_propaganda',
             # Social sensitivity
             'inappropriate_gender_content', 'tribal_bias'
         ]
-        
+
         # Simplified check - real implementation would be more sophisticated
         content_lower = content.lower()
         return any(indicator in content_lower for indicator in inappropriate_indicators)
-    
+
     def _get_cultural_guidance(self, domain: str) -> str:
         """Get cultural guidance for specific domains"""
         guidance = {
             'legal': "Ensure compliance with Iraqi legal standards and Islamic jurisprudence principles",
-            'medical': "Follow Iraqi medical ethics and Islamic bioethics guidelines", 
+            'medical': "Follow Iraqi medical ethics and Islamic bioethics guidelines",
             'educational': "Align with Iraqi educational standards and Islamic educational values",
             'government': "Maintain political neutrality and respect for Iraqi institutional protocols",
             'general': "Follow Islamic values and Iraqi social norms"
@@ -238,7 +239,7 @@ class MCPClient:
     MCP client for connecting to Iraqi government and professional tools
     Handles secure connections and cultural context preservation
     """
-    
+
     def __init__(self, server_url: str, cultural_context: IraqiToolContext):
         self.server_url = server_url
         self.cultural_context = cultural_context
@@ -246,7 +247,7 @@ class MCPClient:
         self.message_handlers: Dict[str, Callable] = {}
         self.request_counter = 0
         self.pending_requests: Dict[str, asyncio.Future] = {}
-        
+
     async def connect(self):
         """Establish secure connection to MCP server"""
         try:
@@ -254,27 +255,27 @@ class MCPClient:
                 self.server_url,
                 extra_headers=self._get_auth_headers()
             )
-            
+
             # Initialize connection with Iraqi context
             await self._send_initialize_message()
-            
+
             # Start message handling loop
             asyncio.create_task(self._handle_messages())
-            
+
         except Exception as e:
             raise ConnectionError(f"Failed to connect to MCP server: {e}")
-    
+
     async def call_tool(
-        self, 
-        tool_name: str, 
+        self,
+        tool_name: str,
         parameters: Dict,
         timeout: float = 30.0
     ) -> Dict:
         """Call tool with Iraqi cultural context"""
-        
+
         request_id = str(self.request_counter)
         self.request_counter += 1
-        
+
         message = MCPMessage(
             id=request_id,
             type=MCPMessageType.CALL_TOOL,
@@ -284,14 +285,14 @@ class MCPClient:
             },
             cultural_context=asdict(self.cultural_context)
         )
-        
+
         # Create future for response
         future = asyncio.Future()
         self.pending_requests[request_id] = future
-        
+
         # Send message
         await self._send_message(message)
-        
+
         # Wait for response with timeout
         try:
             result = await asyncio.wait_for(future, timeout=timeout)
@@ -299,35 +300,35 @@ class MCPClient:
         except asyncio.TimeoutError:
             self.pending_requests.pop(request_id, None)
             raise TimeoutError(f"Tool call {tool_name} timed out after {timeout}s")
-    
+
     async def list_iraqi_tools(self) -> List[Dict]:
         """List tools compatible with Iraqi requirements"""
-        
+
         request_id = str(self.request_counter)
         self.request_counter += 1
-        
+
         message = MCPMessage(
             id=request_id,
             type=MCPMessageType.LIST_TOOLS,
             params={'iraqi_compatible_only': True},
             cultural_context=asdict(self.cultural_context)
         )
-        
+
         future = asyncio.Future()
         self.pending_requests[request_id] = future
-        
+
         await self._send_message(message)
         result = await future
-        
+
         # Filter tools based on Iraqi requirements
         iraqi_tools = []
         for tool in result.get('tools', []):
             if tool.get('iraqi_compatible', False):
                 if self._is_tool_appropriate_for_domain(tool, self.cultural_context.user_domain):
                     iraqi_tools.append(tool)
-        
+
         return iraqi_tools
-    
+
     def _get_auth_headers(self) -> Dict[str, str]:
         """Get authentication headers for secure government connections"""
         headers = {
@@ -338,10 +339,10 @@ class MCPClient:
             'Content-Type': 'application/json'
         }
         return headers
-    
+
     async def _send_initialize_message(self):
         """Send initialization message with Iraqi client capabilities"""
-        
+
         init_message = MCPMessage(
             id='init',
             type=MCPMessageType.INITIALIZE,
@@ -362,7 +363,7 @@ class MCPClient:
                 'cultural_context': asdict(self.cultural_context)
             }
         )
-        
+
         await self._send_message(init_message)
 ```
 
@@ -376,14 +377,14 @@ class IraqiGovernmentPortalMCP:
     MCP server for Iraqi government portal automation
     Handles citizen services, document processing, and administrative workflows
     """
-    
+
     def __init__(self):
         self.protocol = MCPProtocol()
         self._register_government_tools()
-        
+
     def _register_government_tools(self):
         """Register Iraqi government-specific tools"""
-        
+
         # Civil Status Department tools
         self.protocol.register_tool(
             name="civil_status_inquiry",
@@ -400,7 +401,7 @@ class IraqiGovernmentPortalMCP:
             handler=self._handle_civil_status_inquiry,
             security_level='government'
         )
-        
+
         # Ministry of Higher Education tools
         self.protocol.register_tool(
             name="education_certificate_verification",
@@ -418,7 +419,7 @@ class IraqiGovernmentPortalMCP:
             handler=self._handle_education_verification,
             security_level='standard'
         )
-        
+
         # Tax Authority tools
         self.protocol.register_tool(
             name="tax_status_check",
@@ -435,7 +436,7 @@ class IraqiGovernmentPortalMCP:
             handler=self._handle_tax_status_check,
             security_level='government'
         )
-        
+
         # Municipality services
         self.protocol.register_tool(
             name="municipality_permit_application",
@@ -453,23 +454,23 @@ class IraqiGovernmentPortalMCP:
             handler=self._handle_municipality_permit,
             security_level='standard'
         )
-    
+
     async def _handle_civil_status_inquiry(self, params: Dict, context: IraqiToolContext) -> Dict:
         """Handle civil status department inquiries"""
-        
+
         # Validate security clearance for government records
         if not await self._validate_government_access(context):
             return {"error": "Insufficient authorization for government records access"}
-        
+
         national_id = params['national_id']
         inquiry_type = params['inquiry_type']
         language = params.get('language', 'arabic')
-        
+
         # Simulate government portal interaction
         # In real implementation, this would connect to actual government APIs
-        
+
         portal_result = await self._query_civil_status_portal(national_id, inquiry_type)
-        
+
         if portal_result['success']:
             # Format response in requested language
             formatted_result = await self._format_government_response(
@@ -488,10 +489,10 @@ class IraqiGovernmentPortalMCP:
                 "message": portal_result['error'],
                 "guidance": "Please verify the national ID number and try again"
             }
-    
+
     async def _query_civil_status_portal(self, national_id: str, inquiry_type: str) -> Dict:
         """Query the actual Iraqi Civil Status portal"""
-        
+
         # Mock implementation - would connect to real government API
         mock_responses = {
             "birth_certificate": {
@@ -506,7 +507,7 @@ class IraqiGovernmentPortalMCP:
                 }
             }
         }
-        
+
         return mock_responses.get(inquiry_type, {"success": False, "error": "Record not found"})
 ```
 
@@ -518,14 +519,14 @@ class IraqiDocumentProcessingMCP:
     MCP server for Iraqi document processing and validation
     Handles Arabic OCR, document templates, and legal document generation
     """
-    
+
     def __init__(self):
         self.protocol = MCPProtocol()
         self._register_document_tools()
-        
+
     def _register_document_tools(self):
         """Register Iraqi document processing tools"""
-        
+
         # Arabic OCR tool
         self.protocol.register_tool(
             name="arabic_ocr_extract",
@@ -542,10 +543,10 @@ class IraqiDocumentProcessingMCP:
             handler=self._handle_arabic_ocr,
             security_level='standard'
         )
-        
+
         # Legal document generator
         self.protocol.register_tool(
-            name="generate_legal_document", 
+            name="generate_legal_document",
             description="Generate Iraqi legal documents with proper Arabic formatting",
             parameters={
                 "type": "object",
@@ -561,7 +562,7 @@ class IraqiDocumentProcessingMCP:
             handler=self._handle_legal_document_generation,
             security_level='standard'
         )
-        
+
         # Document validation tool
         self.protocol.register_tool(
             name="validate_iraqi_document",
@@ -578,21 +579,21 @@ class IraqiDocumentProcessingMCP:
             handler=self._handle_document_validation,
             security_level='government'
         )
-    
+
     async def _handle_arabic_ocr(self, params: Dict, context: IraqiToolContext) -> Dict:
         """Handle Arabic OCR extraction from Iraqi documents"""
-        
+
         image_data = params['image_data']
         document_type = params.get('document_type', 'unknown')
         enhancement = params.get('enhancement', True)
-        
+
         try:
             # OCR processing (mock implementation)
             ocr_result = await self._process_arabic_ocr(image_data, document_type, enhancement)
-            
+
             # Post-process for Iraqi document standards
             processed_text = await self._post_process_iraqi_text(ocr_result['text'], document_type)
-            
+
             return {
                 "success": True,
                 "extracted_text": processed_text,
@@ -602,17 +603,17 @@ class IraqiDocumentProcessingMCP:
                 "language": "arabic",
                 "processing_notes": ocr_result.get('notes', [])
             }
-            
+
         except Exception as e:
             return {
                 "success": False,
                 "error": f"OCR processing failed: {str(e)}",
                 "guidance": "Please ensure the image is clear and contains Arabic text"
             }
-    
+
     async def _process_arabic_ocr(self, image_data: str, document_type: str, enhancement: bool) -> Dict:
         """Process Arabic OCR with Iraqi document optimization"""
-        
+
         # Mock OCR result - real implementation would use actual OCR engine
         mock_results = {
             "id_card": {
@@ -634,28 +635,28 @@ class IraqiDocumentProcessingMCP:
                 }
             }
         }
-        
+
         return mock_results.get(document_type, {
             "text": "نص مستخرج من الوثيقة",
             "confidence": 0.80,
             "fields": {}
         })
-    
+
     async def _post_process_iraqi_text(self, text: str, document_type: str) -> str:
         """Post-process extracted text for Iraqi document standards"""
-        
+
         # Iraqi-specific text processing
         processed_text = text
-        
+
         # Standardize date formats
         processed_text = await self._standardize_iraqi_dates(processed_text)
-        
+
         # Correct common OCR errors in Arabic
         processed_text = await self._correct_arabic_ocr_errors(processed_text)
-        
+
         # Format according to Iraqi document standards
         processed_text = await self._format_iraqi_document_text(processed_text, document_type)
-        
+
         return processed_text
 ```
 
@@ -667,14 +668,14 @@ class IraqiCulturalValidationMCP:
     MCP server for Iraqi cultural and Islamic compliance validation
     Ensures all content meets Iraqi social norms and Islamic values
     """
-    
+
     def __init__(self):
         self.protocol = MCPProtocol()
         self._register_cultural_tools()
-        
+
     def _register_cultural_tools(self):
         """Register cultural validation tools"""
-        
+
         # Islamic compliance checker
         self.protocol.register_tool(
             name="validate_islamic_compliance",
@@ -692,7 +693,7 @@ class IraqiCulturalValidationMCP:
             handler=self._handle_islamic_compliance_validation,
             security_level='standard'
         )
-        
+
         # Cultural appropriateness checker
         self.protocol.register_tool(
             name="check_iraqi_cultural_appropriateness",
@@ -709,7 +710,7 @@ class IraqiCulturalValidationMCP:
             handler=self._handle_cultural_appropriateness_check,
             security_level='standard'
         )
-        
+
         # Professional language validator
         self.protocol.register_tool(
             name="validate_professional_arabic",
@@ -726,39 +727,39 @@ class IraqiCulturalValidationMCP:
             handler=self._handle_professional_arabic_validation,
             security_level='standard'
         )
-    
+
     async def _handle_islamic_compliance_validation(self, params: Dict, context: IraqiToolContext) -> Dict:
         """Validate content for Islamic compliance"""
-        
+
         content = params['content']
         content_type = params.get('content_type', 'text')
         validation_level = params.get('validation_level', 'basic')
         target_audience = params.get('target_audience', 'general')
-        
+
         # Islamic compliance validation
         compliance_issues = []
         compliance_score = 1.0
-        
+
         # Check for explicit religious violations
         religious_violations = await self._check_religious_violations(content)
         if religious_violations:
             compliance_issues.extend(religious_violations)
             compliance_score -= 0.3 * len(religious_violations)
-        
+
         # Check for cultural sensitivity
         cultural_issues = await self._check_cultural_sensitivity(content, target_audience)
         if cultural_issues:
             compliance_issues.extend(cultural_issues)
             compliance_score -= 0.2 * len(cultural_issues)
-        
+
         # Check for appropriate language use
         language_issues = await self._check_appropriate_language(content, validation_level)
         if language_issues:
             compliance_issues.extend(language_issues)
             compliance_score -= 0.1 * len(language_issues)
-        
+
         compliance_score = max(0.0, compliance_score)
-        
+
         return {
             "compliant": compliance_score >= 0.8,
             "compliance_score": compliance_score,
@@ -767,44 +768,44 @@ class IraqiCulturalValidationMCP:
             "validation_level": validation_level,
             "cultural_context": "Iraqi Islamic values"
         }
-    
+
     async def _check_religious_violations(self, content: str) -> List[str]:
         """Check for Islamic religious violations"""
         violations = []
-        
+
         # Simplified implementation - real version would be more comprehensive
         content_lower = content.lower()
-        
+
         # Check for inappropriate religious content
         inappropriate_terms = [
             'blasphemy', 'mockery_of_religion', 'inappropriate_religious_references'
         ]
-        
+
         for term in inappropriate_terms:
             if term in content_lower:
                 violations.append(f"Contains inappropriate religious content: {term}")
-        
+
         # Check for content that conflicts with Islamic values
         if 'gambling' in content_lower or 'alcohol promotion' in content_lower:
             violations.append("Contains content that conflicts with Islamic values")
-        
+
         return violations
-    
+
     async def _get_islamic_compliance_recommendations(self, issues: List[str]) -> List[str]:
         """Get recommendations for Islamic compliance"""
         recommendations = []
-        
+
         if any('religious' in issue.lower() for issue in issues):
             recommendations.append("Review religious references to ensure respectful and accurate representation")
-        
+
         if any('cultural' in issue.lower() for issue in issues):
             recommendations.append("Adjust content to align with Iraqi cultural norms and Islamic values")
-        
+
         if any('language' in issue.lower() for issue in issues):
             recommendations.append("Use more formal and respectful Arabic language appropriate for the context")
-        
+
         recommendations.append("Consider consultation with Islamic scholars for complex religious matters")
-        
+
         return recommendations
 ```
 
@@ -815,7 +816,7 @@ class IraqiCulturalValidationMCP:
 ```python
 class IraqiMCPRegistry:
     """Registry for all Iraqi-specific MCP servers"""
-    
+
     def __init__(self):
         self.servers = {
             'government_portal': {
@@ -849,19 +850,19 @@ class IraqiMCPRegistry:
                 'domains': ['medical']
             }
         }
-    
+
     def get_servers_for_domain(self, domain: str) -> List[Dict]:
         """Get appropriate servers for a specific domain"""
         return [
             server for server in self.servers.values()
             if domain in server['domains'] or 'all' in server['domains']
         ]
-    
+
     def get_servers_by_security_level(self, min_level: str) -> List[Dict]:
         """Get servers that meet minimum security requirements"""
         security_levels = {'standard': 1, 'professional': 2, 'government': 3}
         min_level_value = security_levels.get(min_level, 1)
-        
+
         return [
             server for server in self.servers.values()
             if security_levels.get(server['security_level'], 1) >= min_level_value
@@ -871,18 +872,21 @@ class IraqiMCPRegistry:
 ## 🚀 INTEGRATION STRATEGY
 
 ### Phase 1: Core MCP Infrastructure
+
 1. **Protocol Implementation**: Deploy core MCP protocol with Iraqi cultural extensions
 2. **Government Server**: Implement government portal automation server
 3. **Document Processing**: Deploy Arabic OCR and document processing server
 4. **Cultural Validation**: Implement Islamic compliance validation server
 
 ### Phase 2: Professional Domain Servers
+
 1. **Legal Services**: Deploy Iraqi legal document automation
 2. **Medical Services**: Implement medical document processing
 3. **Educational Tools**: Create educational content validation
 4. **Business Automation**: Deploy Iraqi business process automation
 
 ### Phase 3: Advanced Integration
+
 1. **Multi-Server Orchestration**: Coordinate multiple MCP servers
 2. **Security Hardening**: Implement government-grade security
 3. **Performance Optimization**: Optimize for Iraqi infrastructure

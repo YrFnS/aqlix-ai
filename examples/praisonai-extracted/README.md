@@ -23,7 +23,7 @@ praisonai-extracted/
 │   ├── praisonai/                    # Core framework components
 │   │   ├── __init__.py              # Framework initialization
 │   │   └── agents_generator.py      # Iraqi agent generation system
-│   ├── ui/                          # User interface components  
+│   ├── ui/                          # User interface components
 │   │   └── iraqi_chainlit_ui.py     # Arabic RTL multi-agent interface
 │   ├── api/                         # RESTful API endpoints
 │   │   └── iraqi_api.py             # FastAPI with Arabic RTL WebSocket
@@ -101,11 +101,13 @@ chainlit run iraqi_chainlit_ui.py --port 8001
 ### ⚖️ Legal Domain
 
 **Specialists Available:**
+
 - **Civil Law Specialist**: Iraqi Civil Code, Personal Status Law, Property Rights
 - **Sharia Compliance Advisor**: Islamic jurisprudence, Fatwa guidance, Religious compliance
 - **Contract Specialist**: Islamic commercial principles, International contracts
 
 **Key Features:**
+
 - Iraqi Civil Code (Law No. 40 of 1951) expertise
 - Islamic inheritance law (Mirath) calculations
 - Sharia-compliant contract drafting
@@ -128,10 +130,12 @@ legal_agent = agent_generator.generate_iraqi_agent(
 ### 🏥 Medical Domain
 
 **Specialists Available:**
+
 - **Medical Consultation Advisor**: Islamic medical ethics, Patient care guidance
 - **Healthcare Navigator**: Iraqi healthcare system, Hospital directories
 
 **Key Features:**
+
 - Islamic medical ethics integration
 - Gender-appropriate care recommendations
 - Ramadan fasting medical guidance
@@ -154,10 +158,12 @@ medical_agent = agent_generator.generate_iraqi_agent(
 ### 📚 Educational Domain
 
 **Specialists Available:**
+
 - **Curriculum Advisor**: Iraqi educational system, Islamic studies integration
 - **Arabic Language Tutor**: Iraqi dialect, Classical Arabic, Quranic Arabic
 
 **Key Features:**
+
 - Iraqi Ministry of Education curriculum alignment
 - Islamic values integration in education
 - Arabic language instruction (all variants)
@@ -166,10 +172,12 @@ medical_agent = agent_generator.generate_iraqi_agent(
 ### 🏛️ Government Domain
 
 **Specialists Available:**
+
 - **Citizen Services Advisor**: Government procedures, Ministry navigation
 - **Document Processing Assistant**: Official documents, Requirements guidance
 
 **Key Features:**
+
 - Iraqi ministry procedures
 - Government service navigation
 - Document processing guidance
@@ -178,10 +186,12 @@ medical_agent = agent_generator.generate_iraqi_agent(
 ### 💼 Business Domain
 
 **Specialists Available:**
+
 - **Business Consultant**: Iraqi market analysis, Business development
 - **Islamic Finance Advisor**: Sharia-compliant finance, Islamic banking
 
 **Key Features:**
+
 - Iraqi market conditions analysis
 - Islamic finance principles
 - Halal business practices
@@ -190,10 +200,12 @@ medical_agent = agent_generator.generate_iraqi_agent(
 ### 🏗️ Engineering Domain
 
 **Specialists Available:**
+
 - **Engineering Standards Advisor**: Iraqi building codes, Technical standards
 - **Project Management Consultant**: Iraqi context project management
 
 **Key Features:**
+
 - Iraqi building codes compliance
 - Technical standards guidance
 - Project planning with local regulations
@@ -204,7 +216,7 @@ medical_agent = agent_generator.generate_iraqi_agent(
 ### Coordination Strategies
 
 1. **Sequential**: Agents work one after another
-2. **Parallel**: Agents work simultaneously  
+2. **Parallel**: Agents work simultaneously
 3. **Hierarchical**: Lead agent coordinates others
 4. **Collaborative**: Agents share context and collaborate
 
@@ -227,6 +239,7 @@ coordination_task = await coordinator.coordinate_multi_domain_task(
 ## 🌐 Arabic RTL Support
 
 ### Features
+
 - **Right-to-Left Text Rendering**: Native RTL support in UI
 - **Iraqi Dialect Recognition**: Specialized processing for Iraqi Arabic
 - **Mixed Language Support**: Arabic-English content handling
@@ -264,6 +277,7 @@ if not result["compliant"]:
 ```
 
 ### Compliance Areas
+
 - **Riba (Interest) Detection**: Automatic detection and flagging
 - **Halal Business Practices**: Validation of business activities
 - **Islamic Ethics**: Medical, legal, and business ethics compliance
@@ -334,7 +348,7 @@ ws://localhost:8000/ws/voice/{session_id}
 
 - **🇮🇶 Iraqi Professional Auto**: Automatic domain detection
 - **⚖️ Iraqi Legal System**: Legal specialists
-- **🏥 Iraqi Healthcare**: Medical specialists  
+- **🏥 Iraqi Healthcare**: Medical specialists
 - **📚 Iraqi Education**: Educational specialists
 - **🏛️ Iraqi Government Services**: Government specialists
 - **💼 Iraqi Business**: Business specialists
@@ -361,7 +375,7 @@ coordinator = IraqiAgentCoordinator()
 # Register MCP tool handlers
 coordinator.register_mcp_tools([
     "code_execution",
-    "file_management", 
+    "file_management",
     "browser_automation"
 ])
 ```
@@ -435,24 +449,28 @@ custom_agent = builder.create_iraqi_agent(
 **Estimated 17-24 weeks of development time value extracted:**
 
 ### Phase 1: Core Framework (6-8 weeks)
+
 - Multi-agent coordination system
 - Agent lifecycle management
 - Resource allocation and monitoring
 - Event-driven architecture
 
-### Phase 2: Iraqi Specialization (8-10 weeks)  
+### Phase 2: Iraqi Specialization (8-10 weeks)
+
 - 6 professional domain agents
 - Islamic compliance framework
 - Cultural context preservation
 - Arabic RTL processing
 
 ### Phase 3: UI/API Integration (3-4 weeks)
+
 - Chainlit multi-agent interface
 - FastAPI with WebSocket support
 - Real-time Arabic chat processing
 - Cultural validation APIs
 
 ### Phase 4: System Integration (2-3 weeks)
+
 - MCP ecosystem integration
 - Cross-platform compatibility
 - Performance optimization
@@ -466,20 +484,20 @@ custom_agent = builder.create_iraqi_agent(
 # Test Islamic compliance
 def test_islamic_compliance():
     validator = IslamicComplianceValidator()
-    
+
     # Test Riba detection
     assert not validator.validate_content("10% interest loan")["compliant"]
-    
+
     # Test Halal business
     assert validator.validate_content("Halal food business")["compliant"]
 
 # Test Arabic RTL processing
 def test_arabic_processing():
     processor = ArabicRTLProcessor()
-    
+
     arabic_text = "مرحباً بكم في النظام"
     processed = processor.process_rtl(arabic_text)
-    
+
     assert processor.detect_arabic(arabic_text)
     assert "<div dir='rtl'>" in processor.format_rtl_response(processed)
 ```
@@ -489,14 +507,14 @@ def test_arabic_processing():
 ```python
 async def test_multi_agent_coordination():
     coordinator = IraqiAgentCoordinator()
-    
+
     # Test collaborative coordination
     task_id = await coordinator.coordinate_multi_domain_task(
         task_description="Legal contract with medical implications",
         required_domains=["legal", "medical"],
         strategy="collaborative"
     )
-    
+
     assert task_id in coordinator.active_tasks
     assert coordinator.active_tasks[task_id].status == "completed"
 ```
@@ -556,6 +574,7 @@ SECURITY_CONFIG = {
 ### Community Contributions
 
 This extraction is open for community contributions focusing on:
+
 - Additional Iraqi professional specializations
 - Enhanced Arabic dialect support
 - Cultural context improvements
@@ -575,4 +594,4 @@ For questions about this Iraqi AI Chat System implementation:
 
 **Built with ❤️ for the Iraqi professional community**
 
-*This extraction preserves the innovative multi-agent architecture of PraisonAI while adding deep Iraqi cultural context, Islamic compliance, and Arabic language support for professional domains.*
+_This extraction preserves the innovative multi-agent architecture of PraisonAI while adding deep Iraqi cultural context, Islamic compliance, and Arabic language support for professional domains._

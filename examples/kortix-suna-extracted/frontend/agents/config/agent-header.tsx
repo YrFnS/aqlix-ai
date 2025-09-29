@@ -1,18 +1,18 @@
-import React from 'react';
-import { Sparkles, Settings, MoreHorizontal, Download } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EditableText } from '@/components/ui/editable';
-import { StylePicker } from '../style-picker';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { KortixLogo } from '@/components/sidebar/kortix-logo';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { Sparkles, Settings, MoreHorizontal, Download } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EditableText } from "@/components/ui/editable";
+import { StylePicker } from "../style-picker";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { KortixLogo } from "@/components/sidebar/kortix-logo";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface AgentHeaderProps {
   agentId: string;
@@ -53,10 +53,11 @@ export function AgentHeader({
   agentMetadata,
 }: AgentHeaderProps) {
   const isSunaAgent = agentMetadata?.is_suna_default || false;
-  console.log('isSunaAgent', isSunaAgent);
+  console.log("isSunaAgent", isSunaAgent);
   const restrictions = agentMetadata?.restrictions || {};
-  const isNameEditable = !isViewingOldVersion && (restrictions.name_editable !== false);
-  
+  const isNameEditable =
+    !isViewingOldVersion && restrictions.name_editable !== false;
+
   const handleNameChange = (value: string) => {
     if (!isNameEditable && isSunaAgent) {
       toast.error("Name cannot be edited", {
@@ -64,7 +65,7 @@ export function AgentHeader({
       });
       return;
     }
-    onFieldChange('name', value);
+    onFieldChange("name", value);
   };
   return (
     <div className="flex items-center justify-between mb-0">
@@ -81,7 +82,7 @@ export function AgentHeader({
               onStyleChange={onStyleChange}
               agentId={agentId}
             >
-              <div 
+              <div
                 className="h-9 w-9 rounded-lg flex items-center justify-center shadow-sm ring-1 ring-black/5 hover:ring-black/10 transition-all duration-200 cursor-pointer"
                 style={{ backgroundColor: currentStyle.color }}
               >
@@ -96,22 +97,22 @@ export function AgentHeader({
             onSave={handleNameChange}
             className={cn(
               "text-lg font-semibold bg-transparent text-foreground placeholder:text-muted-foreground",
-              !isNameEditable && isSunaAgent && "cursor-not-allowed opacity-75"
+              !isNameEditable && isSunaAgent && "cursor-not-allowed opacity-75",
             )}
             placeholder="Agent name..."
             disabled={!isNameEditable}
           />
         </div>
       </div>
-      
+
       <div className="flex items-center gap-2">
         {/* 3-dots menu for actions - always show if onExport is available */}
         {onExport && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
                 disabled={isExporting}
               >
@@ -119,7 +120,7 @@ export function AgentHeader({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-40">
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={onExport}
                 disabled={isExporting}
                 className="flex items-center gap-2 text-xs"
@@ -130,23 +131,23 @@ export function AgentHeader({
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-        
+
         {/* Only show tabs for non-Suna agents */}
         {!isSunaAgent && (
           <Tabs value={activeTab} onValueChange={onTabChange}>
             <TabsList className="grid grid-cols-2 bg-muted/50 h-9">
-              <TabsTrigger 
+              <TabsTrigger
                 value="agent-builder"
                 disabled={isViewingOldVersion}
                 className={cn(
                   "flex items-center gap-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm",
-                  isViewingOldVersion && "opacity-50 cursor-not-allowed"
+                  isViewingOldVersion && "opacity-50 cursor-not-allowed",
                 )}
               >
                 <Sparkles className="h-3 w-3" />
                 Prompt to Build
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="configuration"
                 className="flex items-center gap-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
               >
@@ -159,4 +160,4 @@ export function AgentHeader({
       </div>
     </div>
   );
-} 
+}

@@ -7,9 +7,11 @@
 ## 🔍 **Detailed Component Analysis**
 
 ### **Core Browser Automation Engine (CRITICAL - Direct Use)**
+
 **Location**: `browser_use/browser/`
 
 **Extractable Components**:
+
 ```
 ├── browser.py            # Main browser control class
 ├── context.py            # Browser context management
@@ -21,6 +23,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Government Portal Navigation**: Specialized handling for Iraqi gov websites
 - **Arabic Text Recognition**: Enhanced OCR for Arabic government forms
 - **Cultural Error Handling**: Appropriate error messages in Arabic/English
@@ -29,9 +32,11 @@
 **Extraction Value**: 🔥 **CRITICAL** - Complete browser automation foundation (4-5 weeks saved)
 
 ### **DOM Processing & Element Interaction (CRITICAL - Direct Use)**
+
 **Location**: `browser_use/dom/`
 
 **Extractable Components**:
+
 ```
 ├── service.py                      # Main DOM processing service
 ├── utils.py                        # DOM utility functions
@@ -50,6 +55,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Arabic Form Detection**: Specialized detection for Arabic input fields
 - **Iraqi Government Form Templates**: Pre-configured templates for common Iraqi gov forms
 - **Cultural Element Recognition**: Recognition of Iraqi cultural UI patterns
@@ -58,9 +64,11 @@
 **Extraction Value**: 🔥 **CRITICAL** - Complete DOM interaction system (3-4 weeks saved)
 
 ### **Multi-LLM Integration System (HIGH VALUE - Direct Use)**
+
 **Location**: `browser_use/llm/`
 
 **Extractable Components**:
+
 ```
 ├── base.py               # Base LLM interface
 ├── exceptions.py         # LLM-specific exceptions
@@ -99,6 +107,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Arabic Language Optimization**: Specialized prompts for Arabic text processing
 - **Cultural Context Integration**: Iraqi cultural awareness in LLM interactions
 - **Iraqi Dialect Processing**: Enhanced handling for Iraqi Arabic dialect
@@ -107,9 +116,11 @@
 **Extraction Value**: ⭐ **IMPORTANT** - Multi-LLM abstraction layer (2-3 weeks saved)
 
 ### **Agent System & Automation Logic (HIGH VALUE - Direct Use)**
+
 **Location**: `browser_use/agent/`
 
 **Extractable Components**:
+
 ```
 ├── cloud_events.py       # Cloud event handling
 ├── gif.py               # GIF recording for task documentation
@@ -125,6 +136,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Government System Prompts**: Specialized prompts for Iraqi government portal navigation
 - **Arabic Language Prompts**: System prompts in Arabic for better Iraqi user experience
 - **Cultural Behavior Modification**: Agent behavior adapted for Iraqi cultural norms
@@ -133,9 +145,11 @@
 **Extraction Value**: ⭐ **IMPORTANT** - Complete agent orchestration system (3-4 weeks saved)
 
 ### **Rich Example Library (HIGH VALUE - Educational/Reference)**
+
 **Location**: `examples/`
 
 **Critical Examples for Iraqi Use Cases**:
+
 ```
 getting_started/
 ├── 01_basic_search.py      # Basic web search automation
@@ -169,6 +183,7 @@ use-cases/
 ```
 
 **Iraqi-Specific Enhancement Opportunities**:
+
 - **Iraqi Government Portal Examples**: Specific examples for Iraqi Ministry websites
 - **Arabic CAPTCHA Handling**: Enhanced CAPTCHA solving for Arabic text
 - **Iraqi Document Processing**: Examples for Iraqi legal/medical document handling
@@ -177,14 +192,17 @@ use-cases/
 **Extraction Value**: 💡 **USEFUL** - Complete automation examples (1-2 weeks saved)
 
 ### **File System Integration (MEDIUM VALUE - Direct Use)**
+
 **Location**: `browser_use/filesystem/`
 
 **Extractable Components**:
+
 ```
 └── file_system.py        # File system operations for browser automation
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Arabic File Naming**: Support for Arabic file names and metadata
 - **Iraqi Document Templates**: Pre-configured templates for Iraqi documents
 - **Cultural File Organization**: File organization patterns matching Iraqi business practices
@@ -192,14 +210,17 @@ use-cases/
 **Extraction Value**: 💡 **USEFUL** - File system integration (0.5-1 week saved)
 
 ### **Screenshot & Recording System (MEDIUM VALUE - Direct Use)**
+
 **Location**: `browser_use/screenshots/`
 
 **Extractable Components**:
+
 ```
 └── service.py            # Screenshot capture and management
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Arabic Text OCR**: Enhanced OCR for Arabic screenshots
 - **Iraqi Government Form Recognition**: Specialized recognition for Iraqi gov forms
 - **Cultural Documentation**: Screenshots formatted for Iraqi business documentation
@@ -207,9 +228,11 @@ use-cases/
 **Extraction Value**: 💡 **USEFUL** - Screenshot/recording system (0.5-1 week saved)
 
 ### **MCP (Model Context Protocol) Integration (MEDIUM VALUE - Direct Use)**
+
 **Location**: `browser_use/mcp/`
 
 **Extractable Components**:
+
 ```
 ├── client.py             # MCP client implementation
 ├── controller.py         # MCP controller logic
@@ -218,6 +241,7 @@ use-cases/
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Context Protocols**: Specialized MCP protocols for Iraqi government systems
 - **Arabic Language Support**: MCP protocols supporting Arabic language processing
 - **Cultural Context Sharing**: Protocols for sharing Iraqi cultural context between systems
@@ -227,6 +251,7 @@ use-cases/
 ## 🚀 **Extraction Priority Matrix**
 
 ### **Phase 1: Core Automation (Week 1)**
+
 1. **Browser Engine** (4-5 weeks saved)
    - Complete browser control system
    - Multi-browser support (Chrome, Firefox, Safari, Edge)
@@ -238,6 +263,7 @@ use-cases/
    - Data extraction tools
 
 ### **Phase 2: AI Integration (Week 2)**
+
 3. **Multi-LLM System** (2-3 weeks saved)
    - Support for 10+ LLM providers
    - Smart routing and fallback
@@ -249,6 +275,7 @@ use-cases/
    - Documentation generation
 
 ### **Phase 3: Iraqi Specialization (Week 3)**
+
 5. **Example Adaptation** (1-2 weeks saved)
    - Iraqi government portal examples
    - Arabic form handling examples
@@ -262,6 +289,7 @@ use-cases/
 ## 📊 **Iraqi Government Use Cases**
 
 ### **High-Priority Iraqi Government Portals**
+
 1. **Ministry of Interior** - ID card renewals, passport applications
 2. **Ministry of Finance** - Tax filing, business registration
 3. **Ministry of Education** - Certificate verification, university applications
@@ -270,6 +298,7 @@ use-cases/
 6. **Iraqi Stock Exchange** - Investment documentation, trading permits
 
 ### **Technical Challenges for Iraqi Implementation**
+
 1. **Slow Internet Connections**: Enhanced retry logic and timeout handling
 2. **Arabic Text Processing**: OCR and form recognition for Arabic content
 3. **Government Portal Inconsistencies**: Flexible automation that adapts to changes
@@ -277,6 +306,7 @@ use-cases/
 5. **Security Requirements**: Handling Iraqi government security protocols
 
 ### **Automation Workflows for Iraqi Government**
+
 ```python
 # Example: Iraqi ID Card Renewal
 iraqi_id_renewal = {
@@ -310,18 +340,21 @@ iraqi_id_renewal = {
 ## ⚠️ **Iraqi Integration Requirements**
 
 ### **Technical Adaptations**
+
 - **Arabic OCR Integration**: Enhanced text recognition for Arabic government forms
 - **RTL Layout Handling**: Proper navigation of right-to-left government websites
 - **Iraqi Network Optimization**: Handling for slower/unreliable internet connections
 - **Cultural Error Handling**: Error messages and recovery appropriate for Iraqi users
 
 ### **Government Portal Specialization**
+
 - **Authentication Systems**: Integration with Iraqi government authentication
 - **Form Recognition**: Pre-configured templates for common Iraqi government forms
 - **Document Processing**: Automated handling of Iraqi legal/official documents
 - **Payment Integration**: Connection with Iraqi government payment systems
 
 ### **Cultural Compliance**
+
 - **Islamic Calendar Support**: Proper handling of Hijri dates in government forms
 - **Tribal/Family Naming**: Support for complex Iraqi naming conventions
 - **Regional Variations**: Handling for different Iraqi regional government systems
@@ -330,6 +363,7 @@ iraqi_id_renewal = {
 ## 🎯 **Iraqi Integration Strategy**
 
 ### **Core System Enhancements**
+
 ```python
 # Enhanced browser configuration for Iraqi use
 iraqi_browser_config = {
@@ -344,12 +378,14 @@ iraqi_browser_config = {
 ```
 
 ### **Government Portal Integration**
+
 - **Portal Discovery**: Automated detection of Iraqi government website patterns
 - **Form Templates**: Pre-configured templates for common Iraqi government forms
 - **Workflow Libraries**: Ready-made automation workflows for Iraqi government services
 - **Error Recovery**: Enhanced error handling for Iraqi government portal inconsistencies
 
 ### **Cultural Automation Patterns**
+
 - **Respectful Navigation**: Automation behavior appropriate for Iraqi government contexts
 - **Islamic Compliance**: Automated checks for Islamic calendar and cultural appropriateness
 - **Professional Communication**: Formal Arabic language patterns for government interactions
@@ -363,6 +399,6 @@ iraqi_browser_config = {
 ✅ **Multi-LLM integration** with Iraqi dialect support  
 ✅ **Error recovery system** optimized for Iraqi network conditions  
 ✅ **Documentation generation** in Arabic and English  
-✅ **Cultural compliance** with Iraqi government standards  
+✅ **Cultural compliance** with Iraqi government standards
 
 **Outcome**: Production-ready Iraqi government portal automation system with 16-23 weeks of development time saved.

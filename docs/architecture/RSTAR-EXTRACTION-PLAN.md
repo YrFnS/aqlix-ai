@@ -5,6 +5,7 @@
 Microsoft rStar2-Agent is a **breakthrough agentic reasoning system** that achieves frontier-level math reasoning performance with a 14B model through revolutionary **GRPO-RoC (Generalized Preference Optimization with Resample-on-Correct)** reinforcement learning. This extraction plan identifies key technical innovations for integration into the Iraqi AI Chat System.
 
 **Key Value Propositions**:
+
 - **Agentic Reasoning**: Smart reasoning over brute force, achieving 80.6% AIME24 performance
 - **Tool Calling Architecture**: Autonomous code execution and verification system
 - **GRPO-RoC Algorithm**: Novel RL algorithm optimizing coding tool usage and reasoning efficiency
@@ -26,7 +27,7 @@ class RStar2AgentLoop(ToolAgentLoop):
         """
         Agentic Reasoning Workflow:
         1. Problem Analysis & Planning
-        2. Tool Call Generation & Execution  
+        2. Tool Call Generation & Execution
         3. Result Verification & Integration
         4. Multi-Turn Reasoning Continuation
         5. Solution Synthesis & Validation
@@ -34,6 +35,7 @@ class RStar2AgentLoop(ToolAgentLoop):
 ```
 
 **Iraqi AI Integration Strategy**:
+
 - **Enhance** `iraqi-ai-agent-architect` with agentic reasoning patterns
 - **Integrate** tool calling architecture for Arabic mathematical reasoning
 - **Implement** persistent context management for complex Iraqi professional workflows
@@ -48,7 +50,7 @@ def resample_of_correct(batch: DataProto, tokenizer: PreTrainedTokenizerFast, co
     """
     GRPO-RoC Algorithm Core Features:
     - Error Ratio Penalty Weights: Penalize tool execution failures
-    - Answer Format Optimization: Reward proper response formatting  
+    - Answer Format Optimization: Reward proper response formatting
     - Intelligent Sampling: Balance positive/negative examples
     - Quality-Based Selection: Retain highest-quality reasoning traces
     """
@@ -59,19 +61,20 @@ def resample_of_correct(batch: DataProto, tokenizer: PreTrainedTokenizerFast, co
 ```
 
 **Iraqi AI Enhancement**:
+
 ```typescript
 // Enhanced GRPO-RoC for Iraqi Context
 interface IraqiGRPOConfig {
   cultural_compliance_weight: number; // Reward cultural appropriateness
-  arabic_processing_bonus: number;    // Bonus for correct Arabic handling
+  arabic_processing_bonus: number; // Bonus for correct Arabic handling
   professional_domain_accuracy: number; // Professional terminology precision
-  islamic_compliance_factor: number;  // Islamic values adherence
+  islamic_compliance_factor: number; // Islamic values adherence
 }
 
 class IraqiGRPOProcessor {
   async optimizeReasoningTraces(
     batch: ReasoningBatch,
-    culturalContext: IraqiCulturalContext
+    culturalContext: IraqiCulturalContext,
   ): Promise<OptimizedBatch> {
     // Apply GRPO-RoC with Iraqi cultural and professional domain optimization
   }
@@ -97,17 +100,18 @@ async def run_tool_calls(tool_calls):
 ```
 
 **Iraqi AI Tool Integration**:
+
 ```typescript
 // Enhanced Tool Calling for Iraqi Context
 class IraqiToolCallManager {
   private culturalValidators: CulturalValidator[];
   private arabicProcessors: ArabicProcessor[];
   private professionalDomainTools: ProfessionalDomainTool[];
-  
+
   async executeToolCall(
     toolCall: ToolCall,
     culturalContext: IraqiCulturalContext,
-    professionalDomain: IraqiProfessionalDomain
+    professionalDomain: IraqiProfessionalDomain,
   ): Promise<ToolResponse> {
     // Cultural validation before execution
     // Arabic text processing integration
@@ -147,15 +151,16 @@ async def run_tool_calls_on_server_async(
 ```
 
 **Iraqi AI Security Enhancement**:
+
 ```typescript
 // Enhanced Code Judge for Iraqi Context
 class IraqiCodeJudgeManager {
   private securityPolicy: IraqiSecurityPolicy;
   private culturalFilters: CulturalContentFilter[];
-  
+
   async executeCode(
     code: string,
-    context: IraqiExecutionContext
+    context: IraqiExecutionContext,
   ): Promise<SecureExecutionResult> {
     // Pre-execution cultural and security validation
     // Islamic compliance checks for code content
@@ -179,13 +184,14 @@ history_tool_calls.append(tool_call)
 ```
 
 **Iraqi AI Context Enhancement**:
+
 ```typescript
 // Enhanced Context Management for Iraqi Workflows
 class IraqiContextManager {
   private culturalContext: PersistentCulturalContext;
   private professionalHistory: ProfessionalDomainHistory;
   private arabicProcessingState: ArabicProcessingState;
-  
+
   async manageToolContext(
     toolCall: ToolCall,
     iraqi Context: IraqiWorkflowContext
@@ -226,17 +232,18 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
 **Immediate Extractions**:
 
 1. **Agentic Reasoning Engine**
+
    ```typescript
    // File: packages/reasoning/agentic-reasoning-engine.ts
    class IraqiAgenticReasoningEngine {
      private grpoProcessor: IraqiGRPOProcessor;
      private toolManager: IraqiToolCallManager;
      private contextManager: IraqiContextManager;
-     
+
      async executeReasoningWorkflow(
        problem: Problem,
        culturalContext: IraqiCulturalContext,
-       professionalDomain: IraqiProfessionalDomain
+       professionalDomain: IraqiProfessionalDomain,
      ): Promise<ReasoningResult> {
        // Implement rStar2-Agent reasoning patterns with Iraqi enhancement
      }
@@ -244,15 +251,16 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
    ```
 
 2. **Tool Calling Infrastructure**
+
    ```typescript
    // File: packages/tools/iraqi-tool-calling.ts
    class IraqiToolCallingSystem {
      private codeJudge: IraqiCodeJudgeManager;
      private validators: CulturalValidator[];
-     
+
      async executeToolSequence(
        toolCalls: ToolCall[],
-       context: IraqiWorkflowContext
+       context: IraqiWorkflowContext,
      ): Promise<ToolExecutionResult[]> {
        // Implement secure, culturally-aware tool execution
      }
@@ -266,7 +274,7 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
      async trainReasoningModel(
        trainingData: IraqiTrainingData,
        culturalConstraints: CulturalConstraint[],
-       professionalDomains: ProfessionalDomain[]
+       professionalDomains: ProfessionalDomain[],
      ): Promise<TrainedModel> {
        // Implement GRPO-RoC with Iraqi cultural and professional optimization
      }
@@ -278,13 +286,14 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
 **Enhanced Integration**:
 
 1. **Multi-Turn Reasoning for Iraqi Workflows**
+
    ```typescript
    // Enhanced multi-turn reasoning for Iraqi professional contexts
    class IraqiMultiTurnReasoning {
      async processComplexWorkflow(
        workflow: IraqiProfessionalWorkflow,
        culturalGuidelines: CulturalGuideline[],
-       domainExpertise: DomainExpertise
+       domainExpertise: DomainExpertise,
      ): Promise<WorkflowResult> {
        // Legal document analysis with Islamic compliance
        // Medical diagnosis with cultural sensitivity
@@ -300,7 +309,7 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
      async validateAndExecute(
        code: string,
        culturalContext: IraqiCulturalContext,
-       securityPolicy: IraqiSecurityPolicy
+       securityPolicy: IraqiSecurityPolicy,
      ): Promise<SecureExecutionResult> {
        // Islamic compliance validation for generated code
        // Cultural appropriateness checks
@@ -314,12 +323,13 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
 **Production Deployment**:
 
 1. **Performance Optimization**
+
    ```typescript
    // File: packages/optimization/iraqi-performance.ts
    class IraqiPerformanceOptimizer {
      async optimizeReasoning(
        reasoningTask: ReasoningTask,
-       performanceTargets: PerformanceTarget[]
+       performanceTargets: PerformanceTarget[],
      ): Promise<OptimizedExecution> {
        // Arabic text processing optimization
        // Cultural validation performance tuning
@@ -335,7 +345,7 @@ output_parts.append(f'execution time: {results[i]["cost"]:.2f}s')
      trackReasoningQuality(
        execution: ReasoningExecution,
        culturalCompliance: ComplianceMetrics,
-       professionalAccuracy: AccuracyMetrics
+       professionalAccuracy: AccuracyMetrics,
      ): AnalyticsReport {
        // Cultural compliance tracking
        // Professional domain accuracy monitoring
@@ -357,7 +367,7 @@ interface IraqiAgentWithReasoningCapabilities extends IraqiAgent {
   toolCallingSystem: IraqiToolCallingSystem;
   contextManager: IraqiContextManager;
   grpoTrainer: IraqiGRPOTrainer;
-  
+
   async executeAgenticReasoning(
     task: ComplexReasoningTask,
     culturalContext: IraqiCulturalContext
@@ -424,17 +434,17 @@ servers:
       - multi_turn_reasoning
       - tool_calling_orchestration
       - grpo_optimization
-      
-  code-judge:  
+
+  code-judge:
     command: "npx"
     args: ["@iraqi-ai/code-judge"]
     capabilities:
       - secure_code_execution
       - cultural_validation
       - professional_domain_compliance
-      
+
   reasoning-analytics:
-    command: "npx" 
+    command: "npx"
     args: ["@iraqi-ai/reasoning-analytics"]
     capabilities:
       - performance_monitoring
@@ -447,19 +457,21 @@ servers:
 ### 5.1 Reasoning Performance Optimization
 
 **rStar2-Agent Performance Patterns**:
+
 - **Token Efficiency**: GRPO-RoC achieves better results with shorter responses
 - **Tool Call Optimization**: Intelligent tool selection reduces computational overhead
 - **Context Management**: Persistent context prevents redundant processing
 - **Batch Processing**: Code Judge supports batch execution for performance
 
 **Iraqi AI Performance Enhancements**:
+
 ```typescript
 class IraqiReasoningOptimizer {
   private culturalContextTokens = 20000; // Reserved for Iraqi cultural context
   private arabicProcessingTokens = 15000; // Reserved for Arabic text processing
-  
+
   async optimizeForCulturalPreservation(
-    reasoningTask: ReasoningTask
+    reasoningTask: ReasoningTask,
   ): Promise<OptimizedReasoningTask> {
     // Always preserve cultural validation context
     // Optimize Arabic processing for performance
@@ -471,6 +483,7 @@ class IraqiReasoningOptimizer {
 ### 5.2 Scalable Training Infrastructure
 
 **Training Architecture Based on rStar2-Agent**:
+
 - **Ray Integration**: Distributed training across multiple GPUs
 - **Resource Management**: Intelligent GPU allocation and task scheduling
 - **Checkpoint Management**: Efficient model state persistence
@@ -479,7 +492,7 @@ class IraqiReasoningOptimizer {
 ```typescript
 class IraqiTrainingInfrastructure {
   async setupDistributedTraining(
-    config: IraqiTrainingConfig
+    config: IraqiTrainingConfig,
   ): Promise<TrainingCluster> {
     // Setup Ray cluster with Iraqi cultural constraints
     // Configure GPU allocation for Arabic processing
@@ -497,17 +510,17 @@ class IraqiTrainingInfrastructure {
 class AgenticReasoningTestFramework {
   async testReasoningQuality(
     testProblems: ReasoningProblem[],
-    culturalContext: IraqiCulturalContext
+    culturalContext: IraqiCulturalContext,
   ): Promise<TestResult> {
     // Validate reasoning accuracy
     // Ensure cultural compliance throughout reasoning process
     // Verify professional domain accuracy
     // Test tool calling efficiency and safety
   }
-  
+
   async testToolCallingIntegration(
     toolSequences: ToolCallSequence[],
-    securityPolicies: SecurityPolicy[]
+    securityPolicies: SecurityPolicy[],
   ): Promise<TestResult> {
     // Test secure code execution
     // Validate cultural appropriateness of generated code
@@ -519,12 +532,14 @@ class AgenticReasoningTestFramework {
 ### 6.2 Performance Benchmarking
 
 **Key Metrics from rStar2-Agent**:
+
 - **Reasoning Accuracy**: Problem-solving success rate with cultural compliance
 - **Tool Call Efficiency**: Average tool calls per successful solution
 - **Context Optimization**: Memory usage and token efficiency
 - **Training Efficiency**: Steps to achieve target performance levels
 
 **Iraqi AI Specific Metrics**:
+
 - **Cultural Compliance Rate**: 95%+ cultural appropriateness in reasoning
 - **Arabic Processing Accuracy**: 99%+ RTL text processing during reasoning
 - **Professional Domain Precision**: 90%+ accuracy in domain-specific reasoning
@@ -533,24 +548,28 @@ class AgenticReasoningTestFramework {
 ## 7. Migration Strategy
 
 ### 7.1 Phase 1: Foundation (Week 1-2)
+
 - ✅ Extract agentic reasoning engine patterns
 - ✅ Implement basic tool calling infrastructure
 - ✅ Create GRPO-RoC training framework
 - ✅ Add secure code execution capabilities
 
-### 7.2 Phase 2: Integration (Week 3-4)  
+### 7.2 Phase 2: Integration (Week 3-4)
+
 - ✅ Integrate with existing Iraqi agents
 - ✅ Enhance multi-turn reasoning capabilities
 - ✅ Add cultural and professional domain optimization
 - ✅ Implement comprehensive security framework
 
 ### 7.3 Phase 3: Advanced Features (Week 5-6)
+
 - ✅ Deploy production-ready reasoning infrastructure
 - ✅ Add performance monitoring and analytics
 - ✅ Implement comprehensive testing framework
 - ✅ Create training and evaluation pipelines
 
 ### 7.4 Phase 4: Production Deployment (Week 7-8)
+
 - ✅ Performance optimization and tuning
 - ✅ Monitoring and alerting systems
 - ✅ Documentation and knowledge transfer
@@ -561,23 +580,27 @@ class AgenticReasoningTestFramework {
 ### 8.1 Technical Risks
 
 **High Risk**:
+
 - **Complexity Integration**: Agentic reasoning may conflict with existing workflows
-  - *Mitigation*: Gradual integration with feature flags and fallback mechanisms
-  - *Fallback*: Maintain existing reasoning capabilities as backup
+  - _Mitigation_: Gradual integration with feature flags and fallback mechanisms
+  - _Fallback_: Maintain existing reasoning capabilities as backup
 
 **Medium Risk**:
-- **Performance Impact**: GRPO-RoC training may require significant computational resources
-  - *Mitigation*: Optimize training pipeline and implement distributed processing
-  - *Monitoring*: Real-time resource utilization tracking
 
-**Low Risk**:  
+- **Performance Impact**: GRPO-RoC training may require significant computational resources
+  - _Mitigation_: Optimize training pipeline and implement distributed processing
+  - _Monitoring_: Real-time resource utilization tracking
+
+**Low Risk**:
+
 - **Cultural Context Loss**: Complex reasoning may lose Iraqi cultural context
-  - *Mitigation*: Cultural context preservation at every reasoning step
-  - *Validation*: Mandatory cultural compliance checkpoints
+  - _Mitigation_: Cultural context preservation at every reasoning step
+  - _Validation_: Mandatory cultural compliance checkpoints
 
 ### 8.2 Operational Risks
 
 **Dependencies**:
+
 - **Code Judge Reliability**: Secure code execution must be highly reliable
 - **Training Infrastructure**: Distributed training requires robust infrastructure
 - **Cultural Validation**: Comprehensive cultural compliance validation needed
@@ -585,18 +608,21 @@ class AgenticReasoningTestFramework {
 ## 9. Success Metrics
 
 ### 9.1 Technical Metrics
+
 - **Reasoning Accuracy**: >90% problem-solving success rate
 - **Performance Improvement**: 60-80% better reasoning efficiency vs. baseline
 - **Tool Call Optimization**: 40-60% reduction in unnecessary tool calls
 - **Training Efficiency**: Achieve target performance in <1000 RL steps
 
-### 9.2 Cultural Metrics  
+### 9.2 Cultural Metrics
+
 - **Cultural Compliance**: 95%+ cultural appropriateness maintained
 - **Arabic Processing**: 99%+ RTL accuracy during reasoning workflows
 - **Professional Domain**: 90%+ accuracy in Iraqi terminology and practices
 - **Islamic Compliance**: 100% adherence to Islamic values
 
 ### 9.3 User Experience Metrics
+
 - **Reasoning Quality**: 85%+ user satisfaction with reasoning quality
 - **Problem Resolution**: 70%+ complex problem resolution rate
 - **Cultural Acceptance**: >90% cultural appropriateness rating
@@ -612,13 +638,15 @@ Microsoft rStar2-Agent provides exceptional **agentic reasoning capabilities** t
 4. **Multi-Turn Context Management**: Advanced context preservation across reasoning steps
 
 **Priority Implementation Order**:
+
 1. **High Priority**: Agentic reasoning engine, tool calling infrastructure
-2. **Medium Priority**: GRPO-RoC training framework, secure code execution  
+2. **Medium Priority**: GRPO-RoC training framework, secure code execution
 3. **Lower Priority**: Advanced analytics, performance optimization
 
 The integration will provide **60-80% performance improvement** for complex reasoning tasks while maintaining **95%+ cultural compliance** and **100% Islamic adherence** standards.
 
-**Next Steps**: 
+**Next Steps**:
+
 - Begin Phase 1 implementation with agentic reasoning engine
 - Create detailed technical specifications for each extracted component
 - Set up testing framework for complex reasoning validation

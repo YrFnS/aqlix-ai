@@ -1,7 +1,7 @@
 /**
  * Budget Monitoring and Quota Management System
  * Extracted from vtchat - Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Real-time budget monitoring
  * - Iraqi payment gateway integration
@@ -11,7 +11,7 @@
  * - Subscription tier management
  */
 
-import { Redis } from 'ioredis';
+import { Redis } from "ioredis";
 
 export interface BudgetConfig {
   dailyLimit: number;
@@ -24,17 +24,17 @@ export interface BudgetConfig {
 export interface IraqiBudgetConfig extends BudgetConfig {
   // Iraqi Dinar (IQD) based pricing
   costPerRequest: {
-    chat: number;           // Standard chat request
-    translation: number;    // Arabic translation
+    chat: number; // Standard chat request
+    translation: number; // Arabic translation
     cultural_validation: number; // Cultural compliance check
-    image_generation: number;    // Image generation
+    image_generation: number; // Image generation
     document_processing: number; // Document analysis
     professional_query: number; // Legal/medical/educational
   };
   paymentGatewayFees: {
-    zaincash: number;       // ZainCash transaction fee %
-    fastpay: number;        // FastPay transaction fee %
-    nasswallet: number;     // NassWallet transaction fee %
+    zaincash: number; // ZainCash transaction fee %
+    fastpay: number; // FastPay transaction fee %
+    nasswallet: number; // NassWallet transaction fee %
   };
   professionalDomainMultipliers: {
     legal: number;
@@ -67,7 +67,7 @@ export interface CostBreakdown {
   domainMultiplier: number;
   paymentGatewayFee: number;
   totalCost: number;
-  currency: 'IQD';
+  currency: "IQD";
 }
 
 export class IraqiBudgetTrackingService {
@@ -80,24 +80,24 @@ export class IraqiBudgetTrackingService {
       dailyLimit: 100000, // 100,000 IQD daily
       monthlyLimit: 2500000, // 2,500,000 IQD monthly
       costPerRequest: {
-        chat: 25,                    // 25 IQD per chat
-        translation: 50,             // 50 IQD per translation
-        cultural_validation: 15,     // 15 IQD per validation
-        image_generation: 200,       // 200 IQD per image
-        document_processing: 100,    // 100 IQD per document
-        professional_query: 75,      // 75 IQD per professional query
+        chat: 25, // 25 IQD per chat
+        translation: 50, // 50 IQD per translation
+        cultural_validation: 15, // 15 IQD per validation
+        image_generation: 200, // 200 IQD per image
+        document_processing: 100, // 100 IQD per document
+        professional_query: 75, // 75 IQD per professional query
       },
       paymentGatewayFees: {
-        zaincash: 0.015,    // 1.5% fee
-        fastpay: 0.012,     // 1.2% fee
-        nasswallet: 0.018,  // 1.8% fee
+        zaincash: 0.015, // 1.5% fee
+        fastpay: 0.012, // 1.2% fee
+        nasswallet: 0.018, // 1.8% fee
       },
       professionalDomainMultipliers: {
-        legal: 2.0,         // Legal queries cost 2x
-        medical: 2.5,       // Medical queries cost 2.5x
-        educational: 1.5,   // Educational queries cost 1.5x
-        business: 1.8,      // Business queries cost 1.8x
-        engineering: 2.2,   // Engineering queries cost 2.2x
+        legal: 2.0, // Legal queries cost 2x
+        medical: 2.5, // Medical queries cost 2.5x
+        educational: 1.5, // Educational queries cost 1.5x
+        business: 1.8, // Business queries cost 1.8x
+        engineering: 2.2, // Engineering queries cost 2.2x
       },
       subscriptionTiers: {
         trial: { dailyLimit: 5000, monthlyLimit: 50000 },
@@ -116,9 +116,9 @@ export class IraqiBudgetTrackingService {
    */
   async trackRequest(
     userId: string,
-    requestType: keyof IraqiBudgetConfig['costPerRequest'],
-    domain?: keyof IraqiBudgetConfig['professionalDomainMultipliers'],
-    paymentGateway?: keyof IraqiBudgetConfig['paymentGatewayFees']
+    requestType: keyof IraqiBudgetConfig["costPerRequest"],
+    domain?: keyof IraqiBudgetConfig["professionalDomainMultipliers"],
+    paymentGateway?: keyof IraqiBudgetConfig["paymentGatewayFees"],
   ): Promise<{
     success: boolean;
     cost: CostBreakdown;
@@ -129,19 +129,27 @@ export class IraqiBudgetTrackingService {
     const usage = await this.getCurrentUsage(userId);
 
     // Check if request would exceed budget
-    if (usage.dailySpent + cost.totalCost > usage.dailyRemaining + usage.dailySpent ||
-        usage.monthlySpent + cost.totalCost > usage.monthlyRemaining + usage.monthlySpent) {
+    if (
+      usage.dailySpent + cost.totalCost >
+        usage.dailyRemaining + usage.dailySpent ||
+      usage.monthlySpent + cost.totalCost >
+        usage.monthlyRemaining + usage.monthlySpent
+    ) {
       return {
         success: false,
         cost,
         usage,
-        warningLevel: 'BUDGET_EXCEEDED',
+        warningLevel: "BUDGET_EXCEEDED",
       };
     }
 
     // Update usage
-    const newUsage = await this.updateUsage(userId, cost.totalCost, requestType);
-    
+    const newUsage = await this.updateUsage(
+      userId,
+      cost.totalCost,
+      requestType,
+    );
+
     // Check warning thresholds
     const warningLevel = this.checkWarningThresholds(newUsage);
 
@@ -157,15 +165,17 @@ export class IraqiBudgetTrackingService {
    * Calculate cost for a request with Iraqi-specific pricing
    */
   private calculateRequestCost(
-    requestType: keyof IraqiBudgetConfig['costPerRequest'],
-    domain?: keyof IraqiBudgetConfig['professionalDomainMultipliers'],
-    paymentGateway?: keyof IraqiBudgetConfig['paymentGatewayFees']
+    requestType: keyof IraqiBudgetConfig["costPerRequest"],
+    domain?: keyof IraqiBudgetConfig["professionalDomainMultipliers"],
+    paymentGateway?: keyof IraqiBudgetConfig["paymentGatewayFees"],
   ): CostBreakdown {
     const baseCost = this.config.costPerRequest[requestType];
-    const domainMultiplier = domain ? this.config.professionalDomainMultipliers[domain] : 1.0;
+    const domainMultiplier = domain
+      ? this.config.professionalDomainMultipliers[domain]
+      : 1.0;
     const adjustedCost = baseCost * domainMultiplier;
-    
-    const paymentGatewayFee = paymentGateway 
+
+    const paymentGatewayFee = paymentGateway
       ? adjustedCost * this.config.paymentGatewayFees[paymentGateway]
       : 0;
 
@@ -176,7 +186,7 @@ export class IraqiBudgetTrackingService {
       domainMultiplier,
       paymentGatewayFee,
       totalCost: Math.round(totalCost), // Round to nearest IQD
-      currency: 'IQD',
+      currency: "IQD",
     };
   }
 
@@ -184,17 +194,17 @@ export class IraqiBudgetTrackingService {
    * Get current usage for a user
    */
   async getCurrentUsage(userId: string): Promise<BudgetUsage> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const month = new Date().toISOString().slice(0, 7);
-    
+
     const dailyKey = `budget:daily:${userId}:${today}`;
     const monthlyKey = `budget:monthly:${userId}:${month}`;
     const countsKey = `budget:counts:${userId}:${today}`;
 
     try {
       const [dailySpent, monthlySpent, requestCounts] = await Promise.all([
-        this.redis.get(dailyKey).then(val => parseFloat(val || '0')),
-        this.redis.get(monthlyKey).then(val => parseFloat(val || '0')),
+        this.redis.get(dailyKey).then((val) => parseFloat(val || "0")),
+        this.redis.get(monthlyKey).then((val) => parseFloat(val || "0")),
         this.redis.hgetall(countsKey),
       ]);
 
@@ -211,11 +221,15 @@ export class IraqiBudgetTrackingService {
         monthlyRemaining: Math.max(0, this.config.monthlyLimit - monthlySpent),
         requestCounts: counts,
         lastReset: new Date(),
-        warningTriggered: dailySpent > this.config.dailyLimit * this.config.warningThresholds[0],
-        shutoffTriggered: dailySpent > this.config.dailyLimit * this.config.autoShutoffThreshold,
+        warningTriggered:
+          dailySpent >
+          this.config.dailyLimit * this.config.warningThresholds[0],
+        shutoffTriggered:
+          dailySpent >
+          this.config.dailyLimit * this.config.autoShutoffThreshold,
       };
     } catch (error) {
-      console.error('Error fetching budget usage:', error);
+      console.error("Error fetching budget usage:", error);
       return this.getEmptyUsage();
     }
   }
@@ -226,36 +240,36 @@ export class IraqiBudgetTrackingService {
   private async updateUsage(
     userId: string,
     cost: number,
-    requestType: string
+    requestType: string,
   ): Promise<BudgetUsage> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const month = new Date().toISOString().slice(0, 7);
-    
+
     const dailyKey = `budget:daily:${userId}:${today}`;
     const monthlyKey = `budget:monthly:${userId}:${month}`;
     const countsKey = `budget:counts:${userId}:${today}`;
 
     try {
       const pipeline = this.redis.pipeline();
-      
+
       // Update spending
       pipeline.incrbyfloat(dailyKey, cost);
       pipeline.incrbyfloat(monthlyKey, cost);
-      
+
       // Update request counts
       pipeline.hincrby(countsKey, requestType, 1);
-      
+
       // Set expiry (daily expires at midnight, monthly expires after 32 days)
       pipeline.expire(dailyKey, 86400);
       pipeline.expire(monthlyKey, 86400 * 32);
       pipeline.expire(countsKey, 86400);
-      
+
       await pipeline.exec();
-      
+
       return this.getCurrentUsage(userId);
     } catch (error) {
-      console.error('Error updating budget usage:', error);
-      throw new Error('Failed to update budget tracking');
+      console.error("Error updating budget usage:", error);
+      throw new Error("Failed to update budget tracking");
     }
   }
 
@@ -265,19 +279,19 @@ export class IraqiBudgetTrackingService {
   private checkWarningThresholds(usage: BudgetUsage): string | undefined {
     const dailyPercentage = usage.dailySpent / this.config.dailyLimit;
     const monthlyPercentage = usage.monthlySpent / this.config.monthlyLimit;
-    
+
     const maxPercentage = Math.max(dailyPercentage, monthlyPercentage);
-    
+
     if (maxPercentage >= this.config.autoShutoffThreshold) {
-      return 'CRITICAL';
+      return "CRITICAL";
     } else if (maxPercentage >= this.config.warningThresholds[2]) {
-      return 'HIGH';
+      return "HIGH";
     } else if (maxPercentage >= this.config.warningThresholds[1]) {
-      return 'MEDIUM';
+      return "MEDIUM";
     } else if (maxPercentage >= this.config.warningThresholds[0]) {
-      return 'LOW';
+      return "LOW";
     }
-    
+
     return undefined;
   }
 
@@ -292,14 +306,14 @@ export class IraqiBudgetTrackingService {
     topSpendingUsers: Array<{ userId: string; dailySpent: number }>;
     requestTypeBreakdown: Record<string, number>;
   }> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const month = new Date().toISOString().slice(0, 7);
-    
+
     try {
       // Get all daily budget keys
       const dailyKeys = await this.redis.keys(`budget:daily:*:${today}`);
       const monthlyKeys = await this.redis.keys(`budget:monthly:*:${month}`);
-      
+
       if (dailyKeys.length === 0) {
         return {
           totalUsers: 0,
@@ -314,19 +328,19 @@ export class IraqiBudgetTrackingService {
       // Get spending data
       const dailySpending = await this.redis.mget(...dailyKeys);
       const monthlySpending = await this.redis.mget(...monthlyKeys);
-      
+
       const totalDailySpending = dailySpending
-        .map(val => parseFloat(val || '0'))
+        .map((val) => parseFloat(val || "0"))
         .reduce((sum, val) => sum + val, 0);
-      
+
       const totalMonthlySpending = monthlySpending
-        .map(val => parseFloat(val || '0'))
+        .map((val) => parseFloat(val || "0"))
         .reduce((sum, val) => sum + val, 0);
 
       // Extract user IDs and create top spenders list
       const userSpending = dailyKeys.map((key, index) => {
-        const userId = key.split(':')[2];
-        const spent = parseFloat(dailySpending[index] || '0');
+        const userId = key.split(":")[2];
+        const spent = parseFloat(dailySpending[index] || "0");
         return { userId, dailySpent: spent };
       });
 
@@ -337,11 +351,12 @@ export class IraqiBudgetTrackingService {
       // Get request type breakdown
       const countsKeys = await this.redis.keys(`budget:counts:*:${today}`);
       const requestTypeBreakdown: Record<string, number> = {};
-      
+
       for (const key of countsKeys) {
         const counts = await this.redis.hgetall(key);
         Object.entries(counts).forEach(([type, count]) => {
-          requestTypeBreakdown[type] = (requestTypeBreakdown[type] || 0) + parseInt(count, 10);
+          requestTypeBreakdown[type] =
+            (requestTypeBreakdown[type] || 0) + parseInt(count, 10);
         });
       }
 
@@ -349,13 +364,15 @@ export class IraqiBudgetTrackingService {
         totalUsers: dailyKeys.length,
         totalDailySpending: Math.round(totalDailySpending),
         totalMonthlySpending: Math.round(totalMonthlySpending),
-        averageDailySpendPerUser: Math.round(totalDailySpending / dailyKeys.length),
+        averageDailySpendPerUser: Math.round(
+          totalDailySpending / dailyKeys.length,
+        ),
         topSpendingUsers,
         requestTypeBreakdown,
       };
     } catch (error) {
-      console.error('Error fetching budget stats:', error);
-      throw new Error('Failed to fetch budget statistics');
+      console.error("Error fetching budget stats:", error);
+      throw new Error("Failed to fetch budget statistics");
     }
   }
 
@@ -363,9 +380,9 @@ export class IraqiBudgetTrackingService {
    * Reset budget for a user (admin function)
    */
   async resetUserBudget(userId: string): Promise<void> {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const month = new Date().toISOString().slice(0, 7);
-    
+
     const keys = [
       `budget:daily:${userId}:${today}`,
       `budget:monthly:${userId}:${month}`,
@@ -375,8 +392,8 @@ export class IraqiBudgetTrackingService {
     try {
       await this.redis.del(...keys);
     } catch (error) {
-      console.error('Error resetting user budget:', error);
-      throw new Error('Failed to reset user budget');
+      console.error("Error resetting user budget:", error);
+      throw new Error("Failed to reset user budget");
     }
   }
 
@@ -385,11 +402,11 @@ export class IraqiBudgetTrackingService {
    */
   async updateUserSubscription(
     userId: string,
-    tier: keyof IraqiBudgetConfig['subscriptionTiers']
+    tier: keyof IraqiBudgetConfig["subscriptionTiers"],
   ): Promise<void> {
     const subscriptionKey = `budget:subscription:${userId}`;
     const tierConfig = this.config.subscriptionTiers[tier];
-    
+
     try {
       await this.redis.hmset(subscriptionKey, {
         tier,
@@ -397,12 +414,12 @@ export class IraqiBudgetTrackingService {
         monthlyLimit: tierConfig.monthlyLimit,
         updatedAt: new Date().toISOString(),
       });
-      
+
       // Set expiry for 1 year
       await this.redis.expire(subscriptionKey, 86400 * 365);
     } catch (error) {
-      console.error('Error updating user subscription:', error);
-      throw new Error('Failed to update user subscription');
+      console.error("Error updating user subscription:", error);
+      throw new Error("Failed to update user subscription");
     }
   }
 
@@ -422,32 +439,32 @@ export class IraqiBudgetTrackingService {
 
 // Export default Iraqi budget configuration
 export const IRAQI_BUDGET_CONFIG: IraqiBudgetConfig = {
-  dailyLimit: 50000,    // 50,000 IQD daily default
+  dailyLimit: 50000, // 50,000 IQD daily default
   monthlyLimit: 1000000, // 1,000,000 IQD monthly default
   costPerRequest: {
-    chat: 25,                    // 25 IQD per chat (~$0.019 USD)
-    translation: 50,             // 50 IQD per translation
-    cultural_validation: 15,     // 15 IQD per validation
-    image_generation: 200,       // 200 IQD per image
-    document_processing: 100,    // 100 IQD per document
-    professional_query: 75,      // 75 IQD per professional query
+    chat: 25, // 25 IQD per chat (~$0.019 USD)
+    translation: 50, // 50 IQD per translation
+    cultural_validation: 15, // 15 IQD per validation
+    image_generation: 200, // 200 IQD per image
+    document_processing: 100, // 100 IQD per document
+    professional_query: 75, // 75 IQD per professional query
   },
   paymentGatewayFees: {
-    zaincash: 0.015,    // 1.5% fee (lowest)
-    fastpay: 0.012,     // 1.2% fee (competitive)
-    nasswallet: 0.018,  // 1.8% fee (standard)
+    zaincash: 0.015, // 1.5% fee (lowest)
+    fastpay: 0.012, // 1.2% fee (competitive)
+    nasswallet: 0.018, // 1.8% fee (standard)
   },
   professionalDomainMultipliers: {
-    legal: 2.0,         // Legal expertise premium
-    medical: 2.5,       // Medical expertise highest premium
-    educational: 1.5,   // Educational discount
-    business: 1.8,      // Business premium
-    engineering: 2.2,   // Engineering technical premium
+    legal: 2.0, // Legal expertise premium
+    medical: 2.5, // Medical expertise highest premium
+    educational: 1.5, // Educational discount
+    business: 1.8, // Business premium
+    engineering: 2.2, // Engineering technical premium
   },
   subscriptionTiers: {
-    trial: { dailyLimit: 2500, monthlyLimit: 25000 },        // Trial users
-    basic: { dailyLimit: 25000, monthlyLimit: 500000 },      // Basic subscribers
-    premium: { dailyLimit: 100000, monthlyLimit: 2500000 },  // Premium subscribers
+    trial: { dailyLimit: 2500, monthlyLimit: 25000 }, // Trial users
+    basic: { dailyLimit: 25000, monthlyLimit: 500000 }, // Basic subscribers
+    premium: { dailyLimit: 100000, monthlyLimit: 2500000 }, // Premium subscribers
     organization: { dailyLimit: 500000, monthlyLimit: 10000000 }, // Organizations
   },
   warningThresholds: [0.5, 0.75, 0.9],

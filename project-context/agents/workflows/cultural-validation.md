@@ -1,6 +1,7 @@
 # Iraqi Cultural Validation Workflow
 
 ## Workflow Overview
+
 **Purpose**: Comprehensive cultural appropriateness validation for Iraqi AI content, interfaces, and features with Islamic compliance and political neutrality verification.
 
 **Estimated Duration**: 2-4 hours  
@@ -10,12 +11,14 @@
 ## Agent Coordination Chain
 
 ### Phase 1: Primary Cultural Analysis
+
 **Primary Agent**: `iraqi-cultural-validator`
 **Duration**: 1-1.5 hours
 **Input Context**: Content/feature to validate, `cultural-decisions.md`
 **Output**: `primary-cultural-assessment.md`
 
 **Responsibilities**:
+
 - Assess Islamic compliance and appropriateness
 - Verify political neutrality and sectarian sensitivity
 - Validate professional etiquette alignment
@@ -23,13 +26,14 @@
 - Evaluate cultural sensitivity score
 
 **Validation Criteria**:
+
 ```yaml
 islamic_compliance:
   business_ethics: halal_compliant
   content_appropriateness: family_friendly
   religious_sensitivity: respectful
   gender_interactions: professionally_appropriate
-  
+
 political_neutrality:
   sectarian_references: none_detected
   political_party_mentions: neutral_or_absent
@@ -44,6 +48,7 @@ professional_etiquette:
 ```
 
 **Success Criteria**:
+
 - Cultural appropriateness score >95%
 - Islamic compliance verified (100%)
 - Political neutrality confirmed
@@ -54,12 +59,14 @@ professional_etiquette:
 ---
 
 ### Phase 2: Professional Domain Validation
+
 **Primary Agent**: `iraqi-professional-domain-expert`
 **Duration**: 45-60 minutes
 **Input Context**: `primary-cultural-assessment.md`, content/feature context
 **Output**: `professional-domain-validation.md`
 
 **Responsibilities**:
+
 - Validate Iraqi professional standards alignment
 - Verify domain-specific ethical boundaries
 - Check professional terminology accuracy
@@ -67,6 +74,7 @@ professional_etiquette:
 - Validate cross-professional consistency
 
 **Domain-Specific Validation**:
+
 ```yaml
 legal_domain:
   iraqi_law_compliance: validated
@@ -94,6 +102,7 @@ engineering_domain:
 ```
 
 **Success Criteria**:
+
 - Professional domain accuracy >90%
 - Ethical boundaries clearly defined
 - Iraqi professional standards met
@@ -104,12 +113,14 @@ engineering_domain:
 ---
 
 ### Phase 3: Language & Cultural Expression Validation
+
 **Primary Agent**: `arabic-rtl-processor`
 **Duration**: 30-45 minutes
 **Input Context**: All previous assessments, content language analysis
 **Output**: `language-cultural-validation.md`
 
 **Responsibilities**:
+
 - Validate Iraqi dialect usage appropriateness
 - Ensure Arabic language cultural alignment
 - Check mixed Arabic-English cultural context
@@ -117,6 +128,7 @@ engineering_domain:
 - Validate cultural expression authenticity
 
 **Language Validation Framework**:
+
 ```yaml
 dialect_appropriateness:
   iraqi_dialect_usage: contextually_appropriate
@@ -138,6 +150,7 @@ arabic_authenticity:
 ```
 
 **Success Criteria**:
+
 - Iraqi dialect recognition >85%
 - Cultural expression authenticity >90%
 - Arabic language appropriateness confirmed
@@ -148,12 +161,14 @@ arabic_authenticity:
 ---
 
 ### Phase 4: Cultural Testing & User Scenario Validation
+
 **Primary Agent**: `iraqi-cultural-tester`
 **Duration**: 1-1.5 hours
 **Input Context**: All previous validations, test scenarios
 **Output**: `cultural-testing-results.md`
 
 **Responsibilities**:
+
 - Execute Iraqi cultural test scenarios
 - Validate with Iraqi user personas
 - Test family and social context scenarios
@@ -161,6 +176,7 @@ arabic_authenticity:
 - Assess cultural acceptance probability
 
 **Test Scenario Categories**:
+
 ```yaml
 family_context_scenarios:
   multi_generational_usage: validated
@@ -188,6 +204,7 @@ social_context_scenarios:
 ```
 
 **Success Criteria**:
+
 - All cultural scenarios pass (100%)
 - Iraqi user persona acceptance >95%
 - Religious observance compatibility confirmed
@@ -200,6 +217,7 @@ social_context_scenarios:
 ## Cultural Decision Recording
 
 ### Decision Documentation Template
+
 ```yaml
 cultural_validation_record:
   validation_date: [timestamp]
@@ -210,12 +228,12 @@ cultural_validation_record:
     political_neutrality: [0-100]
     professional_appropriateness: [0-100]
     language_authenticity: [0-100]
-  
+
   key_decisions:
     - decision: [specific cultural decision made]
       rationale: [cultural reasoning]
       precedent: [reference to similar decisions]
-      
+
   validation_agents:
     - agent: iraqi-cultural-validator
       role: primary_cultural_assessment
@@ -223,12 +241,12 @@ cultural_validation_record:
     - agent: iraqi-professional-domain-expert
       role: professional_validation
       confidence: [0-100]
-  
+
   recommendations:
     - category: [improvement area]
       suggestion: [specific recommendation]
       priority: [high/medium/low]
-      
+
   cultural_pattern_updates:
     - pattern: [new cultural pattern identified]
       knowledge_base_section: [where to record]
@@ -240,9 +258,10 @@ cultural_validation_record:
 ## Context Flow Optimization
 
 ### Inter-Phase Context Management
+
 ```yaml
 phase_1_to_2:
-  essential_context: 
+  essential_context:
     - cultural_appropriateness_score
     - islamic_compliance_status
     - identified_cultural_concerns
@@ -276,37 +295,44 @@ phase_3_to_4:
 ### Common Validation Failures
 
 #### Cultural Appropriateness Failure
+
 **Symptoms**: Cultural score <95%, Islamic compliance issues
 **Recovery Strategy**:
+
 1. Identify specific cultural concerns
 2. Consult cultural-decisions.md for precedents
 3. Apply conservative cultural interpretation
 4. Re-validate with stricter criteria
-**Duration Impact**: +1-2 hours
+   **Duration Impact**: +1-2 hours
 
 #### Professional Domain Conflicts
+
 **Symptoms**: Domain accuracy <90%, ethical boundary issues
 **Recovery Strategy**:
+
 1. Escalate to domain-specific consultation
 2. Apply Iraqi professional standards strictly
 3. Enhance disclaimers and boundaries
 4. Re-validate professional appropriateness
-**Duration Impact**: +45-90 minutes
+   **Duration Impact**: +45-90 minutes
 
 #### Language Authenticity Issues
+
 **Symptoms**: Dialect recognition <85%, cultural expression concerns
 **Recovery Strategy**:
+
 1. Consult Iraqi dialect patterns
 2. Simplify language to formal Arabic
 3. Remove potentially problematic expressions
 4. Re-validate with cultural tester
-**Duration Impact**: +30-60 minutes
+   **Duration Impact**: +30-60 minutes
 
 ---
 
 ## Performance Metrics & Success Indicators
 
 ### Target Performance
+
 - **Validation Accuracy**: >98%
 - **Cultural Integrity**: >95%
 - **Process Efficiency**: 2-4 hours total
@@ -314,6 +340,7 @@ phase_3_to_4:
 - **Agent Coordination**: Seamless
 
 ### Success Validation Checklist
+
 - ✅ Islamic compliance verified (100%)
 - ✅ Political neutrality confirmed
 - ✅ Professional appropriateness validated
@@ -325,7 +352,9 @@ phase_3_to_4:
 - ✅ Knowledge base updated
 
 ### Knowledge Base Updates
+
 After successful validation:
+
 - Update `cultural-decisions.md` with new patterns
 - Record validation precedents for future reference
 - Document cultural reasoning for consistency

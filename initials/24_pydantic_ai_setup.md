@@ -21,6 +21,7 @@
 **Foundational PydanticAI agent infrastructure:**
 
 ### Agent Templates and Base Classes
+
 - **BaseIraqiAgent:** Abstract base class for all Iraqi AI agents with cultural context integration
 - **CulturalValidationMixin:** Reusable mixin for cultural compliance validation across agents
 - **ArabicProcessingMixin:** Shared Arabic RTL processing capabilities for language-aware agents
@@ -28,36 +29,44 @@
 - **AgentCoordinationMixin:** Multi-agent workflow coordination and context sharing capabilities
 
 ### 21 Specialized Iraqi AI Agents
+
 **Cultural Intelligence Agents:**
+
 - **iraqi-cultural-validator:** 95%+ cultural appropriateness validation
 - **iraqi-cultural-tester:** Comprehensive cultural testing scenarios
 - **arabic-rtl-processor:** RTL text processing with Iraqi dialect recognition
 
 **Professional Domain Agents:**
+
 - **iraqi-business-analyst:** Iraqi business process analysis and validation
 - **iraqi-professional-domain-expert:** Legal, medical, educational domain expertise
 - **iraqi-product-manager:** Iraqi market dynamics and feature prioritization
 
 **Technical Implementation Agents:**
+
 - **iraqi-ai-agent-architect:** PydanticAI agent development with cultural context
 - **iraqi-technical-debugger:** Iraqi-specific technical issue resolution
 - **iraqi-devops-engineer:** Infrastructure with Iraqi compliance requirements
 
 **UI/UX Design Agents:**
+
 - **iraqi-ui-designer:** Iraqi cultural design patterns and aesthetics
 - **iraqi-ux-researcher:** Iraqi user behavior analysis and research
 - **iraqi-interaction-designer:** Arabic RTL interaction patterns
 - **iraqi-accessibility-specialist:** WCAG compliance with Arabic support
 
 **Security & Payment Agents:**
+
 - **iraqi-security-specialist:** Iraqi regulatory compliance and threat modeling
 - **iraqi-payment-tester:** ZainCash, FastPay, NassWallet testing
 - **payment-security-guardian:** Financial transaction security
 
 **Quality & Testing Agents:**
+
 - **iraqi-arabic-tester:** Arabic text rendering and RTL testing
 
 **System Coordination Agents:**
+
 - **iraqi-workflow-orchestrator:** Multi-agent workflow coordination
 - **iraqi-context-manager:** Context optimization (35% performance improvement)
 - **iraqi-prp-execution-orchestrator:** PRP workflow management
@@ -65,6 +74,7 @@
 - **app-documentation-tracker:** Documentation updates and tracking
 
 ### Core Agent Infrastructure
+
 - **Multi-Agent Coordination:** Intelligent agent selection and workflow orchestration
 - **Cultural Intelligence:** 95%+ cultural appropriateness with Islamic compliance
 - **Arabic Processing:** RTL support, Iraqi dialect recognition, mixed-language handling
@@ -79,6 +89,7 @@
 **Working Iraqi AI agent system examples:**
 
 ### Specialized Agent Implementation
+
 ```python
 # Iraqi Cultural Validator Agent
 from pydantic_ai import Agent
@@ -97,18 +108,20 @@ from core.orchestration import IraqiWorkflowOrchestrator
 orchestrator = IraqiWorkflowOrchestrator()
 await orchestrator.coordinate_agents([
     'iraqi-cultural-validator',
-    'arabic-rtl-processor', 
+    'arabic-rtl-processor',
     'iraqi-payment-tester'
 ])
 ```
 
 ### Agent Workflow Patterns
+
 - **Cultural Validation Chain:** iraqi-cultural-validator → iraqi-cultural-tester → arabic-rtl-processor
 - **UI Development Chain:** iraqi-ux-researcher → iraqi-ui-designer → iraqi-accessibility-specialist
 - **Payment Processing Chain:** payment-security-guardian → iraqi-payment-tester → external-service-coordinator
 - **Professional Domain Chain:** iraqi-professional-domain-expert → iraqi-business-analyst → iraqi-product-manager
 
 ### Performance Optimization
+
 - **Context Management:** 35% performance improvement through iraqi-context-manager
 - **Agent Selection:** Intelligent routing based on domain expertise and cultural requirements
 - **Parallel Processing:** Multi-agent coordination for complex workflows
@@ -133,6 +146,7 @@ await orchestrator.coordinate_agents([
 **Iraqi AI agent ecosystem architecture patterns:**
 
 ### Agent Specialization Architecture
+
 - **Context-Managed Agents (13):** Maintain historical context for complex decisions
 - **Specialized Tool Agents (9):** Immediate processing without context overhead
 - **Domain Experts:** Legal, medical, educational, business professional expertise
@@ -140,6 +154,7 @@ await orchestrator.coordinate_agents([
 - **System Coordinators:** Workflow orchestration, context management, documentation
 
 ### Multi-Agent Coordination
+
 - **Auto-Triggered Chains:** Predefined agent sequences for common workflows
 - **Intelligent Routing:** Dynamic agent selection based on request analysis
 - **Context Sharing:** Optimized context transfer between agents (35% performance gain)
@@ -147,6 +162,7 @@ await orchestrator.coordinate_agents([
 - **Performance Monitoring:** Real-time agent performance and success tracking
 
 ### Cultural Intelligence Integration
+
 - **Islamic Compliance Validation:** 100% compliance checking across all agents
 - **Arabic Language Processing:** RTL support and Iraqi dialect recognition
 - **Professional Domain Expertise:** Iraqi-specific legal, medical, business knowledge
@@ -154,6 +170,7 @@ await orchestrator.coordinate_agents([
 - **Political Neutrality:** Avoid sectarian, political, tribal sensitive topics
 
 ### Agent Architecture Patterns
+
 - **Proactive Triggers:** Automatic agent activation based on content analysis
 - **Quality Gates:** Validation checkpoints ensuring 95%+ cultural appropriateness
 - **Error Recovery:** Graceful degradation and fallback mechanisms
@@ -190,6 +207,7 @@ await orchestrator.coordinate_agents([
 **Iraqi AI agent system validation:**
 
 ### Agent-Specific Testing
+
 - **Cultural Agents:** 95%+ cultural appropriateness, 100% Islamic compliance
 - **Arabic Processing:** 99%+ RTL accuracy, 85%+ Iraqi dialect recognition
 - **Professional Domain:** Validate Iraqi legal, medical, educational expertise
@@ -198,6 +216,7 @@ await orchestrator.coordinate_agents([
 - **Payment Agents:** 100% security validation for ZainCash, FastPay, NassWallet
 
 ### Multi-Agent Coordination Testing
+
 - **Workflow Orchestration:** Test agent chain coordination and context sharing
 - **Performance Testing:** <200ms cultural validation, <300ms multi-agent workflows
 - **Error Handling:** Graceful failure recovery and agent fallback mechanisms
@@ -205,6 +224,7 @@ await orchestrator.coordinate_agents([
 - **Load Testing:** Multi-agent performance under concurrent usage
 
 ### Integration Testing
+
 - **Database Integration:** Agent context persistence with Supabase
 - **API Integration:** Agent coordination through FastAPI backend
 - **Cultural System:** End-to-end cultural validation workflows
@@ -217,18 +237,21 @@ await orchestrator.coordinate_agents([
 **Iraqi AI agent ecosystem integration points:**
 
 ### Core System Integration
+
 - **Workflow Orchestration:** Visual workflow builder integration with agent execution
 - **Cultural Validation:** Real-time cultural compliance across all agent interactions
 - **Arabic Processing:** RTL text handling and Iraqi dialect processing throughout system
 - **Professional Domains:** Iraqi legal, medical, educational, business domain integration
 
 ### Infrastructure Integration
+
 - **Database:** Supabase integration with agent context persistence and real-time updates
 - **API Backend:** FastAPI integration with agent coordination and monitoring
 - **Frontend:** Next.js integration with agent-powered features and Arabic RTL support
 - **Monitoring:** Sentry integration for agent performance tracking and error handling
 
 ### External Service Integration
+
 - **Payment Gateways:** ZainCash, FastPay, NassWallet integration through payment agents
 - **Cultural Services:** External cultural validation and Islamic compliance services
 - **Professional Services:** Integration with Iraqi legal, medical, educational databases
@@ -241,18 +264,21 @@ await orchestrator.coordinate_agents([
 **Iraqi AI agent system implementation considerations:**
 
 ### Agent Deployment Strategy
+
 - **Microservice Architecture:** Each agent as independent service with API endpoints
 - **Containerization:** Docker containers for consistent agent deployment
 - **Load Balancing:** Distribute requests across agent instances
 - **Health Monitoring:** Real-time agent health checks and performance monitoring
 
 ### Cultural Intelligence Focus
+
 - **Islamic Compliance:** 100% validation for all agent responses and actions
 - **Arabic-First Design:** Native RTL support and Iraqi dialect processing
 - **Professional Ethics:** Iraqi professional standards across all domain agents
 - **Regional Sensitivity:** Support for Baghdad, Basra, Mosul, Erbil variations
 
 ### Performance Optimization
+
 - **Context Caching:** 35% performance improvement through intelligent context management
 - **Agent Selection:** Smart routing to most appropriate specialist agent
 - **Parallel Processing:** Multi-agent coordination for complex workflows
@@ -263,7 +289,7 @@ await orchestrator.coordinate_agents([
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [ ] **Intermediate** - Production-ready patterns with common features  
+- [ ] **Intermediate** - Production-ready patterns with common features
 - [x] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

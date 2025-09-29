@@ -1,0 +1,90 @@
+{
+  "name": "@iraqi-ai/features",
+  "version": "1.0.0",
+  "description": "Shared business logic and features for Iraqi AI Chat System (chat/, documents/, payments/)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./chat": {
+      "import": "./dist/chat/index.js",
+      "types": "./dist/chat/index.d.ts"
+    },
+    "./documents": {
+      "import": "./dist/documents/index.js",
+      "types": "./dist/documents/index.d.ts"
+    },
+    "./payments": {
+      "import": "./dist/payments/index.js",
+      "types": "./dist/payments/index.d.ts"
+    },
+    "./images": {
+      "import": "./dist/images/index.js",
+      "types": "./dist/images/index.d.ts"
+    },
+    "./voice": {
+      "import": "./dist/voice/index.js",
+      "types": "./dist/voice/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:types && bun run build:js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir dist",
+    "build:js": "bun build src/index.ts --outdir dist --format esm --target bun",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:unit": "bun test --testNamePattern='unit'",
+    "test:integration": "bun test --testNamePattern='integration'",
+    "test:cultural": "bun test --testNamePattern='cultural'",
+    "test:arabic": "bun test --testNamePattern='arabic'",
+    "test:image": "bun test --testNamePattern='image'",
+    "test:voice": "bun test --testNamePattern='voice'",
+    "lint": "eslint src/**/*.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@iraqi-ai/api-client": "workspace:*",
+    "@iraqi-ai/arabic-nlp": "workspace:*",
+    "zod": "^3.22.4",
+    "date-fns": "^3.2.0",
+    "zustand": "^4.4.7",
+    "@tanstack/react-query": "^5.20.5",
+    "immer": "^10.0.3",
+    "nanoid": "^5.0.4",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1"
+  },
+  "keywords": [
+    "iraqi",
+    "ai",
+    "features",
+    "business-logic",
+    "chat",
+    "documents",
+    "payments",
+    "cultural-ai"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/features"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "bun": ">=1.0.0"
+  }
+}

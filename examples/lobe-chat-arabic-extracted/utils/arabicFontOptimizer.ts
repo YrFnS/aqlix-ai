@@ -1,7 +1,7 @@
 /**
  * Arabic Font Handling and Text Rendering Optimizer
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Dynamic Arabic font loading with fallbacks
  * - Text rendering optimization for mixed Arabic-English content
@@ -37,9 +37,9 @@ export const ARABIC_FONTS: Record<string, ArabicFontConfig> = {
     weight: '400',
     style: 'normal',
     unicodeRange: 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF',
-    display: 'swap'
+    display: 'swap',
   },
-  
+
   // Iraqi professional domains font
   amiri: {
     primary: 'Amiri',
@@ -47,9 +47,9 @@ export const ARABIC_FONTS: Record<string, ArabicFontConfig> = {
     weight: '400',
     style: 'normal',
     unicodeRange: 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF',
-    display: 'swap'
+    display: 'swap',
   },
-  
+
   // Modern Arabic UI font
   cairo: {
     primary: 'Cairo',
@@ -57,9 +57,9 @@ export const ARABIC_FONTS: Record<string, ArabicFontConfig> = {
     weight: '300 700',
     style: 'normal',
     unicodeRange: 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF',
-    display: 'swap'
+    display: 'swap',
   },
-  
+
   // Iraqi dialect-specific font for chat
   harmattan: {
     primary: 'Harmattan',
@@ -67,18 +67,18 @@ export const ARABIC_FONTS: Record<string, ArabicFontConfig> = {
     weight: '400',
     style: 'normal',
     unicodeRange: 'U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF',
-    display: 'swap'
-  }
+    display: 'swap',
+  },
 };
 
 // Professional domain font preferences
 export const DOMAIN_FONTS: Record<string, string> = {
-  legal: 'amiri',      // Traditional for legal documents
+  legal: 'amiri', // Traditional for legal documents
   medical: 'notoArabic', // Clear for medical terminology
-  educational: 'cairo',  // Modern for educational content
+  educational: 'cairo', // Modern for educational content
   business: 'notoArabic', // Professional for business
-  engineering: 'cairo',  // Technical clarity
-  general: 'cairo'       // Default modern font
+  engineering: 'cairo', // Technical clarity
+  general: 'cairo', // Default modern font
 };
 
 // Iraqi dialect typography adjustments
@@ -86,28 +86,28 @@ export const DIALECT_ADJUSTMENTS: Record<string, Partial<CSSStyleDeclaration>> =
   iraqi: {
     letterSpacing: '0.02em',
     wordSpacing: '0.1em',
-    lineHeight: '1.7'
+    lineHeight: '1.7',
   },
   baghdad: {
     letterSpacing: '0.015em',
     wordSpacing: '0.08em',
-    lineHeight: '1.65'
+    lineHeight: '1.65',
   },
   basra: {
     letterSpacing: '0.025em',
     wordSpacing: '0.12em',
-    lineHeight: '1.75'
+    lineHeight: '1.75',
   },
   mosul: {
     letterSpacing: '0.02em',
     wordSpacing: '0.09em',
-    lineHeight: '1.68'
+    lineHeight: '1.68',
   },
   standard: {
     letterSpacing: '0.01em',
     wordSpacing: '0.05em',
-    lineHeight: '1.6'
-  }
+    lineHeight: '1.6',
+  },
 };
 
 /**
@@ -118,31 +118,31 @@ export class ArabicFontOptimizer {
   private loadedFonts: Set<string> = new Set();
   private fontCache: Map<string, FontFace> = new Map();
   private preloadQueue: string[] = [];
-  
+
   constructor() {
     this.initializeFontSystem();
   }
-  
+
   /**
    * Initialize Arabic font system with Iraqi cultural preferences
    */
   private async initializeFontSystem(): Promise<void> {
     // Preload critical Arabic fonts
     await this.preloadCriticalFonts();
-    
+
     // Set up font display observers for performance
     this.setupFontDisplayObservers();
-    
+
     // Initialize cultural font preferences
     this.initializeCulturalPreferences();
   }
-  
+
   /**
    * Preload critical Arabic fonts for Iraqi AI system
    */
   private async preloadCriticalFonts(): Promise<void> {
     const criticalFonts = ['cairo', 'notoArabic'];
-    
+
     for (const fontKey of criticalFonts) {
       try {
         await this.loadArabicFont(fontKey);
@@ -151,7 +151,7 @@ export class ArabicFontOptimizer {
       }
     }
   }
-  
+
   /**
    * Load Arabic font with fallback handling
    */
@@ -159,13 +159,13 @@ export class ArabicFontOptimizer {
     if (this.loadedFonts.has(fontKey)) {
       return this.fontCache.get(fontKey) || null;
     }
-    
+
     const config = ARABIC_FONTS[fontKey];
     if (!config) {
       console.warn(`Font configuration not found: ${fontKey}`);
       return null;
     }
-    
+
     try {
       // Create font face with Iraqi-optimized settings
       const fontFace = new FontFace(
@@ -175,77 +175,75 @@ export class ArabicFontOptimizer {
           weight: config.weight,
           style: config.style,
           unicodeRange: config.unicodeRange,
-          display: config.display
+          display: config.display,
         }
       );
-      
+
       await fontFace.load();
       document.fonts.add(fontFace);
-      
+
       this.fontCache.set(fontKey, fontFace);
       this.loadedFonts.add(fontKey);
-      
+
       return fontFace;
     } catch (error) {
       console.error(`Failed to load Arabic font ${fontKey}:`, error);
       return null;
     }
   }
-  
+
   /**
    * Optimize text rendering for Arabic content with Iraqi enhancements
    */
-  optimizeTextRendering(
-    element: HTMLElement,
-    options: TextRenderingOptions
-  ): void {
+  optimizeTextRendering(element: HTMLElement, options: TextRenderingOptions): void {
     const { direction, dialect, domain, kerning, ligatures, optimization } = options;
-    
+
     // Apply Arabic font stack
     const fontKey = DOMAIN_FONTS[domain] || 'cairo';
     element.style.fontFamily = this.buildFontStack(fontKey);
-    
+
     // Apply text direction and cultural adjustments
-    element.style.direction = direction === 'auto' ? this.detectTextDirection(element.textContent || '') : direction;
+    element.style.direction =
+      direction === 'auto' ? this.detectTextDirection(element.textContent || '') : direction;
     element.style.textAlign = element.style.direction === 'rtl' ? 'right' : 'left';
-    
+
     // Apply dialect-specific typography
     const dialectAdjustments = DIALECT_ADJUSTMENTS[dialect] || DIALECT_ADJUSTMENTS.standard;
     Object.assign(element.style, dialectAdjustments);
-    
+
     // Apply rendering optimizations
     this.applyRenderingOptimizations(element, optimization, kerning, ligatures);
-    
+
     // Apply cultural styling preferences
     this.applyCulturalStyling(element, domain);
   }
-  
+
   /**
    * Build optimized font stack with fallbacks
    */
   private buildFontStack(fontKey: string): string {
     const config = ARABIC_FONTS[fontKey];
     if (!config) return 'Arial, sans-serif';
-    
+
     const fonts = [config.primary, ...config.fallbacks];
-    return fonts.map(font => font.includes(' ') ? `"${font}"` : font).join(', ');
+    return fonts.map((font) => (font.includes(' ') ? `"${font}"` : font)).join(', ');
   }
-  
+
   /**
    * Detect text direction for mixed Arabic-English content
    */
   detectTextDirection(text: string): 'ltr' | 'rtl' {
     if (!text) return 'ltr';
-    
+
     // Arabic Unicode ranges
     const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const arabicChars = (text.match(new RegExp(arabicRegex, 'g')) || []).length;
     const totalChars = text.replace(/\s/g, '').length;
-    
+
     // If more than 30% Arabic characters, use RTL
     return arabicChars / totalChars > 0.3 ? 'rtl' : 'ltr';
   }
-  
+
   /**
    * Apply rendering optimizations based on performance requirements
    */
@@ -274,13 +272,13 @@ export class ArabicFontOptimizer {
         element.style.fontVariantLigatures = ligatures ? 'common-ligatures' : 'none';
         break;
     }
-    
+
     // Arabic-specific optimizations
-    element.style.fontFeatureSettings = ligatures 
-      ? '"liga" 1, "clig" 1, "kern" 1' 
+    element.style.fontFeatureSettings = ligatures
+      ? '"liga" 1, "clig" 1, "kern" 1'
       : '"liga" 0, "clig" 0';
   }
-  
+
   /**
    * Apply cultural styling preferences for Iraqi professional domains
    */
@@ -309,12 +307,12 @@ export class ArabicFontOptimizer {
         element.style.fontSize = '0.95em';
         break;
     }
-    
+
     // Islamic typography principles
     element.style.textShadow = 'none'; // Avoid decorative shadows
     element.style.textTransform = 'none'; // Preserve original text case
   }
-  
+
   /**
    * Setup font display observers for performance monitoring
    */
@@ -323,13 +321,13 @@ export class ArabicFontOptimizer {
       document.fonts.addEventListener('loadingdone', (event) => {
         console.log(`Loaded ${event.fontfaces.length} Arabic fonts`);
       });
-      
+
       document.fonts.addEventListener('loadingerror', (event) => {
         console.error('Arabic font loading error:', event);
       });
     }
   }
-  
+
   /**
    * Initialize cultural preferences for Iraqi users
    */
@@ -365,10 +363,10 @@ export class ArabicFontOptimizer {
       .business-arabic { font-family: "${this.buildFontStack('notoArabic')}" !important; }
       .engineering-arabic { font-family: "${this.buildFontStack('cairo')}" !important; }
     `;
-    
+
     document.head.appendChild(style);
   }
-  
+
   /**
    * Measure text rendering performance for optimization
    */
@@ -378,24 +376,24 @@ export class ArabicFontOptimizer {
     layoutShift: number;
   } {
     const start = performance.now();
-    
+
     // Force layout
     element.offsetHeight;
-    
+
     const renderTime = performance.now() - start;
-    
+
     return {
       renderTime,
       fontLoadTime: this.getFontLoadTime(),
-      layoutShift: this.measureLayoutShift(element)
+      layoutShift: this.measureLayoutShift(element),
     };
   }
-  
+
   private getFontLoadTime(): number {
     // Estimate based on loaded fonts
     return this.loadedFonts.size * 50; // ~50ms per font
   }
-  
+
   private measureLayoutShift(element: HTMLElement): number {
     // Simple layout shift measurement
     const rect = element.getBoundingClientRect();
@@ -409,9 +407,9 @@ export const arabicFontOptimizer = new ArabicFontOptimizer();
 // Utility functions for React components
 export const useArabicFont = (domain: string = 'general') => {
   const fontKey = DOMAIN_FONTS[domain] || 'cairo';
-  return arabicFontOptimizer.buildFontStack ? 
-    arabicFontOptimizer['buildFontStack'](fontKey) : 
-    ARABIC_FONTS[fontKey]?.primary || 'Arial, sans-serif';
+  return arabicFontOptimizer.buildFontStack
+    ? arabicFontOptimizer['buildFontStack'](fontKey)
+    : ARABIC_FONTS[fontKey]?.primary || 'Arial, sans-serif';
 };
 
 export const optimizeArabicText = (
@@ -419,18 +417,18 @@ export const optimizeArabicText = (
   options: Partial<TextRenderingOptions> = {}
 ) => {
   if (!element) return;
-  
+
   const defaultOptions: TextRenderingOptions = {
     direction: 'auto',
     dialect: 'iraqi',
     domain: 'general',
     kerning: true,
     ligatures: true,
-    optimization: 'balanced'
+    optimization: 'balanced',
   };
-  
+
   arabicFontOptimizer.optimizeTextRendering(element, {
     ...defaultOptions,
-    ...options
+    ...options,
   });
 };

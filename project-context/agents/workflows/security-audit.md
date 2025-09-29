@@ -1,6 +1,7 @@
 # Iraqi Security Audit Workflow
 
 ## Workflow Overview
+
 **Purpose**: Comprehensive security audit for Iraqi AI systems with payment gateway security, cultural data protection, and Islamic privacy compliance validation.
 
 **Estimated Duration**: 4-6 hours  
@@ -10,12 +11,14 @@
 ## Agent Coordination Chain
 
 ### Phase 1: Payment Security Assessment
+
 **Primary Agent**: `payment-security-guardian`
 **Duration**: 1.5-2 hours
 **Input Context**: System architecture, payment integrations, `integration-patterns.md`
 **Output**: `payment-security-assessment.md`
 
 **Responsibilities**:
+
 - Audit ZainCash, FastPay, NassWallet integrations
 - Validate payment data encryption and protection
 - Assess transaction security and fraud detection
@@ -23,6 +26,7 @@
 - Evaluate API credential security management
 
 **Security Validation Framework**:
+
 ```yaml
 payment_gateway_security:
   zaincash_integration:
@@ -30,13 +34,13 @@ payment_gateway_security:
     api_key_protection: environment_variables
     transaction_encryption: end_to_end
     fraud_detection: active_monitoring
-    
+
   fastpay_integration:
     connection_security: tls_1_3_minimum
     payload_encryption: aes_256_gcm
     session_management: secure_tokens
     timeout_handling: graceful_degradation
-    
+
   nasswallet_integration:
     authentication: oauth2_secure
     data_transmission: encrypted_channels
@@ -51,6 +55,7 @@ iraqi_payment_compliance:
 ```
 
 **Success Criteria**:
+
 - Payment security score >95%
 - All gateway integrations secure
 - Iraqi compliance requirements met
@@ -61,12 +66,14 @@ iraqi_payment_compliance:
 ---
 
 ### Phase 2: Cultural Data Protection Validation
+
 **Primary Agent**: `iraqi-cultural-validator`
 **Duration**: 1-1.5 hours
 **Input Context**: `payment-security-assessment.md`, cultural data handling
 **Output**: `cultural-data-protection.md`
 
 **Responsibilities**:
+
 - Validate Islamic privacy principles compliance
 - Assess family data protection measures
 - Verify cultural sensitivity in data handling
@@ -74,13 +81,14 @@ iraqi_payment_compliance:
 - Validate political neutrality in data collection
 
 **Cultural Privacy Framework**:
+
 ```yaml
 islamic_privacy_compliance:
   personal_data_minimization: only_necessary_collected
   family_privacy_protection: household_data_isolated
   religious_data_sensitivity: prayer_observance_private
   gender_interaction_data: professionally_appropriate
-  
+
 family_data_protection:
   shared_device_privacy: user_isolation_maintained
   family_decision_data: consultation_privacy_protected
@@ -101,6 +109,7 @@ religious_observance_privacy:
 ```
 
 **Success Criteria**:
+
 - Islamic privacy compliance verified
 - Family data protection confirmed
 - Cultural sensitivity maintained
@@ -111,12 +120,14 @@ religious_observance_privacy:
 ---
 
 ### Phase 3: Infrastructure Security Analysis
+
 **Primary Agent**: `iraqi-devops-engineer`
 **Duration**: 1.5-2 hours
 **Input Context**: Previous assessments, infrastructure architecture
 **Output**: `infrastructure-security-analysis.md`
 
 **Responsibilities**:
+
 - Audit server security and Iraqi network optimization
 - Validate backup and recovery for Arabic content
 - Assess monitoring for Iraqi payment gateways
@@ -124,13 +135,14 @@ religious_observance_privacy:
 - Evaluate infrastructure resilience
 
 **Infrastructure Security Assessment**:
+
 ```yaml
 server_security:
   access_control: multi_factor_authentication
   network_security: firewall_intrusion_detection
   server_hardening: minimal_surface_attack
   update_management: automated_security_patches
-  
+
 arabic_content_security:
   unicode_handling: secure_processing
   rtl_data_integrity: validated_storage
@@ -151,6 +163,7 @@ regulatory_compliance:
 ```
 
 **Success Criteria**:
+
 - Infrastructure security hardened
 - Arabic content protection verified
 - Iraqi regulatory compliance confirmed
@@ -161,12 +174,14 @@ regulatory_compliance:
 ---
 
 ### Phase 4: Application Security Testing
+
 **Primary Agent**: `iraqi-technical-debugger`
 **Duration**: 1-1.5 hours
 **Input Context**: All previous assessments, application codebase
 **Output**: `application-security-testing.md`
 
 **Responsibilities**:
+
 - Test Arabic text input security and validation
 - Audit PydanticAI agent security measures
 - Validate cultural context injection prevention
@@ -174,14 +189,15 @@ regulatory_compliance:
 - Assess cross-browser Arabic security
 
 **Application Security Tests**:
+
 ```yaml
 arabic_input_security:
   injection_prevention:
     - sql_injection: arabic_character_testing
-    - xss_prevention: rtl_script_filtering  
+    - xss_prevention: rtl_script_filtering
     - command_injection: arabic_escape_validation
     - template_injection: arabic_context_sanitization
-  
+
   unicode_security:
     - normalization_attacks: prevented
     - homograph_attacks: detected
@@ -202,6 +218,7 @@ cultural_context_security:
 ```
 
 **Success Criteria**:
+
 - All security tests passed
 - Arabic input vulnerabilities addressed
 - AI agent security confirmed
@@ -214,6 +231,7 @@ cultural_context_security:
 ## Security Incident Response Plan
 
 ### Incident Classification
+
 ```yaml
 critical_incidents:
   payment_data_breach: immediate_response_required
@@ -235,6 +253,7 @@ medium_priority_incidents:
 ```
 
 ### Response Procedures
+
 ```yaml
 immediate_response: # <1 hour
   - isolate_affected_systems
@@ -260,6 +279,7 @@ long_term_response: # 1-7 days
 ## Context Flow Optimization
 
 ### Security Assessment Context Management
+
 ```yaml
 phase_1_to_2:
   essential_context:
@@ -296,37 +316,44 @@ phase_3_to_4:
 ### Security Audit Failures
 
 #### Critical Security Vulnerability Detected
+
 **Response Protocol**:
+
 1. Immediate system isolation
 2. Stakeholder notification
 3. Emergency security patch deployment
 4. Cultural impact assessment
 5. Comprehensive re-audit
-**Duration Impact**: +4-8 hours
+   **Duration Impact**: +4-8 hours
 
 #### Cultural Data Protection Failure
+
 **Response Protocol**:
+
 1. Cultural consultant escalation
 2. Islamic compliance review
 3. Family privacy enhancement
 4. Religious data protection verification
 5. Cultural validation re-audit
-**Duration Impact**: +2-4 hours
+   **Duration Impact**: +2-4 hours
 
 #### Payment Security Compliance Failure
+
 **Response Protocol**:
+
 1. Payment gateway isolation
 2. Iraqi regulatory notification
 3. Security enhancement implementation
 4. Compliance verification
 5. Payment system re-certification
-**Duration Impact**: +6-12 hours
+   **Duration Impact**: +6-12 hours
 
 ---
 
 ## Performance Metrics & Compliance
 
 ### Security Audit Targets
+
 - **Overall Security Score**: >95%
 - **Payment Security**: 100% compliance
 - **Cultural Data Protection**: 100% compliance
@@ -334,6 +361,7 @@ phase_3_to_4:
 - **Application Security**: Zero critical vulnerabilities
 
 ### Iraqi Regulatory Compliance Checklist
+
 - ✅ Iraqi banking security standards met
 - ✅ Cultural data privacy protected
 - ✅ Islamic privacy principles respected
@@ -345,13 +373,16 @@ phase_3_to_4:
 - ✅ Incident response procedures established
 
 ### Knowledge Base Updates
+
 After successful audit:
+
 - Update `integration-patterns.md` with security patterns
 - Record security decisions in `technical-solutions.md`
 - Document cultural security requirements
 - Create security audit precedents for future reference
 
 ### Continuous Security Monitoring
+
 ```yaml
 ongoing_monitoring:
   payment_gateway_health: real_time_monitoring

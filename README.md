@@ -14,7 +14,7 @@ The Iraqi AI Chat System represents **127-184 weeks of development value** achie
 ### **Core Capabilities**
 
 - 🧠 **Advanced AI Agents**: 21 specialized Iraqi AI agents with cultural intelligence
-- 🌐 **Arabic-First Design**: Native RTL support with Iraqi dialect recognition  
+- 🌐 **Arabic-First Design**: Native RTL support with Iraqi dialect recognition
 - 🕌 **Islamic Compliance**: 95%+ cultural appropriateness validation
 - 💼 **Professional Domains**: Iraqi legal, medical, educational, organizational integration
 - 💳 **Payment Integration**: ZainCash, FastPay, NassWallet support
@@ -24,6 +24,7 @@ The Iraqi AI Chat System represents **127-184 weeks of development value** achie
 ## 🚀 **Quick Start**
 
 ### Prerequisites
+
 - **Bun** (30x faster than npm)
 - **Node.js 18+**
 - **PostgreSQL** (via Supabase)
@@ -58,7 +59,7 @@ bun test
 ```bash
 # Development
 bun run dev              # Start development server
-bun run build            # Production build  
+bun run build            # Production build
 bun test                 # Run tests
 bun run lint             # Code validation
 bun run typecheck        # TypeScript validation
@@ -95,14 +96,14 @@ aqlix-ai/
 
 ### **Key Components**
 
-| Component | Purpose | Iraqi Enhancement |
-|-----------|---------|------------------|
-| **AI Agents** | 21 specialized agents for cultural intelligence | 95%+ Islamic compliance validation |
-| **Visual Workflows** | Drag-and-drop workflow builder | Arabic RTL interface, cultural validation |
-| **Desktop Automation** | Government portal automation | Iraqi ministry integration, Arabic OCR |
-| **Payment Integration** | Financial transaction processing | ZainCash, FastPay, NassWallet native support |
-| **Arabic NLP** | Language processing engine | Iraqi dialect recognition, RTL optimization |
-| **Cultural Validation** | Content appropriateness checking | Islamic principles, professional etiquette |
+| Component               | Purpose                                         | Iraqi Enhancement                            |
+| ----------------------- | ----------------------------------------------- | -------------------------------------------- |
+| **AI Agents**           | 21 specialized agents for cultural intelligence | 95%+ Islamic compliance validation           |
+| **Visual Workflows**    | Drag-and-drop workflow builder                  | Arabic RTL interface, cultural validation    |
+| **Desktop Automation**  | Government portal automation                    | Iraqi ministry integration, Arabic OCR       |
+| **Payment Integration** | Financial transaction processing                | ZainCash, FastPay, NassWallet native support |
+| **Arabic NLP**          | Language processing engine                      | Iraqi dialect recognition, RTL optimization  |
+| **Cultural Validation** | Content appropriateness checking                | Islamic principles, professional etiquette   |
 
 ## 🌟 **Major Features**
 
@@ -111,7 +112,7 @@ aqlix-ai/
 Our system includes 21 culturally-intelligent AI agents:
 
 - **Cultural Intelligence**: `iraqi-cultural-validator`, `iraqi-cultural-tester`
-- **Language Processing**: `arabic-rtl-processor`, `iraqi-arabic-tester`  
+- **Language Processing**: `arabic-rtl-processor`, `iraqi-arabic-tester`
 - **Professional Domains**: `iraqi-professional-domain-expert`, `iraqi-business-analyst`
 - **UI/UX Design**: `iraqi-ui-designer`, `iraqi-ux-researcher`, `iraqi-interaction-designer`
 - **Technical Systems**: `iraqi-ai-agent-architect`, `iraqi-technical-debugger`, `iraqi-devops-engineer`
@@ -134,21 +135,25 @@ Our system includes 21 culturally-intelligent AI agents:
 ### 💼 **Professional Domain Integration**
 
 #### Legal Domain
+
 - Iraqi civil and commercial law reference
 - Legal document templates with Arabic support
 - Court procedure guidelines and timelines
 
-#### Medical Domain  
+#### Medical Domain
+
 - Iraqi healthcare system integration
 - Medical terminology in Arabic and English
 - Patient privacy compliance with Iraqi standards
 
 #### Educational Domain
+
 - Iraqi curriculum alignment and assessment
 - Educational resource management
 - Student progress tracking with cultural context
 
 #### Organizational Domain
+
 - Iraqi organizational hierarchy understanding
 - Government ministry workflow integration
 - Professional communication protocols
@@ -156,7 +161,7 @@ Our system includes 21 culturally-intelligent AI agents:
 ### 💳 **Iraqi Payment Gateways**
 
 - **ZainCash**: Mobile payment integration (1000 IQD transactions)
-- **FastPay**: Digital wallet integration (500 IQD transactions)  
+- **FastPay**: Digital wallet integration (500 IQD transactions)
 - **NassWallet**: Electronic payment processing (1000 IQD transactions)
 - **Security**: Enhanced encryption and fraud detection
 - **Compliance**: Central Bank of Iraq regulations adherence
@@ -164,12 +169,14 @@ Our system includes 21 culturally-intelligent AI agents:
 ## 📚 **Documentation**
 
 ### **Core Documentation**
+
 - [**Developer Guide**](./docs/developer/GETTING_STARTED.md) - Complete setup and development guide
 - [**Architecture Overview**](./docs/developer/ARCHITECTURE.md) - System architecture and design patterns
 - [**Cultural Guidelines**](./docs/developer/CULTURAL_GUIDELINES.md) - Iraqi cultural requirements and Islamic principles
 - [**API Reference**](./docs/developer/API_REFERENCE.md) - Complete API documentation
 
 ### **Feature Documentation**
+
 - [**AI Chat System**](./docs/features/CHAT_SYSTEM.md) - Conversational AI with cultural intelligence
 - [**Arabic Processing**](./docs/features/ARABIC_PROCESSING.md) - RTL support and dialect recognition
 - [**Cultural Validation**](./docs/features/CULTURAL_VALIDATION.md) - Islamic compliance system
@@ -177,11 +184,13 @@ Our system includes 21 culturally-intelligent AI agents:
 - [**Payment Integration**](./docs/features/PAYMENT_INTEGRATION.md) - Iraqi payment gateway integration
 
 ### **Technical Documentation**
+
 - [**Agent Architecture**](./docs/technical/AGENT_ARCHITECTURE.md) - PydanticAI agent system design
 - [**Database Schema**](./docs/technical/DATABASE_SCHEMA.md) - Supabase schema with cultural extensions
 - [**Security Implementation**](./docs/technical/SECURITY.md) - Security measures with Iraqi context
 
 ### **Deployment & Operations**
+
 - [**Production Setup**](./docs/deployment/PRODUCTION_SETUP.md) - Production deployment guide
 - [**Environment Configuration**](./docs/deployment/ENVIRONMENT_CONFIG.md) - Configuration management
 - [**Monitoring & Analytics**](./docs/deployment/MONITORING.md) - Sentry integration and performance tracking
@@ -189,11 +198,12 @@ Our system includes 21 culturally-intelligent AI agents:
 ## 🧪 **Testing & Quality Assurance**
 
 ### **Testing Strategy**
+
 ```bash
 # Comprehensive test suite
 bun test                    # All tests
 bun test:unit              # Unit tests
-bun test:integration       # Integration tests  
+bun test:integration       # Integration tests
 bun test:e2e               # End-to-end tests
 
 # Cultural Validation Tests
@@ -204,6 +214,7 @@ bun test:professional      # Professional domain validation
 ```
 
 ### **Quality Standards**
+
 - **Cultural Compliance**: 95%+ Islamic appropriateness
 - **Arabic Processing**: 99%+ RTL accuracy, 85%+ dialect recognition
 - **Payment Security**: 100% security compliance
@@ -214,27 +225,29 @@ bun test:professional      # Professional domain validation
 
 The system incorporates value from **7 major repositories** with **127-184 weeks of development savings**:
 
-| Repository | Extraction Value | Iraqi Enhancement |
-|------------|------------------|------------------|
-| **cline/cline** | 51-80 weeks | Deep planning with cultural context |
-| **coleam00/Archon** | 15-20 weeks | RAG system with Iraqi knowledge bases |
-| **RooCodeInc/roo-code** | 12-16 weeks | Tool orchestration with cultural validation |
-| **google-gemini/gemini-cli** | 10-14 weeks | Government integration with Arabic support |
-| **sst/opencode** | 8-11 weeks | Terminal UI with RTL support |
-| **bytedance/trae-agent** | 6-8 weeks | AI reasoning with Iraqi context |
-| **Unified Orchestrator** | 15-25 weeks | Complete ecosystem integration |
+| Repository                   | Extraction Value | Iraqi Enhancement                           |
+| ---------------------------- | ---------------- | ------------------------------------------- |
+| **cline/cline**              | 51-80 weeks      | Deep planning with cultural context         |
+| **coleam00/Archon**          | 15-20 weeks      | RAG system with Iraqi knowledge bases       |
+| **RooCodeInc/roo-code**      | 12-16 weeks      | Tool orchestration with cultural validation |
+| **google-gemini/gemini-cli** | 10-14 weeks      | Government integration with Arabic support  |
+| **sst/opencode**             | 8-11 weeks       | Terminal UI with RTL support                |
+| **bytedance/trae-agent**     | 6-8 weeks        | AI reasoning with Iraqi context             |
+| **Unified Orchestrator**     | 15-25 weeks      | Complete ecosystem integration              |
 
 ## 🤝 **Contributing**
 
 We welcome contributions that enhance the Iraqi cultural intelligence and professional domain integration:
 
 ### **Contribution Guidelines**
+
 1. **Cultural Sensitivity**: All contributions must respect Iraqi culture and Islamic principles
 2. **Arabic Support**: New features should include Arabic RTL support
 3. **Professional Context**: Consider Iraqi legal, medical, educational, organizational needs
 4. **Quality Standards**: Maintain 95%+ cultural compliance and comprehensive testing
 
 ### **Development Workflow**
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/iraqi-enhancement`
 3. Implement changes with cultural validation
@@ -245,12 +258,14 @@ We welcome contributions that enhance the Iraqi cultural intelligence and profes
 ## 📞 **Support & Contact**
 
 ### **Documentation & Resources**
+
 - [**Complete Documentation**](./docs/) - Comprehensive guides and references
 - [**Example Components**](./examples/) - 60+ extracted components with Iraqi enhancements
 - [**API Documentation**](./docs/developer/API_REFERENCE.md) - Complete API reference
 - [**Cultural Guidelines**](./docs/developer/CULTURAL_GUIDELINES.md) - Iraqi cultural requirements
 
 ### **Technical Support**
+
 For technical questions, cultural validation issues, or professional domain integration:
 
 1. **Check Documentation**: Review comprehensive guides in `/docs/`

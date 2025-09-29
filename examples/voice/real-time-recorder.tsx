@@ -1,15 +1,23 @@
 // Real-time Voice Recording Component for Iraqi Arabic
 // Based on MediaRecorder API with VAD and Arabic RTL support
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Mic, MicOff, Square, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { useState, useRef, useEffect, useCallback } from "react";
+import {
+  Mic,
+  MicOff,
+  Square,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 
 interface VoiceRecorderProps {
-  language: 'arabic' | 'english';
+  language: "arabic" | "english";
   onRecordingComplete: (audioBlob: Blob, duration: number) => void;
   onTranscriptionReceived?: (text: string) => void;
   maxDuration?: number; // in seconds
-  dialect?: 'baghdad' | 'basra' | 'mosul' | 'auto';
+  dialect?: "baghdad" | "basra" | "mosul" | "auto";
 }
 
 interface RecordingState {
@@ -27,7 +35,7 @@ export function VoiceRecorder({
   onRecordingComplete,
   onTranscriptionReceived,
   maxDuration = 180, // 3 minutes
-  dialect = 'auto'
+  dialect = "auto",
 }: VoiceRecorderProps) {
   const [state, setState] = useState<RecordingState>({
     isRecording: false,
@@ -35,8 +43,8 @@ export function VoiceRecorder({
     isPlaying: false,
     duration: 0,
     audioBlob: null,
-    transcription: '',
-    isProcessing: false
+    transcription: "",
+    isProcessing: false,
   });
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -49,53 +57,55 @@ export function VoiceRecorder({
   const vadRef = useRef<any>(null);
   const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const direction = language === 'arabic' ? 'rtl' : 'ltr';
-  const textAlign = language === 'arabic' ? 'text-right' : 'text-left';
-  const fontFamily = language === 'arabic' ? 'font-arabic' : 'font-sans';
+  const direction = language === "arabic" ? "rtl" : "ltr";
+  const textAlign = language === "arabic" ? "text-right" : "text-left";
+  const fontFamily = language === "arabic" ? "font-arabic" : "font-sans";
 
   const texts = {
     arabic: {
-      recording: 'جاري التسجيل...',
-      paused: 'متوقف مؤقتاً',
-      duration: 'المدة',
-      startRecording: 'بدء التسجيل',
-      stopRecording: 'إيقاف التسجيل',
-      pauseRecording: 'توقف مؤقتاً',
-      resumeRecording: 'استئناف التسجيل',
-      playRecording: 'تشغيل التسجيل',
-      processing: 'جاري المعالجة...',
-      transcribing: 'جاري التحويل إلى نص...',
-      noPermission: 'لا يمكن الوصول إلى الميكروفون',
-      permissionDenied: 'تم رفض إذن الميكروفون. يرجى السماح بالوصول إلى الميكروفون في إعدادات المتصفح.',
+      recording: "جاري التسجيل...",
+      paused: "متوقف مؤقتاً",
+      duration: "المدة",
+      startRecording: "بدء التسجيل",
+      stopRecording: "إيقاف التسجيل",
+      pauseRecording: "توقف مؤقتاً",
+      resumeRecording: "استئناف التسجيل",
+      playRecording: "تشغيل التسجيل",
+      processing: "جاري المعالجة...",
+      transcribing: "جاري التحويل إلى نص...",
+      noPermission: "لا يمكن الوصول إلى الميكروفون",
+      permissionDenied:
+        "تم رفض إذن الميكروفون. يرجى السماح بالوصول إلى الميكروفون في إعدادات المتصفح.",
       maxDurationReached: `تم الوصول للحد الأقصى للمدة (${maxDuration} ثانية)`,
       dialect: {
-        baghdad: 'لهجة بغدادية',
-        basra: 'لهجة بصراوية', 
-        mosul: 'لهجة موصلية',
-        auto: 'تحديد تلقائي'
-      }
+        baghdad: "لهجة بغدادية",
+        basra: "لهجة بصراوية",
+        mosul: "لهجة موصلية",
+        auto: "تحديد تلقائي",
+      },
     },
     english: {
-      recording: 'Recording...',
-      paused: 'Paused',
-      duration: 'Duration',
-      startRecording: 'Start Recording',
-      stopRecording: 'Stop Recording',
-      pauseRecording: 'Pause Recording',
-      resumeRecording: 'Resume Recording',
-      playRecording: 'Play Recording',
-      processing: 'Processing...',
-      transcribing: 'Transcribing...',
-      noPermission: 'Cannot access microphone',
-      permissionDenied: 'Microphone permission denied. Please allow microphone access in browser settings.',
+      recording: "Recording...",
+      paused: "Paused",
+      duration: "Duration",
+      startRecording: "Start Recording",
+      stopRecording: "Stop Recording",
+      pauseRecording: "Pause Recording",
+      resumeRecording: "Resume Recording",
+      playRecording: "Play Recording",
+      processing: "Processing...",
+      transcribing: "Transcribing...",
+      noPermission: "Cannot access microphone",
+      permissionDenied:
+        "Microphone permission denied. Please allow microphone access in browser settings.",
       maxDurationReached: `Maximum duration reached (${maxDuration} seconds)`,
       dialect: {
-        baghdad: 'Baghdad Dialect',
-        basra: 'Basra Dialect',
-        mosul: 'Mosul Dialect', 
-        auto: 'Auto Detect'
-      }
-    }
+        baghdad: "Baghdad Dialect",
+        basra: "Basra Dialect",
+        mosul: "Mosul Dialect",
+        auto: "Auto Detect",
+      },
+    },
   };
 
   const t = texts[language];
@@ -105,8 +115,8 @@ export function VoiceRecorder({
     const initVAD = async () => {
       try {
         // Dynamically import VAD (requires WebAssembly)
-        const { MicVAD } = await import('@ricky0123/vad-web');
-        
+        const { MicVAD } = await import("@ricky0123/vad-web");
+
         vadRef.current = await MicVAD.new({
           onSpeechStart: () => {
             // Clear silence timeout when speech detected
@@ -126,10 +136,10 @@ export function VoiceRecorder({
           positiveSpeechThreshold: 0.8, // Higher threshold for Arabic
           negativeSpeechThreshold: 0.3,
           redemptionFrames: 8,
-          frameSamples: 1536
+          frameSamples: 1536,
         });
       } catch (error) {
-        console.log('VAD not available:', error);
+        console.log("VAD not available:", error);
         // Continue without VAD
       }
     };
@@ -146,20 +156,20 @@ export function VoiceRecorder({
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const startTimer = useCallback(() => {
     timerRef.current = setInterval(() => {
-      setState(prev => {
+      setState((prev) => {
         const newDuration = prev.duration + 1;
-        
+
         // Auto-stop at max duration
         if (newDuration >= maxDuration) {
           stopRecording();
           return { ...prev, duration: maxDuration };
         }
-        
+
         return { ...prev, duration: newDuration };
       });
     }, 1000);
@@ -181,17 +191,17 @@ export function VoiceRecorder({
           sampleSize: 16,
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
-        }
+          autoGainControl: true,
+        },
       });
 
       streamRef.current = stream;
       audioChunksRef.current = [];
 
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
-          ? 'audio/webm;codecs=opus'
-          : 'audio/webm'
+        mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+          ? "audio/webm;codecs=opus"
+          : "audio/webm",
       });
 
       mediaRecorderRef.current = mediaRecorder;
@@ -203,41 +213,45 @@ export function VoiceRecorder({
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { 
-          type: 'audio/webm' 
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/webm",
         });
-        
-        setState(prev => ({ ...prev, audioBlob, isRecording: false, isPaused: false }));
+
+        setState((prev) => ({
+          ...prev,
+          audioBlob,
+          isRecording: false,
+          isPaused: false,
+        }));
         onRecordingComplete(audioBlob, state.duration);
-        
+
         // Start transcription
         transcribeAudio(audioBlob);
       };
 
       mediaRecorder.start(100); // Collect data every 100ms
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         isRecording: true,
         isPaused: false,
-        duration: 0
+        duration: 0,
       }));
-      
+
       startTimer();
 
       // Start VAD monitoring
       if (vadRef.current) {
         vadRef.current.start();
       }
-
     } catch (error) {
-      console.error('Error starting recording:', error);
-      setState(prev => ({
+      console.error("Error starting recording:", error);
+      setState((prev) => ({
         ...prev,
-        isProcessing: false
+        isProcessing: false,
       }));
-      
-      if (error instanceof DOMException && error.name === 'NotAllowedError') {
+
+      if (error instanceof DOMException && error.name === "NotAllowedError") {
         alert(t.permissionDenied);
       } else {
         alert(t.noPermission);
@@ -248,20 +262,20 @@ export function VoiceRecorder({
   const stopRecording = () => {
     if (mediaRecorderRef.current && state.isRecording) {
       mediaRecorderRef.current.stop();
-      
+
       // Stop VAD
       if (vadRef.current) {
         vadRef.current.pause();
       }
-      
+
       // Clean up stream
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
       }
-      
+
       stopTimer();
-      
+
       // Clear silence timeout
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
@@ -273,7 +287,7 @@ export function VoiceRecorder({
   const pauseRecording = () => {
     if (mediaRecorderRef.current && state.isRecording) {
       mediaRecorderRef.current.pause();
-      setState(prev => ({ ...prev, isPaused: true }));
+      setState((prev) => ({ ...prev, isPaused: true }));
       stopTimer();
     }
   };
@@ -281,23 +295,23 @@ export function VoiceRecorder({
   const resumeRecording = () => {
     if (mediaRecorderRef.current && state.isPaused) {
       mediaRecorderRef.current.resume();
-      setState(prev => ({ ...prev, isPaused: false }));
+      setState((prev) => ({ ...prev, isPaused: false }));
       startTimer();
     }
   };
 
   const transcribeAudio = async (audioBlob: Blob) => {
-    setState(prev => ({ ...prev, isProcessing: true, transcription: '' }));
+    setState((prev) => ({ ...prev, isProcessing: true, transcription: "" }));
 
     try {
       const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.webm');
-      formData.append('language', language);
-      formData.append('dialect', dialect);
+      formData.append("audio", audioBlob, "recording.webm");
+      formData.append("language", language);
+      formData.append("dialect", dialect);
 
-      const response = await fetch('/api/voice/transcribe', {
-        method: 'POST',
-        body: formData
+      const response = await fetch("/api/voice/transcribe", {
+        method: "POST",
+        body: formData,
       });
 
       if (!response.ok) {
@@ -305,26 +319,26 @@ export function VoiceRecorder({
       }
 
       const result = await response.json();
-      const transcription = result.text || '';
+      const transcription = result.text || "";
 
-      setState(prev => ({ 
-        ...prev, 
-        transcription, 
-        isProcessing: false 
+      setState((prev) => ({
+        ...prev,
+        transcription,
+        isProcessing: false,
       }));
 
       if (onTranscriptionReceived) {
         onTranscriptionReceived(transcription);
       }
-
     } catch (error) {
-      console.error('Transcription error:', error);
-      setState(prev => ({ 
-        ...prev, 
+      console.error("Transcription error:", error);
+      setState((prev) => ({
+        ...prev,
         isProcessing: false,
-        transcription: language === 'arabic' 
-          ? 'خطأ في تحويل الصوت إلى نص'
-          : 'Transcription failed'
+        transcription:
+          language === "arabic"
+            ? "خطأ في تحويل الصوت إلى نص"
+            : "Transcription failed",
       }));
     }
   };
@@ -336,12 +350,12 @@ export function VoiceRecorder({
       audioRef.current = audio;
 
       audio.onended = () => {
-        setState(prev => ({ ...prev, isPlaying: false }));
+        setState((prev) => ({ ...prev, isPlaying: false }));
         URL.revokeObjectURL(audioUrl);
       };
 
       audio.onloadstart = () => {
-        setState(prev => ({ ...prev, isPlaying: true }));
+        setState((prev) => ({ ...prev, isPlaying: true }));
       };
 
       audio.play();
@@ -352,7 +366,7 @@ export function VoiceRecorder({
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
-      setState(prev => ({ ...prev, isPlaying: false }));
+      setState((prev) => ({ ...prev, isPlaying: false }));
     }
   };
 
@@ -361,7 +375,7 @@ export function VoiceRecorder({
     return () => {
       stopTimer();
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
@@ -373,17 +387,22 @@ export function VoiceRecorder({
   }, [stopTimer]);
 
   return (
-    <div className={`w-full p-6 border rounded-lg bg-white shadow-sm ${fontFamily}`} dir={direction}>
+    <div
+      className={`w-full p-6 border rounded-lg bg-white shadow-sm ${fontFamily}`}
+      dir={direction}
+    >
       {/* Header */}
       <div className={`flex items-center justify-between mb-6 ${textAlign}`}>
         <h3 className="text-lg font-semibold">
-          {language === 'arabic' ? 'التسجيل الصوتي' : 'Voice Recording'}
+          {language === "arabic" ? "التسجيل الصوتي" : "Voice Recording"}
         </h3>
-        
+
         {/* Dialect Selector */}
         <select
           value={dialect}
-          onChange={(e) => setState(prev => ({ ...prev, dialect: e.target.value as any }))}
+          onChange={(e) =>
+            setState((prev) => ({ ...prev, dialect: e.target.value as any }))
+          }
           className="px-3 py-1 border rounded text-sm"
           disabled={state.isRecording}
         >
@@ -396,22 +415,27 @@ export function VoiceRecorder({
 
       {/* Recording Status */}
       {(state.isRecording || state.duration > 0) && (
-        <div className={`mb-4 p-3 rounded-lg ${state.isRecording ? 'bg-red-50' : 'bg-gray-50'}`}>
+        <div
+          className={`mb-4 p-3 rounded-lg ${state.isRecording ? "bg-red-50" : "bg-gray-50"}`}
+        >
           <div className={`flex items-center justify-between ${textAlign}`}>
             <div className="flex items-center space-x-2">
               {state.isRecording && !state.isPaused && (
                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
               )}
-              <span className={`font-medium ${
-                state.isRecording ? 'text-red-700' : 'text-gray-700'
-              }`}>
-                {state.isRecording 
-                  ? (state.isPaused ? t.paused : t.recording)
-                  : `${t.duration}: ${formatDuration(state.duration)}`
-                }
+              <span
+                className={`font-medium ${
+                  state.isRecording ? "text-red-700" : "text-gray-700"
+                }`}
+              >
+                {state.isRecording
+                  ? state.isPaused
+                    ? t.paused
+                    : t.recording
+                  : `${t.duration}: ${formatDuration(state.duration)}`}
               </span>
             </div>
-            
+
             <span className="text-sm text-gray-500">
               {formatDuration(state.duration)} / {formatDuration(maxDuration)}
             </span>
@@ -439,7 +463,7 @@ export function VoiceRecorder({
               <Square className="w-5 h-5" />
               <span>{t.stopRecording}</span>
             </button>
-            
+
             {!state.isPaused ? (
               <button
                 onClick={pauseRecording}
@@ -466,7 +490,11 @@ export function VoiceRecorder({
             disabled={state.isProcessing}
             className="flex items-center space-x-2 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
           >
-            {state.isPlaying ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            {state.isPlaying ? (
+              <VolumeX className="w-5 h-5" />
+            ) : (
+              <Volume2 className="w-5 h-5" />
+            )}
             <span>{t.playRecording}</span>
           </button>
         )}
@@ -486,11 +514,13 @@ export function VoiceRecorder({
       {state.transcription && (
         <div className={`p-4 bg-gray-50 rounded-lg ${textAlign}`}>
           <h4 className="font-medium mb-2">
-            {language === 'arabic' ? 'النص المستخرج:' : 'Transcription:'}
+            {language === "arabic" ? "النص المستخرج:" : "Transcription:"}
           </h4>
-          <p className={`text-gray-700 leading-relaxed ${
-            language === 'arabic' ? 'text-right' : 'text-left'
-          }`}>
+          <p
+            className={`text-gray-700 leading-relaxed ${
+              language === "arabic" ? "text-right" : "text-left"
+            }`}
+          >
             {state.transcription}
           </p>
         </div>

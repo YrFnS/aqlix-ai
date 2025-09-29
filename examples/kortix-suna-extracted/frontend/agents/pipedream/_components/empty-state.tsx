@@ -1,18 +1,18 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Filter } from 'lucide-react';
-import type { EmptyStateProps } from '../types';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Filter } from "lucide-react";
+import type { EmptyStateProps } from "../types";
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
   selectedCategory,
-  mode = 'full',
-  onClearFilters
+  mode = "full",
+  onClearFilters,
 }) => {
   const getEmptyMessage = () => {
-    if (selectedCategory !== 'All') {
-      return `No ${mode === 'profile-only' ? 'apps' : 'integrations'} found in "${selectedCategory}" category. Try a different category or search term.`;
+    if (selectedCategory !== "All") {
+      return `No ${mode === "profile-only" ? "apps" : "integrations"} found in "${selectedCategory}" category. Try a different category or search term.`;
     }
-    return mode === 'profile-only'
+    return mode === "profile-only"
       ? "Try adjusting your search criteria or browse available apps."
       : "Try adjusting your search criteria or browse our popular integrations.";
   };
@@ -37,4 +37,4 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       </Button>
     </div>
   );
-}; 
+};

@@ -7,15 +7,17 @@
 ## 🔍 **Detailed Component Analysis**
 
 ### **Backend Database Models (High Value - Direct Use)**
+
 **Location**: `src/backend/base/langflow/services/database/models/`
 
 **Extractable Components**:
+
 ```
 ├── api_key/
 │   ├── model.py          # API key management with expiration
 │   └── crud.py           # CRUD operations for API keys
 ├── file/
-│   ├── model.py          # File storage with metadata 
+│   ├── model.py          # File storage with metadata
 │   └── crud.py           # File upload/download operations
 ├── flow/
 │   ├── model.py          # AI workflow definitions
@@ -41,6 +43,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **User Model**: Add Iraqi profession fields, dialect preferences, cultural settings
 - **Message Model**: Add Arabic RTL support, voice message URLs, cultural validation flags
 - **File Model**: Add Arabic OCR results, document type classification (Iraqi legal, medical docs)
@@ -49,9 +52,11 @@
 **Extraction Value**: 🔥 **CRITICAL** - Complete database foundation (8-10 weeks saved)
 
 ### **Backend API Routes (High Value - Adaptable)**
+
 **Location**: `src/backend/base/langflow/api/v1/`
 
 **Extractable Components**:
+
 ```
 ├── chat.py               # Chat conversation endpoints
 ├── files.py              # File upload/download API
@@ -69,6 +74,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Chat API**: Add Iraqi dialect detection, cultural validation, voice message processing
 - **Files API**: Add Arabic OCR processing, Iraqi document templates, cultural compliance checks
 - **Auth API**: Add Iraqi phone (+964) validation, cultural preference settings
@@ -77,9 +83,11 @@
 **Extraction Value**: 🔥 **CRITICAL** - Complete API foundation (6-8 weeks saved)
 
 ### **Frontend Chat Components (Medium-High Value - Conversion Required)**
+
 **Location**: `src/frontend/src/components/core/chatComponents/`
 
 **Extractable Components**:
+
 ```
 ├── ContentBlockDisplay.tsx   # Message content rendering
 ├── ContentDisplay.tsx        # Chat content display logic
@@ -87,6 +95,7 @@
 ```
 
 **Additional Chat-Related Components**:
+
 ```
 src/frontend/src/pages/messagesPage/
 ├── components/
@@ -107,6 +116,7 @@ src/frontend/src/pages/messagesPage/
 
 **Conversion Requirements**: Svelte → React 19 + TypeScript
 **Iraqi Enhancement Opportunities**:
+
 - Add Arabic RTL text rendering with proper font loading
 - Add voice message playback controls with Iraqi accent optimization
 - Add cultural appropriateness indicators in message display
@@ -115,9 +125,11 @@ src/frontend/src/pages/messagesPage/
 **Extraction Value**: ⭐ **IMPORTANT** - Chat interface foundation (4-6 weeks saved)
 
 ### **Frontend Authentication System (High Value - Conversion Required)**
+
 **Location**: `src/frontend/src/components/authorization/`
 
 **Extractable Components**:
+
 ```
 ├── authAdminGuard/       # Admin access protection
 ├── authGuard/            # General authentication guard
@@ -127,6 +139,7 @@ src/frontend/src/pages/messagesPage/
 ```
 
 **Auth Context & Stores**:
+
 ```
 src/frontend/src/contexts/authContext.tsx
 src/frontend/src/stores/authStore.ts
@@ -140,6 +153,7 @@ src/frontend/src/controllers/API/queries/auth/
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - Add Iraqi phone number (+964) validation in login forms
 - Add cultural preference selection during registration
 - Add professional domain selection (lawyer, doctor, teacher, engineer)
@@ -148,9 +162,11 @@ src/frontend/src/controllers/API/queries/auth/
 **Extraction Value**: 🔥 **CRITICAL** - Complete auth system (3-4 weeks saved)
 
 ### **Frontend File Management System (High Value - Conversion Required)**
+
 **Location**: `src/frontend/src/pages/filesPage/` and related components
 
 **Extractable Components**:
+
 ```
 src/frontend/src/pages/filesPage/
 ├── index.tsx                    # Main files page
@@ -161,6 +177,7 @@ src/frontend/src/pages/filesPage/
 ```
 
 **File Controllers**:
+
 ```
 src/frontend/src/controllers/API/queries/files-v2/
 ├── use-delete-file.ts
@@ -170,6 +187,7 @@ src/frontend/src/controllers/API/queries/files-v2/
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - Add Arabic OCR processing for uploaded documents
 - Add Iraqi document type classification (legal contracts, medical reports, educational certificates)
 - Add cultural appropriateness validation for uploaded content
@@ -178,9 +196,11 @@ src/frontend/src/controllers/API/queries/files-v2/
 **Extraction Value**: ⭐ **IMPORTANT** - File management foundation (3-4 weeks saved)
 
 ### **Frontend UI Component Library (Medium Value - Conversion Required)**
+
 **Location**: `src/frontend/src/components/ui/`
 
 **Available Components** (50+ components):
+
 ```
 ├── accordion.tsx         # Collapsible content
 ├── alert.tsx            # Alert notifications
@@ -205,6 +225,7 @@ src/frontend/src/controllers/API/queries/files-v2/
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - Convert all components to support Arabic RTL layout
 - Add Iraqi-specific form validation (phone numbers, ID formats)
 - Add cultural color schemes and design patterns
@@ -213,9 +234,11 @@ src/frontend/src/controllers/API/queries/files-v2/
 **Extraction Value**: 💡 **USEFUL** - UI component library (2-3 weeks saved)
 
 ### **Real-time Communication System (High Value - Direct Use)**
+
 **Location**: WebSocket implementation throughout backend
 
 **Extractable Components**:
+
 ```
 Backend WebSocket handling:
 ├── server.py             # WebSocket server setup
@@ -228,6 +251,7 @@ Frontend WebSocket:
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - Add Arabic text processing in real-time streams
 - Add voice message streaming for Iraqi accent optimization
 - Add cultural validation in real-time chat processing
@@ -237,6 +261,7 @@ Frontend WebSocket:
 ## 🚀 **Extraction Priority Matrix**
 
 ### **Phase 1: Critical Backend (Weeks 1-2)**
+
 1. **Database Models** (8-10 weeks saved)
    - Direct extraction with Iraqi field additions
    - Complete CRUD operations included
@@ -248,6 +273,7 @@ Frontend WebSocket:
    - File processing pipeline ready
 
 ### **Phase 2: Frontend Foundation (Weeks 3-4)**
+
 3. **Authentication System** (3-4 weeks saved)
    - Complete auth flow with guards
    - User management interface
@@ -259,6 +285,7 @@ Frontend WebSocket:
    - Drag & drop functionality
 
 ### **Phase 3: Chat Interface (Weeks 5-6)**
+
 5. **Chat Components** (4-6 weeks saved)
    - Message display system
    - Real-time chat interface
@@ -270,6 +297,7 @@ Frontend WebSocket:
    - Streaming capabilities
 
 ### **Phase 4: UI Enhancement (Week 7)**
+
 7. **UI Component Library** (2-3 weeks saved)
    - 50+ pre-built components
    - Form system complete
@@ -286,12 +314,14 @@ Frontend WebSocket:
 ## ⚠️ **Conversion Requirements**
 
 ### **Frontend Conversion**: Svelte → React 19
+
 - **Complexity**: Medium-High
 - **Estimated Effort**: 2-3 weeks for complete conversion
 - **Components**: 200+ Svelte components to convert
 - **Benefits**: Modern React patterns, TypeScript integration, better Arabic RTL support
 
 ### **Arabic RTL Adaptations**
+
 - **Text Direction**: Add `dir="rtl"` support to all components
 - **Layout Adjustments**: Mirror layouts for Arabic reading patterns
 - **Font Integration**: Add Arabic font loading and optimization
@@ -300,6 +330,7 @@ Frontend WebSocket:
 ## 🎯 **Iraqi Integration Strategy**
 
 ### **Database Enhancements**
+
 ```sql
 -- User table additions
 profession: IraqiProfession  -- lawyer, doctor, teacher, engineer
@@ -307,7 +338,7 @@ dialect_preference: IraqiDialect  -- iraqi, baghdadi, basrawi
 cultural_settings: JSON  -- Islamic compliance preferences
 phone_number: VARCHAR(15)  -- +964 format validation
 
--- Message table additions  
+-- Message table additions
 language: LanguageCode  -- ar, en
 rtl_direction: BOOLEAN  -- Text direction
 voice_message_url: TEXT  -- Voice message storage
@@ -319,12 +350,14 @@ amount_iqd: DECIMAL(10,3)  -- Iraqi Dinar amounts
 ```
 
 ### **API Enhancements**
+
 - Add Iraqi phone number validation middleware
 - Add cultural appropriateness validation in chat endpoints
 - Add Arabic OCR processing in file endpoints
 - Add Iraqi professional domain routing
 
 ### **Frontend Adaptations**
+
 - Convert all Svelte components to React 19 + TypeScript
 - Add Arabic RTL support with proper font loading
 - Add Iraqi cultural indicators and validation displays
@@ -338,6 +371,6 @@ amount_iqd: DECIMAL(10,3)  -- Iraqi Dinar amounts
 ✅ **File management** with Arabic OCR processing  
 ✅ **Chat interface** with RTL support and voice messages  
 ✅ **Real-time system** with Arabic text processing  
-✅ **UI component library** with RTL adaptations  
+✅ **UI component library** with RTL adaptations
 
 **Outcome**: Production-ready Iraqi AI Chat System foundation with 27-38 weeks of development time saved.

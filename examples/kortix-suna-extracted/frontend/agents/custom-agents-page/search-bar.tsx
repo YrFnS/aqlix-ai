@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import React from "react";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
   placeholder: string;
@@ -11,7 +11,12 @@ interface SearchBarProps {
   className?: string;
 }
 
-export const SearchBar = ({ placeholder, value, onChange, className = '' }: SearchBarProps) => {
+export const SearchBar = ({
+  placeholder,
+  value,
+  onChange,
+  className = "",
+}: SearchBarProps) => {
   return (
     <div className={`relative flex-1 max-w-2xl ${className}`}>
       <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
@@ -23,4 +28,4 @@ export const SearchBar = ({ placeholder, value, onChange, className = '' }: Sear
       />
     </div>
   );
-}; 
+};

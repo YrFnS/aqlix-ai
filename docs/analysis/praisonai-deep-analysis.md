@@ -7,9 +7,11 @@
 ## 🔍 **Detailed Component Analysis**
 
 ### **Core Multi-Agent Framework (HIGH VALUE - Direct Use)**
+
 **Location**: `src/praisonai/praisonai/`
 
 **Extractable Components**:
+
 ```
 ├── __init__.py              # Main framework initialization
 ├── __main__.py              # CLI entry point
@@ -25,6 +27,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Professional Agents**: Specialized agents for Iraqi legal, medical, educational domains
 - **Arabic Language Integration**: Multi-agent communication in Arabic and English
 - **Cultural Context Sharing**: Agents share Iraqi cultural knowledge and context
@@ -33,9 +36,11 @@
 **Extraction Value**: 🔥 **CRITICAL** - Complete multi-agent orchestration (6-8 weeks saved)
 
 ### **Agent Configuration System (HIGH VALUE - Direct Use)**
+
 **Location**: `src/praisonai/` (YAML configuration files)
 
 **Extractable Components**:
+
 ```
 ├── agents.yaml                # Basic agent configuration
 ├── agents-advanced.yaml       # Advanced multi-agent workflows
@@ -44,6 +49,7 @@
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Professional Templates**: Pre-configured YAML templates for Iraqi domains
 - **Cultural Validation Rules**: YAML configurations for Islamic compliance
 - **Arabic Language Settings**: Language preferences and dialect configurations
@@ -52,9 +58,11 @@
 **Extraction Value**: ⭐ **IMPORTANT** - Configuration and templating system (2-3 weeks saved)
 
 ### **Specialized Iraqi Professional Agent Examples (HIGH VALUE - Reference)**
+
 **Location**: `examples/python/models/`
 
 **Extractable Professional Agents**:
+
 ```
 claude/
 ├── claude_legal_advisor_agent.py      # Legal domain specialist
@@ -76,6 +84,7 @@ groq/
 ```
 
 **Iraqi Professional Domain Adaptation**:
+
 - **Iraqi Legal Agent**: Specialized in Iraqi civil law, commercial law, and Islamic law principles
 - **Iraqi Medical Agent**: Knowledge of Iraqi healthcare system, medical regulations, and cultural health practices
 - **Iraqi Educational Agent**: Understanding of Iraqi education system, university requirements, and cultural learning preferences
@@ -85,14 +94,17 @@ groq/
 **Extraction Value**: ⭐ **IMPORTANT** - Professional domain specialists (4-5 weeks saved)
 
 ### **Government Services Integration (MEDIUM VALUE - Reference)**
+
 **Location**: `examples/cookbooks/Government_Services_Agents/`
 
 **Extractable Components**:
+
 ```
 └── Government-Services-Assistant.ipynb  # Government services automation
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Government Portal Integration**: Specialized agents for Iraqi Ministry websites
 - **Arabic Government Form Processing**: Automated handling of Iraqi government forms
 - **Cultural Government Interactions**: Appropriate communication style for Iraqi government services
@@ -101,9 +113,11 @@ groq/
 **Extraction Value**: 💡 **USEFUL** - Government services automation patterns (1-2 weeks saved)
 
 ### **UI and Real-time Systems (MEDIUM VALUE - Direct Use)**
+
 **Location**: `src/praisonai/praisonai/ui/`
 
 **Extractable Components**:
+
 ```
 ├── agents.py                # Agent management interface
 ├── callbacks.py             # Event callback system
@@ -132,6 +146,7 @@ groq/
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Arabic Translation**: Add Arabic (ar.json) translation file for complete Iraqi support
 - **Iraqi Dialect Support**: Specialized translation for Iraqi Arabic dialect
 - **Cultural UI Adaptations**: UI components adapted for Iraqi cultural preferences
@@ -140,14 +155,17 @@ groq/
 **Extraction Value**: 💡 **USEFUL** - UI framework with i18n support (2-3 weeks saved)
 
 ### **Built-in Tools and Integrations (MEDIUM VALUE - Direct Use)**
+
 **Location**: `src/praisonai/praisonai/inbuilt_tools/`
 
 **Extractable Components**:
+
 ```
 └── autogen_tools.py         # AutoGen framework integration tools
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi-Specific Tools**: Tools for Iraqi government portal automation
 - **Arabic Text Processing Tools**: Specialized tools for Arabic language processing
 - **Cultural Validation Tools**: Tools for Islamic compliance and cultural appropriateness
@@ -156,14 +174,17 @@ groq/
 **Extraction Value**: 💡 **USEFUL** - Tool integration framework (1-2 weeks saved)
 
 ### **API and Deployment System (MEDIUM VALUE - Direct Use)**
+
 **Location**: `src/praisonai/praisonai/api/`
 
 **Extractable Components**:
+
 ```
 └── call.py                  # API call management
 ```
 
 **Iraqi Enhancement Opportunities**:
+
 - **Iraqi Service APIs**: Integration with Iraqi government and business APIs
 - **Arabic API Documentation**: API documentation in Arabic for Iraqi developers
 - **Cultural API Patterns**: API patterns adapted for Iraqi business practices
@@ -173,6 +194,7 @@ groq/
 ## 🚀 **Extraction Priority Matrix**
 
 ### **Phase 1: Core Multi-Agent Foundation (Weeks 1-2)**
+
 1. **Multi-Agent Framework** (6-8 weeks saved)
    - Complete agent orchestration system
    - AutoGen and CrewAI integration
@@ -184,6 +206,7 @@ groq/
    - Cultural validation rules
 
 ### **Phase 2: Iraqi Professional Specialization (Weeks 3-4)**
+
 3. **Professional Agent Templates** (4-5 weeks saved)
    - Iraqi legal, medical, educational specialists
    - Cultural context integration
@@ -195,6 +218,7 @@ groq/
    - Cultural government interactions
 
 ### **Phase 3: UI and Deployment (Week 5)**
+
 5. **UI Framework** (2-3 weeks saved)
    - Multi-language support with Arabic
    - Real-time agent communication
@@ -208,6 +232,7 @@ groq/
 ## 📊 **Iraqi Professional Agent Implementation**
 
 ### **Iraqi Legal Agent Configuration**
+
 ```yaml
 iraqi_legal_agent:
   role: "Iraqi Legal Advisor"
@@ -231,6 +256,7 @@ iraqi_legal_agent:
 ```
 
 ### **Iraqi Medical Agent Configuration**
+
 ```yaml
 iraqi_medical_agent:
   role: "Iraqi Medical Specialist"
@@ -254,6 +280,7 @@ iraqi_medical_agent:
 ```
 
 ### **Iraqi Educational Agent Configuration**
+
 ```yaml
 iraqi_educational_agent:
   role: "Iraqi Education Specialist"
@@ -279,31 +306,32 @@ iraqi_educational_agent:
 ## 📊 **Multi-Agent Iraqi Workflow Example**
 
 ### **Iraqi Document Processing Workflow**
+
 ```yaml
 iraqi_document_workflow:
   agents:
     - document_analyzer:
         role: "Document Analysis Specialist"
         tools: [arabic_ocr, document_classifier, cultural_validator]
-    
+
     - legal_reviewer:
         role: "Iraqi Legal Reviewer"
         tools: [iraqi_legal_database, islamic_law_checker]
-    
+
     - cultural_validator:
         role: "Cultural Appropriateness Checker"
         tools: [islamic_compliance, iraqi_cultural_norms]
-    
+
     - translation_specialist:
         role: "Arabic-English Translator"
         tools: [iraqi_dialect_processor, professional_translator]
-  
+
   workflow:
     1. document_analyzer: "Analyze uploaded document for type and content"
     2. legal_reviewer: "Review for Iraqi legal compliance if applicable"
     3. cultural_validator: "Validate for Islamic and Iraqi cultural appropriateness"
     4. translation_specialist: "Provide translations if needed"
-  
+
   final_output: "Comprehensive document analysis with Iraqi cultural validation"
 ```
 
@@ -318,18 +346,21 @@ iraqi_document_workflow:
 ## ⚠️ **Integration Requirements for Iraqi AI System**
 
 ### **Technical Integration**
+
 - **PydanticAI Compatibility**: Adapt PraisonAI patterns to work with our PydanticAI-based system
 - **LangGraph Integration**: Use PraisonAI orchestration patterns with LangGraph for Post-MVP phase
 - **Database Integration**: Integrate with our PostgreSQL-based user and session management
 - **Real-time Communication**: Adapt UI components to work with our SSE/WebSocket system
 
 ### **Cultural Adaptation**
+
 - **Arabic Language Integration**: Full Arabic language support in agent communication
 - **Islamic Compliance**: Built-in Islamic compliance checking in all agent interactions
 - **Iraqi Professional Standards**: Agents trained on Iraqi professional standards and regulations
 - **Cultural Context Awareness**: All agents understand Iraqi cultural norms and business practices
 
 ### **Professional Domain Specialization**
+
 - **Iraqi Legal System**: Agents specialized in Iraqi civil law, commercial law, and Islamic jurisprudence
 - **Iraqi Healthcare System**: Medical agents with knowledge of Iraqi healthcare regulations and practices
 - **Iraqi Education System**: Educational agents familiar with Iraqi Ministry of Education standards
@@ -339,16 +370,19 @@ iraqi_document_workflow:
 ## 🎯 **Iraqi Integration Strategy**
 
 ### **Phase 1: Framework Integration (Post-MVP Month 1)**
+
 - Extract core multi-agent orchestration system
 - Adapt configuration system for Iraqi professional domains
 - Integrate with existing PydanticAI infrastructure
 
 ### **Phase 2: Professional Specialization (Post-MVP Month 2)**
+
 - Implement Iraqi legal, medical, educational, and engineering specialist agents
 - Create YAML configuration templates for Iraqi professional domains
 - Integrate cultural validation and Islamic compliance checking
 
 ### **Phase 3: Advanced Workflows (Post-MVP Month 3)**
+
 - Implement complex multi-agent Iraqi professional workflows
 - Add real-time collaboration between specialist agents
 - Create comprehensive Iraqi document processing pipelines
@@ -361,6 +395,6 @@ iraqi_document_workflow:
 ✅ **Islamic compliance validation** in all agent interactions  
 ✅ **Iraqi professional workflow automation** for complex tasks  
 ✅ **Cultural appropriateness checking** integrated throughout system  
-✅ **Government services integration** for Iraqi portal automation  
+✅ **Government services integration** for Iraqi portal automation
 
 **Outcome**: Production-ready Iraqi professional multi-agent system with 17-24 weeks of development time saved, enabling sophisticated Iraqi professional services automation in Post-MVP phase.

@@ -4,14 +4,17 @@
  * Performance Target: <200ms validation time
  */
 
-import { 
+import {
   IraqiCulturalContext,
   CulturalValidationResult,
-  CulturalEnhancementConfig
-} from '@aqlix-ai/types';
+  CulturalEnhancementConfig,
+} from "@aqlix-ai/types";
 
 export interface CulturalValidator {
-  validate(input: string, context: IraqiCulturalContext): Promise<CulturalValidationResult>;
+  validate(
+    input: string,
+    context: IraqiCulturalContext,
+  ): Promise<CulturalValidationResult>;
   getValidationRules(): string[];
 }
 
@@ -23,9 +26,12 @@ export class IraqiCulturalValidator implements CulturalValidator {
     this.config = config;
   }
 
-  async validate(input: string, context: IraqiCulturalContext): Promise<CulturalValidationResult> {
+  async validate(
+    input: string,
+    context: IraqiCulturalContext,
+  ): Promise<CulturalValidationResult> {
     const startTime = performance.now();
-    
+
     try {
       // Check cache first if enabled
       if (this.config.culturalValidation.cacheEnabled) {
@@ -41,11 +47,41 @@ export class IraqiCulturalValidator implements CulturalValidator {
       let score = 100; // Start with perfect score
 
       // Cultural appropriateness checks
-      score = await this.validateCulturalContent(input, context, issues, recommendations, score);
-      score = await this.validateLanguageUse(input, context, issues, recommendations, score);
-      score = await this.validateSocialNorms(input, context, issues, recommendations, score);
-      score = await this.validateFamilyValues(input, context, issues, recommendations, score);
-      score = await this.validateRespectfulness(input, context, issues, recommendations, score);
+      score = await this.validateCulturalContent(
+        input,
+        context,
+        issues,
+        recommendations,
+        score,
+      );
+      score = await this.validateLanguageUse(
+        input,
+        context,
+        issues,
+        recommendations,
+        score,
+      );
+      score = await this.validateSocialNorms(
+        input,
+        context,
+        issues,
+        recommendations,
+        score,
+      );
+      score = await this.validateFamilyValues(
+        input,
+        context,
+        issues,
+        recommendations,
+        score,
+      );
+      score = await this.validateRespectfulness(
+        input,
+        context,
+        issues,
+        recommendations,
+        score,
+      );
 
       const processingTime = performance.now() - startTime;
       const passed = score >= this.config.culturalValidation.minimumScore;
@@ -56,14 +92,14 @@ export class IraqiCulturalValidator implements CulturalValidator {
         issues,
         recommendations,
         processingTime,
-        validation_timestamp: new Date().toISOString()
+        validation_timestamp: new Date().toISOString(),
       };
 
       // Cache the result if enabled
       if (this.config.culturalValidation.cacheEnabled) {
         const cacheKey = this.generateCacheKey(input, context);
         this.validationCache.set(cacheKey, result);
-        
+
         // Clear cache after TTL
         setTimeout(() => {
           this.validationCache.delete(cacheKey);
@@ -71,26 +107,27 @@ export class IraqiCulturalValidator implements CulturalValidator {
       }
 
       return result;
-
     } catch (error) {
       const processingTime = performance.now() - startTime;
       return {
         score: 0,
         passed: false,
-        issues: [`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`],
-        recommendations: ['Please review input and try again'],
+        issues: [
+          `Validation error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ],
+        recommendations: ["Please review input and try again"],
         processingTime,
-        validation_timestamp: new Date().toISOString()
+        validation_timestamp: new Date().toISOString(),
       };
     }
   }
 
   private async validateCulturalContent(
-    input: string, 
-    context: IraqiCulturalContext, 
-    issues: string[], 
-    recommendations: string[], 
-    currentScore: number
+    input: string,
+    context: IraqiCulturalContext,
+    issues: string[],
+    recommendations: string[],
+    currentScore: number,
   ): Promise<number> {
     let score = currentScore;
 
@@ -105,8 +142,12 @@ export class IraqiCulturalValidator implements CulturalValidator {
     for (const pattern of inappropriatePatterns) {
       if (pattern.test(input)) {
         score -= 20;
-        issues.push(`Content contains culturally inappropriate references: ${pattern.source}`);
-        recommendations.push('Consider using culturally appropriate alternatives');
+        issues.push(
+          `Content contains culturally inappropriate references: ${pattern.source}`,
+        );
+        recommendations.push(
+          "Consider using culturally appropriate alternatives",
+        );
       }
     }
 
@@ -138,7 +179,7 @@ export class IraqiCulturalValidator implements CulturalValidator {
     context: IraqiCulturalContext,
     issues: string[],
     recommendations: string[],
-    currentScore: number
+    currentScore: number,
   ): Promise<number> {
     let score = currentScore;
 
@@ -151,8 +192,8 @@ export class IraqiCulturalValidator implements CulturalValidator {
     for (const pattern of inappropriateLanguage) {
       if (pattern.test(input)) {
         score -= 15;
-        issues.push('Content contains inappropriate language');
-        recommendations.push('Use respectful and professional language');
+        issues.push("Content contains inappropriate language");
+        recommendations.push("Use respectful and professional language");
       }
     }
 
@@ -161,8 +202,10 @@ export class IraqiCulturalValidator implements CulturalValidator {
       const hasArabicText = /[\u0600-\u06FF]/.test(input);
       if (!hasArabicText && input.length > 50) {
         score -= 10;
-        issues.push('Arabic language support requested but no Arabic content detected');
-        recommendations.push('Consider adding Arabic translations or content');
+        issues.push(
+          "Arabic language support requested but no Arabic content detected",
+        );
+        recommendations.push("Consider adding Arabic translations or content");
       }
     }
 
@@ -174,7 +217,7 @@ export class IraqiCulturalValidator implements CulturalValidator {
     context: IraqiCulturalContext,
     issues: string[],
     recommendations: string[],
-    currentScore: number
+    currentScore: number,
   ): Promise<number> {
     let score = currentScore;
 
@@ -186,7 +229,9 @@ export class IraqiCulturalValidator implements CulturalValidator {
     for (const pattern of socialNormViolations) {
       if (pattern.test(input)) {
         score -= 10;
-        recommendations.push('Consider emphasizing community and collective values');
+        recommendations.push(
+          "Consider emphasizing community and collective values",
+        );
       }
     }
 
@@ -211,7 +256,7 @@ export class IraqiCulturalValidator implements CulturalValidator {
     context: IraqiCulturalContext,
     issues: string[],
     recommendations: string[],
-    currentScore: number
+    currentScore: number,
   ): Promise<number> {
     let score = currentScore;
 
@@ -242,7 +287,7 @@ export class IraqiCulturalValidator implements CulturalValidator {
     context: IraqiCulturalContext,
     issues: string[],
     recommendations: string[],
-    currentScore: number
+    currentScore: number,
   ): Promise<number> {
     let score = currentScore;
 
@@ -273,32 +318,37 @@ export class IraqiCulturalValidator implements CulturalValidator {
     for (const pattern of disrespectfulPatterns) {
       if (pattern.test(input)) {
         score -= 15;
-        issues.push('Content contains disrespectful language');
-        recommendations.push('Use more respectful and courteous language');
+        issues.push("Content contains disrespectful language");
+        recommendations.push("Use more respectful and courteous language");
       }
     }
 
     return Math.max(0, Math.min(100, score));
   }
 
-  private generateCacheKey(input: string, context: IraqiCulturalContext): string {
+  private generateCacheKey(
+    input: string,
+    context: IraqiCulturalContext,
+  ): string {
     const contextString = JSON.stringify({
       culturalValidation: context.culturalValidation,
       dialectSupport: context.dialectSupport,
-      professionalDomain: context.professionalDomain
+      professionalDomain: context.professionalDomain,
     });
-    return `cultural_${Buffer.from(input + contextString).toString('base64').slice(0, 32)}`;
+    return `cultural_${Buffer.from(input + contextString)
+      .toString("base64")
+      .slice(0, 32)}`;
   }
 
   getValidationRules(): string[] {
     return [
-      'Content must respect Iraqi cultural values and traditions',
-      'Language must be appropriate and respectful',
-      'Content should emphasize family and community values',
-      'Avoid culturally inappropriate references (alcohol, gambling, etc.)',
-      'Use respectful forms of address and courtesy',
-      'Support Arabic language when requested',
-      'Maintain cultural sensitivity in all interactions'
+      "Content must respect Iraqi cultural values and traditions",
+      "Language must be appropriate and respectful",
+      "Content should emphasize family and community values",
+      "Avoid culturally inappropriate references (alcohol, gambling, etc.)",
+      "Use respectful forms of address and courtesy",
+      "Support Arabic language when requested",
+      "Maintain cultural sensitivity in all interactions",
     ];
   }
 
@@ -307,7 +357,7 @@ export class IraqiCulturalValidator implements CulturalValidator {
     return {
       cacheSize: this.validationCache.size,
       cacheEnabled: this.config.culturalValidation.cacheEnabled,
-      cacheTtl: this.config.culturalValidation.cacheTtl
+      cacheTtl: this.config.culturalValidation.cacheTtl,
     };
   }
 

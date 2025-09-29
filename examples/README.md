@@ -36,33 +36,37 @@ examples/
 ## 🎯 Usage Strategy
 
 ### 1. Reference First
+
 - Study extracted components to understand patterns and architecture
 - Identify which components are needed for current features
 - Understand compatibility levels and adaptation requirements
 
 ### 2. Selective Implementation
+
 - Copy and adapt only what's needed for current sprint/feature
 - Start with minimal implementations, then enhance
 - Maintain clear separation between extracted reference and active code
 
 ### 3. Incremental Enhancement
+
 - Begin with base functionality from extracted components
 - Add Iraqi cultural features incrementally
 - Test each enhancement before moving to next component
 
 ## 📊 Extraction Compatibility Matrix
 
-| Component Category | Source | Compatibility | Iraqi Enhancement Level |
-|-------------------|--------|---------------|----------------------|
-| Database Models | Open WebUI | 95% direct reuse | High - Cultural fields added |
-| FastAPI Routers | Open WebUI | 90% compatibility | Medium - Validation added |
-| Document Processing | Agent Zero | 85% direct use | High - Arabic OCR added |
-| Authentication | Open WebUI | 90% compatibility | High - Iraqi phone validation |
-| UI Components | Open WebUI | 70% adaptable | High - RTL + cultural design |
+| Component Category  | Source     | Compatibility     | Iraqi Enhancement Level       |
+| ------------------- | ---------- | ----------------- | ----------------------------- |
+| Database Models     | Open WebUI | 95% direct reuse  | High - Cultural fields added  |
+| FastAPI Routers     | Open WebUI | 90% compatibility | Medium - Validation added     |
+| Document Processing | Agent Zero | 85% direct use    | High - Arabic OCR added       |
+| Authentication      | Open WebUI | 90% compatibility | High - Iraqi phone validation |
+| UI Components       | Open WebUI | 70% adaptable     | High - RTL + cultural design  |
 
 ## 🔧 Implementation Guidelines
 
 ### For Database Models (`open-webui-extracted/models/`)
+
 ```python
 # ✅ Good: Selective import and enhancement
 from examples.open_webui_extracted.models.users import UserModel as BaseUserModel
@@ -75,6 +79,7 @@ class IraqiUserModel(BaseUserModel):
 ```
 
 ### For Services (`agent-zero-extracted/services/`)
+
 ```python
 # ✅ Good: Inherit and enhance
 from examples.agent_zero_extracted.services.document_processor import DocumentProcessor
@@ -87,6 +92,7 @@ class IraqiDocumentProcessor(DocumentProcessor):
 ```
 
 ### For UI Components (Future)
+
 ```tsx
 // ✅ Good: Extract patterns, rebuild with Iraqi design
 // Study: examples/open-webui-extracted/components/Chat.svelte
@@ -96,18 +102,21 @@ class IraqiDocumentProcessor(DocumentProcessor):
 ## 🚫 Anti-Patterns to Avoid
 
 ### ❌ Don't: Direct copy-paste into main app
+
 ```python
 # Bad: Directly copying without understanding
 cp examples/open-webui-extracted/models/* apps/api/src/models/
 ```
 
 ### ❌ Don't: Import examples in production code
+
 ```python
 # Bad: Production code depending on examples
 from examples.open_webui_extracted.models import UserModel
 ```
 
 ### ❌ Don't: Modify extracted examples
+
 ```python
 # Bad: Editing the reference files
 # examples/open-webui-extracted/models/users.py (modified)
@@ -116,24 +125,28 @@ from examples.open_webui_extracted.models import UserModel
 ## ✅ Correct Implementation Process
 
 ### Phase 1: Study and Plan
+
 1. Read extracted component documentation
 2. Identify minimal requirements for current feature
 3. Plan Iraqi cultural enhancements needed
 4. Create implementation plan
 
 ### Phase 2: Minimal Implementation
+
 1. Create new file in appropriate `apps/` directory
 2. Implement minimal functionality based on extracted patterns
 3. Add basic Iraqi cultural requirements
 4. Test minimal implementation
 
 ### Phase 3: Enhancement
+
 1. Add advanced Iraqi features incrementally
 2. Enhance based on extracted component capabilities
 3. Test each enhancement
 4. Document cultural adaptations
 
 ### Phase 4: Production Ready
+
 1. Add comprehensive error handling
 2. Add logging and monitoring
 3. Add comprehensive tests including cultural validation
@@ -142,13 +155,15 @@ from examples.open_webui_extracted.models import UserModel
 ## 📝 Implementation Tracking
 
 ### Current Status: ✅ Extraction Complete
+
 - [x] Open WebUI database models extracted
-- [x] Open WebUI routers and middleware extracted  
+- [x] Open WebUI routers and middleware extracted
 - [x] Agent Zero document processing extracted
 - [x] Iraqi cultural enhancements documented
 - [x] Tailwind CSS patterns documented
 
 ### Next Steps: Implementation
+
 - [ ] Create minimal user model implementation
 - [ ] Create minimal authentication implementation
 - [ ] Create minimal chat API implementation

@@ -1,7 +1,7 @@
 /**
  * Iraqi Computer Vision System
  * Based on ByteBot with Iraqi Cultural Intelligence & Arabic OCR Enhancement
- * 
+ *
  * Provides comprehensive computer vision capabilities with:
  * - Arabic OCR with Iraqi dialect recognition
  * - Cultural context-aware image analysis
@@ -10,9 +10,9 @@
  * - Real-time visual monitoring and analysis
  */
 
-import { EventEmitter } from 'events';
-import * as cv from 'opencv4nodejs';
-import * as Tesseract from 'tesseract.js';
+import { EventEmitter } from "events";
+import * as cv from "opencv4nodejs";
+import * as Tesseract from "tesseract.js";
 
 // Core cultural and vision interfaces
 export interface IraqiCulturalContext {
@@ -20,7 +20,7 @@ export interface IraqiCulturalContext {
   sessionId: string;
   culturalProfile: IraqiCulturalProfile;
   islamicSettings: IslamicComplianceSettings;
-  languagePreference: 'ar' | 'en' | 'mixed';
+  languagePreference: "ar" | "en" | "mixed";
   professionalDomain?: IraqiProfessionalDomain;
   visionContext: string;
   culturalValidationRequired: boolean;
@@ -41,7 +41,7 @@ export interface VisualPreferences {
   culturalSymbolRecognition: boolean;
   islamicContentAwareness: boolean;
   professionalDocumentTypes: IraqiProfessionalDomain[];
-  colorSchemePreference: 'traditional' | 'modern' | 'high_contrast';
+  colorSchemePreference: "traditional" | "modern" | "high_contrast";
 }
 
 export interface IslamicComplianceSettings {
@@ -50,46 +50,50 @@ export interface IslamicComplianceSettings {
   arabicRightToLeft: boolean;
   islamicSymbolRecognition: boolean;
   prayerTimeAwareness: boolean;
-  culturalSensitivityLevel: 'basic' | 'standard' | 'strict' | 'critical';
+  culturalSensitivityLevel: "basic" | "standard" | "strict" | "critical";
   visualContentFiltering: boolean;
 }
 
 export interface IslamicPreferences {
-  madhab: 'hanafi' | 'maliki' | 'shafii' | 'hanbali' | 'jafari';
+  madhab: "hanafi" | "maliki" | "shafii" | "hanbali" | "jafari";
   islamicCalendar: boolean;
   halalCertification: boolean;
   visualContentRestrictions: ContentRestriction[];
 }
 
 export interface ContentRestriction {
-  type: 'image' | 'text' | 'symbol' | 'color' | 'layout';
+  type: "image" | "text" | "symbol" | "color" | "layout";
   restriction: string;
-  severity: 'warning' | 'block' | 'filter';
+  severity: "warning" | "block" | "filter";
   culturalReason: string;
   islamicReason: string;
 }
 
 export enum IraqiProfessionalDomain {
-  LEGAL = 'legal',
-  MEDICAL = 'medical',
-  EDUCATIONAL = 'educational',
-  GOVERNMENT = 'government',
-  FINANCE = 'finance',
-  ENGINEERING = 'engineering',
-  BUSINESS = 'business',
-  TECHNOLOGY = 'technology'
+  LEGAL = "legal",
+  MEDICAL = "medical",
+  EDUCATIONAL = "educational",
+  GOVERNMENT = "government",
+  FINANCE = "finance",
+  ENGINEERING = "engineering",
+  BUSINESS = "business",
+  TECHNOLOGY = "technology",
 }
 
 export interface IraqiProfessionalContext {
   domain: IraqiProfessionalDomain;
-  expertise_level: 'junior' | 'mid' | 'senior' | 'expert';
+  expertise_level: "junior" | "mid" | "senior" | "expert";
   certifications: string[];
   specializations: string[];
   visual_requirements: VisualRequirement[];
 }
 
 export interface VisualRequirement {
-  type: 'document_type' | 'text_format' | 'layout_pattern' | 'symbol_recognition';
+  type:
+    | "document_type"
+    | "text_format"
+    | "layout_pattern"
+    | "symbol_recognition";
   specification: string;
   mandatory: boolean;
   culturalContext: string;
@@ -116,11 +120,11 @@ export interface ImageInfo {
   width: number;
   height: number;
   format: string;
-  colorSpace: 'RGB' | 'BGR' | 'GRAY' | 'HSV';
+  colorSpace: "RGB" | "BGR" | "GRAY" | "HSV";
   channels: number;
   bitDepth: number;
   fileSize: number;
-  orientation: 'landscape' | 'portrait' | 'square';
+  orientation: "landscape" | "portrait" | "square";
   quality: number; // 0-100
 }
 
@@ -128,17 +132,17 @@ export interface ArabicOCRResult {
   success: boolean;
   text: string;
   textArabic: string;
-  language: 'ar' | 'en' | 'mixed';
+  language: "ar" | "en" | "mixed";
   dialectInfo: IraqiDialectInfo;
   textRegions: TextRegion[];
-  readingDirection: 'ltr' | 'rtl' | 'mixed';
+  readingDirection: "ltr" | "rtl" | "mixed";
   confidence: number; // 0-100
   culturalTerms: CulturalTerm[];
   professionalTerms: ProfessionalTerm[];
 }
 
 export interface IraqiDialectInfo {
-  dialect: 'baghdadi' | 'basrawi' | 'kurdish' | 'turkmen' | 'standard_arabic';
+  dialect: "baghdadi" | "basrawi" | "kurdish" | "turkmen" | "standard_arabic";
   confidence: number; // 0-100
   dialectFeatures: string[];
   culturalIndicators: string[];
@@ -151,8 +155,8 @@ export interface TextRegion {
   height: number;
   text: string;
   confidence: number;
-  language: 'ar' | 'en';
-  direction: 'ltr' | 'rtl';
+  language: "ar" | "en";
+  direction: "ltr" | "rtl";
   fontSize: number;
   fontFamily?: string;
   isCultural: boolean;
@@ -163,8 +167,13 @@ export interface TextRegion {
 export interface CulturalTerm {
   term: string;
   termArabic: string;
-  category: 'greeting' | 'title' | 'location' | 'cultural_reference' | 'professional';
-  significance: 'low' | 'medium' | 'high' | 'critical';
+  category:
+    | "greeting"
+    | "title"
+    | "location"
+    | "cultural_reference"
+    | "professional";
+  significance: "low" | "medium" | "high" | "critical";
   culturalContext: string;
   region: TextRegion;
 }
@@ -173,8 +182,8 @@ export interface ProfessionalTerm {
   term: string;
   termArabic: string;
   domain: IraqiProfessionalDomain;
-  category: 'title' | 'procedure' | 'regulation' | 'technical';
-  significance: 'low' | 'medium' | 'high' | 'critical';
+  category: "title" | "procedure" | "regulation" | "technical";
+  significance: "low" | "medium" | "high" | "critical";
   region: TextRegion;
 }
 
@@ -213,21 +222,29 @@ export interface ObjectAttribute {
 }
 
 export interface CulturalObject extends DetectedObject {
-  culturalCategory: 'traditional_dress' | 'cultural_symbol' | 'architectural_element' | 'ceremonial_object';
+  culturalCategory:
+    | "traditional_dress"
+    | "cultural_symbol"
+    | "architectural_element"
+    | "ceremonial_object";
   culturalSignificance: string;
   culturalSignificanceArabic: string;
-  region: 'baghdad' | 'basra' | 'kurdistan' | 'national' | 'general';
+  region: "baghdad" | "basra" | "kurdistan" | "national" | "general";
 }
 
 export interface IslamicObject extends DetectedObject {
-  islamicCategory: 'religious_text' | 'islamic_symbol' | 'prayer_item' | 'islamic_architecture';
+  islamicCategory:
+    | "religious_text"
+    | "islamic_symbol"
+    | "prayer_item"
+    | "islamic_architecture";
   islamicSignificance: string;
   islamicSignificanceArabic: string;
-  complianceLevel: 'compliant' | 'sensitive' | 'restricted';
+  complianceLevel: "compliant" | "sensitive" | "restricted";
 }
 
 export interface ProfessionalObject extends DetectedObject {
-  professionalCategory: 'document' | 'equipment' | 'uniform' | 'certification';
+  professionalCategory: "document" | "equipment" | "uniform" | "certification";
   domain: IraqiProfessionalDomain;
   professionalSignificance: string;
   certificationLevel?: string;
@@ -239,25 +256,25 @@ export interface CulturalVisualAnalysis {
   layoutAnalysis: LayoutAnalysis;
   colorAnalysis: ColorAnalysis;
   symbolAnalysis: SymbolAnalysis;
-  textDirectionality: 'ltr' | 'rtl' | 'mixed';
+  textDirectionality: "ltr" | "rtl" | "mixed";
   culturalAppropriatenessScore: number; // 0-100
   recommendations: CulturalRecommendation[];
 }
 
 export interface CulturalElement {
-  type: 'text' | 'symbol' | 'color' | 'layout' | 'object';
+  type: "text" | "symbol" | "color" | "layout" | "object";
   description: string;
   descriptionArabic: string;
-  culturalSignificance: 'low' | 'medium' | 'high' | 'critical';
-  appropriateness: 'appropriate' | 'questionable' | 'inappropriate';
+  culturalSignificance: "low" | "medium" | "high" | "critical";
+  appropriateness: "appropriate" | "questionable" | "inappropriate";
   region: BoundingBox;
   suggestions: string[];
   suggestionsArabic: string[];
 }
 
 export interface LayoutAnalysis {
-  direction: 'ltr' | 'rtl' | 'mixed';
-  alignment: 'left' | 'right' | 'center' | 'justified' | 'mixed';
+  direction: "ltr" | "rtl" | "mixed";
+  alignment: "left" | "right" | "center" | "justified" | "mixed";
   culturalAlignment: boolean;
   professionalLayout: boolean;
   islamicLayoutCompliance: boolean;
@@ -285,7 +302,7 @@ export interface ColorSignificance {
   color: string;
   culturalMeaning: string;
   culturalMeaningArabic: string;
-  appropriateness: 'appropriate' | 'neutral' | 'sensitive' | 'inappropriate';
+  appropriateness: "appropriate" | "neutral" | "sensitive" | "inappropriate";
   context: string;
 }
 
@@ -298,14 +315,14 @@ export interface SymbolAnalysis {
 }
 
 export interface DetectedSymbol {
-  type: 'cultural' | 'islamic' | 'professional' | 'generic';
+  type: "cultural" | "islamic" | "professional" | "generic";
   name: string;
   nameArabic: string;
   confidence: number;
   region: BoundingBox;
   significance: string;
   significanceArabic: string;
-  appropriateness: 'appropriate' | 'sensitive' | 'inappropriate';
+  appropriateness: "appropriate" | "sensitive" | "inappropriate";
 }
 
 export interface IslamicVisualCompliance {
@@ -319,8 +336,8 @@ export interface IslamicVisualCompliance {
 }
 
 export interface IslamicComplianceIssue {
-  type: 'content' | 'symbol' | 'text' | 'layout' | 'color';
-  severity: 'info' | 'warning' | 'error' | 'critical';
+  type: "content" | "symbol" | "text" | "layout" | "color";
+  severity: "info" | "warning" | "error" | "critical";
   description: string;
   descriptionArabic: string;
   region: BoundingBox;
@@ -329,11 +346,11 @@ export interface IslamicComplianceIssue {
 }
 
 export interface IslamicRecommendation {
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  priority: "low" | "medium" | "high" | "critical";
   action: string;
   actionArabic: string;
   expectedImprovement: number; // 0-100
-  implementationComplexity: 'easy' | 'medium' | 'hard';
+  implementationComplexity: "easy" | "medium" | "hard";
 }
 
 export interface ProfessionalVisualAnalysis {
@@ -348,13 +365,20 @@ export interface ProfessionalVisualAnalysis {
 }
 
 export interface ProfessionalElement {
-  type: 'header' | 'logo' | 'signature' | 'stamp' | 'table' | 'form_field' | 'certification';
+  type:
+    | "header"
+    | "logo"
+    | "signature"
+    | "stamp"
+    | "table"
+    | "form_field"
+    | "certification";
   name: string;
   nameArabic: string;
   confidence: number;
   region: BoundingBox;
   domain: IraqiProfessionalDomain;
-  importance: 'low' | 'medium' | 'high' | 'critical';
+  importance: "low" | "medium" | "high" | "critical";
   completeness: number; // 0-100
 }
 
@@ -371,8 +395,8 @@ export interface VisionPerformanceMetrics {
 }
 
 export interface VisualRecommendation {
-  type: 'cultural' | 'islamic' | 'professional' | 'technical';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  type: "cultural" | "islamic" | "professional" | "technical";
+  priority: "low" | "medium" | "high" | "critical";
   title: string;
   titleArabic: string;
   description: string;
@@ -383,8 +407,8 @@ export interface VisualRecommendation {
 }
 
 export interface VisualWarning {
-  type: 'cultural' | 'islamic' | 'professional' | 'technical' | 'performance';
-  severity: 'low' | 'medium' | 'high';
+  type: "cultural" | "islamic" | "professional" | "technical" | "performance";
+  severity: "low" | "medium" | "high";
   message: string;
   messageArabic: string;
   region?: BoundingBox;
@@ -393,8 +417,8 @@ export interface VisualWarning {
 
 export interface VisualError {
   code: string;
-  type: 'processing' | 'cultural' | 'islamic' | 'professional';
-  severity: 'low' | 'medium' | 'high' | 'critical';
+  type: "processing" | "cultural" | "islamic" | "professional";
+  severity: "low" | "medium" | "high" | "critical";
   message: string;
   messageArabic: string;
   recoverable: boolean;
@@ -405,10 +429,10 @@ export interface VisualError {
 // Configuration interfaces
 export interface IraqiVisionConfig {
   ocrLanguages: string[]; // e.g., ['ara', 'eng']
-  culturalValidationLevel: 'basic' | 'standard' | 'strict' | 'critical';
-  islamicComplianceLevel: 'aware' | 'compliant' | 'strict' | 'certified';
+  culturalValidationLevel: "basic" | "standard" | "strict" | "critical";
+  islamicComplianceLevel: "aware" | "compliant" | "strict" | "certified";
   professionalDomainFocus?: IraqiProfessionalDomain[];
-  performanceMode: 'accuracy' | 'balanced' | 'speed';
+  performanceMode: "accuracy" | "balanced" | "speed";
   parallelProcessing: boolean;
   cacheResults: boolean;
   realTimeProcessing: boolean;
@@ -436,95 +460,99 @@ export class IraqiComputerVisionSystem extends EventEmitter {
   constructor(config?: Partial<IraqiVisionConfig>) {
     super();
     this.config = this.mergeWithDefaults(config || {});
-    
+
     this.arabicOCREngine = new IraqiArabicOCREngine(this.config);
     this.culturalAnalyzer = new IraqiCulturalVisualAnalyzer(this.config);
     this.islamicValidator = new IraqiIslamicVisualValidator(this.config);
-    this.professionalAnalyzer = new IraqiProfessionalVisualAnalyzer(this.config);
+    this.professionalAnalyzer = new IraqiProfessionalVisualAnalyzer(
+      this.config,
+    );
     this.performanceMonitor = new IraqiVisionPerformanceMonitor(this.config);
-    
+
     this.initializeSystem();
   }
 
   // Main analysis method
   public async analyzeImage(
     imagePath: string | Buffer,
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<IraqiVisualAnalysisResult> {
     const startTime = Date.now();
     const analysisId = this.generateAnalysisId();
-    
+
     try {
       // Check cache if enabled
       if (this.config.cacheResults) {
         const cacheKey = this.generateCacheKey(imagePath, context);
         const cachedResult = this.resultCache.get(cacheKey);
         if (cachedResult) {
-          this.emit('analysisFromCache', { analysisId, cacheKey });
+          this.emit("analysisFromCache", { analysisId, cacheKey });
           return cachedResult;
         }
       }
-      
+
       // Load and preprocess image
       const image = await this.loadImage(imagePath);
       const imageInfo = this.extractImageInfo(image);
-      
-      this.emit('analysisStarted', { analysisId, imageInfo, context });
-      
+
+      this.emit("analysisStarted", { analysisId, imageInfo, context });
+
       // Parallel processing of different analysis components
       const [
         textRecognition,
         objectDetection,
         culturalAnalysis,
         islamicCompliance,
-        professionalAnalysis
+        professionalAnalysis,
       ] = await Promise.all([
         this.arabicOCREngine.recognizeText(image, context),
         this.detectObjects(image, context),
         this.culturalAnalyzer.analyzeCulturalContent(image, context),
         this.islamicValidator.validateContent(image, context),
-        this.professionalAnalyzer.analyzeProfessionalContent(image, context)
+        this.professionalAnalyzer.analyzeProfessionalContent(image, context),
       ]);
-      
+
       // Calculate performance metrics
       const endTime = Date.now();
-      const performanceMetrics = await this.performanceMonitor.calculateMetrics({
-        startTime,
-        endTime,
-        imageInfo,
-        processingComponents: 5
-      });
-      
+      const performanceMetrics = await this.performanceMonitor.calculateMetrics(
+        {
+          startTime,
+          endTime,
+          imageInfo,
+          processingComponents: 5,
+        },
+      );
+
       // Calculate overall confidence
       const confidence = this.calculateOverallConfidence(
         textRecognition,
         objectDetection,
         culturalAnalysis,
         islamicCompliance,
-        professionalAnalysis
+        professionalAnalysis,
       );
-      
+
       // Generate recommendations, warnings, and errors
       const recommendations = await this.generateRecommendations(
         textRecognition,
         culturalAnalysis,
         islamicCompliance,
-        professionalAnalysis
+        professionalAnalysis,
       );
-      
+
       const warnings = await this.generateWarnings(
         culturalAnalysis,
         islamicCompliance,
         professionalAnalysis,
-        performanceMetrics
+        performanceMetrics,
       );
-      
+
       const errors = await this.generateErrors(
         textRecognition,
         objectDetection,
-        performanceMetrics
+        performanceMetrics,
       );
-      
+
       // Compile final result
       const result: IraqiVisualAnalysisResult = {
         id: analysisId,
@@ -539,28 +567,27 @@ export class IraqiComputerVisionSystem extends EventEmitter {
         confidence,
         recommendations,
         warnings,
-        errors
+        errors,
       };
-      
+
       // Cache result if enabled
       if (this.config.cacheResults) {
         const cacheKey = this.generateCacheKey(imagePath, context);
         this.resultCache.set(cacheKey, result);
       }
-      
-      this.emit('analysisCompleted', { 
-        analysisId, 
-        result, 
-        processingTime: endTime - startTime 
+
+      this.emit("analysisCompleted", {
+        analysisId,
+        result,
+        processingTime: endTime - startTime,
       });
-      
+
       return result;
-      
     } catch (error) {
       const errorResult = this.createErrorResult(analysisId, error, startTime);
-      
-      this.emit('analysisError', { analysisId, error: error.message });
-      
+
+      this.emit("analysisError", { analysisId, error: error.message });
+
       return errorResult;
     }
   }
@@ -569,14 +596,14 @@ export class IraqiComputerVisionSystem extends EventEmitter {
   public async startRealTimeProcessing(
     source: string | number, // camera index or video path
     context: IraqiCulturalContext,
-    callback: (result: IraqiVisualAnalysisResult) => void
+    callback: (result: IraqiVisualAnalysisResult) => void,
   ): Promise<void> {
     if (!this.config.realTimeProcessing) {
-      throw new Error('Real-time processing is not enabled in configuration');
+      throw new Error("Real-time processing is not enabled in configuration");
     }
-    
-    this.emit('realTimeProcessingStarted', { source, context });
-    
+
+    this.emit("realTimeProcessingStarted", { source, context });
+
     // Implementation would use OpenCV to capture frames and process them
     // This is a placeholder for the real implementation
   }
@@ -584,22 +611,22 @@ export class IraqiComputerVisionSystem extends EventEmitter {
   // Batch processing multiple images
   public async batchAnalyze(
     imagePaths: string[],
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<IraqiVisualAnalysisResult[]> {
     const results: IraqiVisualAnalysisResult[] = [];
-    
-    this.emit('batchAnalysisStarted', { 
-      count: imagePaths.length, 
-      context 
+
+    this.emit("batchAnalysisStarted", {
+      count: imagePaths.length,
+      context,
     });
-    
+
     if (this.config.parallelProcessing) {
       // Process images in parallel
-      const promises = imagePaths.map(imagePath => 
-        this.analyzeImage(imagePath, context)
+      const promises = imagePaths.map((imagePath) =>
+        this.analyzeImage(imagePath, context),
       );
-      
-      results.push(...await Promise.all(promises));
+
+      results.push(...(await Promise.all(promises)));
     } else {
       // Process images sequentially
       for (const imagePath of imagePaths) {
@@ -607,19 +634,19 @@ export class IraqiComputerVisionSystem extends EventEmitter {
         results.push(result);
       }
     }
-    
-    this.emit('batchAnalysisCompleted', { 
-      results, 
-      successCount: results.filter(r => r.confidence > 50).length 
+
+    this.emit("batchAnalysisCompleted", {
+      results,
+      successCount: results.filter((r) => r.confidence > 50).length,
     });
-    
+
     return results;
   }
 
   // Cultural and Islamic specific methods
   public async validateCulturalAppropriatenessOnly(
     imagePath: string | Buffer,
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<CulturalVisualAnalysis> {
     const image = await this.loadImage(imagePath);
     return await this.culturalAnalyzer.analyzeCulturalContent(image, context);
@@ -627,7 +654,7 @@ export class IraqiComputerVisionSystem extends EventEmitter {
 
   public async validateIslamicComplianceOnly(
     imagePath: string | Buffer,
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<IslamicVisualCompliance> {
     const image = await this.loadImage(imagePath);
     return await this.islamicValidator.validateContent(image, context);
@@ -635,7 +662,7 @@ export class IraqiComputerVisionSystem extends EventEmitter {
 
   public async extractArabicTextOnly(
     imagePath: string | Buffer,
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<ArabicOCRResult> {
     const image = await this.loadImage(imagePath);
     return await this.arabicOCREngine.recognizeText(image, context);
@@ -655,19 +682,24 @@ export class IraqiComputerVisionSystem extends EventEmitter {
     return {
       width: size[1],
       height: size[0],
-      format: 'unknown', // Would be determined from file extension or metadata
-      colorSpace: image.channels === 3 ? 'BGR' : 'GRAY',
+      format: "unknown", // Would be determined from file extension or metadata
+      colorSpace: image.channels === 3 ? "BGR" : "GRAY",
       channels: image.channels,
       bitDepth: 8, // Default for most images
       fileSize: 0, // Would be calculated from buffer/file
-      orientation: size[1] > size[0] ? 'landscape' : size[0] > size[1] ? 'portrait' : 'square',
-      quality: 95 // Default assumption
+      orientation:
+        size[1] > size[0]
+          ? "landscape"
+          : size[0] > size[1]
+            ? "portrait"
+            : "square",
+      quality: 95, // Default assumption
     };
   }
 
   private async detectObjects(
     image: cv.Mat,
-    context: IraqiCulturalContext
+    context: IraqiCulturalContext,
   ): Promise<ObjectDetectionResult> {
     // Implementation would use pre-trained models for object detection
     // This is a placeholder implementation
@@ -677,7 +709,7 @@ export class IraqiComputerVisionSystem extends EventEmitter {
       islamicObjects: [],
       professionalObjects: [],
       totalObjects: 0,
-      confidence: 0
+      confidence: 0,
     };
   }
 
@@ -686,7 +718,7 @@ export class IraqiComputerVisionSystem extends EventEmitter {
     objectDetection: ObjectDetectionResult,
     culturalAnalysis: CulturalVisualAnalysis,
     islamicCompliance: IslamicVisualCompliance,
-    professionalAnalysis: ProfessionalVisualAnalysis
+    professionalAnalysis: ProfessionalVisualAnalysis,
   ): number {
     // Weighted average of all confidence scores
     const weights = {
@@ -694,9 +726,9 @@ export class IraqiComputerVisionSystem extends EventEmitter {
       objects: 0.2,
       cultural: 0.2,
       islamic: 0.15,
-      professional: 0.15
+      professional: 0.15,
     };
-    
+
     return (
       textRecognition.confidence * weights.text +
       objectDetection.confidence * weights.objects +
@@ -707,64 +739,145 @@ export class IraqiComputerVisionSystem extends EventEmitter {
   }
 
   // Placeholder methods for various functionality
-  private async generateRecommendations(...args: any[]): Promise<VisualRecommendation[]> { return []; }
-  private async generateWarnings(...args: any[]): Promise<VisualWarning[]> { return []; }
-  private async generateErrors(...args: any[]): Promise<VisualError[]> { return []; }
-  
-  private createErrorResult(analysisId: string, error: Error, startTime: number): IraqiVisualAnalysisResult {
+  private async generateRecommendations(
+    ...args: any[]
+  ): Promise<VisualRecommendation[]> {
+    return [];
+  }
+  private async generateWarnings(...args: any[]): Promise<VisualWarning[]> {
+    return [];
+  }
+  private async generateErrors(...args: any[]): Promise<VisualError[]> {
+    return [];
+  }
+
+  private createErrorResult(
+    analysisId: string,
+    error: Error,
+    startTime: number,
+  ): IraqiVisualAnalysisResult {
     return {
       id: analysisId,
       timestamp: new Date(),
       imageInfo: {
-        width: 0, height: 0, format: 'unknown', colorSpace: 'RGB',
-        channels: 0, bitDepth: 0, fileSize: 0, orientation: 'square', quality: 0
+        width: 0,
+        height: 0,
+        format: "unknown",
+        colorSpace: "RGB",
+        channels: 0,
+        bitDepth: 0,
+        fileSize: 0,
+        orientation: "square",
+        quality: 0,
       },
       textRecognition: {
-        success: false, text: '', textArabic: '', language: 'en',
-        dialectInfo: { dialect: 'standard_arabic', confidence: 0, dialectFeatures: [], culturalIndicators: [] },
-        textRegions: [], readingDirection: 'ltr', confidence: 0,
-        culturalTerms: [], professionalTerms: []
+        success: false,
+        text: "",
+        textArabic: "",
+        language: "en",
+        dialectInfo: {
+          dialect: "standard_arabic",
+          confidence: 0,
+          dialectFeatures: [],
+          culturalIndicators: [],
+        },
+        textRegions: [],
+        readingDirection: "ltr",
+        confidence: 0,
+        culturalTerms: [],
+        professionalTerms: [],
       },
       objectDetection: {
-        objects: [], culturalObjects: [], islamicObjects: [],
-        professionalObjects: [], totalObjects: 0, confidence: 0
+        objects: [],
+        culturalObjects: [],
+        islamicObjects: [],
+        professionalObjects: [],
+        totalObjects: 0,
+        confidence: 0,
       },
       culturalAnalysis: {
-        overallCulturalScore: 0, culturalElements: [], 
-        layoutAnalysis: { direction: 'ltr', alignment: 'left', culturalAlignment: false, professionalLayout: false, islamicLayoutCompliance: false, layoutScore: 0 },
-        colorAnalysis: { dominantColors: [], culturalColorScheme: false, islamicColorCompliance: false, professionalColorScheme: false, colorHarmony: 0, culturalSignificance: [] },
-        symbolAnalysis: { symbols: [], culturalSymbols: 0, islamicSymbols: 0, professionalSymbols: 0, symbolScore: 0 },
-        textDirectionality: 'ltr', culturalAppropriatenessScore: 0, recommendations: []
+        overallCulturalScore: 0,
+        culturalElements: [],
+        layoutAnalysis: {
+          direction: "ltr",
+          alignment: "left",
+          culturalAlignment: false,
+          professionalLayout: false,
+          islamicLayoutCompliance: false,
+          layoutScore: 0,
+        },
+        colorAnalysis: {
+          dominantColors: [],
+          culturalColorScheme: false,
+          islamicColorCompliance: false,
+          professionalColorScheme: false,
+          colorHarmony: 0,
+          culturalSignificance: [],
+        },
+        symbolAnalysis: {
+          symbols: [],
+          culturalSymbols: 0,
+          islamicSymbols: 0,
+          professionalSymbols: 0,
+          symbolScore: 0,
+        },
+        textDirectionality: "ltr",
+        culturalAppropriatenessScore: 0,
+        recommendations: [],
       },
       islamicCompliance: {
-        overallComplianceScore: 0, halalContentCompliance: false,
-        genderSeparationCompliance: false, religiousContentRespect: false,
-        islamicSymbolRespect: false, complianceIssues: [], recommendations: []
+        overallComplianceScore: 0,
+        halalContentCompliance: false,
+        genderSeparationCompliance: false,
+        religiousContentRespect: false,
+        islamicSymbolRespect: false,
+        complianceIssues: [],
+        recommendations: [],
       },
       professionalAnalysis: {
-        domain: null, domainConfidence: 0, documentType: null,
-        documentTypeArabic: null, professionalElements: [],
-        complianceScore: 0, certificationLevel: null, qualityScore: 0
+        domain: null,
+        domainConfidence: 0,
+        documentType: null,
+        documentTypeArabic: null,
+        professionalElements: [],
+        complianceScore: 0,
+        certificationLevel: null,
+        qualityScore: 0,
       },
       performanceMetrics: {
-        processingTime: Date.now() - startTime, memoryUsage: 0,
-        cpuUsage: 0, accuracyScore: 0, throughputRate: 0,
-        errorRate: 100, culturalProcessingTime: 0,
-        islamicValidationTime: 0, arabicOCRTime: 0
+        processingTime: Date.now() - startTime,
+        memoryUsage: 0,
+        cpuUsage: 0,
+        accuracyScore: 0,
+        throughputRate: 0,
+        errorRate: 100,
+        culturalProcessingTime: 0,
+        islamicValidationTime: 0,
+        arabicOCRTime: 0,
       },
       confidence: 0,
       recommendations: [],
       warnings: [],
-      errors: [{
-        code: 'PROCESSING_FAILED',
-        type: 'processing',
-        severity: 'critical',
-        message: error.message,
-        messageArabic: `خطأ في المعالجة: ${error.message}`,
-        recoverable: true,
-        suggestions: ['Check image format', 'Verify cultural context', 'Review system configuration'],
-        suggestionsArabic: ['تحقق من تنسيق الصورة', 'تحقق من السياق الثقافي', 'راجع إعدادات النظام']
-      }]
+      errors: [
+        {
+          code: "PROCESSING_FAILED",
+          type: "processing",
+          severity: "critical",
+          message: error.message,
+          messageArabic: `خطأ في المعالجة: ${error.message}`,
+          recoverable: true,
+          suggestions: [
+            "Check image format",
+            "Verify cultural context",
+            "Review system configuration",
+          ],
+          suggestionsArabic: [
+            "تحقق من تنسيق الصورة",
+            "تحقق من السياق الثقافي",
+            "راجع إعدادات النظام",
+          ],
+        },
+      ],
     };
   }
 
@@ -772,19 +885,25 @@ export class IraqiComputerVisionSystem extends EventEmitter {
     return `vision_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private generateCacheKey(imagePath: string | Buffer, context: IraqiCulturalContext): string {
-    const imageHash = Buffer.isBuffer(imagePath) ? 
-      imagePath.toString('base64', 0, 32) : imagePath;
+  private generateCacheKey(
+    imagePath: string | Buffer,
+    context: IraqiCulturalContext,
+  ): string {
+    const imageHash = Buffer.isBuffer(imagePath)
+      ? imagePath.toString("base64", 0, 32)
+      : imagePath;
     return `${imageHash}_${context.userId}_${context.culturalProfile.culturalBackground}`;
   }
 
-  private mergeWithDefaults(config: Partial<IraqiVisionConfig>): IraqiVisionConfig {
+  private mergeWithDefaults(
+    config: Partial<IraqiVisionConfig>,
+  ): IraqiVisionConfig {
     return {
-      ocrLanguages: config.ocrLanguages || ['ara', 'eng'],
-      culturalValidationLevel: config.culturalValidationLevel || 'standard',
-      islamicComplianceLevel: config.islamicComplianceLevel || 'compliant',
+      ocrLanguages: config.ocrLanguages || ["ara", "eng"],
+      culturalValidationLevel: config.culturalValidationLevel || "standard",
+      islamicComplianceLevel: config.islamicComplianceLevel || "compliant",
       professionalDomainFocus: config.professionalDomainFocus,
-      performanceMode: config.performanceMode || 'balanced',
+      performanceMode: config.performanceMode || "balanced",
       parallelProcessing: config.parallelProcessing ?? true,
       cacheResults: config.cacheResults ?? true,
       realTimeProcessing: config.realTimeProcessing ?? false,
@@ -793,17 +912,17 @@ export class IraqiComputerVisionSystem extends EventEmitter {
         minimumCulturalScore: 80,
         minimumIslamicScore: 90,
         minimumProfessionalScore: 75,
-        maximumProcessingTime: 5000
-      }
+        maximumProcessingTime: 5000,
+      },
     };
   }
 
   private initializeSystem(): void {
     // Set up event listeners and monitoring
-    this.performanceMonitor.on('performanceIssue', (data) => {
-      this.emit('performanceIssue', data);
+    this.performanceMonitor.on("performanceIssue", (data) => {
+      this.emit("performanceIssue", data);
     });
-    
+
     // Initialize periodic cache cleanup
     setInterval(() => {
       this.cleanupCache();
@@ -812,7 +931,8 @@ export class IraqiComputerVisionSystem extends EventEmitter {
 
   private cleanupCache(): void {
     // Implementation for cache cleanup based on age and usage
-    if (this.resultCache.size > 1000) { // Limit cache size
+    if (this.resultCache.size > 1000) {
+      // Limit cache size
       const entries = Array.from(this.resultCache.entries());
       // Remove oldest entries (simplified implementation)
       entries.slice(0, 500).forEach(([key]) => {
@@ -826,25 +946,28 @@ export class IraqiComputerVisionSystem extends EventEmitter {
 class IraqiArabicOCREngine {
   constructor(private config: IraqiVisionConfig) {}
 
-  async recognizeText(image: cv.Mat, context: IraqiCulturalContext): Promise<ArabicOCRResult> {
+  async recognizeText(
+    image: cv.Mat,
+    context: IraqiCulturalContext,
+  ): Promise<ArabicOCRResult> {
     // Implementation would use Tesseract.js or similar for Arabic OCR
     // This is a placeholder implementation
     return {
       success: true,
-      text: 'Placeholder text',
-      textArabic: 'نص تجريبي',
-      language: 'mixed',
+      text: "Placeholder text",
+      textArabic: "نص تجريبي",
+      language: "mixed",
       dialectInfo: {
-        dialect: 'baghdadi',
+        dialect: "baghdadi",
         confidence: 85,
-        dialectFeatures: ['baghdadi_accent'],
-        culturalIndicators: ['formal_greeting']
+        dialectFeatures: ["baghdadi_accent"],
+        culturalIndicators: ["formal_greeting"],
       },
       textRegions: [],
-      readingDirection: 'rtl',
+      readingDirection: "rtl",
       confidence: 85,
       culturalTerms: [],
-      professionalTerms: []
+      professionalTerms: [],
     };
   }
 }
@@ -852,18 +975,21 @@ class IraqiArabicOCREngine {
 class IraqiCulturalVisualAnalyzer {
   constructor(private config: IraqiVisionConfig) {}
 
-  async analyzeCulturalContent(image: cv.Mat, context: IraqiCulturalContext): Promise<CulturalVisualAnalysis> {
+  async analyzeCulturalContent(
+    image: cv.Mat,
+    context: IraqiCulturalContext,
+  ): Promise<CulturalVisualAnalysis> {
     // Implementation for cultural visual analysis
     return {
       overallCulturalScore: 90,
       culturalElements: [],
       layoutAnalysis: {
-        direction: 'rtl',
-        alignment: 'right',
+        direction: "rtl",
+        alignment: "right",
         culturalAlignment: true,
         professionalLayout: true,
         islamicLayoutCompliance: true,
-        layoutScore: 90
+        layoutScore: 90,
       },
       colorAnalysis: {
         dominantColors: [],
@@ -871,18 +997,18 @@ class IraqiCulturalVisualAnalyzer {
         islamicColorCompliance: true,
         professionalColorScheme: true,
         colorHarmony: 85,
-        culturalSignificance: []
+        culturalSignificance: [],
       },
       symbolAnalysis: {
         symbols: [],
         culturalSymbols: 0,
         islamicSymbols: 0,
         professionalSymbols: 0,
-        symbolScore: 95
+        symbolScore: 95,
       },
-      textDirectionality: 'rtl',
+      textDirectionality: "rtl",
       culturalAppropriatenessScore: 90,
-      recommendations: []
+      recommendations: [],
     };
   }
 }
@@ -890,7 +1016,10 @@ class IraqiCulturalVisualAnalyzer {
 class IraqiIslamicVisualValidator {
   constructor(private config: IraqiVisionConfig) {}
 
-  async validateContent(image: cv.Mat, context: IraqiCulturalContext): Promise<IslamicVisualCompliance> {
+  async validateContent(
+    image: cv.Mat,
+    context: IraqiCulturalContext,
+  ): Promise<IslamicVisualCompliance> {
     // Implementation for Islamic compliance validation
     return {
       overallComplianceScore: 95,
@@ -899,7 +1028,7 @@ class IraqiIslamicVisualValidator {
       religiousContentRespect: true,
       islamicSymbolRespect: true,
       complianceIssues: [],
-      recommendations: []
+      recommendations: [],
     };
   }
 }
@@ -907,7 +1036,10 @@ class IraqiIslamicVisualValidator {
 class IraqiProfessionalVisualAnalyzer {
   constructor(private config: IraqiVisionConfig) {}
 
-  async analyzeProfessionalContent(image: cv.Mat, context: IraqiCulturalContext): Promise<ProfessionalVisualAnalysis> {
+  async analyzeProfessionalContent(
+    image: cv.Mat,
+    context: IraqiCulturalContext,
+  ): Promise<ProfessionalVisualAnalysis> {
     // Implementation for professional content analysis
     return {
       domain: context.professionalDomain || null,
@@ -917,7 +1049,7 @@ class IraqiProfessionalVisualAnalyzer {
       professionalElements: [],
       complianceScore: 80,
       certificationLevel: null,
-      qualityScore: 85
+      qualityScore: 85,
     };
   }
 }
@@ -943,7 +1075,7 @@ class IraqiVisionPerformanceMonitor extends EventEmitter {
       errorRate: 5, // percentage
       culturalProcessingTime: 200, // milliseconds
       islamicValidationTime: 150, // milliseconds
-      arabicOCRTime: 800 // milliseconds
+      arabicOCRTime: 800, // milliseconds
     };
   }
 }

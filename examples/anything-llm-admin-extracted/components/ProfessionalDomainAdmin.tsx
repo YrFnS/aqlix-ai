@@ -1,7 +1,7 @@
 /**
  * Professional Domain Administration Interface
  * Enhanced for Iraqi AI Chat System
- * 
+ *
  * Features:
  * - Iraqi professional domain management (legal, medical, educational, business, engineering, government)
  * - Domain-specific user role assignments
@@ -18,7 +18,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -37,7 +43,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { 
+import {
   Scale,
   Stethoscope,
   GraduationCap,
@@ -55,14 +61,14 @@ import {
   BookOpen,
   Award,
   Shield,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import {
   ProfessionalDomain,
   IraqiUser,
   UserRole,
   CulturalComplianceLevel,
-  AdminPermissions
+  AdminPermissions,
 } from '../types/admin';
 
 interface ProfessionalDomainAdminProps {
@@ -111,16 +117,19 @@ interface DomainKnowledgeBase {
 }
 
 // Domain configuration with Iraqi-specific details
-const DOMAIN_CONFIG: Record<ProfessionalDomain, {
-  name: string;
-  arabicName: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-  arabicDescription: string;
-  iraqiStandards: string[];
-  requiredCompliance: CulturalComplianceLevel;
-}> = {
+const DOMAIN_CONFIG: Record<
+  ProfessionalDomain,
+  {
+    name: string;
+    arabicName: string;
+    icon: React.ReactNode;
+    color: string;
+    description: string;
+    arabicDescription: string;
+    iraqiStandards: string[];
+    requiredCompliance: CulturalComplianceLevel;
+  }
+> = {
   legal: {
     name: 'Legal',
     arabicName: 'قانوني',
@@ -129,7 +138,7 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     description: 'Iraqi legal system, courts, and jurisprudence',
     arabicDescription: 'النظام القانوني العراقي والمحاكم والفقه',
     iraqiStandards: ['Iraqi Civil Code', 'Commercial Law', 'Personal Status Law', 'Criminal Law'],
-    requiredCompliance: 'strict'
+    requiredCompliance: 'strict',
   },
   medical: {
     name: 'Medical',
@@ -138,8 +147,12 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     color: 'text-green-600',
     description: 'Iraqi healthcare system and medical practices',
     arabicDescription: 'النظام الصحي العراقي والممارسات الطبية',
-    iraqiStandards: ['Iraqi Medical Association', 'Ministry of Health Guidelines', 'Medical Ethics Code'],
-    requiredCompliance: 'strict'
+    iraqiStandards: [
+      'Iraqi Medical Association',
+      'Ministry of Health Guidelines',
+      'Medical Ethics Code',
+    ],
+    requiredCompliance: 'strict',
   },
   educational: {
     name: 'Educational',
@@ -148,8 +161,12 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     color: 'text-purple-600',
     description: 'Iraqi education system and academic standards',
     arabicDescription: 'النظام التعليمي العراقي والمعايير الأكاديمية',
-    iraqiStandards: ['Ministry of Education Curriculum', 'Higher Education Standards', 'Teacher Certification'],
-    requiredCompliance: 'moderate'
+    iraqiStandards: [
+      'Ministry of Education Curriculum',
+      'Higher Education Standards',
+      'Teacher Certification',
+    ],
+    requiredCompliance: 'moderate',
   },
   business: {
     name: 'Business',
@@ -159,7 +176,7 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     description: 'Iraqi business practices and commercial law',
     arabicDescription: 'الممارسات التجارية العراقية والقانون التجاري',
     iraqiStandards: ['Commercial Registration Law', 'Investment Law', 'Banking Regulations'],
-    requiredCompliance: 'moderate'
+    requiredCompliance: 'moderate',
   },
   engineering: {
     name: 'Engineering',
@@ -168,8 +185,12 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     color: 'text-gray-600',
     description: 'Iraqi engineering standards and construction codes',
     arabicDescription: 'المعايير الهندسية العراقية وقوانين البناء',
-    iraqiStandards: ['Iraqi Building Code', 'Engineering Syndicate Standards', 'Safety Regulations'],
-    requiredCompliance: 'flexible'
+    iraqiStandards: [
+      'Iraqi Building Code',
+      'Engineering Syndicate Standards',
+      'Safety Regulations',
+    ],
+    requiredCompliance: 'flexible',
   },
   government: {
     name: 'Government',
@@ -179,7 +200,7 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     description: 'Iraqi government services and administrative procedures',
     arabicDescription: 'الخدمات الحكومية العراقية والإجراءات الإدارية',
     iraqiStandards: ['Administrative Law', 'Public Service Code', 'Government Procedures Manual'],
-    requiredCompliance: 'strict'
+    requiredCompliance: 'strict',
   },
   general: {
     name: 'General',
@@ -189,16 +210,18 @@ const DOMAIN_CONFIG: Record<ProfessionalDomain, {
     description: 'General Iraqi cultural and social context',
     arabicDescription: 'السياق الثقافي والاجتماعي العراقي العام',
     iraqiStandards: ['Cultural Norms', 'Social Etiquette', 'Islamic Values'],
-    requiredCompliance: 'moderate'
-  }
+    requiredCompliance: 'moderate',
+  },
 };
 
 export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = ({
   className,
-  showArabicLabels = false
+  showArabicLabels = false,
 }) => {
   const [selectedDomain, setSelectedDomain] = useState<ProfessionalDomain>('legal');
-  const [domainSettings, setDomainSettings] = useState<Record<ProfessionalDomain, DomainSettings>>({} as any);
+  const [domainSettings, setDomainSettings] = useState<Record<ProfessionalDomain, DomainSettings>>(
+    {} as any
+  );
   const [domainExperts, setDomainExperts] = useState<DomainExpert[]>([]);
   const [knowledgeBases, setKnowledgeBases] = useState<DomainKnowledgeBase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -208,17 +231,17 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
   const loadDomainData = async () => {
     try {
       setLoading(true);
-      
+
       const [settingsResponse, expertsResponse, knowledgeResponse] = await Promise.all([
         fetch('/api/admin/domains/settings'),
         fetch(`/api/admin/domains/${selectedDomain}/experts`),
-        fetch(`/api/admin/domains/${selectedDomain}/knowledge-bases`)
+        fetch(`/api/admin/domains/${selectedDomain}/knowledge-bases`),
       ]);
-      
+
       const settingsData = await settingsResponse.json();
       const expertsData = await expertsResponse.json();
       const knowledgeData = await knowledgeResponse.json();
-      
+
       setDomainSettings(settingsData);
       setDomainExperts(expertsData);
       setKnowledgeBases(knowledgeData);
@@ -240,10 +263,17 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
   // Get status color
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': case 'compliant': return 'text-green-600 bg-green-50';
-      case 'inactive': case 'needs_review': return 'text-yellow-600 bg-yellow-50';
-      case 'under_review': case 'non_compliant': return 'text-red-600 bg-red-50';
-      default: return 'text-gray-600 bg-gray-50';
+      case 'active':
+      case 'compliant':
+        return 'text-green-600 bg-green-50';
+      case 'inactive':
+      case 'needs_review':
+        return 'text-yellow-600 bg-yellow-50';
+      case 'under_review':
+      case 'non_compliant':
+        return 'text-red-600 bg-red-50';
+      default:
+        return 'text-gray-600 bg-gray-50';
     }
   };
 
@@ -253,9 +283,9 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
       await fetch(`/api/admin/domains/experts/${expertId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
+        body: JSON.stringify({ status }),
       });
-      
+
       await loadDomainData();
     } catch (error) {
       console.error('Failed to update expert status:', error);
@@ -271,10 +301,9 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
             {showArabicLabels ? 'إدارة المجالات المهنية' : 'Professional Domain Administration'}
           </h1>
           <p className="text-gray-600 mt-1">
-            {showArabicLabels 
+            {showArabicLabels
               ? 'إدارة المجالات المهنية العراقية والخبراء المختصين'
-              : 'Manage Iraqi professional domains and specialized experts'
-            }
+              : 'Manage Iraqi professional domains and specialized experts'}
           </p>
         </div>
         <Button onClick={loadDomainData} disabled={loading}>
@@ -290,7 +319,9 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
       {/* Domain Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>{showArabicLabels ? 'اختر المجال المهني' : 'Select Professional Domain'}</CardTitle>
+          <CardTitle>
+            {showArabicLabels ? 'اختر المجال المهني' : 'Select Professional Domain'}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
@@ -347,16 +378,14 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
               </div>
             </div>
           </div>
-          
+
           <Alert>
             <BookOpen className="w-4 h-4" />
             <AlertDescription>
               <div className="font-semibold mb-1">
                 {showArabicLabels ? 'المعايير العراقية:' : 'Iraqi Standards:'}
               </div>
-              <div className="text-sm">
-                {domainConfig.iraqiStandards.join(' • ')}
-              </div>
+              <div className="text-sm">{domainConfig.iraqiStandards.join(' • ')}</div>
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -365,15 +394,9 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
       {/* Domain Management Tabs */}
       <Tabs defaultValue="experts" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="experts">
-            {showArabicLabels ? 'الخبراء' : 'Experts'}
-          </TabsTrigger>
-          <TabsTrigger value="knowledge">
-            {showArabicLabels ? 'المعرفة' : 'Knowledge'}
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            {showArabicLabels ? 'الإعدادات' : 'Settings'}
-          </TabsTrigger>
+          <TabsTrigger value="experts">{showArabicLabels ? 'الخبراء' : 'Experts'}</TabsTrigger>
+          <TabsTrigger value="knowledge">{showArabicLabels ? 'المعرفة' : 'Knowledge'}</TabsTrigger>
+          <TabsTrigger value="settings">{showArabicLabels ? 'الإعدادات' : 'Settings'}</TabsTrigger>
         </TabsList>
 
         {/* Domain Experts Tab */}
@@ -395,10 +418,9 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                     {showArabicLabels ? 'إضافة خبير جديد' : 'Add New Domain Expert'}
                   </DialogTitle>
                   <DialogDescription>
-                    {showArabicLabels 
+                    {showArabicLabels
                       ? 'قم بتعيين مستخدم كخبير مختص في هذا المجال المهني'
-                      : 'Assign a user as a specialist expert for this professional domain'
-                    }
+                      : 'Assign a user as a specialist expert for this professional domain'}
                   </DialogDescription>
                 </DialogHeader>
                 {/* Add expert form would go here */}
@@ -420,7 +442,7 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {domainExperts.map((expert) => (
+                  {domainExperts.map(expert => (
                     <TableRow key={expert.id}>
                       <TableCell>
                         <div>
@@ -430,7 +452,7 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {expert.specializations.slice(0, 2).map((spec) => (
+                          {expert.specializations.slice(0, 2).map(spec => (
                             <Badge key={spec} variant="outline" className="text-xs">
                               {spec}
                             </Badge>
@@ -450,16 +472,24 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <div className={`text-sm font-medium ${
-                            expert.complianceScore >= 90 ? 'text-green-600' :
-                            expert.complianceScore >= 70 ? 'text-yellow-600' :
-                            'text-red-600'
-                          }`}>
+                          <div
+                            className={`text-sm font-medium ${
+                              expert.complianceScore >= 90
+                                ? 'text-green-600'
+                                : expert.complianceScore >= 70
+                                  ? 'text-yellow-600'
+                                  : 'text-red-600'
+                            }`}
+                          >
                             {expert.complianceScore}%
                           </div>
-                          {expert.complianceScore >= 90 ? <CheckCircle className="w-4 h-4 text-green-600" /> :
-                           expert.complianceScore >= 70 ? <AlertTriangle className="w-4 h-4 text-yellow-600" /> :
-                           <XCircle className="w-4 h-4 text-red-600" />}
+                          {expert.complianceScore >= 90 ? (
+                            <CheckCircle className="w-4 h-4 text-green-600" />
+                          ) : expert.complianceScore >= 70 ? (
+                            <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                          ) : (
+                            <XCircle className="w-4 h-4 text-red-600" />
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -474,15 +504,15 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                           </Button>
                           {expert.status === 'under_review' && (
                             <>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => updateExpertStatus(expert.id, 'active')}
                               >
                                 <CheckCircle className="w-4 h-4 text-green-600" />
                               </Button>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => updateExpertStatus(expert.id, 'inactive')}
                               >
@@ -513,7 +543,7 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
           </div>
 
           <div className="grid gap-4">
-            {knowledgeBases.map((kb) => (
+            {knowledgeBases.map(kb => (
               <Card key={kb.id}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
@@ -532,7 +562,8 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                           {kb.contributors.length} {showArabicLabels ? 'مساهم' : 'contributors'}
                         </span>
                         <span className="text-sm text-gray-600">
-                          {showArabicLabels ? 'آخر تحديث:' : 'Updated:'} {kb.lastUpdated.toLocaleDateString()}
+                          {showArabicLabels ? 'آخر تحديث:' : 'Updated:'}{' '}
+                          {kb.lastUpdated.toLocaleDateString()}
                         </span>
                       </div>
                     </div>
@@ -556,12 +587,14 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
           <h3 className="text-lg font-semibold">
             {showArabicLabels ? 'إعدادات المجال' : 'Domain Settings'}
           </h3>
-          
+
           {currentSettings && (
             <div className="grid gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>{showArabicLabels ? 'متطلبات الخبراء' : 'Expert Requirements'}</CardTitle>
+                  <CardTitle>
+                    {showArabicLabels ? 'متطلبات الخبراء' : 'Expert Requirements'}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
@@ -595,9 +628,15 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="strict">{showArabicLabels ? 'صارم' : 'Strict'}</SelectItem>
-                        <SelectItem value="moderate">{showArabicLabels ? 'معتدل' : 'Moderate'}</SelectItem>
-                        <SelectItem value="flexible">{showArabicLabels ? 'مرن' : 'Flexible'}</SelectItem>
+                        <SelectItem value="strict">
+                          {showArabicLabels ? 'صارم' : 'Strict'}
+                        </SelectItem>
+                        <SelectItem value="moderate">
+                          {showArabicLabels ? 'معتدل' : 'Moderate'}
+                        </SelectItem>
+                        <SelectItem value="flexible">
+                          {showArabicLabels ? 'مرن' : 'Flexible'}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -606,18 +645,25 @@ export const ProfessionalDomainAdmin: React.FC<ProfessionalDomainAdminProps> = (
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{showArabicLabels ? 'الشهادات المطلوبة' : 'Required Certifications'}</CardTitle>
+                  <CardTitle>
+                    {showArabicLabels ? 'الشهادات المطلوبة' : 'Required Certifications'}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {currentSettings.expertRequirements.requiredCertifications.map((cert, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 border rounded">
-                        <span>{cert}</span>
-                        <Button variant="ghost" size="sm">
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </Button>
-                      </div>
-                    ))}
+                    {currentSettings.expertRequirements.requiredCertifications.map(
+                      (cert, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-2 border rounded"
+                        >
+                          <span>{cert}</span>
+                          <Button variant="ghost" size="sm">
+                            <Trash2 className="w-4 h-4 text-red-600" />
+                          </Button>
+                        </div>
+                      )
+                    )}
                     <Button variant="outline" className="w-full">
                       <Plus className="w-4 h-4 mr-2" />
                       {showArabicLabels ? 'إضافة شهادة' : 'Add Certification'}

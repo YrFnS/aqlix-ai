@@ -1,15 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Palette, Search } from "lucide-react"
-import React from "react"
+import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Palette, Search } from "lucide-react";
+import React from "react";
 
 const EMOJI_CATEGORIES = {
   smileys: {
@@ -1527,7 +1537,7 @@ const EMOJI_CATEGORIES = {
       "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
     ],
   },
-}
+};
 
 const COLOR_PALETTE = [
   "#ef4444",
@@ -1554,26 +1564,26 @@ const COLOR_PALETTE = [
   "#000000",
   "#ffffff",
   "#f8fafc",
-]
+];
 
-export const StylePicker = ({ 
-  children, 
-  agentId, 
-  currentEmoji, 
-  currentColor, 
-  onStyleChange 
-}: { 
+export const StylePicker = ({
+  children,
+  agentId,
+  currentEmoji,
+  currentColor,
+  onStyleChange,
+}: {
   children?: React.ReactNode;
   agentId: string;
   currentEmoji?: string;
   currentColor?: string;
   onStyleChange: (emoji: string, color: string) => void;
 }) => {
-  const [selectedColor, setSelectedColor] = useState(currentColor || "#3b82f6")
-  const [selectedEmoji, setSelectedEmoji] = useState(currentEmoji || "😀")
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [activeCategory, setActiveCategory] = useState("smileys")
+  const [selectedColor, setSelectedColor] = useState(currentColor || "#3b82f6");
+  const [selectedEmoji, setSelectedEmoji] = useState(currentEmoji || "😀");
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("smileys");
 
   // Update local state when props change
   React.useEffect(() => {
@@ -1585,115 +1595,163 @@ export const StylePicker = ({
   }, [currentEmoji]);
 
   const filteredEmojis = useMemo(() => {
-    if (!searchTerm) return EMOJI_CATEGORIES[activeCategory as keyof typeof EMOJI_CATEGORIES].emojis
-    const allEmojis = Object.values(EMOJI_CATEGORIES).flatMap((category) => category.emojis)
+    if (!searchTerm)
+      return EMOJI_CATEGORIES[activeCategory as keyof typeof EMOJI_CATEGORIES]
+        .emojis;
+    const allEmojis = Object.values(EMOJI_CATEGORIES).flatMap(
+      (category) => category.emojis,
+    );
     return allEmojis.filter((emoji) => {
-      return emoji.includes(searchTerm)
-    })
-  }, [searchTerm, activeCategory])
+      return emoji.includes(searchTerm);
+    });
+  }, [searchTerm, activeCategory]);
 
   const handleSubmit = () => {
     onStyleChange(selectedEmoji, selectedColor);
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   const handleReset = () => {
     // Reset to generated defaults based on agent ID
-    const avatars = ['🤖', '🎯', '⚡', '🚀', '🔮', '🎨', '📊', '🔧', '💡', '🌟'];
-    const colors = ["#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e", "#10b981", "#14b8a6", "#06b6d4", "#0ea5e9", "#3b82f6", "#6366f1", "#8b5cf6", "#a855f7"];
-    
-    const avatarIndex = agentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % avatars.length;
-    const colorIndex = agentId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % colors.length;
-    
+    const avatars = [
+      "🤖",
+      "🎯",
+      "⚡",
+      "🚀",
+      "🔮",
+      "🎨",
+      "📊",
+      "🔧",
+      "💡",
+      "🌟",
+    ];
+    const colors = [
+      "#ef4444",
+      "#f97316",
+      "#f59e0b",
+      "#eab308",
+      "#84cc16",
+      "#22c55e",
+      "#10b981",
+      "#14b8a6",
+      "#06b6d4",
+      "#0ea5e9",
+      "#3b82f6",
+      "#6366f1",
+      "#8b5cf6",
+      "#a855f7",
+    ];
+
+    const avatarIndex =
+      agentId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      avatars.length;
+    const colorIndex =
+      agentId.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0) %
+      colors.length;
+
     setSelectedEmoji(avatars[avatarIndex]);
     setSelectedColor(colors[colorIndex]);
-    setSearchTerm("")
-    setActiveCategory("smileys")
-  }
+    setSearchTerm("");
+    setActiveCategory("smileys");
+  };
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          {children}
-        </PopoverTrigger>
-        <PopoverContent className="w-96 p-0" align="start">
-          <Card className="border-0 shadow-none">
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-6 h-6 rounded-full border-2 border-gray-200"
-                    style={{ backgroundColor: selectedColor }}
+      <PopoverTrigger asChild>{children}</PopoverTrigger>
+      <PopoverContent className="w-96 p-0" align="start">
+        <Card className="border-0 shadow-none">
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-6 h-6 rounded-full border-2 border-gray-200"
+                  style={{ backgroundColor: selectedColor }}
+                />
+                <span className="font-medium">Color</span>
+              </div>
+              <div className="grid grid-cols-8 gap-2">
+                {COLOR_PALETTE.map((color) => (
+                  <button
+                    key={color}
+                    className={`w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 ${
+                      selectedColor === color
+                        ? "border-gray-900 shadow-md"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => setSelectedColor(color)}
                   />
-                  <span className="font-medium">Color</span>
-                </div>
-                <div className="grid grid-cols-8 gap-2">
-                  {COLOR_PALETTE.map((color) => (
+                ))}
+              </div>
+            </div>
+            <Separator />
+            <div className="space-y-3">
+              {!searchTerm && (
+                <Tabs
+                  value={activeCategory}
+                  onValueChange={setActiveCategory}
+                  className="w-full"
+                >
+                  <TabsList className="grid w-full grid-cols-4 h-auto p-1">
+                    {Object.entries(EMOJI_CATEGORIES)
+                      .slice(0, 4)
+                      .map(([key, category]) => (
+                        <TabsTrigger
+                          key={key}
+                          value={key}
+                          className="text-xs p-1"
+                        >
+                          <span className="text-sm">{category.icon}</span>
+                        </TabsTrigger>
+                      ))}
+                  </TabsList>
+                  <TabsList className="grid w-full grid-cols-4 h-auto p-1 mt-1">
+                    {Object.entries(EMOJI_CATEGORIES)
+                      .slice(4, 8)
+                      .map(([key, category]) => (
+                        <TabsTrigger
+                          key={key}
+                          value={key}
+                          className="text-xs p-1"
+                        >
+                          <span className="text-sm">{category.icon}</span>
+                        </TabsTrigger>
+                      ))}
+                  </TabsList>
+                </Tabs>
+              )}
+              <ScrollArea className="h-48 w-full">
+                <div className="grid grid-cols-8 gap-1 p-1">
+                  {filteredEmojis.map((emoji, index) => (
                     <button
-                      key={color}
-                      className={`w-8 h-8 rounded-lg border-2 transition-all hover:scale-110 ${
-                        selectedColor === color ? "border-gray-900 shadow-md" : "border-gray-200 hover:border-gray-300"
+                      key={`${emoji}-${index}`}
+                      className={`w-8 h-8 text-lg hover:bg-gray-100 rounded transition-colors ${
+                        selectedEmoji === emoji
+                          ? "bg-blue-100 ring-2 ring-blue-500"
+                          : ""
                       }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setSelectedColor(color)}
-                    />
+                      onClick={() => setSelectedEmoji(emoji)}
+                    >
+                      {emoji}
+                    </button>
                   ))}
                 </div>
-              </div>
-              <Separator />
-              <div className="space-y-3">
-                {!searchTerm && (
-                  <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-                    <TabsList className="grid w-full grid-cols-4 h-auto p-1">
-                      {Object.entries(EMOJI_CATEGORIES)
-                        .slice(0, 4)
-                        .map(([key, category]) => (
-                          <TabsTrigger key={key} value={key} className="text-xs p-1">
-                            <span className="text-sm">{category.icon}</span>
-                          </TabsTrigger>
-                        ))}
-                    </TabsList>
-                    <TabsList className="grid w-full grid-cols-4 h-auto p-1 mt-1">
-                      {Object.entries(EMOJI_CATEGORIES)
-                        .slice(4, 8)
-                        .map(([key, category]) => (
-                          <TabsTrigger key={key} value={key} className="text-xs p-1">
-                            <span className="text-sm">{category.icon}</span>
-                          </TabsTrigger>
-                        ))}
-                    </TabsList>
-                  </Tabs>
-                )}
-                <ScrollArea className="h-48 w-full">
-                  <div className="grid grid-cols-8 gap-1 p-1">
-                    {filteredEmojis.map((emoji, index) => (
-                      <button
-                        key={`${emoji}-${index}`}
-                        className={`w-8 h-8 text-lg hover:bg-gray-100 rounded transition-colors ${
-                          selectedEmoji === emoji ? "bg-blue-100 ring-2 ring-blue-500" : ""
-                        }`}
-                        onClick={() => setSelectedEmoji(emoji)}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </ScrollArea>
-                {searchTerm && filteredEmojis.length === 0 && (
-                  <div className="text-center text-muted-foreground py-4">No emojis found for "{searchTerm}"</div>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-end gap-2">
-              <Button variant="outline" onClick={handleReset}>
-                Reset
-              </Button>
-              <Button onClick={handleSubmit}>
-                Save
-              </Button>
-            </CardFooter>
-          </Card>
-        </PopoverContent>
-      </Popover>
-  )
-}
+              </ScrollArea>
+              {searchTerm && filteredEmojis.length === 0 && (
+                <div className="text-center text-muted-foreground py-4">
+                  No emojis found for "{searchTerm}"
+                </div>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-end gap-2">
+            <Button variant="outline" onClick={handleReset}>
+              Reset
+            </Button>
+            <Button onClick={handleSubmit}>Save</Button>
+          </CardFooter>
+        </Card>
+      </PopoverContent>
+    </Popover>
+  );
+};

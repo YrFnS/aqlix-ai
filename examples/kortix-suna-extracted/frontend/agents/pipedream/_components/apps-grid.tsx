@@ -1,15 +1,15 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Loader2, TrendingUp, Star, ArrowRight, ArrowLeft } from 'lucide-react';
-import { AppCard } from './app-card';
-import { getCategoryEmoji } from '../utils';
-import type { AppsGridProps } from '../types';
+import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Loader2, TrendingUp, Star, ArrowRight, ArrowLeft } from "lucide-react";
+import { AppCard } from "./app-card";
+import { getCategoryEmoji } from "../utils";
+import type { AppsGridProps } from "../types";
 
 export const AppsGrid: React.FC<AppsGridProps> = ({
   apps,
   selectedCategory,
-  mode = 'full',
+  mode = "full",
   isLoading,
   currentAgentId,
   agent,
@@ -19,28 +19,35 @@ export const AppsGrid: React.FC<AppsGridProps> = ({
   onConfigureTools,
   onCategorySelect,
   onBrowseMore,
-  onBackToPopular
+  onBackToPopular,
 }) => {
   const getSectionTitle = () => {
-    if (selectedCategory === 'All') {
-      return mode === 'profile-only' ? 'Available Apps' : 'Popular';
+    if (selectedCategory === "All") {
+      return mode === "profile-only" ? "Available Apps" : "Popular";
     }
     return selectedCategory;
   };
 
   const getSectionIcon = () => {
-    if (selectedCategory === 'All') {
-      return <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />;
+    if (selectedCategory === "All") {
+      return (
+        <TrendingUp className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+      );
     }
-    return <span className="text-lg">{getCategoryEmoji(selectedCategory)}</span>;
+    return (
+      <span className="text-lg">{getCategoryEmoji(selectedCategory)}</span>
+    );
   };
 
   const getSectionBadge = () => {
-    if (selectedCategory === 'All') {
+    if (selectedCategory === "All") {
       return (
-        <Badge variant="secondary" className="bg-orange-50 text-orange-700 border-orange-200 dark:border-orange-900 dark:bg-orange-900/20 dark:text-orange-400 text-xs">
+        <Badge
+          variant="secondary"
+          className="bg-orange-50 text-orange-700 border-orange-200 dark:border-orange-900 dark:bg-orange-900/20 dark:text-orange-400 text-xs"
+        >
           <Star className="h-3 w-3 mr-1" />
-          {mode === 'profile-only' ? 'Connect' : 'Recommended'}
+          {mode === "profile-only" ? "Connect" : "Recommended"}
         </Badge>
       );
     }
@@ -52,7 +59,9 @@ export const AppsGrid: React.FC<AppsGridProps> = ({
       <div className="flex items-center justify-center py-8">
         <div className="flex items-center gap-2">
           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          <span className="text-sm text-gray-600 dark:text-gray-400">Loading integrations...</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            Loading integrations...
+          </span>
         </div>
       </div>
     );
@@ -69,7 +78,7 @@ export const AppsGrid: React.FC<AppsGridProps> = ({
             </h2>
             {getSectionBadge()}
           </div>
-          
+
           <div className="flex items-center gap-2">
             {onBackToPopular && (
               <Button
@@ -96,11 +105,11 @@ export const AppsGrid: React.FC<AppsGridProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {apps.map((app) => (
-          <AppCard 
-            key={`${app.name_slug}-${currentAgentId || 'default'}`} 
+          <AppCard
+            key={`${app.name_slug}-${currentAgentId || "default"}`}
             app={app}
             mode={mode}
             currentAgentId={currentAgentId}
@@ -115,4 +124,4 @@ export const AppsGrid: React.FC<AppsGridProps> = ({
       </div>
     </>
   );
-}; 
+};

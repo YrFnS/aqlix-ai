@@ -1,22 +1,27 @@
 /**
  * Iraqi Arabic NLP Pipeline Types
- * 
+ *
  * Type definitions for Arabic language processing with Iraqi dialect recognition
  * and cultural context understanding
  */
 
-import { IraqiCulturalContext } from '@iraqi-ai/types';
+import { IraqiCulturalContext } from "@iraqi-ai/types";
 
 // Core NLP Processing Types
 export interface ArabicNLPRequest {
   text: string;
-  language: 'ar' | 'ar-IQ' | 'mixed' | 'auto-detect';
-  processingMode: 'full' | 'dialect-only' | 'cultural-context' | 'semantic-analysis' | 'response-generation';
+  language: "ar" | "ar-IQ" | "mixed" | "auto-detect";
+  processingMode:
+    | "full"
+    | "dialect-only"
+    | "cultural-context"
+    | "semantic-analysis"
+    | "response-generation";
   culturalContext?: IraqiCulturalContext;
   userPreferences?: {
-    outputLanguage: 'ar' | 'ar-IQ' | 'en' | 'mixed';
-    formalityLevel: 'formal' | 'informal' | 'traditional' | 'modern';
-    dialectPreference: 'iraqi' | 'msa' | 'mixed' | 'user-adaptive';
+    outputLanguage: "ar" | "ar-IQ" | "en" | "mixed";
+    formalityLevel: "formal" | "informal" | "traditional" | "modern";
+    dialectPreference: "iraqi" | "msa" | "mixed" | "user-adaptive";
   };
 }
 
@@ -35,34 +40,34 @@ export interface ArabicNLPResponse {
 
 // Language Detection
 export interface LanguageDetectionResult {
-  primaryLanguage: 'ar' | 'en' | 'mixed' | 'unknown';
+  primaryLanguage: "ar" | "en" | "mixed" | "unknown";
   confidence: number; // 0-100
   detectedDialect?: IraqiDialectType;
   mixedLanguageSegments?: MixedLanguageSegment[];
-  textDirection: 'rtl' | 'ltr' | 'mixed';
-  scriptType: 'arabic' | 'latin' | 'mixed' | 'other';
+  textDirection: "rtl" | "ltr" | "mixed";
+  scriptType: "arabic" | "latin" | "mixed" | "other";
 }
 
 export interface MixedLanguageSegment {
   text: string;
-  language: 'ar' | 'en' | 'other';
+  language: "ar" | "en" | "other";
   startIndex: number;
   endIndex: number;
   confidence: number;
   transliteration?: string;
 }
 
-export type IraqiDialectType = 
-  | 'baghdadi'           // Baghdad dialect
-  | 'basrawi'           // Basra dialect  
-  | 'moslawi'           // Mosul dialect
-  | 'kurdish-iraqi'     // Kurdish-influenced Iraqi
-  | 'southern-iraqi'    // Southern Iraqi dialects
-  | 'northern-iraqi'    // Northern Iraqi dialects
-  | 'bedouin-iraqi'     // Bedouin-influenced Iraqi
-  | 'mesopotamian'      // General Mesopotamian
-  | 'mixed-iraqi'       // Mixed Iraqi dialects
-  | 'msa-iraqi';        // MSA with Iraqi influence
+export type IraqiDialectType =
+  | "baghdadi" // Baghdad dialect
+  | "basrawi" // Basra dialect
+  | "moslawi" // Mosul dialect
+  | "kurdish-iraqi" // Kurdish-influenced Iraqi
+  | "southern-iraqi" // Southern Iraqi dialects
+  | "northern-iraqi" // Northern Iraqi dialects
+  | "bedouin-iraqi" // Bedouin-influenced Iraqi
+  | "mesopotamian" // General Mesopotamian
+  | "mixed-iraqi" // Mixed Iraqi dialects
+  | "msa-iraqi"; // MSA with Iraqi influence
 
 // Iraqi Dialect Analysis
 export interface IraqiDialectAnalysis {
@@ -77,12 +82,17 @@ export interface IraqiDialectAnalysis {
 }
 
 export interface DialectFeature {
-  featureType: 'phonetic' | 'lexical' | 'grammatical' | 'syntactic' | 'cultural-expression';
+  featureType:
+    | "phonetic"
+    | "lexical"
+    | "grammatical"
+    | "syntactic"
+    | "cultural-expression";
   feature: string;
   iraqiVariant: string;
   msaEquivalent?: string;
   confidence: number; // 0-100
-  frequency: 'very-common' | 'common' | 'occasional' | 'rare';
+  frequency: "very-common" | "common" | "occasional" | "rare";
   regionalSpecificity: IraqiDialectType[];
 }
 
@@ -96,28 +106,59 @@ export interface RegionalVariation {
 
 export interface DialectPattern {
   pattern: string;
-  patternType: 'pronunciation' | 'vocabulary' | 'grammar' | 'idiom' | 'cultural-reference';
+  patternType:
+    | "pronunciation"
+    | "vocabulary"
+    | "grammar"
+    | "idiom"
+    | "cultural-reference";
   iraqiExample: string;
   standardArabicEquivalent?: string;
   culturalSignificance: string;
-  usageContext: 'formal' | 'informal' | 'traditional' | 'modern' | 'religious' | 'social';
+  usageContext:
+    | "formal"
+    | "informal"
+    | "traditional"
+    | "modern"
+    | "religious"
+    | "social";
 }
 
 export interface CulturalMarker {
   marker: string;
-  culturalCategory: 'family' | 'hospitality' | 'respect' | 'religion' | 'tradition' | 'social' | 'historical';
+  culturalCategory:
+    | "family"
+    | "hospitality"
+    | "respect"
+    | "religion"
+    | "tradition"
+    | "social"
+    | "historical";
   culturalMeaning: string;
   appropriatenessLevel: number; // 0-100
   contextualUsage: string[];
-  modernRelevance: 'highly-relevant' | 'relevant' | 'somewhat-relevant' | 'traditional-only';
+  modernRelevance:
+    | "highly-relevant"
+    | "relevant"
+    | "somewhat-relevant"
+    | "traditional-only";
 }
 
 export interface ModernInfluence {
   influence: string;
-  influenceType: 'technology' | 'globalization' | 'education' | 'media' | 'social-change';
-  impact: 'high' | 'medium' | 'low';
+  influenceType:
+    | "technology"
+    | "globalization"
+    | "education"
+    | "media"
+    | "social-change";
+  impact: "high" | "medium" | "low";
   generationalDifference: boolean;
-  adaptationLevel: 'fully-integrated' | 'partially-integrated' | 'emerging' | 'resisted';
+  adaptationLevel:
+    | "fully-integrated"
+    | "partially-integrated"
+    | "emerging"
+    | "resisted";
 }
 
 // Cultural Context Extraction
@@ -133,38 +174,69 @@ export interface CulturalContextExtraction {
 
 export interface IslamicReference {
   reference: string;
-  referenceType: 'quran' | 'hadith' | 'islamic-greeting' | 'religious-expression' | 'islamic-value' | 'prayer-related';
+  referenceType:
+    | "quran"
+    | "hadith"
+    | "islamic-greeting"
+    | "religious-expression"
+    | "islamic-value"
+    | "prayer-related";
   arabicText: string;
   transliteration: string;
   meaning: string;
   contextualAppropriateNess: number; // 0-100
-  religousSignificance: 'high' | 'medium' | 'low';
+  religousSignificance: "high" | "medium" | "low";
   usageGuidelines: string[];
 }
 
 export interface IraqiCulturalReference {
   reference: string;
-  referenceType: 'historical' | 'geographical' | 'traditional' | 'family-related' | 'social-custom' | 'food-culture' | 'folklore';
+  referenceType:
+    | "historical"
+    | "geographical"
+    | "traditional"
+    | "family-related"
+    | "social-custom"
+    | "food-culture"
+    | "folklore";
   culturalMeaning: string;
   regionalAssociation: IraqiDialectType[];
-  generationalRelevance: 'all-generations' | 'older-generations' | 'younger-generations' | 'middle-aged';
+  generationalRelevance:
+    | "all-generations"
+    | "older-generations"
+    | "younger-generations"
+    | "middle-aged";
   appropriatenessScore: number; // 0-100
   contextualNotes: string[];
 }
 
 export interface SocialContextIndicator {
   indicator: string;
-  contextType: 'family' | 'professional' | 'social' | 'formal' | 'informal' | 'ceremonial' | 'educational';
+  contextType:
+    | "family"
+    | "professional"
+    | "social"
+    | "formal"
+    | "informal"
+    | "ceremonial"
+    | "educational";
   socialImplication: string;
   appropriateness: number; // 0-100
   responseGuidelines: string[];
 }
 
 export interface ProfessionalContextIndicator {
-  domain: 'legal' | 'medical' | 'educational' | 'business' | 'technical' | 'government' | 'religious';
-  professionalLevel: 'entry' | 'mid-level' | 'senior' | 'expert' | 'leadership';
+  domain:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "business"
+    | "technical"
+    | "government"
+    | "religious";
+  professionalLevel: "entry" | "mid-level" | "senior" | "expert" | "leadership";
   terminologyUsed: ProfessionalTerm[];
-  formalityRequirement: 'very-formal' | 'formal' | 'semi-formal' | 'informal';
+  formalityRequirement: "very-formal" | "formal" | "semi-formal" | "informal";
   culturalConsiderations: string[];
 }
 
@@ -178,29 +250,51 @@ export interface ProfessionalTerm {
 }
 
 export interface EmotionalToneAnalysis {
-  primaryTone: 'positive' | 'neutral' | 'negative' | 'mixed';
+  primaryTone: "positive" | "neutral" | "negative" | "mixed";
   emotionalIntensity: number; // 0-100
   specificEmotions: DetectedEmotion[];
   culturalEmotionalContext: string;
-  appropriateResponseTone: 'formal' | 'warm' | 'supportive' | 'respectful' | 'enthusiastic';
+  appropriateResponseTone:
+    | "formal"
+    | "warm"
+    | "supportive"
+    | "respectful"
+    | "enthusiastic";
 }
 
 export interface DetectedEmotion {
-  emotion: 'joy' | 'sadness' | 'anger' | 'fear' | 'surprise' | 'disgust' | 'respect' | 'gratitude' | 'concern';
+  emotion:
+    | "joy"
+    | "sadness"
+    | "anger"
+    | "fear"
+    | "surprise"
+    | "disgust"
+    | "respect"
+    | "gratitude"
+    | "concern";
   intensity: number; // 0-100
   culturalExpression: string;
   responseGuidance: string;
 }
 
 export interface CulturalSensitivityAssessment {
-  sensitivityLevel: 'high' | 'medium' | 'low' | 'neutral';
+  sensitivityLevel: "high" | "medium" | "low" | "neutral";
   sensitivityAreas: SensitivityArea[];
   responseRequirements: ResponseRequirement[];
   cautionFlags: CautionFlag[];
 }
 
 export interface SensitivityArea {
-  area: 'religious' | 'political' | 'family' | 'gender' | 'tribal' | 'sectarian' | 'historical' | 'social-class';
+  area:
+    | "religious"
+    | "political"
+    | "family"
+    | "gender"
+    | "tribal"
+    | "sectarian"
+    | "historical"
+    | "social-class";
   sensitivityScore: number; // 0-100
   specificConcerns: string[];
   handlingGuidelines: string[];
@@ -208,7 +302,7 @@ export interface SensitivityArea {
 
 export interface ResponseRequirement {
   requirement: string;
-  priority: 'critical' | 'high' | 'medium' | 'low';
+  priority: "critical" | "high" | "medium" | "low";
   consequence: string;
   implementation: string;
 }
@@ -216,7 +310,7 @@ export interface ResponseRequirement {
 export interface CautionFlag {
   flag: string;
   reason: string;
-  severity: 'critical' | 'major' | 'moderate' | 'minor';
+  severity: "critical" | "major" | "moderate" | "minor";
   recommendedAction: string;
 }
 
@@ -239,10 +333,23 @@ export interface IntentDetectionResult {
 
 export interface Intent {
   intent: string;
-  category: 'question' | 'request' | 'complaint' | 'compliment' | 'instruction' | 'information' | 'social' | 'professional';
+  category:
+    | "question"
+    | "request"
+    | "complaint"
+    | "compliment"
+    | "instruction"
+    | "information"
+    | "social"
+    | "professional";
   confidence: number; // 0-100
   culturalContext: string;
-  expectedResponseType: 'informational' | 'actionable' | 'supportive' | 'formal' | 'social';
+  expectedResponseType:
+    | "informational"
+    | "actionable"
+    | "supportive"
+    | "formal"
+    | "social";
 }
 
 export interface CulturallyInfluencedIntent {
@@ -262,7 +369,14 @@ export interface EntityExtractionResult {
 
 export interface ExtractedEntity {
   entity: string;
-  entityType: 'person' | 'place' | 'organization' | 'date' | 'number' | 'concept' | 'object';
+  entityType:
+    | "person"
+    | "place"
+    | "organization"
+    | "date"
+    | "number"
+    | "concept"
+    | "object";
   confidence: number; // 0-100
   context: string;
   arabicForm?: string;
@@ -272,7 +386,12 @@ export interface ExtractedEntity {
 
 export interface CulturalEntity {
   entity: string;
-  culturalCategory: 'islamic-concept' | 'iraqi-tradition' | 'historical-reference' | 'cultural-practice' | 'social-concept';
+  culturalCategory:
+    | "islamic-concept"
+    | "iraqi-tradition"
+    | "historical-reference"
+    | "cultural-practice"
+    | "social-concept";
   arabicTerm: string;
   culturalMeaning: string;
   appropriatenessGuidelines: string[];
@@ -290,7 +409,13 @@ export interface ProfessionalEntity {
 
 export interface TemporalEntity {
   entity: string;
-  temporalType: 'date' | 'time' | 'duration' | 'frequency' | 'islamic-calendar' | 'cultural-time';
+  temporalType:
+    | "date"
+    | "time"
+    | "duration"
+    | "frequency"
+    | "islamic-calendar"
+    | "cultural-time";
   gregorianEquivalent?: string;
   islamicCalendarEquivalent?: string;
   culturalContext?: string;
@@ -298,7 +423,13 @@ export interface TemporalEntity {
 
 export interface LocationEntity {
   entity: string;
-  locationType: 'city' | 'country' | 'region' | 'landmark' | 'cultural-site' | 'religious-site';
+  locationType:
+    | "city"
+    | "country"
+    | "region"
+    | "landmark"
+    | "cultural-site"
+    | "religious-site";
   arabicName: string;
   geographicalContext: string;
   culturalSignificance?: string;
@@ -308,13 +439,23 @@ export interface LocationEntity {
 export interface ConceptualAnalysisResult {
   mainConcepts: Concept[];
   conceptRelationships: ConceptRelationship[];
-  abstractionLevel: 'concrete' | 'semi-abstract' | 'abstract' | 'highly-abstract';
+  abstractionLevel:
+    | "concrete"
+    | "semi-abstract"
+    | "abstract"
+    | "highly-abstract";
   culturalConceptAlignment: number; // 0-100
 }
 
 export interface Concept {
   concept: string;
-  conceptType: 'tangible' | 'abstract' | 'cultural' | 'religious' | 'social' | 'professional';
+  conceptType:
+    | "tangible"
+    | "abstract"
+    | "cultural"
+    | "religious"
+    | "social"
+    | "professional";
   arabicTerm: string;
   definition: string;
   culturalLoadedness: number; // 0-100
@@ -324,7 +465,13 @@ export interface Concept {
 export interface ConceptRelationship {
   concept1: string;
   concept2: string;
-  relationshipType: 'similar' | 'opposite' | 'causal' | 'hierarchical' | 'cultural-association' | 'religious-connection';
+  relationshipType:
+    | "similar"
+    | "opposite"
+    | "causal"
+    | "hierarchical"
+    | "cultural-association"
+    | "religious-connection";
   strength: number; // 0-100
   culturalBasis: string;
 }
@@ -354,7 +501,12 @@ export interface ImplicitCulturalMeaning {
 
 export interface CulturalAssumption {
   assumption: string;
-  assumptionType: 'value-based' | 'behavioral' | 'social' | 'religious' | 'traditional';
+  assumptionType:
+    | "value-based"
+    | "behavioral"
+    | "social"
+    | "religious"
+    | "traditional";
   validityInContext: number; // 0-100
   alternativePerspectives: string[];
 }
@@ -362,7 +514,7 @@ export interface CulturalAssumption {
 export interface CrossCulturalConsideration {
   consideration: string;
   culturalClash: boolean;
-  severity: 'high' | 'medium' | 'low';
+  severity: "high" | "medium" | "low";
   recommendedApproach: string;
 }
 
@@ -393,17 +545,27 @@ export interface ResponseGenerationResult {
 
 export interface GeneratedResponse {
   text: string;
-  language: 'ar' | 'ar-IQ' | 'en' | 'mixed';
+  language: "ar" | "ar-IQ" | "en" | "mixed";
   dialect: IraqiDialectType;
-  formalityLevel: 'formal' | 'informal' | 'traditional' | 'modern';
+  formalityLevel: "formal" | "informal" | "traditional" | "modern";
   culturalAppropriateness: number; // 0-100
   islamicCompliance: number; // 0-100
-  responseType: 'informational' | 'supportive' | 'instructional' | 'social' | 'professional';
+  responseType:
+    | "informational"
+    | "supportive"
+    | "instructional"
+    | "social"
+    | "professional";
 }
 
 export interface AlternativeResponse {
   text: string;
-  variant: 'more-formal' | 'less-formal' | 'dialect-adapted' | 'culturally-enhanced' | 'simplified';
+  variant:
+    | "more-formal"
+    | "less-formal"
+    | "dialect-adapted"
+    | "culturally-enhanced"
+    | "simplified";
   appropriatenessScore: number; // 0-100
   usageContext: string;
 }
@@ -419,8 +581,12 @@ export interface ResponseCulturalValidation {
 
 export interface ValidationIssue {
   issue: string;
-  severity: 'critical' | 'major' | 'moderate' | 'minor';
-  category: 'islamic-compliance' | 'cultural-sensitivity' | 'professional-appropriateness' | 'language-accuracy';
+  severity: "critical" | "major" | "moderate" | "minor";
+  category:
+    | "islamic-compliance"
+    | "cultural-sensitivity"
+    | "professional-appropriateness"
+    | "language-accuracy";
   suggestion: string;
 }
 
@@ -434,9 +600,14 @@ export interface ResponseQualityMetrics {
 
 // Processing Warnings and Errors
 export interface ProcessingWarning {
-  warningType: 'low-confidence' | 'cultural-ambiguity' | 'dialect-uncertainty' | 'context-insufficient' | 'semantic-complexity';
+  warningType:
+    | "low-confidence"
+    | "cultural-ambiguity"
+    | "dialect-uncertainty"
+    | "context-insufficient"
+    | "semantic-complexity";
   message: string;
-  severity: 'info' | 'warning' | 'error';
+  severity: "info" | "warning" | "error";
   suggestion: string;
   affectedComponents: string[];
 }
@@ -445,12 +616,12 @@ export interface ProcessingWarning {
 export interface ArabicNLPConfig {
   dialectDetectionThreshold: number; // 0-100, default 85
   culturalContextThreshold: number; // 0-100, default 70
-  semanticAnalysisDepth: 'basic' | 'standard' | 'comprehensive'; // default 'standard'
+  semanticAnalysisDepth: "basic" | "standard" | "comprehensive"; // default 'standard'
   responseGenerationEnabled: boolean; // default true
   cachingEnabled: boolean; // default true
-  performanceMode: 'speed' | 'balanced' | 'accuracy'; // default 'balanced'
+  performanceMode: "speed" | "balanced" | "accuracy"; // default 'balanced'
   culturalValidationEnabled: boolean; // default true
-  logLevel: 'debug' | 'info' | 'warn' | 'error'; // default 'info'
+  logLevel: "debug" | "info" | "warn" | "error"; // default 'info'
 }
 
 export interface ArabicNLPMetrics {

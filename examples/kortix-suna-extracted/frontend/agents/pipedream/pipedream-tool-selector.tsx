@@ -1,13 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2, Zap, CheckCircle2, RefreshCw, AlertCircle } from 'lucide-react';
-import { type PipedreamTool, type PipedreamAppWithTools, pipedreamApi } from '@/hooks/react-query/pipedream/utils';
-import { toast } from 'sonner';
-import type { PipedreamProfile } from '@/components/agents/pipedream/pipedream-types';
-import { ToolsLoader } from '../mcp/tools-loader';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Loader2,
+  Zap,
+  CheckCircle2,
+  RefreshCw,
+  AlertCircle,
+} from "lucide-react";
+import {
+  type PipedreamTool,
+  type PipedreamAppWithTools,
+  pipedreamApi,
+} from "@/hooks/react-query/pipedream/utils";
+import { toast } from "sonner";
+import type { PipedreamProfile } from "@/components/agents/pipedream/pipedream-types";
+import { ToolsLoader } from "../mcp/tools-loader";
 
 interface PipedreamToolSelectorProps {
   appSlug: string;
@@ -20,9 +36,11 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
   appSlug,
   profile,
   onToolsSelected,
-  initialSelectedTools = []
+  initialSelectedTools = [],
 }) => {
-  const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set(initialSelectedTools));
+  const [selectedTools, setSelectedTools] = useState<Set<string>>(
+    new Set(initialSelectedTools),
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [tools, setTools] = useState<PipedreamTool[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +48,7 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
 
   const fetchTools = async () => {
     if (!profile) {
-      setError('No profile selected');
+      setError("No profile selected");
       setIsLoading(false);
       return;
     }
@@ -38,28 +56,30 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Discover MCP servers for this profile's external_user_id
-      const servers = await pipedreamApi.discoverMCPServers(profile.external_user_id, appSlug);
-      
+      const servers = await pipedreamApi.discoverMCPServers(
+        profile.external_user_id,
+        appSlug,
+      );
+
       // Find the server for this app
-      const server = servers.find(s => s.app_slug === appSlug);
-      
+      const server = servers.find((s) => s.app_slug === appSlug);
+
       if (!server) {
-        setError('App not found in connected servers');
+        setError("App not found in connected servers");
         return;
       }
 
-      if (server.status !== 'connected') {
-        setError('App is not properly connected');
+      if (server.status !== "connected") {
+        setError("App is not properly connected");
         return;
       }
 
       setTools(server.available_tools || []);
-      
     } catch (err: any) {
-      console.error('Error fetching tools:', err);
-      setError(err.message || 'Failed to load tools');
+      console.error("Error fetching tools:", err);
+      setError(err.message || "Failed to load tools");
     } finally {
       setIsLoading(false);
     }
@@ -83,14 +103,14 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
     if (selectedTools.size === tools.length) {
       setSelectedTools(new Set());
     } else {
-      setSelectedTools(new Set(tools.map(tool => tool.name)));
+      setSelectedTools(new Set(tools.map((tool) => tool.name)));
     }
   };
 
   const handleConfirm = () => {
     const selectedArray = Array.from(selectedTools);
     if (selectedArray.length === 0) {
-      toast.error('Please select at least one tool');
+      toast.error("Please select at least one tool");
       return;
     }
     onToolsSelected(selectedArray);
@@ -107,16 +127,16 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
   };
 
   if (isLoading || isRetrying) {
-    return (
-      <ToolsLoader toolCount={5} />
-    );
+    return <ToolsLoader toolCount={5} />;
   }
 
   if (error) {
     return (
       <div className="text-center py-12">
         <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-        <div className="text-red-500 mb-2 font-medium">Failed to load tools</div>
+        <div className="text-red-500 mb-2 font-medium">
+          Failed to load tools
+        </div>
         <p className="text-sm text-muted-foreground mb-4">{error}</p>
         <div className="flex gap-2 justify-center">
           <Button variant="outline" onClick={handleCancel}>
@@ -194,12 +214,10 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
               <RefreshCw className="h-3 w-3" />
             )}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSelectAll}
-          >
-            {selectedTools.size === tools.length ? 'Deselect All' : 'Select All'}
+          <Button variant="outline" size="sm" onClick={handleSelectAll}>
+            {selectedTools.size === tools.length
+              ? "Deselect All"
+              : "Select All"}
           </Button>
         </div>
       </div>
@@ -208,12 +226,14 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
       <div className="max-h-64 overflow-y-auto space-y-2">
         {tools.map((tool) => {
           const isSelected = selectedTools.has(tool.name);
-          
+
           return (
-            <Card 
-              key={tool.name} 
+            <Card
+              key={tool.name}
               className={`p-0 cursor-pointer transition-all duration-200 ${
-                isSelected ? 'border-primary bg-primary/5' : 'hover:border-border'
+                isSelected
+                  ? "border-primary bg-primary/5"
+                  : "hover:border-border"
               }`}
               onClick={() => handleToolToggle(tool.name)}
             >
@@ -253,10 +273,10 @@ export const PipedreamToolSelector: React.FC<PipedreamToolSelectorProps> = ({
           </Button>
           <Button onClick={handleConfirm} disabled={selectedTools.size === 0}>
             <Zap className="h-4 w-4" />
-            Add {selectedTools.size} Tool{selectedTools.size !== 1 ? 's' : ''}
+            Add {selectedTools.size} Tool{selectedTools.size !== 1 ? "s" : ""}
           </Button>
         </div>
       </div>
     </div>
   );
-}; 
+};

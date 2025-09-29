@@ -1,9 +1,9 @@
 /**
  * Islamic Compliance Validator - Advanced Cultural Intelligence
- * 
+ *
  * Comprehensive Islamic compliance validation system for Iraqi workflow automation.
  * Validates workflows, nodes, and data against Islamic principles and Sharia law.
- * 
+ *
  * Features:
  * - Prayer time awareness and scheduling validation
  * - Riba (interest) detection and prevention
@@ -11,13 +11,13 @@
  * - Ministry-specific Islamic compliance rules
  * - Cultural sensitivity analysis
  * - Professional domain Islamic ethics
- * 
+ *
  * @author Iraqi AI Islamic Compliance Team
  * @version 2.0.0
  * @license Islamic Compliance Certified License
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
 // Islamic compliance interfaces
 export interface IIslamicComplianceConfig {
@@ -26,10 +26,25 @@ export interface IIslamicComplianceConfig {
   prayerTimeAwareness: boolean;
   ribaDetection: boolean;
   halalValidation: boolean;
-  culturalSensitivity: 'high' | 'medium' | 'low';
-  complianceLevel: 'strict' | 'moderate' | 'lenient';
-  professionalDomain?: 'legal' | 'medical' | 'educational' | 'governmental' | 'financial' | 'commercial';
-  ministry?: 'health' | 'education' | 'interior' | 'justice' | 'finance' | 'transport' | 'agriculture' | 'labor' | 'general';
+  culturalSensitivity: "high" | "medium" | "low";
+  complianceLevel: "strict" | "moderate" | "lenient";
+  professionalDomain?:
+    | "legal"
+    | "medical"
+    | "educational"
+    | "governmental"
+    | "financial"
+    | "commercial";
+  ministry?:
+    | "health"
+    | "education"
+    | "interior"
+    | "justice"
+    | "finance"
+    | "transport"
+    | "agriculture"
+    | "labor"
+    | "general";
 }
 
 export interface IIslamicComplianceResult {
@@ -42,7 +57,7 @@ export interface IIslamicComplianceResult {
   ribaDetected: boolean;
   halalCompliant: boolean;
   validatedAt: Date;
-  complianceLevel: 'strict' | 'moderate' | 'lenient';
+  complianceLevel: "strict" | "moderate" | "lenient";
   details: {
     financialCompliance: number;
     ethicalCompliance: number;
@@ -73,9 +88,14 @@ export interface IPrayerTimeSchedule {
 
 export interface IRibaDetectionResult {
   detected: boolean;
-  severity: 'high' | 'medium' | 'low';
+  severity: "high" | "medium" | "low";
   violations: Array<{
-    type: 'interest_calculation' | 'usury_transaction' | 'compound_interest' | 'speculation' | 'gambling';
+    type:
+      | "interest_calculation"
+      | "usury_transaction"
+      | "compound_interest"
+      | "speculation"
+      | "gambling";
     description: string;
     location: string;
     suggestion: string;
@@ -86,9 +106,15 @@ export interface IRibaDetectionResult {
 export interface IHalalValidationResult {
   isHalal: boolean;
   concerns: Array<{
-    type: 'product' | 'service' | 'process' | 'ingredient' | 'partner' | 'transaction';
+    type:
+      | "product"
+      | "service"
+      | "process"
+      | "ingredient"
+      | "partner"
+      | "transaction";
     description: string;
-    severity: 'critical' | 'moderate' | 'minor';
+    severity: "critical" | "moderate" | "minor";
     islamicRuling: string;
     suggestion: string;
   }>;
@@ -99,7 +125,13 @@ export interface IHalalValidationResult {
 export interface IIslamicEthicsValidation {
   ethicalCompliance: boolean;
   violations: Array<{
-    principle: 'justice' | 'honesty' | 'trustworthiness' | 'fairness' | 'compassion' | 'responsibility';
+    principle:
+      | "justice"
+      | "honesty"
+      | "trustworthiness"
+      | "fairness"
+      | "compassion"
+      | "responsibility";
     description: string;
     islamicBasis: string;
     correction: string;
@@ -108,7 +140,7 @@ export interface IIslamicEthicsValidation {
     beneficial: boolean;
     harmReduction: boolean;
     communityWelfare: boolean;
-    environmentalImpact: 'positive' | 'neutral' | 'negative';
+    environmentalImpact: "positive" | "neutral" | "negative";
   };
 }
 
@@ -134,7 +166,7 @@ export interface IMinistryIslamicRules {
 
 /**
  * Islamic Compliance Validator
- * 
+ *
  * Comprehensive validation system ensuring all workflow automation
  * complies with Islamic principles and Sharia law.
  */
@@ -155,25 +187,24 @@ export class IslamicComplianceValidator extends EventEmitter {
    * Validate workflow for Islamic compliance
    */
   async validateWorkflow(
-    workflow: any, 
+    workflow: any,
     context: {
       ministry?: string;
       professionalDomain?: string;
       strictMode?: boolean;
       prayerTimeAware?: boolean;
       userLocation?: string;
-    }
+    },
   ): Promise<IIslamicComplianceResult> {
-    
     const validationStartTime = Date.now();
-    const workflowId = workflow.id || 'anonymous';
-    
+    const workflowId = workflow.id || "anonymous";
+
     try {
-      this.emit('validationStarted', {
+      this.emit("validationStarted", {
         workflowId,
         ministry: context.ministry,
         strictMode: context.strictMode,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       // Check cache first
@@ -192,15 +223,17 @@ export class IslamicComplianceValidator extends EventEmitter {
         ribaDetected: false,
         halalCompliant: true,
         validatedAt: new Date(),
-        complianceLevel: context.strictMode ? 'strict' : this.config.complianceLevel,
+        complianceLevel: context.strictMode
+          ? "strict"
+          : this.config.complianceLevel,
         details: {
           financialCompliance: 100,
           ethicalCompliance: 100,
           ritualCompliance: 100,
           socialCompliance: 100,
           professionalCompliance: 100,
-          culturalCompliance: 100
-        }
+          culturalCompliance: 100,
+        },
       };
 
       // 1. Validate workflow scheduling against prayer times
@@ -223,12 +256,20 @@ export class IslamicComplianceValidator extends EventEmitter {
 
       // 5. Validate ministry-specific Islamic requirements
       if (context.ministry && this.config.ministryCompliance) {
-        await this.validateMinistrySpecificCompliance(workflow, context.ministry, result);
+        await this.validateMinistrySpecificCompliance(
+          workflow,
+          context.ministry,
+          result,
+        );
       }
 
       // 6. Validate professional domain Islamic ethics
       if (context.professionalDomain) {
-        await this.validateProfessionalDomainEthics(workflow, context.professionalDomain, result);
+        await this.validateProfessionalDomainEthics(
+          workflow,
+          context.professionalDomain,
+          result,
+        );
       }
 
       // 7. Calculate overall compliance score
@@ -241,22 +282,21 @@ export class IslamicComplianceValidator extends EventEmitter {
       this.validationCache.set(cacheKey, result);
 
       const validationTime = Date.now() - validationStartTime;
-      
-      this.emit('validationCompleted', {
+
+      this.emit("validationCompleted", {
         workflowId,
         isCompliant: result.isCompliant,
         score: result.score,
         validationTime,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
 
       return result;
-
     } catch (error) {
-      this.emit('validationError', {
+      this.emit("validationError", {
         workflowId,
         error: error.message,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
       throw error;
     }
@@ -272,9 +312,8 @@ export class IslamicComplianceValidator extends EventEmitter {
       professionalDomain?: string;
       inputData?: any;
       outputData?: any;
-    }
+    },
   ): Promise<IIslamicComplianceResult> {
-    
     const result: IIslamicComplianceResult = {
       isCompliant: true,
       score: 100,
@@ -292,8 +331,8 @@ export class IslamicComplianceValidator extends EventEmitter {
         ritualCompliance: 100,
         socialCompliance: 100,
         professionalCompliance: 100,
-        culturalCompliance: 100
-      }
+        culturalCompliance: 100,
+      },
     };
 
     // Validate node type for Islamic appropriateness
@@ -304,11 +343,11 @@ export class IslamicComplianceValidator extends EventEmitter {
 
     // Validate input/output data
     if (context.inputData) {
-      await this.validateNodeData(context.inputData, 'input', result);
+      await this.validateNodeData(context.inputData, "input", result);
     }
-    
+
     if (context.outputData) {
-      await this.validateNodeData(context.outputData, 'output', result);
+      await this.validateNodeData(context.outputData, "output", result);
     }
 
     return result;
@@ -317,7 +356,10 @@ export class IslamicComplianceValidator extends EventEmitter {
   /**
    * Validate prayer time compliance
    */
-  private async validatePrayerTimeCompliance(workflow: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validatePrayerTimeCompliance(
+    workflow: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     if (!this.prayerTimeSchedule) {
       await this.updatePrayerTimes();
     }
@@ -326,23 +368,37 @@ export class IslamicComplianceValidator extends EventEmitter {
     if (workflow.settings?.schedule) {
       const schedule = workflow.settings.schedule;
       const conflicts = this.detectPrayerTimeConflicts(schedule);
-      
+
       if (conflicts.length > 0) {
         result.prayerTimeConflicts = conflicts;
-        result.violations.push('Workflow scheduled during prayer times');
-        result.details.ritualCompliance = Math.max(0, result.details.ritualCompliance - 20);
-        
+        result.violations.push("Workflow scheduled during prayer times");
+        result.details.ritualCompliance = Math.max(
+          0,
+          result.details.ritualCompliance - 20,
+        );
+
         // Provide suggestions
-        result.recommendations.push('Adjust workflow schedule to avoid prayer times');
-        result.recommendations.push('Implement prayer time awareness in scheduling');
+        result.recommendations.push(
+          "Adjust workflow schedule to avoid prayer times",
+        );
+        result.recommendations.push(
+          "Implement prayer time awareness in scheduling",
+        );
       }
     }
 
     // Check for Friday prayer (Jumah) considerations
     if (this.isJumahConflict(workflow)) {
-      result.prayerTimeConflicts.push('Friday prayer (Jumah) conflict detected');
-      result.violations.push('Workflow may conflict with Friday prayer obligations');
-      result.details.ritualCompliance = Math.max(0, result.details.ritualCompliance - 15);
+      result.prayerTimeConflicts.push(
+        "Friday prayer (Jumah) conflict detected",
+      );
+      result.violations.push(
+        "Workflow may conflict with Friday prayer obligations",
+      );
+      result.details.ritualCompliance = Math.max(
+        0,
+        result.details.ritualCompliance - 15,
+      );
     }
 
     // Validate Ramadan considerations
@@ -354,24 +410,32 @@ export class IslamicComplianceValidator extends EventEmitter {
   /**
    * Validate Riba (interest) compliance
    */
-  private async validateRibaCompliance(workflow: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateRibaCompliance(
+    workflow: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     const ribaDetection = await this.detectRiba(workflow);
-    
+
     if (ribaDetection.detected) {
       result.ribaDetected = true;
-      result.violations.push('Riba (interest-based transactions) detected');
-      result.details.financialCompliance = Math.max(0, result.details.financialCompliance - 50);
-      
+      result.violations.push("Riba (interest-based transactions) detected");
+      result.details.financialCompliance = Math.max(
+        0,
+        result.details.financialCompliance - 50,
+      );
+
       // Add specific violations
-      ribaDetection.violations.forEach(violation => {
-        result.violations.push(`Riba violation: ${violation.description} at ${violation.location}`);
+      ribaDetection.violations.forEach((violation) => {
+        result.violations.push(
+          `Riba violation: ${violation.description} at ${violation.location}`,
+        );
         result.recommendations.push(violation.suggestion);
       });
 
       // Suggest Islamic alternatives
       if (ribaDetection.alternativeApproaches.length > 0) {
-        result.recommendations.push('Consider Islamic financial alternatives:');
-        ribaDetection.alternativeApproaches.forEach(alternative => {
+        result.recommendations.push("Consider Islamic financial alternatives:");
+        ribaDetection.alternativeApproaches.forEach((alternative) => {
           result.recommendations.push(`- ${alternative}`);
         });
       }
@@ -381,32 +445,45 @@ export class IslamicComplianceValidator extends EventEmitter {
   /**
    * Validate Halal compliance
    */
-  private async validateHalalCompliance(workflow: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateHalalCompliance(
+    workflow: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     const halalValidation = await this.validateHalal(workflow);
-    
+
     if (!halalValidation.isHalal) {
       result.halalCompliant = false;
-      result.violations.push('Haram (forbidden) elements detected in workflow');
-      result.details.ethicalCompliance = Math.max(0, result.details.ethicalCompliance - 30);
-      
+      result.violations.push("Haram (forbidden) elements detected in workflow");
+      result.details.ethicalCompliance = Math.max(
+        0,
+        result.details.ethicalCompliance - 30,
+      );
+
       // Add specific concerns
-      halalValidation.concerns.forEach(concern => {
-        const severity = concern.severity === 'critical' ? 'CRITICAL' : concern.severity.toUpperCase();
-        result.violations.push(`${severity}: ${concern.description} - ${concern.islamicRuling}`);
+      halalValidation.concerns.forEach((concern) => {
+        const severity =
+          concern.severity === "critical"
+            ? "CRITICAL"
+            : concern.severity.toUpperCase();
+        result.violations.push(
+          `${severity}: ${concern.description} - ${concern.islamicRuling}`,
+        );
         result.recommendations.push(concern.suggestion);
       });
 
       // Suggest alternatives
       if (halalValidation.alternativeOptions.length > 0) {
-        result.recommendations.push('Consider these Halal alternatives:');
-        halalValidation.alternativeOptions.forEach(option => {
+        result.recommendations.push("Consider these Halal alternatives:");
+        halalValidation.alternativeOptions.forEach((option) => {
           result.recommendations.push(`- ${option}`);
         });
       }
 
       // Check if certification is required
       if (halalValidation.certificationRequired) {
-        result.recommendations.push('Halal certification may be required for this workflow');
+        result.recommendations.push(
+          "Halal certification may be required for this workflow",
+        );
       }
     }
   }
@@ -414,16 +491,24 @@ export class IslamicComplianceValidator extends EventEmitter {
   /**
    * Validate Islamic ethics
    */
-  private async validateIslamicEthics(workflow: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateIslamicEthics(
+    workflow: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     const ethicsValidation = await this.validateEthics(workflow);
-    
+
     if (!ethicsValidation.ethicalCompliance) {
-      result.violations.push('Islamic ethical principles violated');
-      result.details.ethicalCompliance = Math.max(0, result.details.ethicalCompliance - 25);
-      
+      result.violations.push("Islamic ethical principles violated");
+      result.details.ethicalCompliance = Math.max(
+        0,
+        result.details.ethicalCompliance - 25,
+      );
+
       // Add specific violations
-      ethicsValidation.violations.forEach(violation => {
-        result.violations.push(`Ethics violation: ${violation.description} (${violation.principle})`);
+      ethicsValidation.violations.forEach((violation) => {
+        result.violations.push(
+          `Ethics violation: ${violation.description} (${violation.principle})`,
+        );
         result.violations.push(`Islamic basis: ${violation.islamicBasis}`);
         result.recommendations.push(violation.correction);
       });
@@ -432,19 +517,26 @@ export class IslamicComplianceValidator extends EventEmitter {
     // Validate social impact
     const socialImpact = ethicsValidation.socialImpact;
     if (!socialImpact.beneficial) {
-      result.warnings.push('Workflow may not provide sufficient social benefit');
-      result.recommendations.push('Consider enhancing social welfare aspects');
+      result.warnings.push(
+        "Workflow may not provide sufficient social benefit",
+      );
+      result.recommendations.push("Consider enhancing social welfare aspects");
     }
 
     if (!socialImpact.harmReduction) {
-      result.warnings.push('Workflow does not actively reduce harm');
-      result.recommendations.push('Implement harm reduction measures');
+      result.warnings.push("Workflow does not actively reduce harm");
+      result.recommendations.push("Implement harm reduction measures");
     }
 
-    if (socialImpact.environmentalImpact === 'negative') {
-      result.violations.push('Negative environmental impact detected');
-      result.recommendations.push('Implement environmental protection measures');
-      result.details.socialCompliance = Math.max(0, result.details.socialCompliance - 20);
+    if (socialImpact.environmentalImpact === "negative") {
+      result.violations.push("Negative environmental impact detected");
+      result.recommendations.push(
+        "Implement environmental protection measures",
+      );
+      result.details.socialCompliance = Math.max(
+        0,
+        result.details.socialCompliance - 20,
+      );
     }
   }
 
@@ -452,14 +544,15 @@ export class IslamicComplianceValidator extends EventEmitter {
    * Validate ministry-specific Islamic compliance
    */
   private async validateMinistrySpecificCompliance(
-    workflow: any, 
-    ministry: string, 
-    result: IIslamicComplianceResult
+    workflow: any,
+    ministry: string,
+    result: IIslamicComplianceResult,
   ): Promise<void> {
-    
     const ministryRules = this.ministryRules.get(ministry);
     if (!ministryRules) {
-      result.warnings.push(`No specific Islamic rules defined for ${ministry} ministry`);
+      result.warnings.push(
+        `No specific Islamic rules defined for ${ministry} ministry`,
+      );
       return;
     }
 
@@ -480,7 +573,9 @@ export class IslamicComplianceValidator extends EventEmitter {
     // Validate professional ethics
     for (const ethics of ministryRules.professionalEthics) {
       if (!this.validateProfessionalEthics(workflow, ethics)) {
-        ministryViolations.push(`Professional ethics violation: ${ethics.principle}`);
+        ministryViolations.push(
+          `Professional ethics violation: ${ethics.principle}`,
+        );
         ministryRecommendations.push(`Apply: ${ethics.application}`);
         ministryScore = Math.max(0, ministryScore - 10);
       }
@@ -489,7 +584,9 @@ export class IslamicComplianceValidator extends EventEmitter {
     // Validate cultural requirements
     for (const requirement of ministryRules.culturalRequirements) {
       if (!this.validateCulturalRequirement(workflow, requirement)) {
-        ministryViolations.push(`Cultural requirement not met: ${requirement.requirement}`);
+        ministryViolations.push(
+          `Cultural requirement not met: ${requirement.requirement}`,
+        );
         ministryRecommendations.push(requirement.implementation);
         ministryScore = Math.max(0, ministryScore - 5);
       }
@@ -500,13 +597,16 @@ export class IslamicComplianceValidator extends EventEmitter {
       ministry,
       score: ministryScore,
       specificViolations: ministryViolations,
-      recommendations: ministryRecommendations
+      recommendations: ministryRecommendations,
     };
 
     // Update overall scores
     result.violations.push(...ministryViolations);
     result.recommendations.push(...ministryRecommendations);
-    result.details.professionalCompliance = Math.min(result.details.professionalCompliance, ministryScore);
+    result.details.professionalCompliance = Math.min(
+      result.details.professionalCompliance,
+      ministryScore,
+    );
   }
 
   /**
@@ -514,85 +614,93 @@ export class IslamicComplianceValidator extends EventEmitter {
    */
   private initializeMinistryRules(): void {
     // Health Ministry Islamic Rules
-    this.ministryRules.set('health', {
-      ministry: 'health',
+    this.ministryRules.set("health", {
+      ministry: "health",
       specificRules: [
         {
-          rule: 'Patient privacy must be maintained according to Islamic principles',
-          islamicBasis: 'Protection of individual privacy (Quran 49:12)',
-          implementation: 'Implement strict access controls and consent mechanisms',
-          validation: (workflow) => this.hasPrivacyProtection(workflow)
+          rule: "Patient privacy must be maintained according to Islamic principles",
+          islamicBasis: "Protection of individual privacy (Quran 49:12)",
+          implementation:
+            "Implement strict access controls and consent mechanisms",
+          validation: (workflow) => this.hasPrivacyProtection(workflow),
         },
         {
-          rule: 'Medical procedures must not conflict with Islamic ethics',
-          islamicBasis: 'Preservation of life and health (Maqasid al-Shariah)',
-          implementation: 'Review all medical procedures for Islamic compliance',
-          validation: (workflow) => this.isMedicallyEthical(workflow)
+          rule: "Medical procedures must not conflict with Islamic ethics",
+          islamicBasis: "Preservation of life and health (Maqasid al-Shariah)",
+          implementation:
+            "Review all medical procedures for Islamic compliance",
+          validation: (workflow) => this.isMedicallyEthical(workflow),
         },
         {
-          rule: 'Gender-appropriate care must be ensured',
-          islamicBasis: 'Islamic guidelines on gender interaction',
-          implementation: 'Implement gender-aware healthcare workflows',
-          validation: (workflow) => this.hasGenderAwareness(workflow)
-        }
+          rule: "Gender-appropriate care must be ensured",
+          islamicBasis: "Islamic guidelines on gender interaction",
+          implementation: "Implement gender-aware healthcare workflows",
+          validation: (workflow) => this.hasGenderAwareness(workflow),
+        },
       ],
       professionalEthics: [
         {
-          principle: 'Compassion and mercy in healthcare',
-          description: 'All healthcare services must be delivered with Islamic compassion',
-          application: 'Train staff in Islamic medical ethics and patient care'
+          principle: "Compassion and mercy in healthcare",
+          description:
+            "All healthcare services must be delivered with Islamic compassion",
+          application: "Train staff in Islamic medical ethics and patient care",
         },
         {
-          principle: 'Trustworthiness in medical practice',
-          description: 'Healthcare providers must maintain highest levels of trust',
-          application: 'Implement transparent and accountable medical practices'
-        }
+          principle: "Trustworthiness in medical practice",
+          description:
+            "Healthcare providers must maintain highest levels of trust",
+          application:
+            "Implement transparent and accountable medical practices",
+        },
       ],
       culturalRequirements: [
         {
-          requirement: 'Prayer time accommodation for patients and staff',
-          context: 'Hospital and clinic operations',
-          implementation: 'Schedule non-urgent procedures around prayer times'
+          requirement: "Prayer time accommodation for patients and staff",
+          context: "Hospital and clinic operations",
+          implementation: "Schedule non-urgent procedures around prayer times",
         },
         {
-          requirement: 'Halal food options in healthcare facilities',
-          context: 'Patient nutrition and dietary requirements',
-          implementation: 'Ensure all food services meet Halal standards'
-        }
-      ]
+          requirement: "Halal food options in healthcare facilities",
+          context: "Patient nutrition and dietary requirements",
+          implementation: "Ensure all food services meet Halal standards",
+        },
+      ],
     });
 
     // Education Ministry Islamic Rules
-    this.ministryRules.set('education', {
-      ministry: 'education',
+    this.ministryRules.set("education", {
+      ministry: "education",
       specificRules: [
         {
-          rule: 'Educational content must align with Islamic values',
-          islamicBasis: 'Seeking knowledge is obligatory (Hadith)',
-          implementation: 'Review all curriculum for Islamic compliance',
-          validation: (workflow) => this.hasIslamicEducationalValues(workflow)
+          rule: "Educational content must align with Islamic values",
+          islamicBasis: "Seeking knowledge is obligatory (Hadith)",
+          implementation: "Review all curriculum for Islamic compliance",
+          validation: (workflow) => this.hasIslamicEducationalValues(workflow),
         },
         {
-          rule: 'Gender-appropriate educational environments',
-          islamicBasis: 'Islamic guidelines on education and interaction',
-          implementation: 'Ensure appropriate educational settings and materials',
-          validation: (workflow) => this.hasAppropriateEducationalEnvironment(workflow)
-        }
+          rule: "Gender-appropriate educational environments",
+          islamicBasis: "Islamic guidelines on education and interaction",
+          implementation:
+            "Ensure appropriate educational settings and materials",
+          validation: (workflow) =>
+            this.hasAppropriateEducationalEnvironment(workflow),
+        },
       ],
       professionalEthics: [
         {
-          principle: 'Knowledge seeking and sharing',
-          description: 'Education must promote beneficial knowledge',
-          application: 'Focus on knowledge that benefits individuals and society'
-        }
+          principle: "Knowledge seeking and sharing",
+          description: "Education must promote beneficial knowledge",
+          application:
+            "Focus on knowledge that benefits individuals and society",
+        },
       ],
       culturalRequirements: [
         {
-          requirement: 'Prayer time integration in school schedules',
-          context: 'Daily school operations and class scheduling',
-          implementation: 'Build prayer times into academic schedules'
-        }
-      ]
+          requirement: "Prayer time integration in school schedules",
+          context: "Daily school operations and class scheduling",
+          implementation: "Build prayer times into academic schedules",
+        },
+      ],
     });
 
     // Additional ministries would be added here...
@@ -614,17 +722,17 @@ export class IslamicComplianceValidator extends EventEmitter {
     // This would integrate with a prayer times API or calculation library
     const today = new Date();
     const hijriDate = this.getHijriDate(today);
-    
+
     this.prayerTimeSchedule = {
-      fajr: '05:30',
-      dhuhr: '12:15',
-      asr: '15:45',
-      maghrib: '18:30',
-      isha: '20:00',
-      jumah: '13:00', // Friday prayer
-      timezone: 'Asia/Baghdad',
-      date: today.toISOString().split('T')[0],
-      hijriDate: hijriDate
+      fajr: "05:30",
+      dhuhr: "12:15",
+      asr: "15:45",
+      maghrib: "18:30",
+      isha: "20:00",
+      jumah: "13:00", // Friday prayer
+      timezone: "Asia/Baghdad",
+      date: today.toISOString().split("T")[0],
+      hijriDate: hijriDate,
     };
   }
 
@@ -633,25 +741,27 @@ export class IslamicComplianceValidator extends EventEmitter {
    */
   private detectPrayerTimeConflicts(schedule: any): string[] {
     const conflicts: string[] = [];
-    
+
     if (!this.prayerTimeSchedule) {
       return conflicts;
     }
 
     const prayerTimes = [
-      { name: 'Fajr', time: this.prayerTimeSchedule.fajr },
-      { name: 'Dhuhr', time: this.prayerTimeSchedule.dhuhr },
-      { name: 'Asr', time: this.prayerTimeSchedule.asr },
-      { name: 'Maghrib', time: this.prayerTimeSchedule.maghrib },
-      { name: 'Isha', time: this.prayerTimeSchedule.isha }
+      { name: "Fajr", time: this.prayerTimeSchedule.fajr },
+      { name: "Dhuhr", time: this.prayerTimeSchedule.dhuhr },
+      { name: "Asr", time: this.prayerTimeSchedule.asr },
+      { name: "Maghrib", time: this.prayerTimeSchedule.maghrib },
+      { name: "Isha", time: this.prayerTimeSchedule.isha },
     ];
 
     // Check schedule against prayer times
     if (schedule.cron || schedule.interval) {
       // Parse schedule and check for conflicts
-      prayerTimes.forEach(prayer => {
+      prayerTimes.forEach((prayer) => {
         if (this.scheduleConflictsWithPrayerTime(schedule, prayer.time)) {
-          conflicts.push(`Potential conflict with ${prayer.name} prayer at ${prayer.time}`);
+          conflicts.push(
+            `Potential conflict with ${prayer.name} prayer at ${prayer.time}`,
+          );
         }
       });
     }
@@ -663,49 +773,55 @@ export class IslamicComplianceValidator extends EventEmitter {
    * Detect Riba in workflow
    */
   private async detectRiba(workflow: any): Promise<IRibaDetectionResult> {
-    const violations: IRibaDetectionResult['violations'] = [];
+    const violations: IRibaDetectionResult["violations"] = [];
     const alternativeApproaches: string[] = [];
 
     // Check for interest calculations
     if (this.hasInterestCalculations(workflow)) {
       violations.push({
-        type: 'interest_calculation',
-        description: 'Interest-based calculations detected',
-        location: 'Financial processing nodes',
-        suggestion: 'Replace with profit-sharing (Mudarabah) or cost-plus (Murabaha) models'
+        type: "interest_calculation",
+        description: "Interest-based calculations detected",
+        location: "Financial processing nodes",
+        suggestion:
+          "Replace with profit-sharing (Mudarabah) or cost-plus (Murabaha) models",
       });
-      alternativeApproaches.push('Mudarabah (profit-sharing partnership)');
-      alternativeApproaches.push('Murabaha (cost-plus financing)');
-      alternativeApproaches.push('Ijara (Islamic leasing)');
+      alternativeApproaches.push("Mudarabah (profit-sharing partnership)");
+      alternativeApproaches.push("Murabaha (cost-plus financing)");
+      alternativeApproaches.push("Ijara (Islamic leasing)");
     }
 
     // Check for usury transactions
     if (this.hasUsuryTransactions(workflow)) {
       violations.push({
-        type: 'usury_transaction',
-        description: 'Usury-based transactions detected',
-        location: 'Payment processing nodes',
-        suggestion: 'Implement Islamic banking compliant transaction methods'
+        type: "usury_transaction",
+        description: "Usury-based transactions detected",
+        location: "Payment processing nodes",
+        suggestion: "Implement Islamic banking compliant transaction methods",
       });
     }
 
     // Check for speculation/gambling
     if (this.hasSpeculation(workflow)) {
       violations.push({
-        type: 'speculation',
-        description: 'Speculative or gambling-like activities detected',
-        location: 'Investment or trading nodes',
-        suggestion: 'Replace with asset-backed Islamic investment products'
+        type: "speculation",
+        description: "Speculative or gambling-like activities detected",
+        location: "Investment or trading nodes",
+        suggestion: "Replace with asset-backed Islamic investment products",
       });
-      alternativeApproaches.push('Sukuk (Islamic bonds)');
-      alternativeApproaches.push('Takaful (Islamic insurance)');
+      alternativeApproaches.push("Sukuk (Islamic bonds)");
+      alternativeApproaches.push("Takaful (Islamic insurance)");
     }
 
     return {
       detected: violations.length > 0,
-      severity: violations.length > 2 ? 'high' : violations.length > 0 ? 'medium' : 'low',
+      severity:
+        violations.length > 2
+          ? "high"
+          : violations.length > 0
+            ? "medium"
+            : "low",
       violations,
-      alternativeApproaches
+      alternativeApproaches,
     };
   }
 
@@ -713,83 +829,85 @@ export class IslamicComplianceValidator extends EventEmitter {
    * Validate Halal compliance
    */
   private async validateHalal(workflow: any): Promise<IHalalValidationResult> {
-    const concerns: IHalalValidationResult['concerns'] = [];
+    const concerns: IHalalValidationResult["concerns"] = [];
     const alternativeOptions: string[] = [];
 
     // Check for haram products/services
     if (this.hasHaramProducts(workflow)) {
       concerns.push({
-        type: 'product',
-        description: 'Haram products or services detected',
-        severity: 'critical',
-        islamicRuling: 'Trading in haram goods is prohibited',
-        suggestion: 'Replace with halal alternatives'
+        type: "product",
+        description: "Haram products or services detected",
+        severity: "critical",
+        islamicRuling: "Trading in haram goods is prohibited",
+        suggestion: "Replace with halal alternatives",
       });
     }
 
     // Check for inappropriate partnerships
     if (this.hasInappropriatePartnerships(workflow)) {
       concerns.push({
-        type: 'partner',
-        description: 'Partnerships with non-compliant entities',
-        severity: 'moderate',
-        islamicRuling: 'Partnerships must be with ethical entities',
-        suggestion: 'Review and update partnership criteria'
+        type: "partner",
+        description: "Partnerships with non-compliant entities",
+        severity: "moderate",
+        islamicRuling: "Partnerships must be with ethical entities",
+        suggestion: "Review and update partnership criteria",
       });
     }
 
     // Check for haram processes
     if (this.hasHaramProcesses(workflow)) {
       concerns.push({
-        type: 'process',
-        description: 'Processes that violate Islamic principles',
-        severity: 'moderate',
-        islamicRuling: 'All processes must be ethically sound',
-        suggestion: 'Redesign processes to align with Islamic ethics'
+        type: "process",
+        description: "Processes that violate Islamic principles",
+        severity: "moderate",
+        islamicRuling: "All processes must be ethically sound",
+        suggestion: "Redesign processes to align with Islamic ethics",
       });
     }
 
     return {
-      isHalal: concerns.filter(c => c.severity === 'critical').length === 0,
+      isHalal: concerns.filter((c) => c.severity === "critical").length === 0,
       concerns,
       certificationRequired: this.requiresHalalCertification(workflow),
-      alternativeOptions
+      alternativeOptions,
     };
   }
 
   /**
    * Validate Islamic ethics
    */
-  private async validateEthics(workflow: any): Promise<IIslamicEthicsValidation> {
-    const violations: IIslamicEthicsValidation['violations'] = [];
+  private async validateEthics(
+    workflow: any,
+  ): Promise<IIslamicEthicsValidation> {
+    const violations: IIslamicEthicsValidation["violations"] = [];
 
     // Check for justice
     if (!this.demonstratesJustice(workflow)) {
       violations.push({
-        principle: 'justice',
-        description: 'Workflow does not ensure fair treatment',
-        islamicBasis: 'Justice is fundamental in Islam (Quran 4:135)',
-        correction: 'Implement fair and equitable processes'
+        principle: "justice",
+        description: "Workflow does not ensure fair treatment",
+        islamicBasis: "Justice is fundamental in Islam (Quran 4:135)",
+        correction: "Implement fair and equitable processes",
       });
     }
 
     // Check for honesty
     if (!this.demonstratesHonesty(workflow)) {
       violations.push({
-        principle: 'honesty',
-        description: 'Potential for dishonest practices',
-        islamicBasis: 'Honesty is required in all dealings (Hadith)',
-        correction: 'Ensure transparency and truthfulness'
+        principle: "honesty",
+        description: "Potential for dishonest practices",
+        islamicBasis: "Honesty is required in all dealings (Hadith)",
+        correction: "Ensure transparency and truthfulness",
       });
     }
 
     // Check for trustworthiness
     if (!this.demonstratesTrustworthiness(workflow)) {
       violations.push({
-        principle: 'trustworthiness',
-        description: 'Trust may be compromised',
-        islamicBasis: 'Trustworthiness is essential (Quran 8:27)',
-        correction: 'Implement accountability measures'
+        principle: "trustworthiness",
+        description: "Trust may be compromised",
+        islamicBasis: "Trustworthiness is essential (Quran 8:27)",
+        correction: "Implement accountability measures",
       });
     }
 
@@ -800,25 +918,27 @@ export class IslamicComplianceValidator extends EventEmitter {
         beneficial: this.isSociallyBeneficial(workflow),
         harmReduction: this.reducesHarm(workflow),
         communityWelfare: this.promotesWelfare(workflow),
-        environmentalImpact: this.getEnvironmentalImpact(workflow)
-      }
+        environmentalImpact: this.getEnvironmentalImpact(workflow),
+      },
     };
   }
 
   /**
    * Calculate overall compliance score
    */
-  private calculateOverallComplianceScore(result: IIslamicComplianceResult): void {
+  private calculateOverallComplianceScore(
+    result: IIslamicComplianceResult,
+  ): void {
     const weights = {
       financialCompliance: 0.25,
       ethicalCompliance: 0.25,
-      ritualCompliance: 0.20,
+      ritualCompliance: 0.2,
       socialCompliance: 0.15,
-      professionalCompliance: 0.10,
-      culturalCompliance: 0.05
+      professionalCompliance: 0.1,
+      culturalCompliance: 0.05,
     };
 
-    const weightedScore = 
+    const weightedScore =
       result.details.financialCompliance * weights.financialCompliance +
       result.details.ethicalCompliance * weights.ethicalCompliance +
       result.details.ritualCompliance * weights.ritualCompliance +
@@ -827,36 +947,55 @@ export class IslamicComplianceValidator extends EventEmitter {
       result.details.culturalCompliance * weights.culturalCompliance;
 
     result.score = Math.round(weightedScore);
-    result.isCompliant = result.score >= (this.config.complianceLevel === 'strict' ? 95 : 
-                                         this.config.complianceLevel === 'moderate' ? 80 : 70);
+    result.isCompliant =
+      result.score >=
+      (this.config.complianceLevel === "strict"
+        ? 95
+        : this.config.complianceLevel === "moderate"
+          ? 80
+          : 70);
   }
 
   /**
    * Generate compliance recommendations
    */
-  private generateComplianceRecommendations(result: IIslamicComplianceResult): void {
+  private generateComplianceRecommendations(
+    result: IIslamicComplianceResult,
+  ): void {
     if (result.score < 95) {
-      result.recommendations.push('Consider consulting with Islamic scholars for compliance review');
+      result.recommendations.push(
+        "Consider consulting with Islamic scholars for compliance review",
+      );
     }
 
     if (result.details.financialCompliance < 90) {
-      result.recommendations.push('Review financial processes for Islamic banking compliance');
+      result.recommendations.push(
+        "Review financial processes for Islamic banking compliance",
+      );
     }
 
     if (result.details.ritualCompliance < 90) {
-      result.recommendations.push('Integrate prayer time awareness and Islamic calendar');
+      result.recommendations.push(
+        "Integrate prayer time awareness and Islamic calendar",
+      );
     }
 
     if (result.prayerTimeConflicts.length > 0) {
-      result.recommendations.push('Implement prayer time accommodation in scheduling');
+      result.recommendations.push(
+        "Implement prayer time accommodation in scheduling",
+      );
     }
 
     if (result.ribaDetected) {
-      result.recommendations.push('Replace interest-based transactions with Islamic alternatives');
+      result.recommendations.push(
+        "Replace interest-based transactions with Islamic alternatives",
+      );
     }
 
     if (!result.halalCompliant) {
-      result.recommendations.push('Ensure all products and services meet Halal standards');
+      result.recommendations.push(
+        "Ensure all products and services meet Halal standards",
+      );
     }
   }
 
@@ -867,10 +1006,13 @@ export class IslamicComplianceValidator extends EventEmitter {
 
   private getHijriDate(date: Date): string {
     // This would implement Hijri calendar conversion
-    return '1446-02-15'; // Placeholder
+    return "1446-02-15"; // Placeholder
   }
 
-  private scheduleConflictsWithPrayerTime(schedule: any, prayerTime: string): boolean {
+  private scheduleConflictsWithPrayerTime(
+    schedule: any,
+    prayerTime: string,
+  ): boolean {
     // Implementation would check if schedule conflicts with prayer time
     return false; // Placeholder
   }
@@ -885,7 +1027,10 @@ export class IslamicComplianceValidator extends EventEmitter {
     return false; // Placeholder
   }
 
-  private async validateRamadanCompliance(workflow: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateRamadanCompliance(
+    workflow: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     // Validate Ramadan-specific requirements
   }
 
@@ -948,8 +1093,10 @@ export class IslamicComplianceValidator extends EventEmitter {
     return true; // Placeholder
   }
 
-  private getEnvironmentalImpact(workflow: any): 'positive' | 'neutral' | 'negative' {
-    return 'neutral'; // Placeholder
+  private getEnvironmentalImpact(
+    workflow: any,
+  ): "positive" | "neutral" | "negative" {
+    return "neutral"; // Placeholder
   }
 
   // Ministry-specific validation methods
@@ -977,19 +1124,32 @@ export class IslamicComplianceValidator extends EventEmitter {
     return true; // Placeholder
   }
 
-  private validateCulturalRequirement(workflow: any, requirement: any): boolean {
+  private validateCulturalRequirement(
+    workflow: any,
+    requirement: any,
+  ): boolean {
     return true; // Placeholder
   }
 
-  private async validateNodeType(node: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateNodeType(
+    node: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     // Validate node type for Islamic appropriateness
   }
 
-  private async validateNodeParameters(node: any, result: IIslamicComplianceResult): Promise<void> {
+  private async validateNodeParameters(
+    node: any,
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     // Validate node parameters
   }
 
-  private async validateNodeData(data: any, type: 'input' | 'output', result: IIslamicComplianceResult): Promise<void> {
+  private async validateNodeData(
+    data: any,
+    type: "input" | "output",
+    result: IIslamicComplianceResult,
+  ): Promise<void> {
     // Validate node input/output data
   }
 }

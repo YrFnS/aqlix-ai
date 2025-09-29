@@ -10,9 +10,11 @@
 ## 🎯 Components Successfully Extracted
 
 ### ✅ 1. Agent Management System
+
 **Location**: `backend/agent/`, `frontend/agents/`  
 **Files Extracted**: 47 files  
 **Key Features**:
+
 - Complete agent lifecycle management with versioning (`backend/agent/versioning/`)
 - Agent deployment and scaling controls (`backend/agent/api.py`)
 - Performance monitoring and analytics
@@ -21,15 +23,18 @@
 - Agent templates and installation service (`backend/templates/`)
 
 **Iraqi Integration Points**:
+
 - Professional domain agent templates (legal, medical, educational, government)
 - Arabic language support in agent configuration
 - Islamic compliance validation in agent responses
 - Cultural appropriateness scoring integration
 
 ### ✅ 2. Team Management System (Basejump)
+
 **Location**: `backend/supabase/`, `frontend/basejump/`  
 **Files Extracted**: 15 files  
 **Key Features**:
+
 - Role-based access control for organizations (`frontend/basejump/manage-team-members.tsx`)
 - Team collaboration features and workflows (`frontend/basejump/manage-teams.tsx`)
 - Account management and user permissions (`frontend/basejump/account-selector.tsx`)
@@ -37,15 +42,18 @@
 - Team invitation and management system
 
 **Iraqi Integration Points**:
+
 - Iraqi organizational hierarchy support (partners, associates, support staff)
 - Professional domain team templates (law firms, hospitals, schools)
 - Regional team coordination (Baghdad, Basra, Erbil offices)
 - Role-based permissions for Iraqi professional organizations
 
 ### ✅ 3. Billing & Payment System
+
 **Location**: `backend/services/billing.py`, `frontend/billing/`  
 **Files Extracted**: 8 files  
 **Key Features**:
+
 - Subscription management infrastructure (`frontend/billing/subscription-management-modal.tsx`)
 - Usage tracking and credit management (`frontend/billing/usage-logs.tsx`)
 - Payment processing and billing workflows (`frontend/billing/billing-modal.tsx`)
@@ -53,16 +61,19 @@
 - Payment status tracking and notifications
 
 **Iraqi Integration Points**:
+
 - ZainCash payment gateway integration (1000 IQD minimum)
-- FastPay payment gateway integration (500 IQD minimum)  
+- FastPay payment gateway integration (500 IQD minimum)
 - NassWallet payment gateway integration (1000 IQD minimum)
 - Iraqi tax compliance and invoicing
 - Professional service pricing models for Iraqi market
 
 ### ✅ 4. Workflow Builder & Automation
+
 **Location**: `backend/triggers/`, `frontend/workflows/`  
 **Files Extracted**: 12 files  
 **Key Features**:
+
 - Visual workflow editor (`frontend/workflows/workflow-builder.tsx`)
 - Workflow step management (`frontend/workflows/steps/`)
 - Trigger-based automation system (`backend/triggers/`)
@@ -70,6 +81,7 @@
 - Multi-step process orchestration
 
 **Iraqi Integration Points**:
+
 - Government service workflow templates
 - Professional domain workflow automation (legal case management, medical patient flow)
 - Cultural validation integration points
@@ -77,9 +89,11 @@
 - Islamic business practice compliance in workflows
 
 ### ✅ 5. Enterprise Features
+
 **Location**: `backend/credentials/`, `backend/knowledge_base/`, Various  
 **Files Extracted**: 23 files  
 **Key Features**:
+
 - Organization management and settings
 - Security and compliance controls (`backend/credentials/`)
 - Audit logging and reporting
@@ -88,6 +102,7 @@
 - Credential profile management
 
 **Iraqi Integration Points**:
+
 - Integration APIs for Iraqi government systems
 - Professional licensing verification
 - Islamic business compliance controls
@@ -133,6 +148,7 @@ examples/kortix-suna-extracted/
 ## 🔧 Custom Iraqi Templates Created
 
 ### 1. Payment Gateway Integration (`templates/iraqi-payment-integration.py`)
+
 - **ZainCash Integration**: Complete API wrapper with signature generation
 - **FastPay Integration**: RESTful API integration with Iraqi compliance
 - **NassWallet Integration**: Secure payment processing with encryption
@@ -141,6 +157,7 @@ examples/kortix-suna-extracted/
 - **Security**: HMAC signature validation and secure API communication
 
 ### 2. Organization Templates (`templates/iraqi-organization-templates.tsx`)
+
 - **Law Firm Template**: Complete workflow for legal practices
   - Client intake process with cultural considerations
   - Case management workflow with Arabic documentation
@@ -165,6 +182,7 @@ examples/kortix-suna-extracted/
 ## 📈 Integration Value Assessment
 
 ### Technical Complexity: **High**
+
 - **Backend Integration**: 95+ Python files with FastAPI architecture
 - **Frontend Integration**: 80+ TypeScript React components
 - **Database Schema**: 45 migration files with complex relationships
@@ -172,6 +190,7 @@ examples/kortix-suna-extracted/
 - **Multi-tenant Architecture**: Complete organization isolation and management
 
 ### Business Value: **Very High**
+
 - **Enterprise Team Management**: Complete team collaboration platform
 - **Professional Workflow Automation**: Industry-specific process automation
 - **Iraqi Market Compliance**: Full cultural and business compliance
@@ -179,6 +198,7 @@ examples/kortix-suna-extracted/
 - **Scalability**: Multi-tenant architecture supporting thousands of organizations
 
 ### Development Timeline: **22-32 weeks**
+
 - **Phase 1 (6-8 weeks)**: Core integration and basic functionality
 - **Phase 2 (8-12 weeks)**: Advanced features and professional templates
 - **Phase 3 (8-12 weeks)**: Enterprise deployment and optimization
@@ -186,6 +206,7 @@ examples/kortix-suna-extracted/
 ## 🎯 Key Integration Benefits
 
 ### For Iraqi Professional Organizations
+
 1. **Complete Team Management**: Role-based access, collaboration tools, organizational hierarchy
 2. **Automated Workflows**: Industry-specific process automation with cultural considerations
 3. **Local Payment Integration**: Support for all major Iraqi payment gateways
@@ -193,6 +214,7 @@ examples/kortix-suna-extracted/
 5. **Arabic Language Support**: Full RTL layout with professional Arabic terminology
 
 ### For the Iraqi AI Chat System
+
 1. **Enterprise Scalability**: Multi-tenant architecture supporting large organizations
 2. **Revenue Monetization**: Subscription billing with usage tracking and limits
 3. **Professional Market Entry**: Templates for law firms, hospitals, schools, government
@@ -202,12 +224,14 @@ examples/kortix-suna-extracted/
 ## 🔐 Security & Compliance Features
 
 ### Iraqi Business Compliance
+
 - **Islamic Business Practices**: Content validation for Sharia compliance
 - **Government Regulations**: Adherence to Iraqi ministry requirements
 - **Professional Licensing**: Integration with Iraqi professional boards
 - **Data Protection**: Iraqi-specific privacy and data protection controls
 
 ### Technical Security
+
 - **Multi-Tenant Isolation**: Complete data separation between organizations
 - **Role-Based Access Control**: Granular permissions for all organizational roles
 - **Payment Security**: PCI compliance for all Iraqi payment gateways
@@ -217,6 +241,7 @@ examples/kortix-suna-extracted/
 ## 🚀 Deployment Readiness
 
 ### Infrastructure Requirements
+
 - **Database**: PostgreSQL/Supabase with Iraqi-specific extensions
 - **Cache**: Redis for session management and performance optimization
 - **Payment Gateways**: API credentials for ZainCash, FastPay, NassWallet
@@ -224,6 +249,7 @@ examples/kortix-suna-extracted/
 - **Monitoring**: Enterprise monitoring and analytics dashboard
 
 ### Configuration Requirements
+
 - **Environment Variables**: 25+ configuration variables for Iraqi deployment
 - **Language Support**: Arabic RTL layout with professional terminology
 - **Regional Settings**: Iraq timezone, currency (IQD), and cultural preferences
@@ -233,6 +259,7 @@ examples/kortix-suna-extracted/
 ## 📊 Success Metrics
 
 ### Technical Metrics
+
 - **System Performance**: Sub-200ms API response times
 - **Payment Success Rate**: >98% transaction success rate
 - **System Uptime**: >99.5% availability with monitoring
@@ -240,6 +267,7 @@ examples/kortix-suna-extracted/
 - **Security Compliance**: 100% data isolation and access control
 
 ### Business Metrics
+
 - **Organization Onboarding**: <2 hours complete setup time
 - **User Satisfaction**: >4.5/5 rating from Iraqi professionals
 - **Revenue Growth**: >15% monthly recurring revenue growth
@@ -251,7 +279,7 @@ examples/kortix-suna-extracted/
 **Total Value Delivered**: 22-32 weeks of enterprise-grade development  
 **Files Extracted**: 200+ files across backend, frontend, and templates  
 **Iraqi Integration**: Complete cultural and business compliance  
-**Enterprise Ready**: Multi-tenant architecture with professional workflows  
+**Enterprise Ready**: Multi-tenant architecture with professional workflows
 
 This extraction provides the Iraqi AI Chat System with a complete enterprise platform capable of serving law firms, medical practices, educational institutions, and government entities across Iraq with full Arabic support, local payment integration, and cultural compliance.
 

@@ -1,10 +1,13 @@
-import React from 'react';
-import { MCPConfigurationNew } from './mcp/mcp-configuration-new';
+import React from "react";
+import { MCPConfigurationNew } from "./mcp/mcp-configuration-new";
 
 interface AgentMCPConfigurationProps {
   configuredMCPs: any[];
   customMCPs: any[];
-  onMCPChange: (updates: { configured_mcps: any[]; custom_mcps: any[] }) => void;
+  onMCPChange: (updates: {
+    configured_mcps: any[];
+    custom_mcps: any[];
+  }) => void;
   agentId?: string;
   versionData?: {
     configured_mcps?: any[];
@@ -12,7 +15,7 @@ interface AgentMCPConfigurationProps {
     system_prompt?: string;
     agentpress_tools?: any;
   };
-  saveMode?: 'direct' | 'callback';
+  saveMode?: "direct" | "callback";
   versionId?: string;
 }
 
@@ -22,36 +25,36 @@ export const AgentMCPConfiguration: React.FC<AgentMCPConfigurationProps> = ({
   onMCPChange,
   agentId,
   versionData,
-  saveMode = 'direct',
-  versionId
+  saveMode = "direct",
+  versionId,
 }) => {
   const allMCPs = [
     ...(configuredMCPs || []),
-    ...(customMCPs || []).map(customMcp => ({
+    ...(customMCPs || []).map((customMcp) => ({
       name: customMcp.name,
-      qualifiedName: `custom_${customMcp.type || customMcp.customType}_${customMcp.name.replace(' ', '_').toLowerCase()}`,
+      qualifiedName: `custom_${customMcp.type || customMcp.customType}_${customMcp.name.replace(" ", "_").toLowerCase()}`,
       config: customMcp.config,
       enabledTools: customMcp.enabledTools,
       isCustom: true,
-      customType: customMcp.type || customMcp.customType
-    }))
+      customType: customMcp.type || customMcp.customType,
+    })),
   ];
 
   const handleConfigurationChange = (mcps: any[]) => {
-    const configured = mcps.filter(mcp => !mcp.isCustom);
+    const configured = mcps.filter((mcp) => !mcp.isCustom);
     const custom = mcps
-      .filter(mcp => mcp.isCustom)
-      .map(mcp => ({
+      .filter((mcp) => mcp.isCustom)
+      .map((mcp) => ({
         name: mcp.name,
         type: mcp.customType,
         customType: mcp.customType,
         config: mcp.config,
-        enabledTools: mcp.enabledTools
+        enabledTools: mcp.enabledTools,
       }));
 
     onMCPChange({
       configured_mcps: configured,
-      custom_mcps: custom
+      custom_mcps: custom,
     });
   };
 
@@ -65,4 +68,4 @@ export const AgentMCPConfiguration: React.FC<AgentMCPConfigurationProps> = ({
       versionId={versionId}
     />
   );
-}; 
+};

@@ -5,6 +5,7 @@
 ### 📊 **Research-Based Stack Decisions (July 19, 2025)**
 
 **Key Research Findings:**
+
 - **Next.js 15+**: 90% faster builds with Turbopack, streaming server components for AI chat
 - **PydanticAI + LangGraph**: Superior performance (50× more concurrent agents vs LangChain alone)
 - **SSE over WebSockets**: Better for AI streaming, built-in Next.js 15 support, automatic reconnection
@@ -14,6 +15,7 @@
 ### Technology Stack Decision Matrix (Updated July 2025)
 
 #### Frontend Stack
+
 ```
 Web Application: Next.js 15+ + TypeScript + React 19
 ├── Package Manager: Bun (30x faster installs, native TypeScript)
@@ -28,6 +30,7 @@ Web Application: Next.js 15+ + TypeScript + React 19
 ```
 
 #### Backend Stack
+
 ```
 Primary API: Python FastAPI + Node.js Express (real-time)
 ├── ORM: SQLAlchemy 2.0 (async/await, production-ready)
@@ -42,6 +45,7 @@ Primary API: Python FastAPI + Node.js Express (real-time)
 ```
 
 #### Shared Architecture (Web + Future Mobile)
+
 ```
 Monorepo Structure:
 packages/
@@ -60,14 +64,15 @@ packages/
 ### Database Architecture
 
 #### Dual-ORM Strategy
+
 ```typescript
 // Frontend: Drizzle ORM (TypeScript-native)
-const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  profession: text('profession'), // Iraqi-specific
-  preferences: jsonb('preferences'), // RTL, cultural settings
-  createdAt: timestamp('created_at').defaultNow(),
+const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  profession: text("profession"), // Iraqi-specific
+  preferences: jsonb("preferences"), // RTL, cultural settings
+  createdAt: timestamp("created_at").defaultNow(),
 });
 ```
 
@@ -81,6 +86,7 @@ class User(Base):
 ```
 
 #### Core Tables
+
 ```sql
 -- Users and Authentication
 users (id, email, phone, password_hash, created_at, updated_at)
@@ -115,7 +121,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 ### Phase 1: MVP Foundation (8-10 weeks)
 
 #### Week 1-2: Project Setup & Infrastructure
+
 **PRP: PROJECT-SETUP**
+
 - [ ] Initialize monorepo with Bun workspaces (30x faster than npm)
 - [ ] Set up Next.js 15 + React 19 + TypeScript + Tailwind v4
 - [ ] Configure FastAPI + SQLAlchemy 2.0 backend structure
@@ -127,7 +135,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Set up CI/CD pipeline with Bun build optimization
 
 #### Week 3-4: Authentication & User Management
+
 **PRP: AUTH-SYSTEM**
+
 - [ ] Implement JWT authentication (FastAPI)
 - [ ] Create user registration/login API endpoints
 - [ ] Build Next.js auth pages (login, register, profile)
@@ -138,7 +148,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Add user session management
 
 #### Week 5-6: Core Chat Interface
+
 **PRP: CHAT-INTERFACE**
+
 - [ ] Design chat UI components (messages, input, sidebar)
 - [ ] Implement real-time WebSocket connection
 - [ ] Create conversation management (new, save, load)
@@ -149,7 +161,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Add basic message formatting (markdown support)
 
 #### Week 7-8: AI Integration & Iraqi Accent
+
 **PRP: AI-INTEGRATION**
+
 - [ ] Set up OpenAI API integration
 - [ ] Implement chat completion with system prompts
 - [ ] Create Iraqi dialect system prompts
@@ -160,7 +174,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Add basic content filtering
 
 #### Week 9-10: Voice Features & Polish
+
 **PRP: VOICE-FEATURES**
+
 - [ ] Implement speech-to-text (OpenAI Whisper)
 - [ ] Add text-to-speech with Iraqi accent (OpenAI TTS)
 - [ ] Create voice recording UI components
@@ -173,7 +189,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 ### Phase 2: Document Processing & Web Integration (6-8 weeks)
 
 #### Week 11-12: File Upload System
+
 **PRP: FILE-UPLOAD**
+
 - [ ] Create file upload API with validation
 - [ ] Implement file storage (S3 or local)
 - [ ] Add file type detection and validation
@@ -184,7 +202,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Add file preview capabilities
 
 #### Week 13-14: Document Processing Pipeline
+
 **PRP: DOCUMENT-PROCESSING**
+
 - [ ] Set up PDF text extraction (PyPDF2)
 - [ ] Implement Word document processing (python-docx)
 - [ ] Add Excel file parsing (openpyxl)
@@ -195,7 +215,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Create background processing with Celery
 
 #### Week 15-16: Document Q&A System
+
 **PRP: DOCUMENT-QA**
+
 - [ ] Implement vector embeddings for documents
 - [ ] Create semantic search functionality
 - [ ] Build document-aware chat context
@@ -208,7 +230,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 ### Phase 3: Professional Knowledge & Billing (3-4 weeks)
 
 #### Week 17-18: Iraqi Knowledge Base
+
 **PRP: IRAQI-KNOWLEDGE**
+
 - [ ] Create knowledge base structure
 - [ ] Import Iraqi legal documents (provided by you)
 - [ ] Set up educational content database
@@ -219,7 +243,9 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Implement content versioning
 
 #### Week 19-20: Document Generation & Advanced Features
+
 **PRP: DOCUMENT-GENERATION**
+
 - [ ] Set up PDF generation (ReportLab/WeasyPrint)
 - [ ] Implement Word document creation
 - [ ] Create Arabic-compatible templates
@@ -228,6 +254,7 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Implement CV/Resume generator (Iraqi format)
 
 **PRP: WEB-INTEGRATION-MVP**
+
 - [ ] Implement web search capability (real-time data)
 - [ ] Add news aggregation for Iraqi events
 - [ ] Create web scraping service (basic)
@@ -235,6 +262,7 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 - [ ] Add simple form automation (phase 1)
 
 **PRP: BILLING-SYSTEM**
+
 - [ ] Implement ZainCash payment gateway (primary)
 - [ ] Add FastPay and NassWallet integration
 - [ ] Create credit-based system (IQD pricing)
@@ -249,6 +277,7 @@ payment_history (id, user_id, amount, currency, status, payment_method, created_
 ### AI & Language Processing
 
 #### PydanticAI Implementation (2025 Best Practice)
+
 ```python
 # PydanticAI agent with Iraqi dialect specialization
 from pydantic_ai import Agent, RunContext
@@ -267,13 +296,13 @@ class IraqiAIAgent:
             deps_type=IraqiContext,
             result_type=str
         )
-    
+
     def get_iraqi_system_prompt(self):
         return """
-        أنت مساعد ذكي يتحدث باللهجة العراقية الأصيلة. 
+        أنت مساعد ذكي يتحدث باللهجة العراقية الأصيلة.
         تتميز بـ:
         - استخدام المفردات العراقية المحلية
-        - النبرة الودودة والمألوفة للعراقيين  
+        - النبرة الودودة والمألوفة للعراقيين
         - فهم السياق الثقافي العراقي
         - المعرفة بالقوانين والأنظمة العراقية
         """
@@ -295,6 +324,7 @@ VOICE_CONFIG = {
 ```
 
 #### LangGraph Orchestration (Complex Workflows)
+
 ```python
 # For multi-step document processing and agent routing
 from langgraph.graph import StateGraph, END
@@ -308,31 +338,32 @@ class AgentState(TypedDict):
 
 def create_iraqi_agent_graph():
     workflow = StateGraph(AgentState)
-    
+
     # Add nodes for different capabilities
     workflow.add_node("chat", handle_chat)
     workflow.add_node("document_analysis", process_documents)
     workflow.add_node("legal_specialist", legal_expert)
     workflow.add_node("education_specialist", education_expert)
-    
+
     # Define routing logic
     workflow.add_conditional_edges(
         "chat",
         route_to_specialist,
         {
             "legal": "legal_specialist",
-            "education": "education_specialist", 
+            "education": "education_specialist",
             "document": "document_analysis",
             "general": END
         }
     )
-    
+
     return workflow.compile()
 ```
 
 ### Document Processing Pipeline
 
 #### Multi-format Processing
+
 ```python
 # Document processing strategy
 PROCESSORS = {
@@ -350,7 +381,7 @@ class DocumentEmbedding:
         self.embedder = OpenAIEmbeddings()
         self.vector_store = PineconeVectorStore()
         self.db = db_session
-    
+
     async def process_document(self, doc_content: str):
         chunks = self.chunk_text(doc_content)
         embeddings = self.embedder.embed_documents(chunks)
@@ -365,23 +396,24 @@ class DocumentEmbedding:
 ```
 
 ### Real-time Communication (2025 Optimized)
+
 ```typescript
 // SSE implementation for AI streaming (primary)
 class ChatStreamingService {
   async streamAIResponse(message: string) {
-    const response = await fetch('/api/chat/stream', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message })
+    const response = await fetch("/api/chat/stream", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
     });
 
     const reader = response.body?.getReader();
     const decoder = new TextDecoder();
-    
+
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      
+
       const chunk = decoder.decode(value);
       // Handle streaming AI response chunks
       this.handleStreamChunk(chunk);
@@ -392,56 +424,56 @@ class ChatStreamingService {
 // WebSocket fallback for bidirectional features
 class ChatWebSocketFallback {
   private socket: Socket;
-  
+
   constructor(token: string) {
-    this.socket = io('/chat', {
+    this.socket = io("/chat", {
       auth: { token },
-      transports: ['websocket'],
-      upgrade: true,  // Allow upgrade from polling
-      rememberUpgrade: true
+      transports: ["websocket"],
+      upgrade: true, // Allow upgrade from polling
+      rememberUpgrade: true,
     });
-    
+
     this.setupEventHandlers();
   }
-  
+
   private setupEventHandlers() {
-    this.socket.on('message', this.handleMessage);
-    this.socket.on('typing', this.handleTyping);
-    this.socket.on('voice_generated', this.handleVoice);
-    this.socket.on('document_processed', this.handleDocumentUpdate);
+    this.socket.on("message", this.handleMessage);
+    this.socket.on("typing", this.handleTyping);
+    this.socket.on("voice_generated", this.handleVoice);
+    this.socket.on("document_processed", this.handleDocumentUpdate);
   }
 }
 
 // Zustand + TanStack Query state management
-import { create } from 'zustand';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { create } from "zustand";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 // Client state (Zustand)
 interface ChatUIState {
   isTyping: boolean;
-  selectedLanguage: 'arabic' | 'english';
+  selectedLanguage: "arabic" | "english";
   voiceEnabled: boolean;
   setIsTyping: (typing: boolean) => void;
-  setLanguage: (lang: 'arabic' | 'english') => void;
+  setLanguage: (lang: "arabic" | "english") => void;
   toggleVoice: () => void;
 }
 
 const useChatUIStore = create<ChatUIState>((set) => ({
   isTyping: false,
-  selectedLanguage: 'arabic',
+  selectedLanguage: "arabic",
   voiceEnabled: true,
   setIsTyping: (typing) => set({ isTyping: typing }),
   setLanguage: (lang) => set({ selectedLanguage: lang }),
-  toggleVoice: () => set((state) => ({ voiceEnabled: !state.voiceEnabled }))
+  toggleVoice: () => set((state) => ({ voiceEnabled: !state.voiceEnabled })),
 }));
 
 // Server state (TanStack Query)
 function useChatMessages(conversationId: string) {
   return useQuery({
-    queryKey: ['messages', conversationId],
+    queryKey: ["messages", conversationId],
     queryFn: () => fetchMessages(conversationId),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
   });
 }
 ```
@@ -451,6 +483,7 @@ function useChatMessages(conversationId: string) {
 ## 🚀 Deployment Strategy
 
 ### MVP Deployment (Cost-Effective)
+
 ```yaml
 Infrastructure:
   Web Hosting: Vercel (Next.js + Bun optimization)
@@ -458,12 +491,12 @@ Infrastructure:
   Database: Supabase (PostgreSQL + Drizzle integration)
   File Storage: Supabase Storage
   Cache: Upstash Redis
-  
+
 Performance Benefits:
   - Bun: 30x faster installs, faster builds
   - Drizzle: 100x faster queries than Prisma
   - Custom Components: Zero external UI dependencies
-  
+
 Cost Estimate:
   - Vercel: Free tier initially
   - Fly.io: ~$5/month
@@ -473,6 +506,7 @@ Cost Estimate:
 ```
 
 ### Production Scaling
+
 ```yaml
 Infrastructure:
   Web: Vercel Pro
@@ -481,7 +515,7 @@ Infrastructure:
   Cache: AWS ElastiCache Redis
   Storage: AWS S3
   CDN: CloudFront
-  
+
 Monitoring:
   - Error tracking: Sentry
   - Performance: DataDog/NewRelic
@@ -493,6 +527,7 @@ Monitoring:
 ## 📊 Development Workflow
 
 ### Context Engineering Workflow
+
 1. **Feature Planning**: Create detailed PRP for each feature section
 2. **Context Generation**: Use PRP to generate comprehensive development context
 3. **Implementation**: Develop with full context awareness
@@ -500,19 +535,20 @@ Monitoring:
 5. **Iteration**: Refine based on testing and feedback
 
 ### Git Workflow
+
 ```
 Branches:
   main: Production-ready code
   develop: Integration branch
   feature/*: Feature development
   hotfix/*: Critical fixes
-  
+
 Bun-Optimized Release Process:
   1. Feature branch → develop (bun install --frozen-lockfile)
   2. develop → staging deployment (bun run build)
   3. QA testing on staging (bun test)
   4. develop → main (production with Bun optimization)
-  
+
 Performance Benefits:
   - Build time: 50-70% faster with Bun
   - Install time: 30x faster dependency installation
@@ -520,6 +556,7 @@ Performance Benefits:
 ```
 
 ### Quality Assurance
+
 ```typescript
 // Testing strategy
 Testing Pyramid:
@@ -528,7 +565,7 @@ Testing Pyramid:
   - E2E tests: Playwright
   - Performance tests: Lighthouse CI
   - Security tests: OWASP ZAP
-  
+
 Code Quality:
   - TypeScript strict mode
   - ESLint + Prettier
@@ -541,6 +578,7 @@ Code Quality:
 ## 🔐 Security & Compliance
 
 ### Data Protection Strategy
+
 ```python
 Security Measures:
   - End-to-end encryption for sensitive data
@@ -548,7 +586,7 @@ Security Measures:
   - Input validation and sanitization
   - Rate limiting and DDoS protection
   - Regular security audits
-  
+
 Iraqi Compliance:
   - Data residency considerations
   - User consent management
@@ -557,6 +595,7 @@ Iraqi Compliance:
 ```
 
 ### Payment Integration (Iraqi-Specific - Updated July 2025)
+
 ```typescript
 // Confirmed Iraqi payment gateways with API support
 Primary Payment Options:
@@ -573,7 +612,7 @@ Primary Payment Options:
   4. PayTabs - International gateway with Iraq support
      - Reliable payment processing
      - Multi-currency support
-  
+
 Implementation Strategy:
   - Primary: ZainCash (largest user base)
   - Secondary: FastPay + NassWallet
@@ -586,6 +625,7 @@ Implementation Strategy:
 ## 📈 Performance Optimization
 
 ### Frontend Optimization
+
 ```typescript
 Performance Strategy:
   - Next.js App Router with streaming
@@ -593,7 +633,7 @@ Performance Strategy:
   - Image optimization (next/image)
   - Bundle analysis and code splitting
   - Service worker for offline capability
-  
+
 Real-time Optimization:
   - WebSocket connection pooling
   - Message debouncing
@@ -602,6 +642,7 @@ Real-time Optimization:
 ```
 
 ### Backend Optimization
+
 ```python
 API Performance:
   - FastAPI async/await patterns
@@ -609,7 +650,7 @@ API Performance:
   - Redis caching strategy
   - Background task processing
   - Response compression
-  
+
 AI Integration:
   - Token usage optimization
   - Response streaming
@@ -622,6 +663,7 @@ AI Integration:
 ## 🎯 Success Metrics & Monitoring
 
 ### Technical Metrics
+
 - API response time: <500ms p95
 - Chat message delivery: <100ms
 - Document processing: <30 seconds
@@ -629,12 +671,14 @@ AI Integration:
 - Uptime: 99.9%
 
 ### Business Metrics
+
 - User acquisition: 100 users/month by month 3
 - Conversion rate: 15% free to paid
 - Monthly retention: 70%
 - Revenue: $1K MRR by month 6
 
 ### Development Metrics
+
 - Code coverage: >80%
 - Build time: <5 minutes
 - Deployment frequency: Daily
@@ -646,21 +690,25 @@ AI Integration:
 ## 🔬 **Repository Integration Analysis**
 
 ### **Context Engineering vs BMAD Method**
+
 **Recommendation: Use Context Engineering (Primary) + BMAD Method (Complex Features)**
 
 **Context Engineering Advantages:**
+
 - **Perfect for your PRP approach** - Create individual PRPs for each feature
 - **Systematic methodology** - Transforms "sticky note" prompting to "screenplay" implementation
 - **10× better than prompt engineering** according to research
 - **Ideal for Iraqi-specific features** requiring deep context
 
 **BMAD Method Integration:**
+
 - **Use for complex multi-agent features** (Post-MVP)
 - **Agentic planning** with specialized AI agents (Analyst, PM, Architect)
 - **Hyper-detailed development stories** for complex workflows
 - **Complement Context Engineering** for large-scale features
 
 **Implementation Strategy:**
+
 ```
 MVP Phase: Context Engineering only
 ├── Individual PRPs for each feature section
@@ -674,15 +722,18 @@ Post-MVP: Context Engineering + BMAD Method
 ```
 
 ### **Make-it-Heavy Repository Analysis**
+
 **Recommendation: Post-MVP Integration (Month 6+)**
 
 **Why Post-MVP:**
+
 - **Heavy computational requirements** - Multiple agents running in parallel
 - **MVP focus should be single-agent excellence** with Iraqi specialization
 - **Perfect for professional specialization phase** (lawyers, teachers, doctors)
 - **Ideal for complex analysis** that Iraqi professionals need
 
 **Integration Timeline:**
+
 ```
 Month 1-4 (MVP): Single Master Agent
 ├── Focus on Iraqi dialect perfection
@@ -697,12 +748,14 @@ Month 6+ (Advanced): Make-it-Heavy Integration
 ```
 
 **Specific Use Cases for Iraqi Professionals:**
+
 - **Legal**: Multi-agent analysis of Iraqi law with different perspectives
 - **Education**: Curriculum development with pedagogical expert agents
 - **Medical**: Diagnostic assistance with multiple medical specialist agents
 - **Business**: Market analysis with economic and cultural expert agents
 
 ### **Development Methodology Integration**
+
 ```
 Feature Development Workflow:
 1. Create PRP using Context Engineering principles
@@ -717,6 +770,7 @@ Feature Development Workflow:
 ## 🎯 **Updated Feature Priority Matrix**
 
 ### **MVP Features (Months 1-4)**
+
 ```
 Priority 1 (Essential):
 ├── Chat with Iraqi dialect (Context Engineering PRP)
@@ -733,6 +787,7 @@ Priority 2 (Important):
 ```
 
 ### **Post-MVP Features (Months 4+)**
+
 ```
 Phase 1 (Months 4-6):
 ├── Multi-agent system (BMAD Method planning)

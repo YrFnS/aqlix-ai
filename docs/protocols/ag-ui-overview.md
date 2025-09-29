@@ -47,7 +47,7 @@ AG-UI complements other protocols in our Iraqi AI ecosystem:
 ### Core Features with Cultural Intelligence
 
 - 💬 **Real-time agentic chat** with Arabic streaming and cultural validation
-- 🔄 **Bi-directional state synchronization** with cultural context preservation  
+- 🔄 **Bi-directional state synchronization** with cultural context preservation
 - 🧩 **Generative UI** with RTL layout support and Islamic design principles
 - 🧠 **Real-time context enrichment** with Iraqi cultural intelligence
 - 🛠️ **Frontend tool integration** with Arabic language processing
@@ -74,12 +74,12 @@ interface IraqiAGUIEvent extends AGUIEvent {
   culturalContext: {
     islamicCompliance: {
       validated: boolean;
-      score: number;        // 0-100, 90+ required
+      score: number; // 0-100, 90+ required
       issues: string[];
     };
     culturalValidation: {
       passed: boolean;
-      score: number;        // 0-100, 95+ required
+      score: number; // 0-100, 95+ required
       concerns: string[];
     };
     arabicProcessing: {
@@ -88,20 +88,20 @@ interface IraqiAGUIEvent extends AGUIEvent {
       translationProvided: boolean;
     };
   };
-  
+
   // Professional domain context
   professionalRouting?: {
-    domain: 'legal' | 'medical' | 'educational' | 'business' | 'government';
+    domain: "legal" | "medical" | "educational" | "business" | "government";
     specialistRequired: boolean;
-    urgencyLevel: 'critical' | 'high' | 'medium' | 'low';
+    urgencyLevel: "critical" | "high" | "medium" | "low";
   };
-  
+
   // Payment context (when applicable)
   paymentContext?: {
-    gateway: 'ZainCash' | 'FastPay' | 'NassWallet';
+    gateway: "ZainCash" | "FastPay" | "NassWallet";
     islamicCompliant: boolean;
     amount?: number;
-    currency: 'IQD';
+    currency: "IQD";
   };
 }
 ```
@@ -109,34 +109,37 @@ interface IraqiAGUIEvent extends AGUIEvent {
 ### Enhanced Event Types for Iraqi Context
 
 #### Legal Consultation Events
+
 ```typescript
 interface IraqiLegalConsultationEvent extends IraqiAGUIEvent {
-  type: 'iraqi_legal_consultation';
-  legalDomain: 'civil' | 'commercial' | 'family' | 'criminal';
+  type: "iraqi_legal_consultation";
+  legalDomain: "civil" | "commercial" | "family" | "criminal";
   islamicLawApplicable: boolean;
   urgencyLevel: string;
-  responseLanguage: 'arabic' | 'english' | 'mixed';
+  responseLanguage: "arabic" | "english" | "mixed";
 }
 ```
 
-#### Medical Advisory Events  
+#### Medical Advisory Events
+
 ```typescript
 interface IraqiMedicalAdvisoryEvent extends IraqiAGUIEvent {
-  type: 'iraqi_medical_advisory';
+  type: "iraqi_medical_advisory";
   medicalSpecialty: string;
   islamicMedicalEthics: boolean;
-  patientPrivacy: 'high' | 'standard';
+  patientPrivacy: "high" | "standard";
   emergencyLevel: number; // 1-10 scale
 }
 ```
 
 #### Payment Processing Events
+
 ```typescript
 interface IraqiPaymentEvent extends IraqiAGUIEvent {
-  type: 'iraqi_payment_processing';
-  gateway: 'ZainCash' | 'FastPay' | 'NassWallet';
+  type: "iraqi_payment_processing";
+  gateway: "ZainCash" | "FastPay" | "NassWallet";
   amount: number;
-  currency: 'IQD';
+  currency: "IQD";
   islamicCompliance: boolean;
   culturalSensitivity: boolean;
 }
@@ -168,23 +171,25 @@ Every AG-UI event in the Iraqi system undergoes comprehensive validation:
 
 ### Supported Frameworks with Iraqi Enhancements
 
-| Framework | Iraqi Integration Status | Cultural Features | Professional Domains |
-|-----------|------------------------|-------------------|---------------------|
-| **PydanticAI** | ✅ Fully Integrated | Islamic compliance, Arabic NLP | Legal, Medical, Educational |
-| **LangGraph** | ✅ Enhanced Support | Cultural workflow orchestration | Government, Business |
-| **CrewAI** | ✅ Multi-Agent Iraqi Teams | Professional domain coordination | All domains |
-| **LlamaIndex** | ✅ Arabic Knowledge Base | RTL document processing | Research, Education |
-| **Custom Iraqi Agents** | ✅ Native Integration | Full cultural intelligence | All 22+ agent specializations |
+| Framework               | Iraqi Integration Status   | Cultural Features                | Professional Domains          |
+| ----------------------- | -------------------------- | -------------------------------- | ----------------------------- |
+| **PydanticAI**          | ✅ Fully Integrated        | Islamic compliance, Arabic NLP   | Legal, Medical, Educational   |
+| **LangGraph**           | ✅ Enhanced Support        | Cultural workflow orchestration  | Government, Business          |
+| **CrewAI**              | ✅ Multi-Agent Iraqi Teams | Professional domain coordination | All domains                   |
+| **LlamaIndex**          | ✅ Arabic Knowledge Base   | RTL document processing          | Research, Education           |
+| **Custom Iraqi Agents** | ✅ Native Integration      | Full cultural intelligence       | All 22+ agent specializations |
 
 ### Iraqi-Specific Framework Features
 
 #### PydanticAI Integration
+
 - **Cultural Type Validation**: Pydantic models with Iraqi cultural constraints
 - **Arabic Field Processing**: Native RTL field validation and processing
 - **Islamic Compliance Models**: Built-in religious validation schemas
 - **Professional Domain Models**: Specialized models for Iraqi sectors
 
 #### Multi-Agent Coordination
+
 - **Cultural Context Sharing**: Agents share cultural validation scores
 - **Professional Domain Handoffs**: Seamless expert-to-expert transitions
 - **Islamic Compliance Propagation**: Religious validation across agent chains
@@ -207,38 +212,38 @@ npm install @iraqi-ai/islamic-compliance-validator
 ### Basic Iraqi AG-UI Event Handler
 
 ```typescript
-import { IraqiAGUIEventHandler } from '@iraqi-ai/ag-ui-core';
-import { CulturalValidator } from '@iraqi-ai/cultural-validator';
-import { ArabicProcessor } from '@iraqi-ai/arabic-processor';
+import { IraqiAGUIEventHandler } from "@iraqi-ai/ag-ui-core";
+import { CulturalValidator } from "@iraqi-ai/cultural-validator";
+import { ArabicProcessor } from "@iraqi-ai/arabic-processor";
 
 const iraqiEventHandler = new IraqiAGUIEventHandler({
   culturalValidation: {
     enabled: true,
     minimumScore: 95,
-    islamicComplianceRequired: true
+    islamicComplianceRequired: true,
   },
   arabicProcessing: {
     rtlSupport: true,
-    dialectRecognition: ['iraqi', 'standard'],
-    mixedContentHandling: true
+    dialectRecognition: ["iraqi", "standard"],
+    mixedContentHandling: true,
   },
-  professionalDomains: ['legal', 'medical', 'educational', 'business']
+  professionalDomains: ["legal", "medical", "educational", "business"],
 });
 
 // Handle culturally-aware events
-iraqiEventHandler.on('iraqi_legal_consultation', async (event) => {
+iraqiEventHandler.on("iraqi_legal_consultation", async (event) => {
   // Automatic cultural validation
   const culturalValidation = await event.validateCulturalContext();
-  
+
   // Islamic compliance check
   const islamicCompliance = await event.validateIslamicCompliance();
-  
+
   // Route to appropriate legal specialist
-  const legalSpecialist = await event.routeToProfessionalDomain('legal');
-  
+  const legalSpecialist = await event.routeToProfessionalDomain("legal");
+
   // Process with Arabic support
   const response = await legalSpecialist.processWithArabicSupport(event);
-  
+
   return response;
 });
 ```
@@ -249,46 +254,52 @@ iraqiEventHandler.on('iraqi_legal_consultation', async (event) => {
 
 ```typescript
 // Cultural validation middleware
-app.use(culturalValidationMiddleware({
-  minimumCulturalScore: 95,
-  islamicComplianceRequired: true,
-  professionalDomainValidation: true
-}));
+app.use(
+  culturalValidationMiddleware({
+    minimumCulturalScore: 95,
+    islamicComplianceRequired: true,
+    professionalDomainValidation: true,
+  }),
+);
 
-// Arabic language processing middleware  
-app.use(arabicProcessingMiddleware({
-  rtlAccuracy: 0.99,
-  dialectRecognition: 0.85,
-  mixedContentSupport: true
-}));
+// Arabic language processing middleware
+app.use(
+  arabicProcessingMiddleware({
+    rtlAccuracy: 0.99,
+    dialectRecognition: 0.85,
+    mixedContentSupport: true,
+  }),
+);
 
 // Professional domain routing middleware
-app.use(professionalRoutingMiddleware({
-  domains: ['legal', 'medical', 'educational', 'business', 'government'],
-  expertLevelRequired: true,
-  culturalContextAware: true
-}));
+app.use(
+  professionalRoutingMiddleware({
+    domains: ["legal", "medical", "educational", "business", "government"],
+    expertLevelRequired: true,
+    culturalContextAware: true,
+  }),
+);
 ```
 
 ### Payment Integration Events
 
 ```typescript
 // Islamic-compliant payment processing
-iraqiEventHandler.on('iraqi_payment_processing', async (event) => {
+iraqiEventHandler.on("iraqi_payment_processing", async (event) => {
   // Validate Islamic compliance
   if (!event.paymentContext?.islamicCompliant) {
-    throw new IslamicComplianceViolationError('Payment not Sharia-compliant');
+    throw new IslamicComplianceViolationError("Payment not Sharia-compliant");
   }
-  
+
   // Process through Iraqi payment gateway
   const gateway = event.paymentContext.gateway;
   const result = await processIraqiPayment(gateway, {
     amount: event.paymentContext.amount,
-    currency: 'IQD',
+    currency: "IQD",
     islamicCompliant: true,
-    culturalContext: event.culturalContext
+    culturalContext: event.culturalContext,
   });
-  
+
   return result;
 });
 ```
@@ -302,7 +313,7 @@ The Iraqi AG-UI system coordinates with our 22+ specialized agents:
 - **iraqi-cultural-validator**: Validates all events for cultural appropriateness
 - **arabic-rtl-processor**: Processes Arabic text and RTL formatting
 - **iraqi-legal-specialist**: Handles legal consultation events
-- **iraqi-medical-advisor**: Processes medical advisory events  
+- **iraqi-medical-advisor**: Processes medical advisory events
 - **payment-security-guardian**: Manages payment processing events
 - **iraqi-educational-expert**: Handles educational content events
 

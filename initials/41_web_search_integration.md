@@ -51,16 +51,19 @@
 **Web search integration documentation:**
 
 **Search Provider APIs:**
+
 - **Tavily API:** Real-time search with advanced filtering and cultural context support
 - **Brave Search API:** Privacy-focused search with comprehensive web results and localization
 - **Exa API:** AI-powered search with semantic understanding and contextual relevance
 
 **Search Enhancement Technologies:**
+
 - **Redis Caching:** Search result caching and performance optimization strategies
 - **Search Result Processing:** Content filtering, relevance scoring, and cultural adaptation
 - **Arabic Language Processing:** Iraqi dialect search optimization and Arabic query enhancement
 
 **User Interface Integration:**
+
 - **Toggle Controls:** Search preference UI components and user control patterns
 - **Search Result Display:** Real-time information presentation and result formatting
 - **Cultural Context UI:** Iraqi-specific search result highlighting and cultural relevance indicators
@@ -79,6 +82,7 @@
 - **Professional Context Enhancement:** Search results enhanced for Iraqi legal, medical, and educational professionals
 
 **Islamic Compliance:**
+
 - **Halal Content Filtering:** Search results filtered to exclude content inappropriate for Islamic values
 - **Privacy Protection:** Search query handling compliant with Islamic privacy principles
 - **Transparent Information Access:** Clear indication when web search is being used for information retrieval
@@ -233,27 +237,28 @@ CREATE TABLE search_result_validation (
 ```typescript
 interface SearchProvider {
   tavily: {
-    endpoint: "https://api.tavily.com/search",
-    features: ["real_time", "cultural_filtering", "arabic_support"],
-    rate_limit: "1000_requests_per_day",
-    response_format: "json_with_context"
-  },
+    endpoint: "https://api.tavily.com/search";
+    features: ["real_time", "cultural_filtering", "arabic_support"];
+    rate_limit: "1000_requests_per_day";
+    response_format: "json_with_context";
+  };
   brave: {
-    endpoint: "https://api.search.brave.com/res/v1/web/search",
-    features: ["privacy_focused", "localization", "image_search"],
-    rate_limit: "2000_requests_per_month",
-    response_format: "json_structured"
-  },
+    endpoint: "https://api.search.brave.com/res/v1/web/search";
+    features: ["privacy_focused", "localization", "image_search"];
+    rate_limit: "2000_requests_per_month";
+    response_format: "json_structured";
+  };
   exa: {
-    endpoint: "https://api.exa.ai/search",
-    features: ["ai_powered", "semantic_search", "contextual_relevance"],
-    rate_limit: "10000_requests_per_month",
-    response_format: "json_enhanced"
-  }
+    endpoint: "https://api.exa.ai/search";
+    features: ["ai_powered", "semantic_search", "contextual_relevance"];
+    rate_limit: "10000_requests_per_month";
+    response_format: "json_enhanced";
+  };
 }
 ```
 
 **Provider Fallback Strategy:**
+
 1. **Primary**: User's preferred provider (default: Tavily)
 2. **Secondary**: Automatic fallback to next available provider
 3. **Tertiary**: Final fallback to most reliable provider
@@ -271,23 +276,23 @@ cultural_filters:
     - content_appropriateness: filter_haram_content
     - religious_sensitivity: respect_islamic_values
     - family_appropriate: ensure_family_safe_content
-    
+
   political_neutrality:
     - sectarian_sensitivity: avoid_sectarian_content
     - political_bias: maintain_neutral_perspective
     - regional_balance: balanced_iraqi_representation
-    
+
   professional_context:
     - legal_accuracy: iraqi_law_compliance
     - medical_relevance: iraqi_healthcare_context
     - educational_appropriateness: iraqi_academic_standards
 
 language_enhancement:
-  iraqi_dialect_recognition: 
+  iraqi_dialect_recognition:
     - query_enhancement: add_iraqi_context_terms
     - result_prioritization: favor_arabic_sources
     - cultural_context: add_regional_modifiers
-    
+
   arabic_language_support:
     - rtl_query_processing: proper_arabic_handling
     - mixed_language_queries: arabic_english_optimization
@@ -338,7 +343,7 @@ language_enhancement:
 ## TEMPLATE COMPLEXITY LEVEL:
 
 - [ ] **Beginner-friendly** - Simple getting started patterns
-- [x] **Intermediate** - Production-ready patterns with common features  
+- [x] **Intermediate** - Production-ready patterns with common features
 - [ ] **Advanced** - Comprehensive patterns including complex scenarios
 - [ ] **Enterprise** - Full enterprise patterns with monitoring, scaling, security
 

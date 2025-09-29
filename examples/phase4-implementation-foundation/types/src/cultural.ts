@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // Cultural Context Schema - Based on Iraqi AI protocols extraction
 export const IraqiCulturalContextSchema = z.object({
@@ -7,12 +7,20 @@ export const IraqiCulturalContextSchema = z.object({
   arabicSupport: z.boolean().default(false),
   rtlLayout: z.boolean().default(false),
   dialectSupport: z.enum(["iraqi", "standard", "mixed"]).default("iraqi"),
-  professionalDomain: z.enum([
-    "legal", "medical", "educational", "business", 
-    "government", "technology", "finance", "general"
-  ]).optional(),
+  professionalDomain: z
+    .enum([
+      "legal",
+      "medical",
+      "educational",
+      "business",
+      "government",
+      "technology",
+      "finance",
+      "general",
+    ])
+    .optional(),
   culturalScore: z.number().min(0).max(100).default(85),
-  islamicScore: z.number().min(0).max(100).default(90)
+  islamicScore: z.number().min(0).max(100).default(90),
 });
 
 export type IraqiCulturalContext = z.infer<typeof IraqiCulturalContextSchema>;
@@ -24,10 +32,12 @@ export const CulturalValidationResultSchema = z.object({
   issues: z.array(z.string()).default([]),
   recommendations: z.array(z.string()).default([]),
   processingTime: z.number().min(0),
-  validation_timestamp: z.string().datetime()
+  validation_timestamp: z.string().datetime(),
 });
 
-export type CulturalValidationResult = z.infer<typeof CulturalValidationResultSchema>;
+export type CulturalValidationResult = z.infer<
+  typeof CulturalValidationResultSchema
+>;
 
 // Islamic Compliance Results
 export const IslamicComplianceResultSchema = z.object({
@@ -35,12 +45,16 @@ export const IslamicComplianceResultSchema = z.object({
   compliant: z.boolean(),
   violations: z.array(z.string()).default([]),
   recommendations: z.array(z.string()).default([]),
-  jurisprudenceSchool: z.enum(['hanafi', 'shafi', 'maliki', 'hanbali', 'general']).default('general'),
+  jurisprudenceSchool: z
+    .enum(["hanafi", "shafi", "maliki", "hanbali", "general"])
+    .default("general"),
   processingTime: z.number().min(0),
-  validation_timestamp: z.string().datetime()
+  validation_timestamp: z.string().datetime(),
 });
 
-export type IslamicComplianceResult = z.infer<typeof IslamicComplianceResultSchema>;
+export type IslamicComplianceResult = z.infer<
+  typeof IslamicComplianceResultSchema
+>;
 
 // Political Neutrality Validation
 export const PoliticalNeutralityResultSchema = z.object({
@@ -50,10 +64,12 @@ export const PoliticalNeutralityResultSchema = z.object({
   sectarianRisk: z.boolean().default(false),
   tribalRisk: z.boolean().default(false),
   politicalRisk: z.boolean().default(false),
-  recommendations: z.array(z.string()).default([])
+  recommendations: z.array(z.string()).default([]),
 });
 
-export type PoliticalNeutralityResult = z.infer<typeof PoliticalNeutralityResultSchema>;
+export type PoliticalNeutralityResult = z.infer<
+  typeof PoliticalNeutralityResultSchema
+>;
 
 // Unified Cultural Processing Result
 export const UnifiedCulturalProcessingResultSchema = z.object({
@@ -62,10 +78,12 @@ export const UnifiedCulturalProcessingResultSchema = z.object({
   politicalNeutrality: PoliticalNeutralityResultSchema,
   overallScore: z.number().min(0).max(100),
   success: z.boolean(),
-  processingTime: z.number().min(0)
+  processingTime: z.number().min(0),
 });
 
-export type UnifiedCulturalProcessingResult = z.infer<typeof UnifiedCulturalProcessingResultSchema>;
+export type UnifiedCulturalProcessingResult = z.infer<
+  typeof UnifiedCulturalProcessingResultSchema
+>;
 
 // Cultural Enhancement Configuration
 export const CulturalEnhancementConfigSchema = z.object({
@@ -75,21 +93,25 @@ export const CulturalEnhancementConfigSchema = z.object({
     minimumScore: z.number().min(0).max(100).default(85),
     timeout: z.number().min(0).default(2000),
     cacheEnabled: z.boolean().default(true),
-    cacheTtl: z.number().min(0).default(3600)
+    cacheTtl: z.number().min(0).default(3600),
   }),
   islamicCompliance: z.object({
     enabled: z.boolean().default(true),
     strictMode: z.boolean().default(true),
     minimumScore: z.number().min(0).max(100).default(90),
-    jurisprudenceSchool: z.enum(['hanafi', 'shafi', 'maliki', 'hanbali', 'general']).default('general'),
-    auditingEnabled: z.boolean().default(true)
+    jurisprudenceSchool: z
+      .enum(["hanafi", "shafi", "maliki", "hanbali", "general"])
+      .default("general"),
+    auditingEnabled: z.boolean().default(true),
   }),
   politicalNeutrality: z.object({
     enabled: z.boolean().default(true),
     strictMode: z.boolean().default(true),
     minimumScore: z.number().min(0).max(100).default(95),
-    auditingEnabled: z.boolean().default(true)
-  })
+    auditingEnabled: z.boolean().default(true),
+  }),
 });
 
-export type CulturalEnhancementConfig = z.infer<typeof CulturalEnhancementConfigSchema>;
+export type CulturalEnhancementConfig = z.infer<
+  typeof CulturalEnhancementConfigSchema
+>;

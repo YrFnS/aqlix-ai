@@ -1,30 +1,36 @@
 # Phase 3 Deployment Guide
+
 ## Iraqi AI Chat System - Specialized Protocol Enhancements
 
 ### Overview
+
 This guide covers the production deployment of Phase 3 specialized Iraqi protocol enhancements, building on the unified A2A + CopilotKit foundation with advanced cultural intelligence.
 
 ### Phase 3 Components Implemented
 
 #### 1. Iraqi Cultural Decision Engine
+
 - **Location**: `packages/iraqi-cultural-engine/`
 - **Purpose**: Advanced Islamic compliance and Iraqi cultural decision-making
 - **Performance**: <200ms cultural validation, 98%+ Islamic compliance
 - **Dependencies**: Zod, date-fns, natural
 
-#### 2. Arabic NLP Processing Pipeline  
+#### 2. Arabic NLP Processing Pipeline
+
 - **Location**: `packages/iraqi-arabic-nlp/`
 - **Purpose**: Iraqi dialect recognition and cultural context extraction
 - **Performance**: 90%+ dialect accuracy, 88%+ cultural context extraction
 - **Dependencies**: compromise, natural, franc, zod, date-fns
 
 #### 3. Iraqi Professional Domain Validation
+
 - **Location**: `packages/iraqi-professional-domains/`
 - **Purpose**: Professional content validation for Iraqi domains
 - **Performance**: <500ms validation, 95%+ accuracy, domain-specific compliance
 - **Dependencies**: zod, date-fns, natural
 
 #### 4. Advanced Cultural Learning Algorithms
+
 - **Location**: `packages/iraqi-cultural-learning/`
 - **Purpose**: ML-powered cultural adaptation and Islamic compliance optimization
 - **Performance**: <200ms inference, 90%+ cultural prediction accuracy
@@ -40,19 +46,19 @@ graph TB
     C --> E[Arabic NLP Pipeline]
     C --> F[Professional Validator]
     C --> G[Cultural Learning Engine]
-    
+
     D --> H[Islamic Compliance]
     D --> I[Cultural Appropriateness]
-    
+
     E --> J[Dialect Recognition]
     E --> K[Context Extraction]
-    
+
     F --> L[Domain Validation]
     F --> M[Ethics Assessment]
-    
+
     G --> N[Preference Learning]
     G --> O[Behavior Prediction]
-    
+
     C --> P[A2A Transport Layer]
     P --> Q[Agent Registry]
     P --> R[Response Generation]
@@ -61,6 +67,7 @@ graph TB
 ### Production Configuration
 
 #### Environment Variables
+
 ```bash
 # Core Configuration
 NODE_ENV=production
@@ -97,6 +104,7 @@ LOG_LEVEL=info
 #### Docker Configuration
 
 **Dockerfile.production**
+
 ```dockerfile
 FROM oven/bun:1 as base
 WORKDIR /app
@@ -140,8 +148,9 @@ CMD ["bun", "run", "start:production"]
 ```
 
 **docker-compose.prod.yml**
+
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   iraqi-ai-chat:
@@ -205,6 +214,7 @@ volumes:
 #### Kubernetes Configuration
 
 **k8s/deployment.yaml**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -222,40 +232,40 @@ spec:
         app: iraqi-ai-chat
     spec:
       containers:
-      - name: iraqi-ai-chat
-        image: iraqi-ai-chat:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: IRAQI_CULTURAL_ENGINE_ENABLED
-          value: "true"
-        - name: ARABIC_NLP_PIPELINE_ENABLED
-          value: "true"
-        - name: PROFESSIONAL_VALIDATION_ENABLED
-          value: "true"
-        - name: CULTURAL_LEARNING_ENABLED
-          value: "true"
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi" 
-            cpu: "1000m"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 3000
-          initialDelaySeconds: 60
-          periodSeconds: 30
+        - name: iraqi-ai-chat
+          image: iraqi-ai-chat:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: IRAQI_CULTURAL_ENGINE_ENABLED
+              value: "true"
+            - name: ARABIC_NLP_PIPELINE_ENABLED
+              value: "true"
+            - name: PROFESSIONAL_VALIDATION_ENABLED
+              value: "true"
+            - name: CULTURAL_LEARNING_ENABLED
+              value: "true"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 30
 
 ---
 apiVersion: v1
@@ -267,15 +277,16 @@ spec:
   selector:
     app: iraqi-ai-chat
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3000
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
   type: LoadBalancer
 ```
 
 ### Performance Optimization
 
 #### 1. Cultural Validation Caching
+
 ```typescript
 // packages/iraqi-cultural-engine/src/cache/cultural-cache.ts
 export class CulturalValidationCache {
@@ -284,22 +295,22 @@ export class CulturalValidationCache {
 
   async getCachedValidation(
     content: string,
-    culturalContext: IraqiCulturalContext
+    culturalContext: IraqiCulturalContext,
   ): Promise<CulturalValidationResult | null> {
     const key = this.generateCacheKey(content, culturalContext);
     const cached = this.cache.get(key);
-    
+
     if (cached && Date.now() - cached.timestamp < this.ttl) {
       return cached;
     }
-    
+
     return null;
   }
 
   setCachedValidation(
     content: string,
     culturalContext: IraqiCulturalContext,
-    result: CulturalValidationResult
+    result: CulturalValidationResult,
   ): void {
     const key = this.generateCacheKey(content, culturalContext);
     this.cache.set(key, { ...result, timestamp: Date.now() });
@@ -308,23 +319,22 @@ export class CulturalValidationCache {
 ```
 
 #### 2. Arabic NLP Pipeline Optimization
+
 ```typescript
 // packages/iraqi-arabic-nlp/src/optimization/nlp-optimizer.ts
 export class ArabicNLPOptimizer {
   private dialectCache = new Map<string, DialectResult>();
-  
-  async optimizedDialectRecognition(
-    text: string
-  ): Promise<DialectResult> {
+
+  async optimizedDialectRecognition(text: string): Promise<DialectResult> {
     // Use cached results for common phrases
     if (this.dialectCache.has(text)) {
       return this.dialectCache.get(text)!;
     }
-    
+
     // Batch process multiple texts
     const result = await this.batchDialectRecognition([text]);
     this.dialectCache.set(text, result[0]);
-    
+
     return result[0];
   }
 }
@@ -333,15 +343,20 @@ export class ArabicNLPOptimizer {
 ### Monitoring and Observability
 
 #### 1. Performance Metrics
+
 ```typescript
 // monitoring/iraqi-metrics.ts
 export class IraqiAIMetrics {
   private metrics = {
-    cultural_validation_time: new Histogram('cultural_validation_duration_seconds'),
-    islamic_compliance_score: new Gauge('islamic_compliance_score'),
-    arabic_nlp_accuracy: new Gauge('arabic_nlp_accuracy'),
-    professional_validation_score: new Gauge('professional_validation_score'),
-    cultural_learning_inference_time: new Histogram('cultural_learning_inference_duration_seconds')
+    cultural_validation_time: new Histogram(
+      "cultural_validation_duration_seconds",
+    ),
+    islamic_compliance_score: new Gauge("islamic_compliance_score"),
+    arabic_nlp_accuracy: new Gauge("arabic_nlp_accuracy"),
+    professional_validation_score: new Gauge("professional_validation_score"),
+    cultural_learning_inference_time: new Histogram(
+      "cultural_learning_inference_duration_seconds",
+    ),
   };
 
   recordCulturalValidation(duration: number, score: number): void {
@@ -356,6 +371,7 @@ export class IraqiAIMetrics {
 ```
 
 #### 2. Health Checks
+
 ```typescript
 // health/iraqi-health-check.ts
 export class IraqiAIHealthCheck {
@@ -364,20 +380,20 @@ export class IraqiAIHealthCheck {
       this.checkCulturalEngine(),
       this.checkArabicNLP(),
       this.checkProfessionalValidator(),
-      this.checkCulturalLearning()
+      this.checkCulturalLearning(),
     ]);
 
-    const allHealthy = checks.every(check => check.status === 'healthy');
-    
+    const allHealthy = checks.every((check) => check.status === "healthy");
+
     return {
-      status: allHealthy ? 'healthy' : 'degraded',
+      status: allHealthy ? "healthy" : "degraded",
       timestamp: new Date(),
       components: {
         cultural_engine: checks[0],
-        arabic_nlp: checks[1], 
+        arabic_nlp: checks[1],
         professional_validator: checks[2],
-        cultural_learning: checks[3]
-      }
+        cultural_learning: checks[3],
+      },
     };
   }
 }
@@ -386,34 +402,43 @@ export class IraqiAIHealthCheck {
 ### Security Configuration
 
 #### 1. Cultural Content Security
+
 ```typescript
 // security/cultural-security.ts
 export class CulturalSecurityFilter {
   private sensitiveTopics = [
-    'sectarian_violence',
-    'political_extremism', 
-    'cultural_discrimination',
-    'religious_intolerance'
+    "sectarian_violence",
+    "political_extremism",
+    "cultural_discrimination",
+    "religious_intolerance",
   ];
 
   async validateContentSecurity(
     content: string,
-    culturalContext: IraqiCulturalContext
+    culturalContext: IraqiCulturalContext,
   ): Promise<SecurityValidationResult> {
     // Check for sensitive topics
     const sensitiveTopicDetected = this.detectSensitiveTopics(content);
-    
+
     // Validate Islamic compliance
     const islamicCompliance = await this.validateIslamicCompliance(content);
-    
+
     // Check cultural appropriateness
-    const culturalAppropriateness = await this.validateCulturalAppropriateness(content, culturalContext);
-    
+    const culturalAppropriateness = await this.validateCulturalAppropriateness(
+      content,
+      culturalContext,
+    );
+
     return {
-      is_safe: !sensitiveTopicDetected && islamicCompliance > 90 && culturalAppropriateness > 90,
+      is_safe:
+        !sensitiveTopicDetected &&
+        islamicCompliance > 90 &&
+        culturalAppropriateness > 90,
       islamic_compliance: islamicCompliance,
       cultural_appropriateness: culturalAppropriateness,
-      security_concerns: sensitiveTopicDetected ? ['sensitive_topic_detected'] : []
+      security_concerns: sensitiveTopicDetected
+        ? ["sensitive_topic_detected"]
+        : [],
     };
   }
 }
@@ -422,6 +447,7 @@ export class CulturalSecurityFilter {
 ### Deployment Steps
 
 #### 1. Pre-deployment Checklist
+
 - [ ] All Phase 3 packages built successfully
 - [ ] Cultural validation tests passing (>95% success rate)
 - [ ] Arabic NLP accuracy tests passing (>90% accuracy)
@@ -435,6 +461,7 @@ export class CulturalSecurityFilter {
 - [ ] Monitoring dashboards configured
 
 #### 2. Deployment Commands
+
 ```bash
 # Build all packages
 bun run build:all
@@ -459,6 +486,7 @@ bun run health-check:production
 ```
 
 #### 3. Post-deployment Verification
+
 ```bash
 # Check cultural validation performance
 curl -X POST https://api.iraqi-ai-chat.com/cultural/validate \
@@ -483,22 +511,23 @@ curl -X POST https://api.iraqi-ai-chat.com/learning/predict \
 
 ### Performance Targets (Production)
 
-| Component | Metric | Target | Monitoring |
-|-----------|--------|---------|------------|
-| Cultural Engine | Response Time | <200ms | Prometheus |
-| Cultural Engine | Islamic Compliance | >98% | Custom Dashboard |
-| Arabic NLP | Processing Time | <300ms | Prometheus |
-| Arabic NLP | Dialect Accuracy | >90% | Custom Dashboard |
-| Professional Validator | Validation Time | <500ms | Prometheus |
-| Professional Validator | Accuracy | >95% | Custom Dashboard |
-| Cultural Learning | Inference Time | <200ms | Prometheus |
-| Cultural Learning | Prediction Accuracy | >90% | Custom Dashboard |
-| Overall System | Uptime | >99.9% | Pingdom |
-| Overall System | Error Rate | <0.1% | Sentry |
+| Component              | Metric              | Target | Monitoring       |
+| ---------------------- | ------------------- | ------ | ---------------- |
+| Cultural Engine        | Response Time       | <200ms | Prometheus       |
+| Cultural Engine        | Islamic Compliance  | >98%   | Custom Dashboard |
+| Arabic NLP             | Processing Time     | <300ms | Prometheus       |
+| Arabic NLP             | Dialect Accuracy    | >90%   | Custom Dashboard |
+| Professional Validator | Validation Time     | <500ms | Prometheus       |
+| Professional Validator | Accuracy            | >95%   | Custom Dashboard |
+| Cultural Learning      | Inference Time      | <200ms | Prometheus       |
+| Cultural Learning      | Prediction Accuracy | >90%   | Custom Dashboard |
+| Overall System         | Uptime              | >99.9% | Pingdom          |
+| Overall System         | Error Rate          | <0.1%  | Sentry           |
 
 ### Maintenance Procedures
 
 #### 1. Model Updates
+
 ```bash
 # Update cultural learning models
 bun run cultural-learning:update-models
@@ -511,11 +540,12 @@ bun run cultural-learning:validate
 ```
 
 #### 2. Cultural Knowledge Updates
+
 ```bash
 # Update Islamic compliance rules
 bun run cultural-engine:update-islamic-rules
 
-# Update Iraqi cultural patterns  
+# Update Iraqi cultural patterns
 bun run cultural-engine:update-cultural-patterns
 
 # Refresh professional domain knowledge
@@ -523,6 +553,7 @@ bun run professional-domains:update-knowledge
 ```
 
 #### 3. Arabic Language Updates
+
 ```bash
 # Update Iraqi dialect patterns
 bun run arabic-nlp:update-dialect-patterns
@@ -537,6 +568,7 @@ bun run arabic-nlp:update-context-extraction
 ### Rollback Procedures
 
 #### 1. Component Rollback
+
 ```bash
 # Rollback cultural engine
 kubectl rollout undo deployment/iraqi-ai-chat --to-revision=1
@@ -547,13 +579,15 @@ docker-compose -f docker-compose.prod.yml up -d --scale iraqi-ai-chat=3
 ```
 
 #### 2. Feature Flags
+
 ```typescript
 // feature-flags/iraqi-features.ts
 export const IRAQI_FEATURE_FLAGS = {
-  CULTURAL_ENGINE_V2: process.env.ENABLE_CULTURAL_ENGINE_V2 === 'true',
-  ADVANCED_ARABIC_NLP: process.env.ENABLE_ADVANCED_ARABIC_NLP === 'true',
-  PROFESSIONAL_VALIDATION_V2: process.env.ENABLE_PROFESSIONAL_VALIDATION_V2 === 'true',
-  CULTURAL_LEARNING_ML: process.env.ENABLE_CULTURAL_LEARNING_ML === 'true'
+  CULTURAL_ENGINE_V2: process.env.ENABLE_CULTURAL_ENGINE_V2 === "true",
+  ADVANCED_ARABIC_NLP: process.env.ENABLE_ADVANCED_ARABIC_NLP === "true",
+  PROFESSIONAL_VALIDATION_V2:
+    process.env.ENABLE_PROFESSIONAL_VALIDATION_V2 === "true",
+  CULTURAL_LEARNING_ML: process.env.ENABLE_CULTURAL_LEARNING_ML === "true",
 };
 ```
 

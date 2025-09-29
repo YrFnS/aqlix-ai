@@ -3,8 +3,8 @@
  * Government-grade session management with cultural awareness
  */
 
-import { IraqiUser, SecurityClearance, IraqiMinistry } from './types';
-import { DeviceInfo, CulturalContext } from './authentication';
+import { IraqiUser, SecurityClearance, IraqiMinistry } from "./types";
+import { DeviceInfo, CulturalContext } from "./authentication";
 
 // Session Management
 export interface AuthenticationSession {
@@ -23,12 +23,17 @@ export interface AuthenticationSession {
   expiresAt: Date;
   ipAddress: string;
   deviceInfo: DeviceInfo;
-  status: 'active' | 'idle' | 'expired' | 'terminated' | 'suspended';
+  status: "active" | "idle" | "expired" | "terminated" | "suspended";
   mfaVerified: boolean;
   biometricVerified: boolean;
 }
 
-export type SecurityLevel = 'public' | 'internal' | 'confidential' | 'secret' | 'top_secret';
+export type SecurityLevel =
+  | "public"
+  | "internal"
+  | "confidential"
+  | "secret"
+  | "top_secret";
 
 export interface SessionPermission {
   resource: string;
@@ -36,38 +41,49 @@ export interface SessionPermission {
   scope: PermissionScope;
   conditions?: PermissionCondition[];
   expiresAt?: Date;
-}export type PermissionAction = 
-  | 'read' 
-  | 'write' 
-  | 'execute' 
-  | 'delete' 
-  | 'approve' 
-  | 'audit' 
-  | 'export'
-  | 'print'
-  | 'share';
+}
+export type PermissionAction =
+  | "read"
+  | "write"
+  | "execute"
+  | "delete"
+  | "approve"
+  | "audit"
+  | "export"
+  | "print"
+  | "share";
 
 export interface PermissionScope {
   ministry?: IraqiMinistry;
   department?: string;
   dataClassification?: SecurityLevel;
-  geographicScope?: 'local' | 'governorate' | 'national' | 'international';
+  geographicScope?: "local" | "governorate" | "national" | "international";
 }
 
 export interface PermissionCondition {
-  type: 'time_based' | 'location_based' | 'approval_required' | 'cultural_compliance';
+  type:
+    | "time_based"
+    | "location_based"
+    | "approval_required"
+    | "cultural_compliance";
   parameters: Record<string, any>;
   message?: string;
   messageAr?: string;
 }
 
 export interface SessionRestriction {
-  type: 'ip_whitelist' | 'device_only' | 'location_based' | 'time_window' | 'concurrent_limit';
+  type:
+    | "ip_whitelist"
+    | "device_only"
+    | "location_based"
+    | "time_window"
+    | "concurrent_limit";
   parameters: Record<string, any>;
   isActive: boolean;
   reason: string;
   reasonAr: string;
-}export interface SessionCulturalSettings {
+}
+export interface SessionCulturalSettings {
   prayerTimeNotifications: boolean;
   prayerTimeRestrictions: boolean;
   fridayRestrictions: boolean;
@@ -91,15 +107,15 @@ export interface SessionEvent {
   requiresReview: boolean;
 }
 
-export type SessionEventType = 
-  | 'login'
-  | 'logout'
-  | 'timeout'
-  | 'permission_denied'
-  | 'elevation_requested'
-  | 'cultural_violation'
-  | 'suspicious_activity'
-  | 'location_change'
-  | 'device_change'
-  | 'mfa_challenge'
-  | 'prayer_time_restriction';
+export type SessionEventType =
+  | "login"
+  | "logout"
+  | "timeout"
+  | "permission_denied"
+  | "elevation_requested"
+  | "cultural_violation"
+  | "suspicious_activity"
+  | "location_change"
+  | "device_change"
+  | "mfa_challenge"
+  | "prayer_time_restriction";
