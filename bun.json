@@ -4,10 +4,12 @@
   "workspaces": ["apps/*", "packages/*"],
   "install": {
     "cache": {
-      "dir": ".bun/cache"
+      "dir": ".bun/cache",
+      "disabled": false
     },
     "lockfile": {
-      "path": "bun.lockb"
+      "path": "bun.lock",
+      "save": true
     },
     "registry": {
       "url": "https://registry.npmjs.org/",
@@ -16,19 +18,40 @@
     "production": false,
     "optional": true,
     "dev": true,
-    "peer": false
+    "peer": false,
+    "exact": false,
+    "frozen": false
   },
   "run": {
     "bun": true,
     "silent": false,
-    "cwd": "."
+    "cwd": ".",
+    "shell": "bash"
+  },
+  "build": {
+    "target": "bun",
+    "format": "esm",
+    "sourcemap": "external",
+    "minify": false,
+    "splitting": true,
+    "outdir": "dist",
+    "root": "src"
   },
   "test": {
     "root": ".",
-    "preload": [],
+    "preload": ["./test/setup.ts"],
     "smol": false,
     "coverage": true,
+    "coverageDir": "coverage",
+    "coverageReporter": ["text", "lcov", "html"],
     "bail": 0,
-    "timeout": 5000
+    "timeout": 5000,
+    "setupFilesAfterEnv": ["./test/jest.setup.ts"],
+    "exclude": [
+      "**/examples/**",
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**"
+    ]
   }
 }

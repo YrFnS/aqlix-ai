@@ -2665,3 +2665,5 @@ git status
 git diff --name-only
 git diff --stat
 git ls-files --others --exclude-standard
+
+the next prp we have is this 'c:/Users/Itokoro/Documents/projects/aqlix-ai/initials/02_environment_variables.md' initial we generate a prp from it then execute it, or continue the doing the rest of the tasks we have in archon before moving to the next prp check both the initial 02_environment_variables.md and tasks we have in archon then tell me whats your thoughts
