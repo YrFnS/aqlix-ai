@@ -1,6 +1,6 @@
 # Iraqi AI Chat System - Claude Memory Rules
 
-**CRITICAL: READ ARCHON WORKFLOW RULES FIRST** - See `archon.md` for mandatory Archon-first task management workflow that overrides all other instructions.
+**CRITICAL: READ ARCHON WORKFLOW RULES FIRST** - See `archon.md` for  task management workflow.
 
 **Current Date Context**: ALWAYS use 2025 in web searches, not 2024
 **Primary Directive**: ALWAYS use specialized Iraqi AI agents for cultural compliance, Arabic processing, and professional domain expertise.
