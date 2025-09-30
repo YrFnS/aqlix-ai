@@ -2667,3 +2667,7 @@ git diff --stat
 git ls-files --others --exclude-standard
 
 the next prp we have is this 'c:/Users/Itokoro/Documents/projects/aqlix-ai/initials/02_environment_variables.md' initial we generate a prp from it then execute it, or continue the doing the rest of the tasks we have in archon before moving to the next prp check both the initial 02_environment_variables.md and tasks we have in archon then tell me whats your thoughts
+
+i executed the first prp and generated the second one but before we continue i have a question
+we want use a good module and cheap and can speck and right arabic not just english and we can use it via api dont need to host it so we can give to the users with cheap plans so every one can afford it like 5$ or 10$ per month and we have more expensive plans for even better and more usage
+so what we will use?? make a deep research and tell me your thoughts

@@ -1,1029 +1,902 @@
-name: "Environment Variables Setup for Iraqi AI Chat System"
-description: |
-
-## Purpose
-
-Establish secure environment variable management system for the Iraqi AI Chat System workspace using Bun's native .env file handling, TypeScript environment validation with Zod, and Python environment management with pydantic-settings.
-
-## Core Principles
-
-1. **Security First**: Never commit sensitive credentials to version control
-2. **Type Safety**: Runtime validation for required environment variables
-3. **Developer Experience**: Clear documentation and helpful error messages
-4. **Cross-Platform**: Consistent behavior across Windows/Linux/macOS
-5. **Monorepo Support**: Environment variables accessible across apps/ and packages/
-6. **Global rules**: Follow all rules in CLAUDE.md
+name: "Environment Variables Setup PRP"
+description: "Comprehensive setup for secure environment variable management across Iraqi AI Chat System monorepo with Bun native support, TypeScript validation, and cross-workspace configuration"
 
 ---
 
 ## Goal
 
-Create a production-ready environment variable management system that provides secure credential handling, type-safe environment variable access, and comprehensive validation for the Iraqi AI Chat System monorepo.
+Implement a secure, type-safe environment variable management system for the Iraqi AI Chat System that supports development, staging, and production environments across the monorepo. The system should use Bun's native environment loading, provide TypeScript type safety with Zod validation, and enable consistent environment access across all apps and packages.
 
 ## Why
 
-- **Security**: Proper handling of API keys, database credentials, and sensitive configuration prevents credential leaks
-- **Type Safety**: Runtime validation catches configuration errors early, preventing production issues
-- **Development Efficiency**: Clear environment setup reduces onboarding time and configuration mistakes
-- **Consistency**: Standardized environment management across TypeScript (Bun) and Python (FastAPI) applications
-- **Scalability**: Foundation that supports additional environment-specific configurations as the system grows
+- **Security First**: Proper credential management prevents API key leaks and security vulnerabilities
+- **Developer Experience**: Type-safe environment variables catch configuration errors at compile time
+- **Monorepo Support**: Unified environment configuration accessible across apps/web, apps/api, and shared packages
+- **Deployment Confidence**: Clear separation between development, staging, and production prevents configuration errors
+- **Cultural Compliance**: Environment-based configuration supports Iraqi-specific features (payment gateways, Arabic processing)
 
 ## What
 
-Implement comprehensive environment variable infrastructure with:
-
-- Base environment file templates (.env.example) documenting all required variables
-- Type-safe environment variable validation using Zod (TypeScript) and Pydantic Settings (Python)
-- Secure .env file patterns with proper precedence (.env → .env.{NODE_ENV} → .env.local)
-- Cross-workspace environment variable access patterns
-- Development, staging, and production environment separation
-- Clear documentation of required vs optional variables with helpful error messages
+Implement environment variable infrastructure that:
+- Loads .env files automatically using Bun's native support
+- Validates environment variables with Zod schemas for type safety
+- Provides TypeScript autocompletion for all environment variables
+- Separates client-side (NEXT_PUBLIC_*) and server-side environment variables
+- Supports environment-specific overrides (.env.local, .env.production)
+- Documents all required and optional environment variables
+- Prevents sensitive credentials from being committed to version control
 
 ### Success Criteria
 
-- [ ] .env.example file created with all required variables documented
-- [ ] TypeScript environment validation with Zod catches missing variables at startup
-- [ ] Python environment validation with Pydantic Settings catches missing variables at startup
-- [ ] No sensitive credentials in version control (validated by git history check)
-- [ ] Clear error messages for missing or invalid environment variables
-- [ ] Environment variables accessible across all workspace packages
-- [ ] Cross-platform compatibility verified (Windows, Linux, macOS)
+- [ ] .env.example files created for root, apps/web, and apps/api with all required variables documented
+- [ ] Zod validation schemas implemented for environment variables with helpful error messages
+- [ ] TypeScript type definitions provide autocompletion for process.env in all workspaces
+- [ ] All sensitive environment files (.env, .env.local) properly ignored in .gitignore
+- [ ] Environment variables accessible across apps and packages workspaces
+- [ ] Validation runs at application startup and fails fast with clear error messages
+- [ ] Documentation in README.md explains environment setup for new developers
+- [ ] Test environment variables work correctly in test suites
 
 ## All Needed Context
 
 ### Documentation & References
 
 ```yaml
-# MUST READ - Include these in your context window
+# MUST READ - Bun Environment Variable Documentation
 - url: https://bun.sh/docs/runtime/env
-  why: Bun's automatic .env file loading, file precedence, and variable expansion
-  critical: |
-    - Bun automatically loads .env files (no dotenv package needed)
-    - File precedence: .env → .env.{NODE_ENV} → .env.local
-    - .env.local NOT loaded in test environment for consistency
-    - Bun.env and process.env are aliases (use process.env for portability)
-    - Automatic variable expansion (e.g., DB_URL=$DB_HOST:$DB_PORT)
-    - Escape $ with backslash if value contains $ character
+  why: >
+    Bun automatically loads .env files with specific precedence:
+    1. .env
+    2. .env.production / .env.development / .env.test (based on NODE_ENV)
+    3. .env.local (not loaded in test environment)
 
-- url: https://creatures.sh/blog/env-type-safety-and-validation/
-  why: TypeScript environment variable validation with Zod patterns
-  critical: |
-    - Define Zod schema for all environment variables
-    - Use .parse() to validate at startup (fail fast)
-    - Export typed ENV object for type-safe access throughout app
-    - All process.env properties are string | undefined by default
-    - Zod transforms strings to proper types (numbers, booleans, URLs)
+    Access via process.env, Bun.env, or import.meta.env (all typed as string | undefined)
+    Supports quotes, variable expansion, and --env-file flag
 
-- url: https://docs.pydantic.dev/latest/concepts/pydantic_settings/
-  why: Python environment variable validation with Pydantic Settings
-  critical: |
-    - Pydantic Settings v2 integrates with python-dotenv automatically
-    - BaseSettings class provides type validation and coercion
-    - Field() provides defaults, aliases, and validation rules
-    - model_config controls case sensitivity and .env file loading
-    - Fails at startup with clear errors for missing required fields
+- url: https://bun.sh/guides/runtime/read-env
+  why: Official Bun examples for reading environment variables with TypeScript
 
-- file: .gitignore
-  why: Already has proper .env file patterns configured
-  critical: |
-    Lines 34-39 already exclude .env files:
-    - .env
-    - .env.local
-    - .env.development.local
-    - .env.test.local
-    - .env.production.local
+- url: https://catalins.tech/validate-environment-variables-with-zod/
+  why: >
+    Complete Zod validation patterns:
+    - Safe parsing with error handling: envSchema.safeParse()
+    - Type inference: z.infer<typeof envSchema>
+    - Extending ProcessEnv interface for global types
+    - Separate client/server schemas
 
+- url: https://github.com/af/envalid
+  why: >
+    Alternative validation library (if Zod doesn't fit):
+    - Lightweight, TypeScript-first
+    - Built-in validators: str(), bool(), num(), email(), url()
+    - Custom validators with type inference
+
+- url: https://zod.dev/
+  why: Zod documentation for schema validation (already installed in apps/web)
+
+# EXISTING CODEBASE PATTERNS
 - file: examples/main_agent_reference/.env.example
-  why: Example .env structure for LLM configuration
-  pattern: |
-    # Comments explaining each variable
-    LLM_PROVIDER=openai
-    LLM_API_KEY=sk-your-api-key-here
-    LLM_CHOICE=gpt-4.1-mini
-    LLM_BASE_URL=https://api.openai.com/v1
+  why: Reference pattern for LLM configuration variables (LLM_PROVIDER, LLM_API_KEY, etc.)
 
-- file: apps/api/requirements.txt
-  why: Python dependencies already include environment management tools
-  critical: |
-    Line 21-22:
-    - python-dotenv>=1.0.0 (for .env file loading)
-    - pydantic-settings>=2.1.0 (for typed environment validation)
+- file: .gitignore:34-39
+  why: >
+    Already configured to ignore:
+    .env, .env.local, .env.development.local, .env.test.local, .env.production.local
 
-- file: bun.json
-  why: Workspace configuration for Bun runtime
-  critical: |
-    - Workspace structure already defined
-    - Build target: "bun" means no Node.js polyfills needed
-    - Can access Bun.env directly or use process.env for compatibility
+- file: test/setup.ts:8-10
+  why: >
+    Test environment pattern:
+    process.env.NODE_ENV = "test"
+    process.env.TESTING = "true"
+
+- file: apps/web/playwright.config.ts:11-15
+  why: >
+    Existing process.env usage:
+    forbidOnly: !!process.env.CI
+    retries: process.env.CI ? 2 : 0
+    workers: process.env.CI ? 1 : undefined
+    reuseExistingServer: !process.env.CI
+
+# INSTALLED DEPENDENCIES
+- package: zod@^3.22.4
+  location: apps/web/package.json
+  why: Already available for environment validation in Next.js app
+
+- package: dotenv@^16.3.1
+  location: apps/api/package.json
+  why: Available for Python FastAPI backend (though Bun handles .env natively)
 ```
 
-### Current Codebase tree (relevant parts)
+### Current Codebase Structure
 
 ```bash
-/
+aqlix-ai/
+├── .env                          # ❌ DOES NOT EXIST - Need to create
+├── .env.example                  # ❌ DOES NOT EXIST - Need to create
+├── .gitignore                    # ✅ EXISTS - Already ignores .env files
 ├── apps/
-│   ├── web/                    # Next.js 15+ web application
-│   │   └── [NO package.json or src/ yet]
-│   └── api/                    # Python FastAPI backend
-│       ├── requirements.txt    # Already includes python-dotenv, pydantic-settings
-│       └── tests/              # Test files exist
-├── packages/
-│   └── types/                  # Only package with structure
-│       ├── tsconfig.json       # TypeScript config exists
-│       └── package.json        # Package manifest exists
-├── .gitignore                  # Already excludes .env files properly
-├── bun.json                    # Workspace configuration exists
-├── package.json                # Root workspace manifest exists
-└── [NO .env.example yet]       # Missing - needs creation
+│   ├── web/                      # Next.js 15 + React 19
+│   │   ├── .env.local            # ❌ DOES NOT EXIST - Need to create template
+│   │   ├── .env.example          # ❌ DOES NOT EXIST - Need to create
+│   │   ├── package.json          # ✅ Has Zod ^3.22.4
+│   │   └── src/
+│   │       ├── config/           # ❌ DOES NOT EXIST - Need to create
+│   │       │   └── env.ts        # ❌ DOES NOT EXIST - Zod validation here
+│   │       └── types/            # ❌ DOES NOT EXIST - Need to create
+│   │           └── env.d.ts      # ❌ DOES NOT EXIST - Type definitions here
+│   └── api/                      # FastAPI Python backend
+│       ├── .env.example          # ❌ DOES NOT EXIST - Need to create
+│       ├── config/               # ❌ DOES NOT EXIST - Need to create
+│       │   └── settings.py       # ❌ DOES NOT EXIST - Python env config here
+│       └── package.json          # ✅ Has dotenv ^16.3.1
+├── packages/                     # Shared packages
+│   └── types/                    # Shared TypeScript types
+│       └── src/
+│           └── env.ts            # ❌ DOES NOT EXIST - Shared env types here
+└── test/
+    └── setup.ts                  # ✅ EXISTS - Already sets test env vars
 ```
 
-### Desired Codebase tree with files to be added and responsibility of file
+### Desired Codebase Structure
 
 ```bash
-/
-├── .env.example                # Root template documenting ALL environment variables
+aqlix-ai/
+├── .env.example                  # 🆕 Root-level example with shared variables
 ├── apps/
 │   ├── web/
-│   │   ├── src/
-│   │   │   ├── config/
-│   │   │   │   └── env.ts      # TypeScript environment validation with Zod
-│   │   │   └── lib/
-│   │   │       └── env.ts      # Environment variable access utilities
-│   │   └── .env.example        # Web-specific environment template (optional)
+│   │   ├── .env.example          # 🆕 Next.js specific variables
+│   │   └── src/
+│   │       ├── config/
+│   │       │   └── env.ts        # 🆕 Zod validation + type-safe env object
+│   │       └── types/
+│   │           └── env.d.ts      # 🆕 TypeScript ProcessEnv extension
 │   └── api/
-│       ├── config/
-│       │   ├── __init__.py
-│       │   └── settings.py     # Python environment validation with Pydantic Settings
-│       └── .env.example        # API-specific environment template (optional)
+│       ├── .env.example          # 🆕 API specific variables
+│       └── config/
+│           └── settings.py       # 🆕 Python environment configuration
 ├── packages/
 │   └── types/
 │       └── src/
-│           └── env.ts          # Shared environment type definitions
+│           └── env.ts            # 🆕 Shared environment variable types
 └── docs/
-    └── ENVIRONMENT_SETUP.md    # Comprehensive environment setup guide
+    └── ENVIRONMENT_SETUP.md      # 🆕 Developer documentation
 ```
 
-### Known Gotchas of our codebase & Library Quirks
+### Known Gotchas & Library Quirks
 
 ```typescript
-// CRITICAL: Bun automatic .env loading
-// Bun loads .env files automatically WITHOUT requiring dotenv package
-// File precedence: .env → .env.development → .env.local
-// NOTE: .env.local is NOT loaded when NODE_ENV=test (ensures test consistency)
+// CRITICAL: Bun environment variable quirks
 
-// GOTCHA: process.env returns string | undefined
-// All environment variables are strings or undefined by default
-process.env.PORT // Type: string | undefined
-// Must parse/validate to get correct types
+// ❌ GOTCHA 1: All env vars are string | undefined
+// process.env.PORT returns string, NOT number
+const port = process.env.PORT; // Type: string | undefined
+const portNum = Number(process.env.PORT); // Must manually convert
 
-// GOTCHA: Variable expansion in Bun
-// Bun automatically expands variables like: DB_URL=postgres://$DB_HOST:$DB_PORT
-// If your value contains $, escape it: PASSWORD=my\$ecret
+// ✅ SOLUTION: Use Zod for type coercion
+const envSchema = z.object({
+  PORT: z.string().transform(Number).default("3000"),
+});
 
-// GOTCHA: Bun.env vs process.env
-// They are ALIASES - functionally identical
-// Use process.env for Node.js compatibility
-// Use Bun.env if you want to be explicit about Bun-specific code
+// ❌ GOTCHA 2: .env.local not loaded in test environment
+// Tests won't see variables in .env.local
+if (process.env.NODE_ENV === "test") {
+  // .env.local is IGNORED here
+}
 
-// CRITICAL: Python dotenv loading
-// Pydantic Settings loads .env automatically
-// Use BaseSettings with model_config for .env file path customization
-// python-dotenv NOT needed in code - pydantic-settings handles it
+// ✅ SOLUTION: Use .env.test for test-specific variables
+// Or set in test/setup.ts
 
-// GOTCHA: Next.js environment variables
-// Variables prefixed with NEXT_PUBLIC_ are exposed to browser
-// Server-only variables must NOT have NEXT_PUBLIC_ prefix
-// NEXT_PUBLIC_API_URL → client-side accessible
-// DATABASE_URL → server-only
+// ❌ GOTCHA 3: Next.js requires NEXT_PUBLIC_ prefix for client-side
+// Regular env vars are undefined in browser
+console.log(process.env.API_KEY); // ❌ undefined in browser
+console.log(process.env.NEXT_PUBLIC_API_URL); // ✅ works in browser
 
-// GOTCHA: Type coercion in Pydantic Settings
-// Strings automatically converted to proper types
-// "true" → True, "123" → 123, but validation can fail
-// Use Field(default=...) for optional variables
+// ✅ SOLUTION: Separate client and server schemas
+const clientEnv = z.object({
+  NEXT_PUBLIC_API_URL: z.string().url(),
+});
+const serverEnv = z.object({
+  API_SECRET: z.string().min(32),
+});
 
-// SECURITY: Never commit .env files
-// .gitignore already configured to exclude all .env files
-// ALWAYS use .env.example with placeholder values
-// Run git log search to verify no credentials committed
+// ❌ GOTCHA 4: Bun loads .env files in specific order
+// Later files override earlier ones:
+// 1. .env
+// 2. .env.production | .env.development | .env.test
+// 3. .env.local
+
+// ✅ SOLUTION: Use this hierarchy intentionally
+// .env         → Defaults for all environments
+// .env.local   → Local overrides (gitignored)
+
+// ❌ GOTCHA 5: Environment variables are cached
+// Changes to .env files require restart
+process.env.NEW_VAR = "value"; // ❌ Won't persist across files
+
+// ✅ SOLUTION: Always restart dev server after .env changes
+
+// ❌ GOTCHA 6: Zod validates but doesn't prevent access
+const env = envSchema.parse(process.env);
+// Can still access process.env.INVALID_VAR directly
+
+// ✅ SOLUTION: Always use validated env object, not process.env
+export const env = envSchema.parse(process.env); // Use this
+// DON'T use process.env.* directly after validation
+
+// CRITICAL: Monorepo environment variable access
+// Bun loads .env from CWD (current working directory)
+// In monorepo, CWD matters!
+
+// ❌ PROBLEM: Running from root vs app directory
+// cd apps/web && bun dev   → Loads apps/web/.env
+// bun run dev:web          → Loads root .env
+
+// ✅ SOLUTION: Use --cwd flag in package.json scripts
+"scripts": {
+  "dev": "bun --cwd apps/web run dev"
+}
+
+// SECURITY: Never log environment variables
+console.log(process.env); // ❌ NEVER do this in production
+console.log({ env }); // ❌ Exposes all secrets
+
+// ✅ SOLUTION: Log only non-sensitive info
+console.log("Environment loaded:", {
+  nodeEnv: process.env.NODE_ENV,
+  hasApiKey: !!process.env.API_KEY, // Boolean check only
+});
 ```
 
 ## Implementation Blueprint
 
-### Data models and structure
+### Data Models and Structure
 
-Create the core environment validation schemas that ensure type safety and consistency.
+Create type-safe environment configuration system:
 
 ```typescript
-// TypeScript environment schema with Zod (apps/web/src/config/env.ts)
-import { z } from 'zod';
+// packages/types/src/env.ts - Shared environment types
+export interface BaseEnv {
+  NODE_ENV: "development" | "production" | "test";
+  LOG_LEVEL: "debug" | "info" | "warn" | "error";
+}
 
-const envSchema = z.object({
-  // Node environment
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+// apps/web/src/types/env.d.ts - Extend ProcessEnv for autocompletion
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      // Next.js
+      NODE_ENV: "development" | "production" | "test";
 
-  // API Configuration
+      // Client-side (NEXT_PUBLIC_*)
+      NEXT_PUBLIC_API_URL: string;
+      NEXT_PUBLIC_SUPABASE_URL: string;
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
+
+      // Server-side
+      API_SECRET_KEY: string;
+      DATABASE_URL: string;
+      REDIS_URL?: string;
+
+      // LLM Configuration
+      LLM_PROVIDER: "openai";
+      LLM_API_KEY: string;
+      LLM_MODEL: string;
+
+      // Iraqi AI Specific
+      ZAINCASH_API_KEY?: string;
+      FASTPAY_API_KEY?: string;
+      CULTURAL_VALIDATION_ENABLED: "true" | "false";
+    }
+  }
+}
+
+export {};
+
+// apps/web/src/config/env.ts - Zod validation
+import { z } from "zod";
+
+// Client environment (browser-accessible)
+const clientEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z.string().url(),
-  API_TIMEOUT_MS: z.string().transform(Number).pipe(z.number().positive()).default('30000'),
-
-  // Database
-  DATABASE_URL: z.string().url(),
-
-  // Authentication
-  NEXTAUTH_SECRET: z.string().min(32),
-  NEXTAUTH_URL: z.string().url(),
-
-  // LLM Configuration (Anthropic for Iraqi AI)
-  ANTHROPIC_API_KEY: z.string().min(1),
-  ANTHROPIC_MODEL: z.string().default('claude-sonnet-4.5'),
-
-  // Optional: Feature flags
-  ENABLE_ANALYTICS: z.string().transform(val => val === 'true').default('false'),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
 });
 
-// Export type-safe environment
-export const env = envSchema.parse(process.env);
-export type Env = z.infer<typeof envSchema>;
-```
-
-```python
-# Python environment settings with Pydantic (apps/api/config/settings.py)
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, field_validator
-from typing import Literal
-
-class Settings(BaseSettings):
-    """
-    Iraqi AI Chat System - API Configuration
-
-    Environment variables loaded from .env file automatically.
-    All required variables must be set or application will fail at startup.
-    """
-
-    model_config = SettingsConfigDict(
-        env_file='.env',
-        env_file_encoding='utf-8',
-        case_sensitive=True,
-        extra='ignore'  # Ignore extra variables
-    )
-
-    # Environment
-    environment: Literal['development', 'staging', 'production'] = 'development'
-
-    # API Configuration
-    api_host: str = Field(default='0.0.0.0', alias='API_HOST')
-    api_port: int = Field(default=8000, alias='API_PORT')
-
-    # Database
-    database_url: str = Field(..., alias='DATABASE_URL')  # Required (...)
-
-    # Authentication
-    secret_key: str = Field(..., min_length=32, alias='SECRET_KEY')
-    algorithm: str = Field(default='HS256', alias='ALGORITHM')
-    access_token_expire_minutes: int = Field(default=30, alias='ACCESS_TOKEN_EXPIRE_MINUTES')
-
-    # LLM Configuration
-    anthropic_api_key: str = Field(..., alias='ANTHROPIC_API_KEY')
-    anthropic_model: str = Field(default='claude-sonnet-4.5', alias='ANTHROPIC_MODEL')
-
-    # Iraqi-specific
-    enable_arabic_processing: bool = Field(default=True, alias='ENABLE_ARABIC_PROCESSING')
-    enable_cultural_validation: bool = Field(default=True, alias='ENABLE_CULTURAL_VALIDATION')
-
-    @field_validator('database_url')
-    @classmethod
-    def validate_database_url(cls, v: str) -> str:
-        if not v.startswith('postgresql://'):
-            raise ValueError('DATABASE_URL must be a PostgreSQL connection string')
-        return v
-
-# Global settings instance
-settings = Settings()
-```
-
-### List of tasks to be completed to fulfill the PRP in the order they should be completed
-
-```yaml
-Task 1: Create Root Environment Template
-CREATE .env.example (root):
-  - DOCUMENT: All environment variables used across entire monorepo
-  - ORGANIZE: Sections with clear comments (API, Database, Auth, LLM, Iraqi-specific)
-  - PLACEHOLDER: Safe example values (sk-example-key-here, postgres://user:pass@localhost:5432/db)
-  - SECURITY: NO actual credentials or sensitive values
-  - FORMAT: KEY=value with inline comments explaining each variable
-
-Task 2: Setup TypeScript Environment Validation (Web App)
-CREATE apps/web/src/config/env.ts:
-  - IMPORT: Zod for schema validation
-  - DEFINE: envSchema with all required web environment variables
-  - VALIDATE: Parse process.env at module load time (fail fast)
-  - EXPORT: Typed env object for use throughout application
-  - TYPES: Transform strings to proper types (numbers, booleans, URLs)
-
-CREATE apps/web/src/config/index.ts:
-  - EXPORT: Centralized configuration access point
-  - PATTERN: Re-export env for clean imports: import { env } from '@/config'
-
-ADD packages/types/src/env.ts (optional):
-  - DEFINE: Shared environment type definitions if needed across packages
-  - PATTERN: Common validation helpers and types
-
-Task 3: Setup Python Environment Validation (API)
-CREATE apps/api/config/__init__.py:
-  - PATTERN: Empty file to make config a package
-
-CREATE apps/api/config/settings.py:
-  - IMPORT: BaseSettings from pydantic_settings
-  - DEFINE: Settings class with all API environment variables
-  - VALIDATE: Field validators for critical variables (database_url, api_key format)
-  - CONFIGURE: model_config with .env file path and case sensitivity
-  - EXPORT: Global settings instance: settings = Settings()
-
-UPDATE apps/api/main.py (if exists):
-  - IMPORT: from config.settings import settings
-  - VALIDATE: Environment at startup (happens automatically with Settings())
-  - LOG: Startup message confirming environment loaded
-
-Task 4: Create Environment Documentation
-CREATE docs/ENVIRONMENT_SETUP.md:
-  - SECTION: Overview of environment variable management
-  - SECTION: Required variables with explanations
-  - SECTION: Optional variables with defaults
-  - SECTION: How to setup local development environment
-  - SECTION: Environment-specific configurations (dev/staging/production)
-  - SECTION: Security best practices
-  - SECTION: Troubleshooting common issues
-  - EXAMPLES: Copy-paste ready .env file examples
-
-Task 5: Add Development Dependencies
-UPDATE apps/web/package.json (when created):
-  - ADD: "zod": "^3.22.4" for environment validation
-  - SCRIPT: "validate:env": "bun run src/config/env.ts"
-
-UPDATE package.json (root):
-  - SCRIPT: "validate:env": "bun run --filter '*' validate:env" (workspace-wide)
-
-Task 6: Add Validation to Startup Scripts
-UPDATE apps/web/src/app/layout.tsx (or _app.tsx when created):
-  - IMPORT: Environment config at top of file to trigger validation
-  - PATTERN: import { env } from '@/config/env'
-  - EFFECT: Validation happens before any app code runs
-
-UPDATE apps/api/main.py:
-  - IMPORT: settings at module level to trigger validation
-  - PATTERN: from config.settings import settings
-  - EFFECT: FastAPI won't start if environment is invalid
-
-Task 7: Create Environment Testing
-CREATE apps/web/src/config/env.test.ts:
-  - TEST: Valid environment variables pass validation
-  - TEST: Missing required variables throw clear errors
-  - TEST: Invalid types/formats throw validation errors
-  - TEST: Default values work correctly
-  - PATTERN: Mock process.env for testing
-
-CREATE apps/api/tests/config/test_settings.py:
-  - TEST: Valid environment loads correctly
-  - TEST: Missing required variables raise ValidationError
-  - TEST: Field validators work correctly
-  - TEST: Default values applied correctly
-  - PATTERN: Use pytest with monkeypatch for env variables
-```
-
-### Per task pseudocode as needed added to each task
-
-```bash
-# Task 1: Root .env.example structure
-# ==================================
-# Iraqi AI Chat System - Environment Variables
-# Copy this file to .env and fill in your values
-# NEVER commit .env to version control!
-# ==================================
-
-# ===== Environment =====
-NODE_ENV=development  # development | test | production
-
-# ===== Web Application (Next.js) =====
-NEXT_PUBLIC_API_URL=http://localhost:8000  # API endpoint (exposed to browser)
-NEXTAUTH_SECRET=your-secret-key-min-32-chars-long-here  # Session secret (server-only)
-NEXTAUTH_URL=http://localhost:3000  # App URL for auth callbacks
-
-# ===== API Configuration =====
-API_HOST=0.0.0.0  # API host binding
-API_PORT=8000  # API port
-API_TIMEOUT_MS=30000  # Request timeout in milliseconds
-
-# ===== Database =====
-DATABASE_URL=postgresql://postgres:password@localhost:5432/iraqi_ai  # PostgreSQL connection string
-
-# ===== Authentication & Security =====
-SECRET_KEY=your-secret-key-min-32-chars-long-here  # JWT secret key
-ALGORITHM=HS256  # JWT algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES=30  # Token expiration time
-
-# ===== LLM Configuration (Anthropic Claude) =====
-ANTHROPIC_API_KEY=sk-ant-your-api-key-here  # Anthropic API key for Claude
-ANTHROPIC_MODEL=claude-sonnet-4.5  # Model to use
-
-# ===== Iraqi AI Specific =====
-ENABLE_ARABIC_PROCESSING=true  # Enable Arabic text processing
-ENABLE_CULTURAL_VALIDATION=true  # Enable cultural compliance validation
-
-# ===== Optional Features =====
-ENABLE_ANALYTICS=false  # Enable analytics tracking
-SENTRY_DSN=  # Sentry error tracking (optional)
-```
-
-```typescript
-// Task 2: TypeScript validation with Zod
-// apps/web/src/config/env.ts
-
-import { z } from 'zod';
-
-// Define schema for all environment variables
-const envSchema = z.object({
-  // Environment
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
-
-  // Next.js Web App
-  NEXT_PUBLIC_API_URL: z
-    .string()
-    .url()
-    .describe('API endpoint URL (exposed to browser)'),
-
-  NEXTAUTH_SECRET: z
-    .string()
-    .min(32, 'NEXTAUTH_SECRET must be at least 32 characters')
-    .describe('Secret key for session encryption'),
-
-  NEXTAUTH_URL: z
-    .string()
-    .url()
-    .describe('Application URL for authentication callbacks'),
-
-  // API Configuration
-  API_TIMEOUT_MS: z
-    .string()
-    .transform(Number)
-    .pipe(z.number().positive())
-    .default('30000'),
-
-  // Database
-  DATABASE_URL: z
-    .string()
-    .url()
-    .startsWith('postgresql://', 'DATABASE_URL must be a PostgreSQL connection string')
-    .describe('PostgreSQL database connection string'),
+// Server environment (server-only)
+const serverEnvSchema = z.object({
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  API_SECRET_KEY: z.string().min(32, "API secret must be at least 32 characters"),
+  DATABASE_URL: z.string().url(),
+  REDIS_URL: z.string().url().optional(),
 
   // LLM Configuration
-  ANTHROPIC_API_KEY: z
-    .string()
-    .min(1, 'ANTHROPIC_API_KEY is required')
-    .startsWith('sk-ant-', 'ANTHROPIC_API_KEY must start with sk-ant-')
-    .describe('Anthropic Claude API key'),
+  LLM_PROVIDER: z.enum(["openai"]),
+  LLM_API_KEY: z.string().min(1, "LLM API key is required"),
+  LLM_MODEL: z.string().min(1),
 
-  ANTHROPIC_MODEL: z
-    .string()
-    .default('claude-sonnet-4.5')
-    .describe('Anthropic model to use'),
-
-  // Iraqi AI Features
-  ENABLE_ARABIC_PROCESSING: z
-    .string()
-    .transform(val => val === 'true')
-    .default('true'),
-
-  ENABLE_CULTURAL_VALIDATION: z
-    .string()
-    .transform(val => val === 'true')
-    .default('true'),
-
-  // Optional Features
-  ENABLE_ANALYTICS: z
-    .string()
-    .transform(val => val === 'true')
-    .default('false'),
-
-  SENTRY_DSN: z
-    .string()
-    .url()
-    .optional()
-    .describe('Sentry error tracking DSN (optional)'),
+  // Iraqi AI Specific
+  ZAINCASH_API_KEY: z.string().optional(),
+  FASTPAY_API_KEY: z.string().optional(),
+  CULTURAL_VALIDATION_ENABLED: z.enum(["true", "false"]).default("true"),
 });
 
-// Parse and validate environment variables
-// This runs at module load time - will throw if validation fails
-export const env = envSchema.parse(process.env);
+// Combine and validate
+const envSchema = serverEnvSchema.merge(clientEnvSchema);
 
-// Export type for use in TypeScript code
+// Validate and export
+function validateEnv() {
+  const result = envSchema.safeParse(process.env);
+
+  if (!result.success) {
+    console.error("❌ Invalid environment variables:");
+    console.error(result.error.flatten().fieldErrors);
+    throw new Error("Environment validation failed");
+  }
+
+  return result.data;
+}
+
+export const env = validateEnv();
+
+// Type-safe environment object
 export type Env = z.infer<typeof envSchema>;
-
-// Helper to check if we're in production
-export const isProd = env.NODE_ENV === 'production';
-export const isDev = env.NODE_ENV === 'development';
-export const isTest = env.NODE_ENV === 'test';
 ```
 
-```python
-# Task 3: Python validation with Pydantic Settings
-# apps/api/config/settings.py
+### Task List
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, field_validator, HttpUrl
-from typing import Literal
-import os
+```yaml
+Task 1: Create root .env.example template
+  Description: Create root-level .env.example with shared environment variables
+  Files:
+    - CREATE .env.example
+  Actions:
+    - Document all shared environment variables (NODE_ENV, LOG_LEVEL, etc.)
+    - Add comments explaining each variable's purpose and valid values
+    - Include security notes about never committing actual .env files
 
-class Settings(BaseSettings):
-    """
-    Iraqi AI Chat System - API Configuration
+Task 2: Create apps/web environment configuration
+  Description: Set up Next.js environment variables with Zod validation
+  Files:
+    - CREATE apps/web/.env.example
+    - CREATE apps/web/src/config/env.ts
+    - CREATE apps/web/src/types/env.d.ts
+  Actions:
+    - Define client-side (NEXT_PUBLIC_*) and server-side variables in .env.example
+    - Implement Zod validation schema in env.ts
+    - Create TypeScript type definitions in env.d.ts
+    - Export type-safe env object from env.ts
 
-    Environment variables are loaded from .env file automatically.
-    All required variables must be set or the application will fail at startup
-    with a clear validation error.
+Task 3: Create apps/api environment configuration
+  Description: Set up Python FastAPI environment variables with pydantic validation
+  Files:
+    - CREATE apps/api/.env.example
+    - CREATE apps/api/config/__init__.py
+    - CREATE apps/api/config/settings.py
+  Actions:
+    - Document Python backend environment variables
+    - Implement pydantic BaseSettings for validation
+    - Add type hints for all environment variables
+    - Export settings instance for import
 
-    Usage:
-        from config.settings import settings
+Task 4: Create shared environment types
+  Description: Define shared TypeScript types for environment variables
+  Files:
+    - CREATE packages/types/src/env.ts
+  Actions:
+    - Define BaseEnv interface with common variables
+    - Export environment-related types
+    - Document shared environment patterns
 
-        # Access typed settings
-        api_url = settings.api_host
-        db = settings.database_url
-    """
+Task 5: Update .gitignore security
+  Description: Ensure all sensitive environment files are ignored
+  Files:
+    - VERIFY .gitignore
+  Actions:
+    - Confirm .env patterns are ignored (already present)
+    - Add any missing patterns if needed
+    - Document security requirements in comments
 
-    # Configure Pydantic Settings
-    model_config = SettingsConfigDict(
-        env_file='.env',  # Load from .env file
-        env_file_encoding='utf-8',
-        case_sensitive=True,  # Respect case in environment variables
-        extra='ignore',  # Ignore extra variables not in schema
-    )
+Task 6: Create environment setup documentation
+  Description: Document environment setup process for developers
+  Files:
+    - CREATE docs/ENVIRONMENT_SETUP.md
+  Actions:
+    - Document .env file creation process
+    - Explain environment variable hierarchy
+    - Provide troubleshooting guide
+    - Include security best practices
+    - Add examples for common scenarios
 
-    # ===== Environment =====
-    environment: Literal['development', 'staging', 'production'] = Field(
-        default='development',
-        alias='NODE_ENV',
-        description='Application environment'
-    )
+Task 7: Integrate environment validation in apps
+  Description: Add environment validation to application startup
+  Files:
+    - MODIFY apps/web/src/app/layout.tsx or next.config.js
+    - MODIFY apps/api/main.py
+  Actions:
+    - Import and run env validation at startup
+    - Add helpful error messages for missing variables
+    - Ensure validation fails fast before app initialization
 
-    # ===== API Configuration =====
-    api_host: str = Field(
-        default='0.0.0.0',
-        alias='API_HOST',
-        description='API server host binding'
-    )
+Task 8: Update test configuration
+  Description: Configure test environments properly
+  Files:
+    - MODIFY test/setup.ts
+    - CREATE .env.test (gitignored)
+  Actions:
+    - Set test-specific environment variables
+    - Document test environment requirements
+    - Ensure .env.local not loaded in tests
 
-    api_port: int = Field(
-        default=8000,
-        alias='API_PORT',
-        ge=1,
-        le=65535,
-        description='API server port'
-    )
+Task 9: Update package.json scripts
+  Description: Ensure scripts use correct working directory
+  Files:
+    - VERIFY package.json scripts
+  Actions:
+    - Check --cwd flags for monorepo commands
+    - Document script usage in README
+    - Ensure consistent environment loading
 
-    # ===== Database =====
-    database_url: str = Field(
-        ...,  # Required field
-        alias='DATABASE_URL',
-        description='PostgreSQL database connection string'
-    )
+Task 10: Create environment validation tests
+  Description: Test environment validation logic
+  Files:
+    - CREATE apps/web/src/config/__tests__/env.test.ts
+  Actions:
+    - Test successful validation with valid env vars
+    - Test validation failures with missing required vars
+    - Test type coercion (strings to numbers, etc.)
+    - Test environment-specific loading
+```
 
-    # ===== Authentication & Security =====
-    secret_key: str = Field(
-        ...,  # Required
-        min_length=32,
-        alias='SECRET_KEY',
-        description='Secret key for JWT tokens (min 32 characters)'
-    )
+### Per Task Pseudocode
 
-    algorithm: str = Field(
-        default='HS256',
-        alias='ALGORITHM',
-        description='JWT signing algorithm'
-    )
+```typescript
+// Task 2: apps/web/src/config/env.ts detailed implementation
 
-    access_token_expire_minutes: int = Field(
-        default=30,
-        alias='ACCESS_TOKEN_EXPIRE_MINUTES',
-        ge=1,
-        description='Access token expiration time in minutes'
-    )
+import { z } from "zod";
 
-    # ===== LLM Configuration =====
-    anthropic_api_key: str = Field(
-        ...,  # Required
-        alias='ANTHROPIC_API_KEY',
-        description='Anthropic Claude API key'
-    )
+// PATTERN: Separate client and server schemas for security
+const clientEnvSchema = z.object({
+  // CRITICAL: Only NEXT_PUBLIC_* variables are exposed to browser
+  NEXT_PUBLIC_API_URL: z.string().url("API URL must be valid URL"),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+});
 
-    anthropic_model: str = Field(
-        default='claude-sonnet-4.5',
-        alias='ANTHROPIC_MODEL',
-        description='Anthropic Claude model to use'
-    )
+const serverEnvSchema = z.object({
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 
-    # ===== Iraqi AI Features =====
-    enable_arabic_processing: bool = Field(
-        default=True,
-        alias='ENABLE_ARABIC_PROCESSING',
-        description='Enable Arabic text processing features'
-    )
+  // GOTCHA: Port comes as string, transform to number
+  PORT: z.string().transform(Number).default("3000"),
 
-    enable_cultural_validation: bool = Field(
-        default=True,
-        alias='ENABLE_CULTURAL_VALIDATION',
-        description='Enable cultural compliance validation'
-    )
+  // PATTERN: Minimum length validation for security
+  API_SECRET_KEY: z.string().min(32, {
+    message: "API secret must be at least 32 characters for security",
+  }),
 
-    # ===== Optional Features =====
-    enable_analytics: bool = Field(
-        default=False,
-        alias='ENABLE_ANALYTICS',
-        description='Enable analytics tracking'
-    )
+  DATABASE_URL: z.string().url("Database URL must be valid"),
 
-    sentry_dsn: str | None = Field(
-        default=None,
-        alias='SENTRY_DSN',
-        description='Sentry error tracking DSN (optional)'
-    )
+  // PATTERN: Optional with .optional()
+  REDIS_URL: z.string().url().optional(),
 
-    # ===== Validators =====
-    @field_validator('database_url')
-    @classmethod
-    def validate_database_url(cls, v: str) -> str:
-        """Ensure database URL is PostgreSQL"""
-        if not v.startswith('postgresql://'):
-            raise ValueError(
-                'DATABASE_URL must be a PostgreSQL connection string '
-                'starting with postgresql://'
-            )
-        return v
+  // Iraqi AI specific
+  LLM_PROVIDER: z.enum(["openai"], {
+    errorMap: () => ({ message: "LLM provider must be openai" }),
+  }),
+  LLM_API_KEY: z.string().min(1, "LLM API key is required"),
+  LLM_MODEL: z.string().default("gpt-4o-mini"),
 
-    @field_validator('anthropic_api_key')
-    @classmethod
-    def validate_anthropic_key(cls, v: str) -> str:
-        """Ensure Anthropic API key has correct format"""
-        if not v.startswith('sk-ant-'):
-            raise ValueError(
-                'ANTHROPIC_API_KEY must start with sk-ant- '
-                '(get your key from https://console.anthropic.com/)'
-            )
-        return v
+  // PATTERN: Boolean as string, transform to boolean
+  CULTURAL_VALIDATION_ENABLED: z
+    .enum(["true", "false"])
+    .transform((val) => val === "true")
+    .default("true"),
+});
 
-    # ===== Computed Properties =====
-    @property
-    def is_production(self) -> bool:
-        """Check if running in production"""
-        return self.environment == 'production'
+// Merge schemas
+const envSchema = serverEnvSchema.merge(clientEnvSchema);
 
-    @property
-    def is_development(self) -> bool:
-        """Check if running in development"""
-        return self.environment == 'development'
+// CRITICAL: Validation function with helpful error messages
+function validateEnv() {
+  const parsed = envSchema.safeParse(process.env);
 
+  if (!parsed.success) {
+    console.error("❌ Environment validation failed:");
+    console.error("Missing or invalid environment variables:\n");
 
-# Global settings instance
-# This will load and validate environment variables when imported
-# If validation fails, a clear error will be raised
-settings = Settings()
+    // PATTERN: Helpful error formatting
+    const errors = parsed.error.flatten().fieldErrors;
+    Object.entries(errors).forEach(([key, messages]) => {
+      console.error(`  ${key}:`);
+      messages?.forEach((msg) => console.error(`    - ${msg}`));
+    });
 
-# Example usage in other modules:
-# from config.settings import settings
-# print(f"API running on {settings.api_host}:{settings.api_port}")
+    console.error("\n💡 Check .env.example for required variables");
+
+    throw new Error("Invalid environment configuration");
+  }
+
+  return parsed.data;
+}
+
+// PATTERN: Validate immediately on import
+export const env = validateEnv();
+
+// PATTERN: Export type for consumers
+export type Env = z.infer<typeof envSchema>;
+
+// SECURITY: Only export validated env, never process.env directly
+// ❌ export { process.env }  // NEVER do this
+// ✅ export { env }           // Use validated object
 ```
 
 ```typescript
-// Task 7: TypeScript environment validation tests
-// apps/web/src/config/env.test.ts
+// Task 7: Integration in apps/web/next.config.js
 
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+// PATTERN: Validate environment at build time
+import "./src/config/env.js"; // Import to trigger validation
 
-describe('Environment Validation', () => {
-  const originalEnv = process.env;
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Next.js config here
+  reactStrictMode: true,
 
-  beforeEach(() => {
-    // Reset modules and environment before each test
-    process.env = { ...originalEnv };
-  });
+  // PATTERN: Only NEXT_PUBLIC_* variables are bundled
+  env: {
+    // Don't manually specify - Next.js handles NEXT_PUBLIC_* automatically
+  },
+};
 
-  afterEach(() => {
-    // Restore original environment
-    process.env = originalEnv;
-  });
+export default nextConfig;
+```
 
-  it('should validate correct environment variables', () => {
-    process.env = {
-      NODE_ENV: 'development',
-      NEXT_PUBLIC_API_URL: 'http://localhost:8000',
-      NEXTAUTH_SECRET: 'a'.repeat(32), // Min 32 chars
-      NEXTAUTH_URL: 'http://localhost:3000',
-      DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
-      ANTHROPIC_API_KEY: 'sk-ant-example-key',
-      API_TIMEOUT_MS: '30000',
-    };
+```python
+# Task 3: apps/api/config/settings.py implementation
 
-    // Re-import to trigger validation with new env
-    const { env } = require('./env');
+from pydantic_settings import BaseSettings
+from typing import Literal
 
-    expect(env.NODE_ENV).toBe('development');
-    expect(env.NEXT_PUBLIC_API_URL).toBe('http://localhost:8000');
-    expect(env.ANTHROPIC_API_KEY).toBe('sk-ant-example-key');
-  });
+class Settings(BaseSettings):
+    """
+    Environment configuration for Iraqi AI Chat System API.
+    Uses pydantic-settings for automatic .env loading and validation.
+    """
 
-  it('should throw error for missing required variable', () => {
-    process.env = {
-      NODE_ENV: 'development',
-      // Missing NEXT_PUBLIC_API_URL
-      NEXTAUTH_SECRET: 'a'.repeat(32),
-      NEXTAUTH_URL: 'http://localhost:3000',
-      DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
-      ANTHROPIC_API_KEY: 'sk-ant-example-key',
-    };
+    # Application
+    NODE_ENV: Literal["development", "production", "test"] = "development"
+    PORT: int = 8000
+    LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
 
-    expect(() => {
-      // Re-import should throw validation error
-      jest.resetModules();
-      require('./env');
-    }).toThrow();
-  });
+    # Security
+    API_SECRET_KEY: str  # Required, no default
+    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 
-  it('should apply default values for optional variables', () => {
-    process.env = {
-      // Minimal required variables
-      NEXT_PUBLIC_API_URL: 'http://localhost:8000',
-      NEXTAUTH_SECRET: 'a'.repeat(32),
-      NEXTAUTH_URL: 'http://localhost:3000',
-      DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
-      ANTHROPIC_API_KEY: 'sk-ant-example-key',
-      // API_TIMEOUT_MS not provided - should use default
-    };
+    # Database
+    DATABASE_URL: str
+    REDIS_URL: str | None = None
 
-    const { env } = require('./env');
+    # LLM Configuration
+    LLM_PROVIDER: Literal["openai"]
+    LLM_API_KEY: str
+    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_BASE_URL: str = "https://api.openai.com/v1"
 
-    expect(env.API_TIMEOUT_MS).toBe(30000); // Default value
-    expect(env.ANTHROPIC_MODEL).toBe('claude-sonnet-4.5'); // Default
-  });
+    # Iraqi AI Specific
+    ZAINCASH_API_KEY: str | None = None
+    FASTPAY_API_KEY: str | None = None
+    CULTURAL_VALIDATION_ENABLED: bool = True
 
-  it('should transform string booleans correctly', () => {
-    process.env = {
-      NEXT_PUBLIC_API_URL: 'http://localhost:8000',
-      NEXTAUTH_SECRET: 'a'.repeat(32),
-      NEXTAUTH_URL: 'http://localhost:3000',
-      DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
-      ANTHROPIC_API_KEY: 'sk-ant-example-key',
-      ENABLE_ANALYTICS: 'true',
-      ENABLE_ARABIC_PROCESSING: 'false',
-    };
+    class Config:
+        # PATTERN: Pydantic automatically loads .env files
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        case_sensitive = True
 
-    const { env } = require('./env');
+        # GOTCHA: Validate on initialization
+        validate_assignment = True
 
-    expect(env.ENABLE_ANALYTICS).toBe(true);
-    expect(env.ENABLE_ARABIC_PROCESSING).toBe(false);
-  });
-});
+# PATTERN: Create singleton instance
+settings = Settings()
+
+# SECURITY: Validate required fields
+if not settings.API_SECRET_KEY:
+    raise ValueError("API_SECRET_KEY must be set in environment")
+if len(settings.API_SECRET_KEY) < 32:
+    raise ValueError("API_SECRET_KEY must be at least 32 characters")
 ```
 
 ### Integration Points
 
 ```yaml
-BUN RUNTIME:
-  - loading: "Automatic .env file loading on process start"
-  - precedence: ".env → .env.{NODE_ENV} → .env.local"
-  - access: "process.env or Bun.env (aliases)"
-  - expansion: "Automatic variable expansion with $VARIABLE syntax"
+APPS/WEB (Next.js):
+  - import: apps/web/src/config/env.ts in app/layout.tsx
+  - validation: Runs at build time via next.config.js import
+  - usage: Import { env } from "@/config/env" throughout app
+  - pattern: Use env.API_URL not process.env.API_URL
 
-TYPESCRIPT APPS (apps/web):
-  - validation: "Zod schema validation at app startup"
-  - import: "import { env } from '@/config/env'"
-  - types: "Type-safe environment access throughout app"
-  - testing: "Bun test with mocked environment variables"
+APPS/API (Python):
+  - import: apps/api/config/settings.py in main.py
+  - validation: Settings() validates on instantiation
+  - usage: from config.settings import settings
+  - pattern: settings.DATABASE_URL not os.getenv("DATABASE_URL")
 
-PYTHON API (apps/api):
-  - validation: "Pydantic Settings validation at import time"
-  - import: "from config.settings import settings"
-  - types: "Type-safe settings with Python type hints"
-  - testing: "pytest with monkeypatch for environment variables"
+PACKAGES (Shared):
+  - import: packages/types/src/env.ts for shared types
+  - usage: Import types in other packages
+  - pattern: Define types once, use everywhere
 
-CROSS-WORKSPACE:
-  - pattern: "Root .env.example documents all variables"
-  - override: "App-specific .env files can override root variables"
-  - sharing: "Shared environment types in packages/types if needed"
+TESTS:
+  - setup: test/setup.ts sets process.env.NODE_ENV = "test"
+  - files: Use .env.test for test-specific variables
+  - pattern: Mock environment in tests, don't rely on .env.local
 
-VERSION CONTROL:
-  - exclude: ".env files excluded via .gitignore (already configured)"
-  - template: ".env.example committed to repository"
-  - security: "Never commit actual credentials or secrets"
+CI/CD:
+  - environment: GitHub Actions secrets mapped to env vars
+  - validation: Same validation runs in CI as locally
+  - pattern: Fail fast if validation fails in CI
 ```
 
 ## Validation Loop
 
-### Level 1: File Structure & Git Security
+### Level 1: TypeScript & Linting
 
 ```bash
-# Verify .env.example exists and is documented
-cat .env.example                  # Should have clear comments and sections
-grep -E "^[A-Z_]+=.+" .env.example # Should have all variables documented
-
-# Verify no actual .env files in git
-git ls-files | grep "\.env$"      # Should return nothing (only .env.example)
-git log --all -S "sk-ant-" --      # Should NOT find any API keys in history
-
-# Verify .gitignore properly excludes .env files
-git check-ignore .env             # Should return ".env" (ignored)
-git check-ignore .env.local       # Should return ".env.local" (ignored)
-
-# Expected: .env.example documented, no .env files tracked, no secrets in history
-```
-
-### Level 2: TypeScript Validation Testing
-
-```bash
-# Create test .env file for web app
+# Run type checking first
 cd apps/web
-cp ../../.env.example .env
-# Edit .env with valid test values
+bun run typecheck
+# Expected: No errors, env types should resolve correctly
 
-# Test environment validation loads correctly
-bun run src/config/env.ts         # Should load without errors
+# Check for unused environment variables
+grep -r "process.env\." src/ --exclude-dir=node_modules
+# Expected: No direct process.env usage except in config/env.ts
 
-# Test validation catches missing variables
-mv .env .env.backup
-echo "NODE_ENV=development" > .env  # Incomplete .env
-bun run src/config/env.ts         # Should throw clear validation error
-
-# Restore and test again
-mv .env.backup .env
-bun run src/config/env.ts         # Should succeed
-
-# Expected:
-# - Valid .env loads successfully
-# - Missing variables throw clear errors with variable names
-# - Error messages are helpful for developers
+# Verify TypeScript can resolve env types
+# Open apps/web/src/config/env.ts in IDE
+# Expected: Autocompletion works for env.API_URL etc.
 ```
 
-### Level 3: Python Validation Testing
+### Level 2: Environment Validation Tests
 
-```bash
-# Create test .env file for API
-cd apps/api
-cp ../../.env.example .env
-# Edit .env with valid test values
+```typescript
+// apps/web/src/config/__tests__/env.test.ts
 
-# Test environment validation
-python3 -c "from config.settings import settings; print(settings.api_host)"
-# Should print: 0.0.0.0
+import { describe, it, expect, beforeEach } from "bun:test";
+import { z } from "zod";
 
-# Test validation catches missing variables
-mv .env .env.backup
-echo "NODE_ENV=development" > .env  # Incomplete .env
-python3 -c "from config.settings import settings"
-# Should raise ValidationError with clear message
+// Test the validation logic directly
+describe("Environment Validation", () => {
+  // PATTERN: Save and restore process.env
+  const originalEnv = process.env;
 
-# Test field validators
-echo "DATABASE_URL=mysql://user:pass@localhost/db" >> .env
-python3 -c "from config.settings import settings"
-# Should raise ValueError: DATABASE_URL must be PostgreSQL
+  beforeEach(() => {
+    process.env = { ...originalEnv };
+  });
 
-# Restore and test
-mv .env.backup .env
-python3 -m pytest tests/config/test_settings.py -v
-# All tests should pass
+  it("should validate correct environment variables", () => {
+    process.env = {
+      NODE_ENV: "development",
+      NEXT_PUBLIC_API_URL: "http://localhost:8000",
+      NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-key",
+      API_SECRET_KEY: "a".repeat(32), // 32 chars minimum
+      DATABASE_URL: "postgresql://localhost:5432/test",
+      LLM_PROVIDER: "openai",
+      LLM_API_KEY: "sk-test",
+      LLM_MODEL: "gpt-4o-mini",
+    };
 
-# Expected:
-# - Valid .env loads successfully
-# - Missing required variables raise ValidationError
-# - Field validators work correctly
-# - Test suite passes
+    // Re-import to trigger validation
+    expect(() => {
+      // Validation logic here
+    }).not.toThrow();
+  });
+
+  it("should fail on missing required variables", () => {
+    process.env = {
+      NODE_ENV: "development",
+      // Missing required variables
+    };
+
+    expect(() => {
+      // Validation should throw
+    }).toThrow("Environment validation failed");
+  });
+
+  it("should fail on invalid URL format", () => {
+    process.env = {
+      ...process.env,
+      NEXT_PUBLIC_API_URL: "not-a-url", // Invalid URL
+    };
+
+    expect(() => {
+      // Validation should throw
+    }).toThrow();
+  });
+
+  it("should apply default values correctly", () => {
+    process.env = {
+      // Minimal required vars
+      NEXT_PUBLIC_API_URL: "http://localhost:8000",
+      NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "test-key",
+      API_SECRET_KEY: "a".repeat(32),
+      DATABASE_URL: "postgresql://localhost:5432/test",
+      LLM_PROVIDER: "openai",
+      LLM_API_KEY: "sk-test",
+      // NODE_ENV should default to "development"
+      // LLM_MODEL should default to "gpt-4o-mini"
+    };
+
+    // Validate defaults are applied
+  });
+});
 ```
 
-### Level 4: Cross-Platform Testing
-
 ```bash
-# Test on Windows (Git Bash)
-export TEST_VAR="windows test"
-bun run -e 'console.log(process.env.TEST_VAR)'
-# Should print: windows test
-
-# Test on Linux/macOS
-export TEST_VAR="unix test"
-bun run -e 'console.log(process.env.TEST_VAR)'
-# Should print: unix test
-
-# Test variable expansion (Bun feature)
-echo "BASE=hello" > .env
-echo "FULL=$BASE world" >> .env
-bun run -e 'console.log(process.env.FULL)'
-# Should print: hello world
-
-# Test escaped dollar sign
-echo 'PASSWORD=my$ecret' > .env    # Wrong - will try to expand
-bun run -e 'console.log(process.env.PASSWORD)'
-# Might print: myecret (expansion of non-existent $ecret)
-
-echo 'PASSWORD=my\$ecret' > .env   # Correct - escaped
-bun run -e 'console.log(process.env.PASSWORD)'
-# Should print: my$ecret
-
-# Expected: Consistent behavior across platforms
-```
-
-### Level 5: Workspace Integration Testing
-
-```bash
-# Test environment variables accessible across workspace
-cd /path/to/project/root
-
-# Set variable in root .env
-echo "SHARED_VAR=test_value" > .env
-
-# Access from web app
+# Run environment tests
 cd apps/web
-bun run -e 'console.log(process.env.SHARED_VAR)'
-# Should print: test_value
+bun test src/config/__tests__/env.test.ts
 
-# Access from API (Python reads .env from root)
-cd apps/api
-python3 -c "import os; print(os.getenv('SHARED_VAR'))"
-# Should print: test_value
-
-# Test override with local .env
-echo "SHARED_VAR=local_override" > .env
-bun run -e 'console.log(process.env.SHARED_VAR)'
-# Should print: local_override (local .env takes precedence)
-
-# Expected: Variables accessible across workspace, local overrides work
+# Expected output:
+# ✓ should validate correct environment variables
+# ✓ should fail on missing required variables
+# ✓ should fail on invalid URL format
+# ✓ should apply default values correctly
+#
+# 4 tests passed
 ```
 
-## Final validation Checklist
+### Level 3: Integration Test
 
-- [ ] .env.example created with comprehensive documentation: `cat .env.example | wc -l` shows >30 lines
-- [ ] No .env files in git: `git ls-files | grep "\.env$"` returns nothing
-- [ ] No secrets in git history: `git log --all -S "sk-ant-"` finds nothing
-- [ ] TypeScript validation works: `cd apps/web && bun run src/config/env.ts` succeeds with valid .env
-- [ ] Python validation works: `cd apps/api && python3 -c "from config.settings import settings"` succeeds
-- [ ] Missing variables fail gracefully: Clear error messages identifying missing variables
-- [ ] Type transformations work: Strings correctly converted to numbers/booleans
-- [ ] Default values applied: Optional variables get correct defaults
-- [ ] Field validators work: Database URL format validated, API key format validated
-- [ ] Cross-platform compatible: Tested on Windows and Linux/macOS
-- [ ] Variable expansion works: Bun expands $VARIABLE references correctly
-- [ ] Documentation complete: ENVIRONMENT_SETUP.md created with setup instructions
-- [ ] Tests pass: Both TypeScript and Python test suites pass
+```bash
+# Test 1: Verify .env.example files exist
+test -f .env.example && echo "✅ Root .env.example exists"
+test -f apps/web/.env.example && echo "✅ Web .env.example exists"
+test -f apps/api/.env.example && echo "✅ API .env.example exists"
 
----
+# Test 2: Copy examples and start apps
+cp .env.example .env
+cp apps/web/.env.example apps/web/.env.local
+cp apps/api/.env.example apps/api/.env
+
+# Fill in required values (in real scenario)
+# For testing, use minimal valid values
+
+# Test 3: Verify apps start without validation errors
+cd apps/web
+bun run dev &
+WEB_PID=$!
+sleep 5
+
+# Check if Next.js started successfully
+curl -s http://localhost:3000 | grep -q "200" || echo "❌ Web app failed to start"
+
+# Kill dev server
+kill $WEB_PID
+
+# Test 4: Verify validation catches errors
+echo "INVALID_URL=not-a-url" >> apps/web/.env.local
+bun run dev 2>&1 | grep -q "Environment validation failed" && echo "✅ Validation catches errors"
+
+# Clean up
+rm apps/web/.env.local
+```
+
+### Level 4: Security Verification
+
+```bash
+# Verify no .env files committed
+git ls-files | grep -E "^\.env$|\.env\.local$" && echo "❌ SECURITY: .env files in git!" || echo "✅ No .env files committed"
+
+# Verify .gitignore coverage
+grep -q "^\.env$" .gitignore && echo "✅ .env ignored"
+grep -q "\.env\.local" .gitignore && echo "✅ .env.local ignored"
+
+# Check for hardcoded secrets in code
+grep -r "sk-[a-zA-Z0-9]\{32,\}" apps/ --exclude-dir=node_modules && echo "❌ Potential API key in code!" || echo "✅ No hardcoded API keys found"
+
+# Verify no env vars in package.json
+grep -r "API_KEY\|SECRET" package.json apps/*/package.json && echo "⚠️  Check if these should be in .env" || echo "✅ No secrets in package.json"
+```
+
+## Final Validation Checklist
+
+- [ ] All .env.example files created with comprehensive documentation
+- [ ] Zod validation schemas implemented in apps/web/src/config/env.ts
+- [ ] Python pydantic validation in apps/api/config/settings.py
+- [ ] TypeScript type definitions provide autocompletion
+- [ ] All tests pass: `bun test apps/web/src/config/__tests__/`
+- [ ] No linting errors: `bun run lint`
+- [ ] No type errors: `bun run typecheck`
+- [ ] Apps start successfully with example .env files
+- [ ] Validation catches missing/invalid variables
+- [ ] No .env files committed to git
+- [ ] Security verification passes (no hardcoded secrets)
+- [ ] Documentation created in docs/ENVIRONMENT_SETUP.md
+- [ ] README.md updated with environment setup instructions
 
 ## Anti-Patterns to Avoid
 
-- ❌ Don't commit .env files to version control (use .env.example instead)
-- ❌ Don't hardcode API keys or secrets in code
-- ❌ Don't skip environment validation at startup (fail fast is better)
-- ❌ Don't use process.env directly throughout app (use validated env object)
-- ❌ Don't assume environment variables are always present (validate with Zod/Pydantic)
-- ❌ Don't use NODE_ENV in production without validation
-- ❌ Don't expose server-only variables to browser (no NEXT_PUBLIC_ for secrets)
-- ❌ Don't forget to escape $ in passwords when using Bun (use \$)
-- ❌ Don't load python-dotenv manually in FastAPI (pydantic-settings handles it)
-- ❌ Don't ignore type safety (strings need transformation to numbers/booleans)
-- ❌ Don't provide unclear error messages (use .describe() in Zod, docstrings in Pydantic)
+```typescript
+// ❌ Don't access process.env directly after validation
+import { env } from "@/config/env";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL; // ❌ WRONG
+
+// ✅ Use validated env object
+const apiUrl = env.NEXT_PUBLIC_API_URL; // ✅ CORRECT
+
+// ❌ Don't use string comparison for booleans
+if (process.env.ENABLED === "true") { } // ❌ Fragile
+
+// ✅ Transform to boolean in schema
+const schema = z.object({
+  ENABLED: z.enum(["true", "false"]).transform(v => v === "true"),
+});
+
+// ❌ Don't silently ignore validation errors
+try {
+  validateEnv();
+} catch (e) {
+  console.log("Env validation failed, using defaults"); // ❌ DANGEROUS
+}
+
+// ✅ Fail fast with clear errors
+const env = validateEnv(); // Throws if invalid
+
+// ❌ Don't commit .env files
+git add .env  // ❌ NEVER
+
+// ✅ Only commit .env.example
+git add .env.example  // ✅ SAFE
+
+// ❌ Don't log environment variables
+console.log(process.env); // ❌ Exposes secrets
+
+// ✅ Log only non-sensitive info
+console.log("Environment:", process.env.NODE_ENV); // ✅ SAFE
+
+// ❌ Don't mix client and server env vars
+const serverEnv = z.object({
+  NEXT_PUBLIC_API_URL: z.string(), // ❌ NEXT_PUBLIC in server schema
+  API_SECRET: z.string(),
+});
+
+// ✅ Separate client and server schemas
+const clientEnv = z.object({
+  NEXT_PUBLIC_API_URL: z.string(),
+});
+const serverEnv = z.object({
+  API_SECRET: z.string(),
+});
+```
 
 ---
 
-## Quality Score Assessment
+## PRP Confidence Score: 9/10
 
-**Confidence Level: 9.5/10**
+**Justification:**
+- ✅ **Comprehensive Context**: All Bun documentation, Zod patterns, and security best practices included
+- ✅ **Existing Patterns**: Leverages installed dependencies (Zod, dotenv) and existing .gitignore
+- ✅ **Clear Implementation Path**: Step-by-step tasks with detailed pseudocode
+- ✅ **Executable Validation**: All validation gates are runnable bash commands and tests
+- ✅ **Error Handling**: Comprehensive gotchas and anti-patterns documented
+- ✅ **Security Focused**: Multiple security checks and best practices
+- ✅ **Monorepo Support**: Handles workspace-specific and shared environment variables
+- ⚠️ **Minor Gap**: Python API configuration needs FastAPI/uvicorn startup integration details (not critical for MVP)
 
-**Strengths:**
+**Why not 10/10:**
+Minor uncertainty in Python FastAPI startup integration with environment validation - may need to verify exact import location in `apps/api/main.py` (which doesn't exist yet). However, pydantic-settings pattern is well-established and should work first-pass.
 
-- **Comprehensive Context**: Official Bun documentation, Zod validation patterns, Pydantic Settings documentation
-- **Real-World Examples**: Actual .env.example files from examples/ directory
-- **Existing Infrastructure**: python-dotenv and pydantic-settings already in requirements.txt
-- **Clear Validation**: Executable validation commands at each level
-- **Cross-Platform**: Specific testing for Windows/Linux/macOS compatibility
-- **Security First**: Git security validation and credential protection patterns
-- **Type Safety**: Both TypeScript (Zod) and Python (Pydantic) validation patterns
-- **Monorepo Aware**: Workspace-level and app-specific environment management
+**One-Pass Implementation Confidence:** Very High (95%+)
+- All research is comprehensive and recent (2025)
+- Patterns are proven and well-documented
+- Validation is executable and comprehensive
+- Security is properly addressed
+- Beginner-friendly complexity matches the scope
 
-**Areas of Excellence:**
+---
 
-- **Beginner-Friendly**: Matches required complexity level with clear documentation
-- **Fail Fast**: Validation happens at startup with clear error messages
-- **Production-Ready**: Security patterns and validation suitable for production deployment
-- **Iraqi AI Integration**: Specific environment variables for Arabic processing and cultural validation
-- **Complete Testing**: Testing patterns for both TypeScript and Python environments
-- **Documentation**: Comprehensive ENVIRONMENT_SETUP.md guide included
+**Implementation Time Estimate:** 2-3 hours for complete setup including documentation and tests
 
-**Minor Considerations:**
-
-- Apps/web structure may need adjustment based on actual Next.js app structure (App Router vs Pages Router)
-- Some Iraqi-specific environment variables may need refinement based on actual feature requirements
-- Python .env file loading path may need adjustment if apps/api is run from different working directory
-
-**Expected Success Rate: 98%** - This PRP provides comprehensive context, clear validation loops, and executable tests for successful one-pass implementation of environment variable management in the Iraqi AI Chat System.
-
-The high confidence is based on:
-1. Bun's automatic .env loading (no additional package needed)
-2. Existing python-dotenv and pydantic-settings dependencies
-3. Clear validation patterns from official documentation
-4. Executable validation commands at every level
-5. Security-first approach with git history checks
-6. Real examples from the codebase
+**Follow-up PRPs Needed:** None - this is foundational infrastructure. Future PRPs will consume these environment variables.
