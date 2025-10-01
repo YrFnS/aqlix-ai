@@ -262,6 +262,22 @@ const supabase = createClient<Database>(url, key);
 // Bun resolves workspace: protocol automatically
 ```
 
+## CRITICAL: Use Supabase MCP for Automation
+
+**MANDATORY: Use Supabase MCP tools instead of manual setup.**
+
+### MCP Tools to Use
+
+1. **Project Setup**: `mcp__supabase__create_project()` - Create Supabase project (region: eu-central-1)
+2. **Get Credentials**: `mcp__supabase__get_project_url()`, `mcp__supabase__get_anon_key()`
+3. **Auto-populate .env**: Use Write tool to populate environment files with credentials
+4. **Create Schema**: `mcp__supabase__apply_migration()` - Create users/profiles tables
+5. **Generate Types**: `mcp__supabase__generate_typescript_types()` - Auto-generate TypeScript types
+
+**Note**: Service role key must be retrieved from Supabase dashboard and added to .env manually.
+
+---
+
 ## Implementation Blueprint
 
 ### Phase 1: Package Setup and Installation
