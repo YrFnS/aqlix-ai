@@ -1,34 +1,38 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    // Override for Next.js
     "jsx": "preserve",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
+    "noEmit": true,
     "allowJs": true,
     "checkJs": false,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "incremental": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@/types": ["../../packages/types/src"],
-      "@/ui": ["../../packages/ui/src"],
-      "@/features": ["../../packages/features/src"],
-      "@/api-client": ["../../packages/api-client/src"],
-      "@/arabic-nlp": ["../../packages/arabic-nlp/src"]
-    },
+    "types": [],
+
+    // Next.js specific
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+
+    // Path mappings (override base with Next.js patterns)
+    "paths": {
+      "@/*": ["./src/*"],
+      "@iraqi-ai/types": ["../../packages/types/src"],
+      "@iraqi-ai/ui": ["../../packages/ui/src"],
+      "@iraqi-ai/features": ["../../packages/features/src"],
+      "@iraqi-ai/api-client": ["../../packages/api-client/src"],
+      "@iraqi-ai/arabic-nlp": ["../../packages/arabic-nlp/src"]
+    }
   },
+  "references": [
+    { "path": "../../packages/types" },
+    { "path": "../../packages/ui" },
+    { "path": "../../packages/features" },
+    { "path": "../../packages/api-client" },
+    { "path": "../../packages/arabic-nlp" }
+  ],
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -40,6 +44,12 @@
     ".next",
     "out",
     "dist",
-    "build"
+    "build",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__tests__/**",
+    "tests/**"
   ]
 }

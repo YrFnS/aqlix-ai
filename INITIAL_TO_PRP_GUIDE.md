@@ -47,7 +47,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **02_environment_variables.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: .env file management and environment configuration_
 
-- **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp`
+- **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: TypeScript configuration, tsconfig.json, and path mapping_
 
 - **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp`

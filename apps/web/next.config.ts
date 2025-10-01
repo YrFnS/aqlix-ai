@@ -74,7 +74,7 @@ const nextConfig: NextConfig = {
   i18n: {
     locales: ["en", "ar", "ar-IQ"],
     defaultLocale: "ar-IQ",
-    localeDetection: true,
+    localeDetection: false,
   },
 
   // -------------------------------------------------------------------------

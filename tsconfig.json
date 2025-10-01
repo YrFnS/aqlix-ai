@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./packages/types" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/api-client" },
+    { "path": "./packages/arabic-nlp" },
+    { "path": "./packages/features" },
+    { "path": "./apps/web" }
+  ],
+  "compilerOptions": {
+    "composite": false
+  }
+}
