@@ -44,7 +44,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **01_bun_workspace_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Bun monorepo workspace configuration and setup_
 
-- **02_environment_variables.md** → `/generate-prp` + `/execute-prp`
+- **02_environment_variables.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: .env file management and environment configuration_
 
 - **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp`
