@@ -59,3 +59,6 @@ export interface PaymentGateway {
 export type LanguageCode = 'ar' | 'en' | 'ar-IQ';
 export type DialectCode = 'iraqi' | 'standard';
 export type TextDirection = 'rtl' | 'ltr';
+
+// Re-export environment types
+export * from './env';
