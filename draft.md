@@ -2671,3 +2671,7 @@ the next prp we have is this 'c:/Users/Itokoro/Documents/projects/aqlix-ai/initi
 i executed the first prp and generated the second one but before we continue i have a question
 we want use a good module and cheap and can speck and right arabic not just english and we can use it via api dont need to host it so we can give to the users with cheap plans so every one can afford it like 5$ or 10$ per month and we have more expensive plans for even better and more usage
 so what we will use?? make a deep research and tell me your thoughts
+
+https://github.com/coleam00/ottomator-agents
+https://github.com/docling-project/docling
+https://github.com/ChromeDevTools/chrome-devtools-mcp
