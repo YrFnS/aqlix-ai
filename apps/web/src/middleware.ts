@@ -1,11 +1,17 @@
 /**
  * Next.js middleware for authentication and protected routes
+ *
+ * NOTE: Authentication middleware disabled for basic setup
+ * Will be enabled in authentication PRP
  */
 
-import { updateSession } from './lib/supabase/middleware';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function middleware(request: any) {
-  return await updateSession(request);
+export function middleware(_request: NextRequest) {
+  // For now, just pass through all requests
+  // Authentication will be added in a separate PRP
+  return NextResponse.next();
 }
 
 export const config = {

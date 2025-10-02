@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
   // Compiler Options
   // -------------------------------------------------------------------------
   reactStrictMode: true,
-  swcMinify: true,
+  // Note: swcMinify is now the default in Next.js 15 and has been removed
 
   // -------------------------------------------------------------------------
   // TypeScript Configuration
@@ -50,11 +50,12 @@ const nextConfig: NextConfig = {
   // Monorepo Workspace Support
   // -------------------------------------------------------------------------
   transpilePackages: [
-    "@/types",           // Shared TypeScript types
-    "@/ui",              // Shared UI components
-    "@/features",        // Shared business logic
-    "@/api-client",      // API client logic
-    "@/arabic-nlp",      // Arabic processing logic
+    "@iraqi-ai/types",           // Shared TypeScript types
+    "@iraqi-ai/ui",              // Shared UI components
+    "@iraqi-ai/features",        // Shared business logic
+    "@iraqi-ai/api-client",      // API client logic
+    "@iraqi-ai/arabic-nlp",      // Arabic processing logic
+    "@iraqi-ai/supabase-client", // Supabase client
   ],
 
   // -------------------------------------------------------------------------
@@ -71,11 +72,9 @@ const nextConfig: NextConfig = {
   // -------------------------------------------------------------------------
   // Internationalization (i18n)
   // -------------------------------------------------------------------------
-  i18n: {
-    locales: ["en", "ar", "ar-IQ"],
-    defaultLocale: "ar-IQ",
-    localeDetection: false,
-  },
+  // Note: i18n config is not supported in App Router
+  // Internationalization will be implemented using App Router patterns
+  // See: https://nextjs.org/docs/app/building-your-application/routing/internationalization
 
   // -------------------------------------------------------------------------
   // Headers (Security & CORS)
@@ -129,34 +128,17 @@ const nextConfig: NextConfig = {
   // -------------------------------------------------------------------------
   // Experimental Features
   // -------------------------------------------------------------------------
-  experimental: {
-    // Enable server actions (for form handling)
-    serverActions: {
-      bodySizeLimit: "10mb",
-    },
-  },
-
-  // -------------------------------------------------------------------------
-  // Webpack Configuration (Custom)
-  // -------------------------------------------------------------------------
-  webpack: (config, { isServer }) => {
-    // Enable source maps in development
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
-
-    return config;
-  },
+  // Disabled for basic setup - will enable as needed
+  // experimental: {
+  //   serverActions: {
+  //     bodySizeLimit: "10mb",
+  //   },
+  // },
 
   // -------------------------------------------------------------------------
   // Output Configuration
   // -------------------------------------------------------------------------
-  output: "standalone", // For Docker/container deployments
+  // output: "standalone", // Disabled for basic setup - will enable for deployment
 
   // -------------------------------------------------------------------------
   // Environment Variables
