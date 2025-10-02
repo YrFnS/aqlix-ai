@@ -50,7 +50,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **03_typescript_foundation.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: TypeScript configuration, tsconfig.json, and path mapping_
 
-- **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp`
+- **04_supabase_client_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Supabase client initialization and basic connection_
 
 ### UI Layer (05-10)

@@ -561,7 +561,7 @@ export class IraqiBrowserOperator extends BrowserOperator {
 
 - **Core**: TypeScript, Node.js, Bun runtime
 - **Desktop Control**: NutJS, Electron
-- **Browser Automation**: Puppeteer, Playwright
+- **Browser Automation**: chrome-devtools-mcp, Playwright
 - **Vision Processing**: Custom VLM integration
 - **Cultural Processing**: Arabic NLP, Islamic compliance validation
 

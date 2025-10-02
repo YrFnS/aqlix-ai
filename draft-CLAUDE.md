@@ -53,7 +53,7 @@ Must always follow these rules before doing anything:
 - Always use Serena MCP when searching through the app (read Serena's initial instructions)
 - Always use Playwright MCP for testing workflows, browser automation, and E2E testing
 - Always use Desktop Commander MCP for file operations, process management, and system tasks
-- Always use Puppeteer MCP for browser automation and screenshot generation when needed
+- Always use chrome-devtools-mcp MCP for browser automation and screenshot generation when needed
 - Always search the web for the latest information (note: we are in 2025)
 
 Core constants and principles for Iraqi AI chat system. Rarely change. For implementation tasks, see PRPs.

@@ -1,0 +1,61 @@
+{
+  "name": "@iraqi-ai/supabase-client",
+  "version": "1.0.0",
+  "description": "Type-safe Supabase client utilities for Iraqi AI Chat System",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./src/browser.ts",
+      "default": "./dist/browser.js"
+    },
+    "./server": {
+      "types": "./src/server.ts",
+      "default": "./dist/server.js"
+    },
+    "./admin": {
+      "types": "./src/admin.ts",
+      "default": "./dist/admin.js"
+    }
+  },
+  "scripts": {
+    "build": "bun run build:js && bun run build:types",
+    "build:js": "bun build src/index.ts src/browser.ts src/server.ts src/admin.ts src/env.ts --outdir dist --format esm --external @iraqi-ai/types --external '@supabase/*' --external 'next/headers'",
+    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist",
+    "dev": "bun --watch src/index.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@iraqi-ai/types": "workspace:*",
+    "@supabase/supabase-js": "^2.58.0",
+    "@supabase/ssr": "^0.7.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "supabase",
+    "client",
+    "iraqi",
+    "ai",
+    "database",
+    "typescript"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "directory": "packages/supabase-client"
+  }
+}

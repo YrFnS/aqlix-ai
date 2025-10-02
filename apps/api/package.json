@@ -55,12 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "concurrently": "^8.2.2",
-    "nodemon": "^3.0.2",
-    "flake8": "^7.0.0",
-    "mypy": "^1.8.0",
-    "pytest": "^7.4.4",
-    "pytest-cov": "^4.1.0",
-    "pytest-asyncio": "^0.23.2"
+    "nodemon": "^3.0.2"
   },
   "keywords": [
     "iraqi",

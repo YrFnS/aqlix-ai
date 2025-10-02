@@ -4,7 +4,7 @@
 
 **Comprehensive website automation and form filling system** with Iraqi context-aware form completion, intelligent web navigation, cultural data validation, automated Iraqi government and professional website interactions, and AI-powered form field recognition and completion.
 
-**Specific technologies:** Playwright automation, Puppeteer browser control, intelligent form field detection, Iraqi cultural data validation, Arabic text processing for forms, professional domain automation, and TypeScript integration with cultural compliance validation.
+**Specific technologies:** Playwright automation, chrome-devtools-mcp browser control, intelligent form field detection, Iraqi cultural data validation, Arabic text processing for forms, professional domain automation, and TypeScript integration with cultural compliance validation.
 
 ---
 
@@ -91,7 +91,7 @@
 ### Automation Technology Sources
 
 - **Playwright Advanced Automation:** Advanced browser automation patterns and best practices
-- **Puppeteer Iraqi Context:** Browser automation specifically configured for Iraqi websites
+- **chrome-devtools-mcp Iraqi Context:** Browser automation specifically configured for Iraqi websites
 - **Form Field Recognition:** AI-powered form field detection and classification techniques
 - **Arabic Text Processing:** Arabic text handling in web automation contexts
 - **Security Bypass Techniques:** Ethical automation techniques for security measures
@@ -392,7 +392,7 @@ CREATE TABLE user_automation_preferences (
 ### Core System Integration
 
 - **AI Agent Integration:** PydanticAI agents with intelligent automation capabilities
-- **Browser Automation:** Playwright and Puppeteer integration for website automation
+- **Browser Automation:** Playwright and chrome-devtools-mcp integration for website automation
 - **Cultural Validation:** Integration with Iraqi cultural validation systems
 - **Professional Domain Integration:** Integration with Iraqi professional domain knowledge
 

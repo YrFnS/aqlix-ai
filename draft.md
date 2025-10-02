@@ -1009,7 +1009,7 @@ we have these mcp:
 serena
 Sentry
 @21st-dev/magic
-Puppeteer
+chrome-devtools-mcp
 context7
 sequential-thinking
 playwright
@@ -1376,7 +1376,7 @@ wizard sub-agent
 - **Sentry**: Error tracking, performance monitoring
 - **Desktop Commander**: File operations, system tasks
 - **Serena**: Code search, semantic analysis and editing capabilities
-- **Puppeteer**: Advanced browser automation
+- **chrome-devtools-mcp**: Advanced browser automation
 
 just to make sure did you created the plan file for what we need to do?
 

@@ -62,3 +62,6 @@ export type TextDirection = 'rtl' | 'ltr';
 
 // Re-export environment types
 export * from './env';
+
+// Re-export Supabase database types
+export type { Database, Tables, TablesInsert, TablesUpdate, Enums, CompositeTypes } from './database.types';

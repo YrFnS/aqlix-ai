@@ -28,6 +28,7 @@
     "@iraqi-ai/features": "workspace:*",
     "@iraqi-ai/api-client": "workspace:*",
     "@iraqi-ai/arabic-nlp": "workspace:*",
+    "@iraqi-ai/supabase-client": "workspace:*",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
