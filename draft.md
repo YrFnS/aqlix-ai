@@ -2687,3 +2687,4 @@ https://github.com/CodebuffAI/codebuff
 https://github.com/MotiaDev/motia
 https://betterstack.com/
 
+for docling do we extract from it and use the actual repo as they say in the readme or we just use or just extract from it and use it
