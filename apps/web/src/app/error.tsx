@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export default function Error({
   error,
@@ -11,7 +11,7 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log error to console in development
-    console.error('Application error:', error);
+    console.error("Application error:", error);
   }, [error]);
 
   return (

@@ -3,7 +3,6 @@ Arabic text processing tests for Iraqi AI Chat System
 Tests RTL text handling, Iraqi dialect recognition, and mixed language support
 """
 
-import pytest
 from typing import List, Dict, Any
 
 

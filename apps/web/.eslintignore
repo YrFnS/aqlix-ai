@@ -1,0 +1,19 @@
+# Next.js generated files
+.next/
+out/
+next-env.d.ts
+
+# Build outputs
+dist/
+build/
+.turbo/
+
+# Dependencies
+node_modules/
+
+# Test coverage
+coverage/
+
+# Environment files
+.env*
+!.env.example

@@ -27,9 +27,7 @@ const clientEnvSchema = z.object({
     .default("http://localhost:8000"),
 
   // Supabase Configuration
-  NEXT_PUBLIC_SUPABASE_URL: z
-    .string()
-    .url("Supabase URL must be a valid URL"),
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url("Supabase URL must be a valid URL"),
 
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z
     .string()
@@ -52,10 +50,7 @@ const clientEnvSchema = z.object({
     .default("development"),
 
   // Optional: Monitoring
-  NEXT_PUBLIC_SENTRY_DSN: z
-    .string()
-    .url()
-    .optional(),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional(),
 
   // Optional: Analytics
   NEXT_PUBLIC_GA_MEASUREMENT_ID: z
@@ -108,16 +103,10 @@ const serverEnvSchema = z.object({
     .min(1, "Supabase service role key is required"),
 
   // Database
-  DATABASE_URL: z
-    .string()
-    .url("Database URL must be valid")
-    .optional(),
+  DATABASE_URL: z.string().url("Database URL must be valid").optional(),
 
   // Redis (optional)
-  REDIS_URL: z
-    .string()
-    .url("Redis URL must be valid")
-    .optional(),
+  REDIS_URL: z.string().url("Redis URL must be valid").optional(),
 
   // LLM Configuration (server-only)
   LLM_PROVIDER: z
@@ -126,26 +115,16 @@ const serverEnvSchema = z.object({
     })
     .default("openai"),
 
-  LLM_API_KEY: z
-    .string()
-    .min(1, "LLM API key is required"),
+  LLM_API_KEY: z.string().min(1, "LLM API key is required"),
 
-  LLM_MODEL: z
-    .string()
-    .default("gpt-4o-mini"),
+  LLM_MODEL: z.string().default("gpt-4o-mini"),
 
   // Iraqi Payment Gateways (server-only, optional)
-  ZAINCASH_API_KEY: z
-    .string()
-    .optional(),
+  ZAINCASH_API_KEY: z.string().optional(),
 
-  FASTPAY_API_KEY: z
-    .string()
-    .optional(),
+  FASTPAY_API_KEY: z.string().optional(),
 
-  NASSWALLET_API_KEY: z
-    .string()
-    .optional(),
+  NASSWALLET_API_KEY: z.string().optional(),
 
   // Monitoring (server-only)
   SENTRY_ENVIRONMENT: z
@@ -182,7 +161,9 @@ function validateEnv() {
     console.error("\n💡 Tips:");
     console.error("  - Check .env.example for required variables");
     console.error("  - Copy .env.example to .env.local");
-    console.error("  - Ensure all NEXT_PUBLIC_* variables are set for client-side");
+    console.error(
+      "  - Ensure all NEXT_PUBLIC_* variables are set for client-side",
+    );
     console.error("  - Restart Next.js dev server after changing .env files");
 
     throw new Error("Invalid environment configuration");
@@ -275,8 +256,12 @@ export function logEnvironmentStatus() {
     console.log("🌍 Environment loaded successfully:");
     console.log(`  - NODE_ENV: ${env.NODE_ENV}`);
     console.log(`  - API URL: ${env.NEXT_PUBLIC_API_URL}`);
-    console.log(`  - Cultural Validation: ${env.NEXT_PUBLIC_CULTURAL_VALIDATION_ENABLED ? "enabled" : "disabled"}`);
-    console.log(`  - Arabic Processing: ${env.NEXT_PUBLIC_ARABIC_DIALECT_PROCESSING ? "enabled" : "disabled"}`);
+    console.log(
+      `  - Cultural Validation: ${env.NEXT_PUBLIC_CULTURAL_VALIDATION_ENABLED ? "enabled" : "disabled"}`,
+    );
+    console.log(
+      `  - Arabic Processing: ${env.NEXT_PUBLIC_ARABIC_DIALECT_PROCESSING ? "enabled" : "disabled"}`,
+    );
     console.log(`  - Has API Key: ${!!env.API_SECRET_KEY}`);
     console.log(`  - Has LLM Key: ${!!env.LLM_API_KEY}`);
   }

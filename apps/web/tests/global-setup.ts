@@ -1,6 +1,6 @@
 import { chromium, FullConfig } from '@playwright/test';
 
-async function globalSetup(config: FullConfig) {
+async function globalSetup(_config: FullConfig) {
   console.log('🧪 Setting up global E2E test environment for Iraqi AI Chat System');
 
   // Launch browser for setup

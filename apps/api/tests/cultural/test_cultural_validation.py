@@ -3,7 +3,6 @@ Cultural validation tests for Iraqi AI Chat System
 Tests Islamic compliance, political neutrality, and professional appropriateness
 """
 
-import pytest
 from typing import Dict, Any
 
 
