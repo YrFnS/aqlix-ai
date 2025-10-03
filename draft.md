@@ -2646,9 +2646,6 @@ and we start with monolithic and then we will move to microservice later
 and the app can be scaled and support millions of users in the future so we dont need to create it again thats why we need to make it scalable so we are starting with monolithic and then we will move to microservice later
 this is all covered in the initials folder?
 
-https://github.com/quests-org/quests
-https://github.com/comfyanonymous/ComfyUI
-
 i want to build ai chat system beyound just chat i created the plan into small features c:\Users\Itokoro\Documents\projects\aqlix-ai\initials but before i start implmeneting i we need to update the
 from https://fly.io/ to https://sevalla.com/ what do you think?
 
@@ -2672,6 +2669,21 @@ i executed the first prp and generated the second one but before we continue i h
 we want use a good module and cheap and can speck and right arabic not just english and we can use it via api dont need to host it so we can give to the users with cheap plans so every one can afford it like 5$ or 10$ per month and we have more expensive plans for even better and more usage
 so what we will use?? make a deep research and tell me your thoughts
 
+
+before we continue i have a question
+do we need langchain in our app we are using pydanticai
+
+i have another thing to ask
+i found these repos
+check them and tell me your thoughts
+
+https://github.com/comfyanonymous/ComfyUI
 https://github.com/coleam00/ottomator-agents
 https://github.com/docling-project/docling
 https://github.com/ChromeDevTools/chrome-devtools-mcp
+https://github.com/quests-org/quests
+https://github.com/zed-industries/zed
+https://github.com/CodebuffAI/codebuff
+https://github.com/MotiaDev/motia
+https://betterstack.com/
+
