@@ -17,6 +17,7 @@
     ],
 
     // Path mappings (override base with Next.js patterns)
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@iraqi-ai/types": ["../../packages/types/src"],

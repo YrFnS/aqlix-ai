@@ -55,10 +55,10 @@ This guide shows which command to use for each initial file when creating and ex
 
 ### UI Layer (05-10)
 
-- **05_nextjs_app_setup.md** → `/generate-prp` + `/execute-prp` ✅`
+- **05_nextjs_app_setup.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Next.js 15 application setup with App Router and React 19_
 
-- **06_ui_component_system.md** → `/generate-prp` + `/execute-prp`
+- **06_ui_component_system.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: shadcn/ui component system and design tokens_
 
 - **07_basic_routing.md** → `/generate-prp` + `/execute-prp`
