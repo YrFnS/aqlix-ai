@@ -64,7 +64,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **07_basic_routing.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Next.js App Router navigation and routing components_
 
-- **08_responsive_layout.md** → `/generate-prp` + `/execute-prp`
+- **08_responsive_layout.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Tailwind CSS responsive design and mobile-first patterns_
 
 - **09_form_handling.md** → `/generate-prp` + `/execute-prp`

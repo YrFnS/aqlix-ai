@@ -10,6 +10,7 @@ interface NavLinkProps {
   exact?: boolean;
   className?: string;
   activeClassName?: string;
+  onClick?: () => void;
 }
 
 export function NavLink({
@@ -18,6 +19,7 @@ export function NavLink({
   exact = true,
   className,
   activeClassName = "text-blue-600 font-semibold",
+  onClick,
 }: NavLinkProps) {
   const pathname = usePathname();
 
@@ -34,6 +36,7 @@ export function NavLink({
         isActive ? activeClassName : "text-gray-700",
         className,
       )}
+      onClick={onClick}
     >
       {children}
     </Link>

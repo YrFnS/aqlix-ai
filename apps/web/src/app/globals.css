@@ -57,3 +57,75 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Responsive Container Utilities */
+@layer utilities {
+  .container-responsive {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Responsive Typography Scale */
+@layer utilities {
+  .text-heading-1 {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
+  }
+
+  .text-heading-2 {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold;
+  }
+
+  .text-heading-3 {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold;
+  }
+
+  .text-body-large {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-body {
+    @apply text-sm sm:text-base;
+  }
+}
+
+/* Touch Target Utilities */
+@layer utilities {
+  .touch-target {
+    @apply min-h-[3rem] min-w-[3rem]; /* 48px minimum */
+  }
+
+  .touch-target-large {
+    @apply min-h-[3.5rem] min-w-[3.5rem]; /* 56px for primary actions */
+  }
+}
+
+/* Responsive Spacing Scale */
+@layer utilities {
+  .section-spacing {
+    @apply py-8 sm:py-12 md:py-16 lg:py-20;
+  }
+
+  .element-spacing {
+    @apply space-y-4 sm:space-y-6 md:space-y-8;
+  }
+}
+
+/* Safe Area Insets for Mobile (notch/home indicator) */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

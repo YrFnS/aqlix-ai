@@ -188,6 +188,7 @@ Our system includes 21 culturally-intelligent AI agents:
 - [**Agent Architecture**](./docs/technical/AGENT_ARCHITECTURE.md) - PydanticAI agent system design
 - [**Database Schema**](./docs/technical/DATABASE_SCHEMA.md) - Supabase schema with cultural extensions
 - [**Security Implementation**](./docs/technical/SECURITY.md) - Security measures with Iraqi context
+- [**Responsive Patterns**](./docs/responsive-patterns.md) - Mobile-first responsive design system and patterns
 
 ### **Deployment & Operations**
 
