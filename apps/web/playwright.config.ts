@@ -81,7 +81,7 @@ export default defineConfig({
   },
 
   /* Global setup for Arabic RTL testing */
-  globalSetup: require.resolve('./tests/global-setup.ts'),
+  globalSetup: './tests/global-setup.ts',
 
   /* Test timeout */
   timeout: 30000,

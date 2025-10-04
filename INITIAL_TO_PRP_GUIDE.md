@@ -61,7 +61,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **06_ui_component_system.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: shadcn/ui component system and design tokens_
 
-- **07_basic_routing.md** → `/generate-prp` + `/execute-prp`
+- **07_basic_routing.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Next.js App Router navigation and routing components_
 
 - **08_responsive_layout.md** → `/generate-prp` + `/execute-prp`
