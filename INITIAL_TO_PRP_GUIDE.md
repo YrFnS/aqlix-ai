@@ -70,7 +70,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **09_form_handling.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: react-hook-form with Zod validation and form components_
 
-- **10_error_handling.md** → `/generate-prp` + `/execute-prp`
+- **10_error_handling.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: React Error Boundaries and global error handling_
 
 ### Arabic Layer (11-16)
