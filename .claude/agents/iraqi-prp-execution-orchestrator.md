@@ -7,7 +7,7 @@ context_sources:
 context_management: true
 proactive_triggers: ["PRP completion", "workflow planning", "dependency analysis", "system health", "next steps", "orchestration"]
 tools: Task, Read, Write, MultiEdit, Bash, Grep, Glob
-mcp_servers: ["supabase", "sentry", "playwright"]
+mcp_servers: ["archon", "serena", "github", "sentry", "vibe-check", "pieces"]
 model: sonnet
 ---
 

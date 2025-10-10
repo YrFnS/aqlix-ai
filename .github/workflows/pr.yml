@@ -1,0 +1,194 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  # Validate PR title format
+  pr-title:
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check PR title format
+        uses: amannn/action-semantic-pull-request@v5
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+            cultural
+            arabic
+          requireScope: false
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            should start with a lowercase character.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Check for breaking changes
+  breaking-changes:
+    name: Check Breaking Changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for BREAKING CHANGE in commits
+        run: |
+          BREAKING_CHANGES=$(git log origin/${{ github.base_ref }}..${{ github.sha }} --grep="BREAKING CHANGE" --oneline)
+          if [ -n "$BREAKING_CHANGES" ]; then
+            echo "⚠️ Breaking changes detected:"
+            echo "$BREAKING_CHANGES"
+            echo "breaking_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No breaking changes detected"
+            echo "breaking_changes=false" >> $GITHUB_OUTPUT
+          fi
+        id: check-breaking
+
+  # Validate Iraqi cultural compliance
+  cultural-validation:
+    name: Cultural Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check for cultural compliance markers
+        run: |
+          # Check if PR touches cultural-sensitive files
+          CULTURAL_FILES=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep -E "(cultural|arabic|rtl|islamic)" || true)
+
+          if [ -n "$CULTURAL_FILES" ]; then
+            echo "📋 Cultural-sensitive files modified:"
+            echo "$CULTURAL_FILES"
+            echo "cultural_check=required" >> $GITHUB_OUTPUT
+
+            # Require cultural tests if available
+            if [ -f "package.json" ] && grep -q "test:cultural" package.json; then
+              echo "🧪 Running cultural compliance tests..."
+              bun run test:cultural || echo "⚠️ Cultural tests not yet available"
+            fi
+          else
+            echo "✅ No cultural-sensitive files modified"
+            echo "cultural_check=not_required" >> $GITHUB_OUTPUT
+          fi
+        id: cultural-check
+
+  # Validate Arabic/RTL changes
+  arabic-validation:
+    name: Arabic/RTL Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Check for Arabic/RTL changes
+        run: |
+          # Check if PR touches Arabic/RTL files
+          ARABIC_FILES=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep -E "(arabic|rtl|font-arabic)" || true)
+
+          if [ -n "$ARABIC_FILES" ]; then
+            echo "📋 Arabic/RTL files modified:"
+            echo "$ARABIC_FILES"
+            echo "arabic_check=required" >> $GITHUB_OUTPUT
+
+            # Require Arabic tests if available
+            if [ -f "package.json" ] && grep -q "test:arabic" package.json; then
+              echo "🧪 Running Arabic/RTL tests..."
+              bun run test:arabic || echo "⚠️ Arabic tests not yet available"
+            fi
+          else
+            echo "✅ No Arabic/RTL files modified"
+            echo "arabic_check=not_required" >> $GITHUB_OUTPUT
+          fi
+        id: arabic-check
+
+  # Size limit check
+  size-check:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build applications
+        run: bun run build:apps
+
+      - name: Check bundle sizes
+        run: |
+          echo "📦 Checking bundle sizes..."
+
+          # Check Next.js bundle size
+          if [ -f "apps/web/.next/analyze/client.json" ]; then
+            SIZE=$(jq '.size' apps/web/.next/analyze/client.json)
+            echo "Client bundle size: $SIZE bytes"
+
+            # Warn if bundle > 500KB
+            if [ "$SIZE" -gt 512000 ]; then
+              echo "⚠️ Warning: Client bundle size exceeds 500KB"
+            else
+              echo "✅ Bundle size is acceptable"
+            fi
+          fi
+
+  # PR validation success gate
+  pr-validation-success:
+    name: PR Validation Success
+    runs-on: ubuntu-latest
+    needs: [pr-title, breaking-changes, cultural-validation, arabic-validation, size-check]
+    if: always()
+
+    steps:
+      - name: Check all validations passed
+        run: |
+          if [[ "${{ needs.pr-title.result }}" != "success" ]] || \
+             [[ "${{ needs.breaking-changes.result }}" != "success" ]] || \
+             [[ "${{ needs.cultural-validation.result }}" != "success" ]] || \
+             [[ "${{ needs.arabic-validation.result }}" != "success" ]] || \
+             [[ "${{ needs.size-check.result }}" != "success" ]]; then
+            echo "❌ PR validation failed"
+            exit 1
+          fi
+          echo "✅ All PR validations passed!"

@@ -5,6 +5,14 @@
 **Current Date Context**: ALWAYS use 2025 in web searches, not 2024
 **Primary Directive**: ALWAYS use specialized Iraqi AI agents for cultural compliance, Arabic processing, and professional domain expertise.
 
+## Mandatory
+
+As an autonomous agent you will:
+
+1. Call vibe_check after planning and before major actions.
+2. Provide the full user request and your current plan.
+3. Optionally, record resolved issues with vibe_learn.
+
 ## MANDATORY TRUTHFULNESS PROTOCOL
 
 ### PRINCIPLE 0: RADICAL CANDOR - TRUTH ABOVE ALL
@@ -115,6 +123,55 @@ Use evidence-based language:
 4. **Test-Driven**: Write tests first, confirm failures, implement to pass
 5. **Quality Gates**: Run lint/typecheck before completion
 
+### GitHub Workflow (Agent-Automated)
+
+**Philosophy**: All GitHub operations are **automated by agents** during PRP execution. See `docs/GITHUB_WORKFLOW.md` for complete strategy.
+
+**Two-Branch Strategy**:
+- `main` - Production-ready, stable code only
+- `develop` - Ongoing PRP work (all development happens here)
+
+**How It Works**:
+- Agent commits all PRPs to `develop` branch
+- CI/CD validates every push to `develop`
+- Agent merges `develop` → `main` when feature layer complete (e.g., after PRPs 11-16)
+- Agent creates version tags on `main` for milestones
+
+**Agent Automation**:
+- `iraqi-prp-execution-orchestrator` manages commits, issues, merges, tags automatically
+- `iraqi-devops-engineer` manages CI/CD validation
+- `app-documentation-tracker` updates docs after changes
+
+**No manual GitHub operations required** - agents handle everything via GitHub MCP + CLI.
+
+### CI/CD Pipeline (4-Phase Incremental)
+
+**Status**: Phase 1 Complete ✅ | Phases 2-4 Planned 📋
+
+**Active Workflows** (`.github/workflows/`):
+- **ci.yml**: Quality gates (lint, typecheck, build, test) - runs on push/PR
+- **pr.yml**: PR validation (title format, breaking changes, cultural/Arabic checks, bundle size)
+
+**Roadmap** (`docs/CICD_ROADMAP.md`):
+- **Phase 1 (NOW)**: Basic quality gates ✅ DONE
+- **Phase 2 (After Initial #16)**: Arabic/RTL/Cultural tests 📋 PLANNED
+- **Phase 3 (After Initial #28)**: E2E, Payment, Security tests 📋 PLANNED
+- **Phase 4 (Before MVP Launch)**: Staging/Production deployment 📋 PLANNED
+
+**All PRs must pass**:
+- ✅ ESLint validation
+- ✅ TypeScript type checking
+- ✅ Build validation
+- ✅ Unit tests
+- ✅ PR title format (feat/fix/docs/cultural/arabic/...)
+- ✅ Bundle size < 500KB warning
+
+**Cultural/Arabic Validation** (Phase 1 detection only):
+- 🎯 Detects cultural-sensitive file changes
+- 🎯 Detects Arabic/RTL file changes
+- 🎯 Runs cultural/arabic tests if available (doesn't fail CI yet)
+- ⏭️ Will enforce thresholds in Phase 2 (95% cultural, 99% RTL, 85% dialect)
+
 ### Bun Commands (REQUIRED)
 
 ```bash
@@ -219,24 +276,138 @@ Use for immediate processing without context overhead:
 
 ## MCP Server Coordination
 
-**Required MCP Servers**:
+### Available MCP Servers
 
-- **Archon**: Task management, project coordination, workflow orchestration
-- **Context7**: Official documentation, patterns
-- **@21st-dev/magic**: UI component generation
-- **Playwright**: E2E testing, browser automation
-- **Supabase**: Database operations, real-time features
-- **Sentry**: Error tracking, performance monitoring
-- **Serena**: Code search, semantic analysis and editing capabilities
-- **chrome-devtools-mcp**: Advanced browser automation
+**Core Infrastructure**:
 
-**Selection Rules**:
+1. **Archon** (MANDATORY for ALL agents)
+   - **Capabilities**: Task management, project coordination, documents, versions, RAG knowledge base
+   - **Tools**: `find_tasks`, `manage_task`, `find_projects`, `manage_project`, `find_documents`, `manage_document`, `find_versions`, `manage_version`, `rag_search_knowledge_base`, `rag_search_code_examples`
+   - **Use Case**: Universal task tracking, project management, knowledge retrieval
+   - **Required by**: ALL 22 agents (task management is universal)
+
+2. **Serena** (Code Intelligence)
+   - **Capabilities**: Semantic code search, symbol analysis, code editing, AST operations
+   - **Tools**: `find_symbol`, `find_referencing_symbols`, `get_symbols_overview`, `replace_symbol_body`, `insert_after_symbol`, `search_for_pattern`
+   - **Use Case**: Intelligent code navigation, refactoring, semantic understanding
+   - **Required by**: technical-debugger, ai-agent-architect, documentation-tracker, devops-engineer
+
+3. **Context7** (Documentation)
+   - **Capabilities**: Up-to-date library documentation, code examples, patterns
+   - **Tools**: `resolve-library-id`, `get-library-docs`
+   - **Use Case**: Research latest APIs, implementation patterns, best practices
+   - **Required by**: ai-agent-architect, technical-debugger, devops-engineer, ui-designer
+
+**Development Tools**:
+
+4. **GitHub** (Repository Management)
+   - **Capabilities**: PRs, issues, workflows, code search, releases, branches, commits
+   - **Tools**: `create_pull_request`, `create_issue`, `search_code`, `list_workflow_runs`, `get_commit`, `create_branch`
+   - **Use Case**: Version control operations, CI/CD integration, issue tracking
+   - **Required by**: devops-engineer, technical-debugger, documentation-tracker, prp-execution-orchestrator
+
+5. **Supabase** (Database & Backend)
+   - **Capabilities**: Database operations, auth, real-time subscriptions, edge functions
+   - **Tools**: `execute_sql`, `apply_migration`, `list_tables`, `get_project`, `deploy_edge_function`
+   - **Use Case**: Database schema management, auth configuration, backend operations
+   - **Required by**: technical-debugger, devops-engineer, security-specialist, ai-agent-architect
+   - **Status**: Project `iraqi-ai` in EU-Central-1
+   - **Database**: PostgreSQL 17.6.1 (production-ready)
+
+**Testing & Quality**:
+
+6. **Playwright** (Browser Automation)
+   - **Capabilities**: E2E testing, browser interactions, visual testing, network inspection
+   - **Tools**: `browser_navigate`, `browser_click`, `browser_snapshot`, `browser_take_screenshot`, `browser_evaluate`
+   - **Use Case**: End-to-end testing, user flow validation, visual regression
+   - **Required by**: payment-tester, arabic-tester, cultural-tester, accessibility-specialist
+
+7. **chrome-devtools** (Advanced Browser Testing)
+   - **Capabilities**: Performance profiling, network analysis, console monitoring, DOM inspection
+   - **Tools**: `take_snapshot`, `click`, `fill`, `evaluate_script`, `performance_start_trace`, `list_console_messages`
+   - **Use Case**: Performance debugging, advanced browser testing, network analysis
+   - **Required by**: devops-engineer, payment-tester, accessibility-specialist
+
+**Monitoring & Security**:
+
+8. **Sentry** (Error Tracking)
+   - **Capabilities**: Error tracking, performance monitoring, issue management, release tracking
+   - **Tools**: `search_issues`, `get_issue_details`, `search_events`, `get_trace_details`, `search_docs`
+   - **Use Case**: Production error monitoring, performance analysis, debugging
+   - **Required by**: technical-debugger, devops-engineer, security-specialist
+
+9. **Semgrep** (Code Security)
+   - **Configuration**: `{"command": "semgrep", "args": ["mcp"]}`
+   - **Capabilities**: Static code analysis, security vulnerability detection
+   - **Required by**: security-specialist, payment-security-guardian
+
+**UI & Design**:
+
+10. **@21st-dev/magic** (UI Components)
+    - **Capabilities**: AI-powered UI component generation, design inspiration, component refinement
+    - **Tools**: `21st_magic_component_builder`, `21st_magic_component_inspiration`, `21st_magic_component_refiner`, `logo_search`
+    - **Use Case**: Rapid UI prototyping, component generation, design inspiration
+    - **Required by**: ui-designer, interaction-designer, accessibility-specialist
+
+**Meta-Cognition**:
+
+11. **vibe-check** (Quality Assurance)
+    - **Capabilities**: Metacognitive questioning, pattern recognition, mistake learning, constitutional rules
+    - **Tools**: `vibe_check`, `vibe_learn`, `update_constitution`, `check_constitution`
+    - **Use Case**: Prevent cascading errors, learn from mistakes, quality gates
+    - **Required by**: workflow-orchestrator, prp-execution-orchestrator, context-manager
+
+**Context & Memory**:
+
+12. **Pieces** (Long-Term Memory)
+    - **Capabilities**: Historical context retrieval, workstream summaries, cross-session memory
+    - **Tools**: `ask_pieces_ltm`, `create_pieces_memory`
+    - **Use Case**: Retrieve project history, access past decisions, create persistent memories
+    - **Required by**: context-manager, prp-execution-orchestrator, technical-debugger
+
+### MCP Selection Rules
 
 1. **ARCHON-FIRST RULE**: Always use Archon MCP for task management (see `archon.md`)
-2. Agents specify primary MCP servers in frontmatter
-3. Auto-coordination based on task complexity
-4. Fallback strategies for server unavailability
-5. Performance optimization through intelligent caching
+2. **Agent Frontmatter**: Each agent specifies required MCPs in frontmatter `mcp_servers` field
+3. **Auto-Coordination**: System selects MCPs based on task type and complexity
+4. **Fallback Strategies**: Graceful degradation when MCPs unavailable
+5. **Performance Optimization**: Intelligent caching, parallel MCP calls
+6. **Context Sharing**: MCPs share context through Archon knowledge base
+
+### MCP Configuration Matrix
+
+| Agent | Archon | Serena | Context7 | GitHub | Supabase | Sentry | Playwright | Chrome-DevTools | 21st-dev | Vibe-Check | Pieces |
+|-------|--------|--------|----------|--------|----------|--------|------------|-----------------|----------|------------|--------|
+| **Core Orchestration** |
+| workflow-orchestrator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| prp-execution-orchestrator | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| context-manager | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| **Technical** |
+| ai-agent-architect | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| technical-debugger | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| devops-engineer | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| **Security** |
+| security-specialist | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| payment-security-guardian | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| **Testing** |
+| payment-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
+| arabic-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| cultural-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| accessibility-specialist | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ |
+| **UI/UX** |
+| ui-designer | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| ux-researcher | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| interaction-designer | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| **Cultural** |
+| cultural-validator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| arabic-rtl-processor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| professional-domain-expert | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Business** |
+| product-manager | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| business-analyst | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Utility** |
+| documentation-tracker | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| external-service-coordinator | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ## Multi-Agent Workflow Patterns
 
@@ -289,6 +460,10 @@ Use for immediate processing without context overhead:
 
 ```
 /
+├── .claude/                    # Agent system
+│   └── agents/                 # 22 specialized Iraqi AI agents
+├── .github/                    # CI/CD infrastructure
+│   └── workflows/              # GitHub Actions workflows (ci.yml, pr.yml)
 ├── apps/
 │   ├── web/                    # Next.js 15+ web application
 │   ├── mobile/                 # React Native app (future)
@@ -306,22 +481,32 @@ Use for immediate processing without context overhead:
 │   ├── features/              # Shared business logic (chat/, documents/, payments/)
 │   ├── api-client/            # API client logic
 │   └── arabic-nlp/            # Arabic processing logic
+├── docs/                      # Technical documentation
+│   ├── CICD_ROADMAP.md        # 4-phase CI/CD strategy and implementation plan
+│   └── GITHUB_WORKFLOW.md     # Agent-automated GitHub workflow strategy
 ├── examples/                   # Reference implementations
 │   ├── basic_chat_agent/       # Simple PydanticAI agent patterns
 │   ├── main_agent_reference/   # Production agent architecture
 │   ├── tool_enabled_agent/     # Agent with external tools
 │   ├── structured_output_agent/ # Professional report generation
 │   └── testing_examples/       # Agent testing patterns
-├── services/                   # Microservices
-├── data/                      # Knowledge base (iraqi-law/, education/, templates/)
+├── initials/                   # System templates (56 total: 1-47 MVP, 48-56 Post-MVP)
+├── project-context/            # Persistent knowledge base
+│   ├── agents/                 # Agent-specific context
+│   │   ├── knowledge-base/     # Accumulated domain knowledge
+│   │   └── session-logs/       # Historical session data
+│   └── current-context.md      # Active session context
 ├── PRPs/                      # Product Requirement Prompts
+├── services/                   # Microservices
 └── CLAUDE.md                  # This rules file
 ```
 
 **Key Directories**:
 
-- **Agents**: `.claude/agents/` (21 specialized agents)
+- **Agents**: `.claude/agents/` (22 specialized agents)
+- **Workflows**: `.github/workflows/` (CI/CD automation pipelines)
+- **Documentation**: `docs/` (Technical documentation, roadmaps)
 - **Context**: `project-context/` (persistent knowledge base)
 - **Examples**: `examples/` (79 Iraqi-enhanced components and integrations)
 - **Initials**: `initials/` (56 system templates: 1-47 MVP, 48-56 Post-MVP)
-- **Shared**: `packages/` (ui, types, features, supabase-client, arabic-nlp)
+- **Shared**: `packages/` (ui, types, features, api-client, arabic-nlp)
