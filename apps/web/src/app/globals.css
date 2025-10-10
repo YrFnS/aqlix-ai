@@ -129,3 +129,192 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ========================================
+   Arabic Typography System
+   ========================================
+   Comprehensive Arabic font system with:
+   - CSS custom properties for Arabic typography
+   - Arabic-optimized font sizes and spacing
+   - Font feature settings for proper rendering
+   - Responsive typography for mobile devices
+   - Dark mode support
+   ======================================== */
+
+@layer base {
+  :root {
+    /* Arabic-Optimized Font Sizes */
+    /* Arabic text needs slightly larger sizes for readability */
+    --text-xs-arabic: 0.875rem; /* 14px */
+    --text-sm-arabic: 1rem; /* 16px - base for Arabic */
+    --text-base-arabic: 1.125rem; /* 18px - comfortable reading */
+    --text-lg-arabic: 1.25rem; /* 20px */
+    --text-xl-arabic: 1.5rem; /* 24px */
+    --text-2xl-arabic: 1.875rem; /* 30px */
+    --text-3xl-arabic: 2.25rem; /* 36px */
+
+    /* Arabic-Optimized Line Heights */
+    /* Arabic needs 1.5-1.8x font size for proper readability */
+    --leading-tight-arabic: 1.4;
+    --leading-snug-arabic: 1.5;
+    --leading-normal-arabic: 1.6; /* Default for body text */
+    --leading-relaxed-arabic: 1.7; /* Formal documents */
+    --leading-loose-arabic: 1.8; /* Educational content */
+
+    /* Arabic Letter Spacing */
+    /* 0em is standard, 0.02-0.04em helps readability at small sizes */
+    --tracking-tighter-arabic: -0.02em;
+    --tracking-tight-arabic: -0.01em;
+    --tracking-normal-arabic: 0em; /* Default for Arabic */
+    --tracking-wide-arabic: 0.02em; /* Small text readability */
+    --tracking-wider-arabic: 0.04em; /* Very small text */
+  }
+}
+
+/* Base Arabic Font Class with Font Feature Settings */
+@layer base {
+  .font-arabic {
+    /* Font features for proper Arabic rendering */
+    font-feature-settings:
+      "liga" 1,
+      /* Ligatures for character connection */ "calt" 1,
+      /* Contextual alternates for context forms */ "kern" 1; /* Kerning for proper spacing */
+
+    /* Font smoothing for better rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Text rendering optimization */
+    text-rendering: optimizeLegibility;
+  }
+
+  .font-arabic-heading {
+    /* Inherit base Arabic font features */
+    font-feature-settings:
+      "liga" 1,
+      "calt" 1,
+      "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  .font-arabic-formal {
+    /* Inherit base Arabic font features */
+    font-feature-settings:
+      "liga" 1,
+      "calt" 1,
+      "kern" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Arabic Typography Utilities */
+@layer utilities {
+  /* Arabic Text Sizes */
+  .text-xs-arabic {
+    font-size: var(--text-xs-arabic);
+  }
+  .text-sm-arabic {
+    font-size: var(--text-sm-arabic);
+  }
+  .text-base-arabic {
+    font-size: var(--text-base-arabic);
+  }
+  .text-lg-arabic {
+    font-size: var(--text-lg-arabic);
+  }
+  .text-xl-arabic {
+    font-size: var(--text-xl-arabic);
+  }
+  .text-2xl-arabic {
+    font-size: var(--text-2xl-arabic);
+  }
+  .text-3xl-arabic {
+    font-size: var(--text-3xl-arabic);
+  }
+
+  /* Arabic Line Heights */
+  .leading-tight-arabic {
+    line-height: var(--leading-tight-arabic);
+  }
+  .leading-snug-arabic {
+    line-height: var(--leading-snug-arabic);
+  }
+  .leading-normal-arabic {
+    line-height: var(--leading-normal-arabic);
+  }
+  .leading-relaxed-arabic {
+    line-height: var(--leading-relaxed-arabic);
+  }
+  .leading-loose-arabic {
+    line-height: var(--leading-loose-arabic);
+  }
+
+  /* Arabic Letter Spacing */
+  .tracking-tighter-arabic {
+    letter-spacing: var(--tracking-tighter-arabic);
+  }
+  .tracking-tight-arabic {
+    letter-spacing: var(--tracking-tight-arabic);
+  }
+  .tracking-normal-arabic {
+    letter-spacing: var(--tracking-normal-arabic);
+  }
+  .tracking-wide-arabic {
+    letter-spacing: var(--tracking-wide-arabic);
+  }
+  .tracking-wider-arabic {
+    letter-spacing: var(--tracking-wider-arabic);
+  }
+}
+
+/* Responsive Arabic Typography */
+@layer utilities {
+  /* Mobile: Slightly smaller for screen real estate */
+  @media (max-width: 768px) {
+    :root {
+      --text-base-arabic: 1rem; /* 16px on mobile */
+      --text-lg-arabic: 1.125rem; /* 18px on mobile */
+      --text-xl-arabic: 1.25rem; /* 20px on mobile */
+    }
+  }
+
+  /* Small mobile: Even more compact */
+  @media (max-width: 480px) {
+    :root {
+      --text-base-arabic: 0.9375rem; /* 15px on small mobile */
+      --leading-normal-arabic: 1.5; /* Tighter for small screens */
+    }
+  }
+}
+
+/* Dark Mode Arabic Typography */
+@layer utilities {
+  .dark .font-arabic {
+    /* Slightly adjust font smoothing for dark backgrounds */
+    -webkit-font-smoothing: auto;
+  }
+
+  .dark .font-arabic-heading {
+    -webkit-font-smoothing: auto;
+  }
+
+  .dark .font-arabic-formal {
+    -webkit-font-smoothing: auto;
+  }
+}
+
+/* Print Styles for Arabic */
+@media print {
+  .font-arabic,
+  .font-arabic-heading,
+  .font-arabic-formal {
+    /* Use serif for printed Arabic documents */
+    font-family: "Times New Roman", serif;
+    color: #000;
+    background: #fff;
+  }
+}

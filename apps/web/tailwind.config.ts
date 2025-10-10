@@ -52,6 +52,26 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
+        // Arabic fonts
+        arabic: [
+          'var(--font-arabic-primary)',  // Noto Sans Arabic
+          'Tahoma',                       // Excellent fallback for Arabic
+          'Arial Unicode MS',             // Unicode support
+          'sans-serif'                    // System default
+        ],
+        'arabic-heading': [
+          'var(--font-arabic-heading)',   // Cairo
+          'var(--font-arabic-primary)',   // Fallback to primary
+          'Tahoma',
+          'sans-serif'
+        ],
+        'arabic-formal': [
+          'var(--font-arabic-formal)',    // Amiri
+          'var(--font-arabic-primary)',   // Fallback to primary
+          'Tahoma',
+          'serif'                         // Serif fallback for formal
+        ],
+        // English font (existing)
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
     },

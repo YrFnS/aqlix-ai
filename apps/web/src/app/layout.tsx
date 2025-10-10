@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html
+      lang="ar"
+      className={`
+        ${notoSansArabic.variable}
+        ${cairo.variable}
+        ${amiri.variable}
+      `.trim()}
+    >
       <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );
