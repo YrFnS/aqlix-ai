@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
+import { DirectionProvider } from "@/components/providers/DirectionProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,13 +23,16 @@ export default function RootLayout({
   return (
     <html
       lang="ar"
+      dir="rtl"
       className={`
         ${notoSansArabic.variable}
         ${cairo.variable}
         ${amiri.variable}
       `.trim()}
     >
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className="min-h-screen flex flex-col">
+        <DirectionProvider>{children}</DirectionProvider>
+      </body>
     </html>
   );
 }

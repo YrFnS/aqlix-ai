@@ -55,10 +55,12 @@ export interface PaymentGateway {
   supported: boolean;
 }
 
-// Re-export commonly used types
+// Re-export RTL layout types (includes TextDirection, LanguageLocale, etc.)
+export * from './rtl';
+
+// Re-export commonly used types (legacy, prefer using RTL types)
 export type LanguageCode = 'ar' | 'en' | 'ar-IQ';
 export type DialectCode = 'iraqi' | 'standard';
-export type TextDirection = 'rtl' | 'ltr';
 
 // Re-export environment types
 export * from './env';
