@@ -146,7 +146,8 @@ export function normalizeCharacter(char: string): string {
  * Check if a character is a variant form
  */
 export function isVariantForm(char: string): boolean {
-  return ALL_VARIANTS.has(char);
+  const base = ALL_VARIANTS.get(char);
+  return base !== undefined && base !== char;
 }
 
 /**

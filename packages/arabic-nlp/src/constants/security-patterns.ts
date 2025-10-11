@@ -86,8 +86,12 @@ export const MALICIOUS_ZERO_WIDTH_REGEX = /[\u200B\uFEFF\u2060\u2062-\u2064]/g;
 
 /**
  * Regex to match all zero-width characters (including legitimate ones)
+ * Uses alternation to avoid character class issues
  */
-export const ALL_ZERO_WIDTH_REGEX = /[\u200B-\u200D\uFEFF\u2060\u2062-\u2064]/g;
+export const ALL_ZERO_WIDTH_REGEX = new RegExp(
+  "(?:\\u200B|\\u200C|\\u200D|\\uFEFF|\\u2060|\\u2062|\\u2063|\\u2064)",
+  "g",
+);
 
 /**
  * Control characters that are suspicious in text input
@@ -109,9 +113,19 @@ export const SUSPICIOUS_CONTROL_CHARS = {
 /**
  * Regex to match suspicious control characters
  * Excludes common whitespace (tab, newline, carriage return)
+ * Uses alternation to avoid character class control bytes
  */
-export const SUSPICIOUS_CONTROL_REGEX =
-  /[\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F\u0080-\u009F]/g;
+export const SUSPICIOUS_CONTROL_REGEX = new RegExp(
+  "(?:" +
+    "\\u0000|\\u0001|\\u0002|\\u0003|\\u0004|\\u0005|\\u0006|\\u0007|\\u0008|" +
+    "\\u000B|\\u000C|" +
+    "\\u000E|\\u000F|\\u0010|\\u0011|\\u0012|\\u0013|\\u0014|\\u0015|\\u0016|\\u0017|\\u0018|\\u0019|\\u001A|\\u001B|\\u001C|\\u001D|\\u001E|\\u001F|" +
+    "\\u007F|" +
+    "\\u0080|\\u0081|\\u0082|\\u0083|\\u0084|\\u0085|\\u0086|\\u0087|\\u0088|\\u0089|\\u008A|\\u008B|\\u008C|\\u008D|\\u008E|\\u008F|" +
+    "\\u0090|\\u0091|\\u0092|\\u0093|\\u0094|\\u0095|\\u0096|\\u0097|\\u0098|\\u0099|\\u009A|\\u009B|\\u009C|\\u009D|\\u009E|\\u009F" +
+    ")",
+  "g",
+);
 
 /**
  * Homograph attack pairs - characters that look similar but are different
@@ -140,9 +154,25 @@ export const CYRILLIC_LOOKALIKE_REGEX = /[аеорсхуАЕОРСХУ]/g;
 
 /**
  * Combined dangerous Unicode pattern - matches all security threats
+ * Uses alternation to avoid character class control bytes
  */
-export const ALL_DANGEROUS_UNICODE_REGEX =
-  /[\u202A-\u202E\u2066-\u2069\u200B\uFEFF\u2060\u2062-\u2064\u0000-\u0008\u000B-\u000C\u000E-\u001F\u007F\u0080-\u009F]/g;
+export const ALL_DANGEROUS_UNICODE_REGEX = new RegExp(
+  "(?:" +
+    // Bidi override characters
+    "\\u202A|\\u202B|\\u202C|\\u202D|\\u202E|\\u2066|\\u2067|\\u2068|\\u2069|" +
+    // Zero-width characters
+    "\\u200B|\\u200C|\\u200D|\\uFEFF|\\u2060|\\u2062|\\u2063|\\u2064|" +
+    // Control characters (C0 controls except tab, newline, carriage return)
+    "\\u0000|\\u0001|\\u0002|\\u0003|\\u0004|\\u0005|\\u0006|\\u0007|\\u0008|" +
+    "\\u000B|\\u000C|" +
+    "\\u000E|\\u000F|\\u0010|\\u0011|\\u0012|\\u0013|\\u0014|\\u0015|\\u0016|\\u0017|\\u0018|\\u0019|\\u001A|\\u001B|\\u001C|\\u001D|\\u001E|\\u001F|" +
+    "\\u007F|" +
+    // C1 control characters
+    "\\u0080|\\u0081|\\u0082|\\u0083|\\u0084|\\u0085|\\u0086|\\u0087|\\u0088|\\u0089|\\u008A|\\u008B|\\u008C|\\u008D|\\u008E|\\u008F|" +
+    "\\u0090|\\u0091|\\u0092|\\u0093|\\u0094|\\u0095|\\u0096|\\u0097|\\u0098|\\u0099|\\u009A|\\u009B|\\u009C|\\u009D|\\u009E|\\u009F" +
+    ")",
+  "g",
+);
 
 /**
  * Whitelist of safe zero-width characters for Arabic text
@@ -152,6 +182,19 @@ export const SAFE_ZERO_WIDTH_IN_ARABIC = [
   DANGEROUS_ZERO_WIDTH.ZWNJ, // Used to prevent ligatures
   DANGEROUS_ZERO_WIDTH.ZWJ, // Used to force ligatures
 ] as const;
+
+/**
+ * Type-safe Set instances for efficient membership checks
+ * Cast to Set<string> to allow broader string type checking
+ */
+const BIDI_OVERRIDE_SET = new Set(BIDI_OVERRIDE_ARRAY) as Set<string>;
+const ALWAYS_MALICIOUS_ZERO_WIDTH_SET = new Set(
+  ALWAYS_MALICIOUS_ZERO_WIDTH,
+) as Set<string>;
+const SAFE_ZERO_WIDTH_IN_ARABIC_SET = new Set(
+  SAFE_ZERO_WIDTH_IN_ARABIC,
+) as Set<string>;
+const HIGH_SEVERITY_BIDI_SET = new Set(HIGH_SEVERITY_BIDI) as Set<string>;
 
 /**
  * Maximum consecutive zero-width characters before flagging as suspicious
@@ -183,28 +226,28 @@ export const THREAT_TYPES = {
  * Check if a character is a bidi override character
  */
 export function isBidiOverride(char: string): boolean {
-  return BIDI_OVERRIDE_ARRAY.includes(char as any);
+  return BIDI_OVERRIDE_SET.has(char);
 }
 
 /**
  * Check if a character is dangerous zero-width
  */
 export function isDangerousZeroWidth(char: string): boolean {
-  return ALWAYS_MALICIOUS_ZERO_WIDTH.includes(char as any);
+  return ALWAYS_MALICIOUS_ZERO_WIDTH_SET.has(char);
 }
 
 /**
  * Check if a character is a safe zero-width character in Arabic context
  */
 export function isSafeZeroWidthInArabic(char: string): boolean {
-  return SAFE_ZERO_WIDTH_IN_ARABIC.includes(char as any);
+  return SAFE_ZERO_WIDTH_IN_ARABIC_SET.has(char);
 }
 
 /**
  * Get threat level for a character
  */
 export function getThreatLevel(char: string): "high" | "medium" | "low" | null {
-  if (HIGH_SEVERITY_BIDI.includes(char as any)) {
+  if (HIGH_SEVERITY_BIDI_SET.has(char)) {
     return "high";
   }
   if (isBidiOverride(char)) {

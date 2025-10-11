@@ -81,7 +81,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **12_rtl_layout_foundation.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: CSS logical properties and Tailwind RTL layout system_
 
-- **13_arabic_text_processing.md** → `/generate-prp` + `/execute-prp`
+- **13_arabic_text_processing.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Arabic text normalization and Unicode processing utilities_
 
 - **14_bidirectional_ui.md** → `/generate-prp` + `/execute-prp`

@@ -331,13 +331,13 @@ export function batchSanitize(
  * ```
  */
 export function needsSanitization(text: string): boolean {
-  // Check for bidi overrides
+  BIDI_OVERRIDE_REGEX.lastIndex = 0;
   if (BIDI_OVERRIDE_REGEX.test(text)) return true;
 
-  // Check for malicious zero-width
+  MALICIOUS_ZERO_WIDTH_REGEX.lastIndex = 0;
   if (MALICIOUS_ZERO_WIDTH_REGEX.test(text)) return true;
 
-  // Check for suspicious control chars
+  SUSPICIOUS_CONTROL_REGEX.lastIndex = 0;
   if (SUSPICIOUS_CONTROL_REGEX.test(text)) return true;
 
   return false;

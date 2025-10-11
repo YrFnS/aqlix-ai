@@ -29,8 +29,7 @@ import { normalizeArabic } from "./normalization.js";
  */
 export function measureString(text: string): StringMeasurement {
   // Codepoints: Simple length
-  const codepoints = text.length;
-
+  const codepoints = Array.from(text).length;
   // Graphemes: Use Intl.Segmenter if available, fallback to manual count
   let graphemes = 0;
   if (typeof Intl !== "undefined" && "Segmenter" in Intl) {

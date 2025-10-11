@@ -96,7 +96,8 @@ export const ZERO_WIDTH_CHARS = {
  * Regex to match zero-width characters
  * Note: ZWNJ and ZWJ are legitimate in Arabic text, so handle with care
  */
-export const ZERO_WIDTH_REGEX = /[\u200B\u200C\u200D\uFEFF\u2060\u2063\u2064]/g;
+export const ZERO_WIDTH_REGEX =
+  /(?:\u200B|\u200C|\u200D|\uFEFF|\u2060|\u2063|\u2064)/g;
 
 /**
  * Regex to match dangerous zero-width characters (excluding legitimate ZWNJ/ZWJ)

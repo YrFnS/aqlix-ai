@@ -168,7 +168,8 @@ export function detectBidiThreats(text: string): SecurityThreat[] {
 
   for (const char of text) {
     if (isBidiOverride(char)) {
-      const severity = HIGH_SEVERITY_BIDI.includes(char as any)
+      // Type-safe check: use readonly array includes with string type
+      const severity = (HIGH_SEVERITY_BIDI as readonly string[]).includes(char)
         ? "high"
         : "medium";
 
@@ -213,15 +214,21 @@ export function detectZeroWidthThreats(text: string): SecurityThreat[] {
       continue;
     }
 
+    // Reset lastIndex before each test to prevent global regex state issues
+    ALL_ZERO_WIDTH_REGEX.lastIndex = 0;
+    const isZeroWidth = ALL_ZERO_WIDTH_REGEX.test(char);
+
     // Check if it's a zero-width character
-    if (ALL_ZERO_WIDTH_REGEX.test(char)) {
+    if (isZeroWidth) {
       if (consecutiveCount === 0) {
         startPosition = position;
       }
       consecutiveCount++;
 
       // Check if it's an always-malicious zero-width char
-      if (MALICIOUS_ZERO_WIDTH_REGEX.test(char)) {
+      MALICIOUS_ZERO_WIDTH_REGEX.lastIndex = 0;
+      const isMalicious = MALICIOUS_ZERO_WIDTH_REGEX.test(char);
+      if (isMalicious) {
         threats.push({
           type: "zero-width",
           description: `Malicious zero-width character detected: U+${code.toString(16).toUpperCase()}`,
@@ -282,7 +289,10 @@ export function detectHomographThreats(text: string): SecurityThreat[] {
   if (ATTACK_PATTERNS.MIXED_CYRILLIC_LATIN.test(text)) {
     let position = 0;
     for (const char of text) {
-      if (CYRILLIC_LOOKALIKE_REGEX.test(char)) {
+      // Reset lastIndex before each test to prevent global regex state issues
+      CYRILLIC_LOOKALIKE_REGEX.lastIndex = 0;
+      const isCyrillicLookalike = CYRILLIC_LOOKALIKE_REGEX.test(char);
+      if (isCyrillicLookalike) {
         threats.push({
           type: "homograph",
           description: `Cyrillic lookalike character detected: '${char}'`,
@@ -310,6 +320,8 @@ export function detectControlCharThreats(text: string): SecurityThreat[] {
   let position = 0;
 
   for (const char of text) {
+    // Reset lastIndex before each test to prevent global regex state issues
+    SUSPICIOUS_CONTROL_REGEX.lastIndex = 0;
     if (SUSPICIOUS_CONTROL_REGEX.test(char)) {
       const code = char.codePointAt(0);
       threats.push({
