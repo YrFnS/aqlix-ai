@@ -1,13 +1,13 @@
-import type { Config } from 'tailwindcss';
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     // Include workspace packages that use Tailwind
-    '../../packages/ui/src/**/*.{js,ts,jsx,tsx}',
-    '../../packages/features/src/**/*.{js,ts,jsx,tsx}',
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
+    "../../packages/features/src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -54,25 +54,25 @@ const config: Config = {
       fontFamily: {
         // Arabic fonts
         arabic: [
-          'var(--font-arabic-primary)',  // Noto Sans Arabic
-          'Tahoma',                       // Excellent fallback for Arabic
-          'Arial Unicode MS',             // Unicode support
-          'sans-serif'                    // System default
+          "var(--font-arabic-primary)", // Noto Sans Arabic
+          "Tahoma", // Excellent fallback for Arabic
+          "Arial Unicode MS", // Unicode support
+          "sans-serif", // System default
         ],
-        'arabic-heading': [
-          'var(--font-arabic-heading)',   // Cairo
-          'var(--font-arabic-primary)',   // Fallback to primary
-          'Tahoma',
-          'sans-serif'
+        "arabic-heading": [
+          "var(--font-arabic-heading)", // Cairo
+          "var(--font-arabic-primary)", // Fallback to primary
+          "Tahoma",
+          "sans-serif",
         ],
-        'arabic-formal': [
-          'var(--font-arabic-formal)',    // Amiri
-          'var(--font-arabic-primary)',   // Fallback to primary
-          'Tahoma',
-          'serif'                         // Serif fallback for formal
+        "arabic-formal": [
+          "var(--font-arabic-formal)", // Amiri
+          "var(--font-arabic-primary)", // Fallback to primary
+          "Tahoma",
+          "serif", // Serif fallback for formal
         ],
         // English font (existing)
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
     },
   },

@@ -10,9 +10,9 @@
  * - Use only in server-side code (API routes, Server Actions)
  */
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@iraqi-ai/types';
-import { getAdminEnv } from './env';
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@iraqi-ai/types";
+import { getAdminEnv } from "./env";
 
 /**
  * Create a Supabase admin client with service role key

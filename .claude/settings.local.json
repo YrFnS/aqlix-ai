@@ -1,6 +1,16 @@
 {
   "permissions": {
-    "allow": ["WebSearch", "WebFetch(domain:raw.githubusercontent.com)"],
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(dos2unix:*)",
+      "Bash(chmod:*)",
+      "Bash(test:*)",
+      "Bash(awk:*)",
+      "Bash(cat:*)",
+      "Bash(bun run:*)",
+      "Bash(bun test)"
+    ],
     "deny": [],
     "ask": []
   }

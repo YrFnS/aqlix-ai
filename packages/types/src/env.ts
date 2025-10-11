@@ -31,7 +31,12 @@ export type LogLevel = "debug" | "info" | "warn" | "error";
 /**
  * Log levels for Python backend (uppercase)
  */
-export type PythonLogLevel = "DEBUG" | "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+export type PythonLogLevel =
+  | "DEBUG"
+  | "INFO"
+  | "WARNING"
+  | "ERROR"
+  | "CRITICAL";
 
 /**
  * LLM provider types

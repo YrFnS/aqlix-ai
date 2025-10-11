@@ -4,9 +4,9 @@
  * Uses anon key which is safe when Row Level Security (RLS) is enabled
  */
 
-import { createBrowserClient } from '@supabase/ssr';
-import type { Database } from '@iraqi-ai/types';
-import { getBrowserEnv } from './env';
+import { createBrowserClient } from "@supabase/ssr";
+import type { Database } from "@iraqi-ai/types";
+import { getBrowserEnv } from "./env";
 
 /**
  * Create a Supabase client for browser/Client Components

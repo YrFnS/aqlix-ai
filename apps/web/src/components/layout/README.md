@@ -11,9 +11,7 @@ Responsive container with automatic centering and padding.
 ```tsx
 import { Container } from "@/components/layout/container";
 
-<Container size="lg">
-  {/* Content */}
-</Container>
+<Container size="lg">{/* Content */}</Container>;
 ```
 
 **Sizes**: `sm` | `md` | `lg` | `xl` | `full`
@@ -28,8 +26,10 @@ Responsive grid with configurable columns and gaps.
 import { Grid } from "@/components/layout/grid";
 
 <Grid cols={{ xs: 1, md: 2, lg: 3 }} gap="md">
-  {items.map(item => <Card key={item.id} {...item} />)}
-</Grid>
+  {items.map((item) => (
+    <Card key={item.id} {...item} />
+  ))}
+</Grid>;
 ```
 
 **Gaps**: `sm` | `md` | `lg`
@@ -69,10 +69,7 @@ Conditionally render content based on device type.
 ```tsx
 import { ResponsiveWrapper } from "@/components/layout/responsive-wrapper";
 
-<ResponsiveWrapper
-  mobile={<MobileView />}
-  desktop={<DesktopView />}
-/>
+<ResponsiveWrapper mobile={<MobileView />} desktop={<DesktopView />} />;
 ```
 
 ---
@@ -87,14 +84,14 @@ For comprehensive documentation, examples, and best practices, see:
 
 ## Breakpoints
 
-| Breakpoint | Min Width | Device |
-|------------|-----------|--------|
-| xs | 0px | Mobile |
-| sm | 640px | Large mobile |
-| md | 768px | Tablet |
-| lg | 1024px | Desktop |
-| xl | 1280px | Large desktop |
-| 2xl | 1536px | Ultra-wide |
+| Breakpoint | Min Width | Device        |
+| ---------- | --------- | ------------- |
+| xs         | 0px       | Mobile        |
+| sm         | 640px     | Large mobile  |
+| md         | 768px     | Tablet        |
+| lg         | 1024px    | Desktop       |
+| xl         | 1280px    | Large desktop |
+| 2xl        | 1536px    | Ultra-wide    |
 
 ---
 

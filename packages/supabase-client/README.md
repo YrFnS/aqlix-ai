@@ -57,17 +57,17 @@ export default async function ServerPage() {
 ### Server Actions
 
 ```typescript
-'use server';
+"use server";
 
-import { createActionClient } from '@iraqi-ai/supabase-client/server';
+import { createActionClient } from "@iraqi-ai/supabase-client/server";
 
 export async function updateProfile(formData: FormData) {
   const supabase = createActionClient();
 
   const { error } = await supabase
-    .from('test_users')
-    .update({ name: formData.get('name') as string })
-    .eq('id', formData.get('id') as string);
+    .from("test_users")
+    .update({ name: formData.get("name") as string })
+    .eq("id", formData.get("id") as string);
 
   if (error) throw error;
 }
@@ -76,7 +76,7 @@ export async function updateProfile(formData: FormData) {
 ### Admin Operations (Server-Side Only)
 
 ```typescript
-import { createAdminClient } from '@iraqi-ai/supabase-client/admin';
+import { createAdminClient } from "@iraqi-ai/supabase-client/admin";
 
 export async function deleteUser(userId: string) {
   const supabase = createAdminClient();
@@ -91,13 +91,13 @@ export async function deleteUser(userId: string) {
 All clients are fully typed with your database schema:
 
 ```typescript
-import type { Database } from '@iraqi-ai/types';
+import type { Database } from "@iraqi-ai/types";
 
 // TypeScript knows your table structure!
 const { data } = await supabase
-  .from('test_users') // ✅ Autocomplete available
-  .select('id, name, email') // ✅ Column names validated
-  .eq('name', 'John'); // ✅ Type-safe filters
+  .from("test_users") // ✅ Autocomplete available
+  .select("id, name, email") // ✅ Column names validated
+  .eq("name", "John"); // ✅ Type-safe filters
 ```
 
 ## Security

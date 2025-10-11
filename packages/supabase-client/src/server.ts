@@ -4,10 +4,10 @@
  * Uses @supabase/ssr for server-side rendering support
  */
 
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import type { Database } from '@iraqi-ai/types';
-import { getServerEnv } from './env';
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from "next/headers";
+import type { Database } from "@iraqi-ai/types";
+import { getServerEnv } from "./env";
 
 /**
  * Create a Supabase client for Server Components
@@ -44,7 +44,7 @@ export async function createClient() {
       },
       remove(name: string, options: CookieOptions) {
         try {
-          cookieStore.set({ name, value: '', ...options });
+          cookieStore.set({ name, value: "", ...options });
         } catch (error) {
           // Server Component cannot remove cookies after rendering
         }
@@ -82,7 +82,7 @@ export async function createActionClient() {
         cookieStore.set({ name, value, ...options });
       },
       remove(name: string, options: CookieOptions) {
-        cookieStore.set({ name, value: '', ...options });
+        cookieStore.set({ name, value: "", ...options });
       },
     },
   });

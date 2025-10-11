@@ -2669,7 +2669,6 @@ i executed the first prp and generated the second one but before we continue i h
 we want use a good module and cheap and can speck and right arabic not just english and we can use it via api dont need to host it so we can give to the users with cheap plans so every one can afford it like 5$ or 10$ per month and we have more expensive plans for even better and more usage
 so what we will use?? make a deep research and tell me your thoughts
 
-
 before we continue i have a question
 do we need langchain in our app we are using pydanticai
 
@@ -2688,3 +2687,7 @@ https://github.com/MotiaDev/motia
 https://betterstack.com/
 
 for docling do we extract from it and use the actual repo as they say in the readme or we just use or just extract from it and use it
+
+bun update --interactive
+bun audit
+bun update

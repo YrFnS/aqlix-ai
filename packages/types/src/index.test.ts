@@ -4,7 +4,7 @@ import type {
   ArabicText,
   ChatMessage,
   CulturalValidation,
-  PaymentGateway
+  PaymentGateway,
 } from "./index";
 
 // Helper functions for testing
@@ -13,12 +13,12 @@ const isArabicText = (text: string): boolean => {
 };
 
 const isIraqiDialect = (text: string): boolean => {
-  const iraqiWords = ['شلونك', 'شكو', 'ماكو', 'وين', 'هاي'];
-  return iraqiWords.some(word => text.includes(word));
+  const iraqiWords = ["شلونك", "شكو", "ماكو", "وين", "هاي"];
+  return iraqiWords.some((word) => text.includes(word));
 };
 
 const isCulturallyCompliant = (obj: any): boolean => {
-  return !obj.toString().toLowerCase().includes('haram');
+  return !obj.toString().toLowerCase().includes("haram");
 };
 
 const isIslamicCompliant = (): boolean => {
@@ -37,9 +37,9 @@ describe("Iraqi AI Types", () => {
         preferences: {
           rtl: true,
           culturalMode: "strict",
-          islamicCompliance: true
+          islamicCompliance: true,
         },
-        professionalDomain: "legal"
+        professionalDomain: "legal",
       };
 
       expect(user.id).toBe("user-123");
@@ -56,8 +56,8 @@ describe("Iraqi AI Types", () => {
         preferences: {
           rtl: true,
           culturalMode: "moderate",
-          islamicCompliance: true
-        }
+          islamicCompliance: true,
+        },
       };
 
       expect(isArabicText(user.name)).toBe(true);
@@ -71,7 +71,7 @@ describe("Iraqi AI Types", () => {
         direction: "rtl",
         dialect: "iraqi",
         culturallyValidated: true,
-        islamicCompliant: true
+        islamicCompliant: true,
       };
 
       expect(isIraqiDialect(text.content)).toBe(true);
@@ -85,7 +85,7 @@ describe("Iraqi AI Types", () => {
         direction: "rtl",
         dialect: "standard",
         culturallyValidated: true,
-        islamicCompliant: true
+        islamicCompliant: true,
       };
 
       expect(isCulturallyCompliant(text)).toBe(true);
@@ -103,15 +103,15 @@ describe("Iraqi AI Types", () => {
           direction: "rtl",
           dialect: "iraqi",
           culturallyValidated: true,
-          islamicCompliant: true
+          islamicCompliant: true,
         },
         timestamp: new Date(),
         type: "text",
         culturalContext: {
           professionalDomain: "business",
           respectfulTone: true,
-          politicallyNeutral: true
-        }
+          politicallyNeutral: true,
+        },
       };
 
       expect(isArabicText(message.content.content)).toBe(true);
@@ -128,7 +128,7 @@ describe("Iraqi AI Types", () => {
         politicalNeutrality: true,
         professionalAppropriate: true,
         errors: [],
-        warnings: []
+        warnings: [],
       };
 
       expect(validation.score).toBeGreaterThanOrEqual(95);
@@ -142,8 +142,11 @@ describe("Iraqi AI Types", () => {
         islamicCompliance: false,
         politicalNeutrality: true,
         professionalAppropriate: false,
-        errors: ["Islamic compliance violation", "Inappropriate professional tone"],
-        warnings: ["Consider more respectful language"]
+        errors: [
+          "Islamic compliance violation",
+          "Inappropriate professional tone",
+        ],
+        warnings: ["Consider more respectful language"],
       };
 
       expect(validation.score).toBeLessThan(95);
@@ -158,9 +161,9 @@ describe("Iraqi AI Types", () => {
         minimumAmount: 1000, // 1000 IQD
         fees: {
           fixed: 250,
-          percentage: 2.5
+          percentage: 2.5,
         },
-        supported: true
+        supported: true,
       };
 
       expect(zaincash.provider).toBe("zaincash");
@@ -169,9 +172,13 @@ describe("Iraqi AI Types", () => {
     });
 
     it("should support all Iraqi payment providers", () => {
-      const providers: PaymentGateway["provider"][] = ["zaincash", "fastpay", "nasswallet"];
+      const providers: PaymentGateway["provider"][] = [
+        "zaincash",
+        "fastpay",
+        "nasswallet",
+      ];
 
-      providers.forEach(provider => {
+      providers.forEach((provider) => {
         expect(["zaincash", "fastpay", "nasswallet"]).toContain(provider);
       });
     });

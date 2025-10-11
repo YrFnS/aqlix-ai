@@ -13,7 +13,7 @@
  * - 'ltr': Left-to-right (English, most languages)
  * - 'auto': Automatic detection from text content
  */
-export type TextDirection = 'rtl' | 'ltr' | 'auto';
+export type TextDirection = "rtl" | "ltr" | "auto";
 
 /**
  * Supported language locales for Iraqi AI Chat System
@@ -21,7 +21,7 @@ export type TextDirection = 'rtl' | 'ltr' | 'auto';
  * - 'en-US': English (United States) - Secondary locale
  * - 'ar-SA': Arabic (Saudi Arabia) - Standard Arabic reference
  */
-export type LanguageLocale = 'ar-IQ' | 'en-US' | 'ar-SA';
+export type LanguageLocale = "ar-IQ" | "en-US" | "ar-SA";
 
 /**
  * Iraqi Arabic dialect variants
@@ -31,7 +31,12 @@ export type LanguageLocale = 'ar-IQ' | 'en-US' | 'ar-SA';
  * - 'kurdish': Kurdish-influenced Arabic
  * - 'standard': Modern Standard Arabic (MSA)
  */
-export type IraqiDialect = 'baghdad' | 'basra' | 'mosul' | 'kurdish' | 'standard';
+export type IraqiDialect =
+  | "baghdad"
+  | "basra"
+  | "mosul"
+  | "kurdish"
+  | "standard";
 
 /**
  * RTL configuration for the application
@@ -49,13 +54,13 @@ export interface RTLConfig {
   /** Layout-specific preferences */
   layoutPreferences: {
     /** Text alignment preference */
-    textAlignment: 'auto' | 'right' | 'left';
+    textAlignment: "auto" | "right" | "left";
 
     /** Navigation direction (menu, tabs, etc.) */
-    navigationDirection: 'rtl' | 'ltr';
+    navigationDirection: "rtl" | "ltr";
 
     /** Content flow direction */
-    contentFlow: 'natural' | 'forced-rtl' | 'forced-ltr';
+    contentFlow: "natural" | "forced-rtl" | "forced-ltr";
   };
 }
 

@@ -7,14 +7,7 @@
     "rootDir": "src",
     "noEmit": false
   },
-  "references": [
-    { "path": "../types" }
-  ],
+  "references": [{ "path": "../types" }],
   "include": ["src/**/*.ts"],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["dist", "node_modules", "**/*.test.ts", "**/*.spec.ts"]
 }
