@@ -59,7 +59,11 @@ const BiTextareaInner = React.forwardRef<HTMLTextAreaElement, BiTextareaProps>(
     // Detect direction from textarea value if auto-detect is enabled
     const detectedDirection = React.useMemo(() => {
       // Only auto-detect when direction is 'auto' or undefined
-      if (!autoDetectDirection || !value || (propDirection !== 'auto' && propDirection !== undefined)) {
+      if (
+        !autoDetectDirection ||
+        !value ||
+        (propDirection !== "auto" && propDirection !== undefined)
+      ) {
         return propDirection;
       }
 

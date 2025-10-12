@@ -2692,3 +2692,5 @@ for docling do we extract from it and use the actual repo as they say in the rea
 bun update --interactive
 bun audit
 bun update
+
+https://www.aitmpl.com/plugins
