@@ -13,6 +13,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { DirectionProvider as RadixDirectionProvider } from "@radix-ui/react-direction";
 import type {
   RTLConfig,
   DirectionContext as DirectionContextType,
@@ -138,9 +139,14 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     getTextDirection,
   };
 
+  // Normalize direction for Radix (only accepts 'ltr' | 'rtl')
+  const radixDirection = config.direction === "auto" ? "ltr" : config.direction;
+
   return (
     <DirectionContext.Provider value={contextValue}>
-      {children}
+      <RadixDirectionProvider dir={radixDirection}>
+        {children}
+      </RadixDirectionProvider>
     </DirectionContext.Provider>
   );
 }

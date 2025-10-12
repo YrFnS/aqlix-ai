@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
 import { DirectionProvider } from "@/components/providers/DirectionProvider";
+import { DirectionSync } from "@/components/providers/DirectionSync";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html
       lang="ar"
       dir="rtl"
+      suppressHydrationWarning
       className={`
         ${notoSansArabic.variable}
         ${cairo.variable}
@@ -31,7 +33,10 @@ export default function RootLayout({
       `.trim()}
     >
       <body className="min-h-screen flex flex-col">
-        <DirectionProvider>{children}</DirectionProvider>
+        <DirectionProvider>
+          <DirectionSync />
+          {children}
+        </DirectionProvider>
       </body>
     </html>
   );
