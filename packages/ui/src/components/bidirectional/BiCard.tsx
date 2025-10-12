@@ -28,6 +28,8 @@ export interface BiCardHeaderProps
   extends React.HTMLAttributes<HTMLDivElement> {
   /** Header alignment */
   alignment?: DirectionalAlignment;
+  /** Text direction override */
+  direction?: "ltr" | "rtl" | "auto";
 }
 
 /**
@@ -80,8 +82,8 @@ BiCard.displayName = "BiCard";
  * ```
  */
 export const BiCardHeader = React.memo<BiCardHeaderProps>(
-  ({ children, alignment = "start", className = "", ...props }) => {
-    const { getAlignmentClass } = useBidirectional();
+  ({ children, alignment = "start", direction, className = "", ...props }) => {
+    const { getAlignmentClass } = useBidirectional(direction);
     const alignClass = getAlignmentClass(alignment);
 
     const headerClasses = `
@@ -176,14 +178,16 @@ export interface BiCardFooterProps
   extends React.HTMLAttributes<HTMLDivElement> {
   /** Footer alignment */
   alignment?: DirectionalAlignment;
+  /** Text direction override */
+  direction?: "ltr" | "rtl" | "auto";
 }
 
 /**
  * Bidirectional Card Footer
  */
 export const BiCardFooter = React.memo<BiCardFooterProps>(
-  ({ children, alignment = "start", className = "", ...props }) => {
-    const { getAlignmentClass } = useBidirectional();
+  ({ children, alignment = "start", direction, className = "", ...props }) => {
+    const { getAlignmentClass } = useBidirectional(direction);
     const alignClass = getAlignmentClass(alignment);
 
     const footerClasses = `

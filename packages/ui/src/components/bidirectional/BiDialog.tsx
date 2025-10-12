@@ -57,21 +57,56 @@ export const BiDialog = React.memo<BiDialogProps>(
     ...props
   }) => {
     const { direction, getInlineEndClass } = useBidirectional(propDirection);
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const titleId = React.useId();
+
+    // Focus management and keyboard handling
+    React.useEffect(() => {
+      if (!open || !dialogRef.current) return;
+
+      // Focus the dialog
+      dialogRef.current.focus();
+
+      // Handle Escape key
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape" && onClose) {
+          e.preventDefault();
+          onClose();
+        }
+      };
+
+      // Simple focus trap
+      const handleFocusTrap = (e: FocusEvent) => {
+        if (!dialogRef.current?.contains(e.target as Node)) {
+          dialogRef.current?.focus();
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener("focusin", handleFocusTrap);
+
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("focusin", handleFocusTrap);
+      };
+    }, [open, onClose]);
 
     if (!open) return null;
 
     return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center"
-        onClick={onClose}
-      >
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
         {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
         {/* Dialog */}
         <div
+          ref={dialogRef}
           className={`relative z-10 w-full max-w-lg rounded-lg bg-background p-6 shadow-lg ${className}`.trim()}
           dir={direction}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? titleId : undefined}
+          tabIndex={-1}
           onClick={(e) => e.stopPropagation()}
           {...props}
         >
@@ -100,7 +135,11 @@ export const BiDialog = React.memo<BiDialogProps>(
           )}
 
           {/* Title */}
-          {title && <h2 className="mb-4 text-lg font-semibold">{title}</h2>}
+          {title && (
+            <h2 id={titleId} className="mb-4 text-lg font-semibold">
+              {title}
+            </h2>
+          )}
 
           {/* Content */}
           <div>{children}</div>

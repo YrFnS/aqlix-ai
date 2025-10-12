@@ -38,6 +38,7 @@ export const BiTooltip = React.memo<BiTooltipProps>(
   ({ content, children, direction: propDirection, position = "top" }) => {
     const [isVisible, setIsVisible] = React.useState(false);
     const { direction } = useBidirectional(propDirection);
+    const tooltipId = React.useId();
 
     const positionClasses = {
       top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
@@ -46,17 +47,49 @@ export const BiTooltip = React.memo<BiTooltipProps>(
       right: "left-full top-1/2 -translate-y-1/2 ml-2",
     };
 
+    // Get existing event handlers from child
+    const childProps = children.props;
+    const originalOnMouseEnter = childProps.onMouseEnter;
+    const originalOnMouseLeave = childProps.onMouseLeave;
+    const originalOnFocus = childProps.onFocus;
+    const originalOnBlur = childProps.onBlur;
+
+    // Create merged handlers
+    const handleMouseEnter = (e: React.MouseEvent) => {
+      originalOnMouseEnter?.(e);
+      setIsVisible(true);
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent) => {
+      originalOnMouseLeave?.(e);
+      setIsVisible(false);
+    };
+
+    const handleFocus = (e: React.FocusEvent) => {
+      originalOnFocus?.(e);
+      setIsVisible(true);
+    };
+
+    const handleBlur = (e: React.FocusEvent) => {
+      originalOnBlur?.(e);
+      setIsVisible(false);
+    };
+
     return (
       <div className="relative inline-block">
         {React.cloneElement(children, {
-          onMouseEnter: () => setIsVisible(true),
-          onMouseLeave: () => setIsVisible(false),
-          onFocus: () => setIsVisible(true),
-          onBlur: () => setIsVisible(false),
+          onMouseEnter: handleMouseEnter,
+          onMouseLeave: handleMouseLeave,
+          onFocus: handleFocus,
+          onBlur: handleBlur,
+          "aria-describedby": isVisible ? tooltipId : undefined,
         })}
 
         {isVisible && (
           <div
+            id={tooltipId}
+            role="tooltip"
+            aria-hidden={!isVisible}
             className={`absolute z-50 rounded bg-gray-900 px-2 py-1 text-xs text-white ${positionClasses[position]}`}
             dir={direction}
           >

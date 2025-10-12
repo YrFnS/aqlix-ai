@@ -100,6 +100,15 @@ export function getLogicalSpacing(
 }
 
 /**
+ * Regular expression for detecting Arabic script characters
+ * Includes:
+ * - Arabic (U+0600–U+06FF)
+ * - Arabic Supplement (U+0750–U+077F)
+ * - Arabic Extended-A (U+08A0–U+08FF)
+ */
+export const ARABIC_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+
+/**
  * Normalizes direction value (converts 'auto' to 'rtl' or 'ltr')
  *
  * @param direction - Direction to normalize
@@ -126,9 +135,7 @@ export function normalizeDirection(
 
   // Direction is 'auto' - determine from text if provided
   if (text) {
-    // Simple Arabic character detection
-    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
-    return arabicRegex.test(text) ? "rtl" : "ltr";
+    return ARABIC_REGEX.test(text) ? "rtl" : "ltr";
   }
 
   return defaultDirection;

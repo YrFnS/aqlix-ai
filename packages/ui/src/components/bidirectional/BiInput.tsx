@@ -10,6 +10,7 @@
 import React from "react";
 import type { BidirectionalProps } from "../../types/bidirectional";
 import { useBidirectional } from "../../hooks/useBidirectional";
+import { ARABIC_REGEX } from "../../utils/bidirectional";
 
 /**
  * BiInput Props
@@ -79,11 +80,10 @@ export const BiInput = React.memo<BiInputProps>(
     ) => {
       // Detect direction from input value if auto-detect is enabled
       const detectedDirection = React.useMemo(() => {
-        if (!autoDetectDirection || !value) return propDirection;
+        if (!autoDetectDirection || !value) return propDirection ?? "ltr";
 
-        const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
         const valueStr = String(value);
-        return arabicRegex.test(valueStr) ? "rtl" : "ltr";
+        return ARABIC_REGEX.test(valueStr) ? "rtl" : "ltr";
       }, [autoDetectDirection, value, propDirection]);
 
       const { direction, getInlineStartClass, getInlineEndClass } =

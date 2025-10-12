@@ -121,15 +121,26 @@ export const BiFormField = React.memo<BiFormFieldProps>(
     className = "",
     ...props
   }) => {
+    const generatedId = React.useId();
+    const fieldId = htmlFor || generatedId;
+
+    // Clone child with id if it's a valid React element and doesn't have an id
+    const childWithId =
+      React.isValidElement(children) && !children.props.id
+        ? React.cloneElement(children as React.ReactElement<{ id?: string }>, {
+            id: fieldId,
+          })
+        : children;
+
     return (
       <div className={`space-y-2 ${className}`.trim()} {...props}>
         {label && (
-          <BiFormLabel htmlFor={htmlFor} required={required}>
+          <BiFormLabel htmlFor={fieldId} required={required}>
             {label}
           </BiFormLabel>
         )}
 
-        {children}
+        {childWithId}
 
         {description && !error && (
           <p className="text-sm text-muted-foreground">{description}</p>

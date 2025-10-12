@@ -30,11 +30,12 @@ export interface MixedContentProps {
 /**
  * Default segment formatter
  *
- * Splits content by Arabic/non-Arabic boundaries
+ * Splits content by Arabic/non-Arabic boundaries with proper punctuation handling
  */
 function defaultFormatSegments(content: string): MixedContentSegment[] {
   const segments: MixedContentSegment[] = [];
   const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+  const punctuationRegex = /^[\p{P}\p{S}]+$/u; // Unicode punctuation and symbols
 
   // Split by whitespace while preserving it
   const words = content.split(/(\s+)/);
@@ -44,7 +45,22 @@ function defaultFormatSegments(content: string): MixedContentSegment[] {
   let startPosition = 0;
 
   words.forEach((word) => {
-    const wordDirection = arabicRegex.test(word) ? "rtl" : "ltr";
+    // Skip pure whitespace - it doesn't have direction
+    if (/^\s+$/.test(word)) {
+      currentSegment += word;
+      return;
+    }
+
+    // Determine word direction
+    let wordDirection: "rtl" | "ltr";
+    if (arabicRegex.test(word)) {
+      wordDirection = "rtl";
+    } else if (punctuationRegex.test(word) && currentDirection !== null) {
+      // Punctuation inherits the current direction
+      wordDirection = currentDirection;
+    } else {
+      wordDirection = "ltr";
+    }
 
     if (currentDirection === null) {
       currentDirection = wordDirection;
