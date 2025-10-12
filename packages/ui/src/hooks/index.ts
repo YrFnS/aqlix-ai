@@ -6,3 +6,7 @@
 
 export * from "./useBidirectional";
 export * from "./useIconMirror";
+export * from "./useArabicInput";
+export * from "./useCompositionTracking";
+export * from "./useInputValidation";
+export * from "./useInputNormalization";
