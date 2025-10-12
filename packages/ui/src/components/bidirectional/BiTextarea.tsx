@@ -58,7 +58,10 @@ const BiTextareaInner = React.forwardRef<HTMLTextAreaElement, BiTextareaProps>(
   ) => {
     // Detect direction from textarea value if auto-detect is enabled
     const detectedDirection = React.useMemo(() => {
-      if (!autoDetectDirection || !value) return propDirection;
+      // Only auto-detect when direction is 'auto' or undefined
+      if (!autoDetectDirection || !value || (propDirection !== 'auto' && propDirection !== undefined)) {
+        return propDirection;
+      }
 
       const valueStr = String(value);
       return ARABIC_REGEX.test(valueStr) ? "rtl" : "ltr";
@@ -68,7 +71,10 @@ const BiTextareaInner = React.forwardRef<HTMLTextAreaElement, BiTextareaProps>(
 
     // Base textarea classes
     const baseClasses =
-      "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+      "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm " +
+      "ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none " +
+      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
+      "disabled:cursor-not-allowed disabled:opacity-50";
 
     // Error classes
     const errorClasses = error
