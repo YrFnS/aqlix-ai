@@ -4,7 +4,7 @@
  * @module hooks/useArabicInput
  */
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { ARABIC_REGEX } from "../utils/bidirectional";
 import { useCompositionTracking } from "./useCompositionTracking";
 import { useInputValidation } from "./useInputValidation";
@@ -68,15 +68,21 @@ export function useArabicInput(
 
   const [value, setValue] = useState(initialValue);
 
+  // Composition tracking
+  const composition = useCompositionTracking();
+  const lastAppliedInitialRef = useRef(initialValue);
+
   // Sync internal value with external initialValue changes
   useEffect(() => {
-    if (!composition.state.isComposing) {
+    if (composition.state.isComposing) {
+      return;
+    }
+
+    if (lastAppliedInitialRef.current !== initialValue) {
+      lastAppliedInitialRef.current = initialValue;
       setValue(initialValue);
     }
   }, [initialValue, composition.state.isComposing]);
-
-  // Composition tracking
-  const composition = useCompositionTracking();
 
   // Validation
   const validation = useInputValidation({
