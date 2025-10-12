@@ -46,7 +46,7 @@ export function useCompositionTracking() {
   });
 
   // Track if compositionEnd fired (React timing workaround)
-  const compositionEndFiredRef = useRef(false);
+  const compositionEndFiredRef = useRef(true);
 
   const handleCompositionStart = useCallback(
     (e: React.CompositionEvent<HTMLInputElement | HTMLTextAreaElement>) => {

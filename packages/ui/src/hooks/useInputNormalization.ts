@@ -78,7 +78,7 @@ export function useInputNormalization(
           // Aggressive normalization (diacritics, variants, tatweel)
           return fullNormalization(text);
 
-        case "custom":
+        case "custom": {
           // Custom options with full control
           const result = normalizeArabic(text, {
             form: "NFC",
@@ -86,6 +86,7 @@ export function useInputNormalization(
             ...customOptions,
           });
           return result.text;
+        }
 
         default:
           return text;

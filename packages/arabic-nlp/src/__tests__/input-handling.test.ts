@@ -13,7 +13,7 @@ import {
   sanitizeArabicInput,
   isValidArabicInput,
   isIraqiKurdishChar,
-} from "../index.js";
+} from "@/index.js";
 
 describe("Arabic NLP Input Handling", () => {
   test("Real-time validation performance (<100ms)", () => {

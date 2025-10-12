@@ -7,7 +7,7 @@
  */
 
 import { describe, test, expect } from "bun:test";
-import { ARABIC_REGEX } from "../utils/bidirectional";
+import { ARABIC_REGEX } from "@/utils/bidirectional";
 
 describe("useCompositionTracking - Logic Tests", () => {
   test("ARABIC_REGEX detects Arabic text for composition", () => {

@@ -75,8 +75,17 @@ export function formatValidationMessage(
   // Priority 1: Security threats
   if (result.threats.length > 0) {
     const threat = result.threats[0];
+    // Extract threat type/code from threat object
+    const threatKey =
+      typeof threat === "object" && threat !== null
+        ? (threat.type || threat.code || "")
+            .toString()
+            .toUpperCase()
+            .replace(/-/g, "_")
+        : String(threat).toUpperCase().replace(/-/g, "_");
+
     if (locale === "ar") {
-      switch (String(threat)) {
+      switch (threatKey) {
         case "BIDI_OVERRIDE":
           return "تهديد أمني: تم اكتشاف أحرف تحكم ثنائية الاتجاه";
         case "ZERO_WIDTH_ABUSE":
@@ -85,7 +94,7 @@ export function formatValidationMessage(
           return "تهديد أمني: تم اكتشاف محتوى مشبوه";
       }
     } else {
-      switch (String(threat)) {
+      switch (threatKey) {
         case "BIDI_OVERRIDE":
           return "Security threat: Bidirectional override characters detected";
         case "ZERO_WIDTH_ABUSE":

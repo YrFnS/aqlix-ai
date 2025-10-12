@@ -87,7 +87,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **14_bidirectional_ui.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Direction-aware React components and mixed content handling_
 
-- **15_arabic_input_handling.md** → `/generate-prp` + `/execute-prp`
+- **15_arabic_input_handling.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Arabic keyboard input, IME support, and composition events_
 
 - **16_language_switching.md** → `/generate-prp` + `/execute-prp`

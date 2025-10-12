@@ -3,6 +3,7 @@
  * @module types/arabic-input
  */
 
+import type * as React from "react";
 import type { TextDirection } from "@iraqi-ai/types";
 import type { ValidationResult } from "@iraqi-ai/arabic-nlp";
 

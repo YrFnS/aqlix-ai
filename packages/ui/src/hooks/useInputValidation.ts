@@ -123,12 +123,7 @@ export function useInputValidation(options: UseInputValidationOptions = {}) {
             resolve(result);
           } catch (error) {
             console.error("Validation error:", error);
-            setState((prev) => ({
-              ...prev,
-              isValidating: false,
-              errorMessage: "Validation failed",
-            }));
-            resolve({
+            const failurePayload: ValidationResult = {
               isValid: false,
               errors: [
                 {
@@ -140,7 +135,16 @@ export function useInputValidation(options: UseInputValidationOptions = {}) {
               warnings: [],
               threats: [],
               confidence: 0,
-            });
+            };
+            setState((prev) => ({
+              ...prev,
+              result: failurePayload,
+              isValidating: false,
+              errorMessage: "Validation failed",
+              confidence: 0,
+            }));
+            onValidationChange?.(failurePayload);
+            resolve(failurePayload);
           }
         }, debounceMs) as unknown as number;
       });

@@ -9,7 +9,7 @@ import { Window } from "happy-dom";
 const window = new Window();
 const document = window.document;
 
-// @ts-ignore - Set globals for testing
+// @ts-expect-error - Set globals for testing (type augmentation preferred in test-globals.d.ts)
 globalThis.window = window as unknown as Window & typeof globalThis;
 globalThis.document = document;
 globalThis.navigator = window.navigator;
@@ -19,7 +19,7 @@ globalThis.HTMLInputElement =
 globalThis.HTMLTextAreaElement =
   window.HTMLTextAreaElement as typeof HTMLTextAreaElement;
 
-// @ts-ignore - Mock CompositionEvent for testing
+// @ts-expect-error - Mock CompositionEvent for testing (type augmentation preferred in test-globals.d.ts)
 globalThis.CompositionEvent = class CompositionEvent extends Event {
   data: string;
   constructor(
@@ -29,7 +29,7 @@ globalThis.CompositionEvent = class CompositionEvent extends Event {
     super(type, { cancelable: options?.cancelable, bubbles: options?.bubbles });
     this.data = options?.data || "";
   }
-} as any;
+} as unknown as typeof CompositionEvent;
 
 // Cleanup after all tests
 globalThis.addEventListener("beforeExit", () => {
