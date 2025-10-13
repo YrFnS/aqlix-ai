@@ -99,6 +99,7 @@ build/
 *.swp
 *.swo
 *~
+amcp.json
 
 # OS generated files
 .DS_Store
@@ -142,8 +143,27 @@ temp_voice/
 coverage/
 .nyc_output/
 
+# Test artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+.playwright/
+e2e-results/
+screenshots/
+test-screenshots/
+
+# Storybook
+storybook-static/
+.storybook-out/
+
 # Temporary folders
 tmp/
 temp/
 reference/
 repo-structure/
+
+# Development artifacts
+*.tsbuildinfo
+.turbo/
+.vercel/
+.contentlayer/

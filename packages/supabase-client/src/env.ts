@@ -12,7 +12,7 @@ export interface SupabaseEnv {
 export class SupabaseEnvError extends Error {
   constructor(message: string) {
     super(`Supabase Environment Error: ${message}`);
-    this.name = 'SupabaseEnvError';
+    this.name = "SupabaseEnvError";
   }
 }
 
@@ -20,14 +20,14 @@ export class SupabaseEnvError extends Error {
  * Validate and retrieve browser-safe Supabase environment variables
  * Uses NEXT_PUBLIC_ prefixed variables safe for client-side
  */
-export function getBrowserEnv(): Omit<SupabaseEnv, 'serviceRoleKey'> {
+export function getBrowserEnv(): Omit<SupabaseEnv, "serviceRoleKey"> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
     throw new SupabaseEnvError(
-      'Missing required browser environment variables. ' +
-      'Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.'
+      "Missing required browser environment variables. " +
+        "Ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set.",
     );
   }
 
@@ -41,13 +41,14 @@ export function getBrowserEnv(): Omit<SupabaseEnv, 'serviceRoleKey'> {
 export function getServerEnv(): SupabaseEnv {
   // For server, we can use either NEXT_PUBLIC_ or non-prefixed
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const anonKey =
+    process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !anonKey) {
     throw new SupabaseEnvError(
-      'Missing required server environment variables. ' +
-      'Ensure SUPABASE_URL and SUPABASE_ANON_KEY are set.'
+      "Missing required server environment variables. " +
+        "Ensure SUPABASE_URL and SUPABASE_ANON_KEY are set.",
     );
   }
 
@@ -62,8 +63,8 @@ export function getAdminEnv(): Required<SupabaseEnv> {
 
   if (!serviceRoleKey) {
     throw new SupabaseEnvError(
-      'Missing SUPABASE_SERVICE_ROLE_KEY for admin operations. ' +
-      'Admin client requires service role key for elevated permissions.'
+      "Missing SUPABASE_SERVICE_ROLE_KEY for admin operations. " +
+        "Admin client requires service role key for elevated permissions.",
     );
   }
 

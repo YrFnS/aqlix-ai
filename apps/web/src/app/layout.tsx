@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from "next";
+import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
+import { DirectionProvider } from "@/components/providers/DirectionProvider";
+import { DirectionSync } from "@/components/providers/DirectionSync";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +22,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col">{children}</body>
+    <html
+      lang="ar"
+      dir="rtl"
+      suppressHydrationWarning
+      className={`
+        ${notoSansArabic.variable}
+        ${cairo.variable}
+        ${amiri.variable}
+      `.trim()}
+    >
+      <body className="min-h-screen flex flex-col">
+        <DirectionProvider>
+          <DirectionSync />
+          {children}
+        </DirectionProvider>
+      </body>
     </html>
   );
 }

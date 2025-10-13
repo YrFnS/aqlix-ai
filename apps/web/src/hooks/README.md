@@ -16,15 +16,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 export function Component() {
   const isMobile = useIsMobile();
 
-  return (
-    <div>
-      {isMobile ? (
-        <MobileView />
-      ) : (
-        <DesktopView />
-      )}
-    </div>
-  );
+  return <div>{isMobile ? <MobileView /> : <DesktopView />}</div>;
 }
 ```
 
@@ -136,14 +128,14 @@ For comprehensive documentation, examples, and best practices, see:
 
 ## Breakpoints Reference
 
-| Breakpoint | Min Width | Device | Hook Returns True When |
-|------------|-----------|--------|------------------------|
-| xs | 0px | Mobile | Always (default) |
-| sm | 640px | Large mobile | Width >= 640px |
-| md | 768px | Tablet | Width >= 768px |
-| lg | 1024px | Desktop | Width >= 1024px |
-| xl | 1280px | Large desktop | Width >= 1280px |
-| 2xl | 1536px | Ultra-wide | Width >= 1536px |
+| Breakpoint | Min Width | Device        | Hook Returns True When |
+| ---------- | --------- | ------------- | ---------------------- |
+| xs         | 0px       | Mobile        | Always (default)       |
+| sm         | 640px     | Large mobile  | Width >= 640px         |
+| md         | 768px     | Tablet        | Width >= 768px         |
+| lg         | 1024px    | Desktop       | Width >= 1024px        |
+| xl         | 1280px    | Large desktop | Width >= 1280px        |
+| 2xl        | 1536px    | Ultra-wide    | Width >= 1536px        |
 
 ---
 
@@ -191,7 +183,9 @@ export function ResponsiveGrid() {
 
   return (
     <div style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-      {items.map(item => <Card key={item.id} {...item} />)}
+      {items.map((item) => (
+        <Card key={item.id} {...item} />
+      ))}
     </div>
   );
 }
@@ -210,12 +204,14 @@ export function DataComponent() {
 
   // Load less data on mobile
   const { data } = useSWR(
-    isMobile ? "/api/data?limit=10" : "/api/data?limit=50"
+    isMobile ? "/api/data?limit=10" : "/api/data?limit=50",
   );
 
   return (
     <div>
-      {data?.map(item => <Item key={item.id} {...item} />)}
+      {data?.map((item) => (
+        <Item key={item.id} {...item} />
+      ))}
     </div>
   );
 }
@@ -241,11 +237,7 @@ export function ResponsiveImage() {
   }[breakpoint];
 
   return (
-    <img
-      src={`/images/hero-${imageSize}.jpg`}
-      alt="Hero"
-      loading="lazy"
-    />
+    <img src={`/images/hero-${imageSize}.jpg`} alt="Hero" loading="lazy" />
   );
 }
 ```
@@ -380,17 +372,18 @@ For simple responsive layouts, **prefer CSS over JavaScript hooks**:
 <div className="flex-col md:flex-row">
   <div>Left</div>
   <div>Right</div>
-</div>
+</div>;
 
 // Avoid: Hook-based (unnecessary JavaScript)
 const isMd = useBreakpoint("md");
 <div className={isMd ? "flex-row" : "flex-col"}>
   <div>Left</div>
   <div>Right</div>
-</div>
+</div>;
 ```
 
 Use hooks only when you need:
+
 - Conditional component rendering
 - Different component logic
 - Dynamic calculations
@@ -413,7 +406,8 @@ const isMobile: boolean = useMediaQuery("(max-width: 767px)");
 const isDesktop: boolean = useBreakpoint("lg");
 
 // useCurrentBreakpoint returns specific type
-const current: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" = useCurrentBreakpoint();
+const current: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" =
+  useCurrentBreakpoint();
 ```
 
 ---

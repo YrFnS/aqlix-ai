@@ -128,16 +128,19 @@ Use evidence-based language:
 **Philosophy**: All GitHub operations are **automated by agents** during PRP execution. See `docs/GITHUB_WORKFLOW.md` for complete strategy.
 
 **Two-Branch Strategy**:
+
 - `main` - Production-ready, stable code only
 - `develop` - Ongoing PRP work (all development happens here)
 
 **How It Works**:
+
 - Agent commits all PRPs to `develop` branch
 - CI/CD validates every push to `develop`
 - Agent merges `develop` → `main` when feature layer complete (e.g., after PRPs 11-16)
 - Agent creates version tags on `main` for milestones
 
 **Agent Automation**:
+
 - `iraqi-prp-execution-orchestrator` manages commits, issues, merges, tags automatically
 - `iraqi-devops-engineer` manages CI/CD validation
 - `app-documentation-tracker` updates docs after changes
@@ -149,16 +152,19 @@ Use evidence-based language:
 **Status**: Phase 1 Complete ✅ | Phases 2-4 Planned 📋
 
 **Active Workflows** (`.github/workflows/`):
+
 - **ci.yml**: Quality gates (lint, typecheck, build, test) - runs on push/PR
 - **pr.yml**: PR validation (title format, breaking changes, cultural/Arabic checks, bundle size)
 
 **Roadmap** (`docs/CICD_ROADMAP.md`):
+
 - **Phase 1 (NOW)**: Basic quality gates ✅ DONE
 - **Phase 2 (After Initial #16)**: Arabic/RTL/Cultural tests 📋 PLANNED
 - **Phase 3 (After Initial #28)**: E2E, Payment, Security tests 📋 PLANNED
 - **Phase 4 (Before MVP Launch)**: Staging/Production deployment 📋 PLANNED
 
 **All PRs must pass**:
+
 - ✅ ESLint validation
 - ✅ TypeScript type checking
 - ✅ Build validation
@@ -167,6 +173,7 @@ Use evidence-based language:
 - ✅ Bundle size < 500KB warning
 
 **Cultural/Arabic Validation** (Phase 1 detection only):
+
 - 🎯 Detects cultural-sensitive file changes
 - 🎯 Detects Arabic/RTL file changes
 - 🎯 Runs cultural/arabic tests if available (doesn't fail CI yet)
@@ -376,38 +383,38 @@ Use for immediate processing without context overhead:
 
 ### MCP Configuration Matrix
 
-| Agent | Archon | Serena | Context7 | GitHub | Supabase | Sentry | Playwright | Chrome-DevTools | 21st-dev | Vibe-Check | Pieces |
-|-------|--------|--------|----------|--------|----------|--------|------------|-----------------|----------|------------|--------|
-| **Core Orchestration** |
-| workflow-orchestrator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| prp-execution-orchestrator | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| context-manager | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| **Technical** |
-| ai-agent-architect | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| technical-debugger | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| devops-engineer | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| **Security** |
-| security-specialist | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| payment-security-guardian | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Testing** |
-| payment-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ |
-| arabic-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| cultural-tester | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| accessibility-specialist | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ❌ |
-| **UI/UX** |
-| ui-designer | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| ux-researcher | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| interaction-designer | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
-| **Cultural** |
-| cultural-validator | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| arabic-rtl-processor | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| professional-domain-expert | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Business** |
-| product-manager | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| business-analyst | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Utility** |
-| documentation-tracker | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| external-service-coordinator | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Agent                        | Archon | Serena | Context7 | GitHub | Supabase | Sentry | Playwright | Chrome-DevTools | 21st-dev | Vibe-Check | Pieces |
+| ---------------------------- | ------ | ------ | -------- | ------ | -------- | ------ | ---------- | --------------- | -------- | ---------- | ------ |
+| **Core Orchestration**       |
+| workflow-orchestrator        | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ✅         | ❌     |
+| prp-execution-orchestrator   | ✅     | ✅     | ❌       | ✅     | ❌       | ✅     | ❌         | ❌              | ❌       | ✅         | ✅     |
+| context-manager              | ✅     | ✅     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ✅         | ✅     |
+| **Technical**                |
+| ai-agent-architect           | ✅     | ✅     | ✅       | ❌     | ✅       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| technical-debugger           | ✅     | ✅     | ✅       | ✅     | ✅       | ✅     | ❌         | ❌              | ❌       | ❌         |
+| devops-engineer              | ✅     | ✅     | ✅       | ✅     | ✅       | ✅     | ❌         | ✅              | ❌       | ❌         |
+| **Security**                 |
+| security-specialist          | ✅     | ✅     | ❌       | ❌     | ✅       | ✅     | ❌         | ❌              | ❌       | ❌         |
+| payment-security-guardian    | ✅     | ❌     | ❌       | ❌     | ❌       | ✅     | ✅         | ❌              | ❌       | ❌         |
+| **Testing**                  |
+| payment-tester               | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ✅         | ✅              | ❌       | ❌         |
+| arabic-tester                | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ✅         | ❌              | ❌       | ❌         |
+| cultural-tester              | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ✅         | ❌              | ❌       | ❌         |
+| accessibility-specialist     | ✅     | ✅     | ❌       | ❌     | ❌       | ❌     | ✅         | ✅              | ✅       | ❌         |
+| **UI/UX**                    |
+| ui-designer                  | ✅     | ❌     | ✅       | ❌     | ❌       | ❌     | ❌         | ❌              | ✅       | ❌         |
+| ux-researcher                | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| interaction-designer         | ✅     | ❌     | ✅       | ❌     | ❌       | ❌     | ❌         | ❌              | ✅       | ❌         |
+| **Cultural**                 |
+| cultural-validator           | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| arabic-rtl-processor         | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| professional-domain-expert   | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| **Business**                 |
+| product-manager              | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| business-analyst             | ✅     | ❌     | ❌       | ❌     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| **Utility**                  |
+| documentation-tracker        | ✅     | ✅     | ❌       | ✅     | ❌       | ❌     | ❌         | ❌              | ❌       | ❌         |
+| external-service-coordinator | ✅     | ❌     | ❌       | ❌     | ❌       | ✅     | ❌         | ❌              | ❌       | ❌         |
 
 ## Multi-Agent Workflow Patterns
 

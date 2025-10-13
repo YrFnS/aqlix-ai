@@ -1,0 +1,383 @@
+/**
+ * RTL (Right-to-Left) Layout Styles
+ *
+ * CSS logical properties and RTL utilities for Arabic text direction.
+ * Uses CSS custom properties for direction-agnostic layouts.
+ *
+ * @module rtl.css
+ */
+
+/* ============================================
+   Root Direction Configuration
+   ============================================ */
+
+/* RTL direction CSS custom properties */
+[dir="rtl"] {
+  --text-align-start: right;
+  --text-align-end: left;
+  --inset-start: right;
+  --inset-end: left;
+  --border-start: border-right;
+  --border-end: border-left;
+}
+
+/* LTR direction CSS custom properties */
+[dir="ltr"] {
+  --text-align-start: left;
+  --text-align-end: right;
+  --inset-start: left;
+  --inset-end: right;
+  --border-start: border-left;
+  --border-end: border-right;
+}
+
+/* ============================================
+   Text Direction Utilities
+   ============================================ */
+
+/* RTL text with proper alignment and unicode-bidi */
+.text-rtl {
+  direction: rtl;
+  text-align: right;
+  unicode-bidi: embed;
+}
+
+/* LTR text with proper alignment and unicode-bidi */
+.text-ltr {
+  direction: ltr;
+  text-align: left;
+  unicode-bidi: embed;
+}
+
+/* Automatic direction detection from content */
+.text-auto {
+  direction: auto;
+  text-align: start;
+  unicode-bidi: plaintext;
+}
+
+/* ============================================
+   RTL Layout Components
+   ============================================ */
+
+/* RTL container with proper direction */
+.rtl-container {
+  direction: rtl;
+}
+
+/* RTL flexbox with reversed direction */
+.rtl-flex {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+/* RTL grid with proper flow */
+.rtl-grid {
+  display: grid;
+  direction: rtl;
+}
+
+/* ============================================
+   Form Elements RTL
+   ============================================ */
+
+/* RTL form with proper input direction */
+.rtl-form .form-control,
+.rtl-form input,
+.rtl-form textarea,
+.rtl-form select {
+  direction: rtl;
+  text-align: right;
+}
+
+/* RTL placeholder alignment */
+.rtl-form .form-control::placeholder,
+.rtl-form input::placeholder,
+.rtl-form textarea::placeholder {
+  text-align: right;
+}
+
+/* RTL form labels */
+.rtl-form label {
+  text-align: right;
+}
+
+/* RTL checkbox and radio alignment */
+.rtl-form input[type="checkbox"],
+.rtl-form input[type="radio"] {
+  margin-inline-start: 0.5rem;
+  margin-inline-end: 0;
+}
+
+/* ============================================
+   Arabic Typography Optimization
+   ============================================ */
+
+/* Arabic font optimization for better rendering */
+.font-arabic {
+  font-feature-settings: "liga", "calt", "kern";
+  font-variant-ligatures: common-ligatures contextual;
+  text-rendering: optimizeLegibility;
+  line-height: 1.8; /* Arabic needs more line-height */
+  letter-spacing: 0.01em; /* Slight spacing for clarity */
+}
+
+/* Arabic heading optimization */
+.font-arabic-heading {
+  font-feature-settings: "liga", "calt", "kern";
+  font-variant-ligatures: common-ligatures contextual;
+  text-rendering: optimizeLegibility;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+}
+
+/* Arabic formal text (legal, religious) */
+.font-arabic-formal {
+  font-feature-settings: "liga", "calt", "kern", "dlig";
+  font-variant-ligatures: common-ligatures contextual discretionary-ligatures;
+  text-rendering: optimizeLegibility;
+  line-height: 2; /* Formal Arabic needs generous spacing */
+  letter-spacing: 0.03em;
+}
+
+/* ============================================
+   RTL-Specific Components
+   ============================================ */
+
+/* RTL Button */
+.rtl-button {
+  direction: rtl;
+  text-align: center;
+}
+
+.rtl-button svg {
+  margin-inline-end: 0.5rem;
+  margin-inline-start: 0;
+}
+
+/* RTL Card */
+.rtl-card {
+  direction: rtl;
+  text-align: right;
+}
+
+.rtl-card-header {
+  text-align: right;
+}
+
+/* RTL List */
+.rtl-list {
+  direction: rtl;
+  text-align: right;
+  list-style-position: inside;
+}
+
+.rtl-list li {
+  text-align: right;
+}
+
+/* RTL Table */
+.rtl-table {
+  direction: rtl;
+}
+
+.rtl-table th,
+.rtl-table td {
+  text-align: right;
+}
+
+/* RTL Navigation */
+.rtl-nav {
+  direction: rtl;
+}
+
+.rtl-nav ul {
+  flex-direction: row-reverse;
+}
+
+/* ============================================
+   Bidirectional Content
+   ============================================ */
+
+/* Mixed content container */
+.bidi-content {
+  unicode-bidi: plaintext;
+}
+
+/* Inline bidirectional text */
+.bidi-inline {
+  unicode-bidi: embed;
+  direction: inherit;
+}
+
+/* Override bidirectional algorithm */
+.bidi-override {
+  unicode-bidi: bidi-override;
+}
+
+/* ============================================
+   RTL Animations
+   ============================================ */
+
+/* Slide in from right (RTL) */
+@keyframes slideInRTL {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide out to right (RTL) */
+@keyframes slideOutRTL {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Slide in from left (LTR) */
+@keyframes slideInLTR {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Slide out to left (LTR) */
+@keyframes slideOutLTR {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+/* Apply RTL animation */
+.animate-slide-in-rtl {
+  animation: slideInRTL 0.3s ease-out;
+}
+
+.animate-slide-out-rtl {
+  animation: slideOutRTL 0.3s ease-in;
+}
+
+/* Apply LTR animation */
+.animate-slide-in-ltr {
+  animation: slideInLTR 0.3s ease-out;
+}
+
+.animate-slide-out-ltr {
+  animation: slideOutLTR 0.3s ease-in;
+}
+
+/* ============================================
+   Responsive RTL Adjustments
+   ============================================ */
+
+/* Mobile RTL adjustments */
+@media (max-width: 768px) {
+  .rtl-container {
+    padding-inline-start: 1rem;
+    padding-inline-end: 1rem;
+  }
+
+  .rtl-nav ul {
+    flex-direction: column;
+  }
+
+  /* Increase line-height for Arabic on mobile */
+  .font-arabic {
+    line-height: 2;
+  }
+}
+
+/* Tablet RTL adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .rtl-container {
+    padding-inline-start: 1.5rem;
+    padding-inline-end: 1.5rem;
+  }
+}
+
+/* Desktop RTL adjustments */
+@media (min-width: 1025px) {
+  .rtl-container {
+    padding-inline-start: 2rem;
+    padding-inline-end: 2rem;
+  }
+}
+
+/* ============================================
+   Accessibility Enhancements
+   ============================================ */
+
+/* Focus styles for RTL */
+[dir="rtl"] *:focus {
+  outline-offset: 2px;
+}
+
+/* Skip to content link for RTL */
+[dir="rtl"] .skip-to-content {
+  inset-inline-start: 1rem;
+}
+
+/* Screen reader only text for RTL */
+.sr-only-rtl {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+  direction: rtl;
+}
+
+/* ============================================
+   Dark Mode RTL Support
+   ============================================ */
+
+/* Dark mode with RTL */
+@media (prefers-color-scheme: dark) {
+  .rtl-container {
+    /* Dark mode RTL-specific adjustments */
+  }
+
+  .font-arabic {
+    /* Slightly increase contrast in dark mode */
+    letter-spacing: 0.015em;
+  }
+}
+
+/* ============================================
+   Print Styles for RTL
+   ============================================ */
+
+@media print {
+  .rtl-container {
+    direction: rtl;
+  }
+
+  .font-arabic {
+    /* Optimize for print */
+    font-feature-settings: "liga", "calt", "kern";
+    line-height: 1.8;
+  }
+}

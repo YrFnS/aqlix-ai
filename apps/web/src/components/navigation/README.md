@@ -25,7 +25,7 @@ export function Header() {
 
         {/* Desktop navigation */}
         <div className="hidden md:flex gap-6">
-          {navItems.map(item => (
+          {navItems.map((item) => (
             <NavLink key={item.href} href={item.href}>
               {item.label}
             </NavLink>
@@ -41,6 +41,7 @@ export function Header() {
 ```
 
 **Features**:
+
 - Hidden on desktop (md:hidden)
 - 48x48px touch targets
 - Slide-in animation
@@ -59,9 +60,7 @@ import { BottomNav } from "@/components/navigation/bottom-nav";
 export function AppLayout({ children }) {
   return (
     <div>
-      <main className="pb-16 md:pb-0">
-        {children}
-      </main>
+      <main className="pb-16 md:pb-0">{children}</main>
       <BottomNav />
     </div>
   );
@@ -69,6 +68,7 @@ export function AppLayout({ children }) {
 ```
 
 **Features**:
+
 - Mobile-only (hidden md:)
 - Fixed bottom position
 - Active route highlighting
@@ -76,6 +76,7 @@ export function AppLayout({ children }) {
 - Safe area support
 
 **Default Items**:
+
 - Dashboard (Home icon)
 - Chat (MessageSquare icon)
 - Settings (Settings icon)
@@ -94,15 +95,14 @@ export function AppLayout({ children }) {
   return (
     <div className="flex">
       <AppNav />
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
 ```
 
 **Features**:
+
 - Desktop: Fixed sidebar (always visible)
 - Mobile: Drawer overlay (toggle)
 - Smooth transitions
@@ -136,6 +136,7 @@ import { NavLink } from "@/components/navigation/nav-link";
 ```
 
 **Props**:
+
 - `href`: Link destination (required)
 - `children`: Link content (required)
 - `exact`: Exact path matching (default: true)
@@ -210,9 +211,7 @@ export function MobileAppLayout({ children }) {
         <h1>Iraqi AI Chat</h1>
       </header>
 
-      <main className="pb-16">
-        {children}
-      </main>
+      <main className="pb-16">{children}</main>
 
       <BottomNav />
     </>
@@ -234,9 +233,7 @@ export function DashboardLayout({ children }) {
     <div className="flex min-h-screen">
       <AppNav />
 
-      <main className="flex-1 p-6 md:p-8">
-        {children}
-      </main>
+      <main className="flex-1 p-6 md:p-8">{children}</main>
     </div>
   );
 }
@@ -261,9 +258,7 @@ Edit the component to add authentication actions:
 
   {/* Add custom actions */}
   <hr className="my-2" />
-  <button onClick={handleSignOut}>
-    Sign Out
-  </button>
+  <button onClick={handleSignOut}>Sign Out</button>
 </div>
 ```
 
@@ -293,9 +288,7 @@ Add sections or user profile:
   </Link>
 
   <nav className="flex flex-col gap-2">
-    <div className="text-xs font-semibold text-muted-foreground mb-2">
-      MAIN
-    </div>
+    <div className="text-xs font-semibold text-muted-foreground mb-2">MAIN</div>
     <NavLink href="/dashboard">Dashboard</NavLink>
     <NavLink href="/projects">Projects</NavLink>
 

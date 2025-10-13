@@ -50,11 +50,11 @@ const nextConfig: NextConfig = {
   // Monorepo Workspace Support
   // -------------------------------------------------------------------------
   transpilePackages: [
-    "@iraqi-ai/types",           // Shared TypeScript types
-    "@iraqi-ai/ui",              // Shared UI components
-    "@iraqi-ai/features",        // Shared business logic
-    "@iraqi-ai/api-client",      // API client logic
-    "@iraqi-ai/arabic-nlp",      // Arabic processing logic
+    "@iraqi-ai/types", // Shared TypeScript types
+    "@iraqi-ai/ui", // Shared UI components
+    "@iraqi-ai/features", // Shared business logic
+    "@iraqi-ai/api-client", // API client logic
+    "@iraqi-ai/arabic-nlp", // Arabic processing logic
     "@iraqi-ai/supabase-client", // Supabase client
   ],
 
@@ -63,8 +63,8 @@ const nextConfig: NextConfig = {
   // -------------------------------------------------------------------------
   images: {
     domains: [
-      "your-project.supabase.co",  // Supabase storage domain
-      "localhost",                  // Local development
+      "your-project.supabase.co", // Supabase storage domain
+      "localhost", // Local development
     ],
     formats: ["image/avif", "image/webp"],
   },

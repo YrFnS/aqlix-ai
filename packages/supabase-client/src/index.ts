@@ -16,13 +16,18 @@
  */
 
 // Re-export environment utilities
-export { getBrowserEnv, getServerEnv, getAdminEnv, SupabaseEnvError } from './env';
-export type { SupabaseEnv } from './env';
+export {
+  getBrowserEnv,
+  getServerEnv,
+  getAdminEnv,
+  SupabaseEnvError,
+} from "./env";
+export type { SupabaseEnv } from "./env";
 
 // Re-export client types for convenience
-export type { SupabaseBrowserClient } from './browser';
-export type { SupabaseServerClient } from './server';
-export type { SupabaseAdminClient } from './admin';
+export type { SupabaseBrowserClient } from "./browser";
+export type { SupabaseServerClient } from "./server";
+export type { SupabaseAdminClient } from "./admin";
 
 // Note: Actual client creation functions are exported from subpaths
 // to prevent importing server code in browser and vice versa
