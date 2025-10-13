@@ -865,7 +865,7 @@ describe("Language Switcher - WCAG 2.1 AA Accessibility", () => {
       // Switch to Arabic (RTL)
       await userEvent.click(trigger);
 
-      await waitFor(() => {
+      await waitFor(async () => {
         const menu = screen.getByRole("menu");
         const arabicOption = within(menu).getByRole("menuitem", {
           name: /العربية.*العراق/i,

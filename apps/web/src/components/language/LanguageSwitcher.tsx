@@ -137,6 +137,7 @@ export function LanguageSwitcher({
     >
       {/* Trigger Button */}
       <button
+        id="language-menu"
         onClick={() => setIsOpen(!isOpen)}
         className={buttonClasses}
         aria-label="Select language"
