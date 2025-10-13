@@ -75,13 +75,10 @@ export function formatValidationMessage(
   // Priority 1: Security threats
   if (result.threats.length > 0) {
     const threat = result.threats[0];
-    // Extract threat type/code from threat object
+    // Extract threat type from threat object
     const threatKey =
       typeof threat === "object" && threat !== null
-        ? (threat.type || threat.code || "")
-            .toString()
-            .toUpperCase()
-            .replace(/-/g, "_")
+        ? threat.type.toString().toUpperCase().replace(/-/g, "_")
         : String(threat).toUpperCase().replace(/-/g, "_");
 
     if (locale === "ar") {
