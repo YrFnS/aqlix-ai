@@ -87,6 +87,29 @@ export function DirectionProvider({ children }: { children: React.ReactNode }) {
     }
   }, [config]);
 
+  // Listen for language changes from LanguageProvider
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleLanguageChange = (event: Event) => {
+      const customEvent = event as CustomEvent<{ locale: LanguageLocale }>;
+      const newLocale = customEvent.detail.locale;
+
+      // Update locale and direction when language changes
+      setConfig((prev: RTLConfig) => ({
+        ...prev,
+        locale: newLocale,
+        direction: getLocaleDirection(newLocale),
+      }));
+    };
+
+    window.addEventListener("languageChange", handleLanguageChange);
+
+    return () => {
+      window.removeEventListener("languageChange", handleLanguageChange);
+    };
+  }, []);
+
   // Apply direction and language to document
   useEffect(() => {
     if (typeof document !== "undefined") {

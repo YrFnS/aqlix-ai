@@ -125,7 +125,7 @@ describe("Direction Provider Integration", () => {
   test("No hydration mismatches with suppressHydrationWarning", () => {
     // This test ensures that the suppressHydrationWarning prop prevents
     // hydration errors when direction changes between server and client render
-    const { container } = render(
+    render(
       <DirectionProvider>
         <DirectionSync />
         <TestComponent />
@@ -133,7 +133,6 @@ describe("Direction Provider Integration", () => {
     );
 
     // Component should render without errors
-    expect(container).toBeDefined();
     expect(screen.getByTestId("test-component")).toBeDefined();
   });
 

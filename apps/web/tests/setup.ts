@@ -7,13 +7,21 @@
 import { Window } from "happy-dom";
 
 // Declare proper global types
+// eslint-disable-next-line no-var
 declare global {
+  // eslint-disable-next-line no-var
   var window: Window & typeof globalThis;
+  // eslint-disable-next-line no-var
   var document: Document;
+  // eslint-disable-next-line no-var
   var navigator: Navigator;
+  // eslint-disable-next-line no-var
   var localStorage: Storage;
+  // eslint-disable-next-line no-var
   var sessionStorage: Storage;
+  // eslint-disable-next-line no-var
   var HTMLElement: typeof globalThis.HTMLElement;
+  // eslint-disable-next-line no-var
   var Element: typeof globalThis.Element;
 }
 
