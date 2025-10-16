@@ -36,12 +36,13 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/minimatch": "^6.0.0",
     "@types/ws": "^8.5.10",
-    "typescript": "^5.3.3",
-    "eslint": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
-    "msw": "^2.0.11"
+    "eslint": "^8.56.0",
+    "msw": "^2.0.11",
+    "typescript": "^5.3.3"
   },
   "keywords": [
     "iraqi",
