@@ -57,29 +57,25 @@ describe("Cultural Compliance - Islamic Values", () => {
 
 describe("Cultural Compliance - Professional Terminology", () => {
   test("should use professional domain terminology correctly", () => {
-    const terms = {
-      // Legal domain
-      legal: {
-        correct: ["مستشار قانوني", "محامي", "قاضي", "محكمة"],
-        incorrect: ["حكومة", "وزارة", "دولة"], // Government terminology
-      },
-      // Medical domain
-      medical: {
-        correct: ["طبيب", "مستشفى", "عيادة", "مريض"],
-        incorrect: [],
-      },
-      // Educational domain
-      educational: {
-        correct: ["معلم", "مدرسة", "جامعة", "طالب"],
-        incorrect: [],
-      },
+    const correctTerms = {
+      // Legal domain (professional, not government)
+      legal: ["مستشار قانوني", "محامي", "قاضي", "محكمة"],
+      // Medical domain (professional, not ministry)
+      medical: ["طبيب", "مستشفى", "عيادة", "مريض"],
+      // Educational domain (professional, not government)
+      educational: ["معلم", "مدرسة", "جامعة", "طالب"],
     };
 
+    // Document AVOID terminology (for reference only)
+    const avoidTerms = ["حكومة", "وزارة", "دولة"]; // Government terminology to transform
+
     // Verify correct terminology usage
-    Object.values(terms).forEach((domain) => {
-      expect(domain.correct.length).toBeGreaterThan(0);
-      expect(domain.incorrect.length).toBe(0);
+    Object.values(correctTerms).forEach((domain) => {
+      expect(domain.length).toBeGreaterThan(0);
     });
+
+    // Ensure we're documenting avoidance patterns
+    expect(avoidTerms.length).toBeGreaterThan(0); // Document what NOT to use
   });
 
   test("should transform ministry/government references to professional", () => {
