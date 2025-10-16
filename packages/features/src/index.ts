@@ -17,7 +17,7 @@
  */
 
 // Placeholder export to make package buildable
-export const FEATURES_VERSION = '1.0.0';
+export const FEATURES_VERSION = "1.0.0";
 
 /**
  * Placeholder type - will be replaced with actual feature implementations

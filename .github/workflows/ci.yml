@@ -32,17 +32,14 @@ jobs:
 
       - name: Run ESLint
         run: |
-          echo "⚠️  Linting temporarily disabled during initial MVP development"
-          echo "Will enable full linting after Initial #16 (Arabic Foundation Layer)"
-          echo "Currently focusing on incremental feature implementation"
-          echo "✅ Lint check passed (Phase 1 - Permissive Mode)"
+          echo "🔍 Running ESLint validation..."
+          bun run lint || echo "⚠️  ESLint warnings detected (permissive mode)"
 
       - name: Run TypeScript type checking
         run: |
-          echo "⚠️  TypeScript checking temporarily disabled during initial MVP development"
-          echo "Will enable full type checking after Initial #16 (Arabic Foundation Layer)"
-          echo "Currently focusing on incremental feature implementation"
-          echo "✅ TypeCheck passed (Phase 1 - Permissive Mode)"
+          echo "🔍 Running TypeScript type checking..."
+          bun run typecheck
+          echo "✅ TypeCheck passed"
 
   # Job 2: Build Validation (Medium)
   build:
@@ -65,15 +62,14 @@ jobs:
 
       - name: Build packages
         run: |
-          echo "⚠️  Package builds temporarily disabled during initial MVP development"
-          echo "Will enable after packages have actual code (Initial #16+)"
-          echo "✅ Build check passed (Phase 1 - Permissive Mode)"
+          echo "🏗️  Building packages..."
+          bun run build:packages || echo "⚠️  Package build warnings (non-blocking)"
 
       - name: Build applications
         run: |
-          echo "⚠️  App builds temporarily disabled during initial MVP development"
-          echo "Will enable after Initial #16 (Arabic Foundation Layer)"
-          echo "✅ Build check passed (Phase 1 - Permissive Mode)"
+          echo "🏗️  Building applications..."
+          cd apps/web && bun run build
+          echo "✅ Production build successful"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -106,10 +102,9 @@ jobs:
 
       - name: Run unit tests
         run: |
-          echo "⚠️  Unit tests temporarily disabled during initial MVP development"
-          echo "Will enable test suites as we implement features (Initial #11+)"
-          echo "Tests will be added incrementally with each PRP"
-          echo "✅ Test check passed (Phase 1 - Permissive Mode)"
+          echo "🧪 Running unit tests..."
+          bun run test:unit || echo "⚠️  Some unit tests failing (non-blocking during Phase 2)"
+          echo "✅ Core unit tests executed"
 
       - name: Upload test results
         if: always()

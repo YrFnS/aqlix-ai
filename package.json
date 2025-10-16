@@ -29,6 +29,7 @@
     "test:e2e": "bun run --filter \"./apps/web\" test:e2e",
     "test:cultural": "bun run --filter \"*\" test:cultural",
     "test:arabic": "bun run --filter \"*\" test:arabic",
+    "test:accessibility": "bun run --filter \"*\" test:accessibility",
     "test:image": "bun run --filter \"*\" test:image",
     "test:voice": "bun run --filter \"*\" test:voice",
     "test:desktop": "bun run --filter \"*\" test:desktop",

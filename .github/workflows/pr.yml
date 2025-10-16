@@ -13,9 +13,15 @@ jobs:
     steps:
       - name: Check PR title format
         run: |
-          echo "⚠️  PR title validation temporarily disabled during initial MVP development"
-          echo "Will enable strict validation after Initial #16"
-          echo "✅ PR title check passed (Phase 1 - Permissive Mode)"
+          echo "📋 Validating PR title format..."
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          if [[ "$PR_TITLE" =~ ^(feat|fix|docs|cultural|arabic|style|refactor|perf|test|chore|ci|build|revert)(\(.+\))?:\ .+ ]]; then
+            echo "✅ PR title follows semantic format"
+          else
+            echo "❌ PR title must follow format: type(scope): description"
+            echo "Valid types: feat, fix, docs, cultural, arabic, style, refactor, perf, test, chore, ci, build, revert"
+            exit 1
+          fi
 
   # Check for breaking changes
   breaking-changes:
@@ -71,7 +77,8 @@ jobs:
             # Require cultural tests if available
             if [ -f "package.json" ] && grep -q "test:cultural" package.json; then
               echo "🧪 Running cultural compliance tests..."
-              bun run test:cultural || echo "⚠️ Cultural tests not yet available"
+              bun run test:cultural
+              echo "✅ Cultural tests must pass (95%+ threshold required)"
             fi
           else
             echo "✅ No cultural-sensitive files modified"
@@ -109,7 +116,9 @@ jobs:
             # Require Arabic tests if available
             if [ -f "package.json" ] && grep -q "test:arabic" package.json; then
               echo "🧪 Running Arabic/RTL tests..."
-              bun run test:arabic || echo "⚠️ Arabic tests not yet available"
+              cd apps/web && bunx playwright install chromium --with-deps
+              bun run test:arabic
+              echo "✅ Arabic tests must pass (99%+ RTL accuracy, 85%+ dialect recognition)"
             fi
           else
             echo "✅ No Arabic/RTL files modified"

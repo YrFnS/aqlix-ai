@@ -18,8 +18,10 @@
     "test:watch": "bun test --watch",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:cultural": "bun test --testNamePattern='cultural'",
-    "test:arabic": "bun test --testNamePattern='arabic'",
+    "test:unit": "bun test tests/unit",
+    "test:cultural": "bun test tests/unit/cultural-compliance.test.tsx",
+    "test:arabic": "playwright test tests/e2e/arabic-rtl.spec.ts tests/e2e/rtl-foundation.spec.ts tests/e2e/bidirectional-ui.spec.ts",
+    "test:accessibility": "bun test tests/unit/language-switcher-accessibility.test.tsx",
     "clean": "rm -rf .next out dist .turbo"
   },
   "dependencies": {

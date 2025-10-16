@@ -15,7 +15,7 @@
  */
 
 // Placeholder export to make package buildable
-export const API_CLIENT_VERSION = '1.0.0';
+export const API_CLIENT_VERSION = "1.0.0";
 
 /**
  * Placeholder type - will be replaced with actual API client implementation
