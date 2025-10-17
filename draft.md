@@ -2694,3 +2694,46 @@ bun audit
 bun update
 
 https://www.aitmpl.com/plugins
+
+Initial 17: Testing Framework
+- Required MCPs: Playwright, chrome-devtools, Serena, Archon
+- Agents: iraqi-arabic-tester, iraqi-cultural-tester, iraqi-accessibility-specialist, iraqi-payment-tester
+- Purpose: E2E testing, browser automation, cultural/Arabic testing
+- Status: ✅ All required MCPs active
+
+Initial 18: Authentication System
+- Required MCPs: Supabase, Sentry, Serena, Archon
+- Agents: iraqi-security-specialist, iraqi-technical-debugger, iraqi-devops-engineer
+- Purpose: Auth integration, error monitoring, security validation
+- Status: ✅ All required MCPs active
+
+Initial 19: Cultural & Islamic Compliance System
+- Required MCPs: Archon only
+- Agents: iraqi-cultural-validator, iraqi-cultural-tester, arabic-rtl-processor
+- Purpose: Cultural/Islamic validation (no external services needed)
+- Status: ✅ All required MCPs active
+
+Initial 20: PydanticAI Setup (21 Agents)
+- Required MCPs: ALL 12 MCPs
+- Agents: All 22 specialized Iraqi AI agents
+- Purpose: Complete agent ecosystem deployment
+- Critical: This is the most MCP-intensive initial
+- Status: ✅ All required MCPs active
+
+Initial 21: Iraqi Dialect
+- Required MCPs: Archon only
+- Agents: arabic-rtl-processor
+- Purpose: Dialect processing (no external services)
+- Status: ✅ All required MCPs active
+
+Initial 22: Context Management Foundation
+- Required MCPs: Archon, Serena, vibe-check, Pieces
+- Agents: iraqi-context-manager, iraqi-workflow-orchestrator
+- Purpose: Context optimization, workflow coordination
+- Status: ✅ All required MCPs active
+
+Initial 23: Iraqi Chat API Endpoints
+- Required MCPs: Archon, Supabase, Sentry, GitHub, Playwright, Serena
+- Agents: Multiple technical agents
+- Purpose: API development, testing, monitoring, deployment
+- Status: ✅ All required MCPs active
