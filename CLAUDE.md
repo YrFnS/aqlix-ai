@@ -467,8 +467,10 @@ Use for immediate processing without context overhead:
 
 ```
 /
-├── .claude/                    # Agent system
-│   └── agents/                 # 22 specialized Iraqi AI agents
+├── .claude/                    # Agent system & automation
+│   ├── agents/                 # 22 specialized Iraqi AI agents
+│   ├── hooks/                  # Automated quality scripts (format.sh, lint.sh)
+│   └── settings.json           # Claude Code hooks configuration
 ├── .github/                    # CI/CD infrastructure
 │   └── workflows/              # GitHub Actions workflows (ci.yml, pr.yml)
 ├── apps/
@@ -490,7 +492,9 @@ Use for immediate processing without context overhead:
 │   └── arabic-nlp/            # Arabic processing logic
 ├── docs/                      # Technical documentation
 │   ├── CICD_ROADMAP.md        # 4-phase CI/CD strategy and implementation plan
-│   └── GITHUB_WORKFLOW.md     # Agent-automated GitHub workflow strategy
+│   ├── GITHUB_WORKFLOW.md     # Agent-automated GitHub workflow strategy
+│   ├── HOOKS_SETUP.md         # Claude Code hooks complete guide
+│   └── HOOK_TEST_REPORT.md    # Hook testing results and status
 ├── examples/                   # Reference implementations
 │   ├── basic_chat_agent/       # Simple PydanticAI agent patterns
 │   ├── main_agent_reference/   # Production agent architecture
@@ -511,9 +515,18 @@ Use for immediate processing without context overhead:
 **Key Directories**:
 
 - **Agents**: `.claude/agents/` (22 specialized agents)
+- **Hooks**: `.claude/hooks/` (format.sh, lint.sh automation scripts)
 - **Workflows**: `.github/workflows/` (CI/CD automation pipelines)
-- **Documentation**: `docs/` (Technical documentation, roadmaps)
+- **Documentation**: `docs/` (Technical documentation, roadmaps, hook guides)
 - **Context**: `project-context/` (persistent knowledge base)
 - **Examples**: `examples/` (79 Iraqi-enhanced components and integrations)
 - **Initials**: `initials/` (56 system templates: 1-47 MVP, 48-56 Post-MVP)
 - **Shared**: `packages/` (ui, types, features, api-client, arabic-nlp)
+
+**Key Documentation**:
+
+- **CLAUDE.md**: This file - project rules and guidelines
+- **docs/HOOKS_SETUP.md**: Complete hook documentation and troubleshooting
+- **docs/HOOK_TEST_REPORT.md**: Hook testing results and status
+- **docs/CICD_ROADMAP.md**: CI/CD implementation strategy
+- **docs/GITHUB_WORKFLOW.md**: GitHub automation workflow

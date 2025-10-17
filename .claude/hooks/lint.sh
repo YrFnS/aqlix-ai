@@ -2,8 +2,6 @@
 # Iraqi AI Chat System - Monorepo Linting Hook
 # Handles all file linting across the entire monorepo (Python, TypeScript, JavaScript)
 
-set -e
-
 echo "🔍 Running monorepo-wide linting..."
 
 # Track linting results

@@ -2,8 +2,6 @@
 # Iraqi AI Chat System - Monorepo Formatting Hook
 # Handles all file formatting across the entire monorepo (Python, TypeScript, JavaScript, CSS, JSON, Markdown)
 
-set -e
-
 echo "🎨 Running monorepo-wide formatting..."
 
 # Format Python files in apps/api
