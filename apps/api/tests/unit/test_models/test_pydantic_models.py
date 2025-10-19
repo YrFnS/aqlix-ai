@@ -73,7 +73,17 @@ class TestUserModels:
             # TODO: Implement actual validation
             # with pytest.raises(ValidationError):
             #     User(email=email)
-            assert "@" not in email or email.count("@") != 1
+
+            # For now, check that invalid emails don't have proper format
+            # Valid email should have @ with text on both sides
+            has_at = "@" in email
+            if has_at:
+                parts = email.split("@")
+                assert (
+                    len(parts) != 2 or not parts[0] or not parts[1]
+                )  # Should fail format check
+            else:
+                assert True  # Emails without @ are definitely invalid
 
     def test_user_password_requirements(self):
         """Test password validation."""

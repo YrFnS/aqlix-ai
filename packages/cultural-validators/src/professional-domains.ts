@@ -31,14 +31,27 @@ const DOMAIN_TERMINOLOGY = {
   legal: {
     positive: [
       /قانون عراقي/,
+      /قانون/,
       /محكمة/,
       /عقد/,
       /دعوى/,
       /استشارة قانونية/,
+      /المحكمة/,
+      /القانون المدني/,
+      /عقد البيع/,
       /iraqi law/i,
       /legal consultation/i,
+      /law/i,
     ],
-    required: ["وفقاً للقانون", "استشارة قانونية", "legal", "law"],
+    required: [
+      "وفقاً للقانون",
+      "استشارة قانونية",
+      "legal",
+      "law",
+      "قانون",
+      "محكمة",
+      "عقد",
+    ],
   },
   medical: {
     positive: [
@@ -47,11 +60,14 @@ const DOMAIN_TERMINOLOGY = {
       /تشخيص/,
       /علاج/,
       /وصفة طبية/,
+      /فحص/,
+      /السكري/,
+      /الدم/,
       /medical/i,
       /diagnosis/i,
       /treatment/i,
     ],
-    required: ["استشارة طبية", "medical", "doctor"],
+    required: ["استشارة طبية", "medical", "doctor", "طبيب", "علاج", "وصفة"],
   },
   educational: {
     positive: [
@@ -60,11 +76,15 @@ const DOMAIN_TERMINOLOGY = {
       /تدريس/,
       /طالب/,
       /معلم/,
+      /المنهج/,
+      /الدراسي/,
+      /الصف/,
+      /الجامعة/,
       /education/i,
       /curriculum/i,
       /student/i,
     ],
-    required: ["تعليم", "education"],
+    required: ["تعليم", "education", "منهج", "المنهج", "الصف", "الجامعة"],
   },
   engineering: {
     positive: [
@@ -248,6 +268,7 @@ export function validateMedicalContent(content: string): {
   const hasMedicalTerms = medicalTerms.some((term) => term.test(content));
   const disclaimerPatterns = [
     /استشر طبيب/,
+    /استشارة طبية/,
     /consult.*doctor/i,
     /medical advice/i,
   ];
@@ -256,7 +277,19 @@ export function validateMedicalContent(content: string): {
   );
 
   const issues: string[] = [];
-  if (hasMedicalTerms && !hasDisclaimer) {
+  // Check if content gives medical advice (prescription-like instructions)
+  const givesAdvice =
+    /خذ|تناول|استخدم|يجب|حبة|take|use|should|pill|tablet/i.test(content);
+
+  // If content lacks medical terminology but gives medical advice, it's invalid
+  if (!hasMedicalTerms && givesAdvice) {
+    issues.push(
+      "Content appears to give medical advice but lacks proper medical terminology",
+    );
+  }
+
+  // If content has medical terms and gives advice without disclaimer, it's problematic
+  if (hasMedicalTerms && givesAdvice && !hasDisclaimer) {
     issues.push("Medical content should include disclaimer to consult doctor");
   }
 

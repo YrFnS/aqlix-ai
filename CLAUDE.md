@@ -3,7 +3,7 @@
 **CRITICAL: READ ARCHON WORKFLOW RULES FIRST** - See `archon.md` for task management workflow.
 
 **Current Date Context**: ALWAYS use 2025 in web searches, not 2024
-**Primary Directive**: ALWAYS use specialized Iraqi AI agents for cultural compliance, Arabic processing, and professional domain expertise.
+**Primary Directive**: ALWAYS use specialized agents, each agent has its specialized role.
 
 ## Mandatory
 

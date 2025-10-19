@@ -13,6 +13,7 @@ from unittest.mock import Mock, AsyncMock, patch
 class TestChatAgent:
     """Test suite for chat agent functionality."""
 
+    @pytest.mark.asyncio
     async def test_generate_response_basic(self, mock_llm_client):
         """Test basic response generation."""
         # TODO: Import actual ChatAgent
@@ -27,6 +28,7 @@ class TestChatAgent:
         assert response["model"] == "test-model"
         assert mock_llm_client.call_count == 1
 
+    @pytest.mark.asyncio
     async def test_generate_arabic_response(self, mock_llm_client, arabic_test_samples):
         """Test Arabic language response generation."""
         arabic_prompt = arabic_test_samples["iraqi_dialect"]
@@ -38,6 +40,7 @@ class TestChatAgent:
         # Verify Arabic input was processed
         assert mock_llm_client.call_count == 1
 
+    @pytest.mark.asyncio
     async def test_conversation_context_management(self, mock_llm_client):
         """Test multi-turn conversation context."""
         # First message
@@ -51,6 +54,7 @@ class TestChatAgent:
         # Verify both calls were made
         assert mock_llm_client.call_count == 2
 
+    @pytest.mark.asyncio
     async def test_tool_usage(self, mock_llm_client):
         """Test agent's ability to use tools."""
         tools = [
@@ -66,6 +70,7 @@ class TestChatAgent:
         assert "tool_calls" in response
         assert mock_llm_client.call_count == 1
 
+    @pytest.mark.asyncio
     async def test_error_handling(self, mock_llm_client):
         """Test agent handles LLM errors gracefully."""
         # Mock LLM error
@@ -76,6 +81,7 @@ class TestChatAgent:
 
         assert "LLM API error" in str(exc_info.value)
 
+    @pytest.mark.asyncio
     async def test_empty_input_handling(self, mock_llm_client):
         """Test handling of empty or whitespace input."""
         # TODO: Implement actual validation logic
@@ -98,6 +104,7 @@ class TestChatAgent:
 class TestChatAgentCulturalValidation:
     """Test cultural validation in chat agent."""
 
+    @pytest.mark.asyncio
     async def test_cultural_compliance_check(
         self, mock_llm_client, mock_cultural_validator
     ):
@@ -111,6 +118,7 @@ class TestChatAgentCulturalValidation:
         assert validation["is_appropriate"] is True
         assert validation["score"] > 0.9
 
+    @pytest.mark.asyncio
     async def test_inappropriate_content_detection(
         self, mock_cultural_validator, cultural_test_data
     ):
@@ -122,6 +130,7 @@ class TestChatAgentCulturalValidation:
         assert validation["is_appropriate"] is False
         assert len(validation["issues"]) > 0
 
+    @pytest.mark.asyncio
     async def test_islamic_compliance(
         self, mock_cultural_validator, cultural_test_data
     ):
@@ -141,6 +150,7 @@ class TestChatAgentCulturalValidation:
 class TestChatAgentArabicProcessing:
     """Test Arabic language processing capabilities."""
 
+    @pytest.mark.asyncio
     async def test_iraqi_dialect_recognition(
         self, mock_llm_client, arabic_test_samples
     ):
@@ -153,6 +163,7 @@ class TestChatAgentArabicProcessing:
         # TODO: Add dialect detection validation
         # assert detect_dialect(iraqi_text) == "iraqi"
 
+    @pytest.mark.asyncio
     async def test_bidirectional_text_handling(
         self, mock_llm_client, arabic_test_samples
     ):
@@ -164,6 +175,7 @@ class TestChatAgentArabicProcessing:
         assert response is not None
         assert "text" in response
 
+    @pytest.mark.asyncio
     async def test_rtl_text_direction(self, arabic_test_samples):
         """Test RTL text direction detection."""
         arabic_text = arabic_test_samples["standard_arabic"]
@@ -182,6 +194,7 @@ class TestChatAgentArabicProcessing:
 class TestChatAgentPerformance:
     """Test agent performance characteristics."""
 
+    @pytest.mark.asyncio
     async def test_response_time(self, mock_llm_client, performance_monitor):
         """Test response generation is performant."""
         with performance_monitor.measure("generate_response"):
@@ -192,6 +205,7 @@ class TestChatAgentPerformance:
         # Response should be fast with mock
         assert performance_monitor.timings["generate_response"] < 0.1
 
+    @pytest.mark.asyncio
     async def test_concurrent_requests(self, mock_llm_client):
         """Test handling multiple concurrent requests."""
         import asyncio
@@ -205,6 +219,7 @@ class TestChatAgentPerformance:
         assert all(r is not None for r in responses)
         assert mock_llm_client.call_count == 10
 
+    @pytest.mark.asyncio
     async def test_token_usage_tracking(self, mock_llm_client):
         """Test token usage is properly tracked."""
         response = await mock_llm_client.generate("Test prompt")

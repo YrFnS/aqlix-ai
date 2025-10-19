@@ -110,6 +110,7 @@ class TestAuthService:
 class TestUserAuthentication:
     """Test user authentication flows."""
 
+    @pytest.mark.asyncio
     async def test_authenticate_valid_credentials(
         self, mock_user_data, mock_supabase_client
     ):
@@ -122,6 +123,7 @@ class TestUserAuthentication:
 
         assert result is not None
 
+    @pytest.mark.asyncio
     async def test_authenticate_invalid_password(self, mock_user_data):
         """Test authentication fails with wrong password."""
         email = mock_user_data["email"]
@@ -132,6 +134,7 @@ class TestUserAuthentication:
 
         assert is_authenticated is False
 
+    @pytest.mark.asyncio
     async def test_authenticate_non_existent_user(self):
         """Test authentication fails for non-existent user."""
         email = "nonexistent@example.com"
@@ -142,6 +145,7 @@ class TestUserAuthentication:
 
         assert user_exists is False
 
+    @pytest.mark.asyncio
     async def test_authenticate_inactive_user(self, mock_user_data):
         """Test authentication fails for inactive users."""
         mock_user_data["is_active"] = False

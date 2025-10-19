@@ -1,2 +1,6 @@
 [test]
-preload = ["./tests/setup.ts"]
+preload = [
+  "./tests/setup/global-setup.ts",
+  "./tests/setup/test-env.ts",
+  "./tests/setup/custom-matchers.ts"
+]

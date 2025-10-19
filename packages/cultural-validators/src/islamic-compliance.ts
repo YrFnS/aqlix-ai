@@ -31,6 +31,8 @@ const ISLAMIC_GREETINGS = [
   "جزاك الله خيراً",
   "أستغفر الله",
   "لا حول ولا قوة إلا بالله",
+  "صباح الخير",
+  "مساء الخير",
 ];
 
 /**
@@ -81,10 +83,16 @@ export async function validateIslamicCompliance(
   }
 
   // Check for disrespectful content
-  const hasDisrespectfulContent = DISRESPECTFUL_PATTERNS.some((pattern) =>
+  let hasDisrespectfulContent = DISRESPECTFUL_PATTERNS.some((pattern) =>
     pattern.test(content),
   );
-  if (hasDisrespectfulContent) {
+
+  // Also check with checkReligiousRespect function for additional patterns
+  const respectResult = checkReligiousRespect(content);
+  if (!respectResult.isRespectful) {
+    hasDisrespectfulContent = true;
+    violations.push(...respectResult.issues);
+  } else if (hasDisrespectfulContent) {
     violations.push("Content contains disrespectful or blasphemous references");
   }
 
@@ -154,10 +162,23 @@ export function checkReligiousRespect(content: string): {
     issues.push("Content contains disrespectful religious references");
   }
 
-  // Check for mocking patterns
-  const mockingPatterns = [/mock/i, /joke/i, /استهزاء/];
-  if (mockingPatterns.some((pattern) => pattern.test(content))) {
+  // Check for mocking patterns combined with religious context
+  const mockingPatterns = [/mock/i, /استهزاء/];
+  const religiousContext = [/religion/i, /islam/i, /الدين/, /الإسلام/];
+
+  const hasMocking = mockingPatterns.some((pattern) => pattern.test(content));
+  const hasReligiousContext = religiousContext.some((pattern) =>
+    pattern.test(content),
+  );
+
+  // Only flag if both mocking AND religious context are present
+  if (hasMocking && hasReligiousContext) {
     issues.push("Content may contain mocking or joking about religion");
+  }
+
+  // Check for "joke" specifically combined with "religious"
+  if (/religious.*joke/i.test(content) || /joke.*religious/i.test(content)) {
+    issues.push("Content contains inappropriate religious jokes");
   }
 
   return {
