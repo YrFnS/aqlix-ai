@@ -1,0 +1,33 @@
+{
+  "name": "@iraqi-ai/arabic-test-utils",
+  "version": "1.0.0",
+  "description": "Arabic and RTL testing utilities for Iraqi AI Chat System",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./rtl-assertions": "./dist/rtl-assertions/index.js",
+    "./dialect-recognition": "./dist/dialect-recognition/index.js",
+    "./text-processing": "./dist/text-processing/index.js",
+    "./font-rendering": "./dist/font-rendering/index.js"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@iraqi-ai/testing-utils": "workspace:*",
+    "@iraqi-ai/cultural-validators": "workspace:*"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^20.0.5",
+    "@types/bun": "latest",
+    "happy-dom": "^12.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}

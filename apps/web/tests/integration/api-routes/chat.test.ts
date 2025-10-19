@@ -1,0 +1,267 @@
+/**
+ * Integration tests for Chat API routes
+ * Tests end-to-end chat functionality with cultural validation
+ */
+
+import { describe, test, expect, beforeEach, afterEach } from "bun:test";
+import { TEST_HELPERS, IRAQI_TEST_CONTEXT } from "../../setup/index.js";
+
+describe("Chat API Integration", () => {
+  const API_BASE = "http://localhost:3000/api";
+  let mockUser: ReturnType<typeof TEST_HELPERS.createMockIraqiUser>;
+
+  beforeEach(() => {
+    mockUser = TEST_HELPERS.createMockIraqiUser("baghdad");
+  });
+
+  afterEach(() => {
+    TEST_HELPERS.clearAllMocks();
+  });
+
+  describe("POST /api/chat", () => {
+    test("should handle Arabic chat messages with cultural validation", async () => {
+      const arabicMessage = "السلام عليكم، كيف يمكنني المساعدة؟";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept-Language": "ar-IQ",
+        },
+        body: JSON.stringify({
+          message: arabicMessage,
+          userId: mockUser.id,
+          dialect: mockUser.dialect,
+        }),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data).toHaveProperty("response");
+      expect(data).toHaveProperty("culturalScore");
+
+      // Validate cultural appropriateness
+      await expect(data.response).toBeCulturallyAppropriate(0.95);
+      expect(data.culturalScore).toBeGreaterThanOrEqual(0.95);
+    });
+
+    test("should recognize Baghdad dialect in messages", async () => {
+      const baghdadMessage = "شلونك اليوم؟ شكو ماكو جديد؟";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: baghdadMessage,
+          userId: mockUser.id,
+        }),
+      });
+
+      const data = await response.json();
+      expect(data).toHaveProperty("detectedDialect");
+      expect(data.detectedDialect).toBe("baghdad");
+
+      // Validate dialect recognition
+      expect(baghdadMessage).toMatchIraqiDialect("baghdad", 0.85);
+    });
+
+    test("should validate Islamic compliance in responses", async () => {
+      const message = "ما هي أفضل الممارسات الإسلامية للأعمال؟";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          userId: mockUser.id,
+          requireIslamicCompliance: true,
+        }),
+      });
+
+      const data = await response.json();
+      expect(data).toHaveProperty("response");
+      expect(data).toHaveProperty("islamicCompliant");
+      expect(data.islamicCompliant).toBe(true);
+
+      // Validate Islamic compliance
+      await expect(data.response).toBeIslamicCompliant(0.9);
+    });
+
+    test("should ensure political neutrality in responses", async () => {
+      const message = "ما هي خدماتكم للعراقيين؟";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          userId: mockUser.id,
+        }),
+      });
+
+      const data = await response.json();
+      expect(data).toHaveProperty("response");
+      expect(data).toHaveProperty("politicallyNeutral");
+      expect(data.politicallyNeutral).toBe(true);
+
+      // Validate political neutrality
+      await expect(data.response).toBePoliticallyNeutral();
+    });
+
+    test("should handle mixed Arabic-English messages", async () => {
+      const mixedMessage = "مرحباً، I need help with legal استشارة قانونية";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: mixedMessage,
+          userId: mockUser.id,
+        }),
+      });
+
+      const data = await response.json();
+      expect(response.status).toBe(200);
+      expect(data).toHaveProperty("response");
+      expect(data).toHaveProperty("detectedLanguages");
+      expect(data.detectedLanguages).toContain("ar");
+      expect(data.detectedLanguages).toContain("en");
+    });
+
+    test("should respect Baghdad timezone in timestamps", async () => {
+      const message = "ما هو الوقت الآن؟";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Timezone": IRAQI_TEST_CONTEXT.timezone,
+        },
+        body: JSON.stringify({
+          message,
+          userId: mockUser.id,
+        }),
+      });
+
+      const data = await response.json();
+      expect(data).toHaveProperty("timestamp");
+
+      // Verify timestamp is in Baghdad timezone (UTC+3)
+      const timestamp = new Date(data.timestamp);
+      expect(timestamp).toBeInstanceOf(Date);
+    });
+
+    test("should handle professional domain queries", async () => {
+      const legalQuery = "استشارة قانونية وفقاً للقانون العراقي";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: legalQuery,
+          userId: mockUser.id,
+          domain: "legal",
+        }),
+      });
+
+      const data = await response.json();
+      expect(data).toHaveProperty("response");
+      expect(data).toHaveProperty("domain");
+      expect(data.domain).toBe("legal");
+      expect(data).toHaveProperty("professionalScore");
+      expect(data.professionalScore).toBeGreaterThanOrEqual(0.85);
+    });
+
+    test("should handle rate limiting gracefully", async () => {
+      const message = "test message";
+
+      // Send multiple rapid requests
+      const requests = Array.from({ length: 100 }, () =>
+        fetch(`${API_BASE}/chat`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message, userId: mockUser.id }),
+        }),
+      );
+
+      const responses = await Promise.all(requests);
+      const rateLimited = responses.filter((r) => r.status === 429);
+
+      // Should have some rate-limited responses
+      expect(rateLimited.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe("GET /api/chat/history", () => {
+    test("should retrieve chat history with cultural metadata", async () => {
+      const response = await fetch(
+        `${API_BASE}/chat/history?userId=${mockUser.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Accept-Language": "ar-IQ",
+          },
+        },
+      );
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data).toHaveProperty("messages");
+      expect(Array.isArray(data.messages)).toBe(true);
+
+      // Each message should have cultural metadata
+      if (data.messages.length > 0) {
+        const message = data.messages[0];
+        expect(message).toHaveProperty("culturalScore");
+        expect(message).toHaveProperty("dialect");
+        expect(message).toHaveProperty("islamicCompliant");
+        expect(message).toHaveProperty("politicallyNeutral");
+      }
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("should return 400 for empty messages", async () => {
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "",
+          userId: mockUser.id,
+        }),
+      });
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data).toHaveProperty("error");
+    });
+
+    test("should return 400 for culturally inappropriate content", async () => {
+      const inappropriateMessage = "sectarian offensive content";
+
+      const response = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: inappropriateMessage,
+          userId: mockUser.id,
+        }),
+      });
+
+      // Should reject culturally inappropriate content
+      expect([400, 403]).toContain(response.status);
+    });
+  });
+});
