@@ -14,10 +14,10 @@
     "build:ios": "xcodebuild -workspace ios/IraqiAI.xcworkspace -scheme IraqiAI -configuration Release -sdk iphoneos -derivedDataPath ios/build",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
-    "test": "bun test || exit 0",
+    "test": "bun test",
     "test:e2e": "detox test",
-    "test:cultural": "bun test --testNamePattern='cultural' || exit 0",
-    "test:arabic": "bun test --testNamePattern='arabic' || exit 0",
+    "test:cultural": "bun test --testNamePattern='cultural'",
+    "test:arabic": "bun test --testNamePattern='arabic'",
     "clean": "rm -rf node_modules ios/build android/build dist"
   },
   "dependencies": {
