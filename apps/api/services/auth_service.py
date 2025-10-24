@@ -30,6 +30,13 @@ from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
 from .account_lockout import AccountLockoutManager, LockoutStatus
 from .device_fingerprinting import DeviceFingerprintManager, DeviceFingerprintResult
+from .ip_activity_monitor import (
+    IPActivityMonitor,
+    SuspiciousActivity,
+    LoginAttempt,
+    IPGeolocation,
+    ThreatLevel,
+)
 
 # Import models
 from ..models.iraqi_user import (
@@ -486,9 +493,60 @@ class AuthService:
             # - last_seen timestamp
             # - suspicious_indicators (if any)
 
+            # Step 6.6: Analyze IP address for suspicious activity
+            # TODO: Fetch recent login attempts from database for this IP
+            # For now, use empty list (will be populated when database integration is complete)
+            recent_attempts: list[LoginAttempt] = []
+
+            # In production, fetch from database:
+            # recent_attempts = await self.get_recent_attempts_for_ip(
+            #     ip_address=login_request.ip_address,
+            #     time_window_hours=24
+            # )
+
+            # Optional: Get geolocation data for IP (requires external service)
+            # current_location = await self.get_ip_geolocation(login_request.ip_address)
+            current_location = None  # Placeholder
+
+            # Analyze IP activity for suspicious patterns
+            ip_activity = IPActivityMonitor.analyze_ip_activity(
+                ip_address=login_request.ip_address,
+                recent_attempts=recent_attempts,
+                current_location=current_location,
+                user_id=user_id,
+            )
+
+            # Get additional security measures based on IP analysis
+            security_measures = IPActivityMonitor.should_trigger_additional_security(
+                ip_activity
+            )
+
+            # Log IP activity analysis (in production, store in database)
+            # TODO: Store IP activity analysis in security_events table:
+            # - ip_address
+            # - user_id
+            # - threat_level
+            # - confidence_score
+            # - detected_patterns
+            # - recommended_action
+            # - timestamp
+
+            # Block IP if critical threat detected
+            if security_measures["block_ip"]:
+                # TODO: Add IP to blacklist in database
+                # TODO: Notify security team if critical threat
+                return LoginResult(
+                    success=False,
+                    error_message="Access denied due to suspicious activity. Please contact support.",
+                )
+
             # Step 7: Check if MFA should be enforced
-            # Consider device fingerprint suspicious indicators
-            is_suspicious_activity = len(fingerprint_result.suspicious_indicators) > 0
+            # Consider both device fingerprint and IP activity suspicious indicators
+            is_suspicious_activity = (
+                len(fingerprint_result.suspicious_indicators) > 0
+                or ip_activity.threat_level in [ThreatLevel.HIGH, ThreatLevel.CRITICAL]
+                or security_measures["require_mfa"]
+            )
 
             mfa_enforcement = MFAEnforcementManager.should_enforce_mfa(
                 mfa_enabled=user_profile.get("mfa_enabled", False),
