@@ -26,6 +26,7 @@ from .cultural_context_manager import (
 )
 from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
 from .session_manager import SessionManager, TokenPair
+from .password_utils import PasswordUtils, PasswordStrengthResult
 
 # Import models
 from ..models.iraqi_user import (
@@ -98,6 +99,19 @@ class AuthService:
         validation_errors = []
 
         try:
+            # Step 0: Validate password strength
+            password_strength = PasswordUtils.validate_password_strength(
+                registration.password
+            )
+
+            if not password_strength.is_valid:
+                validation_errors.extend(
+                    [
+                        f"Password strength insufficient: {req}"
+                        for req in password_strength.missing_requirements
+                    ]
+                )
+
             # Step 1: Validate Iraqi ID if provided
             iraqi_id_result = None
             if registration.iraqi_id:
@@ -137,18 +151,25 @@ class AuthService:
 
             # Step 3: Create user in Supabase Auth
             # TODO: Implement Supabase Auth sign up
+            # NOTE: Supabase Auth handles password hashing internally, pass plaintext
             # auth_user = await self.supabase.auth.sign_up({
             #     "email": registration.email,
-            #     "password": registration.password,
+            #     "password": registration.password,  # Supabase handles hashing
             # })
             user_id = "placeholder-user-id"  # Placeholder
 
-            # Step 4: Create Iraqi user authentication record
+            # Step 4: Hash password for local storage (if needed for custom auth)
+            # NOTE: Only hash if you need separate local password storage
+            # For Supabase-only auth, you can rely on Supabase's internal hashing
+            hashed_password = PasswordUtils.hash_password(registration.password)
+
+            # Step 5: Create Iraqi user authentication record
             # TODO: Insert into iraqi_user_authentication table
             # await self.supabase.from_("iraqi_user_authentication").insert({
             #     "id": user_id,
             #     "full_name": registration.full_name,
             #     "email": registration.email,
+            #     "password_hash": hashed_password,  # Optional: local password storage
             #     "region": registration.region.value,
             #     "iraqi_id": registration.iraqi_id,
             #     "iraqi_id_verified": False,
@@ -159,7 +180,7 @@ class AuthService:
             #     ...
             # })
 
-            # Step 5: Create cultural context record
+            # Step 6: Create cultural context record
             cultural_context_metadata = CulturalContextManager.get_cultural_jwt_metadata(
                 region=registration.region,
                 islamic_compliance_level=registration.cultural_preferences.islamic_compliance_level,
@@ -175,12 +196,12 @@ class AuthService:
 
             # TODO: Insert into authentication_cultural_context table
 
-            # Step 6: Create professional domain authentication if applicable
+            # Step 7: Create professional domain authentication if applicable
             if registration.professional_domain and license_result:
                 # TODO: Insert into professional_domain_authentication table
                 pass
 
-            # Step 7: Generate cultural greeting
+            # Step 8: Generate cultural greeting
             cultural_greeting = CulturalContextManager.generate_cultural_greeting(
                 full_name=registration.full_name,
                 region=registration.region,
@@ -194,7 +215,7 @@ class AuthService:
                 professional_etiquette_level=registration.cultural_preferences.professional_etiquette_level,
             )
 
-            # Step 8: Determine verification status and next steps
+            # Step 9: Determine verification status and next steps
             verification_status = "pending"
             next_steps = ["Please verify your email address"]
 
@@ -252,15 +273,43 @@ class AuthService:
             LoginResult with authentication status
         """
         try:
-            # Step 1: Authenticate with Supabase Auth
-            # TODO: Implement Supabase Auth sign in
-            # auth_response = await self.supabase.auth.sign_in_with_password({
-            #     "email": login_request.email,
-            #     "password": login_request.password,
-            # })
-            user_id = "placeholder-user-id"  # Placeholder
+            # Step 1: Fetch user from database by email
+            # TODO: Query iraqi_user_authentication table by email
+            # user_record = await self.supabase.from_("iraqi_user_authentication").select("*").eq("email", login_request.email).single()
+            # Placeholder data for now
+            user_record = {
+                "id": "placeholder-user-id",
+                "password_hash": "$2b$12$placeholder_hash",  # This will be replaced with actual hash from DB
+            }
+            user_id = user_record["id"]
 
-            # Step 2: Fetch Iraqi user authentication profile
+            # Step 2: Verify password against stored hash
+            # Validate password hash format (bcrypt hashes are 60 characters)
+            if (
+                not user_record.get("password_hash")
+                or len(user_record["password_hash"]) != 60
+            ):
+                return LoginResult(
+                    success=False,
+                    error_message="Invalid email or password",  # Generic message for security
+                )
+
+            # Verify password
+            is_valid_password = PasswordUtils.verify_password(
+                login_request.password, user_record["password_hash"]
+            )
+
+            if not is_valid_password:
+                # TODO: Increment failed login attempts
+                # TODO: Check if account should be locked after 5 failed attempts
+                return LoginResult(
+                    success=False,
+                    error_message="Invalid email or password",
+                )
+
+            # TODO: Reset failed login attempts on successful password verification
+
+            # Step 3: Fetch Iraqi user authentication profile
             # TODO: Query iraqi_user_authentication table
             user_profile = {
                 "full_name": "Test User",
@@ -275,7 +324,7 @@ class AuthService:
                 "verification_status": "email_verified",
             }
 
-            # Step 3: Check account status
+            # Step 4: Check account status
             if user_profile["account_status"] == "suspended":
                 return LoginResult(
                     success=False,
@@ -288,7 +337,7 @@ class AuthService:
                     error_message="Account is locked due to multiple failed login attempts. Please reset your password.",
                 )
 
-            # Step 4: Fetch cultural context
+            # Step 5: Fetch cultural context
             # TODO: Query authentication_cultural_context table
             cultural_context = CulturalContextManager.get_cultural_jwt_metadata(
                 region=IraqiRegion(user_profile["region"]),
@@ -302,7 +351,7 @@ class AuthService:
                 ],
             )
 
-            # Step 5: Generate cultural greeting
+            # Step 6: Generate cultural greeting
             cultural_greeting = CulturalContextManager.generate_cultural_greeting(
                 full_name=user_profile["full_name"],
                 region=IraqiRegion(user_profile["region"]),
@@ -316,7 +365,7 @@ class AuthService:
                 ],
             )
 
-            # Step 6: Check if MFA is required
+            # Step 7: Check if MFA is required
             requires_mfa, mfa_reason = MFAManager.should_require_mfa(
                 user_id=user_id,
                 device_id=login_request.device_id,
