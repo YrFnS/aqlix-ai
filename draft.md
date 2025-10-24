@@ -2747,7 +2747,7 @@ Initial 23: Iraqi Chat API Endpoints
 
 coderabbit --prompt-only
 
-i executed PRPs\authentication-system.md check the code and check archon to know what we did and check supabase mcp and sentry mcp, 
+i executed PRPs\authentication-system.md check the code and check archon to know what we did and check supabase mcp and sentry mcp,
 and this is what the agent said after it finished executing the prp
 
 now before we continue with the 32 tasks, we have uncommited changes
@@ -2755,3 +2755,10 @@ first we run coderabbit cli to check the code, and commit the changes
 we have coderabbit cli installed in wsl and i used zsh when i installed it run
 coderabbit --prompt-only,
 let it run as long as it needs (run it in the background) and fix any issues
+
+run coderabbit cli i have it install in wsl use this to run it and wait for it to finish then fix any issues it found
+Bash(wsl -e bash -c "source ~/.bashrc; cd /mnt/c/Users/Itokoro/Documents/projects/aqlix-ai && /home/test/.local/bin/coderabbit --type uncommitted" 2>&1)
+
+then commit the changes then we can continue with the next task
+
+https://docs.coderabbit.ai/cli/claude-code-integration

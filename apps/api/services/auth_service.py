@@ -25,6 +25,7 @@ from .cultural_context_manager import (
     CulturalGreeting,
 )
 from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
+from .mfa_enforcement import MFAEnforcementManager, MFAEnforcementResult
 from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
 from .account_lockout import AccountLockoutManager, LockoutStatus
@@ -447,17 +448,21 @@ class AuthService:
                 ],
             )
 
-            # Step 7: Check if MFA is required
-            requires_mfa, mfa_reason = MFAManager.should_require_mfa(
-                user_id=user_id,
-                device_id=login_request.device_id,
+            # Step 7: Check if MFA should be enforced
+            mfa_enforcement = MFAEnforcementManager.should_enforce_mfa(
+                mfa_enabled=user_profile.get("mfa_enabled", False),
                 mfa_frequency=MFAFrequency.EVERY_LOGIN
                 if user_profile.get("mfa_enabled")
                 else MFAFrequency.NEW_DEVICE,
+                device_id=login_request.device_id,
+                trust_token=None,  # TODO: Get trust token from request headers
                 is_suspicious_activity=False,  # TODO: Implement suspicious activity detection
+                last_login=None,  # TODO: Get from user profile
+                operation_type="login",
             )
 
-            if requires_mfa:
+            # If MFA should be enforced, setup MFA challenge
+            if mfa_enforcement.should_enforce:
                 # Setup MFA
                 mfa_methods = user_profile.get("mfa_methods", ["email"])
                 primary_method = MFAMethod(mfa_methods[0] if mfa_methods else "email")
@@ -475,6 +480,15 @@ class AuthService:
                         success=False,
                         error_message=f"MFA setup failed: {mfa_setup.error_message}",
                     )
+
+                # TODO: Send MFA enforcement email notification if configured
+                # mfa_email = MFAEnforcementManager.generate_mfa_enforcement_email(
+                #     full_name=user_profile["full_name"],
+                #     email=login_request.email,
+                #     enforcement_reason=mfa_enforcement.enforcement_reason,
+                #     operation_type="login",
+                # )
+                # await self.email_service.send(mfa_email)
 
                 return LoginResult(
                     success=True,
