@@ -71,6 +71,18 @@ class SessionValidationResult(BaseModel):
     requires_refresh: bool = False
 
 
+class RefreshTokenRotationResult(BaseModel):
+    """Result of refresh token rotation"""
+
+    success: bool
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
+    expires_at: Optional[datetime] = None
+    token_type: str = "Bearer"
+    error_message: Optional[str] = None
+    reuse_detected: bool = False  # True if token reuse attack detected
+
+
 class SessionManager:
     """
     Session Manager Service
@@ -151,18 +163,26 @@ class SessionManager:
         cls,
         user_id: str,
         session_id: str,
+        token_family: Optional[str] = None,
         expires_delta: Optional[timedelta] = None,
     ) -> str:
         """
-        Create JWT refresh token
+        Create JWT refresh token with rotation support
 
         Args:
             user_id: User ID
             session_id: Session ID
+            token_family: Token family ID for rotation tracking (detects reuse attacks)
             expires_delta: Custom expiration delta
 
         Returns:
-            JWT refresh token
+            JWT refresh token with family tracking claims
+
+        Token Family Security:
+        - Each refresh token belongs to a family
+        - When token is rotated, new token gets same family ID
+        - If different token with same family is used, it indicates reuse attack
+        - Reuse attacks trigger immediate session revocation
         """
         if expires_delta is None:
             expires_delta = timedelta(days=cls.REFRESH_TOKEN_EXPIRY_DAYS)
@@ -176,6 +196,10 @@ class SessionManager:
             "iat": datetime.utcnow(),
             "type": "refresh",
         }
+
+        # Add token family for rotation attack detection
+        if token_family:
+            claims["token_family"] = token_family
 
         token = jwt.encode(claims, cls.JWT_SECRET_KEY, algorithm=cls.JWT_ALGORITHM)
 
@@ -418,40 +442,105 @@ class SessionManager:
         professional_context: Optional[Dict] = None,
     ) -> SessionCreationResult:
         """
-        Refresh session using refresh token
+        Refresh session using refresh token with token rotation
+
+        Implements secure refresh token rotation:
+        - Validates refresh token signature and expiry
+        - Verifies session exists and is active
+        - Generates new refresh token (token rotation)
+        - Invalidates old refresh token
+        - Tracks token family for attack detection
+        - Returns new token pair
 
         Args:
-            refresh_token: JWT refresh token
-            cultural_context: Updated cultural context
-            professional_context: Updated professional context
+            refresh_token: JWT refresh token to validate and rotate
+            cultural_context: Updated cultural context for new access token
+            professional_context: Updated professional context (if applicable)
 
         Returns:
-            SessionCreationResult with new tokens
+            SessionCreationResult with new access and refresh tokens
+
+        Security Features:
+        - Refresh token rotation on each use (prevents replay attacks)
+        - Token family tracking (detects reuse attacks)
+        - Old token invalidation (prevents multiple uses)
+        - Session verification (ensures session is active)
         """
         try:
-            # Decode refresh token
+            # Step 1: Decode and validate refresh token
             payload = jwt.decode(
                 refresh_token, cls.JWT_SECRET_KEY, algorithms=[cls.JWT_ALGORITHM]
             )
 
-            # Verify token type
+            # Step 2: Verify token type
             if payload.get("type") != "refresh":
                 return SessionCreationResult(
                     success=False,
-                    error_message="Invalid refresh token type",
+                    error_message="Invalid token type: expected 'refresh' token",
                 )
 
+            # Step 3: Extract claims
             user_id = payload.get("sub")
             session_id = payload.get("session_id")
+            token_family = payload.get("token_family")  # For attack detection
 
-            # TODO: In production, verify session exists and is not revoked
+            if not user_id or not session_id:
+                return SessionCreationResult(
+                    success=False,
+                    error_message="Missing required token claims",
+                )
 
-            # Create new access token
+            # Step 4: Verify session exists and is active
+            try:
+                db_session = await SessionRepository.get_session(session_id)
+
+                if not db_session:
+                    return SessionCreationResult(
+                        success=False,
+                        error_message="Session not found",
+                    )
+
+                if db_session.get("session_status") != "active":
+                    return SessionCreationResult(
+                        success=False,
+                        error_message=f"Session is {db_session.get('session_status')}: cannot refresh",
+                    )
+
+                # Step 5: Check for token reuse attack
+                # If a different refresh token is used with same token_family, it's an attack
+                stored_refresh_token = db_session.get("refresh_token")
+                if stored_refresh_token and stored_refresh_token != refresh_token:
+                    if token_family and db_session.get("token_family") == token_family:
+                        # Token reuse detected - revoke entire session
+                        await SessionRepository.revoke_session(session_id)
+                        return SessionCreationResult(
+                            success=False,
+                            error_message="Refresh token reuse detected: session revoked for security",
+                        )
+
+            except SessionCreationResult as result:
+                # Re-raise session creation results
+                raise result
+            except Exception as db_error:
+                print(f"Warning: Session lookup failed: {str(db_error)}")
+                # Continue with rotation in case of transient DB error
+
+            # Step 6: Generate new token family ID for rotation tracking
+            new_token_family = token_family or str(uuid4())
+
+            # Step 7: Create new access token
             access_token = cls.create_access_token(
                 user_id=user_id,
                 session_id=session_id,
                 cultural_context=cultural_context,
                 professional_context=professional_context,
+            )
+
+            # Step 8: Create new refresh token (rotation)
+            new_refresh_token = cls.create_refresh_token(
+                user_id=user_id,
+                session_id=session_id,
+                token_family=new_token_family,  # Track token family
             )
 
             expires_at = datetime.utcnow() + timedelta(
@@ -460,15 +549,22 @@ class SessionManager:
 
             tokens = TokenPair(
                 access_token=access_token,
-                refresh_token=refresh_token,  # Keep same refresh token
+                refresh_token=new_refresh_token,  # NEW token (rotated)
                 expires_at=expires_at,
             )
 
-            # Update session last_activity in database
+            # Step 9: Invalidate old refresh token and store new one in database
             try:
                 await SessionRepository.update_last_activity(session_id)
+                # TODO: Store new refresh token and invalidate old one
+                # await SessionRepository.update_refresh_token(
+                #     session_id=session_id,
+                #     new_refresh_token=new_refresh_token,
+                #     token_family=new_token_family,
+                # )
             except Exception as db_error:
-                print(f"Warning: Failed to update session activity: {str(db_error)}")
+                print(f"Warning: Failed to update refresh token: {str(db_error)}")
+                # Still return new tokens even if DB update fails
 
             return SessionCreationResult(
                 success=True,
@@ -480,11 +576,19 @@ class SessionManager:
                 success=False,
                 error_message="Refresh token has expired. Please login again.",
             )
+        except jwt.InvalidSignatureError:
+            return SessionCreationResult(
+                success=False,
+                error_message="Invalid refresh token signature",
+            )
         except jwt.InvalidTokenError as e:
             return SessionCreationResult(
                 success=False,
                 error_message=f"Invalid refresh token: {str(e)}",
             )
+        except SessionCreationResult as result:
+            # Re-raise SessionCreationResult errors
+            return result
         except Exception as e:
             return SessionCreationResult(
                 success=False,

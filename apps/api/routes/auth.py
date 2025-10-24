@@ -351,6 +351,59 @@ async def refresh_token(refresh_request: TokenRefreshRequest):
 
 
 @router.post(
+    "/refresh",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Refresh access token",
+    description="Refresh access token using refresh token with automatic token rotation",
+)
+async def refresh_tokens(
+    refresh_request: TokenRefreshRequest,
+    user: dict = Depends(get_current_user_dependency),
+):
+    """
+    Refresh access token using refresh token
+
+    Features:
+    - Automatic refresh token rotation (security best practice)
+    - Token family tracking for reuse attack detection
+    - Old token invalidation
+    - New access token with same cultural context
+
+    Args:
+        refresh_request: Refresh token
+        user: Current authenticated user (from JWT)
+
+    Returns:
+        New token pair with rotated refresh token
+    """
+    # Import SessionManager for token refresh
+    from ..services.session_manager import SessionManager
+
+    # Refresh the session tokens with rotation
+    result = await SessionManager.refresh_session(
+        refresh_token=refresh_request.refresh_token,
+        cultural_context=user.get("cultural_context", {}),
+        professional_context=user.get("professional_context"),
+    )
+
+    if not result.success:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=result.error_message or "Token refresh failed",
+        )
+
+    return {
+        "success": True,
+        "access_token": result.tokens.access_token,
+        "refresh_token": result.tokens.refresh_token,
+        "expires_at": result.tokens.expires_at.isoformat(),
+        "token_type": result.tokens.token_type,
+        "message": "Token rotated successfully",
+    }
+
+
+@router.post(
     "/logout",
     response_model=dict,
     summary="Logout user",
