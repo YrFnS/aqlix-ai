@@ -29,6 +29,7 @@ from .mfa_enforcement import MFAEnforcementManager, MFAEnforcementResult
 from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
 from .account_lockout import AccountLockoutManager, LockoutStatus
+from .device_fingerprinting import DeviceFingerprintManager, DeviceFingerprintResult
 
 # Import models
 from ..models.iraqi_user import (
@@ -448,18 +449,63 @@ class AuthService:
                 ],
             )
 
+            # Step 6.5: Generate device fingerprint
+            # Create device fingerprint from request headers
+            fingerprint_result = DeviceFingerprintManager.create_device_fingerprint(
+                user_agent=login_request.user_agent or "Unknown",
+                ip_address=login_request.ip_address,
+                accept_language=login_request.accept_language,
+                accept_encoding=login_request.accept_encoding,
+                known_device_ids=None,  # TODO: Fetch known device IDs from database
+            )
+
+            # Use generated device_id if not provided in request
+            device_id = login_request.device_id or fingerprint_result.device_id
+
+            # Use parsed device info if not provided in request
+            device_type = (
+                login_request.device_type or fingerprint_result.device_info.device_type
+            )
+            platform = login_request.platform or fingerprint_result.device_info.platform
+
+            # Check if MFA should be triggered based on device fingerprint
+            should_trigger_device_mfa, device_mfa_reason = (
+                DeviceFingerprintManager.should_trigger_mfa(
+                    fingerprint_result=fingerprint_result,
+                    mfa_on_new_device=True,  # TODO: Get from user preferences
+                )
+            )
+
+            # Log device fingerprint result (in production, store in database)
+            # TODO: Store device fingerprint in iraqi_user_devices table:
+            # - device_id (fingerprint_result.device_id)
+            # - user_id
+            # - device_type, platform, browser, os
+            # - fingerprint_strength
+            # - is_trusted (based on previous successful logins)
+            # - last_seen timestamp
+            # - suspicious_indicators (if any)
+
             # Step 7: Check if MFA should be enforced
+            # Consider device fingerprint suspicious indicators
+            is_suspicious_activity = len(fingerprint_result.suspicious_indicators) > 0
+
             mfa_enforcement = MFAEnforcementManager.should_enforce_mfa(
                 mfa_enabled=user_profile.get("mfa_enabled", False),
                 mfa_frequency=MFAFrequency.EVERY_LOGIN
                 if user_profile.get("mfa_enabled")
                 else MFAFrequency.NEW_DEVICE,
-                device_id=login_request.device_id,
+                device_id=device_id,  # Use generated device_id from fingerprint
                 trust_token=None,  # TODO: Get trust token from request headers
-                is_suspicious_activity=False,  # TODO: Implement suspicious activity detection
+                is_suspicious_activity=is_suspicious_activity,  # Use device fingerprint detection
                 last_login=None,  # TODO: Get from user profile
                 operation_type="login",
             )
+
+            # Override MFA enforcement if device fingerprint indicates suspicious activity
+            if should_trigger_device_mfa and not mfa_enforcement.should_enforce:
+                mfa_enforcement.should_enforce = True
+                mfa_enforcement.enforcement_reason = device_mfa_reason
 
             # If MFA should be enforced, setup MFA challenge
             if mfa_enforcement.should_enforce:
@@ -498,13 +544,13 @@ class AuthService:
                     mfa_setup_id=mfa_setup.verification_id,
                 )
 
-            # Step 7: Create session with cultural context
+            # Step 8: Create session with cultural context and device fingerprint
             session_result = SessionManager.create_session(
                 user_id=user_id,
                 cultural_context=cultural_context,
-                device_id=login_request.device_id,
-                device_type=login_request.device_type,
-                platform=login_request.platform,
+                device_id=device_id,  # Use device_id from fingerprint
+                device_type=device_type,  # Use parsed device_type from fingerprint
+                platform=platform,  # Use parsed platform from fingerprint
             )
 
             if not session_result.success:
@@ -513,7 +559,7 @@ class AuthService:
                     error_message=f"Session creation failed: {session_result.error_message}",
                 )
 
-            # Step 8: Build verification status
+            # Step 9: Build verification status
             verification_status = VerificationStatus(
                 email_verified=True,  # User logged in successfully
                 iraqi_id_verified=False,  # TODO: Check from user profile
