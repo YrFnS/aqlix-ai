@@ -12,6 +12,7 @@ from datetime import datetime
 # Import services
 try:
     from ..services.auth_service import AuthService, RegistrationResult, LoginResult
+    from ..services.rate_limiter import limiter, get_auth_rate_limit
     from ..models.iraqi_user import (
         IraqiUserRegistration,
         LoginRequest,
@@ -23,6 +24,7 @@ try:
     from ..middleware.auth_middleware import get_current_user_dependency
 except ImportError:
     from services.auth_service import AuthService, RegistrationResult, LoginResult
+    from services.rate_limiter import limiter, get_auth_rate_limit
     from models.iraqi_user import (
         IraqiUserRegistration,
         LoginRequest,
@@ -73,7 +75,8 @@ class LogoutRequest(BaseModel):
     summary="Register new Iraqi user",
     description="Register a new user with Iraqi cultural context, ID validation, and professional license support",
 )
-async def register(registration: IraqiUserRegistration):
+@limiter.limit(get_auth_rate_limit("register"))
+async def register(request: Request, registration: IraqiUserRegistration):
     """
     Register new user with Iraqi authentication system
 
@@ -118,9 +121,10 @@ async def register(registration: IraqiUserRegistration):
     summary="Login with cultural context",
     description="Authenticate user and create session with Iraqi cultural greeting",
 )
+@limiter.limit(get_auth_rate_limit("login"))
 async def login(
-    login_request: LoginRequest,
     request: Request,
+    login_request: LoginRequest,
 ):
     """
     Login user and create authenticated session
@@ -184,7 +188,8 @@ async def login(
     summary="Verify email address",
     description="Verify user email with verification token",
 )
-async def verify_email(request: EmailVerificationRequest):
+@limiter.limit(get_auth_rate_limit("email_verification"))
+async def verify_email(request: Request, email_request: EmailVerificationRequest):
     """
     Verify user email address
 
@@ -215,7 +220,8 @@ async def verify_email(request: EmailVerificationRequest):
     summary="Request password reset",
     description="Send password reset email to user",
 )
-async def request_password_reset(request: PasswordResetRequest):
+@limiter.limit(get_auth_rate_limit("password_reset"))
+async def request_password_reset(request: Request, reset_request: PasswordResetRequest):
     """
     Request password reset
 
@@ -248,7 +254,9 @@ async def request_password_reset(request: PasswordResetRequest):
     summary="Setup multi-factor authentication",
     description="Initialize MFA for user account with cultural timing consideration",
 )
+@limiter.limit(get_auth_rate_limit("mfa_setup"))
 async def setup_mfa(
+    request: Request,
     mfa_request: MFASetupRequest,
     user: dict = Depends(get_current_user_dependency),
 ):
@@ -286,7 +294,8 @@ async def setup_mfa(
     summary="Verify MFA code and create session",
     description="Verify MFA code and create authenticated session",
 )
-async def verify_mfa(mfa_verification: MFAVerificationRequest):
+@limiter.limit(get_auth_rate_limit("mfa_verify"))
+async def verify_mfa(request: Request, mfa_verification: MFAVerificationRequest):
     """
     Verify MFA code and create session
 
