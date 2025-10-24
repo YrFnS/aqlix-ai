@@ -106,7 +106,7 @@ async def verify_jwt_token(
         token = credentials.credentials
 
         # Validate token with SessionManager
-        validation_result = SessionManager.validate_access_token(token)
+        validation_result = await SessionManager.validate_access_token(token)
 
         if not validation_result.is_valid:
             raise HTTPException(

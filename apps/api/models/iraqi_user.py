@@ -250,6 +250,7 @@ class MFAVerificationRequest(BaseModel):
 
     verification_id: str
     code: str
+    user_id: str = Field(..., description="User ID for MFA verification")
     device_id: Optional[str] = None
     remember_device: bool = Field(
         default=False, description="Remember this device for future logins"

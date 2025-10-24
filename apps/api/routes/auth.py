@@ -424,13 +424,30 @@ async def get_active_sessions(
     - List of active sessions with device information
     - Session creation time and last activity
     """
-    # TODO: Implement session listing
-    # 1. Query iraqi_authentication_sessions table
-    # 2. Filter by user_id and status='active'
-    # 3. Return session details
+    # Import SessionManager
+    from ..services.session_manager import SessionManager
+
+    # Get active sessions from database
+    sessions = await SessionManager.get_active_sessions(user["user_id"])
+
+    # Convert SessionInfo objects to dicts
+    sessions_data = []
+    for session in sessions:
+        sessions_data.append(
+            {
+                "session_id": session.session_id,
+                "device_id": session.device_id,
+                "device_type": session.device_type,
+                "platform": session.platform,
+                "created_at": session.created_at.isoformat(),
+                "last_activity": session.last_activity.isoformat(),
+                "expires_at": session.expires_at.isoformat(),
+                "is_current": session.session_id == user.get("session_id"),
+            }
+        )
 
     return {
         "success": True,
-        "sessions": [],
-        "count": 0,
+        "sessions": sessions_data,
+        "count": len(sessions_data),
     }
