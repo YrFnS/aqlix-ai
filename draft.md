@@ -2744,3 +2744,14 @@ Initial 23: Iraqi Chat API Endpoints
 - Agents: Multiple technical agents
 - Purpose: API development, testing, monitoring, deployment
 - Status: ✅ All required MCPs active
+
+coderabbit --prompt-only
+
+i executed PRPs\authentication-system.md check the code and check archon to know what we did and check supabase mcp and sentry mcp, 
+and this is what the agent said after it finished executing the prp
+
+now before we continue with the 32 tasks, we have uncommited changes
+first we run coderabbit cli to check the code, and commit the changes
+we have coderabbit cli installed in wsl and i used zsh when i installed it run
+coderabbit --prompt-only,
+let it run as long as it needs (run it in the background) and fix any issues

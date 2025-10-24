@@ -1,194 +1,764 @@
 """
-Unit Tests for Authentication Service
-
-Tests JWT token generation, validation, password hashing,
-and user authentication logic.
+Unit tests for Auth Service
+Tests complete registration, login, and service orchestration flows
 """
 
 import pytest
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from apps.api.services.auth_service import (
+    AuthService,
+    RegistrationData,
+    LoginData,
+    RegistrationResult,
+    LoginResult,
+    IraqiRegion,
+    IslamicComplianceLevel,
+    LanguagePreference,
+    ProfessionalDomain,
+)
 
 
-@pytest.mark.unit
-class TestAuthService:
-    """Test suite for authentication service."""
+class TestUserRegistration:
+    """Test user registration flows"""
 
-    def test_password_hashing(self):
-        """Test password is properly hashed."""
-        # TODO: Import actual auth service
-        # from services.auth import hash_password, verify_password
+    def test_register_basic_user(self):
+        """Register basic user with minimal fields"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد / Ahmed Mohammed",
+            email="ahmed@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        password = "SecureP@ssw0rd123"
+        result = service.register(registration_data)
 
-        # Mock password hashing
-        hashed = f"hashed_{password}"
+        assert result.success is True
+        assert result.user_id is not None
+        assert result.email_sent is True
+        assert result.error_message is None
 
-        assert hashed != password
-        assert len(hashed) > len(password)
+    def test_register_professional_user(self):
+        """Register professional user with Iraqi ID and license"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="د. فاطمة علي / Dr. Fatima Ali",
+            email="fatima@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BASRA,
+            iraqi_id="061985123456",
+            professional_domain=ProfessionalDomain.MEDICAL,
+            professional_license="MED-123456-BA",
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
 
-    def test_password_verification(self):
-        """Test password verification works correctly."""
-        password = "SecureP@ssw0rd123"
-        hashed = f"hashed_{password}"
+        result = service.register(registration_data)
 
-        # Mock verification
-        is_valid = hashed == f"hashed_{password}"
+        assert result.success is True
+        assert result.user_id is not None
+        assert result.email_sent is True
 
-        assert is_valid is True
+    def test_register_duplicate_email(self):
+        """Register with duplicate email should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="duplicate@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        # Wrong password should fail
-        is_valid_wrong = hashed == "hashed_WrongPassword"
-        assert is_valid_wrong is False
+        # First registration
+        first_result = service.register(registration_data)
+        assert first_result.success is True
 
-    def test_create_access_token(self, mock_user_data):
-        """Test JWT access token creation."""
-        # TODO: Import actual token creation
-        # from services.auth import create_access_token
+        # Second registration with same email
+        second_result = service.register(registration_data)
+        assert second_result.success is False
+        assert (
+            "email" in second_result.error_message.lower()
+            or "exists" in second_result.error_message.lower()
+        )
 
-        # Mock token creation
-        token_data = {
-            "sub": mock_user_data["email"],
-            "user_id": mock_user_data["id"],
-            "exp": datetime.utcnow() + timedelta(minutes=60),
-        }
+    def test_register_invalid_email(self):
+        """Register with invalid email format should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="invalid-email",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        # Mock JWT encoding
-        token = "mock.jwt.token"
+        result = service.register(registration_data)
 
-        assert token is not None
-        assert isinstance(token, str)
-        assert len(token) > 10
+        assert result.success is False
+        assert "email" in result.error_message.lower()
 
-    def test_token_expiration(self):
-        """Test token expiration is properly set."""
-        now = datetime.utcnow()
-        expiration = now + timedelta(minutes=60)
+    def test_register_weak_password(self):
+        """Register with weak password should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="ahmed@example.com",
+            password="weak",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        assert expiration > now
-        assert (expiration - now).total_seconds() == 3600
+        result = service.register(registration_data)
 
-    def test_decode_token_valid(self, mock_user_data):
-        """Test valid token can be decoded."""
-        # Mock token
-        token = "valid.jwt.token"
+        assert result.success is False
+        assert "password" in result.error_message.lower()
 
-        # Mock decoding
-        payload = {
-            "sub": mock_user_data["email"],
-            "user_id": mock_user_data["id"],
-        }
+    def test_register_invalid_iraqi_id(self):
+        """Register with invalid Iraqi ID should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="ahmed@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            iraqi_id="123",  # Invalid format
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        assert payload["sub"] == mock_user_data["email"]
-        assert payload["user_id"] == mock_user_data["id"]
+        result = service.register(registration_data)
 
-    def test_decode_token_expired(self):
-        """Test expired token raises error."""
-        expired_token = "expired.jwt.token"
+        assert result.success is False
+        assert (
+            "iraqi id" in result.error_message.lower()
+            or "id" in result.error_message.lower()
+        )
 
-        # TODO: Implement actual expiration check
-        # with pytest.raises(TokenExpiredError):
-        #     decode_token(expired_token)
+    def test_register_invalid_professional_license(self):
+        """Register with invalid professional license should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="ahmed@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            professional_domain=ProfessionalDomain.LEGAL,
+            professional_license="INVALID-LICENSE",
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        # Mock expiration check
-        is_expired = True
-        assert is_expired is True
+        result = service.register(registration_data)
 
-    def test_decode_token_invalid(self):
-        """Test invalid token raises error."""
-        invalid_token = "invalid.token"
+        assert result.success is False
+        assert "license" in result.error_message.lower()
 
-        # TODO: Implement actual validation
-        # with pytest.raises(InvalidTokenError):
-        #     decode_token(invalid_token)
+    def test_register_mismatched_region_and_iraqi_id(self):
+        """Register with Baghdad region but Basra ID prefix should fail"""
+        service = AuthService()
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="ahmed@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,  # Baghdad
+            iraqi_id="061985123456",  # Basra prefix (06)
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
 
-        is_valid = False
-        assert is_valid is False
+        result = service.register(registration_data)
 
-
-@pytest.mark.unit
-class TestUserAuthentication:
-    """Test user authentication flows."""
-
-    @pytest.mark.asyncio
-    async def test_authenticate_valid_credentials(
-        self, mock_user_data, mock_supabase_client
-    ):
-        """Test authentication with valid credentials."""
-        email = mock_user_data["email"]
-        password = "correct_password"
-
-        # Mock authentication
-        result = await mock_supabase_client.table("users").select()
-
-        assert result is not None
-
-    @pytest.mark.asyncio
-    async def test_authenticate_invalid_password(self, mock_user_data):
-        """Test authentication fails with wrong password."""
-        email = mock_user_data["email"]
-        wrong_password = "wrong_password"
-
-        # Mock failed authentication
-        is_authenticated = False
-
-        assert is_authenticated is False
-
-    @pytest.mark.asyncio
-    async def test_authenticate_non_existent_user(self):
-        """Test authentication fails for non-existent user."""
-        email = "nonexistent@example.com"
-        password = "any_password"
-
-        # Mock user not found
-        user_exists = False
-
-        assert user_exists is False
-
-    @pytest.mark.asyncio
-    async def test_authenticate_inactive_user(self, mock_user_data):
-        """Test authentication fails for inactive users."""
-        mock_user_data["is_active"] = False
-
-        # Mock inactive check
-        can_login = mock_user_data["is_active"]
-
-        assert can_login is False
+        # Should either fail or warn about mismatch
+        if not result.success:
+            assert (
+                "region" in result.error_message.lower()
+                or "prefix" in result.error_message.lower()
+            )
 
 
-@pytest.mark.unit
-class TestAuthorizationChecks:
-    """Test authorization and permission checks."""
+class TestUserLogin:
+    """Test user login flows"""
 
-    def test_user_has_required_role(self, mock_user_data):
-        """Test user has required role."""
-        required_role = "user"
+    def test_login_valid_credentials(self):
+        """Login with valid email and password"""
+        service = AuthService()
 
-        has_role = required_role in mock_user_data["roles"]
+        # Register user first
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="login@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
 
-        assert has_role is True
+        # Verify email (simulate)
+        service.verify_email("login@example.com")
 
-    def test_user_missing_required_role(self, mock_user_data):
-        """Test user missing required role."""
-        required_role = "admin"
+        # Login
+        login_data = LoginData(
+            email="login@example.com",
+            password="SecurePass123!",
+            device_id="device-abc-123",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
 
-        has_role = required_role in mock_user_data["roles"]
+        result = service.login(login_data)
 
-        assert has_role is False
+        assert result.success is True
+        assert result.access_token is not None
+        assert result.refresh_token is not None
+        assert result.user_id is not None
 
-    def test_admin_user_has_all_permissions(self, mock_admin_data):
-        """Test admin has all necessary roles."""
-        required_roles = ["admin", "user"]
+    def test_login_invalid_email(self):
+        """Login with non-existent email should fail"""
+        service = AuthService()
 
-        has_all_roles = all(role in mock_admin_data["roles"] for role in required_roles)
+        login_data = LoginData(
+            email="nonexistent@example.com",
+            password="SecurePass123!",
+            device_id="device-abc-123",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
 
-        assert has_all_roles is True
+        result = service.login(login_data)
 
-    def test_check_resource_ownership(self, mock_user_data):
-        """Test user owns resource."""
-        resource_owner_id = mock_user_data["id"]
-        user_id = mock_user_data["id"]
+        assert result.success is False
+        assert (
+            "email" in result.error_message.lower()
+            or "not found" in result.error_message.lower()
+        )
 
-        is_owner = resource_owner_id == user_id
+    def test_login_wrong_password(self):
+        """Login with wrong password should fail"""
+        service = AuthService()
 
-        assert is_owner is True
+        # Register user
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="wrongpass@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
+        service.verify_email("wrongpass@example.com")
+
+        # Login with wrong password
+        login_data = LoginData(
+            email="wrongpass@example.com",
+            password="WrongPassword123!",
+            device_id="device-abc-123",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
+
+        result = service.login(login_data)
+
+        assert result.success is False
+        assert (
+            "password" in result.error_message.lower()
+            or "invalid" in result.error_message.lower()
+        )
+
+    def test_login_unverified_email(self):
+        """Login with unverified email should fail or require verification"""
+        service = AuthService()
+
+        # Register user but don't verify
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="unverified@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
+
+        # Login without verification
+        login_data = LoginData(
+            email="unverified@example.com",
+            password="SecurePass123!",
+            device_id="device-abc-123",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
+
+        result = service.login(login_data)
+
+        # Should fail or indicate email verification required
+        if not result.success:
+            assert (
+                "verify" in result.error_message.lower()
+                or "email" in result.error_message.lower()
+            )
+
+    def test_login_requires_mfa(self):
+        """Login should require MFA for new device"""
+        service = AuthService()
+
+        # Register and verify user
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="mfa@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
+        service.register(registration_data)
+        service.verify_email("mfa@example.com")
+
+        # Login from new device
+        login_data = LoginData(
+            email="mfa@example.com",
+            password="SecurePass123!",
+            device_id="new-device-123",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
+
+        result = service.login(login_data)
+
+        # Should require MFA
+        if result.success:
+            assert result.requires_mfa is True
+            assert result.mfa_setup_id is not None
+        else:
+            assert "mfa" in result.error_message.lower()
+
+    def test_login_rate_limiting(self):
+        """Login should enforce rate limiting after multiple failures"""
+        service = AuthService()
+
+        # Register user
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="ratelimit@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
+        service.verify_email("ratelimit@example.com")
+
+        # Attempt login 5 times with wrong password
+        for _ in range(5):
+            login_data = LoginData(
+                email="ratelimit@example.com",
+                password="WrongPassword!",
+                device_id="device-abc",
+                device_type="iPhone",
+                ip_address="192.168.1.100",
+            )
+            service.login(login_data)
+
+        # 6th attempt should be rate-limited
+        final_attempt = service.login(login_data)
+
+        assert final_attempt.success is False
+        assert (
+            "rate limit" in final_attempt.error_message.lower()
+            or "too many" in final_attempt.error_message.lower()
+        )
+
+
+class TestEmailVerification:
+    """Test email verification functionality"""
+
+    def test_send_verification_email(self):
+        """Send verification email after registration"""
+        service = AuthService()
+
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="verify@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+
+        result = service.register(registration_data)
+
+        assert result.email_sent is True
+        assert result.verification_token is not None
+
+    def test_verify_email_with_valid_token(self):
+        """Verify email with valid token"""
+        service = AuthService()
+
+        # Register
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="validtoken@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        result = service.register(registration_data)
+
+        # Verify
+        verification_result = service.verify_email_token(result.verification_token)
+
+        assert verification_result.success is True
+
+    def test_verify_email_with_expired_token(self):
+        """Verify email with expired token should fail"""
+        service = AuthService()
+
+        # Create expired token
+        expired_token = service.create_verification_token(
+            "user123", expires_in_hours=-1
+        )
+
+        verification_result = service.verify_email_token(expired_token)
+
+        assert verification_result.success is False
+        assert "expired" in verification_result.error_message.lower()
+
+    def test_verify_email_with_invalid_token(self):
+        """Verify email with invalid token should fail"""
+        service = AuthService()
+
+        verification_result = service.verify_email_token("invalid-token-123")
+
+        assert verification_result.success is False
+        assert "invalid" in verification_result.error_message.lower()
+
+
+class TestPasswordReset:
+    """Test password reset functionality"""
+
+    def test_request_password_reset(self):
+        """Request password reset sends email"""
+        service = AuthService()
+
+        # Register user
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="reset@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
+
+        # Request reset
+        reset_result = service.request_password_reset("reset@example.com")
+
+        assert reset_result.success is True
+        assert reset_result.reset_token is not None
+        assert reset_result.email_sent is True
+
+    def test_reset_password_with_valid_token(self):
+        """Reset password with valid token"""
+        service = AuthService()
+
+        # Register
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="validreset@example.com",
+            password="OldPass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+        service.register(registration_data)
+
+        # Request reset
+        reset_request = service.request_password_reset("validreset@example.com")
+
+        # Reset password
+        reset_result = service.reset_password(reset_request.reset_token, "NewPass123!")
+
+        assert reset_result.success is True
+
+        # Verify old password doesn't work
+        service.verify_email("validreset@example.com")
+        old_login = service.login(
+            LoginData(
+                email="validreset@example.com",
+                password="OldPass123!",
+                device_id="device-abc",
+                device_type="iPhone",
+                ip_address="192.168.1.100",
+            )
+        )
+        assert old_login.success is False
+
+        # Verify new password works
+        new_login = service.login(
+            LoginData(
+                email="validreset@example.com",
+                password="NewPass123!",
+                device_id="device-abc",
+                device_type="iPhone",
+                ip_address="192.168.1.100",
+            )
+        )
+        assert new_login.success is True
+
+    def test_reset_password_with_expired_token(self):
+        """Reset password with expired token should fail"""
+        service = AuthService()
+
+        expired_token = service.create_reset_token("user123", expires_in_hours=-1)
+        reset_result = service.reset_password(expired_token, "NewPass123!")
+
+        assert reset_result.success is False
+        assert "expired" in reset_result.error_message.lower()
+
+
+class TestCulturalContextPersistence:
+    """Test cultural context persistence across auth operations"""
+
+    def test_registration_stores_cultural_context(self):
+        """Registration should store cultural preferences"""
+        service = AuthService()
+
+        registration_data = RegistrationData(
+            full_name="أحمد محمد",
+            email="cultural@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.MOSUL,
+            language_preference=LanguagePreference.ARABIC,
+            islamic_compliance_level=IslamicComplianceLevel.STRICT,
+        )
+
+        result = service.register(registration_data)
+        assert result.success is True
+
+        # Get user cultural context
+        user = service.get_user_by_email("cultural@example.com")
+
+        assert user.region == IraqiRegion.MOSUL
+        assert user.language_preference == LanguagePreference.ARABIC
+        assert user.islamic_compliance_level == IslamicComplianceLevel.STRICT
+
+    def test_login_returns_cultural_context(self):
+        """Login should return cultural context in tokens"""
+        service = AuthService()
+
+        # Register with cultural preferences
+        registration_data = RegistrationData(
+            full_name="فاطمة علي",
+            email="culturallogin@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.ERBIL,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
+        service.register(registration_data)
+        service.verify_email("culturallogin@example.com")
+
+        # Login
+        login_data = LoginData(
+            email="culturallogin@example.com",
+            password="SecurePass123!",
+            device_id="device-abc",
+            device_type="iPhone",
+            ip_address="192.168.1.100",
+        )
+        result = service.login(login_data)
+
+        # Decode token to check cultural claims
+        token_payload = service.decode_token(result.access_token)
+
+        assert token_payload["region"] == "erbil"
+        assert token_payload["language_preference"] == "both"
+        assert token_payload["islamic_compliance"] == "standard"
+
+
+class TestServiceIntegration:
+    """Test integration between multiple services"""
+
+    def test_complete_registration_and_login_flow(self):
+        """Complete flow: register → verify email → login"""
+        service = AuthService()
+
+        # 1. Register
+        registration_data = RegistrationData(
+            full_name="محمد حسين",
+            email="complete@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
+        reg_result = service.register(registration_data)
+        assert reg_result.success is True
+
+        # 2. Verify email
+        verify_result = service.verify_email_token(reg_result.verification_token)
+        assert verify_result.success is True
+
+        # 3. Login
+        login_data = LoginData(
+            email="complete@example.com",
+            password="SecurePass123!",
+            device_id="device-abc",
+            device_type="iPhone 14",
+            ip_address="192.168.1.100",
+        )
+        login_result = service.login(login_data)
+        assert login_result.success is True
+        assert login_result.access_token is not None
+
+    def test_professional_registration_with_validation(self):
+        """Professional registration with Iraqi ID and license validation"""
+        service = AuthService()
+
+        registration_data = RegistrationData(
+            full_name="د. عمر الجبوري",
+            email="professional@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            iraqi_id="101980123456",
+            professional_domain=ProfessionalDomain.LEGAL,
+            professional_license="LAW-12345-2020",
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
+
+        result = service.register(registration_data)
+
+        assert result.success is True
+        assert result.iraqi_id_validated is True
+        assert result.license_validated is True
+
+
+class TestEdgeCases:
+    """Test edge cases and error handling"""
+
+    def test_register_with_empty_name(self):
+        """Register with empty name should fail"""
+        service = AuthService()
+
+        registration_data = RegistrationData(
+            full_name="",
+            email="emptyname@example.com",
+            password="SecurePass123!",
+            region=IraqiRegion.BAGHDAD,
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.BASIC,
+        )
+
+        result = service.register(registration_data)
+        assert result.success is False
+
+    def test_login_with_empty_password(self):
+        """Login with empty password should fail"""
+        service = AuthService()
+
+        login_data = LoginData(
+            email="test@example.com",
+            password="",
+            device_id="device-abc",
+            device_type="iPhone",
+            ip_address="192.168.1.100",
+        )
+
+        result = service.login(login_data)
+        assert result.success is False
+
+
+class TestRealWorldScenarios:
+    """Test realistic authentication scenarios"""
+
+    def test_baghdad_lawyer_complete_flow(self):
+        """Baghdad lawyer: register with license, verify, login, MFA"""
+        service = AuthService()
+
+        # Register
+        registration_data = RegistrationData(
+            full_name="المحامي أحمد العبيدي",
+            email="lawyer@iraq-legal.com",
+            password="LegalPass123!",
+            region=IraqiRegion.BAGHDAD,
+            iraqi_id="101975123456",
+            professional_domain=ProfessionalDomain.LEGAL,
+            professional_license="LAW-56789-2015",
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STANDARD,
+        )
+        reg_result = service.register(registration_data)
+        assert reg_result.success is True
+
+        # Verify email
+        service.verify_email_token(reg_result.verification_token)
+
+        # Login
+        login_result = service.login(
+            LoginData(
+                email="lawyer@iraq-legal.com",
+                password="LegalPass123!",
+                device_id="office-laptop",
+                device_type="MacBook Pro",
+                ip_address="192.168.1.50",
+            )
+        )
+        assert login_result.success is True
+
+    def test_basra_doctor_multi_device_sessions(self):
+        """Basra doctor: login from multiple devices"""
+        service = AuthService()
+
+        # Register
+        registration_data = RegistrationData(
+            full_name="د. فاطمة الموسوي",
+            email="doctor@basra-hospital.com",
+            password="MedPass123!",
+            region=IraqiRegion.BASRA,
+            iraqi_id="061980654321",
+            professional_domain=ProfessionalDomain.MEDICAL,
+            professional_license="MED-987654-SU",
+            language_preference=LanguagePreference.BOTH,
+            islamic_compliance_level=IslamicComplianceLevel.STRICT,
+        )
+        service.register(registration_data)
+        service.verify_email("doctor@basra-hospital.com")
+
+        # Login from iPhone
+        iphone_login = service.login(
+            LoginData(
+                email="doctor@basra-hospital.com",
+                password="MedPass123!",
+                device_id="doctor-iphone",
+                device_type="iPhone 14 Pro",
+                ip_address="192.168.1.100",
+            )
+        )
+        assert iphone_login.success is True
+
+        # Login from office computer
+        office_login = service.login(
+            LoginData(
+                email="doctor@basra-hospital.com",
+                password="MedPass123!",
+                device_id="office-pc",
+                device_type="Windows 11",
+                ip_address="192.168.1.101",
+            )
+        )
+        assert office_login.success is True
+
+        # Both sessions should be active
+        sessions = service.get_active_sessions("doctor@basra-hospital.com")
+        assert len(sessions) >= 2

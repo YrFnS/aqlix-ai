@@ -121,7 +121,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **25_iraqi_ai_database_schema.md** → `/generate-prp` + `/execute-prp`
   - _Reason: Iraqi AI-specific PostgreSQL schema with cultural context and agent data_
 
-- **26_authentication_system.md** → `/generate-prp` + `/execute-prp`
+- **26_authentication_system.md** → `/generate-prp` + `/execute-prp` ✅
   - _Reason: Supabase Auth, JWT tokens, and session management_
 
 - **27_iraqi_chat_api_endpoints.md** → `/generate-prp` + `/execute-prp`

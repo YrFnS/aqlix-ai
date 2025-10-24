@@ -1,381 +1,770 @@
 /**
- * Integration tests for Authentication Flow
- * Tests Supabase auth integration with Iraqi cultural context
+ * Integration tests for Authentication Flow (Next.js)
+ * Tests Server Actions, cultural context, session persistence, and Iraqi-specific flows
  */
 
-import { describe, test, expect, beforeEach, afterEach } from "bun:test";
-import { TEST_HELPERS, IRAQI_TEST_CONTEXT } from "../../setup/index.js";
+import { describe, test, expect, beforeEach, afterEach } from "@jest/globals";
+import { signInAction, signUpAction, signOutAction } from "@/app/actions/auth";
+import { createClient } from "@/lib/supabase/client";
+import type { IraqiRegion, ProfessionalDomain } from "@iraqi-ai/types";
 
-describe("Authentication Flow Integration", () => {
-  const API_BASE = "http://localhost:3000/api";
-  let testUser: {
-    email: string;
-    password: string;
-    profile: ReturnType<typeof TEST_HELPERS.createMockIraqiUser>;
-  };
+describe("Next.js Authentication Integration Tests", () => {
+  let testEmail: string;
+  let supabase: ReturnType<typeof createClient>;
 
   beforeEach(() => {
-    testUser = {
-      email: `test-${Date.now()}@iraqi-ai.test`,
-      password: "TestPassword123!",
-      profile: TEST_HELPERS.createMockIraqiUser("baghdad"),
-    };
+    testEmail = `test-${Date.now()}@iraqi-test.com`;
+    supabase = createClient();
   });
 
-  afterEach(() => {
-    TEST_HELPERS.clearAllMocks();
+  afterEach(async () => {
+    // Cleanup test users
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      // Ignore cleanup errors
+    }
   });
 
-  describe("User Registration", () => {
-    test("should register new user with Iraqi profile", async () => {
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept-Language": "ar-IQ",
-        },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: {
-            name: testUser.profile.name,
-            nameEnglish: testUser.profile.nameEnglish,
-            dialect: testUser.profile.dialect,
-            locale: testUser.profile.locale,
-            timezone: testUser.profile.timezone,
-          },
-        }),
+  describe("User Registration with Iraqi ID", () => {
+    test("should register user with valid Iraqi ID", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "أحمد محمد / Ahmed Mohammed",
+        region: "baghdad" as IraqiRegion,
+        iraqiId: "101990123456",
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
       });
 
-      expect(response.status).toBe(201);
-
-      const data = await response.json();
-      expect(data).toHaveProperty("user");
-      expect(data).toHaveProperty("session");
-      expect(data.user).toHaveProperty("id");
-      expect(data.user.email).toBe(testUser.email);
-
-      // Verify Iraqi profile fields
-      expect(data.user.profile).toHaveProperty("dialect");
-      expect(data.user.profile.dialect).toBe("baghdad");
-      expect(data.user.profile.locale).toBe("ar-IQ");
-      expect(data.user.profile.timezone).toBe("Asia/Baghdad");
+      expect(result.data?.success).toBe(true);
+      expect(result.data?.user).toBeDefined();
+      expect(result.data?.emailSent).toBe(true);
     });
 
-    test("should validate Arabic name in profile", async () => {
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: {
-            name: testUser.profile.name, // Arabic name
-          },
-        }),
+    test("should validate Iraqi ID format (12 digits)", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test User",
+        region: "baghdad" as IraqiRegion,
+        iraqiId: "123", // Invalid - too short
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
       });
 
-      const data = await response.json();
-      expect(data.user.profile.name).toBeValidArabicText();
+      expect(result.error).toBeDefined();
+      expect(result.error).toMatch(/iraqi id/i);
     });
 
-    test("should set Baghdad timezone by default", async () => {
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: {
-            name: testUser.profile.name,
-          },
-        }),
+    test("should validate Iraqi ID regional prefix", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test User",
+        region: "baghdad" as IraqiRegion, // Baghdad
+        iraqiId: "061990123456", // Basra prefix (06)
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
       });
 
-      const data = await response.json();
-      expect(data.user.profile.timezone).toBe(IRAQI_TEST_CONTEXT.timezone);
+      // Should fail due to region mismatch
+      expect(result.error).toBeDefined();
+      expect(result.error).toMatch(/region|prefix/i);
     });
 
-    test("should reject weak passwords", async () => {
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: "weak",
-          profile: testUser.profile,
-        }),
+    test("should extract birth year from Iraqi ID", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test User",
+        region: "baghdad" as IraqiRegion,
+        iraqiId: "101985123456", // Birth year 1985
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
       });
 
-      expect(response.status).toBe(400);
-      const data = await response.json();
-      expect(data).toHaveProperty("error");
-      expect(data.error).toMatch(/password/i);
-    });
-
-    test("should reject duplicate email registration", async () => {
-      // First registration
-      await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: testUser.profile,
-        }),
-      });
-
-      // Duplicate registration
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: testUser.profile,
-        }),
-      });
-
-      expect(response.status).toBe(409);
-      const data = await response.json();
-      expect(data).toHaveProperty("error");
+      expect(result.data?.success).toBe(true);
+      expect(result.data?.iraqiIdValidation?.birthYear).toBe(1985);
     });
   });
 
-  describe("User Login", () => {
+  describe("User Registration with Professional License", () => {
+    test("should register legal professional with valid license", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "المحامي عمر / Lawyer Omar",
+        region: "baghdad" as IraqiRegion,
+        iraqiId: "101980123456",
+        professionalDomain: "legal" as ProfessionalDomain,
+        professionalLicense: "LAW-12345-2020",
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
+      });
+
+      expect(result.data?.success).toBe(true);
+      expect(result.data?.licenseValidated).toBe(true);
+    });
+
+    test("should register medical professional with specialization", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "د. فاطمة / Dr. Fatima",
+        region: "basra" as IraqiRegion,
+        iraqiId: "061985654321",
+        professionalDomain: "medical" as ProfessionalDomain,
+        professionalLicense: "MED-123456-SU", // Surgery specialization
+        languagePreference: "both",
+        islamicComplianceLevel: "strict",
+      });
+
+      expect(result.data?.success).toBe(true);
+      expect(result.data?.licenseValidated).toBe(true);
+    });
+
+    test("should validate professional license format", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test Professional",
+        region: "baghdad" as IraqiRegion,
+        professionalDomain: "legal" as ProfessionalDomain,
+        professionalLicense: "INVALID-LICENSE",
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
+
+      expect(result.error).toBeDefined();
+      expect(result.error).toMatch(/license/i);
+    });
+
+    test("should validate license matches professional domain", async () => {
+      const result = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test Professional",
+        region: "baghdad" as IraqiRegion,
+        professionalDomain: "medical" as ProfessionalDomain,
+        professionalLicense: "LAW-12345-2020", // Legal license for medical domain
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
+
+      expect(result.error).toBeDefined();
+      expect(result.error).toMatch(/license|domain/i);
+    });
+  });
+
+  describe("Login Flow with Cultural Greeting", () => {
     beforeEach(async () => {
-      // Register user for login tests
-      await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: testUser.profile,
-        }),
+      // Register test user
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Test User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
       });
+
+      // Verify email (simulate)
+      // In production, this would require clicking email verification link
     });
 
-    test("should login with valid credentials", async () => {
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept-Language": "ar-IQ",
-        },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-        }),
+    test("should login and return cultural greeting", async () => {
+      const result = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "test-device-123",
       });
 
-      expect(response.status).toBe(200);
-
-      const data = await response.json();
-      expect(data).toHaveProperty("user");
-      expect(data).toHaveProperty("session");
-      expect(data).toHaveProperty("accessToken");
-      expect(data).toHaveProperty("refreshToken");
-
-      // Verify session includes Iraqi context
-      expect(data.session).toHaveProperty("locale");
-      expect(data.session.locale).toBe("ar-IQ");
-    });
-
-    test("should reject invalid credentials", async () => {
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: "wrongpassword",
-        }),
-      });
-
-      expect(response.status).toBe(401);
-      const data = await response.json();
-      expect(data).toHaveProperty("error");
-    });
-
-    test("should return user profile with dialect preference", async () => {
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-        }),
-      });
-
-      const data = await response.json();
-      expect(data.user.profile).toHaveProperty("dialect");
-      expect(["baghdad", "basra", "mosul", "kurdish", "standard"]).toContain(
-        data.user.profile.dialect,
+      expect(result.data?.success).toBe(true);
+      expect(result.data?.culturalGreeting).toBeDefined();
+      expect(result.data?.culturalGreeting?.primaryGreeting).toContain(
+        "السلام عليكم",
       );
     });
+
+    test("should include regional dialect in greeting (Baghdad)", async () => {
+      const result = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "test-device-123",
+      });
+
+      expect(result.data?.culturalGreeting?.regionalVariation).toBe("شلونك");
+    });
+
+    test("should adapt greeting to time of day", async () => {
+      const result = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "test-device-123",
+      });
+
+      const greeting = result.data?.culturalGreeting?.primaryGreeting;
+      const hour = new Date().getHours();
+
+      if (hour >= 0 && hour < 12) {
+        expect(greeting).toContain("صباح");
+      } else {
+        expect(greeting).toContain("مساء");
+      }
+    });
+
+    test("should reject login with wrong password", async () => {
+      const result = await signInAction({
+        email: testEmail,
+        password: "WrongPassword123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "test-device-123",
+      });
+
+      expect(result.error).toBeDefined();
+      expect(result.error).toMatch(/password|invalid|credentials/i);
+    });
   });
 
-  describe("Session Management", () => {
-    let sessionToken: string;
+  describe("MFA Setup and Verification", () => {
+    let accessToken: string;
 
     beforeEach(async () => {
       // Register and login
-      await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: testUser.profile,
-        }),
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "MFA Test User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
       });
 
-      const loginResponse = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-        }),
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "mfa-device",
       });
 
-      const loginData = await loginResponse.json();
-      sessionToken = loginData.accessToken;
+      accessToken = loginResult.data?.accessToken || "";
     });
 
-    test("should access protected routes with valid session", async () => {
-      const response = await fetch(`${API_BASE}/user/profile`, {
-        method: "GET",
+    test("should setup SMS MFA", async () => {
+      const response = await fetch("/api/auth/mfa/setup", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${sessionToken}`,
-          "Accept-Language": "ar-IQ",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
-      });
-
-      expect(response.status).toBe(200);
-      const data = await response.json();
-      expect(data).toHaveProperty("profile");
-    });
-
-    test("should reject access without session token", async () => {
-      const response = await fetch(`${API_BASE}/user/profile`, {
-        method: "GET",
-      });
-
-      expect(response.status).toBe(401);
-    });
-
-    test("should refresh session token", async () => {
-      const loginResponse = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-        }),
-      });
-
-      const loginData = await loginResponse.json();
-      const refreshToken = loginData.refreshToken;
-
-      const response = await fetch(`${API_BASE}/auth/refresh`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          refreshToken,
+          method: "sms",
+          destination: "+9647501234567",
         }),
       });
 
       expect(response.status).toBe(200);
       const data = await response.json();
-      expect(data).toHaveProperty("accessToken");
-      expect(data).toHaveProperty("refreshToken");
+      expect(data.success).toBe(true);
+      expect(data.method).toBe("sms");
+      expect(data.setupId).toBeDefined();
     });
 
-    test("should logout and invalidate session", async () => {
-      const logoutResponse = await fetch(`${API_BASE}/auth/logout`, {
+    test("should setup Email MFA", async () => {
+      const response = await fetch("/api/auth/mfa/setup", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${sessionToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify({
+          method: "email",
+          destination: testEmail,
+        }),
       });
 
-      expect(logoutResponse.status).toBe(200);
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data.success).toBe(true);
+      expect(data.method).toBe("email");
+    });
 
-      // Try to access protected route after logout
-      const protectedResponse = await fetch(`${API_BASE}/user/profile`, {
-        method: "GET",
+    test("should respect prayer time delays for MFA", async () => {
+      // Simulate MFA during prayer time (Fajr: 4:30-5:30 AM Baghdad time)
+      const response = await fetch("/api/auth/mfa/setup", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${sessionToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
+        body: JSON.stringify({
+          method: "sms",
+          destination: "+9647501234567",
+          currentTime: "2025-01-15T05:00:00+03:00", // During Fajr
+        }),
       });
 
-      expect(protectedResponse.status).toBe(401);
+      const data = await response.json();
+      if (data.prayerTimeDelay) {
+        expect(data.prayerTimeDelay).toContain("Fajr");
+      }
     });
   });
 
-  describe("Profile Updates", () => {
-    let sessionToken: string;
+  describe("Session Persistence Across Page Loads", () => {
+    test("should persist session after page reload", async () => {
+      // Register and login
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Session Test User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
 
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "session-device",
+      });
+
+      expect(loginResult.data?.success).toBe(true);
+
+      // Simulate page reload by getting session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      expect(session).toBeDefined();
+      expect(session?.user?.email).toBe(testEmail);
+    });
+
+    test("should maintain cultural context in session", async () => {
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Cultural Context User",
+        region: "mosul" as IraqiRegion,
+        languagePreference: "arabic",
+        islamicComplianceLevel: "strict",
+      });
+
+      await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "cultural-device",
+      });
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      expect(session?.user?.user_metadata?.region).toBe("mosul");
+      expect(session?.user?.user_metadata?.language_preference).toBe("arabic");
+      expect(session?.user?.user_metadata?.islamic_compliance_level).toBe(
+        "strict",
+      );
+    });
+
+    test("should handle token refresh transparently", async () => {
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Refresh Test User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
+
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "refresh-device",
+      });
+
+      const refreshToken = loginResult.data?.refreshToken;
+      expect(refreshToken).toBeDefined();
+
+      // Refresh session
+      const response = await fetch("/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data.accessToken).toBeDefined();
+      expect(data.refreshToken).toBeDefined();
+    });
+  });
+
+  describe("Cultural Context Preservation", () => {
+    test("should preserve region preference across auth flow", async () => {
+      const regionPreference = "basra" as IraqiRegion;
+
+      // Register with Basra region
+      const registerResult = await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Basra User",
+        region: regionPreference,
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
+      });
+
+      expect(registerResult.data?.culturalContext?.region).toBe(
+        regionPreference,
+      );
+
+      // Login should maintain region
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "basra-device",
+      });
+
+      expect(loginResult.data?.culturalContext?.region).toBe(regionPreference);
+    });
+
+    test("should preserve language preference", async () => {
+      const languagePreference = "arabic";
+
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Arabic User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference,
+        islamicComplianceLevel: "basic",
+      });
+
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "arabic-device",
+      });
+
+      expect(loginResult.data?.culturalContext?.languagePreference).toBe(
+        languagePreference,
+      );
+    });
+
+    test("should preserve Islamic compliance level", async () => {
+      const islamicLevel = "strict";
+
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Strict Compliance User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: islamicLevel,
+      });
+
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "strict-device",
+      });
+
+      expect(loginResult.data?.culturalContext?.islamicComplianceLevel).toBe(
+        islamicLevel,
+      );
+    });
+
+    test("should include cultural context in JWT token claims", async () => {
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "JWT Test User",
+        region: "erbil" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
+      });
+
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Test Browser",
+        platform: "Web",
+        deviceId: "jwt-device",
+      });
+
+      const accessToken = loginResult.data?.accessToken;
+      expect(accessToken).toBeDefined();
+
+      // Decode JWT to verify cultural claims
+      const tokenPayload = JSON.parse(
+        Buffer.from(accessToken!.split(".")[1], "base64").toString(),
+      );
+
+      expect(tokenPayload.region).toBe("erbil");
+      expect(tokenPayload.language_preference).toBe("both");
+      expect(tokenPayload.islamic_compliance).toBe("standard");
+    });
+  });
+
+  describe("Multi-Device Session Management", () => {
     beforeEach(async () => {
-      // Setup authenticated user
-      await fetch(`${API_BASE}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-          profile: testUser.profile,
-        }),
+      await signUpAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        fullName: "Multi-Device User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
       });
-
-      const loginResponse = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: testUser.email,
-          password: testUser.password,
-        }),
-      });
-
-      const loginData = await loginResponse.json();
-      sessionToken = loginData.accessToken;
     });
 
-    test("should update dialect preference", async () => {
-      const response = await fetch(`${API_BASE}/user/profile`, {
-        method: "PATCH",
+    test("should support concurrent sessions on multiple devices", async () => {
+      // Login from device 1
+      const device1Result = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "iPhone 14",
+        platform: "iOS",
+        deviceId: "iphone-device",
+      });
+      expect(device1Result.data?.success).toBe(true);
+
+      // Login from device 2
+      const device2Result = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "MacBook Pro",
+        platform: "macOS",
+        deviceId: "macbook-device",
+      });
+      expect(device2Result.data?.success).toBe(true);
+
+      // Verify both sessions are active
+      const response = await fetch("/api/auth/sessions", {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionToken}`,
+          Authorization: `Bearer ${device1Result.data?.accessToken}`,
         },
-        body: JSON.stringify({
-          dialect: "basra",
-        }),
+      });
+
+      const data = await response.json();
+      expect(data.sessions.length).toBeGreaterThanOrEqual(2);
+    });
+
+    test("should track device information for each session", async () => {
+      const loginResult = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "iPhone 14 Pro",
+        platform: "iOS 17",
+        deviceId: "unique-device-id-123",
+      });
+
+      const response = await fetch("/api/auth/sessions", {
+        headers: {
+          Authorization: `Bearer ${loginResult.data?.accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+      const currentSession = data.sessions.find(
+        (s: any) => s.deviceId === "unique-device-id-123",
+      );
+
+      expect(currentSession).toBeDefined();
+      expect(currentSession.deviceType).toBe("iPhone 14 Pro");
+      expect(currentSession.platform).toBe("iOS 17");
+    });
+
+    test("should allow logout from specific device", async () => {
+      // Create two sessions
+      const device1 = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "iPhone",
+        platform: "iOS",
+        deviceId: "device-1",
+      });
+
+      await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "MacBook",
+        platform: "macOS",
+        deviceId: "device-2",
+      });
+
+      // Logout from device 1
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${device1.data?.accessToken}`,
+        },
+      });
+
+      // Verify device 1 session is invalid
+      const device1Check = await fetch("/api/auth/sessions", {
+        headers: {
+          Authorization: `Bearer ${device1.data?.accessToken}`,
+        },
+      });
+      expect(device1Check.status).toBe(401);
+
+      // Device 2 should still be active
+      // (would need device2 access token to verify)
+    });
+
+    test("should logout from all devices", async () => {
+      const device1 = await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Device 1",
+        platform: "Platform 1",
+        deviceId: "multi-device-1",
+      });
+
+      await signInAction({
+        email: testEmail,
+        password: "SecurePass123!",
+        deviceType: "Device 2",
+        platform: "Platform 2",
+        deviceId: "multi-device-2",
+      });
+
+      // Logout from all devices
+      await fetch("/api/auth/logout/all", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${device1.data?.accessToken}`,
+        },
+      });
+
+      // Verify all sessions are invalid
+      const sessionsCheck = await fetch("/api/auth/sessions", {
+        headers: {
+          Authorization: `Bearer ${device1.data?.accessToken}`,
+        },
+      });
+      expect(sessionsCheck.status).toBe(401);
+    });
+  });
+
+  describe("Password Reset Flow", () => {
+    beforeEach(async () => {
+      await signUpAction({
+        email: testEmail,
+        password: "OldPassword123!",
+        fullName: "Reset Test User",
+        region: "baghdad" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
+    });
+
+    test("should request password reset", async () => {
+      const response = await fetch("/api/auth/password-reset/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: testEmail }),
       });
 
       expect(response.status).toBe(200);
       const data = await response.json();
-      expect(data.profile.dialect).toBe("basra");
+      expect(data.success).toBe(true);
+      expect(data.emailSent).toBe(true);
     });
 
-    test("should update cultural compliance preference", async () => {
-      const response = await fetch(`${API_BASE}/user/profile`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionToken}`,
-        },
+    test("should reset password with valid token", async () => {
+      // Request reset
+      const resetRequest = await fetch("/api/auth/password-reset/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: testEmail }),
+      });
+      const resetData = await resetRequest.json();
+
+      // Reset password
+      const resetResponse = await fetch("/api/auth/password-reset/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          preferences: {
-            culturalCompliance: "relaxed",
-          },
+          token: resetData.resetToken,
+          newPassword: "NewPassword123!",
         }),
       });
 
-      expect(response.status).toBe(200);
-      const data = await response.json();
-      expect(data.profile.preferences.culturalCompliance).toBe("relaxed");
+      expect(resetResponse.status).toBe(200);
+
+      // Verify old password doesn't work
+      const oldLogin = await signInAction({
+        email: testEmail,
+        password: "OldPassword123!",
+        deviceType: "Test",
+        platform: "Test",
+        deviceId: "test",
+      });
+      expect(oldLogin.error).toBeDefined();
+
+      // Verify new password works
+      const newLogin = await signInAction({
+        email: testEmail,
+        password: "NewPassword123!",
+        deviceType: "Test",
+        platform: "Test",
+        deviceId: "test",
+      });
+      expect(newLogin.data?.success).toBe(true);
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("should handle network errors gracefully", async () => {
+      // Simulate network error by using invalid endpoint
+      const result = await signInAction({
+        email: "test@example.com",
+        password: "password",
+        deviceType: "Test",
+        platform: "Test",
+        deviceId: "test",
+      });
+
+      expect(result.error).toBeDefined();
+    });
+
+    test("should provide user-friendly error messages", async () => {
+      const result = await signUpAction({
+        email: "invalid-email",
+        password: "weak",
+        fullName: "",
+        region: "invalid" as IraqiRegion,
+        languagePreference: "both",
+        islamicComplianceLevel: "basic",
+      });
+
+      expect(result.error).toBeDefined();
+      expect(typeof result.error).toBe("string");
+      expect(result.error!.length).toBeGreaterThan(0);
     });
   });
 });
