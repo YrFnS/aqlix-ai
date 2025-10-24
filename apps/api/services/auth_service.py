@@ -27,6 +27,7 @@ from .cultural_context_manager import (
 from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
 from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
+from .account_lockout import AccountLockoutManager, LockoutStatus
 
 # Import models
 from ..models.iraqi_user import (
@@ -285,8 +286,25 @@ class AuthService:
             user_record = {
                 "id": "placeholder-user-id",
                 "password_hash": "$2b$12$LQv3c4yavXvGA5lX3dFPLOmT0hZOhPYHpTqjKTUqKqKemBVLhG6IS",  # Valid 60-char test hash
+                "failed_login_attempts": 0,
+                "locked_until": None,
+                "last_failed_attempt": None,
             }
             user_id = user_record["id"]
+
+            # Step 1.5: Check account lockout status BEFORE password verification
+            lockout_status = AccountLockoutManager.check_lockout_status(
+                failed_attempts=user_record.get("failed_login_attempts", 0),
+                locked_until=user_record.get("locked_until"),
+                last_failed_attempt=user_record.get("last_failed_attempt"),
+            )
+
+            # If account is locked, return immediately
+            if lockout_status.is_locked:
+                return LoginResult(
+                    success=False,
+                    error_message=lockout_status.lockout_reason,
+                )
 
             # Step 2: Verify password against stored hash
             # Always verify password to prevent timing attacks
@@ -308,14 +326,70 @@ class AuthService:
                 is_valid_password = False
 
             if not is_valid_password:
-                # TODO: Increment failed login attempts
-                # TODO: Check if account should be locked after 5 failed attempts
-                return LoginResult(
-                    success=False,
-                    error_message="Invalid email or password",
+                # Record failed login attempt
+                (
+                    new_failed_attempts,
+                    new_locked_until,
+                    should_send_notification,
+                ) = AccountLockoutManager.record_failed_attempt(
+                    current_failed_attempts=user_record.get("failed_login_attempts", 0),
+                    locked_until=user_record.get("locked_until"),
                 )
 
-            # TODO: Reset failed login attempts on successful password verification
+                # TODO: Update database with new failed_login_attempts and locked_until
+                # await self.supabase.from_("iraqi_user_authentication").update({
+                #     "failed_login_attempts": new_failed_attempts,
+                #     "locked_until": new_locked_until.isoformat() if new_locked_until else None,
+                #     "last_failed_attempt": datetime.now().isoformat(),
+                # }).eq("id", user_id).execute()
+
+                # Send email notification if account was just locked
+                if should_send_notification:
+                    # TODO: Send lockout notification email
+                    # email_content = AccountLockoutManager.generate_lockout_email_content(
+                    #     full_name=user_profile.get("full_name", "User"),
+                    #     email=login_request.email,
+                    #     locked_until=new_locked_until,
+                    #     ip_address=device_info.get("ip_address"),
+                    # )
+                    # await self.send_email(email_content)
+                    pass
+
+                # Check if user should be warned about approaching lockout
+                should_warn, warning_message = AccountLockoutManager.should_warn_user(
+                    new_failed_attempts
+                )
+
+                # Build error message
+                error_message = "Invalid email or password"
+                if new_locked_until:
+                    # Account just got locked
+                    time_remaining = new_locked_until - datetime.now()
+                    minutes = int(time_remaining.total_seconds() / 60)
+                    error_message = (
+                        f"Account locked due to {new_failed_attempts} failed login attempts. "
+                        f"Try again in {minutes} minutes."
+                    )
+                elif should_warn:
+                    # Warn user about approaching lockout
+                    error_message = f"Invalid email or password. {warning_message}"
+
+                return LoginResult(
+                    success=False,
+                    error_message=error_message,
+                )
+
+            # Reset failed login attempts on successful password verification
+            new_failed_attempts, new_locked_until = (
+                AccountLockoutManager.reset_failed_attempts()
+            )
+
+            # TODO: Update database to reset failed attempts counter
+            # await self.supabase.from_("iraqi_user_authentication").update({
+            #     "failed_login_attempts": 0,
+            #     "locked_until": None,
+            #     "last_failed_attempt": None,
+            # }).eq("id", user_id).execute()
 
             # Step 3: Fetch Iraqi user authentication profile
             # TODO: Query iraqi_user_authentication table
