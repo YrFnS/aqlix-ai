@@ -93,19 +93,27 @@ async def verify_jwt_token(
     """
     Verify JWT token and extract claims
 
+    Performs comprehensive JWT validation:
+    - Decodes JWT and verifies signature
+    - Checks token expiry
+    - Validates token type
+    - Checks session revocation status
+    - Verifies session exists in database
+
     Args:
-        credentials: HTTP Bearer credentials
+        credentials: HTTP Bearer credentials with JWT in "Bearer <token>" format
 
     Returns:
-        JWT payload with claims
+        JWT payload dictionary with claims (sub, session_id, cultural_context, etc.)
 
     Raises:
-        HTTPException: If token is invalid or expired
+        HTTPException: If token is invalid, expired, or revoked (status 401)
     """
     try:
         token = credentials.credentials
 
-        # Validate token with SessionManager
+        # Step 1: Validate token with SessionManager
+        # This performs all JWT validation including signature, expiry, and revocation
         validation_result = await SessionManager.validate_access_token(token)
 
         if not validation_result.is_valid:
@@ -116,7 +124,8 @@ async def verify_jwt_token(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        # Token is valid, return payload
+        # Step 2: Token is valid, decode and return payload
+        # We know it's valid from SessionManager validation above
         payload = jwt.decode(
             token,
             SessionManager.JWT_SECRET_KEY,
@@ -125,16 +134,25 @@ async def verify_jwt_token(
 
         return payload
 
+    except HTTPException:
+        # Re-raise HTTP exceptions from above
+        raise
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token has expired. Please refresh your session.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    except jwt.InvalidTokenError:
+    except jwt.InvalidSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication token",
+            detail="Invalid token signature: authentication failed",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid token format: {str(e)}",
             headers={"WWW-Authenticate": "Bearer"},
         )
     except Exception as e:

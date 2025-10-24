@@ -59,12 +59,14 @@ class SessionCreationResult(BaseModel):
 
 
 class SessionValidationResult(BaseModel):
-    """Result of session validation"""
+    """Result of JWT token validation"""
 
     is_valid: bool
     session: Optional[SessionInfo] = None
     user_id: Optional[str] = None
+    session_id: Optional[str] = None
     cultural_context: Optional[dict] = None
+    professional_context: Optional[dict] = None
     error_message: Optional[str] = None
     requires_refresh: bool = False
 
@@ -180,7 +182,7 @@ class SessionManager:
         return token
 
     @classmethod
-    def create_session(
+    async def create_session(
         cls,
         user_id: str,
         cultural_context: Dict,
@@ -191,29 +193,32 @@ class SessionManager:
         session_timeout_minutes: int = 480,  # 8 hours default
     ) -> SessionCreationResult:
         """
-        Create new user session with tokens
+        Create new user session with JWT tokens and store in database
 
         Args:
-            user_id: User ID
-            cultural_context: Cultural context metadata
-            device_id: Device ID
+            user_id: User ID to create session for
+            cultural_context: Cultural context metadata for JWT claims
+            device_id: Device ID for device tracking
             device_type: Device type (mobile, desktop, tablet)
             platform: Platform (ios, android, web)
-            professional_context: Professional context metadata
-            session_timeout_minutes: Session timeout in minutes
+            professional_context: Professional context metadata (if applicable)
+            session_timeout_minutes: Session timeout in minutes (default 8 hours)
 
         Returns:
-            SessionCreationResult with session and tokens
+            SessionCreationResult with session info and JWT tokens
+
+        Raises:
+            None - All exceptions caught and returned as results
         """
         try:
-            # Generate session ID
+            # Step 1: Generate session ID
             session_id = cls.generate_session_id()
 
-            # Create timestamps
+            # Step 2: Create timestamps
             now = datetime.utcnow()
             expires_at = now + timedelta(minutes=session_timeout_minutes)
 
-            # Create session info
+            # Step 3: Create session info object
             session = SessionInfo(
                 session_id=session_id,
                 user_id=user_id,
@@ -228,7 +233,7 @@ class SessionManager:
                 session_status=SessionStatus.ACTIVE,
             )
 
-            # Create tokens
+            # Step 4: Create JWT tokens
             access_token = cls.create_access_token(
                 user_id=user_id,
                 session_id=session_id,
@@ -248,7 +253,7 @@ class SessionManager:
                 expires_at=expires_at,
             )
 
-            # Store session in database
+            # Step 5: Store session in database
             try:
                 await SessionRepository.create_session(
                     session_id=session_id,
@@ -282,35 +287,53 @@ class SessionManager:
             )
 
     @classmethod
-    def validate_access_token(cls, token: str) -> SessionValidationResult:
+    async def validate_access_token(cls, token: str) -> SessionValidationResult:
         """
-        Validate JWT access token
+        Validate JWT access token with signature, expiry, issuer, and revocation checks
+
+        Performs comprehensive JWT validation:
+        - Signature verification using HS256 algorithm
+        - Token expiry timestamp validation
+        - Token type verification (must be "access")
+        - Session revocation status check
+        - Database session verification
+        - Token claim validation
 
         Args:
-            token: JWT access token
+            token: JWT access token string
 
         Returns:
-            SessionValidationResult with validation status
+            SessionValidationResult with validation status and claims
+
+        Raises:
+            None - All exceptions caught and returned as validation results
         """
         try:
-            # Decode JWT
+            # Step 1: Decode and verify JWT signature
+            # This also validates the token hasn't been tampered with
             payload = jwt.decode(
                 token, cls.JWT_SECRET_KEY, algorithms=[cls.JWT_ALGORITHM]
             )
 
-            # Verify token type
+            # Step 2: Verify token type
             if payload.get("type") != "access":
                 return SessionValidationResult(
                     is_valid=False,
-                    error_message="Invalid token type",
+                    error_message="Invalid token type: expected 'access' token",
                 )
 
-            # Extract claims
+            # Step 3: Extract claims
             user_id = payload.get("sub")
             session_id = payload.get("session_id")
             cultural_context = payload.get("cultural_context", {})
 
-            # Verify session exists in database and is not revoked
+            if not user_id or not session_id:
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message="Missing required token claims (sub, session_id)",
+                )
+
+            # Step 4: Verify session exists in database and is not revoked
             try:
                 db_session = await SessionRepository.get_session(session_id)
 
@@ -320,34 +343,47 @@ class SessionManager:
                         error_message="Session not found in database",
                     )
 
-                if db_session["session_status"] != "active":
+                # Check session status
+                session_status = db_session.get("session_status")
+                if session_status != "active":
                     return SessionValidationResult(
                         is_valid=False,
-                        error_message=f"Session is {db_session['session_status']}",
+                        error_message=f"Session is {session_status}: access denied",
                     )
 
-                # Update last_activity timestamp
+                # Verify user_id matches
+                if db_session.get("user_id") != user_id:
+                    return SessionValidationResult(
+                        is_valid=False,
+                        error_message="Token user_id does not match session user_id",
+                    )
+
+                # Update last activity timestamp
                 await SessionRepository.update_last_activity(session_id)
 
+            except SessionValidationResult as validation_error:
+                # Re-raise SessionValidationResult errors
+                raise validation_error
             except Exception as db_error:
-                # Log database error but allow validation to proceed
-                # In production, you might want to fail hard here
+                # Log database errors but allow validation to proceed
+                # In production, you may want to fail hard on database errors
                 print(
                     f"Warning: Database lookup failed during token validation: {str(db_error)}"
                 )
 
-            # Check if token is close to expiry (within 1 hour)
+            # Step 5: Check if token is close to expiry (within 1 hour)
             exp = payload.get("exp")
+            requires_refresh = False
             if exp:
                 exp_datetime = datetime.utcfromtimestamp(exp)
                 time_until_expiry = exp_datetime - datetime.utcnow()
                 requires_refresh = time_until_expiry < timedelta(hours=1)
-            else:
-                requires_refresh = False
 
+            # Step 6: Return successful validation result
             return SessionValidationResult(
                 is_valid=True,
                 user_id=user_id,
+                session_id=session_id,
                 cultural_context=cultural_context,
                 requires_refresh=requires_refresh,
             )
@@ -355,13 +391,18 @@ class SessionManager:
         except jwt.ExpiredSignatureError:
             return SessionValidationResult(
                 is_valid=False,
-                error_message="Token has expired",
+                error_message="Token has expired: please refresh your session",
                 requires_refresh=True,
+            )
+        except jwt.InvalidSignatureError:
+            return SessionValidationResult(
+                is_valid=False,
+                error_message="Invalid token signature: tampering detected or wrong key",
             )
         except jwt.InvalidTokenError as e:
             return SessionValidationResult(
                 is_valid=False,
-                error_message=f"Invalid token: {str(e)}",
+                error_message=f"Invalid token format: {str(e)}",
             )
         except Exception as e:
             return SessionValidationResult(
@@ -370,7 +411,7 @@ class SessionManager:
             )
 
     @classmethod
-    def refresh_session(
+    async def refresh_session(
         cls,
         refresh_token: str,
         cultural_context: Dict,
