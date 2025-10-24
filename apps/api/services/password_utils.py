@@ -64,14 +64,16 @@ class PasswordUtils:
         if not password:
             raise ValueError("Password cannot be empty")
 
-        if len(password) > PasswordUtils.MAX_LENGTH:
+        # Convert password to bytes for byte length check
+        password_bytes = password.encode("utf-8")
+
+        # Check byte length (bcrypt's 72-byte limit, not character count)
+        if len(password_bytes) > PasswordUtils.MAX_LENGTH:
             raise ValueError(
-                f"Password exceeds maximum length of {PasswordUtils.MAX_LENGTH} characters"
+                f"Password exceeds maximum length of {PasswordUtils.MAX_LENGTH} bytes (UTF-8 encoded)"
             )
 
         # Hash password with automatic salt generation
-        # Convert password to bytes
-        password_bytes = password.encode("utf-8")
 
         # Generate salt and hash
         salt = bcrypt.gensalt(rounds=BCRYPT_ROUNDS)
@@ -117,7 +119,7 @@ class PasswordUtils:
 
         Checks:
         - Minimum length (8 characters)
-        - Maximum length (128 characters)
+        - Maximum length (72 bytes for bcrypt compatibility)
         - Contains uppercase letter (A-Z)
         - Contains lowercase letter (a-z)
         - Contains digit (0-9)
@@ -149,15 +151,17 @@ class PasswordUtils:
         else:
             strength_score += 20
 
-        if len(password) > PasswordUtils.MAX_LENGTH:
+        # Check byte length (bcrypt's 72-byte limit)
+        password_bytes = password.encode("utf-8")
+        if len(password_bytes) > PasswordUtils.MAX_LENGTH:
             missing_requirements.append(
-                f"Maximum {PasswordUtils.MAX_LENGTH} characters"
+                f"Maximum {PasswordUtils.MAX_LENGTH} bytes (UTF-8 encoded)"
             )
             return PasswordStrengthResult(
                 is_valid=False,
                 strength_score=0,
                 missing_requirements=missing_requirements,
-                suggestions=["Password is too long"],
+                suggestions=["Password is too long (exceeds 72 bytes)"],
             )
 
         # Check for uppercase letters

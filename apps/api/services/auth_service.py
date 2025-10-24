@@ -151,16 +151,21 @@ class AuthService:
 
             # Step 3: Create user in Supabase Auth
             # TODO: Implement Supabase Auth sign up
-            # NOTE: Supabase Auth handles password hashing internally, pass plaintext
+            # ARCHITECTURE NOTE: This implementation uses HYBRID authentication:
+            # - Supabase Auth for user management and email verification
+            # - Local password hashing for backup/custom auth scenarios
+            # - This provides flexibility but requires careful management
+            # PRODUCTION DECISION: Choose ONE approach:
+            #   Option A: Supabase-only (remove local password hashing)
+            #   Option B: Local-only (remove Supabase Auth calls, implement full auth)
             # auth_user = await self.supabase.auth.sign_up({
             #     "email": registration.email,
-            #     "password": registration.password,  # Supabase handles hashing
+            #     "password": registration.password,  # Pass plaintext to Supabase
             # })
             user_id = "placeholder-user-id"  # Placeholder
 
-            # Step 4: Hash password for local storage (if needed for custom auth)
-            # NOTE: Only hash if you need separate local password storage
-            # For Supabase-only auth, you can rely on Supabase's internal hashing
+            # Step 4: Hash password for local backup storage (hybrid approach)
+            # If using Supabase-only auth, remove this line
             hashed_password = PasswordUtils.hash_password(registration.password)
 
             # Step 5: Create Iraqi user authentication record
@@ -279,25 +284,28 @@ class AuthService:
             # Placeholder data for now
             user_record = {
                 "id": "placeholder-user-id",
-                "password_hash": "$2b$12$placeholder_hash",  # This will be replaced with actual hash from DB
+                "password_hash": "$2b$12$LQv3c4yavXvGA5lX3dFPLOmT0hZOhPYHpTqjKTUqKqKemBVLhG6IS",  # Valid 60-char test hash
             }
             user_id = user_record["id"]
 
             # Step 2: Verify password against stored hash
-            # Validate password hash format (bcrypt hashes are 60 characters)
-            if (
-                not user_record.get("password_hash")
-                or len(user_record["password_hash"]) != 60
-            ):
-                return LoginResult(
-                    success=False,
-                    error_message="Invalid email or password",  # Generic message for security
-                )
+            # Always verify password to prevent timing attacks
+            # PasswordUtils.verify_password handles invalid hash formats gracefully
+            password_hash = user_record.get("password_hash", "")
+            is_valid_password = False
 
-            # Verify password
-            is_valid_password = PasswordUtils.verify_password(
-                login_request.password, user_record["password_hash"]
-            )
+            if len(password_hash) == 60:  # Valid bcrypt hash length
+                is_valid_password = PasswordUtils.verify_password(
+                    login_request.password, password_hash
+                )
+            else:
+                # Use a dummy verification to keep timing consistent
+                # This prevents timing attacks by ensuring all paths take similar time
+                dummy_hash = (
+                    "$2b$12$LQv3c4yavXvGA5lX3dFPLOmT0hZOhPYHpTqjKTUqKqKemBVLhG6IS"
+                )
+                PasswordUtils.verify_password(login_request.password, dummy_hash)
+                is_valid_password = False
 
             if not is_valid_password:
                 # TODO: Increment failed login attempts
@@ -517,7 +525,7 @@ class AuthService:
         Returns:
             True if successful
         """
-        return SessionManager.revoke_session(session_id)
+        return await SessionManager.revoke_session(session_id)
 
     async def logout_all_devices(self, user_id: str) -> int:
         """
@@ -529,4 +537,4 @@ class AuthService:
         Returns:
             Number of sessions revoked
         """
-        return SessionManager.revoke_all_user_sessions(user_id)
+        return await SessionManager.revoke_all_user_sessions(user_id)

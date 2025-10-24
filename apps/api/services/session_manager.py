@@ -10,6 +10,10 @@ from pydantic import BaseModel
 from uuid import uuid4
 import jwt
 import os
+import json
+
+# Import database repository
+from ..database import SessionRepository
 
 
 class SessionStatus(str, Enum):
@@ -244,7 +248,26 @@ class SessionManager:
                 expires_at=expires_at,
             )
 
-            # TODO: In production, store session in database (iraqi_authentication_sessions table)
+            # Store session in database
+            try:
+                await SessionRepository.create_session(
+                    session_id=session_id,
+                    user_id=user_id,
+                    session_token=access_token,
+                    refresh_token=refresh_token,
+                    expires_at=expires_at,
+                    cultural_context_snapshot=cultural_context,
+                    device_id=device_id,
+                    device_type=device_type,
+                    platform=platform,
+                    professional_session_mode=professional_context is not None,
+                    login_method="email_password",
+                    mfa_completed=False,  # Will be updated after MFA if required
+                )
+            except Exception as db_error:
+                # Log database error but don't fail session creation
+                # In production, you might want to fail hard here
+                print(f"Warning: Failed to store session in database: {str(db_error)}")
 
             return SessionCreationResult(
                 success=True,
@@ -287,8 +310,31 @@ class SessionManager:
             session_id = payload.get("session_id")
             cultural_context = payload.get("cultural_context", {})
 
-            # TODO: In production, verify session exists in database and is not revoked
-            # TODO: Update last_activity timestamp
+            # Verify session exists in database and is not revoked
+            try:
+                db_session = await SessionRepository.get_session(session_id)
+
+                if not db_session:
+                    return SessionValidationResult(
+                        is_valid=False,
+                        error_message="Session not found in database",
+                    )
+
+                if db_session["session_status"] != "active":
+                    return SessionValidationResult(
+                        is_valid=False,
+                        error_message=f"Session is {db_session['session_status']}",
+                    )
+
+                # Update last_activity timestamp
+                await SessionRepository.update_last_activity(session_id)
+
+            except Exception as db_error:
+                # Log database error but allow validation to proceed
+                # In production, you might want to fail hard here
+                print(
+                    f"Warning: Database lookup failed during token validation: {str(db_error)}"
+                )
 
             # Check if token is close to expiry (within 1 hour)
             exp = payload.get("exp")
@@ -377,7 +423,11 @@ class SessionManager:
                 expires_at=expires_at,
             )
 
-            # TODO: In production, update session last_activity
+            # Update session last_activity in database
+            try:
+                await SessionRepository.update_last_activity(session_id)
+            except Exception as db_error:
+                print(f"Warning: Failed to update session activity: {str(db_error)}")
 
             return SessionCreationResult(
                 success=True,
@@ -401,7 +451,7 @@ class SessionManager:
             )
 
     @staticmethod
-    def revoke_session(session_id: str) -> bool:
+    async def revoke_session(session_id: str) -> bool:
         """
         Revoke a session (logout)
 
@@ -411,11 +461,14 @@ class SessionManager:
         Returns:
             True if successful
         """
-        # TODO: In production, update session status to 'revoked' in database
-        return True
+        try:
+            return await SessionRepository.revoke_session(session_id)
+        except Exception as e:
+            print(f"Error revoking session: {str(e)}")
+            return False
 
     @staticmethod
-    def revoke_all_user_sessions(user_id: str) -> int:
+    async def revoke_all_user_sessions(user_id: str) -> int:
         """
         Revoke all sessions for a user (logout from all devices)
 
@@ -425,11 +478,14 @@ class SessionManager:
         Returns:
             Number of sessions revoked
         """
-        # TODO: In production, revoke all active sessions for user in database
-        return 0
+        try:
+            return await SessionRepository.revoke_all_user_sessions(user_id)
+        except Exception as e:
+            print(f"Error revoking all user sessions: {str(e)}")
+            return 0
 
     @staticmethod
-    def get_active_sessions(user_id: str) -> List[SessionInfo]:
+    async def get_active_sessions(user_id: str) -> List[SessionInfo]:
         """
         Get all active sessions for a user
 
@@ -439,16 +495,52 @@ class SessionManager:
         Returns:
             List of active SessionInfo objects
         """
-        # TODO: In production, query database for active sessions
-        return []
+        try:
+            db_sessions = await SessionRepository.get_active_sessions(user_id)
+
+            # Convert database rows to SessionInfo objects
+            sessions = []
+            for db_session in db_sessions:
+                sessions.append(
+                    SessionInfo(
+                        session_id=str(db_session["id"]),
+                        user_id=str(db_session["user_id"]),
+                        device_id=db_session.get("device_id"),
+                        device_type=db_session.get("device_type"),
+                        platform=db_session.get("platform"),
+                        created_at=db_session["created_at"],
+                        expires_at=db_session["expires_at"],
+                        last_activity=db_session["last_activity"],
+                        cultural_context_snapshot=json.loads(
+                            db_session["cultural_context_snapshot"]
+                        )
+                        if isinstance(db_session["cultural_context_snapshot"], str)
+                        else db_session["cultural_context_snapshot"],
+                        professional_session_mode=db_session.get(
+                            "professional_session_mode", False
+                        ),
+                        session_status=SessionStatus(
+                            db_session.get("session_status", "active")
+                        ),
+                    )
+                )
+
+            return sessions
+
+        except Exception as e:
+            print(f"Error getting active sessions: {str(e)}")
+            return []
 
     @staticmethod
-    def cleanup_expired_sessions() -> int:
+    async def cleanup_expired_sessions() -> int:
         """
         Cleanup expired sessions (background task)
 
         Returns:
             Number of sessions cleaned up
         """
-        # TODO: In production, delete or mark as expired sessions older than expiry time
-        return 0
+        try:
+            return await SessionRepository.cleanup_expired_sessions()
+        except Exception as e:
+            print(f"Error cleaning up expired sessions: {str(e)}")
+            return 0
