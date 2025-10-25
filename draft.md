@@ -2762,3 +2762,5 @@ Bash(wsl -e bash -c "source ~/.bashrc; cd /mnt/c/Users/Itokoro/Documents/project
 then commit the changes then we can continue with the next task
 
 https://docs.coderabbit.ai/cli/claude-code-integration
+
+lets continue with the next task, and keep in maind when using coderabbit cli you need to do this command "wsl -e bash -c "source ~/.bashrc; cd /mnt/c/Users/Itokoro/Documents/projects/aqlix-ai && /home/test/.local/bin/coderabbit --type uncommitted" 2>&1"

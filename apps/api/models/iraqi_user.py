@@ -163,10 +163,6 @@ class LoginRequest(BaseModel):
     device_id: Optional[str] = None
     device_type: Optional[str] = None
     platform: Optional[str] = None
-    user_agent: Optional[str] = None
-    ip_address: Optional[str] = None
-    accept_language: Optional[str] = None
-    accept_encoding: Optional[str] = None
 
 
 class CulturalContext(BaseModel):
@@ -254,7 +250,6 @@ class MFAVerificationRequest(BaseModel):
 
     verification_id: str
     code: str
-    user_id: str = Field(..., description="User ID for MFA verification")
     device_id: Optional[str] = None
     remember_device: bool = Field(
         default=False, description="Remember this device for future logins"

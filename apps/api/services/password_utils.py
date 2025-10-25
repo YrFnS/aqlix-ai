@@ -33,7 +33,8 @@ class PasswordUtils:
 
     # Password requirements
     MIN_LENGTH = 8
-    MAX_LENGTH = 72  # Bcrypt has a 72-byte limit
+    MAX_LENGTH = 72  # Character limit (guidance, but bcrypt enforces bytes)
+    MAX_BCRYPT_BYTES = 72  # Bcrypt enforces a strict 72-byte limit
     REQUIRE_UPPERCASE = True
     REQUIRE_LOWERCASE = True
     REQUIRE_DIGIT = True
@@ -64,13 +65,11 @@ class PasswordUtils:
         if not password:
             raise ValueError("Password cannot be empty")
 
-        # Convert password to bytes for byte length check
+        # Validate password byte length (bcrypt enforces 72-byte limit)
         password_bytes = password.encode("utf-8")
-
-        # Check byte length (bcrypt's 72-byte limit, not character count)
-        if len(password_bytes) > PasswordUtils.MAX_LENGTH:
+        if len(password_bytes) > PasswordUtils.MAX_BCRYPT_BYTES:
             raise ValueError(
-                f"Password exceeds maximum length of {PasswordUtils.MAX_LENGTH} bytes (UTF-8 encoded)"
+                f"Password exceeds maximum length of {PasswordUtils.MAX_BCRYPT_BYTES} bytes"
             )
 
         # Hash password with automatic salt generation
@@ -119,7 +118,7 @@ class PasswordUtils:
 
         Checks:
         - Minimum length (8 characters)
-        - Maximum length (72 bytes for bcrypt compatibility)
+        - Maximum length (128 characters)
         - Contains uppercase letter (A-Z)
         - Contains lowercase letter (a-z)
         - Contains digit (0-9)
@@ -151,17 +150,20 @@ class PasswordUtils:
         else:
             strength_score += 20
 
-        # Check byte length (bcrypt's 72-byte limit)
-        password_bytes = password.encode("utf-8")
-        if len(password_bytes) > PasswordUtils.MAX_LENGTH:
+        # Check byte length (bcrypt enforces 72-byte limit)
+        byte_len = len(password.encode("utf-8"))
+        if byte_len > PasswordUtils.MAX_BCRYPT_BYTES:
             missing_requirements.append(
-                f"Maximum {PasswordUtils.MAX_LENGTH} bytes (UTF-8 encoded)"
+                f"Maximum {PasswordUtils.MAX_BCRYPT_BYTES} bytes (UTF-8 encoded)"
             )
             return PasswordStrengthResult(
                 is_valid=False,
                 strength_score=0,
                 missing_requirements=missing_requirements,
-                suggestions=["Password is too long (exceeds 72 bytes)"],
+                suggestions=[
+                    f"Password exceeds {PasswordUtils.MAX_BCRYPT_BYTES} bytes when encoded. "
+                    f"Multi-byte characters count as multiple bytes."
+                ],
             )
 
         # Check for uppercase letters

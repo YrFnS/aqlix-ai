@@ -33,7 +33,9 @@ def cleanup_test_users(db_session):
     """Cleanup test users after each test"""
     yield
     # Cleanup logic here
-    db_session.execute("DELETE FROM iraqi_user_authentication WHERE email LIKE '%@test.example.com'")
+    db_session.execute(
+        "DELETE FROM iraqi_user_authentication WHERE email LIKE '%@test.example.com'"
+    )
     db_session.commit()
 
 
@@ -650,7 +652,7 @@ class TestCompleteAuthFlows:
     def test_complete_professional_registration_to_login(
         self, client, cleanup_test_users
     ):
-        """Complete flow: register Iraqi professional ’ verify ’ login"""
+        """Complete flow: register Iraqi professional ï¿½ verify ï¿½ login"""
         # 1. Register
         reg_response = client.post(
             "/api/auth/register",
@@ -670,9 +672,7 @@ class TestCompleteAuthFlows:
         token = reg_response.json()["verification_token"]
 
         # 2. Verify email
-        verify_response = client.post(
-            "/api/auth/verify-email", json={"token": token}
-        )
+        verify_response = client.post("/api/auth/verify-email", json={"token": token})
         assert verify_response.status_code == 200
 
         # 3. Login

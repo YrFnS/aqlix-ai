@@ -25,18 +25,8 @@ from .cultural_context_manager import (
     CulturalGreeting,
 )
 from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
-from .mfa_enforcement import MFAEnforcementManager, MFAEnforcementResult
 from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
-from .account_lockout import AccountLockoutManager, LockoutStatus
-from .device_fingerprinting import DeviceFingerprintManager, DeviceFingerprintResult
-from .ip_activity_monitor import (
-    IPActivityMonitor,
-    SuspiciousActivity,
-    LoginAttempt,
-    IPGeolocation,
-    ThreatLevel,
-)
 
 # Import models
 from ..models.iraqi_user import (
@@ -161,22 +151,20 @@ class AuthService:
 
             # Step 3: Create user in Supabase Auth
             # TODO: Implement Supabase Auth sign up
-            # ARCHITECTURE NOTE: This implementation uses HYBRID authentication:
-            # - Supabase Auth for user management and email verification
-            # - Local password hashing for backup/custom auth scenarios
-            # - This provides flexibility but requires careful management
-            # PRODUCTION DECISION: Choose ONE approach:
-            #   Option A: Supabase-only (remove local password hashing)
-            #   Option B: Local-only (remove Supabase Auth calls, implement full auth)
+            # NOTE: Supabase Auth handles password hashing internally, pass plaintext
             # auth_user = await self.supabase.auth.sign_up({
             #     "email": registration.email,
-            #     "password": registration.password,  # Pass plaintext to Supabase
+            #     "password": registration.password,  # Supabase handles hashing
             # })
             user_id = "placeholder-user-id"  # Placeholder
 
-            # Step 4: Hash password for local backup storage (hybrid approach)
-            # If using Supabase-only auth, remove this line
-            hashed_password = PasswordUtils.hash_password(registration.password)
+            # Step 4: Password handling based on auth mode
+            # IMPORTANT: When using Supabase Auth, do NOT hash locally
+            # Supabase handles password hashing internally - double hashing breaks auth
+            # Local password storage is ONLY for custom auth path (not implemented yet)
+            # TODO: Remove local password hashing once Supabase Auth is fully integrated
+            # For now, setting hashed_password to None to prevent double-hashing
+            hashed_password = None  # Will be populated by Supabase Auth internally
 
             # Step 5: Create Iraqi user authentication record
             # TODO: Insert into iraqi_user_authentication table
@@ -294,111 +282,35 @@ class AuthService:
             # Placeholder data for now
             user_record = {
                 "id": "placeholder-user-id",
-                "password_hash": "$2b$12$LQv3c4yavXvGA5lX3dFPLOmT0hZOhPYHpTqjKTUqKqKemBVLhG6IS",  # Valid 60-char test hash
-                "failed_login_attempts": 0,
-                "locked_until": None,
-                "last_failed_attempt": None,
+                "password_hash": "$2b$12$placeholder_hash",  # This will be replaced with actual hash from DB
             }
             user_id = user_record["id"]
 
-            # Step 1.5: Check account lockout status BEFORE password verification
-            lockout_status = AccountLockoutManager.check_lockout_status(
-                failed_attempts=user_record.get("failed_login_attempts", 0),
-                locked_until=user_record.get("locked_until"),
-                last_failed_attempt=user_record.get("last_failed_attempt"),
-            )
-
-            # If account is locked, return immediately
-            if lockout_status.is_locked:
+            # Step 2: Verify password against stored hash
+            # Validate password hash format (bcrypt hashes are 60 characters)
+            if (
+                not user_record.get("password_hash")
+                or len(user_record["password_hash"]) != 60
+            ):
                 return LoginResult(
                     success=False,
-                    error_message=lockout_status.lockout_reason,
+                    error_message="Invalid email or password",  # Generic message for security
                 )
 
-            # Step 2: Verify password against stored hash
-            # Always verify password to prevent timing attacks
-            # PasswordUtils.verify_password handles invalid hash formats gracefully
-            password_hash = user_record.get("password_hash", "")
-            is_valid_password = False
-
-            if len(password_hash) == 60:  # Valid bcrypt hash length
-                is_valid_password = PasswordUtils.verify_password(
-                    login_request.password, password_hash
-                )
-            else:
-                # Use a dummy verification to keep timing consistent
-                # This prevents timing attacks by ensuring all paths take similar time
-                dummy_hash = (
-                    "$2b$12$LQv3c4yavXvGA5lX3dFPLOmT0hZOhPYHpTqjKTUqKqKemBVLhG6IS"
-                )
-                PasswordUtils.verify_password(login_request.password, dummy_hash)
-                is_valid_password = False
+            # Verify password
+            is_valid_password = PasswordUtils.verify_password(
+                login_request.password, user_record["password_hash"]
+            )
 
             if not is_valid_password:
-                # Record failed login attempt
-                (
-                    new_failed_attempts,
-                    new_locked_until,
-                    should_send_notification,
-                ) = AccountLockoutManager.record_failed_attempt(
-                    current_failed_attempts=user_record.get("failed_login_attempts", 0),
-                    locked_until=user_record.get("locked_until"),
-                )
-
-                # TODO: Update database with new failed_login_attempts and locked_until
-                # await self.supabase.from_("iraqi_user_authentication").update({
-                #     "failed_login_attempts": new_failed_attempts,
-                #     "locked_until": new_locked_until.isoformat() if new_locked_until else None,
-                #     "last_failed_attempt": datetime.now().isoformat(),
-                # }).eq("id", user_id).execute()
-
-                # Send email notification if account was just locked
-                if should_send_notification:
-                    # TODO: Send lockout notification email
-                    # email_content = AccountLockoutManager.generate_lockout_email_content(
-                    #     full_name=user_profile.get("full_name", "User"),
-                    #     email=login_request.email,
-                    #     locked_until=new_locked_until,
-                    #     ip_address=device_info.get("ip_address"),
-                    # )
-                    # await self.send_email(email_content)
-                    pass
-
-                # Check if user should be warned about approaching lockout
-                should_warn, warning_message = AccountLockoutManager.should_warn_user(
-                    new_failed_attempts
-                )
-
-                # Build error message
-                error_message = "Invalid email or password"
-                if new_locked_until:
-                    # Account just got locked
-                    time_remaining = new_locked_until - datetime.now()
-                    minutes = int(time_remaining.total_seconds() / 60)
-                    error_message = (
-                        f"Account locked due to {new_failed_attempts} failed login attempts. "
-                        f"Try again in {minutes} minutes."
-                    )
-                elif should_warn:
-                    # Warn user about approaching lockout
-                    error_message = f"Invalid email or password. {warning_message}"
-
+                # TODO: Increment failed login attempts
+                # TODO: Check if account should be locked after 5 failed attempts
                 return LoginResult(
                     success=False,
-                    error_message=error_message,
+                    error_message="Invalid email or password",
                 )
 
-            # Reset failed login attempts on successful password verification
-            new_failed_attempts, new_locked_until = (
-                AccountLockoutManager.reset_failed_attempts()
-            )
-
-            # TODO: Update database to reset failed attempts counter
-            # await self.supabase.from_("iraqi_user_authentication").update({
-            #     "failed_login_attempts": 0,
-            #     "locked_until": None,
-            #     "last_failed_attempt": None,
-            # }).eq("id", user_id).execute()
+            # TODO: Reset failed login attempts on successful password verification
 
             # Step 3: Fetch Iraqi user authentication profile
             # TODO: Query iraqi_user_authentication table
@@ -456,117 +368,17 @@ class AuthService:
                 ],
             )
 
-            # Step 6.5: Generate device fingerprint
-            # Create device fingerprint from request headers
-            fingerprint_result = DeviceFingerprintManager.create_device_fingerprint(
-                user_agent=login_request.user_agent or "Unknown",
-                ip_address=login_request.ip_address,
-                accept_language=login_request.accept_language,
-                accept_encoding=login_request.accept_encoding,
-                known_device_ids=None,  # TODO: Fetch known device IDs from database
-            )
-
-            # Use generated device_id if not provided in request
-            device_id = login_request.device_id or fingerprint_result.device_id
-
-            # Use parsed device info if not provided in request
-            device_type = (
-                login_request.device_type or fingerprint_result.device_info.device_type
-            )
-            platform = login_request.platform or fingerprint_result.device_info.platform
-
-            # Check if MFA should be triggered based on device fingerprint
-            should_trigger_device_mfa, device_mfa_reason = (
-                DeviceFingerprintManager.should_trigger_mfa(
-                    fingerprint_result=fingerprint_result,
-                    mfa_on_new_device=True,  # TODO: Get from user preferences
-                )
-            )
-
-            # Log device fingerprint result (in production, store in database)
-            # TODO: Store device fingerprint in iraqi_user_devices table:
-            # - device_id (fingerprint_result.device_id)
-            # - user_id
-            # - device_type, platform, browser, os
-            # - fingerprint_strength
-            # - is_trusted (based on previous successful logins)
-            # - last_seen timestamp
-            # - suspicious_indicators (if any)
-
-            # Step 6.6: Analyze IP address for suspicious activity
-            # TODO: Fetch recent login attempts from database for this IP
-            # For now, use empty list (will be populated when database integration is complete)
-            recent_attempts: list[LoginAttempt] = []
-
-            # In production, fetch from database:
-            # recent_attempts = await self.get_recent_attempts_for_ip(
-            #     ip_address=login_request.ip_address,
-            #     time_window_hours=24
-            # )
-
-            # Optional: Get geolocation data for IP (requires external service)
-            # current_location = await self.get_ip_geolocation(login_request.ip_address)
-            current_location = None  # Placeholder
-
-            # Analyze IP activity for suspicious patterns
-            ip_activity = IPActivityMonitor.analyze_ip_activity(
-                ip_address=login_request.ip_address,
-                recent_attempts=recent_attempts,
-                current_location=current_location,
+            # Step 7: Check if MFA is required
+            requires_mfa, mfa_reason = MFAManager.should_require_mfa(
                 user_id=user_id,
-            )
-
-            # Get additional security measures based on IP analysis
-            security_measures = IPActivityMonitor.should_trigger_additional_security(
-                ip_activity
-            )
-
-            # Log IP activity analysis (in production, store in database)
-            # TODO: Store IP activity analysis in security_events table:
-            # - ip_address
-            # - user_id
-            # - threat_level
-            # - confidence_score
-            # - detected_patterns
-            # - recommended_action
-            # - timestamp
-
-            # Block IP if critical threat detected
-            if security_measures["block_ip"]:
-                # TODO: Add IP to blacklist in database
-                # TODO: Notify security team if critical threat
-                return LoginResult(
-                    success=False,
-                    error_message="Access denied due to suspicious activity. Please contact support.",
-                )
-
-            # Step 7: Check if MFA should be enforced
-            # Consider both device fingerprint and IP activity suspicious indicators
-            is_suspicious_activity = (
-                len(fingerprint_result.suspicious_indicators) > 0
-                or ip_activity.threat_level in [ThreatLevel.HIGH, ThreatLevel.CRITICAL]
-                or security_measures["require_mfa"]
-            )
-
-            mfa_enforcement = MFAEnforcementManager.should_enforce_mfa(
-                mfa_enabled=user_profile.get("mfa_enabled", False),
+                device_id=login_request.device_id,
                 mfa_frequency=MFAFrequency.EVERY_LOGIN
                 if user_profile.get("mfa_enabled")
                 else MFAFrequency.NEW_DEVICE,
-                device_id=device_id,  # Use generated device_id from fingerprint
-                trust_token=None,  # TODO: Get trust token from request headers
-                is_suspicious_activity=is_suspicious_activity,  # Use device fingerprint detection
-                last_login=None,  # TODO: Get from user profile
-                operation_type="login",
+                is_suspicious_activity=False,  # TODO: Implement suspicious activity detection
             )
 
-            # Override MFA enforcement if device fingerprint indicates suspicious activity
-            if should_trigger_device_mfa and not mfa_enforcement.should_enforce:
-                mfa_enforcement.should_enforce = True
-                mfa_enforcement.enforcement_reason = device_mfa_reason
-
-            # If MFA should be enforced, setup MFA challenge
-            if mfa_enforcement.should_enforce:
+            if requires_mfa:
                 # Setup MFA
                 mfa_methods = user_profile.get("mfa_methods", ["email"])
                 primary_method = MFAMethod(mfa_methods[0] if mfa_methods else "email")
@@ -585,15 +397,6 @@ class AuthService:
                         error_message=f"MFA setup failed: {mfa_setup.error_message}",
                     )
 
-                # TODO: Send MFA enforcement email notification if configured
-                # mfa_email = MFAEnforcementManager.generate_mfa_enforcement_email(
-                #     full_name=user_profile["full_name"],
-                #     email=login_request.email,
-                #     enforcement_reason=mfa_enforcement.enforcement_reason,
-                #     operation_type="login",
-                # )
-                # await self.email_service.send(mfa_email)
-
                 return LoginResult(
                     success=True,
                     user_id=user_id,
@@ -602,13 +405,13 @@ class AuthService:
                     mfa_setup_id=mfa_setup.verification_id,
                 )
 
-            # Step 8: Create session with cultural context and device fingerprint
+            # Step 7: Create session with cultural context
             session_result = SessionManager.create_session(
                 user_id=user_id,
                 cultural_context=cultural_context,
-                device_id=device_id,  # Use device_id from fingerprint
-                device_type=device_type,  # Use parsed device_type from fingerprint
-                platform=platform,  # Use parsed platform from fingerprint
+                device_id=login_request.device_id,
+                device_type=login_request.device_type,
+                platform=login_request.platform,
             )
 
             if not session_result.success:
@@ -617,7 +420,7 @@ class AuthService:
                     error_message=f"Session creation failed: {session_result.error_message}",
                 )
 
-            # Step 9: Build verification status
+            # Step 8: Build verification status
             verification_status = VerificationStatus(
                 email_verified=True,  # User logged in successfully
                 iraqi_id_verified=False,  # TODO: Check from user profile
@@ -717,7 +520,7 @@ class AuthService:
         Returns:
             True if successful
         """
-        return await SessionManager.revoke_session(session_id)
+        return SessionManager.revoke_session(session_id)
 
     async def logout_all_devices(self, user_id: str) -> int:
         """
@@ -729,4 +532,4 @@ class AuthService:
         Returns:
             Number of sessions revoked
         """
-        return await SessionManager.revoke_all_user_sessions(user_id)
+        return SessionManager.revoke_all_user_sessions(user_id)

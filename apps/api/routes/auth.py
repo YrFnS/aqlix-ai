@@ -12,7 +12,6 @@ from datetime import datetime
 # Import services
 try:
     from ..services.auth_service import AuthService, RegistrationResult, LoginResult
-    from ..services.rate_limiter import limiter, get_auth_rate_limit
     from ..models.iraqi_user import (
         IraqiUserRegistration,
         LoginRequest,
@@ -24,7 +23,6 @@ try:
     from ..middleware.auth_middleware import get_current_user_dependency
 except ImportError:
     from services.auth_service import AuthService, RegistrationResult, LoginResult
-    from services.rate_limiter import limiter, get_auth_rate_limit
     from models.iraqi_user import (
         IraqiUserRegistration,
         LoginRequest,
@@ -75,8 +73,7 @@ class LogoutRequest(BaseModel):
     summary="Register new Iraqi user",
     description="Register a new user with Iraqi cultural context, ID validation, and professional license support",
 )
-@limiter.limit(get_auth_rate_limit("register"))
-async def register(request: Request, registration: IraqiUserRegistration):
+async def register(registration: IraqiUserRegistration):
     """
     Register new user with Iraqi authentication system
 
@@ -121,10 +118,9 @@ async def register(request: Request, registration: IraqiUserRegistration):
     summary="Login with cultural context",
     description="Authenticate user and create session with Iraqi cultural greeting",
 )
-@limiter.limit(get_auth_rate_limit("login"))
 async def login(
-    request: Request,
     login_request: LoginRequest,
+    request: Request,
 ):
     """
     Login user and create authenticated session
@@ -188,8 +184,7 @@ async def login(
     summary="Verify email address",
     description="Verify user email with verification token",
 )
-@limiter.limit(get_auth_rate_limit("email_verification"))
-async def verify_email(request: Request, email_request: EmailVerificationRequest):
+async def verify_email(request: EmailVerificationRequest):
     """
     Verify user email address
 
@@ -220,15 +215,14 @@ async def verify_email(request: Request, email_request: EmailVerificationRequest
     summary="Request password reset",
     description="Send password reset email to user",
 )
-@limiter.limit(get_auth_rate_limit("password_reset"))
-async def request_password_reset(request: Request, reset_request: PasswordResetRequest):
+async def request_password_reset(reset_request: PasswordResetRequest):
     """
     Request password reset
 
     Sends password reset email with secure token.
 
     Args:
-        request: Password reset request with email
+        reset_request: Password reset request with email
 
     Returns:
         Success message
@@ -254,9 +248,7 @@ async def request_password_reset(request: Request, reset_request: PasswordResetR
     summary="Setup multi-factor authentication",
     description="Initialize MFA for user account with cultural timing consideration",
 )
-@limiter.limit(get_auth_rate_limit("mfa_setup"))
 async def setup_mfa(
-    request: Request,
     mfa_request: MFASetupRequest,
     user: dict = Depends(get_current_user_dependency),
 ):
@@ -294,8 +286,7 @@ async def setup_mfa(
     summary="Verify MFA code and create session",
     description="Verify MFA code and create authenticated session",
 )
-@limiter.limit(get_auth_rate_limit("mfa_verify"))
-async def verify_mfa(request: Request, mfa_verification: MFAVerificationRequest):
+async def verify_mfa(mfa_verification: MFAVerificationRequest):
     """
     Verify MFA code and create session
 
@@ -356,59 +347,6 @@ async def refresh_token(refresh_request: TokenRefreshRequest):
         "success": True,
         "access_token": "new-access-token",
         "expires_at": datetime.now().isoformat(),
-    }
-
-
-@router.post(
-    "/refresh",
-    response_model=dict,
-    status_code=status.HTTP_200_OK,
-    summary="Refresh access token",
-    description="Refresh access token using refresh token with automatic token rotation",
-)
-async def refresh_tokens(
-    refresh_request: TokenRefreshRequest,
-    user: dict = Depends(get_current_user_dependency),
-):
-    """
-    Refresh access token using refresh token
-
-    Features:
-    - Automatic refresh token rotation (security best practice)
-    - Token family tracking for reuse attack detection
-    - Old token invalidation
-    - New access token with same cultural context
-
-    Args:
-        refresh_request: Refresh token
-        user: Current authenticated user (from JWT)
-
-    Returns:
-        New token pair with rotated refresh token
-    """
-    # Import SessionManager for token refresh
-    from ..services.session_manager import SessionManager
-
-    # Refresh the session tokens with rotation
-    result = await SessionManager.refresh_session(
-        refresh_token=refresh_request.refresh_token,
-        cultural_context=user.get("cultural_context", {}),
-        professional_context=user.get("professional_context"),
-    )
-
-    if not result.success:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=result.error_message or "Token refresh failed",
-        )
-
-    return {
-        "success": True,
-        "access_token": result.tokens.access_token,
-        "refresh_token": result.tokens.refresh_token,
-        "expires_at": result.tokens.expires_at.isoformat(),
-        "token_type": result.tokens.token_type,
-        "message": "Token rotated successfully",
     }
 
 
@@ -486,30 +424,13 @@ async def get_active_sessions(
     - List of active sessions with device information
     - Session creation time and last activity
     """
-    # Import SessionManager
-    from ..services.session_manager import SessionManager
-
-    # Get active sessions from database
-    sessions = await SessionManager.get_active_sessions(user["user_id"])
-
-    # Convert SessionInfo objects to dicts
-    sessions_data = []
-    for session in sessions:
-        sessions_data.append(
-            {
-                "session_id": session.session_id,
-                "device_id": session.device_id,
-                "device_type": session.device_type,
-                "platform": session.platform,
-                "created_at": session.created_at.isoformat(),
-                "last_activity": session.last_activity.isoformat(),
-                "expires_at": session.expires_at.isoformat(),
-                "is_current": session.session_id == user.get("session_id"),
-            }
-        )
+    # TODO: Implement session listing
+    # 1. Query iraqi_authentication_sessions table
+    # 2. Filter by user_id and status='active'
+    # 3. Return session details
 
     return {
         "success": True,
-        "sessions": sessions_data,
-        "count": len(sessions_data),
+        "sessions": [],
+        "count": 0,
     }
