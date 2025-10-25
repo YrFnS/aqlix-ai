@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 import os
+import logging
 
 # Import our specialized services
 from .iraqi_id_validator import (
@@ -27,6 +28,12 @@ from .cultural_context_manager import (
 from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
 from .session_manager import SessionManager, TokenPair
 from .password_utils import PasswordUtils, PasswordStrengthResult
+from .account_lockout import AccountLockoutManager
+from .device_fingerprinting import DeviceFingerprintManager
+from .security_logger import (
+    get_security_logger,
+    SecurityEventSeverity,
+)
 
 # Import models
 from ..models.iraqi_user import (
@@ -76,6 +83,7 @@ class AuthService:
     - Session management with cultural context
     - Password reset and email verification
     - Account status management
+    - Comprehensive security audit logging
     """
 
     def __init__(self):
@@ -84,14 +92,25 @@ class AuthService:
         self.supabase_url = os.getenv("SUPABASE_URL")
         self.supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
 
+        # Initialize security logger
+        self.security_logger = get_security_logger()
+
+        # Initialize standard logger for server-side diagnostics
+        self.logger = logging.getLogger(__name__)
+
     async def register_user(
-        self, registration: IraqiUserRegistration
+        self,
+        registration: IraqiUserRegistration,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
     ) -> RegistrationResult:
         """
         Register new Iraqi user with cultural context
 
         Args:
             registration: IraqiUserRegistration data
+            ip_address: Client IP address for security logging
+            user_agent: User agent for security logging
 
         Returns:
             RegistrationResult with registration status
@@ -240,6 +259,20 @@ class AuthService:
                         ]
                     )
 
+            # Step 10: Log registration event
+            self.security_logger.log_register(
+                user_id=user_id,
+                email=registration.email,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                region=registration.region.value if registration.region else None,
+                professional_domain=(
+                    registration.professional_domain.value
+                    if registration.professional_domain
+                    else None
+                ),
+            )
+
             return RegistrationResult(
                 success=True,
                 user_id=user_id,
@@ -250,6 +283,15 @@ class AuthService:
             )
 
         except Exception as e:
+            # Log error (without sensitive data)
+            self.security_logger.log_suspicious_activity(
+                email=registration.email,
+                ip_address=ip_address,
+                activity_type="registration_error",
+                details={"error_type": type(e).__name__},
+                severity=SecurityEventSeverity.MEDIUM,
+            )
+
             return RegistrationResult(
                 success=False,
                 email=registration.email,
@@ -261,6 +303,8 @@ class AuthService:
     async def login_user(
         self,
         login_request: LoginRequest,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
         respect_prayer_times: bool = True,
         cultural_timing_flexibility: int = 15,
     ) -> LoginResult:
@@ -269,6 +313,8 @@ class AuthService:
 
         Args:
             login_request: LoginRequest with credentials
+            ip_address: Client IP address for security logging
+            user_agent: User agent for security logging
             respect_prayer_times: Whether to respect prayer times for MFA
             cultural_timing_flexibility: Minutes of flexibility
 
@@ -283,15 +329,51 @@ class AuthService:
             user_record = {
                 "id": "placeholder-user-id",
                 "password_hash": "$2b$12$placeholder_hash",  # This will be replaced with actual hash from DB
+                "failed_login_attempts": 0,
+                "locked_until": None,
+                "last_failed_attempt": None,
             }
             user_id = user_record["id"]
 
-            # Step 2: Verify password against stored hash
+            # Step 2: Check account lockout status
+            lockout_status = AccountLockoutManager.check_lockout_status(
+                failed_attempts=user_record.get("failed_login_attempts", 0),
+                locked_until=user_record.get("locked_until"),
+                last_failed_attempt=user_record.get("last_failed_attempt"),
+            )
+
+            if lockout_status.is_locked:
+                # Log failed login attempt (account locked)
+                self.security_logger.log_failed_login(
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    reason="account_locked",
+                    attempts_remaining=0,
+                )
+
+                return LoginResult(
+                    success=False,
+                    error_message=lockout_status.lockout_reason,
+                )
+
+            # Step 3: Verify password against stored hash
             # Validate password hash format (bcrypt hashes are 60 characters)
             if (
                 not user_record.get("password_hash")
                 or len(user_record["password_hash"]) != 60
             ):
+                # This is a system/data integrity error, not a user authentication failure
+                # Do NOT count this against user lockout attempts
+                self.security_logger.log_suspicious_activity(
+                    user_id=user_id,
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    activity_type="system_invalid_password_hash",
+                    details={"error": "Invalid or missing password hash in database"},
+                    severity=SecurityEventSeverity.HIGH,
+                )
+
                 return LoginResult(
                     success=False,
                     error_message="Invalid email or password",  # Generic message for security
@@ -303,16 +385,61 @@ class AuthService:
             )
 
             if not is_valid_password:
-                # TODO: Increment failed login attempts
-                # TODO: Check if account should be locked after 5 failed attempts
+                # Record failed attempt
+                (
+                    new_failed_attempts,
+                    new_locked_until,
+                    should_notify,
+                ) = AccountLockoutManager.record_failed_attempt(
+                    current_failed_attempts=user_record.get("failed_login_attempts", 0),
+                    locked_until=user_record.get("locked_until"),
+                )
+
+                # TODO: Update failed login attempts in database
+                # await self.supabase.from_("iraqi_user_authentication").update({
+                #     "failed_login_attempts": new_failed_attempts,
+                #     "locked_until": new_locked_until,
+                #     "last_failed_attempt": datetime.now()
+                # }).eq("id", user_id)
+
+                # Log failed login attempt
+                attempts_remaining = AccountLockoutManager.check_lockout_status(
+                    failed_attempts=new_failed_attempts,
+                    locked_until=new_locked_until,
+                ).remaining_attempts
+
+                self.security_logger.log_failed_login(
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    reason="invalid_password",
+                    attempts_remaining=attempts_remaining,
+                )
+
+                # Log account lockout if locked
+                if new_locked_until:
+                    self.security_logger.log_account_locked(
+                        user_id=user_id,
+                        email=login_request.email,
+                        ip_address=ip_address,
+                        reason="failed_login_attempts",
+                        locked_until=new_locked_until,
+                    )
+
                 return LoginResult(
                     success=False,
                     error_message="Invalid email or password",
                 )
 
+            # Password valid - reset failed attempts
             # TODO: Reset failed login attempts on successful password verification
+            # await self.supabase.from_("iraqi_user_authentication").update({
+            #     "failed_login_attempts": 0,
+            #     "locked_until": None,
+            #     "last_failed_attempt": None
+            # }).eq("id", user_id)
 
-            # Step 3: Fetch Iraqi user authentication profile
+            # Step 4: Fetch Iraqi user authentication profile
             # TODO: Query iraqi_user_authentication table
             user_profile = {
                 "full_name": "Test User",
@@ -327,20 +454,34 @@ class AuthService:
                 "verification_status": "email_verified",
             }
 
-            # Step 4: Check account status
+            # Step 5: Check account status
             if user_profile["account_status"] == "suspended":
+                self.security_logger.log_failed_login(
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    reason="account_suspended",
+                )
+
                 return LoginResult(
                     success=False,
                     error_message="Account is suspended. Please contact support.",
                 )
 
             if user_profile["account_status"] == "locked":
+                self.security_logger.log_failed_login(
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    reason="account_locked",
+                )
+
                 return LoginResult(
                     success=False,
                     error_message="Account is locked due to multiple failed login attempts. Please reset your password.",
                 )
 
-            # Step 5: Fetch cultural context
+            # Step 6: Fetch cultural context
             # TODO: Query authentication_cultural_context table
             cultural_context = CulturalContextManager.get_cultural_jwt_metadata(
                 region=IraqiRegion(user_profile["region"]),
@@ -354,7 +495,7 @@ class AuthService:
                 ],
             )
 
-            # Step 6: Generate cultural greeting
+            # Step 7: Generate cultural greeting
             cultural_greeting = CulturalContextManager.generate_cultural_greeting(
                 full_name=user_profile["full_name"],
                 region=IraqiRegion(user_profile["region"]),
@@ -368,14 +509,35 @@ class AuthService:
                 ],
             )
 
-            # Step 7: Check if MFA is required
+            # Step 8: Create device fingerprint
+            device_fingerprint = DeviceFingerprintManager.create_device_fingerprint(
+                user_agent=user_agent or "unknown",
+                ip_address=ip_address,
+            )
+
+            # Detect suspicious activity
+            if device_fingerprint.suspicious_indicators:
+                self.security_logger.log_suspicious_activity(
+                    user_id=user_id,
+                    email=login_request.email,
+                    ip_address=ip_address,
+                    activity_type="suspicious_device",
+                    details={
+                        "indicators": device_fingerprint.suspicious_indicators,
+                        "fingerprint_strength": device_fingerprint.fingerprint_strength,
+                    },
+                    severity=SecurityEventSeverity.HIGH,
+                )
+
+            # Step 9: Check if MFA is required
+            is_suspicious = len(device_fingerprint.suspicious_indicators) > 0
             requires_mfa, mfa_reason = MFAManager.should_require_mfa(
                 user_id=user_id,
-                device_id=login_request.device_id,
+                device_id=device_fingerprint.device_id,
                 mfa_frequency=MFAFrequency.EVERY_LOGIN
                 if user_profile.get("mfa_enabled")
                 else MFAFrequency.NEW_DEVICE,
-                is_suspicious_activity=False,  # TODO: Implement suspicious activity detection
+                is_suspicious_activity=is_suspicious,
             )
 
             if requires_mfa:
@@ -397,6 +559,14 @@ class AuthService:
                         error_message=f"MFA setup failed: {mfa_setup.error_message}",
                     )
 
+                # Log MFA setup
+                self.security_logger.log_mfa_setup(
+                    user_id=user_id,
+                    email=login_request.email,
+                    mfa_method=primary_method.value,
+                    ip_address=ip_address,
+                )
+
                 return LoginResult(
                     success=True,
                     user_id=user_id,
@@ -405,11 +575,11 @@ class AuthService:
                     mfa_setup_id=mfa_setup.verification_id,
                 )
 
-            # Step 7: Create session with cultural context
+            # Step 10: Create session with cultural context
             session_result = SessionManager.create_session(
                 user_id=user_id,
                 cultural_context=cultural_context,
-                device_id=login_request.device_id,
+                device_id=device_fingerprint.device_id,
                 device_type=login_request.device_type,
                 platform=login_request.platform,
             )
@@ -420,12 +590,32 @@ class AuthService:
                     error_message=f"Session creation failed: {session_result.error_message}",
                 )
 
-            # Step 8: Build verification status
+            # Step 11: Build verification status
             verification_status = VerificationStatus(
                 email_verified=True,  # User logged in successfully
                 iraqi_id_verified=False,  # TODO: Check from user profile
                 professional_license_verified=False,  # TODO: Check from user profile
                 overall_status=user_profile["verification_status"],
+            )
+
+            # Step 12: Log successful login
+            self.security_logger.log_login(
+                user_id=user_id,
+                email=login_request.email,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                device_id=device_fingerprint.device_id,
+                session_id=session_result.session_id,
+                mfa_used=False,
+            )
+
+            # Step 13: Log session creation
+            self.security_logger.log_session_created(
+                user_id=user_id,
+                session_id=session_result.session_id,
+                device_id=device_fingerprint.device_id,
+                ip_address=ip_address,
+                expires_at=session_result.expires_at,
             )
 
             return LoginResult(
@@ -438,9 +628,24 @@ class AuthService:
             )
 
         except Exception as e:
+            # Log full exception details server-side for diagnostics
+            self.logger.exception(
+                "Login error for email %s: %s", login_request.email, str(e)
+            )
+
+            # Log error to security logger
+            self.security_logger.log_suspicious_activity(
+                email=login_request.email,
+                ip_address=ip_address,
+                activity_type="login_error",
+                details={"error_type": type(e).__name__},
+                severity=SecurityEventSeverity.MEDIUM,
+            )
+
+            # Return generic error message to client (no internal details)
             return LoginResult(
                 success=False,
-                error_message=f"Login failed: {str(e)}",
+                error_message="Login failed",
             )
 
     async def verify_mfa_and_create_session(
@@ -448,7 +653,9 @@ class AuthService:
         verification_id: str,
         code: str,
         user_id: str,
+        email: str,
         device_id: Optional[str] = None,
+        ip_address: Optional[str] = None,
         remember_device: bool = False,
     ) -> LoginResult:
         """
@@ -458,7 +665,9 @@ class AuthService:
             verification_id: MFA verification ID
             code: User-provided verification code
             user_id: User ID
+            email: User email for logging
             device_id: Device ID
+            ip_address: IP address for logging
             remember_device: Whether to trust this device
 
         Returns:
@@ -478,10 +687,31 @@ class AuthService:
             )
 
             if not mfa_result.success:
+                # Log MFA failure
+                self.security_logger.log_suspicious_activity(
+                    user_id=user_id,
+                    email=email,
+                    ip_address=ip_address,
+                    activity_type="mfa_verification_failed",
+                    details={
+                        "verification_id": verification_id,
+                        "attempts_used": attempts_used + 1,
+                    },
+                    severity=SecurityEventSeverity.MEDIUM,
+                )
+
                 return LoginResult(
                     success=False,
                     error_message=f"MFA verification failed: {mfa_result.error_message}",
                 )
+
+            # Log successful MFA verification
+            self.security_logger.log_mfa_verified(
+                user_id=user_id,
+                email=email,
+                mfa_method="email",  # TODO: Get from MFA setup
+                ip_address=ip_address,
+            )
 
             # TODO: Fetch user profile and cultural context
             cultural_context = {}
@@ -491,6 +721,25 @@ class AuthService:
                 user_id=user_id,
                 cultural_context=cultural_context,
                 device_id=device_id,
+            )
+
+            # Log session creation
+            self.security_logger.log_session_created(
+                user_id=user_id,
+                session_id=session_result.session_id,
+                device_id=device_id,
+                ip_address=ip_address,
+                expires_at=session_result.expires_at,
+            )
+
+            # Log successful login with MFA
+            self.security_logger.log_login(
+                user_id=user_id,
+                email=email,
+                ip_address=ip_address,
+                device_id=device_id,
+                session_id=session_result.session_id,
+                mfa_used=True,
             )
 
             # Trust device if requested
@@ -505,31 +754,95 @@ class AuthService:
             )
 
         except Exception as e:
-            return LoginResult(
-                success=False,
-                error_message=f"MFA verification failed: {str(e)}",
+            # Log full exception details server-side for diagnostics
+            self.logger.exception(
+                "MFA verification error for user %s: %s", user_id, str(e)
             )
 
-    async def logout_user(self, session_id: str) -> bool:
+            # Log error to security logger
+            self.security_logger.log_suspicious_activity(
+                user_id=user_id,
+                email=email,
+                ip_address=ip_address,
+                activity_type="mfa_verification_error",
+                details={"error_type": type(e).__name__},
+                severity=SecurityEventSeverity.MEDIUM,
+            )
+
+            # Return generic error message to client (no internal details)
+            return LoginResult(
+                success=False,
+                error_message="MFA verification failed",
+            )
+
+    async def logout_user(
+        self,
+        session_id: str,
+        user_id: str,
+        email: str,
+        ip_address: Optional[str] = None,
+    ) -> bool:
         """
         Logout user by revoking session
 
         Args:
             session_id: Session ID to revoke
+            user_id: User ID for logging
+            email: User email for logging
+            ip_address: IP address for logging
 
         Returns:
             True if successful
         """
-        return SessionManager.revoke_session(session_id)
+        success = SessionManager.revoke_session(session_id)
 
-    async def logout_all_devices(self, user_id: str) -> int:
+        if success:
+            # Log session revocation
+            self.security_logger.log_session_revoked(
+                user_id=user_id,
+                session_id=session_id,
+                reason="user_logout",
+                ip_address=ip_address,
+            )
+
+            # Log logout
+            self.security_logger.log_logout(
+                user_id=user_id,
+                email=email,
+                session_id=session_id,
+                ip_address=ip_address,
+            )
+
+        return success
+
+    async def logout_all_devices(
+        self,
+        user_id: str,
+        email: str,
+        ip_address: Optional[str] = None,
+    ) -> int:
         """
         Logout user from all devices
 
         Args:
             user_id: User ID
+            email: User email for logging
+            ip_address: IP address for logging
 
         Returns:
             Number of sessions revoked
         """
-        return SessionManager.revoke_all_user_sessions(user_id)
+        sessions_revoked = SessionManager.revoke_all_user_sessions(user_id)
+
+        if sessions_revoked > 0:
+            # Log all sessions revoked
+            self.security_logger.log_suspicious_activity(
+                user_id=user_id,
+                email=email,
+                ip_address=ip_address,
+                activity_type="all_sessions_revoked",
+                details={"sessions_count": sessions_revoked},
+                severity=SecurityEventSeverity.MEDIUM,
+            )
+
+        return sessions_revoked
