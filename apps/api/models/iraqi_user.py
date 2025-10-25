@@ -1,12 +1,17 @@
 """
 Pydantic models for Iraqi user authentication
 Defines data structures for user registration, authentication, and cultural context
+Integrated with comprehensive input validation services
 """
 
+import logging
 from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field, validator
 from enum import Enum
+
+# Configure security logger
+security_logger = logging.getLogger("security.xss_sanitization")
 
 
 class ProfessionalDomain(str, Enum):
@@ -63,21 +68,28 @@ class CulturalPreferences(BaseModel):
 
 
 class IraqiUserRegistration(BaseModel):
-    """Iraqi user registration request"""
+    """Iraqi user registration request with comprehensive input validation"""
 
     # Basic information
     email: EmailStr = Field(..., description="User email address")
     password: str = Field(
         ...,
         min_length=8,
-        description="Password (min 8 chars, must include uppercase, lowercase, number)",
+        max_length=72,  # Bcrypt limit
+        description="Password (min 8 chars, must include uppercase, lowercase, number, special char)",
     )
-    full_name: str = Field(..., min_length=2, max_length=200, description="Full name")
+    full_name: str = Field(
+        ...,
+        min_length=2,
+        max_length=200,
+        description="Full name (Arabic + English supported)",
+    )
 
     # Iraqi context
     region: IraqiRegion = Field(default=IraqiRegion.BAGHDAD, description="Iraqi region")
     iraqi_id: Optional[str] = Field(
-        default=None, description="Optional Iraqi national ID (12 digits)"
+        default=None,
+        description="Optional Iraqi national ID (15 digits: XXX-XXXX-XXXXXXX-X)",
     )
 
     # Professional context
@@ -88,7 +100,7 @@ class IraqiUserRegistration(BaseModel):
         default=None, description="Professional license number"
     )
     institutional_affiliation: Optional[str] = Field(
-        default=None, description="Institutional affiliation"
+        default=None, max_length=500, description="Institutional affiliation"
     )
 
     # Cultural preferences
@@ -103,66 +115,167 @@ class IraqiUserRegistration(BaseModel):
 
     @validator("password")
     def validate_password_strength(cls, v):
-        """Validate password strength"""
-        import re
+        """
+        Validate password strength using comprehensive validation
 
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
+        Integrated with PasswordUtils for consistent validation
+        """
+        from apps.api.services.password_utils import PasswordUtils
 
-        if not re.search(r"[A-Z]", v):
-            raise ValueError("Password must contain at least one uppercase letter")
+        result = PasswordUtils.validate_password_strength(v)
 
-        if not re.search(r"[a-z]", v):
-            raise ValueError("Password must contain at least one lowercase letter")
-
-        if not re.search(r"\d", v):
-            raise ValueError("Password must contain at least one number")
+        if not result.is_valid:
+            error_msg = "; ".join(result.missing_requirements)
+            raise ValueError(f"Password validation failed: {error_msg}")
 
         return v
 
+    @validator("full_name")
+    def validate_full_name(cls, v):
+        """
+        Validate full name with Arabic + English support
+
+        Uses InputValidator for comprehensive name validation
+        """
+        if not v or not v.strip():
+            raise ValueError("Full name cannot be empty")
+
+        from apps.api.services.input_validator import InputValidator
+
+        result = InputValidator.validate_name(v.strip())
+
+        if not result.is_valid:
+            raise ValueError(result.error_message)
+
+        # Check for XSS patterns
+        has_xss, xss_warnings = InputValidator.detect_xss_patterns(v)
+        if has_xss:
+            raise ValueError("Full name contains potentially dangerous characters")
+
+        return result.sanitized_value
+
     @validator("iraqi_id")
-    def validate_iraqi_id(cls, v, values):
-        """Validate Iraqi ID format if provided"""
+    def validate_iraqi_id_format(cls, v, values):
+        """
+        Validate Iraqi ID format (15 digits)
+
+        Updated from 12 digits to 15 digits per Task 115 requirements
+        Uses InputValidator for comprehensive validation
+        """
         if v is None:
             return v
 
-        import re
+        from apps.api.services.input_validator import InputValidator
 
-        # Iraqi ID format: 12 digits with regional prefix
-        regional_prefixes = {
-            IraqiRegion.BAGHDAD: "10",
-            IraqiRegion.BASRA: "06",
-            IraqiRegion.MOSUL: "02",
-            IraqiRegion.ERBIL: "05",
-        }
+        result = InputValidator.validate_iraqi_id(v.strip(), allow_formatted=True)
 
-        region = values.get("region", IraqiRegion.OTHER)
+        if not result.is_valid:
+            raise ValueError(result.error_message)
 
-        if region != IraqiRegion.OTHER:
-            expected_prefix = regional_prefixes.get(region)
-            if expected_prefix:
-                pattern = f"^{expected_prefix}\\d{{10}}$"
-                if not re.match(pattern, v):
-                    raise ValueError(
-                        f"Iraqi ID must start with {expected_prefix} for {region.value} region "
-                        f"and be 12 digits total"
-                    )
-        else:
-            # Generic validation for 'other' region
-            if not re.match(r"^\d{12}$", v):
-                raise ValueError("Iraqi ID must be 12 digits")
+        # Regional prefix validation (optional, can be enhanced)
+        region = values.get("region")
+        if region and result.validation_details.get("regional_prefix"):
+            # Note: Regional prefix mapping for 15-digit format may differ
+            # This is a placeholder for future enhancement
+            pass
 
-        return v
+        return result.sanitized_value
+
+    @validator("professional_license")
+    def validate_professional_license_format(cls, v, values):
+        """
+        Validate professional license format
+
+        Uses ProfessionalLicenseValidator for domain-specific validation
+        """
+        if v is None:
+            return v
+
+        domain = values.get("professional_domain")
+        if not domain:
+            raise ValueError("Professional domain required when license provided")
+
+        from apps.api.services.professional_license_validator import (
+            ProfessionalLicenseValidator,
+        )
+
+        result = ProfessionalLicenseValidator.validate(
+            license_number=v.strip(), domain=domain
+        )
+
+        if not result.is_valid:
+            raise ValueError(result.error_message)
+
+        return v.strip()
+
+    @validator("institutional_affiliation")
+    def validate_institutional_affiliation(cls, v):
+        """
+        Validate institutional affiliation (sanitize for XSS)
+
+        Logs security events when XSS sanitization modifies content
+        """
+        if v is None:
+            return v
+
+        from apps.api.services.xss_sanitizer import XSSSanitizer, SanitizationLevel
+
+        # Strip HTML for institutional affiliation
+        result = XSSSanitizer.sanitize(v.strip(), level=SanitizationLevel.STRICT)
+
+        if result.was_modified:
+            # Log security warning if content was modified
+            try:
+                # Redact potentially sensitive content - only log first/last 10 chars
+                original_preview = (
+                    v[:10] + "..." + v[-10:] if len(v) > 20 else "[REDACTED]"
+                )
+                sanitized_preview = (
+                    result.sanitized_value[:10] + "..." + result.sanitized_value[-10:]
+                    if len(result.sanitized_value) > 20
+                    else result.sanitized_value
+                )
+
+                security_logger.warning(
+                    "XSS sanitization modified institutional_affiliation",
+                    extra={
+                        "field": "institutional_affiliation",
+                        "original_preview": original_preview,
+                        "sanitized_preview": sanitized_preview,
+                        "removed_elements": result.removed_elements,
+                        "security_warnings": result.security_warnings,
+                        "sanitization_level": result.sanitization_level.value,
+                        "context": "user_registration",
+                    },
+                )
+            except Exception as log_error:
+                # Ensure logging errors don't break validation
+                security_logger.error(
+                    f"Failed to log XSS sanitization event: {log_error}"
+                )
+
+        return result.sanitized_value
 
 
 class LoginRequest(BaseModel):
-    """User login request"""
+    """User login request with input validation"""
 
     email: EmailStr
     password: str
-    device_id: Optional[str] = None
-    device_type: Optional[str] = None
-    platform: Optional[str] = None
+    device_id: Optional[str] = Field(default=None, max_length=200)
+    device_type: Optional[str] = Field(default=None, max_length=100)
+    platform: Optional[str] = Field(default=None, max_length=100)
+
+    @validator("device_id", "device_type", "platform")
+    def validate_device_fields(cls, v):
+        """Validate device fields for XSS"""
+        if v is None:
+            return v
+
+        from apps.api.services.xss_sanitizer import XSSSanitizer, SanitizationLevel
+
+        result = XSSSanitizer.sanitize(v.strip(), level=SanitizationLevel.STRICT)
+        return result.sanitized_value
 
 
 class CulturalContext(BaseModel):
@@ -228,32 +341,65 @@ class AuthenticationResult(BaseModel):
 
 
 class MFASetupRequest(BaseModel):
-    """MFA setup request"""
+    """MFA setup request with input validation"""
 
     method: str = Field(..., description="MFA method (sms, email, cultural_questions)")
     phone_number: Optional[str] = Field(
         default=None, description="Phone number for SMS MFA"
     )
-    backup_email: Optional[str] = Field(
+    backup_email: Optional[EmailStr] = Field(
         default=None, description="Backup email for MFA"
     )
     respect_prayer_times: bool = Field(
         default=True, description="Respect prayer times for MFA prompts"
     )
     cultural_timing_flexibility: int = Field(
-        default=15, description="Cultural timing flexibility in minutes"
+        default=15, ge=0, le=60, description="Cultural timing flexibility in minutes"
     )
+
+    @validator("phone_number")
+    def validate_phone_number(cls, v):
+        """Validate Iraqi phone number format"""
+        if v is None:
+            return v
+
+        from apps.api.services.input_validator import InputValidator
+
+        result = InputValidator.validate_phone(v.strip())
+
+        if not result.is_valid:
+            raise ValueError(result.error_message)
+
+        return result.sanitized_value
 
 
 class MFAVerificationRequest(BaseModel):
     """MFA verification request"""
 
     verification_id: str
-    code: str
-    device_id: Optional[str] = None
+    code: str = Field(..., min_length=4, max_length=10)
+    device_id: Optional[str] = Field(default=None, max_length=200)
     remember_device: bool = Field(
         default=False, description="Remember this device for future logins"
     )
+
+    @validator("code")
+    def validate_code(cls, v):
+        """Validate MFA code (digits only)"""
+        if not v.isdigit():
+            raise ValueError("MFA code must contain only digits")
+        return v
+
+    @validator("verification_id", "device_id")
+    def sanitize_ids(cls, v):
+        """Sanitize ID fields"""
+        if v is None:
+            return v
+
+        from apps.api.services.xss_sanitizer import XSSSanitizer, SanitizationLevel
+
+        result = XSSSanitizer.sanitize(v.strip(), level=SanitizationLevel.STRICT)
+        return result.sanitized_value
 
 
 class PasswordResetRequest(BaseModel):
@@ -265,27 +411,29 @@ class PasswordResetRequest(BaseModel):
 class PasswordResetConfirmation(BaseModel):
     """Password reset confirmation"""
 
-    token: str
-    new_password: str
+    token: str = Field(..., max_length=500)
+    new_password: str = Field(..., min_length=8, max_length=72)
 
     @validator("new_password")
     def validate_password_strength(cls, v):
         """Validate password strength"""
-        import re
+        from apps.api.services.password_utils import PasswordUtils
 
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
+        result = PasswordUtils.validate_password_strength(v)
 
-        if not re.search(r"[A-Z]", v):
-            raise ValueError("Password must contain at least one uppercase letter")
-
-        if not re.search(r"[a-z]", v):
-            raise ValueError("Password must contain at least one lowercase letter")
-
-        if not re.search(r"\d", v):
-            raise ValueError("Password must contain at least one number")
+        if not result.is_valid:
+            error_msg = "; ".join(result.missing_requirements)
+            raise ValueError(f"Password validation failed: {error_msg}")
 
         return v
+
+    @validator("token")
+    def sanitize_token(cls, v):
+        """Sanitize token"""
+        from apps.api.services.xss_sanitizer import XSSSanitizer, SanitizationLevel
+
+        result = XSSSanitizer.sanitize(v.strip(), level=SanitizationLevel.STRICT)
+        return result.sanitized_value
 
 
 class SessionInfo(BaseModel):
