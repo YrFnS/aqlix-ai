@@ -161,16 +161,19 @@ class MFAManager:
         return f"{masked_local}@{masked_domain}"
 
     @classmethod
-    def setup_mfa(
+    async def setup_mfa(
         cls,
         user_id: str,
         method: MFAMethod,
         destination: Optional[str] = None,
         respect_prayer_times: bool = True,
         cultural_timing_flexibility: int = 15,
+        city: str = "baghdad",
     ) -> MFASetupResult:
         """
         Setup MFA for user
+
+        Now uses Aladhan API for accurate prayer times
 
         Args:
             user_id: User ID
@@ -178,6 +181,7 @@ class MFAManager:
             destination: Phone number or email for verification
             respect_prayer_times: Whether to respect prayer times
             cultural_timing_flexibility: Minutes of flexibility
+            city: Iraqi city for prayer times (baghdad, basra, mosul, erbil)
 
         Returns:
             MFASetupResult with verification details
@@ -185,10 +189,11 @@ class MFAManager:
         # Import here to avoid circular imports
         from .cultural_context_manager import CulturalContextManager
 
-        # Check prayer time delay
-        should_delay, delay_reason = CulturalContextManager.should_delay_mfa(
+        # Check prayer time delay using Aladhan API
+        should_delay, delay_reason = await CulturalContextManager.should_delay_mfa(
             respect_prayer_times=respect_prayer_times,
             cultural_timing_flexibility=cultural_timing_flexibility,
+            city=city,
         )
 
         if should_delay:

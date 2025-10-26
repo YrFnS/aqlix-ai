@@ -167,3 +167,5 @@ repo-structure/
 .turbo/
 .vercel/
 .contentlayer/
+*.mcp.json
+.mcp.json.example

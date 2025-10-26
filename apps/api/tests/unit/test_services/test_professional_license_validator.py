@@ -24,36 +24,36 @@ class TestProfessionalLicenseValidatorBasicFormat:
         assert result.error_message is None
 
     def test_valid_medical_license(self):
-        """Valid medical license format MED-123456-BA"""
+        """Valid medical license format MED-123456-SU (MED-<6 digits>-<specialty code>)"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="MED-123456-BA",
+            license_number="MED-123456-SU",
             domain=ProfessionalDomain.MEDICAL,
         )
         assert result.is_valid is True
         assert result.error_message is None
 
     def test_valid_educational_license(self):
-        """Valid educational license format EDU-12345-2025"""
+        """Valid educational license format EDU-789012-BA (EDU-<6 digits>-<region>)"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="EDU-12345-2025",
+            license_number="EDU-789012-BA",
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is True
         assert result.error_message is None
 
     def test_valid_engineering_license(self):
-        """Valid engineering license format ENG-123456-CIV"""
+        """Valid engineering license format ENG-345678-CE (ENG-<6 digits>-<discipline>)"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-123456-CIV",
+            license_number="ENG-345678-CE",
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is True
         assert result.error_message is None
 
     def test_valid_organizational_license(self):
-        """Valid organizational license format ORG-12345-2025"""
+        """Valid organizational license format ORG-901234-MA (ORG-<6 digits>-<type>)"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ORG-12345-2025",
+            license_number="ORG-901234-MA",
             domain=ProfessionalDomain.ORGANIZATIONAL,
         )
         assert result.is_valid is True
@@ -153,12 +153,12 @@ class TestLegalLicenseFormat:
 
 
 class TestMedicalLicenseFormat:
-    """Test medical domain license format: MED-XXXXXX-YY"""
+    """Test medical domain license format: MED-XXXXXX-XX (MED-<6 digits>-<specialty code>)"""
 
     def test_correct_prefix(self):
         """Medical license must start with MED-"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="MED-123456-BA",
+            license_number="MED-123456-SU",
             domain=ProfessionalDomain.MEDICAL,
         )
         assert result.is_valid is True
@@ -166,14 +166,28 @@ class TestMedicalLicenseFormat:
     def test_wrong_prefix(self):
         """Medical license with wrong prefix should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="LAW-123456-BA",
+            license_number="LAW-123456-SU",
             domain=ProfessionalDomain.MEDICAL,
         )
         assert result.is_valid is False
 
     def test_valid_specialization_codes(self):
-        """Medical license should accept valid 2-letter codes"""
-        valid_codes = ["BA", "MO", "ER", "SU", "PE", "CA", "NE", "PS"]
+        """Medical license should accept valid specialty codes (SU, IM, PED, etc.)"""
+        # Test valid codes from MEDICAL_SPECIALTY_CODES
+        valid_codes = [
+            "SU",
+            "IM",
+            "PED",
+            "OB",
+            "GYN",
+            "CARD",
+            "ORTH",
+            "NEUR",
+            "DERM",
+            "PSY",
+            "RAD",
+            "ANES",
+        ]
         for code in valid_codes:
             result = ProfessionalLicenseValidator.validate(
                 license_number=f"MED-123456-{code}",
@@ -181,10 +195,19 @@ class TestMedicalLicenseFormat:
             )
             assert result.is_valid is True, f"Failed for code: {code}"
 
+    def test_invalid_specialization_code(self):
+        """Medical license with invalid specialty code should fail with clear message"""
+        result = ProfessionalLicenseValidator.validate(
+            license_number="MED-123456-XX",  # Invalid code
+            domain=ProfessionalDomain.MEDICAL,
+        )
+        assert result.is_valid is False
+        assert "specialty code" in result.error_message.lower()
+
     def test_lowercase_specialization_code(self):
         """Medical license with lowercase code should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="MED-123456-ba",
+            license_number="MED-123456-su",
             domain=ProfessionalDomain.MEDICAL,
         )
         assert result.is_valid is False
@@ -192,7 +215,7 @@ class TestMedicalLicenseFormat:
     def test_invalid_number_length(self):
         """Medical license with wrong number length should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="MED-1234-BA",  # Too short
+            license_number="MED-1234-SU",  # Too short (4 digits instead of 6)
             domain=ProfessionalDomain.MEDICAL,
         )
         assert result.is_valid is False
@@ -207,12 +230,12 @@ class TestMedicalLicenseFormat:
 
 
 class TestEducationalLicenseFormat:
-    """Test educational domain license format: EDU-XXXXX-YYYY"""
+    """Test educational domain license format: EDU-XXXXXX-XX (EDU-<6 digits>-<region>)"""
 
     def test_correct_prefix(self):
         """Educational license must start with EDU-"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="EDU-12345-2025",
+            license_number="EDU-789012-BA",
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is True
@@ -220,35 +243,47 @@ class TestEducationalLicenseFormat:
     def test_wrong_prefix(self):
         """Educational license with wrong prefix should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="LAW-12345-2025",
+            license_number="LAW-789012-BA",
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is False
 
-    def test_year_range_validation(self):
-        """Educational license should validate year range"""
-        # Valid year
+    def test_valid_region_codes(self):
+        """Educational license should accept valid Iraqi region codes"""
+        # Test valid codes from EDUCATIONAL_REGION_CODES
+        valid_codes = ["BA", "BS", "NI", "ER", "SU", "AN", "DI", "KI", "NA", "KA"]
+        for code in valid_codes:
+            result = ProfessionalLicenseValidator.validate(
+                license_number=f"EDU-789012-{code}",
+                domain=ProfessionalDomain.EDUCATIONAL,
+            )
+            assert result.is_valid is True, f"Failed for code: {code}"
+
+    def test_invalid_region_code(self):
+        """Educational license with invalid region code should fail with clear message"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="EDU-12345-2025",
+            license_number="EDU-789012-XX",  # Invalid code
             domain=ProfessionalDomain.EDUCATIONAL,
         )
-        assert result.is_valid is True
+        assert result.is_valid is False
+        assert "region code" in result.error_message.lower()
 
-        # Invalid year (too old)
+    def test_invalid_number_length(self):
+        """Educational license with wrong number length should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="EDU-12345-1960",
+            license_number="EDU-12345-BA",  # Too short (5 digits instead of 6)
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is False
 
 
 class TestEngineeringLicenseFormat:
-    """Test engineering domain license format: ENG-XXXXXX-YYY"""
+    """Test engineering domain license format: ENG-XXXXXX-XX (ENG-<6 digits>-<discipline>)"""
 
     def test_correct_prefix(self):
         """Engineering license must start with ENG-"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-123456-CIV",
+            license_number="ENG-345678-CE",
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is True
@@ -256,45 +291,55 @@ class TestEngineeringLicenseFormat:
     def test_wrong_prefix(self):
         """Engineering license with wrong prefix should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="LAW-123456-CIV",
+            license_number="LAW-345678-CE",
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is False
 
-    def test_valid_specialization_codes(self):
-        """Engineering license should accept valid 3-letter codes"""
-        valid_codes = ["CIV", "MEC", "ELE", "CHE", "ARC", "PET", "ENV"]
+    def test_valid_discipline_codes(self):
+        """Engineering license should accept valid 2-letter discipline codes"""
+        # Test valid codes from ENGINEERING_DISCIPLINE_CODES
+        valid_codes = ["CE", "ME", "EE", "CH", "AR", "PE", "IE", "CS", "EN", "AG"]
         for code in valid_codes:
             result = ProfessionalLicenseValidator.validate(
-                license_number=f"ENG-123456-{code}",
+                license_number=f"ENG-345678-{code}",
                 domain=ProfessionalDomain.ENGINEERING,
             )
             assert result.is_valid is True, f"Failed for code: {code}"
 
-    def test_lowercase_specialization_code(self):
+    def test_invalid_discipline_code(self):
+        """Engineering license with invalid discipline code should fail with clear message"""
+        result = ProfessionalLicenseValidator.validate(
+            license_number="ENG-345678-XX",  # Invalid code
+            domain=ProfessionalDomain.ENGINEERING,
+        )
+        assert result.is_valid is False
+        assert "discipline code" in result.error_message.lower()
+
+    def test_lowercase_discipline_code(self):
         """Engineering license with lowercase code should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-123456-civ",
+            license_number="ENG-345678-ce",
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is False
 
-    def test_two_letter_code(self):
-        """Engineering license with 2-letter code should fail"""
+    def test_three_letter_code(self):
+        """Engineering license with 3-letter code should fail (only 2 letters allowed)"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-123456-CI",
+            license_number="ENG-345678-CIV",
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is False
 
 
 class TestOrganizationalLicenseFormat:
-    """Test organizational domain license format: ORG-XXXXX-YYYY"""
+    """Test organizational domain license format: ORG-XXXXXX-XX (ORG-<6 digits>-<type>)"""
 
     def test_correct_prefix(self):
         """Organizational license must start with ORG-"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ORG-12345-2025",
+            license_number="ORG-901234-MA",
             domain=ProfessionalDomain.ORGANIZATIONAL,
         )
         assert result.is_valid is True
@@ -302,7 +347,35 @@ class TestOrganizationalLicenseFormat:
     def test_wrong_prefix(self):
         """Organizational license with wrong prefix should fail"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="LAW-12345-2025",
+            license_number="LAW-901234-MA",
+            domain=ProfessionalDomain.ORGANIZATIONAL,
+        )
+        assert result.is_valid is False
+
+    def test_valid_type_codes(self):
+        """Organizational license should accept valid type codes"""
+        # Test valid codes from ORGANIZATIONAL_TYPE_CODES
+        valid_codes = ["MA", "HR", "FI", "IT", "PR", "QA", "OP", "SA", "AD", "CO"]
+        for code in valid_codes:
+            result = ProfessionalLicenseValidator.validate(
+                license_number=f"ORG-901234-{code}",
+                domain=ProfessionalDomain.ORGANIZATIONAL,
+            )
+            assert result.is_valid is True, f"Failed for code: {code}"
+
+    def test_invalid_type_code(self):
+        """Organizational license with invalid type code should fail with clear message"""
+        result = ProfessionalLicenseValidator.validate(
+            license_number="ORG-901234-XX",  # Invalid code
+            domain=ProfessionalDomain.ORGANIZATIONAL,
+        )
+        assert result.is_valid is False
+        assert "type code" in result.error_message.lower()
+
+    def test_invalid_number_length(self):
+        """Organizational license with wrong number length should fail"""
+        result = ProfessionalLicenseValidator.validate(
+            license_number="ORG-12345-MA",  # Too short (5 digits instead of 6)
             domain=ProfessionalDomain.ORGANIZATIONAL,
         )
         assert result.is_valid is False
@@ -355,7 +428,7 @@ class TestCrossDomainValidation:
     def test_medical_license_in_legal_domain_fails(self):
         """Medical license format should fail in legal domain"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="MED-123456-BA",
+            license_number="MED-123456-SU",
             domain=ProfessionalDomain.LEGAL,
         )
         assert result.is_valid is False
@@ -363,7 +436,7 @@ class TestCrossDomainValidation:
     def test_engineering_license_in_educational_domain_fails(self):
         """Engineering license format should fail in educational domain"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-123456-CIV",
+            license_number="ENG-345678-CE",
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is False
@@ -437,7 +510,7 @@ class TestRealWorldScenarios:
     def test_baghdad_professor_license(self):
         """Baghdad university professor"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="EDU-24680-2015",
+            license_number="EDU-246801-BA",  # Baghdad region
             domain=ProfessionalDomain.EDUCATIONAL,
         )
         assert result.is_valid is True
@@ -446,16 +519,16 @@ class TestRealWorldScenarios:
     def test_mosul_civil_engineer_license(self):
         """Mosul civil engineer"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ENG-135792-CIV",
+            license_number="ENG-135792-CE",  # Civil Engineering
             domain=ProfessionalDomain.ENGINEERING,
         )
         assert result.is_valid is True
         assert result.domain == ProfessionalDomain.ENGINEERING
 
     def test_erbil_organization_license(self):
-        """Erbil professional organization"""
+        """Erbil professional organization manager"""
         result = ProfessionalLicenseValidator.validate(
-            license_number="ORG-11223-2022",
+            license_number="ORG-112233-MA",  # Management type
             domain=ProfessionalDomain.ORGANIZATIONAL,
         )
         assert result.is_valid is True

@@ -86,21 +86,98 @@ class ProfessionalLicenseValidator:
     Validates professional licenses for Iraqi domains with domain-specific rules.
     Most licenses require manual verification by domain authorities.
 
-    License Format Examples:
-    - Legal: "LAW-BGD-2020-12345" (Law-City-Year-Number)
-    - Medical: "MED-PHYS-IMA-2018-98765" (Med-Specialty-Authority-Year-Number)
-    - Educational: "EDU-UNI-MOE-2015-54321" (Edu-Level-Authority-Year-Number)
-    - Engineering: "ENG-CIV-IES-2019-11111" (Eng-Discipline-Authority-Year-Number)
-    - Organizational: "ORG-PM-MOP-2021-22222" (Org-Type-Authority-Year-Number)
+    License Format Examples (Simplified):
+    - Legal: "LAW-12345-2020" (LAW-<5 digits>-<year>)
+    - Medical: "MED-123456-SU" (MED-<6 digits>-<specialty code>)
+    - Educational: "EDU-789012-BA" (EDU-<6 digits>-<region>)
+    - Engineering: "ENG-345678-CE" (ENG-<6 digits>-<discipline>)
+    - Organizational: "ORG-901234-MA" (ORG-<6 digits>-<type>)
+
+    Valid Codes:
+    - Medical Specialties: SU (Surgery), IM (Internal Medicine), PED (Pediatrics), etc.
+    - Educational Regions: BA (Baghdad), BS (Basra), NI (Nineveh), ER (Erbil), etc.
+    - Engineering Disciplines: CE (Civil), ME (Mechanical), EE (Electrical), etc.
+    - Organizational Types: MA (Management), HR (Human Resources), FI (Finance), etc.
     """
 
-    # Domain-specific license format patterns
+    # Domain-specific license format patterns (simplified format)
+    # Legal: LAW-12345-2020 (LAW-<5 digits>-<year>)
+    # Medical: MED-123456-SU (MED-<6 digits>-<specialty code>)
+    # Educational: EDU-789012-BA (EDU-<6 digits>-<region>)
+    # Engineering: ENG-345678-CE (ENG-<6 digits>-<discipline>)
+    # Organizational: ORG-901234-MA (ORG-<6 digits>-<type>)
     LICENSE_PATTERNS = {
-        ProfessionalDomain.LEGAL: r"^LAW-[A-Z]{3}-\d{4}-\d{5}$",
-        ProfessionalDomain.MEDICAL: r"^MED-[A-Z]{4}-[A-Z]{3}-\d{4}-\d{5}$",
-        ProfessionalDomain.EDUCATIONAL: r"^EDU-[A-Z]{3}-[A-Z]{3}-\d{4}-\d{5}$",
-        ProfessionalDomain.ENGINEERING: r"^ENG-[A-Z]{3}-[A-Z]{3}-\d{4}-\d{5}$",
-        ProfessionalDomain.ORGANIZATIONAL: r"^ORG-[A-Z]{2,4}-[A-Z]{3}-\d{4}-\d{5}$",
+        ProfessionalDomain.LEGAL: r"^LAW-\d{5}-\d{4}$",
+        ProfessionalDomain.MEDICAL: r"^MED-\d{6}-[A-Z]{2,4}$",
+        ProfessionalDomain.EDUCATIONAL: r"^EDU-\d{6}-[A-Z]{2}$",
+        ProfessionalDomain.ENGINEERING: r"^ENG-\d{6}-[A-Z]{2}$",
+        ProfessionalDomain.ORGANIZATIONAL: r"^ORG-\d{6}-[A-Z]{2}$",
+    }
+
+    # Valid specialty codes for medical domain
+    MEDICAL_SPECIALTY_CODES = {
+        "SU": "Surgery",
+        "IM": "Internal Medicine",
+        "PED": "Pediatrics",
+        "OB": "Obstetrics",
+        "GYN": "Gynecology",
+        "CARD": "Cardiology",
+        "ORTH": "Orthopedics",
+        "NEUR": "Neurology",
+        "DERM": "Dermatology",
+        "PSY": "Psychiatry",
+        "RAD": "Radiology",
+        "ANES": "Anesthesiology",
+    }
+
+    # Valid region codes for educational domain (Iraqi governorates)
+    EDUCATIONAL_REGION_CODES = {
+        "BA": "Baghdad",
+        "BS": "Basra",
+        "NI": "Nineveh (Mosul)",
+        "ER": "Erbil",
+        "SU": "Sulaymaniyah",
+        "AN": "Anbar",
+        "DI": "Diyala",
+        "KI": "Kirkuk",
+        "NA": "Najaf",
+        "KA": "Karbala",
+        "WA": "Wasit",
+        "SA": "Salah ad-Din",
+        "QA": "Qadisiyyah",
+        "BB": "Babil",
+        "DH": "Dhi Qar",
+        "MY": "Maysan",
+        "MU": "Muthanna",
+        "DU": "Duhok",
+    }
+
+    # Valid discipline codes for engineering domain
+    ENGINEERING_DISCIPLINE_CODES = {
+        "CE": "Civil Engineering",
+        "ME": "Mechanical Engineering",
+        "EE": "Electrical Engineering",
+        "CH": "Chemical Engineering",
+        "AR": "Architecture",
+        "PE": "Petroleum Engineering",
+        "IE": "Industrial Engineering",
+        "CS": "Computer Engineering",
+        "EN": "Environmental Engineering",
+        "AG": "Agricultural Engineering",
+    }
+
+    # Valid type codes for organizational domain
+    ORGANIZATIONAL_TYPE_CODES = {
+        "MA": "Management",
+        "HR": "Human Resources",
+        "FI": "Finance",
+        "IT": "Information Technology",
+        "PR": "Project Management",
+        "QA": "Quality Assurance",
+        "OP": "Operations",
+        "SA": "Strategic Analysis",
+        "AD": "Administration",
+        "CO": "Consulting",
     }
 
     # Valid issuing authorities by domain
@@ -154,6 +231,210 @@ class ProfessionalLicenseValidator:
             return False
 
         return bool(re.match(pattern, license_number))
+
+    @classmethod
+    def validate_legal_license(cls, license_number: str) -> tuple[bool, Optional[str]]:
+        """
+        Validate legal professional license format
+        Format: LAW-12345-2020 (LAW-<5 digits>-<year>)
+
+        Args:
+            license_number: License number to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import re
+        from datetime import datetime
+
+        if not license_number:
+            return False, "License number is required"
+
+        # Check basic format
+        if not re.match(cls.LICENSE_PATTERNS[ProfessionalDomain.LEGAL], license_number):
+            return (
+                False,
+                "Invalid legal license format. Expected: LAW-12345-2020 (LAW-<5 digits>-<year>)",
+            )
+
+        # Extract year component
+        parts = license_number.split("-")
+        year = int(parts[2])
+
+        # Validate year is reasonable (1970 - current year)
+        current_year = datetime.now().year
+        if year < 1970 or year > current_year:
+            return (
+                False,
+                f"Invalid year in license. Year must be between 1970 and {current_year}",
+            )
+
+        return True, None
+
+    @classmethod
+    def validate_medical_license(
+        cls, license_number: str
+    ) -> tuple[bool, Optional[str]]:
+        """
+        Validate medical professional license format
+        Format: MED-123456-SU (MED-<6 digits>-<specialty code>)
+
+        Args:
+            license_number: License number to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import re
+
+        if not license_number:
+            return False, "License number is required"
+
+        # Check basic format
+        if not re.match(
+            cls.LICENSE_PATTERNS[ProfessionalDomain.MEDICAL], license_number
+        ):
+            return (
+                False,
+                "Invalid medical license format. Expected: MED-123456-SU (MED-<6 digits>-<specialty code>)",
+            )
+
+        # Extract specialty code
+        parts = license_number.split("-")
+        specialty_code = parts[2]
+
+        # Validate specialty code
+        if specialty_code not in cls.MEDICAL_SPECIALTY_CODES:
+            valid_codes = ", ".join(cls.MEDICAL_SPECIALTY_CODES.keys())
+            return (
+                False,
+                f"Invalid medical specialty code '{specialty_code}'. Valid codes: {valid_codes}",
+            )
+
+        return True, None
+
+    @classmethod
+    def validate_educational_license(
+        cls, license_number: str
+    ) -> tuple[bool, Optional[str]]:
+        """
+        Validate educational professional license format
+        Format: EDU-789012-BA (EDU-<6 digits>-<region>)
+
+        Args:
+            license_number: License number to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import re
+
+        if not license_number:
+            return False, "License number is required"
+
+        # Check basic format
+        if not re.match(
+            cls.LICENSE_PATTERNS[ProfessionalDomain.EDUCATIONAL], license_number
+        ):
+            return (
+                False,
+                "Invalid educational license format. Expected: EDU-789012-BA (EDU-<6 digits>-<region>)",
+            )
+
+        # Extract region code
+        parts = license_number.split("-")
+        region_code = parts[2]
+
+        # Validate region code
+        if region_code not in cls.EDUCATIONAL_REGION_CODES:
+            valid_codes = ", ".join(cls.EDUCATIONAL_REGION_CODES.keys())
+            return (
+                False,
+                f"Invalid region code '{region_code}'. Valid codes: {valid_codes}",
+            )
+
+        return True, None
+
+    @classmethod
+    def validate_engineering_license(
+        cls, license_number: str
+    ) -> tuple[bool, Optional[str]]:
+        """
+        Validate engineering professional license format
+        Format: ENG-345678-CE (ENG-<6 digits>-<discipline>)
+
+        Args:
+            license_number: License number to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import re
+
+        if not license_number:
+            return False, "License number is required"
+
+        # Check basic format
+        if not re.match(
+            cls.LICENSE_PATTERNS[ProfessionalDomain.ENGINEERING], license_number
+        ):
+            return (
+                False,
+                "Invalid engineering license format. Expected: ENG-345678-CE (ENG-<6 digits>-<discipline>)",
+            )
+
+        # Extract discipline code
+        parts = license_number.split("-")
+        discipline_code = parts[2]
+
+        # Validate discipline code
+        if discipline_code not in cls.ENGINEERING_DISCIPLINE_CODES:
+            valid_codes = ", ".join(cls.ENGINEERING_DISCIPLINE_CODES.keys())
+            return (
+                False,
+                f"Invalid discipline code '{discipline_code}'. Valid codes: {valid_codes}",
+            )
+
+        return True, None
+
+    @classmethod
+    def validate_organizational_license(
+        cls, license_number: str
+    ) -> tuple[bool, Optional[str]]:
+        """
+        Validate organizational professional license format
+        Format: ORG-901234-MA (ORG-<6 digits>-<type>)
+
+        Args:
+            license_number: License number to validate
+
+        Returns:
+            Tuple of (is_valid, error_message)
+        """
+        import re
+
+        if not license_number:
+            return False, "License number is required"
+
+        # Check basic format
+        if not re.match(
+            cls.LICENSE_PATTERNS[ProfessionalDomain.ORGANIZATIONAL], license_number
+        ):
+            return (
+                False,
+                "Invalid organizational license format. Expected: ORG-901234-MA (ORG-<6 digits>-<type>)",
+            )
+
+        # Extract type code
+        parts = license_number.split("-")
+        type_code = parts[2]
+
+        # Validate type code
+        if type_code not in cls.ORGANIZATIONAL_TYPE_CODES:
+            valid_codes = ", ".join(cls.ORGANIZATIONAL_TYPE_CODES.keys())
+            return False, f"Invalid type code '{type_code}'. Valid codes: {valid_codes}"
+
+        return True, None
 
     @staticmethod
     def validate_issuing_authority(
@@ -331,16 +612,41 @@ class ProfessionalLicenseValidator:
             "manual_verification_required": True,
         }
 
-        # Step 1: Validate license format
-        format_valid = cls.validate_license_format(license_number, domain)
+        # Step 1: Validate license format with domain-specific validators
+        format_valid = False
+        format_error = None
+
+        # Use domain-specific validators for detailed error messages
+        if domain == ProfessionalDomain.LEGAL:
+            format_valid, format_error = cls.validate_legal_license(license_number)
+        elif domain == ProfessionalDomain.MEDICAL:
+            format_valid, format_error = cls.validate_medical_license(license_number)
+        elif domain == ProfessionalDomain.EDUCATIONAL:
+            format_valid, format_error = cls.validate_educational_license(
+                license_number
+            )
+        elif domain == ProfessionalDomain.ENGINEERING:
+            format_valid, format_error = cls.validate_engineering_license(
+                license_number
+            )
+        elif domain == ProfessionalDomain.ORGANIZATIONAL:
+            format_valid, format_error = cls.validate_organizational_license(
+                license_number
+            )
+        else:
+            # Fallback to basic format validation
+            format_valid = cls.validate_license_format(license_number, domain)
+            if not format_valid:
+                format_error = f"Invalid license format for {domain.value} domain"
+
         validation_details["format_valid"] = format_valid
 
         if not format_valid:
             return ProfessionalLicenseValidationResult(
                 is_valid=False,
                 verification_status=LicenseVerificationStatus.REJECTED,
-                error_message=f"Invalid license format for {domain.value} domain. "
-                f"Expected format: {cls.LICENSE_PATTERNS.get(domain)}",
+                error_message=format_error
+                or f"Invalid license format for {domain.value} domain",
                 domain=domain,
                 license_format_valid=False,
                 requires_manual_verification=True,

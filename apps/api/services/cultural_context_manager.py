@@ -203,19 +203,23 @@ class CulturalContextManager:
         return None
 
     @classmethod
-    def should_delay_mfa(
+    async def should_delay_mfa(
         cls,
         respect_prayer_times: bool = True,
         cultural_timing_flexibility: int = 15,
         current_time: Optional[datetime] = None,
+        city: str = "baghdad",
     ) -> tuple[bool, Optional[str]]:
         """
         Check if MFA should be delayed due to prayer time
+
+        Now uses Aladhan API for accurate prayer times instead of hardcoded times
 
         Args:
             respect_prayer_times: Whether to respect prayer times
             cultural_timing_flexibility: Minutes of flexibility before/after prayer
             current_time: Current time (defaults to now)
+            city: Iraqi city for prayer times (baghdad, basra, mosul, erbil)
 
         Returns:
             Tuple of (should_delay, reason)
@@ -226,33 +230,29 @@ class CulturalContextManager:
         if current_time is None:
             current_time = datetime.now(cls.IRAQ_TIMEZONE)
 
-        current_prayer = cls.get_current_prayer_time(current_time)
+        # Import prayer times service
+        from apps.api.services.prayer_times_service import PrayerTimesService
 
-        if current_prayer:
-            return (
-                True,
-                f"During {current_prayer.prayer_name.value} prayer time. "
-                f"Please try again after {current_prayer.end_time.strftime('%H:%M')}",
-            )
+        # Check if currently in prayer time using Aladhan API
+        is_prayer, prayer_name = await PrayerTimesService.is_prayer_time(
+            city=city, flexibility_minutes=cultural_timing_flexibility
+        )
 
-        # Check if we're within flexibility window before prayer
-        current_time_only = current_time.time()
-        for prayer, times in cls.PRAYER_TIMES.items():
-            start = times["start"]
+        if is_prayer and prayer_name:
+            # Get next prayer time to inform user when to retry
+            next_prayer_info = await PrayerTimesService.get_next_prayer(city=city)
 
-            # Calculate if we're within flexibility minutes before prayer
-            from datetime import timedelta
-
-            flexibility_delta = timedelta(minutes=cultural_timing_flexibility)
-            check_time = (
-                datetime.combine(datetime.today(), start) - flexibility_delta
-            ).time()
-
-            if check_time <= current_time_only < start:
+            if next_prayer_info:
+                next_prayer_name, next_prayer_time = next_prayer_info
                 return (
                     True,
-                    f"Approaching {prayer.value} prayer time. "
-                    f"Please complete authentication now or wait until after {times['end'].strftime('%H:%M')}",
+                    f"During {prayer_name} prayer time. "
+                    f"Please try again after the prayer (next prayer: {next_prayer_name} at {next_prayer_time})",
+                )
+            else:
+                return (
+                    True,
+                    f"During {prayer_name} prayer time. Please try again after the prayer.",
                 )
 
         return False, None
