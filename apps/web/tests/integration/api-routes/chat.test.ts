@@ -155,9 +155,30 @@ describe("Chat API Integration", () => {
       const data = await response.json();
       expect(data).toHaveProperty("timestamp");
 
-      // Verify timestamp is in Baghdad timezone (UTC+3)
+      // Verify timestamp is in Baghdad timezone (UTC+3 / Asia/Baghdad)
       const timestamp = new Date(data.timestamp);
       expect(timestamp).toBeInstanceOf(Date);
+
+      // Validate timestamp formatting in Baghdad timezone
+      const baghdadTime = timestamp.toLocaleString("en-US", {
+        timeZone: "Asia/Baghdad",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+      expect(baghdadTime).toMatch(/\d{1,2}:\d{2} (AM|PM)/);
+
+      // Verify the timestamp offset matches Baghdad (UTC+3)
+      const baghdadHour = parseInt(
+        timestamp.toLocaleString("en-US", {
+          timeZone: "Asia/Baghdad",
+          hour: "numeric",
+          hour12: false,
+        }),
+      );
+      const utcHour = timestamp.getUTCHours();
+      const offset = (baghdadHour - utcHour + 24) % 24;
+      expect(offset).toBe(3); // Baghdad is UTC+3
     });
 
     test("should handle professional domain queries", async () => {

@@ -45,13 +45,12 @@ const window = new Window({
 window.document.documentElement.setAttribute("dir", "rtl");
 window.document.documentElement.setAttribute("lang", "ar-IQ");
 
-// Add Arabic font support
+// Add Arabic font support using system fonts (no external dependencies)
+// Tests don't need actual font rendering, so we use safe fallback fonts
 const fontStyle = window.document.createElement("style");
 fontStyle.textContent = `
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
-
   .font-arabic {
-    font-family: 'Noto Sans Arabic', 'Amiri', 'Arial Unicode MS', sans-serif;
+    font-family: 'Arial Unicode MS', 'DejaVu Sans', sans-serif;
     direction: rtl;
     text-align: right;
   }
@@ -64,9 +63,9 @@ fontStyle.textContent = `
     direction: ltr;
   }
 
-  /* Iraqi AI specific styles */
+  /* Iraqi AI specific styles - using system fonts for test reliability */
   body {
-    font-family: 'Noto Sans Arabic', sans-serif;
+    font-family: 'Arial Unicode MS', 'DejaVu Sans', sans-serif;
   }
 `;
 window.document.head.appendChild(fontStyle);
@@ -115,21 +114,82 @@ const mockRouter = {
 (global as any).mockRouter = mockRouter;
 
 // Mock IntersectionObserver for component testing
+// Properly accepts callback and options to support components that rely on intersection events
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
+  private callback: IntersectionObserverCallback;
+  private options?: IntersectionObserverInit;
+
+  constructor(
+    callback: IntersectionObserverCallback,
+    options?: IntersectionObserverInit,
+  ) {
+    this.callback = callback;
+    this.options = options;
+  }
+
   disconnect() {}
-  observe() {}
+
+  observe(target: Element) {
+    // Simulate intersection by triggering callback with mock entry
+    this.callback(
+      [
+        {
+          isIntersecting: true,
+          target,
+          boundingClientRect: {} as DOMRectReadOnly,
+          intersectionRatio: 1,
+          intersectionRect: {} as DOMRectReadOnly,
+          rootBounds: null,
+          time: Date.now(),
+        } as IntersectionObserverEntry,
+      ],
+      this,
+    );
+  }
+
   unobserve() {}
+
   takeRecords() {
     return [];
   }
 } as any;
 
 // Mock ResizeObserver for component testing
+// Properly accepts callback to support components that rely on resize events
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
+  private callback: ResizeObserverCallback;
+
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+  }
+
   disconnect() {}
-  observe() {}
+
+  observe(target: Element) {
+    // Simulate resize by triggering callback with mock entry
+    this.callback(
+      [
+        {
+          target,
+          contentRect: {
+            width: 1024,
+            height: 768,
+            top: 0,
+            left: 0,
+            bottom: 768,
+            right: 1024,
+            x: 0,
+            y: 0,
+          } as DOMRectReadOnly,
+          borderBoxSize: [] as any,
+          contentBoxSize: [] as any,
+          devicePixelContentBoxSize: [] as any,
+        } as ResizeObserverEntry,
+      ],
+      this,
+    );
+  }
+
   unobserve() {}
 } as any;
 

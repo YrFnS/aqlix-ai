@@ -226,10 +226,7 @@ test.describe("User Journey: Iraqi Professional Registration", () => {
     await page.click('[data-testid="domain-legal"]');
 
     // Step 3: Fill professional license
-    await page.fill(
-      '[data-testid="professional-license"]',
-      "LAW-12345-2024",
-    );
+    await page.fill('[data-testid="professional-license"]', "LAW-12345-2024");
 
     // Step 4: Select region (Baghdad)
     await page.click('[data-testid="region-select"]');
@@ -271,10 +268,7 @@ test.describe("User Journey: Iraqi Professional Registration", () => {
     await page.click('[data-testid="domain-medical"]');
 
     // Fill medical license with specialization
-    await page.fill(
-      '[data-testid="professional-license"]',
-      "MED-123456-BA",
-    );
+    await page.fill('[data-testid="professional-license"]', "MED-123456-BA");
 
     // Select region (Basra)
     await page.click('[data-testid="region-select"]');
@@ -318,10 +312,7 @@ test.describe("User Journey: Iraqi Professional Registration", () => {
     await page.fill('[data-testid="iraqi-id"]', "101234567890");
 
     // Fill professional license
-    await page.fill(
-      '[data-testid="professional-license"]',
-      "ENG-123456-CIV",
-    );
+    await page.fill('[data-testid="professional-license"]', "ENG-123456-CIV");
 
     // Select region
     await page.click('[data-testid="region-select"]');
@@ -354,9 +345,7 @@ test.describe("User Journey: Login with Cultural Greeting", () => {
     await expect(page).toHaveURL("/(app)/dashboard", { timeout: 10000 });
 
     // Check for Baghdad cultural greeting (شلونك - "how are you?" in Baghdad dialect)
-    const greetingElement = page.locator(
-      '[data-testid="cultural-greeting"]',
-    );
+    const greetingElement = page.locator('[data-testid="cultural-greeting"]');
     await expect(greetingElement).toBeVisible();
 
     // The greeting should contain the appropriate Iraqi dialect
@@ -388,7 +377,9 @@ test.describe("User Journey: Login with Cultural Greeting", () => {
     await expect(page).toHaveURL("/(app)/dashboard", { timeout: 10000 });
 
     // Verify greeting is shown
-    await expect(page.locator('[data-testid="cultural-greeting"]')).toBeVisible();
+    await expect(
+      page.locator('[data-testid="cultural-greeting"]'),
+    ).toBeVisible();
   });
 
   test("should respect regional dialect preferences", async ({ page }) => {
@@ -403,9 +394,7 @@ test.describe("User Journey: Login with Cultural Greeting", () => {
     await expect(page).toHaveURL("/(app)/dashboard", { timeout: 10000 });
 
     // Check that regional preference is applied
-    const regionPreference = page.locator(
-      '[data-testid="region-preference"]',
-    );
+    const regionPreference = page.locator('[data-testid="region-preference"]');
     await expect(regionPreference).toContainText("Basra");
   });
 });
@@ -433,9 +422,7 @@ test.describe("User Journey: MFA Setup with Prayer Time Consideration", () => {
     await page.click('[data-testid="mfa-submit"]');
 
     // Verify code input appears
-    await expect(
-      page.locator('[data-testid="mfa-code-input"]'),
-    ).toBeVisible();
+    await expect(page.locator('[data-testid="mfa-code-input"]')).toBeVisible();
 
     // Fill verification code (in real test, would get from SMS)
     await page.fill('[data-testid="mfa-code-input"]', "123456");
@@ -466,9 +453,7 @@ test.describe("User Journey: MFA Setup with Prayer Time Consideration", () => {
     await page.click('[data-testid="mfa-submit"]');
 
     // Verify code input appears
-    await expect(
-      page.locator('[data-testid="mfa-code-input"]'),
-    ).toBeVisible();
+    await expect(page.locator('[data-testid="mfa-code-input"]')).toBeVisible();
 
     // Fill verification code
     await page.fill('[data-testid="mfa-code-input"]', "123456");
@@ -507,15 +492,11 @@ test.describe("User Journey: MFA Setup with Prayer Time Consideration", () => {
 
     if (prayerVisible) {
       // Verify it mentions prayer time delay
-      await expect(prayerNotice).toContainText(
-        "prayer time",
-      );
+      await expect(prayerNotice).toContainText("prayer time");
     }
 
     // Verify code input still appears
-    await expect(
-      page.locator('[data-testid="mfa-code-input"]'),
-    ).toBeVisible();
+    await expect(page.locator('[data-testid="mfa-code-input"]')).toBeVisible();
   });
 });
 
@@ -585,7 +566,7 @@ test.describe("User Journey: Multi-Device Session Management", () => {
 
     // Login on both devices
     await page1.goto("/(auth)/login");
-    await page1.fill('[data-testid="signin-email"]', "alldevices@example.iq');
+    await page1.fill('[data-testid="signin-email"]', "alldevices@example.iq");
     await page1.fill('[data-testid="signin-password"]', "SecureP@ssw0rd123");
     await page1.click('[data-testid="signin-submit"]');
     await expect(page1).toHaveURL("/(app)/dashboard", { timeout: 10000 });
@@ -614,9 +595,7 @@ test.describe("User Journey: Multi-Device Session Management", () => {
     await context2.close();
   });
 
-  test("should track device information in session list", async ({
-    page,
-  }) => {
+  test("should track device information in session list", async ({ page }) => {
     await page.goto("/(auth)/login");
 
     // Login
@@ -630,15 +609,9 @@ test.describe("User Journey: Multi-Device Session Management", () => {
     await page.click('[data-testid="session-management"]');
 
     // Verify device information is displayed
-    await expect(
-      page.locator('[data-testid="device-name"]'),
-    ).toBeVisible();
-    await expect(
-      page.locator('[data-testid="device-type"]'),
-    ).toBeVisible();
-    await expect(
-      page.locator('[data-testid="last-activity"]'),
-    ).toBeVisible();
+    await expect(page.locator('[data-testid="device-name"]')).toBeVisible();
+    await expect(page.locator('[data-testid="device-type"]')).toBeVisible();
+    await expect(page.locator('[data-testid="last-activity"]')).toBeVisible();
   });
 });
 
@@ -662,10 +635,7 @@ test.describe("User Journey: Professional Domain Verification", () => {
     await page.click('[data-testid="domain-engineering"]');
 
     // Fill engineering license with civil specialization
-    await page.fill(
-      '[data-testid="professional-license"]',
-      "ENG-654321-CIV",
-    );
+    await page.fill('[data-testid="professional-license"]', "ENG-654321-CIV");
 
     // Select Erbil region
     await page.click('[data-testid="region-select"]');
@@ -683,7 +653,7 @@ test.describe("User Journey: Professional Domain Verification", () => {
     // A user with multiple professional licenses
     await page.goto("/(auth)/register");
 
-    await page.fill('[data-testid="signup-email"]', "multidomain@example.iq');
+    await page.fill('[data-testid="signup-email"]', "multidomain@example.iq");
     await page.fill('[data-testid="signup-password"]', "SecureP@ssw0rd123");
     await page.fill(
       '[data-testid="signup-confirm-password"]',
@@ -693,10 +663,7 @@ test.describe("User Journey: Professional Domain Verification", () => {
     // Select first domain (Medical)
     await page.click('[data-testid="professional-domain-select"]');
     await page.click('[data-testid="domain-medical"]');
-    await page.fill(
-      '[data-testid="professional-license"]',
-      "MED-123456-SU",
-    );
+    await page.fill('[data-testid="professional-license"]', "MED-123456-SU");
 
     // Check if option to add additional domain exists
     const addDomainButton = page.locator('[data-testid="add-domain"]');

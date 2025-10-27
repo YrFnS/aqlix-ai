@@ -12,7 +12,17 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 import { createServerClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@iraqi-ai/types";
+
+/**
+ * Cultural context returned from database
+ */
+interface CulturalContext {
+  region?: string;
+  languagePreference?: string;
+  islamicComplianceLevel?: string;
+}
 
 /**
  * Protected routes that require authentication
@@ -48,24 +58,30 @@ export async function middleware(request: NextRequest) {
   // Update session (refresh tokens if needed)
   const response = await updateSession(request);
 
+  // Validate required environment variables
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Missing required Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set",
+    );
+  }
+
   // Create Supabase client to check auth state
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options) {
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options) {
-          response.cookies.set({ name, value: "", ...options });
-        },
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options) {
+        response.cookies.set({ name, value, ...options });
+      },
+      remove(name: string, options) {
+        response.cookies.set({ name, value: "", ...options });
       },
     },
-  );
+  });
 
   // Get current user
   const {
@@ -82,8 +98,10 @@ export async function middleware(request: NextRequest) {
   // Check if route is an auth route
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
-  // Check if route is public
-  const isPublicRoute = PUBLIC_ROUTES.some((route) => pathname === route);
+  // Check if route is public (use exact match for homepage, startsWith for others)
+  const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+    route === "/" ? pathname === "/" : pathname.startsWith(route),
+  );
 
   // Handle protected routes
   if (isProtectedRoute && !isAuthenticated) {
@@ -145,11 +163,7 @@ export async function middleware(request: NextRequest) {
 /**
  * Get cultural context from cookies (fallback when user not authenticated)
  */
-function getCulturalContextFromCookies(request: NextRequest): {
-  languagePreference?: string;
-  region?: string;
-  islamicComplianceLevel?: string;
-} {
+function getCulturalContextFromCookies(request: NextRequest): CulturalContext {
   return {
     languagePreference: request.cookies.get("cultural_lang")?.value,
     region: request.cookies.get("cultural_region")?.value,
@@ -161,30 +175,43 @@ function getCulturalContextFromCookies(request: NextRequest): {
  * Get cultural context from database for authenticated users
  */
 async function getCulturalContextFromDatabase(
-  supabase: any,
+  supabase: SupabaseClient<Database>,
   userId: string,
-): Promise<{
-  region?: string;
-  languagePreference?: string;
-  islamicComplianceLevel?: string;
-}> {
+): Promise<CulturalContext> {
   try {
-    // TODO: Replace with actual database query once table is set up
-    // const { data } = await supabase
-    //   .from('iraqi_user_authentication')
-    //   .select('region, language_preference, islamic_compliance_level')
-    //   .eq('id', userId)
-    //   .single();
+    // Note: iraqi_user_authentication table exists in database but not yet in TypeScript types
+    // Using type assertion until types are regenerated from Supabase
+    const { data, error } = await (supabase as any)
+      .from("iraqi_user_authentication")
+      .select("region, language_preference, islamic_compliance_level")
+      .eq("id", userId)
+      .single();
 
-    // For now, return default values
+    if (error) {
+      console.error("Error fetching cultural context:", error);
+      // Return defaults on error
+      return {
+        region: "baghdad",
+        languagePreference: "both",
+        islamicComplianceLevel: "standard",
+      };
+    }
+
+    // Return user's cultural preferences from database
+    return {
+      region: (data?.region as string) || "baghdad",
+      languagePreference: (data?.language_preference as string) || "both",
+      islamicComplianceLevel:
+        (data?.islamic_compliance_level as string) || "standard",
+    };
+  } catch (error) {
+    console.error("Error fetching cultural context:", error);
+    // Return defaults on exception
     return {
       region: "baghdad",
       languagePreference: "both",
       islamicComplianceLevel: "standard",
     };
-  } catch (error) {
-    console.error("Error fetching cultural context:", error);
-    return {};
   }
 }
 

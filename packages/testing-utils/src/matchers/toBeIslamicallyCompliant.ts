@@ -16,10 +16,20 @@ async function validateIslamicCompliance(content: string): Promise<{
   violations: string[];
   recommendations: string[];
 }> {
+  // CRITICAL: This is a placeholder implementation that MUST NOT be used in production
+  // Throw error unless explicitly enabled for development/testing
+  if (process.env.ENABLE_PLACEHOLDER_VALIDATORS !== "true") {
+    throw new Error(
+      "Islamic compliance validation not implemented - this is a placeholder that always returns basic heuristic checks. " +
+        "Set ENABLE_PLACEHOLDER_VALIDATORS=true to bypass this error for development/testing (NOT FOR PRODUCTION). " +
+        "For production use, implement proper validation in @iraqi-ai/cultural-validators package.",
+    );
+  }
+
   // TEMPORARY PLACEHOLDER IMPLEMENTATION
   // This will be replaced with real validation in Task 6
 
-  // Simple heuristic checks for demo purposes
+  // Simple heuristic checks for demo purposes (NOT PRODUCTION-READY)
   const hasIslamicGreeting =
     content.includes("السلام عليكم") ||
     content.includes("بسم الله") ||

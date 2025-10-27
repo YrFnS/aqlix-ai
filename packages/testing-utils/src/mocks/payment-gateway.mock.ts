@@ -94,7 +94,7 @@ export function createMockPaymentGateway(config: MockPaymentConfig) {
           );
         }
 
-        const transactionId = `${gateway}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const transactionId = `${gateway}_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
         return {
           transactionId,
           status: "pending",

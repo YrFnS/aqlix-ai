@@ -37,18 +37,53 @@ const ISLAMIC_GREETINGS = [
 
 /**
  * Prohibited content patterns in Islam
+ * Latin patterns use \b (ASCII word boundaries)
+ * Arabic patterns use Unicode-aware boundaries: (?:^|[^\u0621-\u064A])TERM(?:$|[^\u0621-\u064A])
+ * Arabic Unicode range: \u0621-\u064A covers most Arabic letters
  */
 const PROHIBITED_PATTERNS = {
-  alcohol: [/alcohol/i, /beer/i, /wine/i, /whiskey/i, /خمر/, /كحول/, /بيرة/],
-  pork: [/pork/i, /bacon/i, /ham/i, /لحم خنزير/, /خنزير/],
-  gambling: [/gambling/i, /casino/i, /lottery/i, /قمار/, /كازينو/, /يانصيب/],
-  usury: [/usury/i, /interest rate/i, /ربا/],
+  alcohol: [
+    /\balcohol\b/i,
+    /\bbeer\b/i,
+    /\bwine\b/i,
+    /\bwhiskey\b/i,
+    /(?:^|[^\u0621-\u064A])خمر(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])كحول(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])بيرة(?:$|[^\u0621-\u064A])/,
+  ],
+  pork: [
+    /\bpork\b/i,
+    /\bbacon\b/i,
+    /\bham\b/i,
+    /(?:^|[^\u0621-\u064A])لحم خنزير(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])خنزير(?:$|[^\u0621-\u064A])/,
+  ],
+  gambling: [
+    /\bgambling\b/i,
+    /\bcasino\b/i,
+    /\blottery\b/i,
+    /(?:^|[^\u0621-\u064A])قمار(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])كازينو(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])يانصيب(?:$|[^\u0621-\u064A])/,
+  ],
+  usury: [
+    /\busury\b/i,
+    /\binterest rate\b/i,
+    /(?:^|[^\u0621-\u064A])ربا(?:$|[^\u0621-\u064A])/,
+  ],
 };
 
 /**
  * Disrespectful patterns
+ * Latin patterns use \b (ASCII word boundaries)
+ * Arabic patterns use Unicode-aware boundaries for proper word isolation
  */
-const DISRESPECTFUL_PATTERNS = [/blasphemy/i, /استهزاء/, /تجديف/, /إهانة/];
+const DISRESPECTFUL_PATTERNS = [
+  /\bblasphemy\b/i,
+  /(?:^|[^\u0621-\u064A])استهزاء(?:$|[^\u0621-\u064A])/,
+  /(?:^|[^\u0621-\u064A])تجديف(?:$|[^\u0621-\u064A])/,
+  /(?:^|[^\u0621-\u064A])إهانة(?:$|[^\u0621-\u064A])/,
+];
 
 /**
  * Validates content for Islamic compliance
@@ -163,8 +198,17 @@ export function checkReligiousRespect(content: string): {
   }
 
   // Check for mocking patterns combined with religious context
-  const mockingPatterns = [/mock/i, /استهزاء/];
-  const religiousContext = [/religion/i, /islam/i, /الدين/, /الإسلام/];
+  // Latin uses \b, Arabic uses Unicode-aware boundaries
+  const mockingPatterns = [
+    /\bmock\b/i,
+    /(?:^|[^\u0621-\u064A])استهزاء(?:$|[^\u0621-\u064A])/,
+  ];
+  const religiousContext = [
+    /\breligion\b/i,
+    /\bislam\b/i,
+    /(?:^|[^\u0621-\u064A])الدين(?:$|[^\u0621-\u064A])/,
+    /(?:^|[^\u0621-\u064A])الإسلام(?:$|[^\u0621-\u064A])/,
+  ];
 
   const hasMocking = mockingPatterns.some((pattern) => pattern.test(content));
   const hasReligiousContext = religiousContext.some((pattern) =>
