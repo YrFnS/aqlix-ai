@@ -321,3 +321,32 @@
     background: #fff;
   }
 }
+
+/* ========================================
+   Bidirectional Text Isolation Utilities
+   ========================================
+   Unicode Bidirectional Algorithm (UAX #9) support
+   for mixed Arabic-English content
+   ======================================== */
+
+@layer utilities {
+  /* Bidirectional Isolation for inline mixed content */
+  .bidi-isolate {
+    unicode-bidi: isolate;
+  }
+
+  /* Bidirectional Isolation Override (for forcing direction) */
+  .bidi-isolate-override {
+    unicode-bidi: isolate-override;
+  }
+
+  /* Plain Text Embedding (treats content as plain text) */
+  .bidi-plaintext {
+    unicode-bidi: plaintext;
+  }
+
+  /* Bidirectional Embed (legacy support) */
+  .bidi-embed {
+    unicode-bidi: embed;
+  }
+}

@@ -155,11 +155,13 @@ export function LoginForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-arabic">
-                  {culturalMode === "en-US"
-                    ? "Email Address"
-                    : culturalMode === "ar-IQ"
-                      ? "البريد الإلكتروني"
-                      : "البريد الإلكتروني / Email"}
+                  {culturalMode === "en-US" ? (
+                    "Email Address"
+                  ) : culturalMode === "ar-IQ" ? (
+                    "البريد الإلكتروني"
+                  ) : (
+                    <bdi>البريد الإلكتروني / Email</bdi>
+                  )}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -187,11 +189,13 @@ export function LoginForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="font-arabic">
-                  {culturalMode === "en-US"
-                    ? "Password"
-                    : culturalMode === "ar-IQ"
-                      ? "كلمة المرور"
-                      : "كلمة المرور / Password"}
+                  {culturalMode === "en-US" ? (
+                    "Password"
+                  ) : culturalMode === "ar-IQ" ? (
+                    "كلمة المرور"
+                  ) : (
+                    <bdi>كلمة المرور / Password</bdi>
+                  )}
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -209,7 +213,7 @@ export function LoginForm({
           />
 
           {/* Form-level Error */}
-          {formError && <FormError message={formError} />}
+          {formError && <FormError error={formError} />}
 
           {/* Submit Button */}
           <Button
@@ -217,17 +221,21 @@ export function LoginForm({
             className="font-arabic w-full"
             disabled={isPending}
           >
-            {isPending
-              ? culturalMode === "en-US"
-                ? "Signing in..."
-                : culturalMode === "ar-IQ"
-                  ? "جاري تسجيل الدخول..."
-                  : "جاري تسجيل الدخول... / Signing in..."
-              : culturalMode === "en-US"
-                ? "Sign In"
-                : culturalMode === "ar-IQ"
-                  ? "تسجيل الدخول"
-                  : "تسجيل الدخول / Sign In"}
+            {isPending ? (
+              culturalMode === "en-US" ? (
+                "Signing in..."
+              ) : culturalMode === "ar-IQ" ? (
+                "جاري تسجيل الدخول..."
+              ) : (
+                <bdi>جاري تسجيل الدخول... / Signing in...</bdi>
+              )
+            ) : culturalMode === "en-US" ? (
+              "Sign In"
+            ) : culturalMode === "ar-IQ" ? (
+              "تسجيل الدخول"
+            ) : (
+              <bdi>تسجيل الدخول / Sign In</bdi>
+            )}
           </Button>
         </form>
       </Form>
@@ -239,30 +247,36 @@ export function LoginForm({
           href="/auth/password-reset"
           className="text-primary hover:underline font-arabic block"
         >
-          {culturalMode === "en-US"
-            ? "Forgot your password?"
-            : culturalMode === "ar-IQ"
-              ? "نسيت كلمة المرور؟"
-              : "نسيت كلمة المرور؟ / Forgot password?"}
+          {culturalMode === "en-US" ? (
+            "Forgot your password?"
+          ) : culturalMode === "ar-IQ" ? (
+            "نسيت كلمة المرور؟"
+          ) : (
+            <bdi>نسيت كلمة المرور؟ / Forgot password?</bdi>
+          )}
         </a>
 
         {/* Register Link */}
         {showRegisterLink && (
           <p className="text-muted-foreground font-arabic">
-            {culturalMode === "en-US"
-              ? "Don't have an account? "
-              : culturalMode === "ar-IQ"
-                ? "ليس لديك حساب؟ "
-                : "ليس لديك حساب؟ / Don't have an account? "}
+            {culturalMode === "en-US" ? (
+              "Don't have an account? "
+            ) : culturalMode === "ar-IQ" ? (
+              "ليس لديك حساب؟ "
+            ) : (
+              <bdi>ليس لديك حساب؟ / Don't have an account? </bdi>
+            )}
             <a
               href="/auth/register"
               className="text-primary hover:underline font-bold"
             >
-              {culturalMode === "en-US"
-                ? "Register"
-                : culturalMode === "ar-IQ"
-                  ? "تسجيل حساب جديد"
-                  : "تسجيل / Register"}
+              {culturalMode === "en-US" ? (
+                "Register"
+              ) : culturalMode === "ar-IQ" ? (
+                "تسجيل حساب جديد"
+              ) : (
+                <bdi>تسجيل / Register</bdi>
+              )}
             </a>
           </p>
         )}

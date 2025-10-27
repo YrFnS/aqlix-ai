@@ -31,12 +31,22 @@ export interface TestAuthSession {
 /**
  * Generates a test authentication token for a user
  *
+ * @param credentials - Test user credentials
+ * @param autoCreate - Whether to auto-create user if not exists (default: false)
+ *
  * @example
  * ```typescript
+ * // Sign in to existing test user
  * const token = await generateTestToken({
  *   email: "test@example.com",
  *   password: "testpass123"
  * });
+ *
+ * // Create user if needed (explicit opt-in)
+ * const token = await generateTestToken({
+ *   email: "test@example.com",
+ *   password: "testpass123"
+ * }, true);
  *
  * // Use token in authenticated requests
  * fetch("/api/protected", {
@@ -46,6 +56,7 @@ export interface TestAuthSession {
  */
 export async function generateTestToken(
   credentials: TestUserCredentials,
+  autoCreate: boolean = false,
 ): Promise<string> {
   const supabaseUrl = process.env.SUPABASE_TEST_URL || process.env.SUPABASE_URL;
   const supabaseKey =
@@ -53,7 +64,7 @@ export async function generateTestToken(
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error(
-      "Supabase credentials not found. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
+      "Supabase credentials not found. Set SUPABASE_TEST_URL and SUPABASE_TEST_ANON_KEY (or SUPABASE_URL and SUPABASE_ANON_KEY).",
     );
   }
 
@@ -66,7 +77,14 @@ export async function generateTestToken(
   });
 
   if (error) {
-    // If user doesn't exist, create it
+    // Only create user if explicitly requested
+    if (!autoCreate) {
+      throw new Error(
+        `Test user does not exist. Set autoCreate=true to create user, or pre-create test users to avoid database pollution. Error: ${error.message}`,
+      );
+    }
+
+    // Auto-create user (requires explicit opt-in)
     const { data: signUpData, error: signUpError } = await client.auth.signUp({
       email: credentials.email,
       password: credentials.password,
@@ -115,12 +133,19 @@ export async function generateTestSession(
     throw new Error(`Failed to generate test session: ${error?.message}`);
   }
 
+  // Validate user email exists
+  if (!data.user?.email) {
+    throw new Error(
+      "User email required for token generation but was not returned by Supabase",
+    );
+  }
+
   return {
     access_token: data.session.access_token,
     refresh_token: data.session.refresh_token,
     user: {
       id: data.user.id,
-      email: data.user.email!,
+      email: data.user.email,
       role: credentials.role || "user",
     },
   };
@@ -141,8 +166,9 @@ export function generateMockToken(userId: string = "test-user-id"): string {
     exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
   };
 
-  const base64Header = btoa(JSON.stringify(header));
-  const base64Payload = btoa(JSON.stringify(payload));
+  // Use Buffer.from for Node.js compatibility (btoa is browser-only)
+  const base64Header = Buffer.from(JSON.stringify(header)).toString("base64");
+  const base64Payload = Buffer.from(JSON.stringify(payload)).toString("base64");
 
   // Note: This is a mock signature, not cryptographically valid
   const mockSignature = "mock-signature-for-testing";

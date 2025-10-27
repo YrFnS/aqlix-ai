@@ -208,11 +208,13 @@ export function RegisterForm({
           {/* Basic Information Section */}
           <div className="space-y-4">
             <h2 className="font-arabic text-lg font-semibold">
-              {culturalMode === "en-US"
-                ? "Basic Information"
-                : culturalMode === "ar-IQ"
-                  ? "المعلومات الأساسية"
-                  : "المعلومات الأساسية / Basic Information"}
+              {culturalMode === "en-US" ? (
+                "Basic Information"
+              ) : culturalMode === "ar-IQ" ? (
+                "المعلومات الأساسية"
+              ) : (
+                <bdi>المعلومات الأساسية / Basic Information</bdi>
+              )}
             </h2>
 
             {/* Full Name */}
@@ -222,11 +224,13 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-arabic">
-                    {culturalMode === "en-US"
-                      ? "Full Name"
-                      : culturalMode === "ar-IQ"
-                        ? "الاسم الكامل"
-                        : "الاسم الكامل / Full Name"}
+                    {culturalMode === "en-US" ? (
+                      "Full Name"
+                    ) : culturalMode === "ar-IQ" ? (
+                      "الاسم الكامل"
+                    ) : (
+                      <bdi>الاسم الكامل / Full Name</bdi>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -253,11 +257,13 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-arabic">
-                    {culturalMode === "en-US"
-                      ? "Email Address"
-                      : culturalMode === "ar-IQ"
-                        ? "البريد الإلكتروني"
-                        : "البريد الإلكتروني / Email"}
+                    {culturalMode === "en-US" ? (
+                      "Email Address"
+                    ) : culturalMode === "ar-IQ" ? (
+                      "البريد الإلكتروني"
+                    ) : (
+                      <bdi>البريد الإلكتروني / Email</bdi>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -281,11 +287,13 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-arabic">
-                    {culturalMode === "en-US"
-                      ? "Password"
-                      : culturalMode === "ar-IQ"
-                        ? "كلمة المرور"
-                        : "كلمة المرور / Password"}
+                    {culturalMode === "en-US" ? (
+                      "Password"
+                    ) : culturalMode === "ar-IQ" ? (
+                      "كلمة المرور"
+                    ) : (
+                      <bdi>كلمة المرور / Password</bdi>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -316,11 +324,13 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-arabic">
-                    {culturalMode === "en-US"
-                      ? "Confirm Password"
-                      : culturalMode === "ar-IQ"
-                        ? "تأكيد كلمة المرور"
-                        : "تأكيد كلمة المرور / Confirm Password"}
+                    {culturalMode === "en-US" ? (
+                      "Confirm Password"
+                    ) : culturalMode === "ar-IQ" ? (
+                      "تأكيد كلمة المرور"
+                    ) : (
+                      <bdi>تأكيد كلمة المرور / Confirm Password</bdi>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -344,17 +354,19 @@ export function RegisterForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-arabic">
-                    {culturalMode === "en-US"
-                      ? "Region"
-                      : culturalMode === "ar-IQ"
-                        ? "المنطقة"
-                        : "المنطقة / Region"}
+                    {culturalMode === "en-US" ? (
+                      "Region"
+                    ) : culturalMode === "ar-IQ" ? (
+                      "المنطقة"
+                    ) : (
+                      <bdi>المنطقة / Region</bdi>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <select
                       {...field}
                       disabled={isPending}
-                      className="border-input focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className="border-input focus-visible:ring-ring flex min-h-[44px] w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                     >
                       <option value="baghdad">
                         {culturalMode === "ar-IQ" ? "بغداد" : "Baghdad / بغداد"}
@@ -450,7 +462,7 @@ export function RegisterForm({
                         <select
                           {...field}
                           disabled={isPending}
-                          className="border-input focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                          className="border-input focus-visible:ring-ring flex min-h-[44px] w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                         >
                           <option value="">
                             {culturalMode === "ar-IQ"
@@ -538,7 +550,7 @@ export function RegisterForm({
                     <select
                       {...field}
                       disabled={isPending}
-                      className="border-input focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className="border-input focus-visible:ring-ring flex min-h-[44px] w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                     >
                       <option value="basic">
                         {culturalMode === "ar-IQ" ? "أساسي" : "Basic / أساسي"}
@@ -575,7 +587,7 @@ export function RegisterForm({
                     <select
                       {...field}
                       disabled={isPending}
-                      className="border-input focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                      className="border-input focus-visible:ring-ring flex min-h-[44px] w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                     >
                       <option value="ar-IQ">
                         {culturalMode === "ar-IQ" ? "عربي" : "Arabic / عربي"}

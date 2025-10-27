@@ -18,9 +18,14 @@
  * ```
  */
 export async function waitForArabicRendering(
-  element: HTMLElement,
+  element: HTMLElement | null | undefined,
   timeout: number = 5000,
 ): Promise<boolean> {
+  // Guard: Validate element exists and is HTMLElement
+  if (!element || !(element instanceof HTMLElement)) {
+    return false;
+  }
+
   const startTime = Date.now();
 
   while (Date.now() - startTime < timeout) {
@@ -62,7 +67,13 @@ export async function waitForArabicFont(
   }
 
   try {
-    await document.fonts.load(`12px "${fontFamily}"`, { timeout });
+    // Use Promise.race to implement timeout for font loading
+    const fontLoadPromise = document.fonts.load(`12px "${fontFamily}"`);
+    const timeoutPromise = new Promise<void>((_, reject) =>
+      setTimeout(() => reject(new Error("Font load timeout")), timeout),
+    );
+
+    await Promise.race([fontLoadPromise, timeoutPromise]);
     return document.fonts.check(`12px "${fontFamily}"`);
   } catch (error) {
     return false;
@@ -76,9 +87,14 @@ export async function waitForArabicFont(
  * @param timeout - Maximum wait time in ms (default: 5000)
  */
 export async function waitForArabicContent(
-  element: HTMLElement,
+  element: HTMLElement | null | undefined,
   timeout: number = 5000,
 ): Promise<boolean> {
+  // Guard: Validate element exists and is HTMLElement
+  if (!element || !(element instanceof HTMLElement)) {
+    return false;
+  }
+
   const startTime = Date.now();
   const arabicRegex = /[\u0600-\u06ff]/;
 
@@ -98,10 +114,21 @@ export async function waitForArabicContent(
  * Waits for multiple Arabic elements to render
  */
 export async function waitForMultipleArabicElements(
-  elements: HTMLElement[],
+  elements: (HTMLElement | null | undefined)[],
   timeout: number = 5000,
 ): Promise<boolean> {
-  const promises = elements.map((el) => waitForArabicRendering(el, timeout));
+  // Filter out null/undefined elements
+  const validElements = elements.filter(
+    (el): el is HTMLElement => el != null && el instanceof HTMLElement,
+  );
+
+  if (validElements.length === 0) {
+    return false;
+  }
+
+  const promises = validElements.map((el) =>
+    waitForArabicRendering(el, timeout),
+  );
 
   const results = await Promise.all(promises);
   return results.every((result) => result === true);
@@ -111,9 +138,14 @@ export async function waitForMultipleArabicElements(
  * Waits for dir="rtl" attribute to be set on element
  */
 export async function waitForRTLAttribute(
-  element: HTMLElement,
+  element: HTMLElement | null | undefined,
   timeout: number = 5000,
 ): Promise<boolean> {
+  // Guard: Validate element exists and is HTMLElement
+  if (!element || !(element instanceof HTMLElement)) {
+    return false;
+  }
+
   const startTime = Date.now();
 
   while (Date.now() - startTime < timeout) {
@@ -132,9 +164,14 @@ export async function waitForRTLAttribute(
  * Waits for element's computed direction to be RTL
  */
 export async function waitForComputedRTL(
-  element: HTMLElement,
+  element: HTMLElement | null | undefined,
   timeout: number = 5000,
 ): Promise<boolean> {
+  // Guard: Validate element exists and is HTMLElement
+  if (!element || !(element instanceof HTMLElement)) {
+    return false;
+  }
+
   const startTime = Date.now();
 
   while (Date.now() - startTime < timeout) {
