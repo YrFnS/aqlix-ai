@@ -33,12 +33,31 @@ class IslamicComplianceLevel(str, Enum):
 
 
 class IraqiRegion(str, Enum):
-    """Iraqi regions"""
+    """Iraqi regions (19 governorates)"""
 
+    # Major cities
     BAGHDAD = "baghdad"
     BASRA = "basra"
-    MOSUL = "mosul"
+    MOSUL = "mosul"  # Nineveh governorate
     ERBIL = "erbil"
+
+    # Other governorates
+    KIRKUK = "kirkuk"
+    DIYALA = "diyala"
+    ANBAR = "anbar"
+    NAJAF = "najaf"
+    KARBALA = "karbala"
+    WASIT = "wasit"
+    SALADIN = "saladin"
+    QADISIYYAH = "qadisiyyah"
+    BABIL = "babil"
+    DHI_QAR = "dhi_qar"
+    MAYSAN = "maysan"
+    MUTHANNA = "muthanna"
+    DOHUK = "dohuk"
+    SULAYMANIYAH = "sulaymaniyah"
+    HALABJA = "halabja"
+
     OTHER = "other"
 
 

@@ -142,6 +142,7 @@ export function CulturalGreeting({
       <div
         className={cn("font-arabic space-y-1 text-right", className)}
         dir="rtl"
+        lang="ar-IQ"
       >
         <p className="text-lg font-semibold">{greeting.primaryGreeting}</p>
         {greeting.regionalVariation && (
@@ -158,7 +159,11 @@ export function CulturalGreeting({
 
   if (languagePreference === "en-US") {
     return (
-      <div className={cn("space-y-1 text-left", className)} dir="ltr">
+      <div
+        className={cn("space-y-1 text-left", className)}
+        dir="ltr"
+        lang="en-US"
+      >
         <p className="text-lg font-semibold">{greeting.englishGreeting}</p>
         {greeting.professionalSuffix && (
           <p className="text-sm font-medium">{greeting.professionalSuffix}</p>
@@ -171,7 +176,7 @@ export function CulturalGreeting({
   return (
     <div className={cn("space-y-2", className)}>
       {/* Arabic Greeting */}
-      <div className="font-arabic text-right" dir="rtl">
+      <div className="font-arabic text-right" dir="rtl" lang="ar-IQ">
         <p className="text-lg font-semibold">{greeting.primaryGreeting}</p>
         {greeting.regionalVariation && (
           <p className="text-muted-foreground text-sm">
@@ -181,7 +186,7 @@ export function CulturalGreeting({
       </div>
 
       {/* English Greeting */}
-      <div className="text-left" dir="ltr">
+      <div className="text-left" dir="ltr" lang="en-US">
         <p className="text-muted-foreground text-sm">
           {greeting.englishGreeting}
         </p>
@@ -189,7 +194,7 @@ export function CulturalGreeting({
 
       {/* Professional Suffix (if applicable) */}
       {greeting.professionalSuffix && (
-        <div className="font-arabic text-right" dir="rtl">
+        <div className="font-arabic text-right" dir="rtl" lang="ar-IQ">
           <p className="text-sm font-medium">{greeting.professionalSuffix}</p>
         </div>
       )}
@@ -251,6 +256,7 @@ export function CompactCulturalGreeting({
       <span
         className={cn("font-arabic inline-flex items-center gap-2", className)}
         dir="rtl"
+        lang="ar-IQ"
       >
         <span>{greeting.ar}</span>
         {fullName && <span className="font-semibold">{fullName}</span>}
@@ -263,6 +269,7 @@ export function CompactCulturalGreeting({
       <span
         className={cn("inline-flex items-center gap-2", className)}
         dir="ltr"
+        lang="en-US"
       >
         <span>{greeting.en}</span>
         {fullName && <span className="font-semibold">{fullName}</span>}
@@ -275,6 +282,7 @@ export function CompactCulturalGreeting({
     <span
       className={cn("font-arabic inline-flex items-center gap-2", className)}
       dir="rtl"
+      lang="ar-IQ"
     >
       <span>{greeting.regional || greeting.ar}</span>
       {fullName && <span className="font-semibold">{fullName}</span>}
@@ -324,12 +332,18 @@ export function WelcomeMessage({
               : "text-left",
           )}
           dir={languagePreference === "ar-IQ" ? "rtl" : "ltr"}
+          lang={languagePreference === "ar-IQ" ? "ar-IQ" : "en-US"}
         >
-          {languagePreference === "en-US"
-            ? "Welcome back"
-            : languagePreference === "ar-IQ"
-              ? "أهلاً بعودتك"
-              : "أهلاً بعودتك / Welcome back"}
+          {languagePreference === "en-US" ? (
+            "Welcome back"
+          ) : languagePreference === "ar-IQ" ? (
+            "أهلاً بعودتك"
+          ) : (
+            <>
+              <span lang="ar-IQ">أهلاً بعودتك</span> /{" "}
+              <span lang="en-US">Welcome back</span>
+            </>
+          )}
         </div>
       )}
     </div>

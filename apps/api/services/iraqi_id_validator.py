@@ -12,12 +12,31 @@ from pydantic import BaseModel
 
 
 class IraqiRegion(str, Enum):
-    """Iraqi regions with official ID prefixes"""
+    """Iraqi regions with official ID prefixes (19 governorates)"""
 
+    # Major cities
     BAGHDAD = "baghdad"
     BASRA = "basra"
-    MOSUL = "mosul"
+    MOSUL = "mosul"  # Nineveh governorate
     ERBIL = "erbil"
+
+    # Other governorates
+    KIRKUK = "kirkuk"
+    DIYALA = "diyala"
+    ANBAR = "anbar"
+    NAJAF = "najaf"
+    KARBALA = "karbala"
+    WASIT = "wasit"
+    SALADIN = "saladin"
+    QADISIYYAH = "qadisiyyah"
+    BABIL = "babil"
+    DHI_QAR = "dhi_qar"
+    MAYSAN = "maysan"
+    MUTHANNA = "muthanna"
+    DOHUK = "dohuk"
+    SULAYMANIYAH = "sulaymaniyah"
+    HALABJA = "halabja"
+
     OTHER = "other"
 
 
@@ -51,24 +70,82 @@ class IraqiIDValidator:
     - Digits 7-11: Sequential number
     - Digit 12: Checksum (placeholder for future official specs)
 
-    Regional Prefixes:
-    - Baghdad: 10
+    Regional Prefixes (All 19 Iraqi Governorates):
+    - Baghdad: 10, 11
+    - Nineveh (Mosul): 02
+    - Sulaymaniyah: 03
+    - Erbil: 04
+    - Dohuk: 05
     - Basra: 06
-    - Mosul: 02
-    - Erbil: 05
-    - Other regions: Various codes (not validated in STANDARD mode)
+    - Diyala: 07
+    - Anbar: 08
+    - Kirkuk: 09
+    - Najaf: 12
+    - Karbala: 13
+    - Wasit: 14
+    - Saladin: 15
+    - Qadisiyyah: 16
+    - Babil: 17
+    - Dhi Qar: 18
+    - Maysan: 19
+    - Muthanna: 20
+    - Halabja: 21
     """
 
-    # Official regional prefix mappings
+    # Official regional prefix mappings for all 19 Iraqi governorates
+    # Based on Iraqi Civil Affairs numbering system
     REGIONAL_PREFIXES = {
-        IraqiRegion.BAGHDAD: "10",
-        IraqiRegion.BASRA: "06",
-        IraqiRegion.MOSUL: "02",
-        IraqiRegion.ERBIL: "05",
+        # Note: Baghdad has multiple prefixes (10, 11) due to population size
+        IraqiRegion.BAGHDAD: ["10", "11"],
+        IraqiRegion.MOSUL: ["02"],  # Nineveh governorate
+        IraqiRegion.SULAYMANIYAH: ["03"],
+        IraqiRegion.ERBIL: ["04"],
+        IraqiRegion.DOHUK: ["05"],
+        IraqiRegion.BASRA: ["06"],
+        IraqiRegion.DIYALA: ["07"],
+        IraqiRegion.ANBAR: ["08"],
+        IraqiRegion.KIRKUK: ["09"],
+        IraqiRegion.NAJAF: ["12"],
+        IraqiRegion.KARBALA: ["13"],
+        IraqiRegion.WASIT: ["14"],
+        IraqiRegion.SALADIN: ["15"],
+        IraqiRegion.QADISIYYAH: ["16"],
+        IraqiRegion.BABIL: ["17"],
+        IraqiRegion.DHI_QAR: ["18"],
+        IraqiRegion.MAYSAN: ["19"],
+        IraqiRegion.MUTHANNA: ["20"],
+        IraqiRegion.HALABJA: ["21"],
     }
 
-    # Reverse mapping for prefix lookup
-    PREFIX_TO_REGION = {v: k for k, v in REGIONAL_PREFIXES.items()}
+    # Reverse mapping for prefix lookup (prefix -> region)
+    PREFIX_TO_REGION = {}
+    for region, prefixes in REGIONAL_PREFIXES.items():
+        for prefix in prefixes:
+            PREFIX_TO_REGION[prefix] = region
+
+    # Arabic region names for validation messages
+    REGION_NAMES_ARABIC = {
+        IraqiRegion.BAGHDAD: "بغداد",
+        IraqiRegion.BASRA: "البصرة",
+        IraqiRegion.MOSUL: "الموصل",
+        IraqiRegion.ERBIL: "أربيل",
+        IraqiRegion.KIRKUK: "كركوك",
+        IraqiRegion.DIYALA: "ديالى",
+        IraqiRegion.ANBAR: "الأنبار",
+        IraqiRegion.NAJAF: "النجف",
+        IraqiRegion.KARBALA: "كربلاء",
+        IraqiRegion.WASIT: "واسط",
+        IraqiRegion.SALADIN: "صلاح الدين",
+        IraqiRegion.QADISIYYAH: "القادسية",
+        IraqiRegion.BABIL: "بابل",
+        IraqiRegion.DHI_QAR: "ذي قار",
+        IraqiRegion.MAYSAN: "ميسان",
+        IraqiRegion.MUTHANNA: "المثنى",
+        IraqiRegion.DOHUK: "دهوك",
+        IraqiRegion.SULAYMANIYAH: "السليمانية",
+        IraqiRegion.HALABJA: "حلبجة",
+        IraqiRegion.OTHER: "أخرى",
+    }
 
     @staticmethod
     def validate_format(iraqi_id: str) -> Tuple[bool, Optional[str]]:
@@ -135,9 +212,9 @@ class IraqiIDValidator:
         prefix = iraqi_id[:2]
         return cls.PREFIX_TO_REGION.get(prefix)
 
-    @staticmethod
+    @classmethod
     def validate_regional_prefix(
-        iraqi_id: str, expected_region: IraqiRegion
+        cls, iraqi_id: str, expected_region: IraqiRegion
     ) -> Tuple[bool, Optional[str]]:
         """
         Validate that Iraqi ID prefix matches expected region
@@ -147,25 +224,34 @@ class IraqiIDValidator:
             expected_region: Expected region for this ID
 
         Returns:
-            Tuple of (is_valid, error_message)
+            Tuple of (is_valid, error_message with Arabic translation)
         """
         if expected_region == IraqiRegion.OTHER:
             # For 'other' region, we only validate format, not prefix
             return True, None
 
         prefix = iraqi_id[:2]
-        expected_prefix = IraqiIDValidator.REGIONAL_PREFIXES.get(expected_region)
+        expected_prefixes = cls.REGIONAL_PREFIXES.get(expected_region)
 
-        if not expected_prefix:
+        if not expected_prefixes:
             return (
                 False,
                 f"No prefix mapping for region: {expected_region.value}",
             )
 
-        if prefix != expected_prefix:
+        if prefix not in expected_prefixes:
+            # Get Arabic region name
+            arabic_name = cls.REGION_NAMES_ARABIC.get(
+                expected_region, expected_region.value
+            )
+
+            # Format prefix list for error message
+            prefix_list = ", ".join(expected_prefixes)
+
             return (
                 False,
-                f"Iraqi ID must start with {expected_prefix} for {expected_region.value} region (got {prefix})",
+                f"رقم الهوية يجب أن يبدأ بـ {prefix_list} لمحافظة {arabic_name} (تم استلام {prefix}) / "
+                f"Iraqi ID must start with {prefix_list} for {expected_region.value} region (got {prefix})",
             )
 
         return True, None

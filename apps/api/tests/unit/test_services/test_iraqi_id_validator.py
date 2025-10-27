@@ -104,13 +104,61 @@ class TestIraqiIDBirthYearExtraction:
 
 
 class TestIraqiIDRegionalPrefixes:
-    """Test regional prefix validation (STANDARD level)"""
+    """Test regional prefix validation (STANDARD level) for all 19 governorates"""
 
     def test_baghdad_prefix_10_valid(self):
         """Baghdad ID starting with 10 should be valid"""
         result = IraqiIDValidator.validate(
             iraqi_id="101990123456",
             expected_region=IraqiRegion.BAGHDAD,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+        assert result.extracted_region == IraqiRegion.BAGHDAD
+
+    def test_baghdad_prefix_11_valid(self):
+        """Baghdad ID starting with 11 should be valid (multiple prefixes)"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="111990123456",
+            expected_region=IraqiRegion.BAGHDAD,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+        assert result.extracted_region == IraqiRegion.BAGHDAD
+
+    def test_mosul_prefix_02_valid(self):
+        """Mosul (Nineveh) ID starting with 02 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="021990123456",
+            expected_region=IraqiRegion.MOSUL,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+        assert result.extracted_region == IraqiRegion.MOSUL
+
+    def test_sulaymaniyah_prefix_03_valid(self):
+        """Sulaymaniyah ID starting with 03 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="031990123456",
+            expected_region=IraqiRegion.SULAYMANIYAH,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_erbil_prefix_04_valid(self):
+        """Erbil ID starting with 04 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="041990123456",
+            expected_region=IraqiRegion.ERBIL,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_dohuk_prefix_05_valid(self):
+        """Dohuk ID starting with 05 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="051990123456",
+            expected_region=IraqiRegion.DOHUK,
             verification_level=VerificationLevel.STANDARD,
         )
         assert result.is_valid is True
@@ -123,34 +171,148 @@ class TestIraqiIDRegionalPrefixes:
             verification_level=VerificationLevel.STANDARD,
         )
         assert result.is_valid is True
+        assert result.extracted_region == IraqiRegion.BASRA
 
-    def test_mosul_prefix_02_valid(self):
-        """Mosul ID starting with 02 should be valid"""
+    def test_diyala_prefix_07_valid(self):
+        """Diyala ID starting with 07 should be valid"""
         result = IraqiIDValidator.validate(
-            iraqi_id="021990123456",
-            expected_region=IraqiRegion.MOSUL,
+            iraqi_id="071990123456",
+            expected_region=IraqiRegion.DIYALA,
             verification_level=VerificationLevel.STANDARD,
         )
         assert result.is_valid is True
 
-    def test_erbil_prefix_05_valid(self):
-        """Erbil ID starting with 05 should be valid"""
+    def test_anbar_prefix_08_valid(self):
+        """Anbar ID starting with 08 should be valid"""
         result = IraqiIDValidator.validate(
-            iraqi_id="051990123456",
-            expected_region=IraqiRegion.ERBIL,
+            iraqi_id="081990123456",
+            expected_region=IraqiRegion.ANBAR,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_kirkuk_prefix_09_valid(self):
+        """Kirkuk ID starting with 09 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="091990123456",
+            expected_region=IraqiRegion.KIRKUK,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_najaf_prefix_12_valid(self):
+        """Najaf ID starting with 12 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="121990123456",
+            expected_region=IraqiRegion.NAJAF,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_karbala_prefix_13_valid(self):
+        """Karbala ID starting with 13 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="131990123456",
+            expected_region=IraqiRegion.KARBALA,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_wasit_prefix_14_valid(self):
+        """Wasit ID starting with 14 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="141990123456",
+            expected_region=IraqiRegion.WASIT,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_saladin_prefix_15_valid(self):
+        """Saladin ID starting with 15 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="151990123456",
+            expected_region=IraqiRegion.SALADIN,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_qadisiyyah_prefix_16_valid(self):
+        """Qadisiyyah ID starting with 16 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="161990123456",
+            expected_region=IraqiRegion.QADISIYYAH,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_babil_prefix_17_valid(self):
+        """Babil ID starting with 17 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="171990123456",
+            expected_region=IraqiRegion.BABIL,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_dhi_qar_prefix_18_valid(self):
+        """Dhi Qar ID starting with 18 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="181990123456",
+            expected_region=IraqiRegion.DHI_QAR,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_maysan_prefix_19_valid(self):
+        """Maysan ID starting with 19 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="191990123456",
+            expected_region=IraqiRegion.MAYSAN,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_muthanna_prefix_20_valid(self):
+        """Muthanna ID starting with 20 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="201990123456",
+            expected_region=IraqiRegion.MUTHANNA,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is True
+
+    def test_halabja_prefix_21_valid(self):
+        """Halabja ID starting with 21 should be valid"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="211990123456",
+            expected_region=IraqiRegion.HALABJA,
             verification_level=VerificationLevel.STANDARD,
         )
         assert result.is_valid is True
 
     def test_wrong_regional_prefix_baghdad(self):
-        """Baghdad ID with wrong prefix should fail"""
+        """Baghdad ID with wrong prefix should fail with Arabic message"""
         result = IraqiIDValidator.validate(
             iraqi_id="061990123456",  # Basra prefix
             expected_region=IraqiRegion.BAGHDAD,
             verification_level=VerificationLevel.STANDARD,
         )
         assert result.is_valid is False
-        assert "prefix" in result.error_message.lower()
+        assert (
+            "prefix" in result.error_message.lower() or "بغداد" in result.error_message
+        )
+
+    def test_wrong_regional_prefix_basra(self):
+        """Basra ID with wrong prefix should fail with Arabic message"""
+        result = IraqiIDValidator.validate(
+            iraqi_id="101990123456",  # Baghdad prefix
+            expected_region=IraqiRegion.BASRA,
+            verification_level=VerificationLevel.STANDARD,
+        )
+        assert result.is_valid is False
+        assert (
+            "البصرة" in result.error_message or "basra" in result.error_message.lower()
+        )
 
     def test_other_region_accepts_any_prefix(self):
         """OTHER region should accept any valid prefix"""

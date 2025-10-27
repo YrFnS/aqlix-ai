@@ -10,7 +10,9 @@ import { cn } from "@/lib/utils";
  * Used for errors that don't belong to a specific field.
  *
  * Features:
- * - Accessible with role="alert" for screen readers
+ * - Accessible with role="alert" and aria-live regions for screen readers
+ * - WCAG 4.1.3 Status Messages (Level AA) compliant
+ * - Announces errors dynamically in user's language
  * - Consistent styling with FormMessage
  * - Optional error icon
  * - Supports Error objects or string messages
@@ -43,6 +45,8 @@ export function FormError({
   return (
     <div
       role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
       className={cn(
         "flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive",
         className,
