@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Import services
 try:
@@ -21,6 +21,7 @@ try:
         PasswordResetConfirmation,
     )
     from ..middleware.auth_middleware import get_current_user_dependency
+    from ..database.client import SessionRepository
 except ImportError:
     from services.auth_service import AuthService, RegistrationResult, LoginResult
     from models.iraqi_user import (
@@ -32,6 +33,7 @@ except ImportError:
         PasswordResetConfirmation,
     )
     from middleware.auth_middleware import get_current_user_dependency
+    from database.client import SessionRepository
 
 # Create router
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
@@ -196,17 +198,75 @@ async def verify_email(request: EmailVerificationRequest):
     Returns:
         Verification status
     """
-    # TODO: Implement email verification with Supabase
-    # 1. Validate token
-    # 2. Update user email_verified status
-    # 3. Update iraqi_user_authentication record
-    # 4. Generate success response
+    try:
+        # Step 1: Verify token with Supabase Auth
+        # The token is sent via email after registration
+        # Supabase Auth stores and manages these tokens internally
+        verify_response = auth_service.supabase.auth.verify_otp(
+            {
+                "token_hash": request.token,
+                "type": "email",
+            }
+        )
 
-    return {
-        "success": True,
-        "message": "Email verified successfully",
-        "next_steps": ["Complete your profile", "Login to your account"],
-    }
+        # Step 2: Check if verification was successful
+        if not verify_response.user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "success": False,
+                    "error_message": "Invalid or expired verification token",
+                },
+            )
+
+        user_id = verify_response.user.id
+
+        # Step 3: Update iraqi_user_authentication record
+        # Update verification_status to "email_verified"
+        update_response = (
+            auth_service.supabase.table("iraqi_user_authentication")
+            .update(
+                {
+                    "verification_status": "email_verified",
+                    "email_verified": True,
+                    "email_verified_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+            .eq("id", user_id)
+            .execute()
+        )
+
+        if not update_response.data:
+            # Log error but don't fail the request
+            # Email is already verified in auth.users
+            auth_service.logger.warning(
+                f"Failed to update verification status for user {user_id} "
+                "in iraqi_user_authentication"
+            )
+
+        # Step 4: Return success response
+        return {
+            "success": True,
+            "message": "Email verified successfully",
+            "next_steps": ["Complete your profile", "Login to your account"],
+        }
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        # Handle unexpected errors
+        auth_service.logger.error(f"Email verification error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error_message": (
+                    "Email verification failed. "
+                    "Please request a new verification email."
+                ),
+            },
+        )
 
 
 @router.post(
@@ -227,16 +287,125 @@ async def request_password_reset(reset_request: PasswordResetRequest):
     Returns:
         Success message
     """
-    # TODO: Implement password reset request
-    # 1. Validate email exists
-    # 2. Generate reset token
-    # 3. Send reset email
-    # 4. Return success (don't reveal if email exists)
+    try:
+        # Step 1: Use Supabase Auth's built-in password reset
+        # This sends an email with a recovery link/token
+        reset_response = auth_service.supabase.auth.reset_password_for_email(
+            reset_request.email,
+            {
+                "redirect_to": None,  # API-only flow, no redirect
+            },
+        )
 
-    return {
-        "success": True,
-        "message": "If the email exists, a password reset link has been sent",
-    }
+        # Supabase always returns success even if email doesn't exist
+        # This prevents email enumeration attacks
+
+        # For testing purposes, we return a token
+        # In production, the token would only be sent via email
+        # Note: Supabase manages tokens internally, we cannot extract them
+        # For tests to work, they must use the actual email token
+
+        return {
+            "success": True,
+            "email_sent": True,
+            "message": ("If the email exists, a password reset link has been sent"),
+        }
+
+    except Exception as e:
+        # Log error but return success to prevent email enumeration
+        auth_service.logger.error(f"Password reset request error: {str(e)}")
+
+        # Always return success for security
+        return {
+            "success": True,
+            "email_sent": True,
+            "message": ("If the email exists, a password reset link has been sent"),
+        }
+
+
+@router.post(
+    "/password/reset/confirm",
+    response_model=dict,
+    summary="Confirm password reset",
+    description="Reset password using verification token",
+)
+async def confirm_password_reset(
+    confirmation: PasswordResetConfirmation,
+):
+    """
+    Confirm password reset with token
+
+    Uses the token from password reset email to update the user's password.
+
+    Args:
+        confirmation: Password reset confirmation with token and new password
+
+    Returns:
+        Success status
+    """
+    try:
+        # Step 1: Verify the reset token with Supabase
+        # The token was sent via email in the reset request
+        verify_response = auth_service.supabase.auth.verify_otp(
+            {
+                "token_hash": confirmation.token,
+                "type": "recovery",
+            }
+        )
+
+        if not verify_response.user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "success": False,
+                    "error_message": "Invalid or expired reset token",
+                },
+            )
+
+        # Step 2: Update the user's password
+        # Supabase Auth handles password hashing internally
+        update_response = auth_service.supabase.auth.update_user(
+            {
+                "password": confirmation.new_password,
+            }
+        )
+
+        if not update_response.user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "success": False,
+                    "error_message": "Failed to update password",
+                },
+            )
+
+        # Step 3: Log the password change for security audit
+        user_id = update_response.user.id
+        auth_service.logger.info(
+            f"Password reset completed for user {user_id}",
+            extra={"event": "password_reset", "user_id": user_id},
+        )
+
+        return {
+            "success": True,
+            "message": "Password reset successfully",
+        }
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        # Handle unexpected errors
+        auth_service.logger.error(f"Password reset confirmation error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error_message": (
+                    "Password reset failed. Please request a new reset link."
+                ),
+            },
+        )
 
 
 # ========== MFA ENDPOINTS ==========
@@ -424,13 +593,72 @@ async def get_active_sessions(
     - List of active sessions with device information
     - Session creation time and last activity
     """
-    # TODO: Implement session listing
-    # 1. Query iraqi_authentication_sessions table
-    # 2. Filter by user_id and status='active'
-    # 3. Return session details
+    try:
+        # Step 1: Extract user ID from authenticated user
+        user_id = user.get("id")
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={
+                    "success": False,
+                    "error_message": "Invalid user authentication",
+                },
+            )
 
-    return {
-        "success": True,
-        "sessions": [],
-        "count": 0,
-    }
+        # Step 2: Query active sessions from database
+        # SessionRepository filters by user_id, status='active', and non-expired
+        sessions_data = await SessionRepository.get_active_sessions(user_id)
+
+        # Step 3: Format session data for response
+        # Remove sensitive data like tokens
+        formatted_sessions = []
+        for session in sessions_data:
+            formatted_sessions.append(
+                {
+                    "session_id": session.get("id"),
+                    "device_id": session.get("device_id"),
+                    "device_type": session.get("device_type"),
+                    "platform": session.get("platform"),
+                    "ip_address": session.get("ip_address"),
+                    "user_agent": session.get("user_agent"),
+                    "created_at": (
+                        session.get("created_at").isoformat()
+                        if session.get("created_at")
+                        else None
+                    ),
+                    "last_activity": (
+                        session.get("last_activity").isoformat()
+                        if session.get("last_activity")
+                        else None
+                    ),
+                    "expires_at": (
+                        session.get("expires_at").isoformat()
+                        if session.get("expires_at")
+                        else None
+                    ),
+                    "login_method": session.get("login_method"),
+                    "mfa_completed": session.get("mfa_completed"),
+                    "language_used": session.get("language_used"),
+                    "regional_context": session.get("regional_context"),
+                }
+            )
+
+        return {
+            "success": True,
+            "sessions": formatted_sessions,
+            "count": len(formatted_sessions),
+        }
+
+    except HTTPException:
+        # Re-raise HTTP exceptions
+        raise
+    except Exception as e:
+        # Handle unexpected errors
+        auth_service.logger.error(f"Get active sessions error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "success": False,
+                "error_message": "Failed to retrieve sessions",
+            },
+        )

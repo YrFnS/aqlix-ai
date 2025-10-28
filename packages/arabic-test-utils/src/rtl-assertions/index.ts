@@ -3,6 +3,21 @@
  * Provides comprehensive validation for Arabic RTL rendering
  */
 
+/**
+ * Comprehensive list of Arabic font families for validation
+ * Used across RTL layout validation and Arabic font detection
+ */
+const ARABIC_FONTS = [
+  "noto sans arabic",
+  "arabic",
+  "traditional arabic",
+  "geeza pro",
+  "dubai",
+  "cairo",
+  "tajawal",
+  "amiri",
+] as const;
+
 export interface RTLLayoutValidation {
   hasRTLDirection: boolean;
   hasCorrectAlignment: boolean;
@@ -106,14 +121,7 @@ export async function validateRTLLayout(
   }
 
   // Check Arabic font
-  const arabicFonts = [
-    "noto sans arabic",
-    "arabic",
-    "traditional arabic",
-    "geeza pro",
-    "dubai",
-  ];
-  const hasArabicFont = arabicFonts.some((font) =>
+  const hasArabicFont = ARABIC_FONTS.some((font) =>
     fontFamily.toLowerCase().includes(font),
   );
   if (!hasArabicFont) {
@@ -309,15 +317,7 @@ export function assertArabicFontLoaded(fontFamily: string): void {
     throw new Error("Font family must be a string");
   }
 
-  const arabicFonts = [
-    "cairo",
-    "tajawal",
-    "amiri",
-    "noto sans arabic",
-    "arabic",
-  ];
-
-  const hasArabicFont = arabicFonts.some((font) =>
+  const hasArabicFont = ARABIC_FONTS.some((font) =>
     fontFamily.toLowerCase().includes(font),
   );
 

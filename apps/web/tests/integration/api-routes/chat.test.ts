@@ -207,8 +207,8 @@ describe("Chat API Integration", () => {
     test("should handle rate limiting gracefully", async () => {
       const message = "test message";
 
-      // Send multiple rapid requests
-      const requests = Array.from({ length: 100 }, () =>
+      // Send exactly 10 requests (rate limit threshold)
+      const requests = Array.from({ length: 10 }, () =>
         fetch(`${API_BASE}/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -216,11 +216,19 @@ describe("Chat API Integration", () => {
         }),
       );
 
+      // All 10 requests should succeed
       const responses = await Promise.all(requests);
-      const rateLimited = responses.filter((r) => r.status === 429);
+      const successful = responses.filter((r) => r.status === 200);
+      expect(successful.length).toBe(10);
 
-      // Should have some rate-limited responses
-      expect(rateLimited.length).toBeGreaterThan(0);
+      // 11th request should be rate-limited
+      const eleventhResponse = await fetch(`${API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, userId: mockUser.id }),
+      });
+
+      expect(eleventhResponse.status).toBe(429);
     });
   });
 
