@@ -169,3 +169,4 @@ repo-structure/
 .contentlayer/
 *.mcp.json
 .mcp.json.example
+apps/web/tests/e2e/visual-regression/screenshot-comparison.spec.ts-snapshots/

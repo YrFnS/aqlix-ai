@@ -202,17 +202,42 @@ export function MFAForm({
     <div
       className="w-full max-w-md space-y-6"
       dir={culturalMode === "ar-IQ" ? "rtl" : "ltr"}
+      lang={
+        culturalMode === "en-US"
+          ? "en-US"
+          : culturalMode === "ar-IQ"
+            ? "ar-IQ"
+            : undefined
+      }
     >
       {/* Header */}
       <div className="space-y-2 text-center">
-        <h1 className="font-arabic text-2xl font-bold tracking-tight">
+        <h1
+          className="font-arabic text-2xl font-bold tracking-tight"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US"
             ? "Verification Required"
             : culturalMode === "ar-IQ"
               ? "التحقق مطلوب"
               : "التحقق مطلوب / Verification Required"}
         </h1>
-        <p className="text-muted-foreground font-arabic text-sm">
+        <p
+          className="text-muted-foreground font-arabic text-sm bidi-isolate"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US"
             ? `Enter the verification code sent to your ${getMethodDisplayText()}`
             : culturalMode === "ar-IQ"
@@ -220,7 +245,11 @@ export function MFAForm({
               : `أدخل رمز التحقق المرسل إلى ${getMethodDisplayText()}`}
         </p>
         {destination && (
-          <p className="font-arabic text-sm font-medium" dir="ltr">
+          <p
+            className="font-arabic text-sm font-medium bidi-isolate"
+            dir="ltr"
+            lang="en-US"
+          >
             {destination}
           </p>
         )}
@@ -228,7 +257,16 @@ export function MFAForm({
 
       {/* Prayer Time Notice */}
       {prayerTimeDelay && (
-        <div className="bg-secondary text-secondary-foreground rounded-md border p-4">
+        <div
+          className="bg-secondary text-secondary-foreground rounded-md border p-4"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           <div className="flex items-center gap-3">
             <svg
               className="h-5 w-5 flex-shrink-0"

@@ -221,8 +221,27 @@ export function checkReligiousRespect(content: string): {
   }
 
   // Check for "joke" specifically combined with "religious"
-  if (/religious.*joke/i.test(content) || /joke.*religious/i.test(content)) {
+  if (
+    /religious.*joke/i.test(content) ||
+    /joke.*religious/i.test(content) ||
+    /inappropriate.*religious/i.test(content)
+  ) {
     issues.push("Content contains inappropriate religious jokes");
+  }
+
+  // Specific check: explicit insulting verbs near religion terms
+  // Using word boundaries and checking for patterns not already caught by DISRESPECTFUL_PATTERNS
+  const specificMockingPattern =
+    /\b(mock|ridicule|deride|taunt|scoff at)\b.*\b(religion|faith|church|mosque|synagogue|Islam|Christianity|Judaism)\b/i;
+  const reverseMockingPattern =
+    /\b(religion|faith|church|mosque|synagogue|Islam|Christianity|Judaism)\b.*\b(mock|ridicule|deride|taunt|scoff at)\b/i;
+
+  if (
+    !hasDisrespectful && // Only add if not already flagged by DISRESPECTFUL_PATTERNS
+    (specificMockingPattern.test(content) ||
+      reverseMockingPattern.test(content))
+  ) {
+    issues.push("Content contains explicit mockery of religious terms");
   }
 
   return {

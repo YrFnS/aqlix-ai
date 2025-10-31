@@ -11,7 +11,7 @@
  * - Birth year extraction display
  */
 
-import { useState, useEffect, forwardRef } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -58,6 +58,12 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
       birthYear?: number;
     }>({ isValid: false });
 
+    // Store onChange callback in ref to avoid re-render loops
+    const onChangeRef = useRef(onChange);
+    useEffect(() => {
+      onChangeRef.current = onChange;
+    }, [onChange]);
+
     // Validate Iraqi ID
     useEffect(() => {
       if (!value || value.length === 0) {
@@ -68,10 +74,10 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
       const validation = validateIraqiID(value, region, verificationLevel);
       setValidationState(validation);
 
-      if (onChange) {
-        onChange(value, validation.isValid);
+      if (onChangeRef.current) {
+        onChangeRef.current(value, validation.isValid);
       }
-    }, [value, region, verificationLevel, onChange]);
+    }, [value, region, verificationLevel]);
 
     // Update internal state when controlled value changes
     useEffect(() => {
@@ -114,11 +120,25 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
     const isPartiallyValid = value.length >= 6 && value.length < 12;
 
     return (
-      <div className="space-y-2">
+      <div
+        className="space-y-2"
+        lang={
+          culturalMode === "en-US"
+            ? "en-US"
+            : culturalMode === "ar-IQ"
+              ? "ar-IQ"
+              : undefined
+        }
+      >
         {/* Label */}
         <Label
           htmlFor={props.id || "iraqi-id"}
           className={cn("font-arabic", error && "text-destructive")}
+          lang={
+            culturalMode === "ar-IQ" || culturalMode === "both"
+              ? "ar-IQ"
+              : "en-US"
+          }
         >
           {getLabelText()}
           {props.required && <span className="text-destructive ml-1">*</span>}
@@ -209,8 +229,15 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
         {/* Birth Year Display */}
         {showBirthYear && validationState.birthYear && (
           <p
-            className="text-muted-foreground font-arabic text-sm"
+            className="text-muted-foreground font-arabic text-sm bidi-isolate"
             id={`${props.id || "iraqi-id"}-birth-year`}
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {culturalMode === "en-US"
               ? `Birth year: ${validationState.birthYear}`
@@ -223,8 +250,15 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
         {/* Validation Message */}
         {validationState.message && !error && (
           <p
-            className="text-muted-foreground font-arabic text-sm"
+            className="text-muted-foreground font-arabic text-sm bidi-isolate"
             id={`${props.id || "iraqi-id"}-validation`}
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {validationState.message}
           </p>
@@ -233,8 +267,15 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
         {/* Error Message */}
         {error && (
           <p
-            className="font-arabic text-sm font-medium text-destructive"
+            className="font-arabic text-sm font-medium text-destructive bidi-isolate"
             id={`${props.id || "iraqi-id"}-error`}
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {error}
           </p>
@@ -242,7 +283,16 @@ export const IraqiIDInput = forwardRef<HTMLInputElement, IraqiIDInputProps>(
 
         {/* Helper Text */}
         {!error && !validationState.message && (
-          <p className="text-muted-foreground font-arabic text-sm">
+          <p
+            className="text-muted-foreground font-arabic text-sm"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
+          >
             {culturalMode === "en-US"
               ? "Enter your 12-digit Iraqi national ID number"
               : culturalMode === "ar-IQ"

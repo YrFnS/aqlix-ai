@@ -18,6 +18,24 @@ const ARABIC_FONTS = [
   "amiri",
 ] as const;
 
+/**
+ * Subset of CSSStyleDeclaration properties used for RTL validation
+ * Provides type safety for computed style properties
+ */
+interface ComputedStyleSubset {
+  direction: string;
+  textAlign: string;
+  unicodeBidi: string;
+  fontFamily: string;
+}
+
+/**
+ * Element-like object with dir attribute for RTL testing
+ */
+interface RTLElement {
+  dir?: string;
+}
+
 export interface RTLLayoutValidation {
   hasRTLDirection: boolean;
   hasCorrectAlignment: boolean;
@@ -132,8 +150,12 @@ export async function validateRTLLayout(
   }
 
   // Check spacing (should not be too compressed)
-  const hasProperSpacing = parseFloat(computedStyle.wordSpacing) >= 0;
-  if (!hasProperSpacing) {
+  const wordSpacing = parseFloat(computedStyle.wordSpacing);
+  const hasProperSpacing = !Number.isNaN(wordSpacing) && wordSpacing >= 0;
+  if (Number.isNaN(wordSpacing)) {
+    violations.push(`Invalid word spacing value (not a number)`);
+    score -= 0.2;
+  } else if (wordSpacing < 0) {
     violations.push(`Word spacing is negative (Arabic text may be compressed)`);
     score -= 0.2;
   }
@@ -230,7 +252,7 @@ async function waitForRender(
  */
 export function hasArabicText(element: HTMLElement): boolean {
   const arabicRegex =
-    /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/;
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
   return arabicRegex.test(element.textContent || "");
 }
 
@@ -242,7 +264,7 @@ export function getArabicTextPercentage(element: HTMLElement): number {
   if (text.length === 0) return 0;
 
   const arabicRegex =
-    /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/g;
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g;
   const arabicMatches = text.match(arabicRegex);
   const arabicCount = arabicMatches ? arabicMatches.length : 0;
 
@@ -253,7 +275,10 @@ export function getArabicTextPercentage(element: HTMLElement): number {
  * Simplified RTL direction assertion
  * For testing DOM-like objects with dir attribute
  */
-export function assertRTLDirection(element: any, computedStyle?: any): void {
+export function assertRTLDirection(
+  element: RTLElement,
+  computedStyle?: Partial<ComputedStyleSubset>,
+): void {
   // Check computedStyle first if provided
   if (computedStyle && computedStyle.direction) {
     if (computedStyle.direction !== "rtl") {
@@ -274,7 +299,10 @@ export function assertRTLDirection(element: any, computedStyle?: any): void {
  * Asserts text alignment based on language
  * "arabic" expects right alignment, "english" expects left alignment
  */
-export function assertTextAlignment(style: any, language: string): void {
+export function assertTextAlignment(
+  style: Partial<ComputedStyleSubset>,
+  language: string,
+): void {
   const expectedAlignment = language === "arabic" ? "right" : "left";
 
   if (style.textAlign !== expectedAlignment) {
@@ -297,7 +325,10 @@ export function assertBidirectionalText(text: string): {
   hasEnglish: boolean;
   isBidirectional: boolean;
 } {
-  const hasArabic = /[\u0600-\u06ff]/.test(text);
+  const hasArabic =
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(
+      text,
+    );
   const hasEnglish = /[a-zA-Z]/.test(text);
   const isBidirectional = hasArabic && hasEnglish;
 

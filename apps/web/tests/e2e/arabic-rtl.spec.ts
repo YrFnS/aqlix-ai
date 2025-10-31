@@ -31,11 +31,12 @@ test.describe("Arabic RTL Support", () => {
     );
     expect(direction).toBe("rtl");
 
-    // Check text alignment
+    // Check text alignment - browsers use 'start' for RTL which aligns to right
     const textAlign = await testElement.evaluate(
       (el) => window.getComputedStyle(el).textAlign,
     );
-    expect(textAlign).toBe("right");
+    // Accept both 'right' and 'start' (modern browsers use 'start' for RTL)
+    expect(["right", "start"]).toContain(textAlign);
   });
 
   test("should handle mixed Arabic-English content correctly", async ({
@@ -82,7 +83,7 @@ test.describe("Arabic RTL Support", () => {
     const englishNumbers = "1234567890";
 
     await page.evaluate(
-      (arabicNums, englishNums) => {
+      ({ arabicNums, englishNums }) => {
         const arabicDiv = document.createElement("div");
         arabicDiv.id = "arabic-numbers";
         arabicDiv.textContent = `Arabic: ${arabicNums}`;
@@ -95,8 +96,7 @@ test.describe("Arabic RTL Support", () => {
         document.body.appendChild(arabicDiv);
         document.body.appendChild(englishDiv);
       },
-      arabicNumbers,
-      englishNumbers,
+      { arabicNums: arabicNumbers, englishNums: englishNumbers },
     );
 
     await expect(page.locator("#arabic-numbers")).toContainText(arabicNumbers);
@@ -144,10 +144,11 @@ test.describe("Arabic RTL Support", () => {
       document.body.appendChild(form);
     });
 
-    // Test tab navigation
-    await page.keyboard.press("Tab");
+    // Focus on the form first
+    await page.locator("#field1").focus();
     await expect(page.locator("#field1")).toBeFocused();
 
+    // Test tab navigation
     await page.keyboard.press("Tab");
     await expect(page.locator("#field2")).toBeFocused();
 

@@ -69,7 +69,7 @@ export async function getBaghdadPrayerTimes(date: Date = new Date()): Promise<Pr
   const year = date.getFullYear();
 
   const response = await fetch(
-    `http://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=Baghdad&country=Iraq&method=7`
+    `https://api.aladhan.com/v1/timingsByCity/${day}-${month}-${year}?city=Baghdad&country=Iraq&method=7`
   );
 
   if (!response.ok) {

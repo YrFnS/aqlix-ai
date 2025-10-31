@@ -119,24 +119,54 @@ export function LoginForm({
     <div
       className="w-full max-w-md space-y-6"
       dir={culturalMode === "ar-IQ" ? "rtl" : "ltr"}
+      lang={
+        culturalMode === "en-US"
+          ? "en-US"
+          : culturalMode === "ar-IQ"
+            ? "ar-IQ"
+            : undefined
+      }
     >
       {/* Cultural Greeting Header */}
       <div className="space-y-2 text-center">
-        <h1 className="font-arabic text-2xl font-bold tracking-tight">
+        <h1
+          className="font-arabic text-2xl font-bold tracking-tight"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US" ? (
             "Sign In"
           ) : culturalMode === "ar-IQ" ? (
             "تسجيل الدخول"
           ) : (
             <>
-              <span className="block">السلام عليكم</span>
-              <span className="text-muted-foreground block text-base">
+              <span className="block" lang="ar-IQ">
+                السلام عليكم
+              </span>
+              <span
+                className="text-muted-foreground block text-base"
+                lang="en-US"
+              >
                 Welcome Back
               </span>
             </>
           )}
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p
+          className="text-muted-foreground text-sm"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US"
             ? "Enter your credentials to access your account"
             : culturalMode === "ar-IQ"

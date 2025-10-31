@@ -59,7 +59,17 @@ export interface CulturalComplianceOptions {
 /**
  * Asserts that content meets Iraqi cultural compliance standards
  *
- * @throws Error if content fails cultural compliance checks
+ * @param content - Content to validate (must be non-empty string)
+ * @param options - Validation options
+ * @param options.minScore - Minimum score (0.0-1.0, default: 0.95)
+ * @param options.islamicCompliance - Require Islamic compliance (default: true)
+ * @param options.politicalNeutrality - Require political neutrality (default: true)
+ * @param options.professionalDomain - Professional domain context
+ *
+ * @throws {TypeError} If content is not a string
+ * @throws {Error} If content is empty
+ * @throws {RangeError} If minScore is not between 0.0 and 1.0
+ * @throws {Error} If content fails cultural compliance checks
  *
  * @example
  * ```typescript
@@ -73,12 +83,57 @@ export async function assertCulturalCompliance(
   content: string,
   options: CulturalComplianceOptions = {},
 ): Promise<void> {
+  // Input validation: content must be a non-empty string
+  if (typeof content !== "string") {
+    throw new TypeError(
+      `Expected content to be a string, got ${typeof content}`,
+    );
+  }
+
+  if (content.trim().length === 0) {
+    throw new Error("Content cannot be empty or whitespace-only");
+  }
+
   const {
     minScore = 0.95,
     islamicCompliance = true,
     politicalNeutrality = true,
     professionalDomain,
   } = options;
+
+  // Validate minScore range
+  if (typeof minScore !== "number" || Number.isNaN(minScore)) {
+    throw new TypeError(`minScore must be a number, got ${typeof minScore}`);
+  }
+
+  if (minScore < 0.0 || minScore > 1.0) {
+    throw new RangeError(
+      `minScore must be between 0.0 and 1.0, got ${minScore}`,
+    );
+  }
+
+  // Validate boolean options
+  if (typeof islamicCompliance !== "boolean") {
+    throw new TypeError(
+      `islamicCompliance must be a boolean, got ${typeof islamicCompliance}`,
+    );
+  }
+
+  if (typeof politicalNeutrality !== "boolean") {
+    throw new TypeError(
+      `politicalNeutrality must be a boolean, got ${typeof politicalNeutrality}`,
+    );
+  }
+
+  // Validate professionalDomain if provided
+  if (
+    professionalDomain !== undefined &&
+    typeof professionalDomain !== "string"
+  ) {
+    throw new TypeError(
+      `professionalDomain must be a string, got ${typeof professionalDomain}`,
+    );
+  }
 
   const validation = await validateCulturalContent(content, {
     domain: professionalDomain,
@@ -120,11 +175,19 @@ export async function assertCulturalCompliance(
 
 /**
  * Asserts that content is Islamically compliant
+ *
+ * @param content - Content to validate (must be non-empty string)
+ * @param minScore - Minimum Islamic compliance score (0.0-1.0, default: 0.9)
+ *
+ * @throws {TypeError} If content is not a string or minScore is not a number
+ * @throws {Error} If content is empty
+ * @throws {RangeError} If minScore is not between 0.0 and 1.0
  */
 export async function assertIslamicCompliance(
   content: string,
   minScore: number = 0.9,
 ): Promise<void> {
+  // Input validation handled by assertCulturalCompliance
   await assertCulturalCompliance(content, {
     minScore,
     islamicCompliance: true,
@@ -134,10 +197,16 @@ export async function assertIslamicCompliance(
 
 /**
  * Asserts that content is politically neutral
+ *
+ * @param content - Content to validate (must be non-empty string)
+ *
+ * @throws {TypeError} If content is not a string
+ * @throws {Error} If content is empty or politically biased
  */
 export async function assertPoliticalNeutrality(
   content: string,
 ): Promise<void> {
+  // Input validation handled by assertCulturalCompliance
   await assertCulturalCompliance(content, {
     minScore: 0.8,
     islamicCompliance: false,
@@ -147,6 +216,14 @@ export async function assertPoliticalNeutrality(
 
 /**
  * Asserts that professional content meets domain-specific standards
+ *
+ * @param content - Content to validate (must be non-empty string)
+ * @param domain - Professional domain context (legal, medical, educational, engineering, organizational)
+ * @param minScore - Minimum compliance score (0.0-1.0, default: 0.95)
+ *
+ * @throws {TypeError} If content is not a string, domain is invalid, or minScore is not a number
+ * @throws {Error} If content is empty or fails domain-specific validation
+ * @throws {RangeError} If minScore is not between 0.0 and 1.0
  */
 export async function assertProfessionalCompliance(
   content: string,
@@ -158,6 +235,21 @@ export async function assertProfessionalCompliance(
     | "organizational",
   minScore: number = 0.95,
 ): Promise<void> {
+  // Validate domain
+  const validDomains = [
+    "legal",
+    "medical",
+    "educational",
+    "engineering",
+    "organizational",
+  ];
+  if (!validDomains.includes(domain)) {
+    throw new TypeError(
+      `Invalid professional domain "${domain}". Must be one of: ${validDomains.join(", ")}`,
+    );
+  }
+
+  // Input validation handled by assertCulturalCompliance
   await assertCulturalCompliance(content, {
     minScore,
     professionalDomain: domain,
@@ -168,11 +260,47 @@ export async function assertProfessionalCompliance(
 
 /**
  * Batch assertion for multiple content items
+ *
+ * @param contentItems - Array of content strings to validate
+ * @param options - Validation options applied to all items
+ *
+ * @throws {TypeError} If contentItems is not an array
+ * @throws {Error} If array is empty or any content item fails validation
+ *
+ * @example
+ * ```typescript
+ * await assertBatchCulturalCompliance([
+ *   "السلام عليكم",
+ *   "بسم الله الرحمن الرحيم"
+ * ], { minScore: 0.95 });
+ * ```
  */
 export async function assertBatchCulturalCompliance(
   contentItems: string[],
   options: CulturalComplianceOptions = {},
 ): Promise<void> {
+  // Validate contentItems is an array
+  if (!Array.isArray(contentItems)) {
+    throw new TypeError(
+      `Expected contentItems to be an array, got ${typeof contentItems}`,
+    );
+  }
+
+  // Validate array is not empty
+  if (contentItems.length === 0) {
+    throw new Error("contentItems array cannot be empty");
+  }
+
+  // Validate all items are strings
+  const nonStringItems = contentItems.filter(
+    (item) => typeof item !== "string",
+  );
+  if (nonStringItems.length > 0) {
+    throw new TypeError(
+      `All contentItems must be strings. Found ${nonStringItems.length} non-string items`,
+    );
+  }
+
   const results = await Promise.allSettled(
     contentItems.map((content) => assertCulturalCompliance(content, options)),
   );

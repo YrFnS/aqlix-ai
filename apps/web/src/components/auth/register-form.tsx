@@ -176,24 +176,54 @@ export function RegisterForm({
     <div
       className="w-full max-w-2xl space-y-6"
       dir={culturalMode === "ar-IQ" ? "rtl" : "ltr"}
+      lang={
+        culturalMode === "en-US"
+          ? "en-US"
+          : culturalMode === "ar-IQ"
+            ? "ar-IQ"
+            : undefined
+      }
     >
       {/* Cultural Greeting Header */}
       <div className="space-y-2 text-center">
-        <h1 className="font-arabic text-2xl font-bold tracking-tight">
+        <h1
+          className="font-arabic text-2xl font-bold tracking-tight"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US" ? (
             "Create Account"
           ) : culturalMode === "ar-IQ" ? (
             "إنشاء حساب جديد"
           ) : (
             <>
-              <span className="block">أهلاً وسهلاً</span>
-              <span className="text-muted-foreground block text-base">
+              <span className="block" lang="ar-IQ">
+                أهلاً وسهلاً
+              </span>
+              <span
+                className="text-muted-foreground block text-base"
+                lang="en-US"
+              >
                 Welcome
               </span>
             </>
           )}
         </h1>
-        <p className="text-muted-foreground text-sm">
+        <p
+          className="text-muted-foreground text-sm"
+          lang={
+            culturalMode === "en-US"
+              ? "en-US"
+              : culturalMode === "ar-IQ"
+                ? "ar-IQ"
+                : undefined
+          }
+        >
           {culturalMode === "en-US"
             ? "Join the Iraqi AI community"
             : culturalMode === "ar-IQ"
@@ -206,7 +236,16 @@ export function RegisterForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Basic Information Section */}
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
+          >
             <h2 className="font-arabic text-lg font-semibold">
               {culturalMode === "en-US" ? (
                 "Basic Information"
@@ -392,7 +431,16 @@ export function RegisterForm({
           </div>
 
           {/* Iraqi ID Section (Optional) */}
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
+          >
             <h2 className="font-arabic text-lg font-semibold">
               {culturalMode === "en-US"
                 ? "Iraqi ID (Optional)"
@@ -421,7 +469,16 @@ export function RegisterForm({
           </div>
 
           {/* Professional Information Section (Optional) */}
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
+          >
             <div className="flex items-center justify-between">
               <h2 className="font-arabic text-lg font-semibold">
                 {culturalMode === "en-US"
@@ -524,7 +581,16 @@ export function RegisterForm({
           </div>
 
           {/* Cultural Preferences Section */}
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
+          >
             <h2 className="font-arabic text-lg font-semibold">
               {culturalMode === "en-US"
                 ? "Cultural Preferences"

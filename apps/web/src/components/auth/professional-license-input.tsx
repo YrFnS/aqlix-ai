@@ -138,11 +138,25 @@ export const ProfessionalLicenseInput = forwardRef<
     const showValidationIcon = value.length > 0;
 
     return (
-      <div className="space-y-2">
+      <div
+        className="space-y-2"
+        lang={
+          culturalMode === "en-US"
+            ? "en-US"
+            : culturalMode === "ar-IQ"
+              ? "ar-IQ"
+              : undefined
+        }
+      >
         {/* Label */}
         <Label
           htmlFor={props.id || "professional-license"}
           className={cn("font-arabic", error && "text-destructive")}
+          lang={
+            culturalMode === "ar-IQ" || culturalMode === "both"
+              ? "ar-IQ"
+              : "en-US"
+          }
         >
           {getLabelText()}
           {props.required && <span className="text-destructive ml-1">*</span>}
@@ -214,8 +228,15 @@ export const ProfessionalLicenseInput = forwardRef<
         {/* Error Message */}
         {error && (
           <p
-            className="font-arabic text-sm font-medium text-destructive"
+            className="font-arabic text-sm font-medium text-destructive bidi-isolate"
             id={`${props.id || "professional-license"}-error`}
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {error}
           </p>
@@ -224,8 +245,15 @@ export const ProfessionalLicenseInput = forwardRef<
         {/* Helper Text */}
         {!error && (
           <p
-            className="text-muted-foreground font-arabic text-sm"
+            className="text-muted-foreground font-arabic text-sm bidi-isolate"
             id={`${props.id || "professional-license"}-helper`}
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {getHelperText()}
           </p>
@@ -236,6 +264,13 @@ export const ProfessionalLicenseInput = forwardRef<
           <div
             className="text-muted-foreground font-arabic rounded-md border border-dashed p-3 text-sm"
             role="alert"
+            lang={
+              culturalMode === "en-US"
+                ? "en-US"
+                : culturalMode === "ar-IQ"
+                  ? "ar-IQ"
+                  : undefined
+            }
           >
             {culturalMode === "en-US" ? (
               <DomainInstructions domain={domain} lang="en" />
@@ -244,7 +279,7 @@ export const ProfessionalLicenseInput = forwardRef<
             ) : (
               <>
                 <DomainInstructions domain={domain} lang="ar" />
-                <div className="mt-1 opacity-70">
+                <div className="mt-1 opacity-70" lang="en-US">
                   <DomainInstructions domain={domain} lang="en" />
                 </div>
               </>

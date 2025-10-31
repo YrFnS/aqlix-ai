@@ -38,12 +38,29 @@ jobs:
 
       - name: Validate cultural compliance threshold (95%+)
         run: |
-          echo "✅ Cultural compliance tests passed"
-          echo "📊 Validating 95%+ threshold..."
-          # Future: Add threshold validation logic
-          echo "✅ Cultural appropriateness: 95%+"
-          echo "✅ Islamic compliance: 90%+"
-          echo "✅ Professional terminology: 100%"
+          echo "📊 Validating cultural compliance threshold..."
+
+          # Install jq for JSON parsing if not available
+          if ! command -v jq &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y jq bc
+          fi
+
+          # Run tests with JSON output and extract cultural compliance score
+          # Note: This assumes test:cultural outputs JSON with culturalCompliance field
+          # Adjust path/field based on actual test output structure
+          TEST_OUTPUT=$(bun run test:cultural --json 2>/dev/null || echo '{"culturalCompliance": 0}')
+          CULTURAL_SCORE=$(echo "$TEST_OUTPUT" | jq -r '.culturalCompliance // 0')
+
+          echo "📊 Cultural Compliance Score: ${CULTURAL_SCORE}%"
+
+          # Validate 95% threshold
+          if (( $(echo "$CULTURAL_SCORE < 95" | bc -l) )); then
+            echo "❌ Cultural compliance $CULTURAL_SCORE% below required 95%"
+            echo "::error::Cultural compliance threshold not met. Required: 95%, Actual: $CULTURAL_SCORE%"
+            exit 1
+          fi
+
+          echo "✅ Cultural appropriateness: ${CULTURAL_SCORE}%+ (meets 95% requirement)"
 
       - name: Upload cultural compliance report
         if: always()
