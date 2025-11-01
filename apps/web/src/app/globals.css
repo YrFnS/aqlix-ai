@@ -350,3 +350,80 @@
     unicode-bidi: embed;
   }
 }
+
+/* ========================================
+   Performance Optimizations
+   ========================================
+   Custom utilities to prevent layout shift (CLS)
+   and optimize rendering performance
+
+   Note: Tailwind CSS includes aspect-* utilities by default
+   (aspect-video, aspect-square, aspect-auto)
+   ======================================== */
+
+@layer utilities {
+  /* Additional Aspect Ratios not in Tailwind */
+  .aspect-portrait {
+    aspect-ratio: 3 / 4;
+  }
+
+  .aspect-landscape {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-wide {
+    aspect-ratio: 21 / 9;
+  }
+
+  /* CSS Containment for Performance - Limits layout recalculation */
+  .contain-layout {
+    contain: layout;
+  }
+
+  .contain-paint {
+    contain: paint;
+  }
+
+  .contain-size {
+    contain: size;
+  }
+
+  .contain-style {
+    contain: style;
+  }
+
+  .contain-strict {
+    contain: strict;
+  }
+
+  .contain-content {
+    contain: content;
+  }
+
+  /* GPU Acceleration Hints */
+  .gpu-accelerate {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Skeleton Loading States - Prevents layout shift */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-heading {
+    @apply skeleton h-8 w-3/4;
+  }
+
+  .skeleton-avatar {
+    @apply skeleton h-12 w-12 rounded-full;
+  }
+
+  .skeleton-button {
+    @apply skeleton h-10 w-24;
+  }
+}

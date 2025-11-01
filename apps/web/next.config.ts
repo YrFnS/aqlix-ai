@@ -59,7 +59,7 @@ const nextConfig: NextConfig = {
   ],
 
   // -------------------------------------------------------------------------
-  // Image Optimization
+  // Image Optimization (Iraqi Network Optimization)
   // -------------------------------------------------------------------------
   images: {
     domains: [
@@ -67,6 +67,12 @@ const nextConfig: NextConfig = {
       "localhost", // Local development
     ],
     formats: ["image/avif", "image/webp"],
+    // Device sizes optimized for Iraqi mobile devices
+    deviceSizes: [360, 375, 640, 750, 828, 1080, 1200, 1920],
+    // Image sizes for responsive images
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Minimize cache invalidation
+    minimumCacheTTL: 60,
   },
 
   // -------------------------------------------------------------------------
@@ -77,7 +83,7 @@ const nextConfig: NextConfig = {
   // See: https://nextjs.org/docs/app/building-your-application/routing/internationalization
 
   // -------------------------------------------------------------------------
-  // Headers (Security & CORS)
+  // Headers (Security, CORS & Performance)
   // -------------------------------------------------------------------------
   async headers() {
     return [
@@ -108,6 +114,36 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Cache static assets aggressively (1 year)
+      {
+        source: "/_next/static/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // Cache images for 1 day
+      {
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, must-revalidate",
+          },
+        ],
+      },
+      // Cache fonts for 1 year
+      {
+        source: "/fonts/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
 
@@ -126,13 +162,51 @@ const nextConfig: NextConfig = {
   },
 
   // -------------------------------------------------------------------------
-  // Experimental Features
+  // Experimental Features & Performance Optimizations
   // -------------------------------------------------------------------------
-  // Disabled for basic setup - will enable as needed
-  // experimental: {
-  //   serverActions: {
-  //     bodySizeLimit: "10mb",
-  //   },
+  experimental: {
+    // Optimize packet size for Iraqi 3G/4G networks
+    optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
+    // Server actions configuration
+    serverActions: {
+      bodySizeLimit: "2mb", // Optimize for slower networks
+    },
+  },
+
+  // -------------------------------------------------------------------------
+  // Bundle Analyzer (Development Only)
+  // -------------------------------------------------------------------------
+  // Uncomment to analyze bundle size:
+  // webpack: (config, { isServer }) => {
+  //   if (!isServer) {
+  //     config.optimization = {
+  //       ...config.optimization,
+  //       splitChunks: {
+  //         chunks: 'all',
+  //         cacheGroups: {
+  //           default: false,
+  //           vendors: false,
+  //           // Vendor chunk
+  //           vendor: {
+  //             name: 'vendor',
+  //             chunks: 'all',
+  //             test: /node_modules/,
+  //             priority: 20
+  //           },
+  //           // Common chunk
+  //           common: {
+  //             name: 'common',
+  //             minChunks: 2,
+  //             chunks: 'all',
+  //             priority: 10,
+  //             reuseExistingChunk: true,
+  //             enforce: true
+  //           }
+  //         }
+  //       }
+  //     };
+  //   }
+  //   return config;
   // },
 
   // -------------------------------------------------------------------------
