@@ -22,13 +22,13 @@ type ProfessionalDomain =
   | "engineering"
   | "organizational";
 
-// Domain-specific license format patterns
+// Domain-specific license format patterns (Iraqi professional standards)
 const LICENSE_PATTERNS: Record<ProfessionalDomain, RegExp> = {
-  legal: /^LAW-\d{5}-\d{4}$/, // LAW-12345-2024
-  medical: /^MED-\d{6}-[A-Z]{2}$/, // MED-123456-BG (BG=Baghdad)
-  educational: /^EDU-\d{5}-\d{4}$/, // EDU-12345-2024
-  engineering: /^ENG-\d{6}-[A-Z]{3}$/, // ENG-123456-CIV (Civil Engineering)
-  organizational: /^ORG-\d{5}-\d{4}$/, // ORG-12345-2024
+  legal: /^LAW-\d{5}-\d{4}$/, // LAW-12345-2024 (License-Year format)
+  medical: /^MED-\d{6}-[A-Z]{2}$/, // MED-123456-SU (Specialization: SU=Surgery, IM=Internal Medicine, PD=Pediatrics, etc.)
+  educational: /^EDU-\d{6}-[A-Z]{2}$/, // EDU-789012-BA (Specialization: BA=Basic Education, SE=Secondary, HE=Higher Education)
+  engineering: /^ENG-\d{6}-[A-Z]{2}$/, // ENG-345678-CE (Specialization: CE=Civil, EE=Electrical, ME=Mechanical)
+  organizational: /^ORG-\d{6}-[A-Z]{2}$/, // ORG-901234-MA (Specialization: MA=Management, AD=Administration, HR=Human Resources)
 };
 
 // Domain display names
@@ -40,13 +40,13 @@ const DOMAIN_NAMES: Record<ProfessionalDomain, { ar: string; en: string }> = {
   organizational: { ar: "تنظيمي", en: "Organizational" },
 };
 
-// Domain-specific format examples
+// Domain-specific format examples (Iraqi professional license standards)
 const LICENSE_EXAMPLES: Record<ProfessionalDomain, string> = {
-  legal: "LAW-12345-2024",
-  medical: "MED-123456-BG",
-  educational: "EDU-12345-2024",
-  engineering: "ENG-123456-CIV",
-  organizational: "ORG-12345-2024",
+  legal: "LAW-12345-2024", // Legal - License + Year
+  medical: "MED-123456-SU", // Medical - License + Specialization (Surgery)
+  educational: "EDU-789012-BA", // Educational - License + Specialization (Basic Education)
+  engineering: "ENG-345678-CE", // Engineering - License + Specialization (Civil Engineering)
+  organizational: "ORG-901234-MA", // Organizational - License + Specialization (Management)
 };
 
 interface ProfessionalLicenseInputProps
@@ -309,20 +309,20 @@ function DomainInstructions({
       en: "Format: LAW-License Number (5 digits)-Year (4 digits)",
     },
     medical: {
-      ar: "النموذج: MED-رقم الترخيص (6 أرقام)-رمز المنطقة (حرفين)",
-      en: "Format: MED-License Number (6 digits)-Region Code (2 letters)",
+      ar: "النموذج: MED-رقم الترخيص (6 أرقام)-رمز التخصص (حرفين) - مثال: SU=جراحة، IM=باطنية، PD=أطفال",
+      en: "Format: MED-License Number (6 digits)-Specialization Code (2 letters) - Ex: SU=Surgery, IM=Internal Medicine, PD=Pediatrics",
     },
     educational: {
-      ar: "النموذج: EDU-رقم الترخيص (5 أرقام)-السنة (4 أرقام)",
-      en: "Format: EDU-License Number (5 digits)-Year (4 digits)",
+      ar: "النموذج: EDU-رقم الترخيص (6 أرقام)-رمز التخصص (حرفين) - مثال: BA=أساسي، SE=ثانوي، HE=عالي",
+      en: "Format: EDU-License Number (6 digits)-Specialization Code (2 letters) - Ex: BA=Basic, SE=Secondary, HE=Higher Education",
     },
     engineering: {
-      ar: "النموذج: ENG-رقم الترخيص (6 أرقام)-نوع الهندسة (3 أحرف)",
-      en: "Format: ENG-License Number (6 digits)-Engineering Type (3 letters)",
+      ar: "النموذج: ENG-رقم الترخيص (6 أرقام)-رمز الهندسة (حرفين) - مثال: CE=مدني، EE=كهرباء، ME=ميكانيك",
+      en: "Format: ENG-License Number (6 digits)-Engineering Code (2 letters) - Ex: CE=Civil, EE=Electrical, ME=Mechanical",
     },
     organizational: {
-      ar: "النموذج: ORG-رقم الترخيص (5 أرقام)-السنة (4 أرقام)",
-      en: "Format: ORG-License Number (5 digits)-Year (4 digits)",
+      ar: "النموذج: ORG-رقم الترخيص (6 أرقام)-رمز التخصص (حرفين) - مثال: MA=إدارة، AD=إدارة عامة، HR=موارد بشرية",
+      en: "Format: ORG-License Number (6 digits)-Specialization Code (2 letters) - Ex: MA=Management, AD=Administration, HR=Human Resources",
     },
   };
 

@@ -2766,3 +2766,10 @@ https://docs.coderabbit.ai/cli/claude-code-integration
 lets continue with the next task, and keep in maind when using coderabbit cli you need to do this command "wsl -e bash -c "source ~/.bashrc; cd /mnt/c/Users/Itokoro/Documents/projects/aqlix-ai && /home/test/.local/bin/coderabbit --type uncommitted" 2>&1"
 
 https://github.com/thesysdev/template-c1-component-next
+https://github.com/get-convex/chef
+
+https://roost.tools/
+https://snyk.io/
+https://github.com/guardrails-ai/guardrails
+https://langfuse.com/
+https://mem0.ai

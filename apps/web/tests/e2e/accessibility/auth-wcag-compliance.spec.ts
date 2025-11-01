@@ -421,6 +421,156 @@ test.describe("Touch Target Sizes - Mobile", () => {
       expect(boundingBox.height).toBeGreaterThanOrEqual(44);
     }
   });
+
+  test("Email input - must meet 44px minimum touch target", async ({
+    page,
+  }) => {
+    await page.goto("/auth/login");
+
+    const emailInput = page.locator('input[type="email"]');
+    const boundingBox = await emailInput.boundingBox();
+
+    // TRUTHFULNESS: Verify actual input dimensions
+    expect(boundingBox).not.toBeNull();
+    if (boundingBox) {
+      expect(boundingBox.height).toBeGreaterThanOrEqual(44);
+      expect(boundingBox.width).toBeGreaterThan(0);
+    }
+  });
+
+  test("Password input - must meet 44px minimum touch target", async ({
+    page,
+  }) => {
+    await page.goto("/auth/login");
+
+    const passwordInput = page.locator('input[type="password"]');
+    const boundingBox = await passwordInput.boundingBox();
+
+    expect(boundingBox).not.toBeNull();
+    if (boundingBox) {
+      expect(boundingBox.height).toBeGreaterThanOrEqual(44);
+      expect(boundingBox.width).toBeGreaterThan(0);
+    }
+  });
+
+  test("Text inputs on register - must meet 44px minimum touch target", async ({
+    page,
+  }) => {
+    await page.goto("/auth/register");
+
+    // Test full name input
+    const fullNameInput = page.locator('input[name="fullName"]');
+    const fullNameBox = await fullNameInput.boundingBox();
+
+    expect(fullNameBox).not.toBeNull();
+    if (fullNameBox) {
+      expect(fullNameBox.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Test email input
+    const emailInput = page.locator('input[type="email"]');
+    const emailBox = await emailInput.boundingBox();
+
+    expect(emailBox).not.toBeNull();
+    if (emailBox) {
+      expect(emailBox.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Test password inputs
+    const passwordInputs = page.locator('input[type="password"]');
+    const count = await passwordInputs.count();
+
+    for (let i = 0; i < count; i++) {
+      const input = passwordInputs.nth(i);
+      const box = await input.boundingBox();
+
+      expect(box).not.toBeNull();
+      if (box) {
+        expect(box.height).toBeGreaterThanOrEqual(44);
+      }
+    }
+  });
+
+  test("Iraqi ID input - must meet 44px minimum touch target", async ({
+    page,
+  }) => {
+    await page.goto("/auth/register");
+
+    const iraqiIdInput = page.locator('input[id="iraqi-id"]');
+    const boundingBox = await iraqiIdInput.boundingBox();
+
+    expect(boundingBox).not.toBeNull();
+    if (boundingBox) {
+      expect(boundingBox.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("Touch targets on mobile viewport - iPhone SE (375px)", async ({
+    page,
+  }) => {
+    // Set viewport to iPhone SE dimensions
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.goto("/auth/login");
+
+    // Test email input on mobile
+    const emailInput = page.locator('input[type="email"]');
+    const emailBox = await emailInput.boundingBox();
+
+    expect(emailBox).not.toBeNull();
+    if (emailBox) {
+      expect(emailBox.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Test password input on mobile
+    const passwordInput = page.locator('input[type="password"]');
+    const passwordBox = await passwordInput.boundingBox();
+
+    expect(passwordBox).not.toBeNull();
+    if (passwordBox) {
+      expect(passwordBox.height).toBeGreaterThanOrEqual(44);
+    }
+
+    // Test submit button on mobile
+    const submitButton = page.locator('button[type="submit"]');
+    const buttonBox = await submitButton.boundingBox();
+
+    expect(buttonBox).not.toBeNull();
+    if (buttonBox) {
+      expect(buttonBox.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("Touch targets on mobile viewport - Android (360px)", async ({
+    page,
+  }) => {
+    // Set viewport to common Android dimensions
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.goto("/auth/register");
+
+    // Test all input types on Android viewport
+    const inputs = page.locator(
+      'input[type="text"], input[type="email"], input[type="password"]',
+    );
+    const count = await inputs.count();
+
+    for (let i = 0; i < count; i++) {
+      const input = inputs.nth(i);
+      const box = await input.boundingBox();
+
+      if (box) {
+        expect(box.height).toBeGreaterThanOrEqual(44);
+      }
+    }
+
+    // Test submit button on Android
+    const submitButton = page.locator('button[type="submit"]');
+    const buttonBox = await submitButton.boundingBox();
+
+    expect(buttonBox).not.toBeNull();
+    if (buttonBox) {
+      expect(buttonBox.height).toBeGreaterThanOrEqual(44);
+    }
+  });
 });
 
 /**

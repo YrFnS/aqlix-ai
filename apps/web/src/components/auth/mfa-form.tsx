@@ -93,36 +93,31 @@ export function MFAForm({
     return () => clearInterval(interval);
   }, [timeRemaining]);
 
-  // Check for prayer time delays (placeholder - would integrate with backend)
+  // Check for prayer time delays using Aladhan API
   useEffect(() => {
-    const checkPrayerTime = () => {
-      const now = new Date();
-      const hour = now.getHours();
-      const minute = now.getMinutes();
-
-      // Simplified prayer time check (actual times would come from backend)
-      const prayerTimes = [
-        { name: "Fajr", start: 4.5, end: 5.5 },
-        { name: "Dhuhr", start: 12, end: 12.5 },
-        { name: "Asr", start: 15.5, end: 16.25 },
-        { name: "Maghrib", start: 18, end: 18.5 },
-        { name: "Isha", start: 19.5, end: 20.25 },
-      ];
-
-      const currentTime = hour + minute / 60;
-      const activePrayer = prayerTimes.find(
-        (pt) => currentTime >= pt.start && currentTime <= pt.end,
+    const checkPrayerTime = async () => {
+      // Check prayer time using Aladhan API with 15-minute flexibility
+      const { getCurrentPrayerTime } = await import(
+        "@/lib/services/prayer-time-service"
       );
 
-      if (activePrayer) {
-        setPrayerTimeDelay(
-          culturalMode === "en-US"
-            ? `During ${activePrayer.name} prayer time`
-            : culturalMode === "ar-IQ"
-              ? `أثناء صلاة ${activePrayer.name}`
-              : `أثناء صلاة ${activePrayer.name} / During ${activePrayer.name} prayer`,
-        );
-      } else {
+      try {
+        const activePrayerName = await getCurrentPrayerTime(15); // 15 minutes flexibility
+
+        if (activePrayerName) {
+          setPrayerTimeDelay(
+            culturalMode === "en-US"
+              ? `During ${activePrayerName} prayer time`
+              : culturalMode === "ar-IQ"
+                ? `أثناء صلاة ${activePrayerName}`
+                : `أثناء صلاة ${activePrayerName} / During ${activePrayerName} prayer`,
+          );
+        } else {
+          setPrayerTimeDelay(undefined);
+        }
+      } catch (error) {
+        console.error("Failed to check prayer time:", error);
+        // Graceful fallback - don't show prayer time delay if API fails
         setPrayerTimeDelay(undefined);
       }
     };

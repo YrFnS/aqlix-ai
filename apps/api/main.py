@@ -102,6 +102,72 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 # ============================================================================
+# Security Headers Middleware (CVE-003 Fix)
+# ============================================================================
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request as StarletteRequest
+from starlette.responses import Response
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """
+    Add security headers to all responses.
+
+    Implements OWASP security best practices:
+    - CSP: Content Security Policy
+    - HSTS: HTTP Strict Transport Security
+    - X-Frame-Options: Clickjacking protection
+    - X-Content-Type-Options: MIME sniffing protection
+    - X-XSS-Protection: Legacy XSS protection
+    - Referrer-Policy: Control referrer information
+    """
+
+    async def dispatch(self, request: StarletteRequest, call_next):
+        response: Response = await call_next(request)
+
+        # Content Security Policy (CSP)
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+            "style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data: https:; "
+            "font-src 'self' data:; "
+            "connect-src 'self' https://api.openai.com https://*.supabase.co; "
+            "frame-ancestors 'none';"
+        )
+
+        # HTTP Strict Transport Security (HSTS)
+        if settings.is_production:
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains; preload"
+            )
+
+        # Clickjacking protection
+        response.headers["X-Frame-Options"] = "DENY"
+
+        # MIME sniffing protection
+        response.headers["X-Content-Type-Options"] = "nosniff"
+
+        # XSS protection (legacy, but still useful)
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+
+        # Referrer policy
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+        # Permissions policy (formerly Feature-Policy)
+        # Allow microphone for voice features, block geolocation and camera
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), microphone=(self), camera=()"
+        )
+
+        return response
+
+
+# Add security headers middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
+
+# ============================================================================
 # CORS Middleware
 # ============================================================================
 app.add_middleware(

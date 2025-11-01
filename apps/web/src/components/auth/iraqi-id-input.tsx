@@ -4,7 +4,12 @@
  * Iraqi National ID Input Component
  * Features:
  * - 12-digit Iraqi ID format validation
- * - Regional prefix validation (Baghdad: 10, Basra: 06, Mosul: 02, Erbil: 05)
+ * - Regional prefix validation for all 19 Iraqi governorates:
+ *   Anbar (01), Mosul/Nineveh (02), Duhok (03), Sulaymaniyah (04),
+ *   Erbil (05), Basra (06), Karbala (07), Najaf (08), Diyala (09),
+ *   Baghdad (10), Wasit (12), Salah al-Din (13), Babil (14),
+ *   Dhi Qar (15), Maysan (16), Muthanna (17), Qadisiyyah (18),
+ *   Kirkuk (19), Halabja (20)
  * - Real-time validation and formatting
  * - RTL support for Arabic labels
  * - Visual feedback for validation status
@@ -16,18 +21,54 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-// Iraqi regional prefix mapping
+// Iraqi regional prefix mapping (all 19 governorates)
 const REGIONAL_PREFIXES = {
-  baghdad: "10",
-  basra: "06",
-  mosul: "02",
+  anbar: "01",
+  mosul: "02", // Nineveh governorate
   erbil: "05",
+  basra: "06",
+  karbala: "07",
+  najaf: "08",
+  diyala: "09",
+  baghdad: "10",
+  wasit: "12",
+  salahaldin: "13", // Salah al-Din
+  babil: "14",
+  dhiqar: "15", // Dhi Qar
+  maysan: "16",
+  muthanna: "17",
+  qadisiyyah: "18",
+  kirkuk: "19",
+  halabja: "20",
+  // Kurdistan Region
+  sulaymaniyah: "04",
+  duhok: "03",
 } as const;
 
 interface IraqiIDInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   label?: string;
-  region?: "baghdad" | "basra" | "mosul" | "erbil" | "other";
+  region?:
+    | "anbar"
+    | "mosul"
+    | "duhok"
+    | "sulaymaniyah"
+    | "erbil"
+    | "basra"
+    | "karbala"
+    | "najaf"
+    | "diyala"
+    | "baghdad"
+    | "wasit"
+    | "salahaldin"
+    | "babil"
+    | "dhiqar"
+    | "maysan"
+    | "muthanna"
+    | "qadisiyyah"
+    | "kirkuk"
+    | "halabja"
+    | "other";
   verificationLevel?: "basic" | "standard" | "strict";
   showBirthYear?: boolean;
   culturalMode?: "ar-IQ" | "en-US" | "both";
@@ -310,10 +351,31 @@ IraqiIDInput.displayName = "IraqiIDInput";
 /**
  * Validate Iraqi National ID
  * Implements validation logic from apps/api/services/iraqi_id_validator.py
+ * Supports all 19 Iraqi governorates
  */
 function validateIraqiID(
   iraqiId: string,
-  expectedRegion?: "baghdad" | "basra" | "mosul" | "erbil" | "other",
+  expectedRegion?:
+    | "anbar"
+    | "mosul"
+    | "duhok"
+    | "sulaymaniyah"
+    | "erbil"
+    | "basra"
+    | "karbala"
+    | "najaf"
+    | "diyala"
+    | "baghdad"
+    | "wasit"
+    | "salahaldin"
+    | "babil"
+    | "dhiqar"
+    | "maysan"
+    | "muthanna"
+    | "qadisiyyah"
+    | "kirkuk"
+    | "halabja"
+    | "other",
   verificationLevel: "basic" | "standard" | "strict" = "standard",
 ): {
   isValid: boolean;

@@ -12,6 +12,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { hasArabicContent } from "@/lib/arabic-utils";
 
 const Form = FormProvider;
 
@@ -152,6 +153,10 @@ const FormMessage = React.forwardRef<
     return null;
   }
 
+  // Detect Arabic content and set language/direction attributes
+  const bodyText = typeof body === "string" ? body : "";
+  const isArabic = hasArabicContent(bodyText);
+
   return (
     <p
       ref={ref}
@@ -159,6 +164,8 @@ const FormMessage = React.forwardRef<
       role="alert"
       aria-live="polite"
       aria-atomic="true"
+      lang={isArabic ? "ar-IQ" : undefined}
+      dir={isArabic ? "rtl" : undefined}
       className={cn("text-sm font-medium text-destructive", className)}
       {...props}
     >
