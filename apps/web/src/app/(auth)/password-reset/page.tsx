@@ -45,7 +45,7 @@ export default function PasswordResetPage() {
     },
   });
 
-  const onSubmit = async (values: ResetFormValues) => {
+  const onSubmit = async (_values: ResetFormValues) => {
     setFormError(undefined);
 
     startTransition(async () => {
@@ -160,7 +160,7 @@ export default function PasswordResetPage() {
             />
 
             {/* Form-level Error */}
-            {formError && <FormError message={formError} />}
+            {formError && <FormError error={formError} />}
 
             {/* Submit Button */}
             <Button

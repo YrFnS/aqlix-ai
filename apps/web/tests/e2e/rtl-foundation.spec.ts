@@ -101,7 +101,9 @@ test.describe("RTL Foundation", () => {
     expect(parsed.dialectPreference).toBe("baghdad");
   });
 
-  test("should apply direction class to body element", async ({ page }) => {
+  test("should apply direction class to body element", async ({
+    page: _page,
+  }) => {
     await page.goto("/");
 
     // Check that body has rtl class
@@ -112,7 +114,9 @@ test.describe("RTL Foundation", () => {
     expect(bodyClasses).toContain("rtl");
   });
 
-  test("should maintain direction after page navigation", async ({ page }) => {
+  test("should maintain direction after page navigation", async ({
+    page: _page,
+  }) => {
     await page.goto("/");
 
     // Verify initial direction
@@ -134,7 +138,9 @@ test.describe("RTL Foundation", () => {
     expect(config).toBeTruthy();
   });
 
-  test("should handle corrupt localStorage gracefully", async ({ page }) => {
+  test("should handle corrupt localStorage gracefully", async ({
+    page: _page,
+  }) => {
     await page.goto("/");
 
     // Set invalid JSON in localStorage
@@ -161,7 +167,9 @@ test.describe("RTL Foundation", () => {
     expect(config?.direction).toBe("rtl");
   });
 
-  test("should set correct CSS custom properties for RTL", async ({ page }) => {
+  test("should set correct CSS custom properties for RTL", async ({
+    page: _page,
+  }) => {
     await page.goto("/");
 
     // Check CSS custom properties for RTL

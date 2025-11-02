@@ -191,7 +191,7 @@ describe("Direction Provider Integration", () => {
   });
 
   test("Radix DirectionProvider receives correct dir prop", () => {
-    const { container } = render(
+    const { container: _container } = render(
       <DirectionProvider>
         <TestComponent />
       </DirectionProvider>,

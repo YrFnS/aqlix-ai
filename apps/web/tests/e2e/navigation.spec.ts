@@ -36,7 +36,9 @@ test.describe("Navigation", () => {
     await expect(page.locator("h1")).toContainText("Contact Us");
   });
 
-  test("should handle dynamic routes for docs correctly", async ({ page }) => {
+  test("should handle dynamic routes for docs correctly", async ({
+    page: _page,
+  }) => {
     // Go to docs home
     await page.goto("/docs");
     await expect(page.locator("h1")).toContainText("Documentation");
@@ -65,7 +67,9 @@ test.describe("Navigation", () => {
     await expect(page.locator("h2")).toContainText("404");
   });
 
-  test("should handle dynamic routes for blog correctly", async ({ page }) => {
+  test("should handle dynamic routes for blog correctly", async ({
+    page: _page,
+  }) => {
     // Go to blog home
     await page.goto("/blog");
     await expect(page.locator("h1")).toContainText("Blog");
@@ -110,7 +114,9 @@ test.describe("Navigation", () => {
     await expect(page.locator("h1")).toContainText("Profile");
   });
 
-  test("should navigate between route groups seamlessly", async ({ page }) => {
+  test("should navigate between route groups seamlessly", async ({
+    page: _page,
+  }) => {
     // Marketing page (with MarketingNav)
     await page.goto("/");
     await expect(page.locator("nav")).toBeVisible();
@@ -142,7 +148,9 @@ test.describe("Navigation", () => {
     );
   });
 
-  test("should handle browser back/forward navigation", async ({ page }) => {
+  test("should handle browser back/forward navigation", async ({
+    page: _page,
+  }) => {
     await page.goto("/");
     await page.click('a[href="/about"]');
     await expect(page).toHaveURL("/about");
@@ -156,7 +164,9 @@ test.describe("Navigation", () => {
     await expect(page).toHaveURL("/about");
   });
 
-  test("should show no console errors during navigation", async ({ page }) => {
+  test("should show no console errors during navigation", async ({
+    page: _page,
+  }) => {
     const consoleMessages: string[] = [];
 
     page.on("console", (msg) => {

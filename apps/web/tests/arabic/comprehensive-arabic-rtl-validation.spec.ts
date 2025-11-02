@@ -21,9 +21,6 @@
 
 import { test, expect, Page } from "@playwright/test";
 
-// Test browsers
-const BROWSERS = ["chromium", "firefox", "webkit"] as const;
-
 // Authentication pages to test
 const AUTH_PAGES = [
   { path: "/register", name: "Registration" },
@@ -104,40 +101,6 @@ const TIME_BASED_GREETINGS = [
     greeting: "مساء الخير",
     english: "Good evening",
     period: "evening",
-  },
-] as const;
-
-// Arabic validation messages
-const VALIDATION_MESSAGES = [
-  {
-    field: "email",
-    message: "البريد الإلكتروني غير صحيح",
-    english: "Invalid email",
-  },
-  {
-    field: "password",
-    message: "كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل",
-    english: "Password must be at least 8 characters",
-  },
-  {
-    field: "confirmPassword",
-    message: "كلمات المرور غير متطابقة",
-    english: "Passwords don't match",
-  },
-  {
-    field: "required",
-    message: "هذا الحقل مطلوب",
-    english: "This field is required",
-  },
-  {
-    field: "iraqiId",
-    message: "معرف العراق يجب أن يكون 12 رقم",
-    english: "Iraqi ID must be 12 digits",
-  },
-  {
-    field: "terms",
-    message: "يجب قبول الشروط والأحكام",
-    english: "Must accept terms and conditions",
   },
 ] as const;
 
@@ -262,7 +225,7 @@ test.describe("1. RTL Text Rendering Accuracy (99%+ Required)", () => {
     });
   }
 
-  test("Registration: RTL form layout consistency", async ({ page }) => {
+  test("Registration: RTL form layout consistency", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Check that form container has RTL direction
@@ -309,7 +272,9 @@ test.describe("1. RTL Text Rendering Accuracy (99%+ Required)", () => {
 });
 
 test.describe("2. Iraqi Dialect Recognition (85%+ Required)", () => {
-  test("Cultural greeting: Regional dialect variations", async ({ page }) => {
+  test("Cultural greeting: Regional dialect variations", async ({
+    page: _page,
+  }) => {
     await page.goto("/login");
 
     // Test each regional dialect
@@ -323,7 +288,7 @@ test.describe("2. Iraqi Dialect Recognition (85%+ Required)", () => {
     }
   });
 
-  test("Cultural greeting: Time-based greetings", async ({ page }) => {
+  test("Cultural greeting: Time-based greetings", async ({ page: _page }) => {
     for (const timeGreeting of TIME_BASED_GREETINGS) {
       // Mock different times of day
       await page.goto("/login");
@@ -340,7 +305,9 @@ test.describe("2. Iraqi Dialect Recognition (85%+ Required)", () => {
     }
   });
 
-  test("Iraqi dialect phrases: Recognition accuracy", async ({ page }) => {
+  test("Iraqi dialect phrases: Recognition accuracy", async ({
+    page: _page,
+  }) => {
     // This test would require integration with dialect recognition API
     // For comprehensive validation, we log expected phrases
 
@@ -376,7 +343,7 @@ test.describe("2. Iraqi Dialect Recognition (85%+ Required)", () => {
 });
 
 test.describe("3. Mixed Arabic-English Content Handling (95%+ Required)", () => {
-  test("Registration form: Mixed content labels", async ({ page }) => {
+  test("Registration form: Mixed content labels", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Test mixed content in form labels (Arabic / English)
@@ -396,7 +363,9 @@ test.describe("3. Mixed Arabic-English Content Handling (95%+ Required)", () => 
     }
   });
 
-  test("Email field: English text in Arabic context", async ({ page }) => {
+  test("Email field: English text in Arabic context", async ({
+    page: _page,
+  }) => {
     await page.goto("/register");
 
     const emailInput = page.locator('input[type="email"]').first();
@@ -415,7 +384,9 @@ test.describe("3. Mixed Arabic-English Content Handling (95%+ Required)", () => 
     expect(value).toBe("ahmed@example.com");
   });
 
-  test("Phone number: +964 prefix with Arabic context", async ({ page }) => {
+  test("Phone number: +964 prefix with Arabic context", async ({
+    page: _page,
+  }) => {
     await page.goto("/register");
 
     // Test phone number input (if available)
@@ -429,7 +400,7 @@ test.describe("3. Mixed Arabic-English Content Handling (95%+ Required)", () => 
     }
   });
 
-  test("Iraqi ID: Number display in Arabic form", async ({ page }) => {
+  test("Iraqi ID: Number display in Arabic form", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Find Iraqi ID input
@@ -470,7 +441,7 @@ test.describe("3. Mixed Arabic-English Content Handling (95%+ Required)", () => 
 });
 
 test.describe("4. Arabic Form Validation Messages (95%+ Required)", () => {
-  test("Email validation: Arabic error message", async ({ page }) => {
+  test("Email validation: Arabic error message", async ({ page: _page }) => {
     await page.goto("/register");
 
     const emailInput = page.locator('input[type="email"]').first();
@@ -516,7 +487,7 @@ test.describe("4. Arabic Form Validation Messages (95%+ Required)", () => {
     expect(hasError).toBeTruthy();
   });
 
-  test("Confirm password: Arabic mismatch message", async ({ page }) => {
+  test("Confirm password: Arabic mismatch message", async ({ page: _page }) => {
     await page.goto("/register");
 
     const passwordInput = page.locator('input[name="password"]').first();
@@ -539,7 +510,7 @@ test.describe("4. Arabic Form Validation Messages (95%+ Required)", () => {
     expect(hasError).toBeTruthy();
   });
 
-  test("Required fields: Arabic required message", async ({ page }) => {
+  test("Required fields: Arabic required message", async ({ page: _page }) => {
     await page.goto("/register");
 
     const submitButton = page.locator('button[type="submit"]').first();
@@ -558,7 +529,9 @@ test.describe("4. Arabic Form Validation Messages (95%+ Required)", () => {
     expect(requiredMessages).toBeGreaterThan(0);
   });
 
-  test("Iraqi ID validation: Arabic format message", async ({ page }) => {
+  test("Iraqi ID validation: Arabic format message", async ({
+    page: _page,
+  }) => {
     await page.goto("/register");
 
     const iraqiIdInput = page.locator('input[id="iraqi-id"]').first();
@@ -585,7 +558,7 @@ test.describe("4. Arabic Form Validation Messages (95%+ Required)", () => {
 });
 
 test.describe("5. Arabic Cultural Greetings (95%+ Required)", () => {
-  test("Login page: Islamic greeting display", async ({ page }) => {
+  test("Login page: Islamic greeting display", async ({ page: _page }) => {
     await page.goto("/login");
 
     // Check for Islamic greeting
@@ -597,7 +570,9 @@ test.describe("5. Arabic Cultural Greetings (95%+ Required)", () => {
     expect(hasGreeting).toBeTruthy();
   });
 
-  test("Registration page: Welcome message in Arabic", async ({ page }) => {
+  test("Registration page: Welcome message in Arabic", async ({
+    page: _page,
+  }) => {
     await page.goto("/register");
 
     // Check for Arabic welcome message
@@ -609,7 +584,9 @@ test.describe("5. Arabic Cultural Greetings (95%+ Required)", () => {
     expect(hasWelcome).toBeTruthy();
   });
 
-  test("Cultural greeting: Time-based greeting logic", async ({ page }) => {
+  test("Cultural greeting: Time-based greeting logic", async ({
+    page: _page,
+  }) => {
     // Test morning greeting
     await page.goto("/login");
 
@@ -619,7 +596,9 @@ test.describe("5. Arabic Cultural Greetings (95%+ Required)", () => {
     expect(greetingExists).toBeTruthy();
   });
 
-  test("Cultural greeting: Regional variation display", async ({ page }) => {
+  test("Cultural greeting: Regional variation display", async ({
+    page: _page,
+  }) => {
     await page.goto("/login");
 
     // Verify Arabic greeting text exists
@@ -630,7 +609,9 @@ test.describe("5. Arabic Cultural Greetings (95%+ Required)", () => {
     expect(greetingText!.length).toBeGreaterThan(0);
   });
 
-  test("Professional etiquette: Title usage in greetings", async ({ page }) => {
+  test("Professional etiquette: Title usage in greetings", async ({
+    page: _page,
+  }) => {
     // This requires testing with authenticated professional users
     // For now, verify component structure
     await page.goto("/login");
@@ -644,7 +625,7 @@ test.describe("6. Cross-Browser Arabic Compatibility (95%+ Required)", () => {
   const testPages = ["/register", "/login"];
 
   for (const testPage of testPages) {
-    test(`${testPage}: Chromium Arabic rendering`, async ({ page }) => {
+    test(`${testPage}: Chromium Arabic rendering`, async ({ page: _page }) => {
       await page.goto(testPage);
 
       // Take screenshot for manual verification
@@ -658,7 +639,7 @@ test.describe("6. Cross-Browser Arabic Compatibility (95%+ Required)", () => {
       expect(arabicElements).toBeGreaterThan(0);
     });
 
-    test(`${testPage}: Firefox Arabic rendering`, async ({ page }) => {
+    test(`${testPage}: Firefox Arabic rendering`, async ({ page: _page }) => {
       await page.goto(testPage);
 
       // Take screenshot for manual verification
@@ -672,7 +653,9 @@ test.describe("6. Cross-Browser Arabic Compatibility (95%+ Required)", () => {
       expect(arabicElements).toBeGreaterThan(0);
     });
 
-    test(`${testPage}: WebKit (Safari) Arabic rendering`, async ({ page }) => {
+    test(`${testPage}: WebKit (Safari) Arabic rendering`, async ({
+      page: _page,
+    }) => {
       await page.goto(testPage);
 
       // Take screenshot for manual verification
@@ -687,7 +670,7 @@ test.describe("6. Cross-Browser Arabic Compatibility (95%+ Required)", () => {
     });
   }
 
-  test("Cross-browser: Arabic font loading", async ({ page }) => {
+  test("Cross-browser: Arabic font loading", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Check font loading status
@@ -708,7 +691,7 @@ test.describe("6. Cross-Browser Arabic Compatibility (95%+ Required)", () => {
     expect(fontsLoaded.hasFonts).toBeTruthy();
   });
 
-  test("Cross-browser: RTL CSS custom properties", async ({ page }) => {
+  test("Cross-browser: RTL CSS custom properties", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Check CSS custom properties for RTL
@@ -737,7 +720,9 @@ test.describe("7. Mobile Arabic Validation", () => {
   ];
 
   for (const viewport of mobileViewports) {
-    test(`Mobile ${viewport.name}: Arabic RTL layout`, async ({ page }) => {
+    test(`Mobile ${viewport.name}: Arabic RTL layout`, async ({
+      page: _page,
+    }) => {
       await page.setViewportSize({
         width: viewport.width,
         height: viewport.height,
@@ -780,7 +765,7 @@ test.describe("7. Mobile Arabic Validation", () => {
 });
 
 test.describe("8. Performance Testing for Arabic", () => {
-  test("Arabic text rendering performance", async ({ page }) => {
+  test("Arabic text rendering performance", async ({ page: _page }) => {
     const startTime = Date.now();
 
     await page.goto("/register");
@@ -796,7 +781,7 @@ test.describe("8. Performance Testing for Arabic", () => {
     expect(renderTime).toBeLessThan(1000);
   });
 
-  test("Large Arabic content rendering", async ({ page }) => {
+  test("Large Arabic content rendering", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Create large Arabic content for testing
@@ -826,7 +811,7 @@ test.describe("8. Performance Testing for Arabic", () => {
 });
 
 test.describe("9. Accessibility Testing for Arabic", () => {
-  test("Screen reader: Arabic lang attributes", async ({ page }) => {
+  test("Screen reader: Arabic lang attributes", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Check that Arabic elements have correct lang attribute
@@ -846,7 +831,7 @@ test.describe("9. Accessibility Testing for Arabic", () => {
     }
   });
 
-  test("ARIA labels: Arabic accessibility", async ({ page }) => {
+  test("ARIA labels: Arabic accessibility", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Check for Arabic ARIA labels
@@ -860,7 +845,7 @@ test.describe("9. Accessibility Testing for Arabic", () => {
     expect(ariaLabels).toBeGreaterThanOrEqual(0);
   });
 
-  test("Focus management: RTL keyboard navigation", async ({ page }) => {
+  test("Focus management: RTL keyboard navigation", async ({ page: _page }) => {
     await page.goto("/register");
 
     // Test Tab navigation through form
@@ -884,7 +869,7 @@ test.describe("9. Accessibility Testing for Arabic", () => {
 /**
  * VALIDATION SUMMARY GENERATION
  */
-test("Generate Arabic/RTL Validation Summary", async ({ page }) => {
+test("Generate Arabic/RTL Validation Summary", async ({ page: _page }) => {
   console.log("\n=== COMPREHENSIVE ARABIC/RTL VALIDATION SUMMARY ===\n");
 
   console.log("Test Categories:");

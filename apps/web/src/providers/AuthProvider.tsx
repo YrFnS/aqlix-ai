@@ -90,7 +90,7 @@ export interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider component
-export function AuthProvider({ children }: { children: React.node }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [culturalContext, setCulturalContext] =
@@ -236,6 +236,9 @@ export function AuthProvider({ children }: { children: React.node }) {
 
       return () => clearTimeout(timer);
     }
+
+    // If refreshTime <= 0, no cleanup needed
+    return undefined;
   }, [session?.expiresAt, refreshSession]);
 
   // Logout
@@ -276,7 +279,7 @@ export function AuthProvider({ children }: { children: React.node }) {
 }
 
 // Custom hook to use auth context
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
 
   if (context === undefined) {

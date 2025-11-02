@@ -30,7 +30,8 @@ describe("Iraqi Rate Limiting System", () => {
 
   beforeEach(() => {
     // Initialize services with test configurations
-    rateLimitService = new IraqiRateLimitService();
+    const testConfig = IraqiRateLimitConfiguration.DEFAULT_CONFIG;
+    rateLimitService = new IraqiRateLimitService(testConfig, 'sliding_window', 'standard');
     budgetService = new IraqiBudgetTrackingService();
     paymentService = new IraqiPaymentIntegrationService();
     domainService = new ProfessionalDomainQuotaService();

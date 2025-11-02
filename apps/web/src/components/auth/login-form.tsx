@@ -61,8 +61,6 @@ export function LoginForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | undefined>();
-  const [requiresMfa, setRequiresMfa] = useState(false);
-  const [mfaSetupId, setMfaSetupId] = useState<string | undefined>();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -91,8 +89,6 @@ export function LoginForm({
         if (result.success) {
           if (result.data?.requiresMfa) {
             // MFA required - redirect to MFA verification page
-            setRequiresMfa(true);
-            setMfaSetupId(result.data.mfaSetupId);
             router.push(`/auth/mfa-verify?setupId=${result.data.mfaSetupId}`);
           } else {
             // Login successful - callback and redirect

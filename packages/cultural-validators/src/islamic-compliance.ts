@@ -80,9 +80,16 @@ const PROHIBITED_PATTERNS = {
  */
 const DISRESPECTFUL_PATTERNS = [
   /\bblasphemy\b/i,
+  /\bmocking\s+religion/i,
+  /\bmock(?:ing|s)?\s+(?:Islam|religion|religious)/i,
+  /\binappropriate\s+religious/i,
+  /\breligious\s+jokes?\b/i,
+  /\bjoke[sd]?\s+about\s+(?:Islam|religion|Allah|Prophet)/i,
+  /\bdisrespect(?:ful|ing)?\s+(?:to\s+)?(?:Islam|religion|religious)/i,
   /(?:^|[^\u0621-\u064A])استهزاء(?:$|[^\u0621-\u064A])/,
   /(?:^|[^\u0621-\u064A])تجديف(?:$|[^\u0621-\u064A])/,
   /(?:^|[^\u0621-\u064A])إهانة(?:$|[^\u0621-\u064A])/,
+  /(?:^|[^\u0621-\u064A])سخرية(?:$|[^\u0621-\u064A])/, // mockery in Arabic
 ];
 
 /**

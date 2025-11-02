@@ -15,7 +15,12 @@
  */
 
 import { describe, test, expect, beforeEach, afterEach, mock } from "bun:test";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  within as _within,
+} from "@testing-library/react";
 import { act } from "react";
 import userEvent from "@testing-library/user-event";
 import {
@@ -867,7 +872,7 @@ describe("Language Switcher - WCAG 2.1 AA Accessibility", () => {
 
       await waitFor(async () => {
         const menu = screen.getByRole("menu");
-        const arabicOption = within(menu).getByRole("menuitem", {
+        const arabicOption = _within(menu).getByRole("menuitem", {
           name: /العربية.*العراق/i,
         });
         await userEvent.click(arabicOption);

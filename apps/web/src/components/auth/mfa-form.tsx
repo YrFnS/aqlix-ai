@@ -373,7 +373,7 @@ export function MFAForm({
           />
 
           {/* Form-level Error */}
-          {formError && <FormError message={formError} />}
+          {formError && <FormError error={formError} />}
 
           {/* Submit Button */}
           <Button

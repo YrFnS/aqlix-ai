@@ -4,7 +4,7 @@
  */
 
 import { describe, test, expect, beforeEach } from "bun:test";
-import { TEST_HELPERS } from "../../setup/index.js";
+import { TEST_HELPERS as _TEST_HELPERS } from "../../setup/index.js";
 
 describe("ChatMessage Component", () => {
   let container: HTMLElement;

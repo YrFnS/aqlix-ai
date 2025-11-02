@@ -57,7 +57,7 @@ test.describe("Arabic RTL Support", () => {
     await expect(testElement).toContainText(mixedText);
   });
 
-  test("should support Iraqi dialect text input", async ({ page }) => {
+  test("should support Iraqi dialect text input", async ({ page: _page }) => {
     // Create an input field for testing
     await page.evaluate(() => {
       const input = document.createElement("input");
@@ -78,7 +78,7 @@ test.describe("Arabic RTL Support", () => {
     await expect(iraqiInput).toHaveValue(iraqiText);
   });
 
-  test("should render Arabic numbers correctly", async ({ page }) => {
+  test("should render Arabic numbers correctly", async ({ page: _page }) => {
     const arabicNumbers = "١٢٣٤٥٦٧٨٩٠";
     const englishNumbers = "1234567890";
 
@@ -105,7 +105,7 @@ test.describe("Arabic RTL Support", () => {
     );
   });
 
-  test("should handle responsive design with RTL", async ({ page }) => {
+  test("should handle responsive design with RTL", async ({ page: _page }) => {
     // Test mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
@@ -131,7 +131,7 @@ test.describe("Arabic RTL Support", () => {
     expect(boundingBox?.width).toBeLessThanOrEqual(375);
   });
 
-  test("should support keyboard navigation in RTL", async ({ page }) => {
+  test("should support keyboard navigation in RTL", async ({ page: _page }) => {
     // Create a form with RTL inputs
     await page.evaluate(() => {
       const form = document.createElement("form");

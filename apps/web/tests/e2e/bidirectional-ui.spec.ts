@@ -13,7 +13,9 @@ test.describe("Bidirectional UI Components", () => {
     await page.goto("/");
   });
 
-  test("should switch direction without page refresh", async ({ page }) => {
+  test("should switch direction without page refresh", async ({
+    page: _page,
+  }) => {
     // Check initial direction
     const html = page.locator("html");
     const initialDir = await html.getAttribute("dir");
@@ -42,7 +44,9 @@ test.describe("Bidirectional UI Components", () => {
     // expect(iconClass).toContain("order-first");
   });
 
-  test("should mirror directional icons in RTL mode", async ({ page }) => {
+  test("should mirror directional icons in RTL mode", async ({
+    page: _page,
+  }) => {
     // TODO: Test icon mirroring
     // const arrowIcon = page.locator('[data-iconname="arrow-right"]');
     // const transform = await arrowIcon.evaluate((el) =>
@@ -51,7 +55,9 @@ test.describe("Bidirectional UI Components", () => {
     // expect(transform).toContain("matrix(-1"); // scaleX(-1)
   });
 
-  test("should not mirror content icons in RTL mode", async ({ page }) => {
+  test("should not mirror content icons in RTL mode", async ({
+    page: _page,
+  }) => {
     // TODO: Test content icons don't mirror
     // const searchIcon = page.locator('[data-iconname="search"]');
     // const transform = await searchIcon.evaluate((el) =>
@@ -72,7 +78,9 @@ test.describe("Bidirectional UI Components", () => {
     // await expect(englishSegment).toBeVisible();
   });
 
-  test("should handle Arabic input with proper alignment", async ({ page }) => {
+  test("should handle Arabic input with proper alignment", async ({
+    page: _page,
+  }) => {
     // TODO: Test BiInput with Arabic text
     // const input = page.locator('[data-testid="arabic-input"]');
     // await input.fill("مرحبا");
@@ -136,7 +144,9 @@ test.describe("Bidirectional UI Components", () => {
     // expect(flexDirection).toBe("row-reverse");
   });
 
-  test("should be keyboard accessible in both directions", async ({ page }) => {
+  test("should be keyboard accessible in both directions", async ({
+    page: _page,
+  }) => {
     // TODO: Test keyboard navigation
     // const firstButton = page.locator("button").first();
     // await firstButton.focus();

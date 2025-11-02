@@ -76,12 +76,24 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
       calculateCategoryScore(culturalScores.prayerTimeHandling) * 0.1;
 
     console.log("\n📊 CULTURAL APPROPRIATENESS REPORT:");
-    console.log(`   Islamic Compliance: ${calculateCategoryScore(culturalScores.islamicCompliance).toFixed(1)}%`);
-    console.log(`   Arabic Greeting: ${calculateCategoryScore(culturalScores.arabicGreeting).toFixed(1)}%`);
-    console.log(`   Professional Etiquette: ${calculateCategoryScore(culturalScores.professionalEtiquette).toFixed(1)}%`);
-    console.log(`   Family Privacy: ${calculateCategoryScore(culturalScores.familyPrivacy).toFixed(1)}%`);
-    console.log(`   Regional Support: ${calculateCategoryScore(culturalScores.regionalSupport).toFixed(1)}%`);
-    console.log(`   Prayer Time Handling: ${calculateCategoryScore(culturalScores.prayerTimeHandling).toFixed(1)}%`);
+    console.log(
+      `   Islamic Compliance: ${calculateCategoryScore(culturalScores.islamicCompliance).toFixed(1)}%`,
+    );
+    console.log(
+      `   Arabic Greeting: ${calculateCategoryScore(culturalScores.arabicGreeting).toFixed(1)}%`,
+    );
+    console.log(
+      `   Professional Etiquette: ${calculateCategoryScore(culturalScores.professionalEtiquette).toFixed(1)}%`,
+    );
+    console.log(
+      `   Family Privacy: ${calculateCategoryScore(culturalScores.familyPrivacy).toFixed(1)}%`,
+    );
+    console.log(
+      `   Regional Support: ${calculateCategoryScore(culturalScores.regionalSupport).toFixed(1)}%`,
+    );
+    console.log(
+      `   Prayer Time Handling: ${calculateCategoryScore(culturalScores.prayerTimeHandling).toFixed(1)}%`,
+    );
     console.log(`\n   🎯 OVERALL SCORE: ${overallScore.toFixed(1)}%`);
     console.log(`   ✅ PASSING THRESHOLD: 95.0%\n`);
 
@@ -101,7 +113,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           region="baghdad"
           languagePreference="both"
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -113,7 +125,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
 
       // Score: 100% if both conditions met
       culturalScores.islamicCompliance.push(
-        hasIslamicGreeting && hasEnglishTranslation ? 100 : 0
+        hasIslamicGreeting && hasEnglishTranslation ? 100 : 0,
       );
     });
 
@@ -123,11 +135,13 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="strict"
           region="baghdad"
           languagePreference="ar-IQ"
-        />
+        />,
       );
 
       const greeting = container.textContent;
-      const hasFullGreeting = greeting?.includes("السلام عليكم ورحمة الله وبركاته");
+      const hasFullGreeting = greeting?.includes(
+        "السلام عليكم ورحمة الله وبركاته",
+      );
 
       expect(hasFullGreeting).toBe(true);
 
@@ -142,7 +156,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           languagePreference="ar-IQ"
           timeOverride={morningTime}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -161,7 +175,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           languagePreference="ar-IQ"
           timeOverride={eveningTime}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -188,7 +202,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
       culturalScores.islamicCompliance.push(
         prayerTimeCheckbox && (prayerTimeCheckbox as HTMLInputElement).checked
           ? 100
-          : 0
+          : 0,
       );
     });
 
@@ -206,7 +220,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
       expect(hasFamilyNameField).toBe(false);
 
       culturalScores.islamicCompliance.push(
-        !hasFatherField && !hasMotherField && !hasFamilyNameField ? 100 : 0
+        !hasFatherField && !hasMotherField && !hasFamilyNameField ? 100 : 0,
       );
     });
   });
@@ -223,7 +237,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -241,7 +255,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -259,7 +273,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -277,7 +291,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -296,7 +310,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           languagePreference="ar-IQ"
           timeOverride={morningTime}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -315,7 +329,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           languagePreference="ar-IQ"
           timeOverride={afternoonTime}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -332,7 +346,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           islamicComplianceLevel="standard"
           languagePreference="ar-IQ"
-        />
+        />,
       );
 
       const arabicElement = container.querySelector('[dir="rtl"]');
@@ -347,7 +361,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           region="baghdad"
           islamicComplianceLevel="standard"
           languagePreference="en-US"
-        />
+        />,
       );
 
       const englishElement = container.querySelector('[dir="ltr"]');
@@ -368,8 +382,10 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
       const html = container.innerHTML;
       const hasLegal = html.includes("قانوني") || html.includes("Legal");
       const hasMedical = html.includes("طبي") || html.includes("Medical");
-      const hasEducational = html.includes("تعليمي") || html.includes("Educational");
-      const hasEngineering = html.includes("هندسي") || html.includes("Engineering");
+      const hasEducational =
+        html.includes("تعليمي") || html.includes("Educational");
+      const hasEngineering =
+        html.includes("هندسي") || html.includes("Engineering");
       const hasOrganizational =
         html.includes("تنظيمي") || html.includes("Organizational");
 
@@ -380,9 +396,13 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
       expect(hasOrganizational).toBe(true);
 
       const score =
-        [hasLegal, hasMedical, hasEducational, hasEngineering, hasOrganizational].filter(
-          Boolean
-        ).length * 20;
+        [
+          hasLegal,
+          hasMedical,
+          hasEducational,
+          hasEngineering,
+          hasOrganizational,
+        ].filter(Boolean).length * 20;
 
       culturalScores.professionalEtiquette.push(score);
     });
@@ -396,7 +416,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           languagePreference="ar-IQ"
           professionalEtiquetteLevel="standard"
           showProfessionalSuffix={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -416,7 +436,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           languagePreference="ar-IQ"
           professionalEtiquetteLevel="formal"
           showProfessionalSuffix={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -436,7 +456,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           languagePreference="ar-IQ"
           professionalEtiquetteLevel="traditional"
           showProfessionalSuffix={true}
-        />
+        />,
       );
 
       const greeting = container.textContent;
@@ -463,7 +483,8 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
         await waitFor(() => {
           const html = container.innerHTML;
           const hasDomainSelect =
-            html.includes("المجال المهني") || html.includes("Professional Domain");
+            html.includes("المجال المهني") ||
+            html.includes("Professional Domain");
           expect(hasDomainSelect).toBe(true);
         });
 
@@ -553,7 +574,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
 
       // Check that privacy level defaults to most restrictive
       const privacySelect = container.querySelector(
-        'select[name="familyPrivacyLevel"]'
+        'select[name="familyPrivacyLevel"]',
       ) as HTMLSelectElement;
 
       if (privacySelect) {
@@ -622,7 +643,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={true}
-        />
+        />,
       );
 
       const withoutVariation = render(
@@ -631,19 +652,19 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           islamicComplianceLevel="standard"
           languagePreference="both"
           showRegionalVariation={false}
-        />
+        />,
       );
 
-      const hasVariationText = withVariation.container.textContent?.includes("شلونك");
-      const lacksVariationText = !withoutVariation.container.textContent?.includes(
-        "شلونك"
-      );
+      const hasVariationText =
+        withVariation.container.textContent?.includes("شلونك");
+      const lacksVariationText =
+        !withoutVariation.container.textContent?.includes("شلونك");
 
       expect(hasVariationText).toBe(true);
       expect(lacksVariationText).toBe(true);
 
       culturalScores.regionalSupport.push(
-        hasVariationText && lacksVariationText ? 100 : 50
+        hasVariationText && lacksVariationText ? 100 : 50,
       );
     });
   });
@@ -665,7 +686,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           method="sms"
           destination="+9647501234567"
           culturalMode="both"
-        />
+        />,
       );
 
       // Wait for prayer time check to run
@@ -673,7 +694,9 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
 
       const html = container.innerHTML;
       const hasPrayerNotice =
-        html.includes("Fajr") || html.includes("صلاة") || html.includes("prayer");
+        html.includes("Fajr") ||
+        html.includes("صلاة") ||
+        html.includes("prayer");
 
       jest.useRealTimers();
 
@@ -693,14 +716,16 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           method="email"
           destination="test@example.com"
           culturalMode="both"
-        />
+        />,
       );
 
       jest.advanceTimersByTime(1000);
 
       const html = container.innerHTML;
       const hasPrayerNotice =
-        html.includes("Dhuhr") || html.includes("صلاة") || html.includes("prayer");
+        html.includes("Dhuhr") ||
+        html.includes("صلاة") ||
+        html.includes("prayer");
 
       jest.useRealTimers();
 
@@ -720,7 +745,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           method="sms"
           destination="+9647501234567"
           culturalMode="both"
-        />
+        />,
       );
 
       jest.advanceTimersByTime(1000);
@@ -751,7 +776,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
           method="sms"
           destination="+9647501234567"
           culturalMode="both"
-        />
+        />,
       );
 
       jest.advanceTimersByTime(1000);
@@ -808,7 +833,7 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
             method="sms"
             destination="+9647501234567"
             culturalMode="both"
-          />
+          />,
         );
 
         jest.advanceTimersByTime(1000);
@@ -944,32 +969,32 @@ export function calculateCulturalScore(scores: {
   const recommendations: string[] = [];
   if (breakdown.islamicCompliance < 95) {
     recommendations.push(
-      "Enhance Islamic compliance: Full greeting format for strict mode, consistent prayer time respect"
+      "Enhance Islamic compliance: Full greeting format for strict mode, consistent prayer time respect",
     );
   }
   if (breakdown.arabicGreeting < 95) {
     recommendations.push(
-      "Improve Arabic greeting: Ensure all regional dialects and time-based greetings are correct"
+      "Improve Arabic greeting: Ensure all regional dialects and time-based greetings are correct",
     );
   }
   if (breakdown.professionalEtiquette < 95) {
     recommendations.push(
-      "Strengthen professional etiquette: Add all professional domains and proper title usage"
+      "Strengthen professional etiquette: Add all professional domains and proper title usage",
     );
   }
   if (breakdown.familyPrivacy < 95) {
     recommendations.push(
-      "Enhance family privacy: Remove any family information requests, default to private"
+      "Enhance family privacy: Remove any family information requests, default to private",
     );
   }
   if (breakdown.regionalSupport < 95) {
     recommendations.push(
-      "Improve regional support: Ensure all Iraqi regions have equal representation"
+      "Improve regional support: Ensure all Iraqi regions have equal representation",
     );
   }
   if (breakdown.prayerTimeHandling < 95) {
     recommendations.push(
-      "Enhance prayer time handling: Cover all five daily prayers with appropriate delays"
+      "Enhance prayer time handling: Cover all five daily prayers with appropriate delays",
     );
   }
 

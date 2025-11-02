@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Verify the email confirmation token
     const { data, error } = await supabase.auth.verifyOtp({

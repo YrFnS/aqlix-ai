@@ -209,8 +209,10 @@ expect.extend({
 
 /**
  * TypeScript declarations for custom matchers
+ * Using namespace syntax for module augmentation (eslint-disable necessary for Jest compatibility)
  */
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toBeCulturallyAppropriate(minScore?: number): Promise<R>;

@@ -19,7 +19,7 @@
  */
 
 import { describe, it, expect, beforeEach } from "bun:test";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within as _within } from "@testing-library/react";
 import { axe, toHaveNoViolations } from "jest-axe";
 import userEvent from "@testing-library/user-event";
 import { LoginForm } from "@/components/auth/login-form";
