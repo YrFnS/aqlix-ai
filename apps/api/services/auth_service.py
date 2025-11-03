@@ -336,8 +336,14 @@ class AuthService:
                     if registration.professional_domain
                     else None
                 ),
-                family_privacy_level=registration.cultural_preferences.family_privacy_level,
-                professional_etiquette_level=registration.cultural_preferences.professional_etiquette_level,
+                family_privacy_level=getattr(
+                    registration.cultural_preferences, "family_privacy_level", "family"
+                ),
+                professional_etiquette_level=getattr(
+                    registration.cultural_preferences,
+                    "professional_etiquette_level",
+                    "standard",
+                ),
             )
 
             # Insert into authentication_cultural_context table
@@ -349,12 +355,18 @@ class AuthService:
                     if registration.region
                     else "baghdad",
                     "cultural_formality_level": "standard",  # Default
-                    "professional_etiquette_level": registration.cultural_preferences.professional_etiquette_level.value
-                    if hasattr(
-                        registration.cultural_preferences,
-                        "professional_etiquette_level",
-                    )
-                    else "standard",
+                    "professional_etiquette_level": (
+                        registration.cultural_preferences.professional_etiquette_level.value
+                        if (
+                            hasattr(
+                                registration.cultural_preferences,
+                                "professional_etiquette_level",
+                            )
+                            and registration.cultural_preferences.professional_etiquette_level
+                            is not None
+                        )
+                        else "standard"
+                    ),
                     # Islamic preferences
                     "islamic_compliance_level": registration.cultural_preferences.islamic_compliance_level.value,
                     "prayer_time_consideration": True,
@@ -371,11 +383,18 @@ class AuthService:
                     else "baghdad",
                     "communication_style": "respectful",
                     # Family and privacy
-                    "family_privacy_level": registration.cultural_preferences.family_privacy_level.value
-                    if hasattr(
-                        registration.cultural_preferences, "family_privacy_level"
-                    )
-                    else "family",
+                    "family_privacy_level": (
+                        registration.cultural_preferences.family_privacy_level.value
+                        if (
+                            hasattr(
+                                registration.cultural_preferences,
+                                "family_privacy_level",
+                            )
+                            and registration.cultural_preferences.family_privacy_level
+                            is not None
+                        )
+                        else "family"
+                    ),
                     "professional_visibility": True,
                     "cultural_sensitivity_level": "high",
                     # Authentication behavior
@@ -495,7 +514,11 @@ class AuthService:
                     if registration.professional_domain
                     else None
                 ),
-                professional_etiquette_level=registration.cultural_preferences.professional_etiquette_level,
+                professional_etiquette_level=getattr(
+                    registration.cultural_preferences,
+                    "professional_etiquette_level",
+                    "standard",
+                ),
             )
 
             # Step 9: Determine verification status and next steps

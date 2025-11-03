@@ -4,7 +4,7 @@ Validates all user inputs with Iraqi-specific rules and security best practices
 
 Provides centralized input validation for:
 - Email addresses (RFC 5322 compliant)
-- Iraqi national IDs (15 digits as per Task 115 requirements)
+- Iraqi national IDs (12 digits - regional code + birth year + sequential + checksum)
 - Professional licenses (domain-specific formats)
 - Phone numbers (Iraqi format)
 - URLs (with sanitization)
@@ -15,7 +15,7 @@ Provides centralized input validation for:
 import re
 from typing import Optional, Tuple, List
 from enum import Enum
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, validator
 from urllib.parse import urlparse
 
 
@@ -54,7 +54,7 @@ class InputLengthLimits:
     PASSWORD_MAX = 72  # Bcrypt limit
 
     # Iraqi-specific
-    IRAQI_ID_LENGTH = 15  # Task 115 requirement (updated from 12)
+    IRAQI_ID_LENGTH = 12  # Iraqi national ID cards are 12 digits
     PHONE_MIN = 10
     PHONE_MAX = 20
     LICENSE_MAX = 50
@@ -85,10 +85,10 @@ class InputValidator:
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
     )
 
-    # Iraqi ID format: 15 digits (XXX-XXXX-XXXXXXX-X)
-    # Regional prefix (3 digits) + Birth year (4 digits) + Sequential (7 digits) + Checksum (1 digit)
-    IRAQI_ID_REGEX = re.compile(r"^\d{15}$")
-    IRAQI_ID_FORMATTED_REGEX = re.compile(r"^\d{3}-\d{4}-\d{7}-\d{1}$")
+    # Iraqi ID format: 12 digits (XX-XXXX-XXXXX-X)
+    # Regional prefix (2 digits) + Birth year (4 digits) + Sequential (5 digits) + Checksum (1 digit)
+    IRAQI_ID_REGEX = re.compile(r"^\d{12}$")
+    IRAQI_ID_FORMATTED_REGEX = re.compile(r"^\d{2}-\d{4}-\d{5}-\d{1}$")
 
     # Iraqi phone number: +964 XXX XXX XXXX or 07XX XXX XXXX
     IRAQI_PHONE_REGEX = re.compile(r"^(\+964|0)(7[3-9]\d)\d{7}$")
@@ -198,12 +198,12 @@ class InputValidator:
         iraqi_id: str, allow_formatted: bool = True
     ) -> InputValidationResult:
         """
-        Validate Iraqi national ID (15 digits)
+        Validate Iraqi national ID (12 digits)
 
-        Format: XXX-XXXX-XXXXXXX-X (optional dashes)
-        - Regional prefix: 3 digits
+        Format: XX-XXXX-XXXXX-X (optional dashes)
+        - Regional prefix: 2 digits
         - Birth year: 4 digits
-        - Sequential number: 7 digits
+        - Sequential number: 5 digits
         - Checksum: 1 digit
 
         Args:
@@ -234,14 +234,14 @@ class InputValidator:
             else:
                 return InputValidationResult(
                     is_valid=False,
-                    error_message="Invalid Iraqi ID format. Expected: XXX-XXXX-XXXXXXX-X",
+                    error_message="Invalid Iraqi ID format. Expected: XX-XXXX-XXXXX-X",
                     validation_type=ValidationType.IRAQI_ID,
                     validation_details=validation_details,
                 )
         else:
             validation_details["input_format"] = "plain"
 
-        # Validate 15 digits
+        # Validate 12 digits
         if not InputValidator.IRAQI_ID_REGEX.match(iraqi_id):
             return InputValidationResult(
                 is_valid=False,
@@ -250,11 +250,11 @@ class InputValidator:
                 validation_details=validation_details,
             )
 
-        # Extract components
-        regional_prefix = iraqi_id[:3]
-        birth_year = iraqi_id[3:7]
-        sequential = iraqi_id[7:14]
-        checksum = iraqi_id[14]
+        # Extract components (12 digits: XX-XXXX-XXXXX-X)
+        regional_prefix = iraqi_id[:2]
+        birth_year = iraqi_id[2:6]
+        sequential = iraqi_id[6:11]
+        checksum = iraqi_id[11]
 
         validation_details["regional_prefix"] = regional_prefix
         validation_details["birth_year"] = birth_year

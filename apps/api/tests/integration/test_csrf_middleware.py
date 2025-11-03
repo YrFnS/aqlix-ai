@@ -137,7 +137,7 @@ class TestProtectedEndpoints:
 
         assert response.status_code == 403
 
-    def test_post_with_valid_csrf_token_succeeds(self, client, valid_jwt_token):
+    async def test_post_with_valid_csrf_token_succeeds(self, client, valid_jwt_token):
         """POST request with valid CSRF token should succeed"""
         token, session_id = valid_jwt_token
 
@@ -348,7 +348,7 @@ class TestSecurityEventLogging:
 class TestConcurrentRequests:
     """Test CSRF protection under concurrent requests"""
 
-    def test_concurrent_csrf_validation(self, client, valid_jwt_token):
+    async def test_concurrent_csrf_validation(self, client, valid_jwt_token):
         """CSRF validation should work correctly under concurrent requests"""
         import concurrent.futures
 

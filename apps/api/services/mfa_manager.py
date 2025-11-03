@@ -100,7 +100,8 @@ class MFAManager:
         # Generate random number with specified length
         max_num = 10**length - 1
         min_num = 10 ** (length - 1)
-        code = secrets.randbelow(max_num - min_num) + min_num
+        # Generate random number in range [min_num, max_num] inclusive
+        code = secrets.randbelow(max_num - min_num + 1) + min_num
         return str(code).zfill(length)
 
     @staticmethod
@@ -150,13 +151,23 @@ class MFAManager:
 
         local, domain = email.split("@", 1)
 
+        # Handle empty local part
+        if not local:
+            masked_local = "***"
+        else:
+            masked_local = f"{local[0]}***"
+
+        # Handle empty or invalid domain parts
         if "." not in domain:
             masked_domain = "***"
         else:
-            domain_parts = domain.split(".")
-            masked_domain = f"{domain_parts[0][0]}***.{domain_parts[-1]}"
-
-        masked_local = f"{local[0]}***" if local else "***"
+            domain_parts = [part for part in domain.split(".") if part]
+            if len(domain_parts) < 2:
+                # Handle edge cases with consecutive dots
+                masked_domain = "***"
+            else:
+                # Show first char of first part and last part
+                masked_domain = f"{domain_parts[0][0]}***.{domain_parts[-1]}"
 
         return f"{masked_local}@{masked_domain}"
 

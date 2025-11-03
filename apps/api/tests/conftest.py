@@ -15,6 +15,7 @@ All fixtures use appropriate scoping to balance performance and isolation.
 import asyncio
 import pytest
 import pytest_asyncio
+import warnings
 from typing import AsyncGenerator, Generator
 from httpx import AsyncClient, ASGITransport
 from fastapi import FastAPI
@@ -104,6 +105,11 @@ def test_settings():
     # Test API key
     os.environ["API_SECRET_KEY"] = (
         "test-secret-key-minimum-32-characters-long-for-security"
+    )
+
+    # JWT secret key for SessionManager (required for real JWT token generation in tests)
+    os.environ["JWT_SECRET_KEY"] = (
+        "test-jwt-secret-key-minimum-32-characters-long-for-security"
     )
 
     # Cultural settings for testing
@@ -282,15 +288,21 @@ def auth_headers(mock_user_data):
 
     Returns headers with valid JWT token for test user.
     """
-    # TODO: Generate actual JWT token using application's auth logic
-    # from services.auth import create_access_token
-    # token = create_access_token(data=mock_user_data)
+    from services.session_manager import SessionManager
 
-    # For now, return mock token
-    mock_token = "test-jwt-token-for-authenticated-requests"
+    # Generate real JWT token for testing
+    token = SessionManager.create_access_token(
+        user_id=mock_user_data["id"],
+        session_id="test-session-id-123",
+        cultural_context={
+            "language": "en",
+            "region": "baghdad",
+            "dialect": "iraqi",
+        },
+    )
 
     return {
-        "Authorization": f"Bearer {mock_token}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
 
@@ -302,10 +314,25 @@ def admin_auth_headers(mock_admin_data):
 
     Returns headers with valid JWT token for admin user.
     """
-    mock_token = "test-admin-jwt-token-for-authorized-requests"
+    from services.session_manager import SessionManager
+
+    # Generate real JWT token for admin user
+    token = SessionManager.create_access_token(
+        user_id=mock_admin_data["id"],
+        session_id="test-admin-session-id-456",
+        cultural_context={
+            "language": "en",
+            "region": "baghdad",
+            "dialect": "iraqi",
+        },
+        professional_context={
+            "role": "admin",
+            "permissions": ["read", "write", "delete"],
+        },
+    )
 
     return {
-        "Authorization": f"Bearer {mock_token}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
 
@@ -638,7 +665,9 @@ def performance_monitor():
             self.timings[operation] = duration
 
             if duration > 1.0:  # Warn on slow operations
-                pytest.warn(f"Slow operation: {operation} took {duration:.2f}s")
+                warnings.warn(
+                    f"Slow operation: {operation} took {duration:.2f}s", UserWarning
+                )
 
     return PerformanceMonitor()
 

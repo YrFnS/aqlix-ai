@@ -37,17 +37,20 @@ jobs:
       - name: Run Arabic RTL tests
         run: |
           echo "🧪 Running Arabic/RTL E2E tests..."
-          bun run test:arabic || echo "⚠️  Arabic test warnings (Phase 2 - non-blocking)"
-          echo "✅ Arabic tests complete (with warnings)"
+          bun run test:arabic
+          echo "✅ Arabic tests complete (Phase 1 - warnings allowed)"
         id: arabic-tests
 
       - name: Validate RTL accuracy threshold (99%+)
         run: |
           echo "✅ Arabic RTL tests passed"
-          echo "📊 Validating 99%+ RTL accuracy..."
-          # Future: Add threshold validation logic
-          echo "✅ RTL layout accuracy: 99%+"
-          echo "✅ Iraqi dialect recognition: 85%+"
+          echo "📊 Validating RTL accuracy threshold..."
+          # TODO Phase 2: Parse test results and validate >= 99% RTL accuracy
+          # TODO Phase 2: Parse test results and validate >= 85% Iraqi dialect recognition
+          # For now, allowing tests to proceed (Phase 1)
+          echo "⚠️  Phase 1: Threshold validation pending implementation"
+          echo "🎯 Target: >= 99% RTL accuracy"
+          echo "🎯 Target: >= 85% Iraqi dialect recognition"
 
       - name: Upload RTL test screenshots
         if: always()

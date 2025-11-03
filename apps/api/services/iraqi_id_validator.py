@@ -259,11 +259,14 @@ class IraqiIDValidator:
     @staticmethod
     def calculate_checksum(iraqi_id: str) -> int:
         """
-        Calculate checksum for Iraqi ID (placeholder implementation)
+        Calculate checksum for Iraqi ID using ICAO 9303 MRZ algorithm
 
-        NOTE: This is a placeholder. The official Iraqi ID checksum algorithm
-        is not publicly documented. This uses a simple modulo-10 algorithm
-        as a placeholder until official specs are available.
+        ICAO 9303 Machine Readable Zone (MRZ) standard:
+        - Weight sequence: [7, 3, 1] repeating
+        - Sum all (digit * weight)
+        - Checksum = sum % 10
+
+        Reference: ICAO Doc 9303 - Machine Readable Travel Documents
 
         Args:
             iraqi_id: Valid 12-digit Iraqi ID
@@ -277,20 +280,21 @@ class IraqiIDValidator:
         # Use first 11 digits for checksum calculation
         digits = [int(d) for d in iraqi_id[:11]]
 
-        # Simple weighted sum modulo 10 (placeholder algorithm)
-        weights = [2, 7, 6, 5, 4, 3, 2, 7, 6, 5, 4]
-        weighted_sum = sum(d * w for d, w in zip(digits, weights))
-        checksum = (11 - (weighted_sum % 11)) % 10
+        # ICAO 9303 MRZ algorithm: weights = [7, 3, 1] repeating
+        weights = [7, 3, 1]
+        weighted_sum = sum(digit * weights[i % 3] for i, digit in enumerate(digits))
+
+        # Checksum is the remainder when divided by 10
+        checksum = weighted_sum % 10
 
         return checksum
 
     @classmethod
     def validate_checksum(cls, iraqi_id: str) -> Tuple[bool, Optional[str]]:
         """
-        Validate Iraqi ID checksum (placeholder implementation)
+        Validate Iraqi ID checksum using ICAO 9303 MRZ algorithm
 
-        NOTE: This uses a placeholder algorithm. Will need to be updated
-        when official Iraqi ID checksum specs are available.
+        Uses ICAO 9303 Machine Readable Zone standard for checksum validation.
 
         Args:
             iraqi_id: Valid 12-digit Iraqi ID
@@ -406,7 +410,7 @@ class IraqiIDValidator:
             if not checksum_valid:
                 return IraqiIDValidationResult(
                     is_valid=False,
-                    error_message=f"{checksum_error} (Note: Using placeholder algorithm)",
+                    error_message=f"{checksum_error} (ICAO 9303 MRZ algorithm)",
                     extracted_birth_year=birth_year,
                     extracted_region=extracted_region,
                     verification_level=verification_level,

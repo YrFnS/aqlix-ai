@@ -77,8 +77,15 @@ class SessionManager:
     - Session expiration and refresh logic
     """
 
-    # JWT settings (in production, load from environment)
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+    # JWT settings (must be configured via environment)
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    if not JWT_SECRET_KEY:
+        raise RuntimeError(
+            "JWT_SECRET_KEY environment variable is required. "
+            "Set it to a secure random value (minimum 32 characters). "
+            "Example: openssl rand -hex 32"
+        )
+
     JWT_ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRY_HOURS = 8  # 8 hours for cultural/professional sessions
     REFRESH_TOKEN_EXPIRY_DAYS = 30  # 30 days

@@ -89,6 +89,9 @@ class PrayerTimesService:
     # In production, use Redis or similar distributed cache
     _cache: Dict[str, Dict] = {}
     _cache_expiry: Dict[str, datetime] = {}
+    _cache_lock: asyncio.Lock = (
+        asyncio.Lock()
+    )  # Async-safe cache access (coroutine synchronization)
 
     @classmethod
     async def get_prayer_times(
@@ -114,24 +117,26 @@ class PrayerTimesService:
             logger.warning(f"Unknown city '{city}', defaulting to Baghdad")
             city = "baghdad"
 
-        # Check cache first
+        # Check cache first (with lock for thread safety)
         cache_key = f"{city}_{date.strftime('%Y-%m-%d')}"
 
-        if cache_key in cls._cache and cache_key in cls._cache_expiry:
-            if datetime.now() < cls._cache_expiry[cache_key]:
-                logger.info(
-                    f"Returning cached prayer times for {city} on {date.date()}"
-                )
-                return cls._cache[cache_key]
+        async with cls._cache_lock:
+            if cache_key in cls._cache and cache_key in cls._cache_expiry:
+                if datetime.now() < cls._cache_expiry[cache_key]:
+                    logger.info(
+                        f"Returning cached prayer times for {city} on {date.date()}"
+                    )
+                    return cls._cache[cache_key]
 
         # Fetch from API
         try:
             prayer_times = await cls._fetch_from_aladhan_api(city, date)
 
             if prayer_times:
-                # Cache for 24 hours
-                cls._cache[cache_key] = prayer_times
-                cls._cache_expiry[cache_key] = datetime.now() + timedelta(hours=24)
+                # Cache for 24 hours (with lock for thread safety)
+                async with cls._cache_lock:
+                    cls._cache[cache_key] = prayer_times
+                    cls._cache_expiry[cache_key] = datetime.now() + timedelta(hours=24)
                 logger.info(
                     f"Fetched and cached prayer times for {city} on {date.date()}"
                 )
@@ -296,12 +301,23 @@ class PrayerTimesService:
                 logger.error(f"Error parsing prayer time {prayer_name}: {e}")
                 continue
 
-        # If no prayer found today, return Fajr of next day
-        return "Fajr (tomorrow)", prayer_times.fajr
+        # If no prayer found today, fetch tomorrow's Fajr time
+        tomorrow = now + timedelta(days=1)
+        tomorrow_prayer_times = await cls.get_prayer_times(city, tomorrow)
+
+        if tomorrow_prayer_times:
+            return "Fajr (tomorrow)", tomorrow_prayer_times.fajr
+        else:
+            # Fallback to today's Fajr if tomorrow fetch fails
+            logger.warning(
+                "Could not fetch tomorrow's prayer times, using today's Fajr as fallback"
+            )
+            return "Fajr (tomorrow)", prayer_times.fajr
 
     @classmethod
-    def clear_cache(cls):
-        """Clear the prayer times cache"""
-        cls._cache.clear()
-        cls._cache_expiry.clear()
+    async def clear_cache(cls):
+        """Clear the prayer times cache (with lock for thread safety)"""
+        async with cls._cache_lock:
+            cls._cache.clear()
+            cls._cache_expiry.clear()
         logger.info("Prayer times cache cleared")

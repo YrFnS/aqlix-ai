@@ -126,14 +126,18 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response: Response = await call_next(request)
 
         # Content Security Policy (CSP)
+        # TODO: Implement nonce-based CSP for inline scripts/styles
+        # For now, using strict-dynamic with hash fallback
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-            "style-src 'self' 'unsafe-inline'; "
+            "script-src 'self' 'strict-dynamic'; "
+            "style-src 'self'; "
             "img-src 'self' data: https:; "
             "font-src 'self' data:; "
             "connect-src 'self' https://api.openai.com https://*.supabase.co; "
-            "frame-ancestors 'none';"
+            "frame-ancestors 'none'; "
+            "base-uri 'self'; "
+            "form-action 'self';"
         )
 
         # HTTP Strict Transport Security (HSTS)

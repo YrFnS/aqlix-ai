@@ -58,6 +58,7 @@ class MFAEnforcementManager:
 
     @staticmethod
     def should_enforce_mfa(
+        user_id: str,
         mfa_enabled: bool,
         mfa_frequency: MFAFrequency,
         device_id: Optional[str] = None,
@@ -71,6 +72,7 @@ class MFAEnforcementManager:
         Determine if MFA should be enforced
 
         Args:
+            user_id: User ID for device trust verification
             mfa_enabled: Whether MFA is enabled for user
             mfa_frequency: MFA frequency setting
             device_id: Device ID
@@ -124,7 +126,7 @@ class MFAEnforcementManager:
                 from .mfa_manager import MFAManager
 
                 device_trust = MFAManager.check_device_trust(
-                    user_id="placeholder",  # Will be provided by caller
+                    user_id=user_id,
                     device_id=device_id,
                     trust_token=trust_token,
                 )
@@ -162,7 +164,7 @@ class MFAEnforcementManager:
             from .mfa_manager import MFAManager
 
             device_trust = MFAManager.check_device_trust(
-                user_id="placeholder",  # Will be provided by caller
+                user_id=user_id,
                 device_id=device_id,
                 trust_token=trust_token,
             )
@@ -228,6 +230,7 @@ class MFAEnforcementManager:
 
     @staticmethod
     def get_enforcement_status(
+        user_id: str,
         mfa_enabled: bool,
         mfa_frequency: MFAFrequency,
         device_id: Optional[str] = None,
@@ -238,6 +241,7 @@ class MFAEnforcementManager:
         Get current MFA enforcement status (simplified version)
 
         Args:
+            user_id: User ID for device trust verification
             mfa_enabled: Whether MFA is enabled
             mfa_frequency: MFA frequency setting
             device_id: Device ID
@@ -248,6 +252,7 @@ class MFAEnforcementManager:
             MFAEnforcementStatus with enforcement details
         """
         enforcement_result = MFAEnforcementManager.should_enforce_mfa(
+            user_id=user_id,
             mfa_enabled=mfa_enabled,
             mfa_frequency=mfa_frequency,
             device_id=device_id,

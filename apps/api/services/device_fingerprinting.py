@@ -400,6 +400,10 @@ class DeviceFingerprintManager:
         elif (
             previous_device_info.browser == current_device_info.browser
             and previous_device_info.os == current_device_info.os
+            and (
+                previous_device_info.browser_version
+                or current_device_info.browser_version
+            )
             and previous_device_info.browser_version
             != current_device_info.browser_version
         ):

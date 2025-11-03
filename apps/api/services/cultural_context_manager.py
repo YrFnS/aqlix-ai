@@ -286,7 +286,7 @@ class CulturalContextManager:
         if current_time is None:
             current_time = datetime.now(cls.IRAQ_TIMEZONE)
 
-        time_of_day = cls.get_time_of_day(current_time)
+        time_of_day = cls.get_current_time_of_day(current_time)
 
         # Build primary greeting based on Islamic compliance
         if islamic_compliance_level in [

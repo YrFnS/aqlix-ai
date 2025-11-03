@@ -4,10 +4,12 @@ Provides async database connection and query utilities
 """
 
 import os
+import json
+import asyncio
 from typing import Optional, Dict, List, Any
 from contextlib import asynccontextmanager
 import asyncpg
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class DatabaseClient:
@@ -18,16 +20,27 @@ class DatabaseClient:
     """
 
     _pool: Optional[asyncpg.Pool] = None
+    _pool_lock: asyncio.Lock = asyncio.Lock()
 
     @classmethod
     async def get_pool(cls) -> asyncpg.Pool:
         """
         Get or create database connection pool
+        Thread-safe with double-checked locking pattern
 
         Returns:
             asyncpg.Pool connection pool
         """
-        if cls._pool is None:
+        # First check without lock (fast path)
+        if cls._pool is not None:
+            return cls._pool
+
+        # Acquire lock for pool creation
+        async with cls._pool_lock:
+            # Double-check after acquiring lock
+            if cls._pool is not None:
+                return cls._pool
+
             # Build connection string from environment
             database_url = os.getenv("DATABASE_URL")
 
@@ -54,7 +67,7 @@ class DatabaseClient:
                     database_url, min_size=2, max_size=10, command_timeout=60
                 )
 
-        return cls._pool
+            return cls._pool
 
     @classmethod
     async def close_pool(cls):
@@ -217,9 +230,7 @@ class SessionRepository:
         RETURNING *
         """
 
-        now = datetime.utcnow()
-
-        import json
+        now = datetime.now(timezone.utc)
 
         cultural_json = json.dumps(cultural_context_snapshot)
 
@@ -298,7 +309,9 @@ class SessionRepository:
         SET last_activity = $1
         WHERE id = $2 AND session_status = 'active'
         """
-        result = await DatabaseClient.execute(query, datetime.utcnow(), session_id)
+        result = await DatabaseClient.execute(
+            query, datetime.now(timezone.utc), session_id
+        )
         return "UPDATE 1" in result
 
     @staticmethod
@@ -356,7 +369,7 @@ class SessionRepository:
         WHERE user_id = $1 AND session_status = 'active' AND expires_at > $2
         ORDER BY created_at DESC
         """
-        return await DatabaseClient.fetch(query, user_id, datetime.utcnow())
+        return await DatabaseClient.fetch(query, user_id, datetime.now(timezone.utc))
 
     @staticmethod
     async def cleanup_expired_sessions() -> int:
@@ -371,5 +384,5 @@ class SessionRepository:
         SET session_status = 'expired'
         WHERE session_status = 'active' AND expires_at < $1
         """
-        result = await DatabaseClient.execute(query, datetime.utcnow())
+        result = await DatabaseClient.execute(query, datetime.now(timezone.utc))
         return int(result.split(" ")[1]) if " " in result else 0

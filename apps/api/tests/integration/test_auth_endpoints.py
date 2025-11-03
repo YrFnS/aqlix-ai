@@ -32,9 +32,12 @@ def db_session():
 def cleanup_test_users(db_session):
     """Cleanup test users after each test"""
     yield
-    # Cleanup logic here
+    # Cleanup logic here - using parameterized query to prevent SQL injection
+    from sqlalchemy import text
+
     db_session.execute(
-        "DELETE FROM iraqi_user_authentication WHERE email LIKE '%@test.example.com'"
+        text("DELETE FROM iraqi_user_authentication WHERE email LIKE :email_pattern"),
+        {"email_pattern": "%@test.example.com"},
     )
     db_session.commit()
 
@@ -652,7 +655,7 @@ class TestCompleteAuthFlows:
     def test_complete_professional_registration_to_login(
         self, client, cleanup_test_users
     ):
-        """Complete flow: register Iraqi professional � verify � login"""
+        """Complete flow: register Iraqi professional → verify → login"""
         # 1. Register
         reg_response = client.post(
             "/api/auth/register",

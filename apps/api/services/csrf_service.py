@@ -4,7 +4,7 @@ Implements CSRF token generation, validation, and double-submit cookie pattern
 Ensures Iraqi regulatory compliance and secure state-changing request protection
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, Tuple
 from pydantic import BaseModel
 import secrets
@@ -12,6 +12,8 @@ import hashlib
 import hmac
 from enum import Enum
 import threading
+import logging
+import atexit
 
 
 class CSRFTokenStatus(str, Enum):
@@ -123,7 +125,7 @@ class CSRFService:
         ).hexdigest()
 
         # Calculate expiry
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         expires_at = now + timedelta(minutes=cls.CSRF_TOKEN_EXPIRY_MINUTES)
 
         return CSRFTokenInfo(
@@ -190,7 +192,7 @@ class CSRFService:
             )
 
         # Check if token is expired
-        if datetime.utcnow() > stored_token_info.expires_at:
+        if datetime.now(timezone.utc) > stored_token_info.expires_at:
             return CSRFValidationResult(
                 is_valid=False,
                 status=CSRFTokenStatus.EXPIRED,
@@ -370,6 +372,15 @@ class CSRFTokenRepository:
     Thread-safe repository for CSRF token storage and retrieval
     In-memory storage for development, database storage for production
 
+    ⚠️  PRODUCTION WARNING:
+    This in-memory storage implementation is for DEVELOPMENT ONLY.
+    It will NOT work in distributed/multi-instance deployments:
+    - Tokens are only stored in this process's memory
+    - Multiple servers cannot share token state
+    - Load-balanced deployments will fail CSRF validation
+
+    For production, implement database or Redis-backed storage.
+
     Thread Safety:
     - Uses threading.RLock for synchronization
     - All operations are atomic and race-free
@@ -380,6 +391,70 @@ class CSRFTokenRepository:
     _tokens: Dict[str, CSRFTokenInfo] = {}
     # Thread lock for synchronization
     _lock: threading.RLock = threading.RLock()
+    # Background cleanup thread
+    _cleanup_thread: Optional[threading.Thread] = None
+    _cleanup_running: bool = False
+    # Logger for cleanup operations
+    logger = logging.getLogger(__name__)
+
+    @classmethod
+    def start_cleanup_thread(cls, cleanup_interval_minutes: int = 15):
+        """
+        Start background cleanup thread for expired tokens
+
+        Args:
+            cleanup_interval_minutes: Interval between cleanups (default 15 minutes)
+        """
+        if cls._cleanup_running:
+            cls.logger.info("Cleanup thread already running")
+            return
+
+        cls._cleanup_running = True
+
+        def cleanup_worker():
+            """Background worker that periodically cleans up expired tokens"""
+            import time
+
+            while cls._cleanup_running:
+                try:
+                    # Run cleanup immediately on each iteration
+                    deleted_count = cls.cleanup_expired_tokens()
+                    if deleted_count > 0:
+                        cls.logger.info(
+                            f"CSRF token cleanup: removed {deleted_count} expired tokens"
+                        )
+
+                    if not cls._cleanup_running:
+                        break
+
+                    # Sleep for the specified interval
+                    time.sleep(cleanup_interval_minutes * 60)
+
+                except Exception as error:
+                    cls.logger.error(f"Error in CSRF token cleanup thread: {error}")
+
+        # Create and start daemon thread
+        cls._cleanup_thread = threading.Thread(target=cleanup_worker, daemon=True)
+        cls._cleanup_thread.name = "CSRF-Token-Cleanup-Thread"
+        cls._cleanup_thread.start()
+
+        cls.logger.info(
+            f"CSRF token cleanup thread started (interval: {cleanup_interval_minutes} minutes)"
+        )
+
+        # Register cleanup on shutdown
+        atexit.register(cls.stop_cleanup_thread)
+
+    @classmethod
+    def stop_cleanup_thread(cls):
+        """Stop background cleanup thread gracefully"""
+        if not cls._cleanup_running:
+            return
+
+        cls._cleanup_running = False
+        if cls._cleanup_thread and cls._cleanup_thread.is_alive():
+            cls._cleanup_thread.join(timeout=5)
+            cls.logger.info("CSRF token cleanup thread stopped")
 
     @classmethod
     def store_token(cls, session_id: str, token_info: CSRFTokenInfo):
@@ -433,7 +508,7 @@ class CSRFTokenRepository:
             Number of tokens cleaned up
         """
         with cls._lock:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             expired_sessions = [
                 session_id
                 for session_id, token_info in cls._tokens.items()
