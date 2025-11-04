@@ -84,19 +84,33 @@ class TestChatAgent:
     @pytest.mark.asyncio
     async def test_empty_input_handling(self, mock_llm_client):
         """Test handling of empty or whitespace input."""
-        # TODO: Implement actual validation logic
-        # Should raise validation error for empty input
-
+        # Test various empty input cases
         empty_inputs = ["", "   ", "\n\n", None]
 
-        for empty_input in empty_inputs[:1]:  # Test one for now
+        for empty_input in empty_inputs:
             if empty_input is None:
-                with pytest.raises(Exception):
+                # None should raise an exception
+                with pytest.raises(Exception) as exc_info:
                     await mock_llm_client.generate(empty_input)
+                assert exc_info.value is not None, "Expected exception for None input"
             else:
-                # Empty strings might be handled differently
-                response = await mock_llm_client.generate(empty_input or "test")
-                assert response is not None
+                # Empty/whitespace strings should either:
+                # 1. Raise validation error, or
+                # 2. Return a response (depending on implementation)
+                try:
+                    response = await mock_llm_client.generate(empty_input)
+                    # If no error, verify response structure
+                    assert response is not None, (
+                        f"Response should not be None for input: {repr(empty_input)}"
+                    )
+                    assert isinstance(response, str), (
+                        f"Response should be string, got {type(response)}"
+                    )
+                except Exception as e:
+                    # If validation error is raised, that's also acceptable
+                    assert "empty" in str(e).lower() or "invalid" in str(e).lower(), (
+                        f"Expected validation error for empty input, got: {e}"
+                    )
 
 
 @pytest.mark.unit

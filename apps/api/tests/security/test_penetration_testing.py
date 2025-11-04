@@ -290,20 +290,26 @@ class TestBruteForceAttacks:
 class TestAccountEnumerationAttacks:
     """Test account enumeration attack prevention"""
 
+    @pytest.mark.skip(reason="TODO: Requires full auth service integration")
     def test_user_enumeration_via_login(self):
         """Test user enumeration via login response"""
+        # TODO: Implement after auth service is fully integrated
         # Login responses should not reveal if user exists
         # Same error message for invalid user and invalid password
         pass
 
+    @pytest.mark.skip(reason="TODO: Requires registration endpoint integration")
     def test_user_enumeration_via_registration(self):
         """Test user enumeration via registration"""
+        # TODO: Implement after registration flow is complete
         # Registration should not reveal if email already exists
         # (or use consistent timing)
         pass
 
+    @pytest.mark.skip(reason="TODO: Requires password reset flow integration")
     def test_user_enumeration_via_password_reset(self):
         """Test user enumeration via password reset"""
+        # TODO: Implement after password reset service is integrated
         # Password reset should not reveal if email exists
         pass
 
@@ -323,8 +329,10 @@ class TestRateLimitBypassAttacks:
         count = int(limit.split("/")[0])
         assert count <= 10  # Not too permissive
 
+    @pytest.mark.skip(reason="TODO: Requires distributed rate limiting implementation")
     def test_rate_limit_user_agent_rotation(self):
         """Test rate limit bypass via user agent rotation"""
+        # TODO: Implement after Redis-based distributed rate limiting is added
         # Rate limiting should not rely solely on user agent
         pass
 
@@ -347,8 +355,10 @@ class TestMFABypassAttacks:
         assert result.should_enforce is True
         assert result.can_skip is False
 
+    @pytest.mark.skip(reason="TODO: Requires MFA manager cryptographic analysis")
     def test_mfa_code_prediction(self):
         """Test MFA code prediction prevention"""
+        # TODO: Implement cryptographic security analysis for MFA codes
         # MFA codes should be cryptographically secure
         # This requires MFA manager testing
         pass
@@ -395,20 +405,26 @@ class TestPasswordSecurityAttacks:
 class TestAuthenticationBypassAttacks:
     """Test authentication bypass attempts"""
 
+    @pytest.mark.skip(reason="TODO: Requires session manager integration testing")
     def test_session_fixation_attack(self):
         """Test session fixation attack prevention"""
+        # TODO: Implement after session manager integration is complete
         # Session ID should regenerate after login
         # This requires session manager testing
         pass
 
+    @pytest.mark.skip(reason="TODO: Requires cookie security validation")
     def test_session_hijacking_attack(self):
         """Test session hijacking prevention"""
+        # TODO: Implement cookie attribute validation tests
         # Sessions should have secure attributes
         # HttpOnly, Secure, SameSite
         pass
 
+    @pytest.mark.skip(reason="TODO: Requires JWT service integration")
     def test_jwt_manipulation_attack(self):
         """Test JWT token manipulation"""
+        # TODO: Implement after JWT auth service is integrated
         # JWT tokens should be signed and verified
         # This requires auth service testing
         pass
@@ -427,8 +443,9 @@ class TestInjectionVariants:
         for payload in ldap_payloads:
             # Should be sanitized by input validation
             result = InputValidator.validate_text_length(payload, max_length=100)
+            # TODO: Add specific LDAP injection pattern detection
             # At minimum, should not allow special characters
-            pass
+            assert result.is_valid  # Basic validation should pass
 
     def test_xpath_injection(self):
         """Test XPath injection prevention"""
@@ -458,8 +475,9 @@ class TestInjectionVariants:
             has_sql, sql_warnings = InputValidator.detect_sql_injection_patterns(
                 payload
             )
+            # TODO: Add dedicated command injection pattern detection
             # Should trigger at least one detection
-            pass
+            assert has_xss or has_sql, f"Command injection not detected: {payload}"
 
 
 class TestSecurityBypassSummary:

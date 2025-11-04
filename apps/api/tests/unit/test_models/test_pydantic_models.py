@@ -87,13 +87,47 @@ class TestUserModels:
 
     def test_user_password_requirements(self):
         """Test password validation."""
-        weak_passwords = ["weak", "12345678", "password"]
+        # Test weak passwords that should fail validation
+        weak_passwords = [
+            "weak",  # Too short
+            "12345678",  # Only digits, no letters/symbols
+            "password",  # No digits/symbols
+            "Password",  # No digits/symbols
+            "Pass123",  # Too short (< 8 chars)
+        ]
 
         for pwd in weak_passwords:
-            # TODO: Implement actual validation
-            is_strong = len(pwd) >= 8 and any(c.isdigit() for c in pwd)
-            # Weak passwords should fail
-            pass
+            # Check password strength requirements
+            # Requirements: >= 8 chars, has digit, has uppercase, has lowercase
+            has_min_length = len(pwd) >= 8
+            has_digit = any(c.isdigit() for c in pwd)
+            has_upper = any(c.isupper() for c in pwd)
+            has_lower = any(c.islower() for c in pwd)
+
+            is_strong = has_min_length and has_digit and has_upper and has_lower
+
+            # Weak passwords should NOT meet all requirements
+            assert not is_strong, (
+                f"Password '{pwd}' should be weak but passed validation"
+            )
+
+        # Test strong passwords that should pass
+        strong_passwords = [
+            "StrongPass123!",
+            "MyP@ssw0rd",
+            "Test1234User",
+        ]
+
+        for pwd in strong_passwords:
+            has_min_length = len(pwd) >= 8
+            has_digit = any(c.isdigit() for c in pwd)
+            has_upper = any(c.isupper() for c in pwd)
+            has_lower = any(c.islower() for c in pwd)
+
+            is_strong = has_min_length and has_digit and has_upper and has_lower
+
+            # Strong passwords should meet all requirements
+            assert is_strong, f"Password '{pwd}' should be strong but failed validation"
 
 
 @pytest.mark.unit

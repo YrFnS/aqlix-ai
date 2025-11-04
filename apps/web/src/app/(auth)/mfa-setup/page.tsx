@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { MFAForm } from "@/components/auth";
+import { MFASetupContent } from "./mfa-setup-content";
 
 export const metadata: Metadata = {
   title: "MFA Verification | التحقق الثنائي",
@@ -18,30 +18,6 @@ export default function MFASetupPage({
         <MFASetupContent searchParams={searchParams} />
       </Suspense>
     </div>
-  );
-}
-
-function MFASetupContent({
-  searchParams,
-}: {
-  searchParams: { setupId?: string; method?: string; destination?: string };
-}) {
-  const setupId = searchParams.setupId || "default-setup-id";
-  const method =
-    (searchParams.method as "sms" | "email" | "cultural_questions") || "email";
-  const destination = searchParams.destination;
-
-  return (
-    <MFAForm
-      verificationId={setupId}
-      method={method}
-      destination={destination}
-      culturalMode="both"
-      redirectTo="/dashboard"
-      onCancel={() => {
-        window.location.href = "/auth/login";
-      }}
-    />
   );
 }
 

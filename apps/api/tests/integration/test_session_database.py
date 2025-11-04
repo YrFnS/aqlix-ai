@@ -8,24 +8,13 @@ import os
 import pytest
 from datetime import datetime, timedelta
 from uuid import uuid4
+from freezegun import freeze_time
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-# Import directly from the module files
-import importlib.util
-
-# Load session_manager module
-session_manager_spec = importlib.util.spec_from_file_location(
-    "session_manager",
-    os.path.join(os.path.dirname(__file__), "../../services/session_manager.py"),
-)
-session_manager = importlib.util.module_from_spec(session_manager_spec)
-session_manager_spec.loader.exec_module(session_manager)
-
-SessionManager = session_manager.SessionManager
-SessionStatus = session_manager.SessionStatus
-TokenPair = session_manager.TokenPair
+# Import directly from services module
+from services.session_manager import SessionManager, SessionStatus, TokenPair
 
 
 # Mock database repository for testing
@@ -116,18 +105,25 @@ class MockSessionRepository:
         return count
 
 
-# Patch the SessionRepository in session_manager module
-# Note: In real tests, you would use proper mocking libraries like pytest-mock
-import sys
-
-sys.modules["database"] = type(sys)("database")
-sys.modules["database"].SessionRepository = MockSessionRepository
-
-
+# Patch the SessionRepository using pytest monkeypatch
 @pytest.fixture(autouse=True)
-def reset_mock_db():
-    """Reset mock database before each test"""
+def mock_database(monkeypatch):
+    """Mock database module for testing"""
+    # Create mock database module
+    import types
+
+    mock_db_module = types.ModuleType("database")
+    mock_db_module.SessionRepository = MockSessionRepository
+
+    # Patch sys.modules using monkeypatch for proper cleanup
+    monkeypatch.setitem(sys.modules, "database", mock_db_module)
+
+    # Reset mock data before each test
     MockSessionRepository.reset()
+
+    yield
+
+    # Cleanup happens automatically via monkeypatch
 
 
 class TestSessionCreationWithDatabase:
@@ -408,31 +404,32 @@ class TestSessionTokenIntegration:
         user_id = str(uuid4())
         cultural_context = {"region": "baghdad"}
 
-        # Create session
-        create_result = await SessionManager.create_session(
-            user_id=user_id, cultural_context=cultural_context
-        )
+        # Start with a fixed time
+        initial_time = datetime(2025, 1, 1, 12, 0, 0)
+        with freeze_time(initial_time):
+            # Create session
+            create_result = await SessionManager.create_session(
+                user_id=user_id, cultural_context=cultural_context
+            )
 
-        session_id = create_result.session.session_id
-        refresh_token = create_result.tokens.refresh_token
+            session_id = create_result.session.session_id
+            refresh_token = create_result.tokens.refresh_token
 
-        # Get initial activity time
-        initial_session = await MockSessionRepository.get_session(session_id)
-        initial_activity = initial_session["last_activity"]
+            # Get initial activity time
+            initial_session = await MockSessionRepository.get_session(session_id)
+            initial_activity = initial_session["last_activity"]
 
-        # Wait a bit (in real tests you'd use freezegun or similar)
-        import time
+        # Move time forward by 5 minutes
+        later_time = initial_time + timedelta(minutes=5)
+        with freeze_time(later_time):
+            # Refresh session
+            refresh_result = await SessionManager.refresh_session(
+                refresh_token=refresh_token,
+                cultural_context=cultural_context,
+            )
 
-        time.sleep(0.1)
+            assert refresh_result.success is True
 
-        # Refresh session
-        refresh_result = await SessionManager.refresh_session(
-            refresh_token=refresh_token,
-            cultural_context=cultural_context,
-        )
-
-        assert refresh_result.success is True
-
-        # Verify activity was updated
-        updated_session = await MockSessionRepository.get_session(session_id)
-        assert updated_session["last_activity"] > initial_activity
+            # Verify activity was updated
+            updated_session = await MockSessionRepository.get_session(session_id)
+            assert updated_session["last_activity"] > initial_activity

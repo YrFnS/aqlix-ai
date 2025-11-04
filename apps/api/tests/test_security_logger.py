@@ -28,17 +28,20 @@ from services.security_logger import (
 
 
 @pytest.fixture
-def security_logger():
-    """Create SecurityLogger instance for testing"""
+def security_logger(tmp_path, monkeypatch):
+    """Create SecurityLogger instance for testing with isolated tmp directory"""
+    # Use pytest's tmp_path for test isolation
+    test_log_dir = tmp_path / "security_logs"
+    test_log_dir.mkdir()
+
+    # Patch the LOG_BASE_DIR to use tmp_path
+    monkeypatch.setattr(SecurityLogger, "LOG_BASE_DIR", test_log_dir)
+
+    # Create logger with isolated directory
     logger = SecurityLogger()
     yield logger
-    # Cleanup: Remove test log files
-    # Note: In production, use separate test log directory
-    # for log_file in logger.LOG_BASE_DIR.glob("*.log*"):
-    #     try:
-    #         log_file.unlink()
-    #     except Exception:
-    #         pass
+
+    # Cleanup happens automatically via tmp_path fixture
 
 
 @pytest.fixture

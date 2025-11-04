@@ -22,51 +22,14 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-# Import security services
-import importlib.util
-
-# Import password utils
-password_spec = importlib.util.spec_from_file_location(
-    "password_utils",
-    os.path.join(os.path.dirname(__file__), "../../services/password_utils.py"),
-)
-password_utils = importlib.util.module_from_spec(password_spec)
-password_spec.loader.exec_module(password_utils)
-
-# Import input validator
-from apps.api.services.input_validator import InputValidator
-
-# Import CSRF service
-from apps.api.services.csrf_service import CSRFService, CSRFTokenRepository
-
-# Import XSS sanitizer
-from apps.api.services.xss_sanitizer import XSSSanitizer
-
-# Import account lockout
-account_lockout_spec = importlib.util.spec_from_file_location(
-    "account_lockout",
-    os.path.join(os.path.dirname(__file__), "../../services/account_lockout.py"),
-)
-account_lockout_module = importlib.util.module_from_spec(account_lockout_spec)
-account_lockout_spec.loader.exec_module(account_lockout_module)
-AccountLockoutManager = account_lockout_module.AccountLockoutManager
-
-# Import MFA enforcement
-mfa_enforcement_spec = importlib.util.spec_from_file_location(
-    "mfa_enforcement",
-    os.path.join(os.path.dirname(__file__), "../../services/mfa_enforcement.py"),
-)
-mfa_enforcement_module = importlib.util.module_from_spec(mfa_enforcement_spec)
-mfa_enforcement_spec.loader.exec_module(mfa_enforcement_module)
-MFAEnforcementManager = mfa_enforcement_module.MFAEnforcementManager
-
-# Import rate limiter
-rate_limiter_spec = importlib.util.spec_from_file_location(
-    "rate_limiter",
-    os.path.join(os.path.dirname(__file__), "../../services/rate_limiter.py"),
-)
-rate_limiter_module = importlib.util.module_from_spec(rate_limiter_spec)
-rate_limiter_spec.loader.exec_module(rate_limiter_module)
+# Import security services using standard imports
+from services import password_utils
+from services.input_validator import InputValidator
+from services.csrf_service import CSRFService, CSRFTokenRepository
+from services.xss_sanitizer import XSSSanitizer
+from services.account_lockout import AccountLockoutManager
+from services.mfa_enforcement import MFAEnforcementManager
+from services import rate_limiter
 
 
 class TestAccountLockoutControl:

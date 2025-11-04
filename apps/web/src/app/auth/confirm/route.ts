@@ -10,11 +10,48 @@ import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+/**
+ * Validate redirect URL to prevent open redirect attacks
+ * Only allows internal relative URLs or safe absolute URLs from the same origin
+ */
+function validateRedirectUrl(url: string | null, requestUrl: string): string {
+  const defaultRedirect = "/dashboard";
+
+  // If no URL provided, use default
+  if (!url) {
+    return defaultRedirect;
+  }
+
+  // Allow relative URLs that start with /
+  if (url.startsWith("/") && !url.startsWith("//")) {
+    // Prevent protocol-relative URLs (//example.com)
+    return url;
+  }
+
+  // For absolute URLs, validate they're from the same origin
+  try {
+    const requestOrigin = new URL(requestUrl).origin;
+    const redirectUrl = new URL(url);
+
+    if (redirectUrl.origin === requestOrigin) {
+      return redirectUrl.pathname + redirectUrl.search + redirectUrl.hash;
+    }
+
+    // External URL detected, use default
+    console.warn(`Open redirect attempt blocked: ${url}`);
+    return defaultRedirect;
+  } catch {
+    // Invalid URL, use default
+    return defaultRedirect;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") || "/dashboard";
+  const nextParam = searchParams.get("next");
+  const next = validateRedirectUrl(nextParam, request.url);
 
   // Preserve cultural context from query params
   const culturalLang = searchParams.get("lang");
@@ -104,6 +141,8 @@ export async function GET(request: NextRequest) {
         response.cookies.set("cultural_lang", culturalLang, {
           maxAge: 60 * 60 * 24 * 365, // 1 year
           path: "/",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
         });
       }
@@ -112,6 +151,8 @@ export async function GET(request: NextRequest) {
         response.cookies.set("cultural_region", culturalRegion, {
           maxAge: 60 * 60 * 24 * 365, // 1 year
           path: "/",
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
         });
       }

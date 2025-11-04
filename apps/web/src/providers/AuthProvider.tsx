@@ -12,6 +12,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
+import { useRouter } from "next/navigation";
 import {
   getCurrentUserAction,
   refreshTokenAction,
@@ -292,13 +293,14 @@ export function useAuth(): AuthContextType {
 // Helper hook for protected routes
 export function useRequireAuth() {
   const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       // Redirect to login if not authenticated
-      window.location.href = "/login";
+      router.push("/login");
     }
-  }, [isAuthenticated, isLoading]);
+  }, [isAuthenticated, isLoading, router]);
 
   return { isAuthenticated, isLoading };
 }

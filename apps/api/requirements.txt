@@ -41,7 +41,8 @@ pytz>=2023.3  # Iraqi timezone support (Asia/Baghdad)
 pytest>=7.4.4
 pytest-cov>=4.1.0
 pytest-asyncio>=0.23.2
-httpx>=0.25.2  # For async client testing
+freezegun>=1.4.0  # Time manipulation for testing
+# httpx already declared in "HTTP & Requests" section (line 29)
 
 # Code Quality
 flake8>=7.0.0
