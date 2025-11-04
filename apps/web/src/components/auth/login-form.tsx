@@ -312,11 +312,17 @@ export function LoginForm({
 }
 
 /**
- * Generate a unique device ID for session tracking
+ * Generate a cryptographically secure unique device ID for session tracking
+ * Uses crypto.randomUUID() for security instead of predictable Date.now() + Math.random()
  * Stores in localStorage for multi-session support
  */
 function generateDeviceId(): string {
-  const deviceId = `device-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  // Use crypto.randomUUID() for cryptographically secure IDs
+  const deviceId =
+    typeof window !== "undefined" && window.crypto?.randomUUID
+      ? `device-${window.crypto.randomUUID()}`
+      : `device-fallback-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+
   if (typeof window !== "undefined") {
     localStorage.setItem("deviceId", deviceId);
   }

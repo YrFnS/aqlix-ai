@@ -68,13 +68,29 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Validate type parameter is a valid OTP type
+  // Note: Only includes email-related OTP types used in this app
+  // Phone-related types ("sms", "phone_change", "invite") are omitted as phone auth is not supported
+  const validOtpTypes = ["email_change", "recovery", "email"] as const;
+  type OtpType = (typeof validOtpTypes)[number];
+
+  if (!validOtpTypes.includes(type as OtpType)) {
+    return redirectToError(
+      request,
+      "invalid_type",
+      "نوع التحقق غير صالح / Invalid verification type",
+      culturalLang,
+      culturalRegion,
+    );
+  }
+
   try {
     const supabase = await createClient();
 
-    // Verify the email confirmation token
+    // Verify the email confirmation token with properly typed parameter
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash,
-      type: type as any,
+      type: type as OtpType,
     });
 
     if (error) {

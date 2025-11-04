@@ -349,15 +349,39 @@ class TestIraqiIDVerificationLevels:
         assert "prefix" in result.error_message.lower()
 
     def test_strict_level_validates_checksum(self):
-        """STRICT level should validate checksum"""
-        # Note: This test assumes a checksum algorithm is implemented
+        """STRICT level should validate checksum using ICAO 9303 MRZ algorithm"""
+        # Test with valid checksum (calculated using ICAO 9303 algorithm)
+        # For "10199012345", checksum calculation:
+        # digits: [1,0,1,9,9,0,1,2,3,4,5]
+        # weights: [7,3,1,7,3,1,7,3,1,7,3]
+        # sum: 1*7 + 0*3 + 1*1 + 9*7 + 9*3 + 0*1 + 1*7 + 2*3 + 3*1 + 4*7 + 5*3 = 163
+        # checksum: 163 % 10 = 3
+        valid_id_with_checksum = "101990123453"
+
         result = IraqiIDValidator.validate(
-            iraqi_id="101990123456",
+            iraqi_id=valid_id_with_checksum,
             expected_region=IraqiRegion.BAGHDAD,
             verification_level=VerificationLevel.STRICT,
         )
-        # Result depends on actual checksum implementation
-        assert result.is_valid is not None
+        assert result.is_valid is True, (
+            f"Valid checksum should pass: {result.error_message}"
+        )
+
+        # Test with invalid checksum
+        invalid_checksum_id = "101990123456"  # Wrong checksum (should be 3, not 6)
+
+        result_invalid = IraqiIDValidator.validate(
+            iraqi_id=invalid_checksum_id,
+            expected_region=IraqiRegion.BAGHDAD,
+            verification_level=VerificationLevel.STRICT,
+        )
+        assert result_invalid.is_valid is False, "Invalid checksum should fail"
+        assert "checksum" in result_invalid.error_message.lower(), (
+            f"Error message should mention checksum: {result_invalid.error_message}"
+        )
+        assert "ICAO 9303" in result_invalid.error_message, (
+            "Error message should reference ICAO 9303 standard"
+        )
 
 
 class TestIraqiIDValidationResult:

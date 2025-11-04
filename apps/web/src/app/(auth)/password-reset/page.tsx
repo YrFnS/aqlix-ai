@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/ui/form-error";
+import { resetPasswordAction } from "@/lib/auth/actions";
 
 // Validation schema
 const resetSchema = z.object({
@@ -45,17 +46,22 @@ export default function PasswordResetPage() {
     },
   });
 
-  const onSubmit = async (_values: ResetFormValues) => {
+  const onSubmit = async (values: ResetFormValues) => {
     setFormError(undefined);
 
     startTransition(async () => {
       try {
-        // TODO: Call password reset Server Action
-        // const result = await resetPasswordAction(values);
+        // Call actual password reset Server Action
+        const result = await resetPasswordAction(values);
 
-        // Simulate success for now
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setIsSuccess(true);
+        if (result.success) {
+          setIsSuccess(true);
+        } else {
+          setFormError(
+            result.error ||
+              "حدث خطأ في إرسال البريد / Failed to send reset email. Please try again.",
+          );
+        }
       } catch (error) {
         setFormError(
           "حدث خطأ في النظام / System error occurred. Please try again later.",

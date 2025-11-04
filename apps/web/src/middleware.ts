@@ -120,14 +120,21 @@ export async function middleware(request: NextRequest) {
       loginUrl.searchParams.set("region", culturalContext.region);
     }
 
-    return NextResponse.redirect(loginUrl);
+    // Create redirect and copy cookies from original response
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    copyCookies(response, redirectResponse);
+    return redirectResponse;
   }
 
   // Handle auth routes when already authenticated
   if (isAuthRoute && isAuthenticated) {
     // Redirect to dashboard if trying to access login/register while authenticated
     const dashboardUrl = new URL("/dashboard", request.url);
-    return NextResponse.redirect(dashboardUrl);
+
+    // Create redirect and copy cookies from original response
+    const redirectResponse = NextResponse.redirect(dashboardUrl);
+    copyCookies(response, redirectResponse);
+    return redirectResponse;
   }
 
   // Handle public routes - allow access
@@ -158,6 +165,40 @@ export async function middleware(request: NextRequest) {
   }
 
   return response;
+}
+
+/**
+ * Copy cookies from source response to destination response
+ * Ensures cookies and all their security attributes are preserved when creating redirect responses
+ */
+function copyCookies(source: NextResponse, destination: NextResponse): void {
+  // Get all cookies from source response
+  const sourceCookies = source.cookies.getAll();
+
+  // Copy each cookie with all its attributes to destination response
+  for (const cookie of sourceCookies) {
+    // Build options object preserving all cookie attributes
+    const options: {
+      httpOnly?: boolean;
+      secure?: boolean;
+      sameSite?: "strict" | "lax" | "none";
+      maxAge?: number;
+      path?: string;
+      domain?: string;
+      expires?: Date;
+    } = {};
+
+    // Preserve security attributes
+    if (cookie.httpOnly !== undefined) options.httpOnly = cookie.httpOnly;
+    if (cookie.secure !== undefined) options.secure = cookie.secure;
+    if (cookie.sameSite !== undefined) options.sameSite = cookie.sameSite;
+    if (cookie.maxAge !== undefined) options.maxAge = cookie.maxAge;
+    if (cookie.path !== undefined) options.path = cookie.path;
+    if (cookie.domain !== undefined) options.domain = cookie.domain;
+    if (cookie.expires !== undefined) options.expires = cookie.expires;
+
+    destination.cookies.set(cookie.name, cookie.value, options);
+  }
 }
 
 /**
