@@ -5,7 +5,7 @@ Generates and validates device fingerprints for security and multi-device sessio
 
 import hashlib
 import re
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict, Tuple, List
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -32,7 +32,7 @@ class DeviceFingerprintResult(BaseModel):
     device_info: DeviceInfo
     is_new_device: bool
     fingerprint_strength: str  # weak, medium, strong
-    suspicious_indicators: list[str] = []
+    suspicious_indicators: List[str] = []
 
 
 class DeviceChangeDetection(BaseModel):
@@ -215,7 +215,7 @@ class DeviceFingerprintManager:
         ip_address: Optional[str] = None,
         accept_language: Optional[str] = None,
         accept_encoding: Optional[str] = None,
-        known_device_ids: Optional[list[str]] = None,
+        known_device_ids: Optional[List[str]] = None,
     ) -> DeviceFingerprintResult:
         """
         Create comprehensive device fingerprint with detection

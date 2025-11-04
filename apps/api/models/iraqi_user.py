@@ -340,7 +340,7 @@ class VerificationStatus(BaseModel):
     iraqi_id_verified: bool
     professional_license_verified: bool
     overall_status: str  # pending, email_verified, fully_verified
-    verification_prompts: list[
+    verification_prompts: List[
         str
     ] = []  # Messages to show user about pending verifications
 

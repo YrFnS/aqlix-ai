@@ -25,29 +25,29 @@ Comprehensive security testing covering OWASP Top 10, penetration testing, secur
 
 ```bash
 cd apps/api
-bun test tests/security/
+python -m pytest tests/security/
 ```
 
 ### Run Specific Test Suites
 
 ```bash
 # OWASP Top 10 Compliance
-bun test tests/security/test_owasp_compliance.py
+python -m pytest tests/security/test_owasp_compliance.py
 
 # Penetration Testing
-bun test tests/security/test_penetration_testing.py
+python -m pytest tests/security/test_penetration_testing.py
 
 # Security Controls
-bun test tests/security/test_security_controls.py
+python -m pytest tests/security/test_security_controls.py
 
 # Iraqi Compliance
-bun test tests/security/test_iraqi_compliance.py
+python -m pytest tests/security/test_iraqi_compliance.py
 ```
 
 ### Run with Coverage
 
 ```bash
-bun test --coverage tests/security/
+python -m pytest --cov=. --cov-report=html tests/security/
 ```
 
 ### Run Specific Test Classes
@@ -372,8 +372,8 @@ All tests should pass with the following compliance levels:
 
 ## Documentation
 
-- **Security Testing Report**: `C:/Users/Itokoro/Documents/projects/aqlix-ai/SECURITY_TESTING_REPORT.md`
-- **OWASP Compliance Matrix**: `C:/Users/Itokoro/Documents/projects/aqlix-ai/OWASP_COMPLIANCE_MATRIX.md`
+- **Security Testing Report**: `SECURITY_TESTING_REPORT.md` (in project root)
+- **OWASP Compliance Matrix**: `OWASP_COMPLIANCE_MATRIX.md` (in project root)
 - **Test Suite README**: This file
 
 ---
@@ -400,7 +400,7 @@ jobs:
       - name: Run Security Tests
         run: |
           cd apps/api
-          bun test tests/security/
+          python -m pytest tests/security/
 ```
 
 ---

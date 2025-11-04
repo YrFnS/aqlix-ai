@@ -4,7 +4,7 @@ Validates professional licenses for Iraqi domains (legal, medical, educational, 
 """
 
 from datetime import datetime
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Tuple
 from enum import Enum
 from pydantic import BaseModel
 
@@ -233,7 +233,7 @@ class ProfessionalLicenseValidator:
         return bool(re.match(pattern, license_number))
 
     @classmethod
-    def validate_legal_license(cls, license_number: str) -> tuple[bool, Optional[str]]:
+    def validate_legal_license(cls, license_number: str) -> Tuple[bool, Optional[str]]:
         """
         Validate legal professional license format
         Format: LAW-12345-2020 (LAW-<5 digits>-<year>)
@@ -274,7 +274,7 @@ class ProfessionalLicenseValidator:
     @classmethod
     def validate_medical_license(
         cls, license_number: str
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate medical professional license format
         Format: MED-123456-SU (MED-<6 digits>-<specialty code>)
@@ -316,7 +316,7 @@ class ProfessionalLicenseValidator:
     @classmethod
     def validate_educational_license(
         cls, license_number: str
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate educational professional license format
         Format: EDU-789012-BA (EDU-<6 digits>-<region>)
@@ -358,7 +358,7 @@ class ProfessionalLicenseValidator:
     @classmethod
     def validate_engineering_license(
         cls, license_number: str
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate engineering professional license format
         Format: ENG-345678-CE (ENG-<6 digits>-<discipline>)
@@ -400,7 +400,7 @@ class ProfessionalLicenseValidator:
     @classmethod
     def validate_organizational_license(
         cls, license_number: str
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Validate organizational professional license format
         Format: ORG-901234-MA (ORG-<6 digits>-<type>)

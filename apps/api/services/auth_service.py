@@ -4,7 +4,7 @@ Comprehensive authentication service integrating all Iraqi-specific auth compone
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 import os
 import logging
@@ -58,10 +58,10 @@ class RegistrationResult(BaseModel):
     user_id: Optional[str] = None
     email: str
     verification_status: str
-    next_steps: list[str]
+    next_steps: List[str]
     cultural_greeting: Optional[CulturalGreeting] = None
     error_message: Optional[str] = None
-    validation_errors: list[str] = []
+    validation_errors: List[str] = []
 
 
 class LoginResult(BaseModel):

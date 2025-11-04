@@ -18,7 +18,7 @@ Example:
     print(settings.DATABASE_URL)
 """
 
-from typing import Literal
+from typing import Literal, List
 from pydantic import Field, field_validator, AnyHttpUrl, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -99,7 +99,7 @@ class Settings(BaseSettings):
         return v
 
     @property
-    def cors_origins_list(self) -> list[str]:
+    def cors_origins_list(self) -> List[str]:
         """Parse CORS_ORIGINS into a list."""
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
@@ -338,7 +338,7 @@ class Settings(BaseSettings):
     )
 
     @property
-    def allowed_extensions_list(self) -> list[str]:
+    def allowed_extensions_list(self) -> List[str]:
         """Parse ALLOWED_FILE_EXTENSIONS into a list."""
         return [ext.strip().lower() for ext in self.ALLOWED_FILE_EXTENSIONS.split(",")]
 

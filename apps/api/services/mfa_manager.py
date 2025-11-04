@@ -4,7 +4,7 @@ Manages MFA setup, verification, and cultural timing considerations for Iraqi us
 """
 
 from datetime import datetime, timedelta
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 from enum import Enum
 from pydantic import BaseModel
 import secrets
@@ -370,7 +370,7 @@ class MFAManager:
         mfa_frequency: MFAFrequency = MFAFrequency.EVERY_LOGIN,
         is_suspicious_activity: bool = False,
         last_login: Optional[datetime] = None,
-    ) -> tuple[bool, str]:
+    ) -> Tuple[bool, str]:
         """
         Determine if MFA should be required
 

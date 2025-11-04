@@ -12,7 +12,7 @@ Provides comprehensive protection against:
 
 import html
 import re
-from typing import Optional, List, Set
+from typing import Optional, List, Set, Tuple
 from enum import Enum
 from pydantic import BaseModel
 
@@ -218,7 +218,7 @@ class XSSSanitizer:
     @staticmethod
     def _remove_dangerous_tags_with_parser(
         text: str, dangerous_tags: Set[str]
-    ) -> tuple[str, List[str], List[str]]:
+    ) -> Tuple[str, List[str], List[str]]:
         """
         Remove dangerous HTML tags using BeautifulSoup parser
 
@@ -265,7 +265,7 @@ class XSSSanitizer:
     @staticmethod
     def _remove_dangerous_tags_with_regex(
         text: str, dangerous_tags: Set[str]
-    ) -> tuple[str, List[str], List[str]]:
+    ) -> Tuple[str, List[str], List[str]]:
         """
         Remove dangerous HTML tags using regex (fallback method)
 

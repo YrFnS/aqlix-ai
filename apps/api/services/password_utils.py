@@ -4,7 +4,7 @@ Secure password hashing and verification using bcrypt
 """
 
 import re
-from typing import Optional
+from typing import Optional, List
 import bcrypt
 from pydantic import BaseModel
 
@@ -18,8 +18,8 @@ class PasswordStrengthResult(BaseModel):
 
     is_valid: bool
     strength_score: int  # 0-100
-    missing_requirements: list[str] = []
-    suggestions: list[str] = []
+    missing_requirements: List[str] = []
+    suggestions: List[str] = []
     estimated_crack_time: str = ""
 
 

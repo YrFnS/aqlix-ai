@@ -7,7 +7,7 @@ timeout management, and structured error responses.
 
 import asyncio
 import logging
-from typing import Callable, Optional, TypeVar, Any, Protocol
+from typing import Callable, Optional, TypeVar, Any, Protocol, List
 from dataclasses import dataclass
 from datetime import datetime
 from functools import wraps
@@ -418,7 +418,7 @@ class AsyncContextManager:
 
 
 async def chain_operations(
-    operations: list[Callable[[], Any]],
+    operations: List[Callable[[], Any]],
     continue_on_error: bool = False,
     timeout_config: Optional[TimeoutConfig] = None,
 ) -> AsyncResult:
@@ -483,7 +483,7 @@ async def chain_operations(
 
 
 async def parallel_operations(
-    operations: list[Callable[[], Any]],
+    operations: List[Callable[[], Any]],
     stop_on_error: bool = False,
     timeout_config: Optional[TimeoutConfig] = None,
 ) -> AsyncResult:

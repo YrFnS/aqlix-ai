@@ -5,7 +5,7 @@ Handles JWT verification, cultural context extraction, rate limiting, and sessio
 
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Optional, Dict, Callable
+from typing import Optional, Dict, Callable, Tuple
 from datetime import datetime
 import jwt
 import os
@@ -43,7 +43,7 @@ class RateLimiter:
 
     def is_allowed(
         self, identifier: str, current_time: Optional[datetime] = None
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Check if request is allowed based on rate limit
 
@@ -125,18 +125,6 @@ async def verify_jwt_token(
 
         return payload
 
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has expired. Please refresh your session.",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    except jwt.InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

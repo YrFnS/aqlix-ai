@@ -4,7 +4,7 @@ Manages cultural preferences, greetings, and timing for Iraqi users
 """
 
 from datetime import datetime, time
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Tuple
 from enum import Enum
 from pydantic import BaseModel
 import zoneinfo
@@ -209,7 +209,7 @@ class CulturalContextManager:
         cultural_timing_flexibility: int = 15,
         current_time: Optional[datetime] = None,
         city: str = "baghdad",
-    ) -> tuple[bool, Optional[str]]:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Check if MFA should be delayed due to prayer time
 
