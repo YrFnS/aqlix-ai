@@ -379,7 +379,7 @@ class TestMFAEndpoints:
         assert data["success"] is True
         assert data["method"] == "email"
 
-    def test_mfa_verify_code(self, client, verified_user):
+    def test_mfa_verify_valid_code(self, client, verified_user):
         """POST /api/auth/mfa/verify with valid code"""
         # Setup MFA
         setup_response = client.post(
@@ -399,8 +399,32 @@ class TestMFAEndpoints:
             headers={"Authorization": f"Bearer {verified_user['access_token']}"},
         )
 
-        # Response depends on actual implementation
-        assert response.status_code in [200, 400]
+        # Valid code should return 200 with success=True
+        assert response.status_code == 200
+        data = response.json()
+        assert data.get("success") is True
+
+    def test_mfa_verify_invalid_code(self, client, verified_user):
+        """POST /api/auth/mfa/verify with invalid code"""
+        # Setup MFA first to get a valid setup_id
+        setup_response = client.post(
+            "/api/auth/mfa/setup",
+            json={"method": "email", "destination": verified_user["email"]},
+            headers={"Authorization": f"Bearer {verified_user['access_token']}"},
+        )
+        setup_id = setup_response.json()["setup_id"]
+
+        # Use invalid code
+        invalid_code = "000000"
+
+        response = client.post(
+            "/api/auth/mfa/verify",
+            json={"setup_id": setup_id, "code": invalid_code},
+            headers={"Authorization": f"Bearer {verified_user['access_token']}"},
+        )
+
+        # Invalid code should return 400
+        assert response.status_code == 400
 
 
 class TestPasswordResetEndpoints:

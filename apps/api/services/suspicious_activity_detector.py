@@ -28,8 +28,9 @@ class SuspiciousActivityScore:
     geographic_anomaly_detected: bool
     unusual_time_detected: bool
     device_change_detected: bool
+    recent_failed_attempts_detected: bool
     risk_level: str  # low, medium, high, critical
-    reasons: List[str]  # Human-readable reasons for score
+    reasons: List[str]  # Human-readable reasons for score  # Human-readable reasons for score
 
 
 class SuspiciousActivityDetector:
@@ -144,6 +145,7 @@ class SuspiciousActivityDetector:
             geographic_anomaly_detected=geographic_anomaly,
             unusual_time_detected=unusual_time,
             device_change_detected=device_change,
+            recent_failed_attempts_detected=failed_attempts,
             risk_level=risk_level,
             reasons=reasons if reasons else ["Normal activity"],
         )

@@ -336,7 +336,9 @@ class XSSSanitizer:
 
         # Remove event handlers
         for attr in XSSSanitizer.DANGEROUS_ATTRS:
-            pattern = re.compile(f"{attr}\\s*=\\s*[\"'][^\"']*[\"']", re.IGNORECASE)
+            pattern = re.compile(
+                rf"{attr}\s*=\s*(?:[\"'][^\"']*[\"']|[^\s\"'>]+)", re.IGNORECASE
+            )
             if pattern.search(text):
                 removed_elements.append(attr)
                 security_warnings.append(f"Removed event handler: {attr}")
@@ -346,7 +348,7 @@ class XSSSanitizer:
         text = XSSSanitizer._sanitize_urls(text)
 
         # Remove inline styles (for STANDARD level, styles are not allowed)
-        style_pattern = re.compile(r'style\s*=\s*["\'][^"\']*["\']', re.IGNORECASE)
+        style_pattern = compile(r'style\s*=\s*["\'][^"\']*["\']', re.IGNORECASE)
         if style_pattern.search(text):
             removed_elements.append("style attribute")
             security_warnings.append("Removed inline styles")
@@ -408,7 +410,9 @@ class XSSSanitizer:
 
         # Remove event handlers
         for attr in XSSSanitizer.DANGEROUS_ATTRS:
-            pattern = re.compile(f"{attr}\\s*=\\s*[\"'][^\"']*[\"']", re.IGNORECASE)
+            pattern = re.compile(
+                rf"{attr}\s*=\s*(?:[\"'][^\"']*[\"']|[^\s\"'>]+)", re.IGNORECASE
+            )
             if pattern.search(text):
                 removed_elements.append(attr)
                 security_warnings.append(f"Removed event handler: {attr}")

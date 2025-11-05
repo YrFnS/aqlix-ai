@@ -232,7 +232,22 @@ class SessionRepository:
 
         now = datetime.now(timezone.utc)
 
-        cultural_json = json.dumps(cultural_context_snapshot)
+        # Safely serialize cultural context
+        try:
+            cultural_json = json.dumps(cultural_context_snapshot)
+        except (TypeError, ValueError) as e:
+            # Fallback: try with default=str for non-serializable objects
+            try:
+                cultural_json = json.dumps(cultural_context_snapshot, default=str)
+            except (TypeError, ValueError):
+                # Ultimate fallback: empty object
+                cultural_json = "{}"
+                # Log the error with context
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    f"Failed to serialize cultural_context_snapshot for session {session_id}: {e}"
+                )
 
         row = await DatabaseClient.fetchrow(
             query,

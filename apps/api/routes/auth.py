@@ -149,6 +149,7 @@ async def login(
     # Use device info for login
     result = await auth_service.login_user(
         login_request,
+        device_info=device_info,
         respect_prayer_times=True,
         cultural_timing_flexibility=15,
     )

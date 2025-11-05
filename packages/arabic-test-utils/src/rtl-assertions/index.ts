@@ -232,6 +232,7 @@ export function getRTLLayoutInfo(element: HTMLElement): Record<string, string> {
 
 /**
  * Waits for element to be rendered in DOM
+ * Handles normal flow, fixed positioned, and sticky positioned elements
  */
 async function waitForRender(
   element: HTMLElement,
@@ -239,7 +240,17 @@ async function waitForRender(
 ): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < timeout) {
-    if (element.offsetParent !== null || element === document.body) {
+    // Check if element is rendered:
+    // 1. offsetParent !== null: element is in normal document flow
+    // 2. offsetWidth/offsetHeight > 0: element has visible dimensions (works for fixed/sticky)
+    // 3. element === document.body or document.documentElement: root elements
+    const isInDocumentFlow = element.offsetParent !== null;
+    const hasVisibleDimensions =
+      element.offsetWidth > 0 && element.offsetHeight > 0;
+    const isRootElement =
+      element === document.body || element === document.documentElement;
+
+    if (isInDocumentFlow || hasVisibleDimensions || isRootElement) {
       return;
     }
     await new Promise((resolve) => setTimeout(resolve, 50));

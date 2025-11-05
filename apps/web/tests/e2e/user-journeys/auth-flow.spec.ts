@@ -267,8 +267,9 @@ test.describe("User Journey: Iraqi Professional Registration", () => {
     await page.click('[data-testid="professional-domain-select"]');
     await page.click('[data-testid="domain-medical"]');
 
-    // Fill medical license with specialization
-    await page.fill('[data-testid="professional-license"]', "MED-123456-BA");
+    // Fill medical license with specialization (Iraqi Medical Association format: specialization code + registration number)
+    // Using valid format: IMA-2023-001234 (Iraqi Medical Association - Year - Serial Number)
+    await page.fill('[data-testid="professional-license"]', "IMA-2023-001234");
 
     // Select region (Basra)
     await page.click('[data-testid="region-select"]');

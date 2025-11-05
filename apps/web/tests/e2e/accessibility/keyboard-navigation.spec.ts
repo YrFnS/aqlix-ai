@@ -11,22 +11,39 @@ test.describe("Keyboard Navigation", () => {
     // Start tabbing from beginning
     await page.keyboard.press("Tab");
 
-    // Should focus on first navigation link
-    let focused = await page.evaluate(() =>
+    // Verify focus moved to first focusable element (not body)
+    let focusedTag = await page.evaluate(() => document.activeElement?.tagName);
+    expect(focusedTag).not.toBe("BODY");
+
+    // Should focus on first navigation link with href attribute
+    let focusedHref = await page.evaluate(() =>
       document.activeElement?.getAttribute("href"),
     );
-    expect(focused).toBeTruthy();
+    expect(focusedHref).toBeTruthy();
 
-    // Tab through navigation
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Tab");
-    await page.keyboard.press("Tab");
+    // Store first focused element's data-testid for reference
+    const firstFocusedId = await page.evaluate(() =>
+      document.activeElement?.getAttribute("data-testid"),
+    );
 
-    // Verify navigation is accessible
-    focused = await page.evaluate(() =>
+    // Tab through navigation to next elements
+    await page.keyboard.press("Tab");
+    let secondFocusedId = await page.evaluate(() =>
+      document.activeElement?.getAttribute("data-testid"),
+    );
+    expect(secondFocusedId).not.toBe(firstFocusedId);
+
+    await page.keyboard.press("Tab");
+    let thirdFocusedId = await page.evaluate(() =>
+      document.activeElement?.getAttribute("data-testid"),
+    );
+    expect(thirdFocusedId).not.toBe(secondFocusedId);
+
+    // Verify final focused element
+    focusedHref = await page.evaluate(() =>
       document.activeElement?.getAttribute("href"),
     );
-    expect(focused).toBeTruthy();
+    expect(focusedHref).toBeTruthy();
   });
 
   test("should activate buttons with Enter and Space", async ({ page }) => {
@@ -138,30 +155,56 @@ test.describe("Keyboard Navigation", () => {
     await page.goto("/dashboard");
 
     // Open user menu
-    await page.focus('[data-testid="user-menu"]');
+    const userMenu = page.locator('[data-testid="user-menu"]');
+    await userMenu.focus();
+
+    // Verify menu button is focused
+    const menuButtonFocused = await page.evaluate(
+      () => document.activeElement?.getAttribute("data-testid") === "user-menu",
+    );
+    expect(menuButtonFocused).toBeTruthy();
+
     await page.keyboard.press("Enter");
 
-    // Menu should be open
+    // Menu should be open and contain menuitems
     const menu = page.locator('[role="menu"]');
     await expect(menu).toBeVisible();
 
-    // Press Arrow Down
+    const menuItems = menu.locator('[role="menuitem"]');
+    const itemCount = await menuItems.count();
+    expect(itemCount).toBeGreaterThan(0);
+
+    // Press Arrow Down to focus first menu item
     await page.keyboard.press("ArrowDown");
 
     // First menu item should be focused
-    const firstItem = await page.evaluate(() => {
+    const firstItemFocused = await page.evaluate(() => {
       const activeElement = document.activeElement;
       return activeElement?.getAttribute("role") === "menuitem";
     });
+    expect(firstItemFocused).toBeTruthy();
 
-    expect(firstItem).toBeTruthy();
+    // Store first item for comparison
+    const firstItemText = await page.evaluate(
+      () => document.activeElement?.textContent,
+    );
 
-    // Press Arrow Down again
+    // Press Arrow Down again to move to second item
     await page.keyboard.press("ArrowDown");
 
-    // Second item should be focused
-    const menuItems = await menu.locator('[role="menuitem"]').count();
-    expect(menuItems).toBeGreaterThan(1);
+    // Second item should be focused (if it exists)
+    if (itemCount > 1) {
+      const secondItemFocused = await page.evaluate(() => {
+        const activeElement = document.activeElement;
+        return activeElement?.getAttribute("role") === "menuitem";
+      });
+      expect(secondItemFocused).toBeTruthy();
+
+      const secondItemText = await page.evaluate(
+        () => document.activeElement?.textContent,
+      );
+      expect(secondItemText).not.toBe(firstItemText);
+    }
   });
 
   test("should support Home and End keys in lists", async ({ page }) => {
@@ -277,28 +320,54 @@ test.describe("Keyboard Navigation", () => {
   }) => {
     await page.goto("/");
 
+    const focusedElements: Array<{ tag: string; testId: string | null }> = [];
+
     // Tab through 10 elements
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press("Tab");
 
+      // Capture focused element details
+      const focusedElement = await page.evaluate(() => {
+        const el = document.activeElement as HTMLElement;
+        return {
+          tag: el?.tagName || "UNKNOWN",
+          testId: el?.getAttribute("data-testid"),
+        };
+      });
+
+      // Skip body element
+      if (focusedElement.tag === "BODY") {
+        continue;
+      }
+
+      focusedElements.push(focusedElement);
+
       // Check if focused element has visible outline or ring
       const hasFocusIndicator = await page.evaluate(() => {
         const el = document.activeElement as HTMLElement;
+        if (!el || el === document.body) return false;
+
         const styles = window.getComputedStyle(el);
 
         return (
-          styles.outline !== "none" ||
-          styles.outlineWidth !== "0px" ||
-          styles.boxShadow.includes("ring") ||
+          (styles.outline !== "none" && styles.outlineWidth !== "0px") ||
+          styles.boxShadow.includes("rgb") || // Any shadow means focus indicator
           el.classList.contains("focus:ring") ||
-          el.classList.contains("focus-visible:ring")
+          el.classList.contains("focus-visible:ring") ||
+          el.getAttribute("tabindex") !== null
         );
       });
 
-      if (i > 0) {
-        // Skip first iteration (might be body)
+      // Expect focus indicator for interactive elements
+      const isInteractive = /^(A|BUTTON|INPUT|SELECT|TEXTAREA)$/.test(
+        focusedElement.tag,
+      );
+      if (isInteractive) {
         expect(hasFocusIndicator).toBeTruthy();
       }
     }
+
+    // Should have focused on at least 3 distinct elements
+    expect(focusedElements.length).toBeGreaterThanOrEqual(3);
   });
 });

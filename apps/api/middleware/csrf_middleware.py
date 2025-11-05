@@ -316,9 +316,9 @@ class CSRFMiddleware:
         Returns:
             True if token is still valid
         """
-        from datetime import datetime
+        from datetime import datetime, timezone
 
-        return token_info.is_active and datetime.utcnow() < token_info.expires_at
+        return token_info.is_active and datetime.now(timezone.utc) < token_info.expires_at
 
     def _log_csrf_failure(
         self,
@@ -369,9 +369,9 @@ async def get_csrf_token_for_session(session_id: str) -> Optional[str]:
         return csrf_token_info.token
 
     # Check if token is still valid
-    from datetime import datetime
+    from datetime import datetime, timezone
 
-    if datetime.utcnow() > stored_token_info.expires_at:
+    if datetime.now(timezone.utc) > stored_token_info.expires_at:
         # Token expired, generate new one
         csrf_token_info = CSRFService.generate_csrf_token(session_id)
         CSRFTokenRepository.store_token(session_id, csrf_token_info)

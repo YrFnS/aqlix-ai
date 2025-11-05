@@ -301,6 +301,34 @@ class TestA07AuthenticationFailures:
         # Verification should work
         assert PasswordUtils.verify_password(strong_password, hashed) is True
 
+        # Strong password validation should pass
+        result = PasswordUtils.validate_password_strength(strong_password)
+        assert result.is_valid is True
+
+        # Test weak password: too short
+        weak_short = "Short1!"
+        result = PasswordUtils.validate_password_strength(weak_short)
+        assert result.is_valid is False
+        assert "At least 8 characters" in result.missing_requirements
+
+        # Test weak password: no uppercase
+        weak_no_upper = "noupper123!"
+        result = PasswordUtils.validate_password_strength(weak_no_upper)
+        assert result.is_valid is False
+        assert "At least one uppercase letter" in result.missing_requirements
+
+        # Test weak password: no digits
+        weak_no_digits = "NoDigits!"
+        result = PasswordUtils.validate_password_strength(weak_no_digits)
+        assert result.is_valid is False
+        assert "At least one digit" in result.missing_requirements
+
+        # Test weak password: no symbols
+        weak_no_symbols = "NoSymbols123"
+        result = PasswordUtils.validate_password_strength(weak_no_symbols)
+        assert result.is_valid is False
+        assert "At least one special character" in result.missing_requirements
+
 
 class TestA08DataIntegrityFailures:
     """A08:2021 – Software and Data Integrity Failures"""

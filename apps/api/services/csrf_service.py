@@ -183,7 +183,7 @@ class CSRFService:
             )
 
         # Verify token matches stored token
-        if token != stored_token_info.token:
+        if not secrets.compare_digest(token, stored_token_info.token):
             return CSRFValidationResult(
                 is_valid=False,
                 status=CSRFTokenStatus.MISMATCH,

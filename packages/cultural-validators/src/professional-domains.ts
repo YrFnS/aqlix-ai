@@ -278,8 +278,14 @@ export function validateMedicalContent(content: string): {
 
   const issues: string[] = [];
   // Check if content gives medical advice (prescription-like instructions)
+  // More specific patterns to reduce false positives:
+  // - Arabic: خذ (take), تناول (consume), استخدم (use) + medical context
+  // - Imperatives like "يجب أن تأخذ" (you must take), "خذ الدواء" (take the medicine)
+  // - English: "take pill", "take tablet", "take medicine" (avoid standalone "take" or "use")
   const givesAdvice =
-    /خذ|تناول|استخدم|يجب|حبة|take|use|should|pill|tablet/i.test(content);
+    /خذ\s+(حبة|دواء|علاج|الدواء)|تناول\s+(الدواء|حبة|علاج)|استخدم\s+(الدواء|الحبة|العلاج)|يجب\s+(أن\s+)?تأخذ|يجب\s+(أن\s+)?تناول|(take|use)\s+(pill|tablet|medicine|the\s+medicine)|prescription|وصفة\s+طبية/i.test(
+      content,
+    );
 
   // If content lacks medical terminology but gives medical advice, it's invalid
   if (!hasMedicalTerms && givesAdvice) {

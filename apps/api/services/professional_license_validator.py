@@ -259,6 +259,11 @@ class ProfessionalLicenseValidator:
 
         # Extract year component
         parts = license_number.split("-")
+        if len(parts) < 3:
+            return (
+                False,
+                "Invalid legal license format. Expected: LAW-12345-2020",
+            )
         year = int(parts[2])
 
         # Validate year is reasonable (1970 - current year)
@@ -301,6 +306,11 @@ class ProfessionalLicenseValidator:
 
         # Extract specialty code
         parts = license_number.split("-")
+        if len(parts) < 3:
+            return (
+                False,
+                "Invalid medical license format. Expected: MED-123456-SU",
+            )
         specialty_code = parts[2]
 
         # Validate specialty code
@@ -343,6 +353,11 @@ class ProfessionalLicenseValidator:
 
         # Extract region code
         parts = license_number.split("-")
+        if len(parts) < 3:
+            return (
+                False,
+                "Invalid educational license format. Expected: EDU-789012-BA",
+            )
         region_code = parts[2]
 
         # Validate region code
@@ -385,6 +400,11 @@ class ProfessionalLicenseValidator:
 
         # Extract discipline code
         parts = license_number.split("-")
+        if len(parts) < 3:
+            return (
+                False,
+                "Invalid engineering license format. Expected: ENG-345678-CE",
+            )
         discipline_code = parts[2]
 
         # Validate discipline code
@@ -427,6 +447,11 @@ class ProfessionalLicenseValidator:
 
         # Extract type code
         parts = license_number.split("-")
+        if len(parts) < 3:
+            return (
+                False,
+                "Invalid organizational license format. Expected: ORG-901234-MA",
+            )
         type_code = parts[2]
 
         # Validate type code

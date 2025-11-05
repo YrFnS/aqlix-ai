@@ -17,6 +17,7 @@ async def test_health_endpoint(client):
     assert "features" in data
 
 
+@pytest.mark.api
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_root_endpoint(client):
