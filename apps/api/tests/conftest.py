@@ -64,20 +64,6 @@ def pytest_configure(config):
 # ============================================================================
 
 
-@pytest.fixture(scope="session")
-def event_loop_policy():
-    """Configure event loop policy for async tests."""
-    return asyncio.DefaultEventLoopPolicy()
-
-
-@pytest.fixture(scope="session")
-def event_loop(event_loop_policy) -> Generator:
-    """Create event loop for async tests."""
-    loop = event_loop_policy.new_event_loop()
-    yield loop
-    loop.close()
-
-
 # ============================================================================
 # Environment Configuration Fixtures
 # ============================================================================

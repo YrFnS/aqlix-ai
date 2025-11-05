@@ -79,6 +79,9 @@ class ProfessionalLicenseValidationResult(BaseModel):
     validation_details: dict = {}
 
 
+import re
+
+
 class ProfessionalLicenseValidator:
     """
     Professional License Validator
@@ -224,8 +227,6 @@ class ProfessionalLicenseValidator:
         if not license_number:
             return False
 
-        import re
-
         pattern = ProfessionalLicenseValidator.LICENSE_PATTERNS.get(domain)
         if not pattern:
             return False
@@ -244,9 +245,6 @@ class ProfessionalLicenseValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        import re
-        from datetime import datetime
-
         if not license_number:
             return False, "License number is required"
 
@@ -290,8 +288,6 @@ class ProfessionalLicenseValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        import re
-
         if not license_number:
             return False, "License number is required"
 
@@ -337,8 +333,6 @@ class ProfessionalLicenseValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        import re
-
         if not license_number:
             return False, "License number is required"
 
@@ -384,8 +378,6 @@ class ProfessionalLicenseValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        import re
-
         if not license_number:
             return False, "License number is required"
 
@@ -431,8 +423,6 @@ class ProfessionalLicenseValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        import re
-
         if not license_number:
             return False, "License number is required"
 

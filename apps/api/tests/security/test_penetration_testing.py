@@ -445,9 +445,7 @@ class TestInjectionVariants:
             result = InputValidator.validate_text_length(payload, max_length=100)
             # LDAP special characters should be rejected or sanitized
             # Check if special characters '(', ')', '|', '*' are present
-            has_dangerous_chars = any(
-                char in payload for char in ["(", ")", "|", "*"]
-            )
+            has_dangerous_chars = any(char in payload for char in ["(", ")", "|", "*"])
             if has_dangerous_chars:
                 # Should either be rejected (is_valid=False) or special chars should be detected
                 # For now, just verify the payload doesn't pass without detection

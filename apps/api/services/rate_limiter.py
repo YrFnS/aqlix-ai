@@ -49,7 +49,7 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
 
     # Cache miss or expired - fetch fresh data
     try:
-        from services.prayer_times_service import PrayerTimesService
+        from .prayer_times_service import PrayerTimesService
 
         # Check if current time is within prayer time window (15 minutes flexibility)
         is_prayer, prayer_name = await PrayerTimesService.is_prayer_time(
@@ -67,17 +67,11 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
 
     except Exception as e:
         logger.error(f"Failed to check prayer time: {e}")
-
-        # Fallback: return last cached value if available
+        # Return cached value if available, or False if not
         async with _prayer_time_cache_lock:
             if city in _prayer_time_cache:
-                cached_result, cached_time = _prayer_time_cache[city]
-                logger.warning(
-                    f"Using stale prayer time cache ({(now - cached_time).total_seconds():.0f}s old) due to service failure"
-                )
+                cached_result, _ = _prayer_time_cache[city]
                 return cached_result
-
-        # Ultimate fallback: assume not prayer time
         return False
 
 

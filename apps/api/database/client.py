@@ -244,6 +244,7 @@ class SessionRepository:
                 cultural_json = "{}"
                 # Log the error with context
                 import logging
+
                 logger = logging.getLogger(__name__)
                 logger.warning(
                     f"Failed to serialize cultural_context_snapshot for session {session_id}: {e}"

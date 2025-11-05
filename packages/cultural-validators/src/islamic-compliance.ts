@@ -2,6 +2,7 @@
  * Islamic compliance validation for Iraqi AI Chat System
  * Validates content against Islamic principles and values
  */
+import { removeDiacritics } from "@iraqi-ai/arabic-test-utils";
 
 /**
  * Islamic compliance validation result
@@ -105,6 +106,7 @@ const DISRESPECTFUL_PATTERNS = [
 export async function validateIslamicCompliance(
   content: string,
 ): Promise<IslamicComplianceResult> {
+  const normalizedContent = removeDiacritics(content);
   const violations: string[] = [];
   const recommendations: string[] = [];
 
@@ -116,7 +118,7 @@ export async function validateIslamicCompliance(
   // Check for prohibited content
   let hasProhibitedContent = false;
   for (const [category, patterns] of Object.entries(PROHIBITED_PATTERNS)) {
-    if (patterns.some((pattern) => pattern.test(content))) {
+    if (patterns.some((pattern) => pattern.test(normalizedContent))) {
       hasProhibitedContent = true;
       violations.push(
         `Content contains references to prohibited items in Islam: ${category}`,
@@ -126,7 +128,7 @@ export async function validateIslamicCompliance(
 
   // Check for disrespectful content
   let hasDisrespectfulContent = DISRESPECTFUL_PATTERNS.some((pattern) =>
-    pattern.test(content),
+    pattern.test(normalizedContent),
   );
 
   // Also check with checkReligiousRespect function for additional patterns
@@ -183,9 +185,10 @@ export function hasIslamicGreeting(content: string): boolean {
  * Checks if content contains prohibited references
  */
 export function hasProhibitedReferences(content: string): boolean {
+  const normalizedContent = removeDiacritics(content);
   return Object.values(PROHIBITED_PATTERNS)
     .flat()
-    .some((pattern) => pattern.test(content));
+    .some((pattern) => pattern.test(normalizedContent));
 }
 
 /**
@@ -195,9 +198,10 @@ export function checkReligiousRespect(content: string): {
   isRespectful: boolean;
   issues: string[];
 } {
+  const normalizedContent = removeDiacritics(content);
   const issues: string[] = [];
   const hasDisrespectful = DISRESPECTFUL_PATTERNS.some((pattern) =>
-    pattern.test(content),
+    pattern.test(normalizedContent),
   );
 
   if (hasDisrespectful) {
@@ -217,9 +221,11 @@ export function checkReligiousRespect(content: string): {
     /(?:^|[^\u0621-\u064A])الإسلام(?:$|[^\u0621-\u064A])/,
   ];
 
-  const hasMocking = mockingPatterns.some((pattern) => pattern.test(content));
+  const hasMocking = mockingPatterns.some((pattern) =>
+    pattern.test(normalizedContent),
+  );
   const hasReligiousContext = religiousContext.some((pattern) =>
-    pattern.test(content),
+    pattern.test(normalizedContent),
   );
 
   // Only flag if both mocking AND religious context are present
@@ -282,11 +288,12 @@ export function checkProhibitedContent(content: string): {
   categories: string[];
   details: string[];
 } {
+  const normalizedContent = removeDiacritics(content);
   const categories: string[] = [];
   const details: string[] = [];
 
   for (const [category, patterns] of Object.entries(PROHIBITED_PATTERNS)) {
-    if (patterns.some((pattern) => pattern.test(content))) {
+    if (patterns.some((pattern) => pattern.test(normalizedContent))) {
       categories.push(category);
       details.push(`Content contains ${category} references`);
     }

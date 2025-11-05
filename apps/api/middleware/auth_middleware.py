@@ -168,8 +168,12 @@ async def get_current_user(
         "session_id": payload.get("session_id"),
         "cultural_context": payload.get("cultural_context", {}),
         "professional_context": payload.get("professional_context"),
-        "token_issued_at": datetime.fromtimestamp(payload.get("iat", 0), tz=timezone.utc),
-        "token_expires_at": datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc),
+        "token_issued_at": datetime.fromtimestamp(
+            payload.get("iat", 0), tz=timezone.utc
+        ),
+        "token_expires_at": datetime.fromtimestamp(
+            payload.get("exp", 0), tz=timezone.utc
+        ),
     }
 
     return user_info

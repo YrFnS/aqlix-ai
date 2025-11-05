@@ -345,7 +345,7 @@ class TestA08DataIntegrityFailures:
         token_info = CSRFService.generate_csrf_token(session_id)
 
         # Tamper with token hash
-        tampered_token_info = token_info
+        tampered_token_info = token_info.copy()
         tampered_token_info.token_hash = "tampered-hash"
 
         # Validation should fail

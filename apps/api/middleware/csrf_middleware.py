@@ -318,7 +318,9 @@ class CSRFMiddleware:
         """
         from datetime import datetime, timezone
 
-        return token_info.is_active and datetime.now(timezone.utc) < token_info.expires_at
+        return (
+            token_info.is_active and datetime.now(timezone.utc) < token_info.expires_at
+        )
 
     def _log_csrf_failure(
         self,

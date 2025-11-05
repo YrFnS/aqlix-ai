@@ -30,7 +30,9 @@ class SuspiciousActivityScore:
     device_change_detected: bool
     recent_failed_attempts_detected: bool
     risk_level: str  # low, medium, high, critical
-    reasons: List[str]  # Human-readable reasons for score  # Human-readable reasons for score
+    reasons: List[
+        str
+    ]  # Human-readable reasons for score  # Human-readable reasons for score
 
 
 class SuspiciousActivityDetector:

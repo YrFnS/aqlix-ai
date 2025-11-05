@@ -312,7 +312,7 @@ class PrayerTimesService:
             logger.warning(
                 "Could not fetch tomorrow's prayer times, using today's Fajr as fallback"
             )
-            return "Fajr (tomorrow)", prayer_times.fajr
+            return "Fajr", prayer_times.fajr
 
     @classmethod
     async def clear_cache(cls):
