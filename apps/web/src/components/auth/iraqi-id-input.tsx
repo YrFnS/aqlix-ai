@@ -22,28 +22,31 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 // Iraqi regional prefix mapping (all 19 governorates)
-const REGIONAL_PREFIXES = {
-  anbar: "01",
+// Based on Iraqi Civil Affairs numbering system
+// Some regions have multiple accepted prefixes (stored as arrays)
+type PrefixMap = Record<string, string | string[]>;
+const REGIONAL_PREFIXES: PrefixMap = {
+  anbar: "08",
   mosul: "02", // Nineveh governorate
-  erbil: "05",
+  erbil: "04",
   basra: "06",
-  karbala: "07",
-  najaf: "08",
-  diyala: "09",
-  baghdad: "10",
-  wasit: "12",
-  salahaldin: "13", // Salah al-Din
-  babil: "14",
-  dhiqar: "15", // Dhi Qar
-  maysan: "16",
-  muthanna: "17",
-  qadisiyyah: "18",
-  kirkuk: "19",
-  halabja: "20",
+  karbala: "13",
+  najaf: "12",
+  diyala: "07",
+  baghdad: ["10", "11"], // Baghdad accepts both prefixes
+  wasit: "14",
+  salahaldin: "15", // Salah al-Din
+  babil: "17",
+  dhiqar: "18", // Dhi Qar
+  maysan: "19",
+  muthanna: "20",
+  qadisiyyah: "16",
+  kirkuk: "09",
+  halabja: "21",
   // Kurdistan Region
-  sulaymaniyah: "04",
-  duhok: "03",
-} as const;
+  sulaymaniyah: "03",
+  duhok: "05",
+};
 
 interface IraqiIDInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
@@ -413,10 +416,19 @@ function validateIraqiID(
       const expectedPrefix = REGIONAL_PREFIXES[expectedRegion];
       const actualPrefix = iraqiId.substring(0, 2);
 
-      if (actualPrefix !== expectedPrefix) {
+      // Handle both string and array prefixes
+      const prefixMatches = Array.isArray(expectedPrefix)
+        ? expectedPrefix.includes(actualPrefix)
+        : actualPrefix === expectedPrefix;
+
+      if (!prefixMatches) {
+        // Format error message to show all allowed prefixes
+        const allowedPrefixes = Array.isArray(expectedPrefix)
+          ? expectedPrefix.join(" or ")
+          : expectedPrefix;
         return {
           isValid: false,
-          message: `ID should start with ${expectedPrefix} for ${expectedRegion}`,
+          message: `ID should start with ${allowedPrefixes} for ${expectedRegion}`,
           birthYear,
         };
       }
@@ -424,7 +436,7 @@ function validateIraqiID(
   }
 
   // Step 4: Checksum validation (STRICT only)
-  // Note: Simplified checksum - replace with actual Iraqi ID checksum algorithm if available
+  // Uses ICAO 9303 MRZ algorithm (same as backend)
   if (verificationLevel === "strict") {
     const checksum = calculateChecksum(iraqiId);
     const lastDigit = parseInt(iraqiId.charAt(11), 10);
@@ -432,7 +444,7 @@ function validateIraqiID(
     if (checksum !== lastDigit) {
       return {
         isValid: false,
-        message: "Invalid ID checksum",
+        message: `Invalid ID checksum (expected ${checksum}, got ${lastDigit})`,
         birthYear,
       };
     }
@@ -447,13 +459,34 @@ function validateIraqiID(
 }
 
 /**
- * Calculate checksum for Iraqi ID (simplified)
- * Note: This is a placeholder - replace with actual Iraqi ID checksum algorithm
+ * Calculate checksum for Iraqi ID using ICAO 9303 MRZ algorithm
+ *
+ * ICAO 9303 Machine Readable Zone (MRZ) standard:
+ * - Weight sequence: [7, 3, 1] repeating
+ * - Sum all (digit * weight)
+ * - Checksum = sum % 10
+ *
+ * Reference: ICAO Doc 9303 - Machine Readable Travel Documents
+ * Matches backend implementation in apps/api/services/iraqi_id_validator.py
+ *
+ * @param iraqiId - Valid 12-digit Iraqi ID
+ * @returns Calculated checksum digit (0-9)
  */
 function calculateChecksum(iraqiId: string): number {
-  let sum = 0;
-  for (let i = 0; i < 11; i++) {
-    sum += parseInt(iraqiId.charAt(i), 10) * (12 - i);
+  if (iraqiId.length < 11) {
+    return -1;
   }
-  return sum % 10;
+
+  // Use first 11 digits for checksum calculation
+  const digits = iraqiId.slice(0, 11).split("").map(Number);
+
+  // ICAO 9303 MRZ algorithm: weights = [7, 3, 1] repeating
+  const weights = [7, 3, 1];
+  const weightedSum = digits.reduce(
+    (sum, digit, index) => sum + digit * weights[index % 3],
+    0,
+  );
+
+  // Checksum is the remainder when divided by 10
+  return weightedSum % 10;
 }

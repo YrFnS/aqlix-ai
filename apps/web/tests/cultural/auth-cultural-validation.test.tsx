@@ -48,8 +48,8 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
     prayerTimeHandling: number[];
   };
 
-  beforeEach(() => {
-    // Initialize cultural score tracking
+  beforeAll(() => {
+    // Initialize cultural score tracking once before all tests
     culturalScores = {
       islamicCompliance: [],
       arabicGreeting: [],
@@ -61,7 +61,12 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
   });
 
   afterEach(() => {
-    // Calculate overall cultural appropriateness score
+    // Restore real timers after each test to prevent test interference
+    jest.useRealTimers();
+  });
+
+  afterAll(() => {
+    // Calculate overall cultural appropriateness score once after all tests
     const calculateCategoryScore = (scores: number[]) => {
       if (scores.length === 0) return 0;
       return scores.reduce((a, b) => a + b, 0) / scores.length;

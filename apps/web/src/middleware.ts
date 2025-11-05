@@ -222,6 +222,7 @@ async function getCulturalContextFromDatabase(
   try {
     // Note: iraqi_user_authentication table exists in database but not yet in TypeScript types
     // Using type assertion until types are regenerated from Supabase
+    // The iraqi_user_authentication table uses 'id' as primary key (references auth.users.id)
     const { data, error } = await (supabase as any)
       .from("iraqi_user_authentication")
       .select("region, language_preference, islamic_compliance_level")

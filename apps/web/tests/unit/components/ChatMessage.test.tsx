@@ -17,7 +17,12 @@ describe("ChatMessage Component", () => {
   describe("RTL Layout", () => {
     test("should render Arabic messages with RTL layout", async () => {
       const arabicMessage = "مرحباً بك في نظام الذكاء الاصطناعي العراقي";
-      const messageElement = createChatMessage(arabicMessage, "rtl");
+      const messageElement = createChatMessage(
+        arabicMessage,
+        "rtl",
+        undefined,
+        container,
+      );
 
       await expect(messageElement).toHaveRTLLayout();
       expect(getComputedStyle(messageElement).direction).toBe("rtl");
@@ -26,7 +31,12 @@ describe("ChatMessage Component", () => {
 
     test("should render English messages with LTR layout", () => {
       const englishMessage = "Welcome to Iraqi AI Chat System";
-      const messageElement = createChatMessage(englishMessage, "ltr");
+      const messageElement = createChatMessage(
+        englishMessage,
+        "ltr",
+        undefined,
+        container,
+      );
 
       expect(getComputedStyle(messageElement).direction).toBe("ltr");
       expect(getComputedStyle(messageElement).textAlign).toBe("left");
@@ -34,7 +44,12 @@ describe("ChatMessage Component", () => {
 
     test("should handle mixed Arabic-English content", async () => {
       const mixedMessage = "مرحباً Hello العراق Iraq";
-      const messageElement = createChatMessage(mixedMessage, "rtl");
+      const messageElement = createChatMessage(
+        mixedMessage,
+        "rtl",
+        undefined,
+        container,
+      );
 
       await expect(messageElement).toHaveRTLLayout();
       expect(messageElement.textContent).toBe(mixedMessage);
@@ -83,6 +98,7 @@ describe("ChatMessage Component", () => {
         "Test message",
         "ltr",
         timestamp,
+        container,
       );
 
       const timestampElement = messageElement.querySelector("[data-timestamp]");
@@ -99,6 +115,7 @@ function createChatMessage(
   content: string,
   direction: "rtl" | "ltr",
   timestamp?: Date,
+  container?: HTMLElement,
 ): HTMLElement {
   const message = document.createElement("div");
   message.className = `chat-message ${direction === "rtl" ? "rtl-layout font-arabic" : "ltr-layout"}`;
@@ -115,6 +132,8 @@ function createChatMessage(
     message.appendChild(time);
   }
 
-  document.body.appendChild(message);
+  // Append to container if provided, otherwise to document.body
+  const targetElement = container || document.body;
+  targetElement.appendChild(message);
   return message;
 }

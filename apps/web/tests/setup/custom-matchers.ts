@@ -209,22 +209,19 @@ expect.extend({
 
 /**
  * TypeScript declarations for custom matchers
- * Using namespace syntax for module augmentation (eslint-disable necessary for Jest compatibility)
+ * Using Bun test matcher types (not Jest)
  */
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toBeCulturallyAppropriate(minScore?: number): Promise<R>;
-      toBeIslamicCompliant(minScore?: number): Promise<R>;
-      toBePoliticallyNeutral(): Promise<R>;
-      toHaveRTLLayout(minScore?: number): Promise<R>;
-      toMatchIraqiDialect(
-        expectedDialect: "baghdad" | "basra" | "mosul" | "kurdish" | "standard",
-        minConfidence?: number,
-      ): R;
-      toBeValidArabicText(): R;
-    }
+declare module "bun:test" {
+  interface Matchers<T = unknown> {
+    toBeCulturallyAppropriate(minScore?: number): Promise<T>;
+    toBeIslamicCompliant(minScore?: number): Promise<T>;
+    toBePoliticallyNeutral(): Promise<T>;
+    toHaveRTLLayout(minScore?: number): Promise<T>;
+    toMatchIraqiDialect(
+      expectedDialect: "baghdad" | "basra" | "mosul" | "kurdish" | "standard",
+      minConfidence?: number,
+    ): T;
+    toBeValidArabicText(): T;
   }
 }
 

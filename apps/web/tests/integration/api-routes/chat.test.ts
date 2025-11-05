@@ -207,21 +207,22 @@ describe("Chat API Integration", () => {
     test("should handle rate limiting gracefully", async () => {
       const message = "test message";
 
-      // Send exactly 10 requests (rate limit threshold)
-      const requests = Array.from({ length: 10 }, () =>
-        fetch(`${API_BASE}/chat`, {
+      // Send exactly 10 requests sequentially (rate limit threshold)
+      const responses: Response[] = [];
+      for (let i = 0; i < 10; i++) {
+        const response = await fetch(`${API_BASE}/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message, userId: mockUser.id }),
-        }),
-      );
+        });
+        responses.push(response);
+      }
 
       // All 10 requests should succeed
-      const responses = await Promise.all(requests);
       const successful = responses.filter((r) => r.status === 200);
       expect(successful.length).toBe(10);
 
-      // 11th request should be rate-limited
+      // 11th request should be rate-limited (within same time window)
       const eleventhResponse = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -229,6 +230,14 @@ describe("Chat API Integration", () => {
       });
 
       expect(eleventhResponse.status).toBe(429);
+
+      // TODO: Use fake timers to test rate limit window reset
+      // Example: After time window expires, requests should succeed again
+      // jest.useFakeTimers();
+      // jest.advanceTimersByTime(60000); // Advance by rate limit window
+      // const afterResetResponse = await fetch(...);
+      // expect(afterResetResponse.status).toBe(200);
+      // jest.useRealTimers();
     });
   });
 

@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test";
 import type { Page } from "@playwright/test";
+import * as fs from "fs";
+import * as path from "path";
 
 /**
  * Accessibility Tests: WCAG 2.1 AA Compliance
@@ -8,11 +10,20 @@ import type { Page } from "@playwright/test";
 
 /**
  * Helper function to inject axe-core for accessibility testing
+ * Uses local vendored package instead of CDN for reliability
  */
 async function injectAxe(page: Page) {
-  await page.addScriptTag({
-    url: "https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.7.2/axe.min.js",
-  });
+  // Read axe-core from local node_modules
+  const axePath = path.join(
+    process.cwd(),
+    "node_modules",
+    "axe-core",
+    "axe.min.js",
+  );
+  const axeSource = fs.readFileSync(axePath, "utf8");
+
+  // Inject local axe-core script
+  await page.addScriptTag({ content: axeSource });
 }
 
 /**

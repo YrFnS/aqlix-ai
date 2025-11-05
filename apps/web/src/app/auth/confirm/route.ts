@@ -130,11 +130,25 @@ export async function GET(request: NextRequest) {
     // Email verification successful
     if (data.user) {
       // Update user verification status in database
-      // TODO: Update iraqi_user_authentication table
-      // const { error: updateError } = await supabase
-      //   .from('iraqi_user_authentication')
-      //   .update({ email_verified: true })
-      //   .eq('id', data.user.id);
+      const { error: updateError } = await supabase
+        .from("iraqi_user_authentication")
+        .update({
+          verification_status: "email_verified",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", data.user.id);
+
+      if (updateError) {
+        console.error(
+          "Failed to update email verification status:",
+          updateError,
+        );
+        // Log to monitoring/alerting system (placeholder for integration)
+        // In production, integrate with Sentry, DataDog, or similar service
+        // Example: await monitoringService.captureException(updateError, { userId: data.user.id, eventType: 'email_verification_update' });
+        // Continue with redirect even if database update fails
+        // User's Supabase auth.users email is already verified
+      }
 
       // Redirect to success page or dashboard
       const successUrl = new URL(next, request.url);

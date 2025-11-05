@@ -204,22 +204,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await refreshTokenAction(session.refreshToken);
 
       if (result.success && result.data) {
-        setSession((prev) => ({
-          ...prev!,
-          accessToken: result.data.accessToken,
-          expiresAt: result.data.expiresAt,
-        }));
+        setSession((prev) => {
+          // Null safety check
+          if (!prev) return prev;
+
+          return {
+            ...prev,
+            accessToken: result.data.accessToken,
+            expiresAt: result.data.expiresAt,
+          };
+        });
       }
     } catch (error) {
       console.error("Failed to refresh session:", error);
       // On refresh failure, logout user
       await logout();
     }
-  }, [session?.refreshToken]);
+  }, [session?.refreshToken, logout]);
 
   // Auto-refresh session before expiry
   useEffect(() => {
-    if (!session?.expiresAt) {
+    if (!session?.expiresAt || !session?.refreshToken) {
       return;
     }
 
@@ -240,7 +245,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // If refreshTime <= 0, no cleanup needed
     return undefined;
-  }, [session?.expiresAt, refreshSession]);
+  }, [session?.expiresAt, session?.refreshToken, refreshSession]);
 
   // Logout
   const logout = useCallback(async (logoutAllDevices: boolean = false) => {
