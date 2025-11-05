@@ -81,7 +81,7 @@ class TestXSSAttacks:
         for payload in dom_xss_payloads:
             # Should detect dangerous patterns
             has_xss, warnings = InputValidator.detect_xss_patterns(payload)
-            assert has_xss is True or "javascript:" in payload.lower()
+            assert has_xss is True, f"XSS not properly detected for payload: {payload}"
 
     def test_xss_bypass_attempts(self):
         """Test XSS filter bypass attempts"""
@@ -95,12 +95,14 @@ class TestXSSAttacks:
         for attempt in bypass_attempts:
             # Detection should catch variations
             has_xss, warnings = InputValidator.detect_xss_patterns(attempt)
-            assert has_xss is True or "<script>" in attempt.lower()
+            assert has_xss is True, f"XSS not properly detected for attempt: {attempt}"
 
             # Sanitization should neutralize
             sanitized = XSSSanitizer.sanitize(attempt)
             # Verify dangerous content removed/escaped
-            assert "alert" not in sanitized or "&lt;" in sanitized
+            assert "alert" not in sanitized and "&lt;" in sanitized, (
+                f"XSS not properly sanitized for attempt: {attempt}"
+            )
 
 
 class TestSQLInjectionAttacks:
@@ -153,8 +155,9 @@ class TestSQLInjectionAttacks:
 
         for payload in error_payloads:
             has_sql, warnings = InputValidator.detect_sql_injection_patterns(payload)
-            # Should detect SQL keywords
-            assert has_sql is True or "select" in payload.lower()
+            # Should detect SQL injection and generate warnings
+            assert has_sql is True, f"SQL injection not detected for payload: {payload}"
+            assert len(warnings) > 0, f"No warnings generated for payload: {payload}"
 
     def test_sql_injection_bypass_attempts(self):
         """Test SQL injection filter bypass"""

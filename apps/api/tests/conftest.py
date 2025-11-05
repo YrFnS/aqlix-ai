@@ -377,21 +377,21 @@ def mock_supabase_client():
             """Mock table access."""
             return self
 
-        async def select(self, *args):
+        def select(self, *args):
             """Mock select query."""
             return self
 
-        async def insert(self, data: dict):
+        def insert(self, data: dict):
             """Mock insert operation."""
-            return {"data": data, "error": None}
+            return self
 
-        async def update(self, data: dict):
+        def update(self, data: dict):
             """Mock update operation."""
-            return {"data": data, "error": None}
+            return self
 
-        async def delete(self):
+        def delete(self):
             """Mock delete operation."""
-            return {"data": None, "error": None}
+            return self
 
     return MockSupabaseClient()
 

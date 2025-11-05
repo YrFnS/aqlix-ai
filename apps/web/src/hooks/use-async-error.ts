@@ -102,6 +102,13 @@ export function useAsyncError(): AsyncErrorState & AsyncErrorHandlers {
           throw err;
         }
 
+        // Runtime type guard: ensure data is not null/undefined
+        if (result.data === null || result.data === undefined) {
+          const err = new Error("Operation succeeded but returned no data");
+          setError(err);
+          throw err;
+        }
+
         return result.data as T;
       } catch (err) {
         const error =
@@ -155,6 +162,13 @@ export function useAsyncError(): AsyncErrorState & AsyncErrorHandlers {
 
         if (!result.success) {
           const err = result.error || new Error("Operation failed");
+          setError(err);
+          throw err;
+        }
+
+        // Runtime type guard: ensure data is not null/undefined
+        if (result.data === null || result.data === undefined) {
+          const err = new Error("Operation succeeded but returned no data");
           setError(err);
           throw err;
         }

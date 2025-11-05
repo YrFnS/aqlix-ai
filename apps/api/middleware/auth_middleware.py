@@ -117,10 +117,18 @@ async def verify_jwt_token(
             )
 
         # Token is valid, return payload
+        # Explicitly verify signature, expiration, and other claims
         payload = jwt.decode(
             token,
             SessionManager.JWT_SECRET_KEY,
             algorithms=[SessionManager.JWT_ALGORITHM],
+            options={
+                "verify_signature": True,
+                "verify_exp": True,
+                "verify_iat": True,
+                "verify_nbf": True,
+                "require": ["exp", "iat", "nbf"],
+            },
         )
 
         return payload
@@ -194,10 +202,18 @@ async def extract_cultural_context(request: Request) -> Dict:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
+            # Explicitly verify all JWT claims
             payload = jwt.decode(
                 token,
                 SessionManager.JWT_SECRET_KEY,
                 algorithms=[SessionManager.JWT_ALGORITHM],
+                options={
+                    "verify_signature": True,
+                    "verify_exp": True,
+                    "verify_iat": True,
+                    "verify_nbf": True,
+                    "require": ["exp", "iat", "nbf"],
+                },
             )
             return payload.get("cultural_context", {})
     except Exception:
@@ -292,10 +308,18 @@ class AuthMiddleware:
             auth_header = request.headers.get("Authorization")
             if auth_header and auth_header.startswith("Bearer "):
                 token = auth_header.split(" ")[1]
+                # Explicitly verify all JWT claims for security
                 payload = jwt.decode(
                     token,
                     SessionManager.JWT_SECRET_KEY,
                     algorithms=[SessionManager.JWT_ALGORITHM],
+                    options={
+                        "verify_signature": True,
+                        "verify_exp": True,
+                        "verify_iat": True,
+                        "verify_nbf": True,
+                        "require": ["exp", "iat", "nbf"],
+                    },
                 )
                 identifier = payload.get("sub", identifier)
         except Exception:

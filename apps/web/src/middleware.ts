@@ -15,6 +15,16 @@ import { createServerClient } from "@supabase/ssr";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@iraqi-ai/types";
 
+// Validate Supabase environment variables at module startup
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Missing required Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set",
+  );
+}
+
 /**
  * Cultural context returned from database
  */
@@ -58,17 +68,7 @@ export async function middleware(request: NextRequest) {
   // Update session (refresh tokens if needed)
   const response = await updateSession(request);
 
-  // Validate required environment variables
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
-      "Missing required Supabase environment variables: NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be set",
-    );
-  }
-
-  // Create Supabase client to check auth state
+  // Create Supabase client to check auth state (validated at module startup)
   const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
