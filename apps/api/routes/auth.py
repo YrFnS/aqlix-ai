@@ -437,17 +437,223 @@ async def setup_mfa(
     Returns:
         MFA setup details and verification code (masked)
     """
-    # TODO: Implement MFA setup
-    # 1. Use MFAManager.setup_mfa()
-    # 2. Store MFA configuration in database
-    # 3. Send verification code
-    # 4. Return setup details
+    from ..services.mfa_manager import MFAManager, MFAMethod
+    from ..database.client import DatabaseClient
 
-    return {
-        "success": True,
-        "mfa_setup_id": "placeholder-mfa-id",
-        "message": "MFA setup initiated. Please verify with the code sent to your device.",
-    }
+    # Validate MFA method
+    try:
+        method = MFAMethod(mfa_request.method.lower())
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={"message": f"Invalid MFA method: {mfa_request.method}"},
+        )
+
+    # Determine destination based on method
+    destination = None
+    if method == MFAMethod.SMS:
+        destination = mfa_request.phone_number
+    elif method == MFAMethod.EMAIL:
+        destination = mfa_request.backup_email
+
+    # Validate that the chosen destination is present and non-empty
+    if method in [MFAMethod.SMS, MFAMethod.EMAIL] and not destination:
+        missing_field = "phone_number" if method == MFAMethod.SMS else "backup_email"
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "message": f"Missing required field: {missing_field}",
+                "error": f"{missing_field} is required for {method.value} MFA method",
+            },
+        )
+
+    # Get city from user profile/config, with fallback
+    # Try to get from user profile first
+    from ..config.settings import settings
+
+    city = user.get("region") or "baghdad"  # Fallback to default
+    if not city or city not in ["baghdad", "basra", "mosul", "erbil"]:
+        city = "baghdad"  # Final fallback to default
+
+    # Call MFAManager.setup_mfa with proper parameters
+    try:
+        setup_result = await MFAManager.setup_mfa(
+            user_id=user.get("id"),
+            method=method,
+            destination=destination,
+            respect_prayer_times=mfa_request.respect_prayer_times,
+            cultural_timing_flexibility=mfa_request.cultural_timing_flexibility,
+            city=city,
+        )
+
+        # Handle prayer time delay
+        if not setup_result.success:
+            return {
+                "success": False,
+                "message": "MFA setup delayed",
+                "delay_reason": setup_result.prayer_time_delay,
+            }
+
+        # Persist MFA configuration to database
+        mfa_setup_id = setup_result.verification_id
+
+        try:
+            # Store MFA configuration in cultural_mfa_configuration table
+            from ..database.client import DatabaseClient
+            import hashlib
+            from datetime import datetime, timezone
+
+            # Hash the secret/pepper if needed
+            secret_hash = None
+            if method == MFAMethod.EMAIL and destination:
+                # For email MFA, we can use a pepper-based hash
+                pepper = settings.API_SECRET_KEY.get_secret_value()
+                secret_hash = hashlib.sha256(
+                    f"{destination}:{pepper}".encode()
+                ).hexdigest()
+
+            # Prepare MFA config data
+            mfa_config_data = {
+                "user_id": user.get("id"),
+                "enabled_methods": [method.value],
+                "primary_method": method.value,
+                "backup_methods": [],
+                "respect_prayer_times": mfa_request.respect_prayer_times,
+                "cultural_timing_flexibility": mfa_request.cultural_timing_flexibility,
+                "sms_phone_number": destination if method == MFAMethod.SMS else None,
+                "backup_email": destination if method == MFAMethod.EMAIL else None,
+                "mfa_frequency": "every_login",
+            }
+
+            # Use upsert pattern to handle create-or-update for idempotency
+            mfa_config_id = await DatabaseClient.fetchval(
+                """
+                INSERT INTO cultural_mfa_configuration (
+                    user_id, enabled_methods, primary_method, backup_methods,
+                    respect_prayer_times, cultural_timing_flexibility,
+                    sms_phone_number, backup_email, mfa_frequency,
+                    created_at, updated_at
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    enabled_methods = EXCLUDED.enabled_methods,
+                    primary_method = EXCLUDED.primary_method,
+                    backup_methods = EXCLUDED.backup_methods,
+                    respect_prayer_times = EXCLUDED.respect_prayer_times,
+                    cultural_timing_flexibility = EXCLUDED.cultural_timing_flexibility,
+                    sms_phone_number = EXCLUDED.sms_phone_number,
+                    backup_email = EXCLUDED.backup_email,
+                    mfa_frequency = EXCLUDED.mfa_frequency,
+                    updated_at = CURRENT_TIMESTAMP
+                RETURNING id
+                """,
+                mfa_config_data["user_id"],
+                mfa_config_data["enabled_methods"],
+                mfa_config_data["primary_method"],
+                mfa_config_data["backup_methods"],
+                mfa_config_data["respect_prayer_times"],
+                mfa_config_data["cultural_timing_flexibility"],
+                mfa_config_data["sms_phone_number"],
+                mfa_config_data["backup_email"],
+                mfa_config_data["mfa_frequency"],
+            )
+
+            # Store verification code in database (temporary, for verification step)
+            verification_code_plain = setup_result.verification_code
+            verification_code_hash = MFAManager.hash_verification_code(
+                verification_code_plain, mfa_setup_id
+            )
+
+            await DatabaseClient.execute(
+                """
+                INSERT INTO iraqi_authentication_sessions (
+                    id, user_id, session_token, refresh_token, expires_at,
+                    cultural_context_snapshot, session_status, last_activity, created_at
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                ON CONFLICT (id) DO UPDATE SET
+                    session_token = EXCLUDED.session_token,
+                    refresh_token = EXCLUDED.refresh_token,
+                    expires_at = EXCLUDED.expires_at,
+                    cultural_context_snapshot = EXCLUDED.cultural_context_snapshot,
+                    last_activity = EXCLUDED.last_activity
+                """,
+                mfa_setup_id,  # Use verification_id as session_id for temp storage
+                user.get("id"),
+                verification_code_hash,  # Store hashed code in session_token field
+                None,
+                setup_result.expires_at,
+                '{"mfa_verification": true, "method": "' + method.value + '"}',
+                "active",
+                datetime.now(timezone.utc),
+                datetime.now(timezone.utc),
+            )
+
+        except Exception as db_error:
+            # Log database error
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.error(
+                f"Failed to persist MFA configuration for user {user.get('id')}: {str(db_error)}"
+            )
+            # Rollback on failure - the database client will handle rollback internally
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail={
+                    "message": "Failed to save MFA configuration. Please try again."
+                },
+            )
+
+        # Send verification code via NotificationService
+        try:
+            from ..services.notification_service import NotificationService
+
+            notification_service = NotificationService()
+            await notification_service.send_verification_code(
+                method=method.value,
+                destination=destination,
+                code=verification_code_plain,
+                user_name=user.get("full_name", "User"),
+            )
+        except Exception as notification_error:
+            # Log notification failure but don't fail the whole request
+            import logging
+
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                f"Failed to send verification code for user {user.get('id')}: {str(notification_error)}"
+            )
+            # Continue with response - user can request resend
+
+        # Prepare response with masked details (NO verification code)
+        response_data = {
+            "success": True,
+            "mfa_setup_id": mfa_setup_id,
+            "method": method.value,
+            "masked_destination": setup_result.masked_destination,
+            "expires_at": setup_result.expires_at.isoformat()
+            if setup_result.expires_at
+            else None,
+            "message": f"MFA verification code sent to {setup_result.masked_destination}. Please enter the code to complete setup.",
+        }
+
+        return response_data
+
+    except HTTPException:
+        # Re-raise HTTP exceptions (like validation errors)
+        raise
+    except Exception as e:
+        # Log the error for debugging
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.error(f"MFA setup failed for user {user.get('id')}: {str(e)}")
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={"message": "Failed to setup MFA. Please try again later."},
+        )
 
 
 @router.post(

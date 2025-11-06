@@ -100,9 +100,22 @@ jobs:
       - name: Check Iraqi cultural patterns
         run: |
           echo "🌍 Checking Iraqi cultural patterns..."
-          echo "✅ Political neutrality check"
-          echo "✅ Family/social respect validation"
-          echo "✅ Gender-appropriate language validation"
+
+          # Make script executable
+          chmod +x scripts/validate-iraqi-cultural.sh
+
+          # Run actual cultural validation script
+          if scripts/validate-iraqi-cultural.sh; then
+            echo "✅ All cultural pattern checks passed"
+            echo "✅ Political neutrality: Validated"
+            echo "✅ Family/social respect: Validated"
+            echo "✅ Gender-appropriate language: Validated"
+            echo "✅ Islamic compliance: Validated"
+            echo "✅ Professional domain: Validated"
+          else
+            echo "❌ Cultural pattern validation failed"
+            exit 1
+          fi
 
   cultural-success:
     name: Cultural Tests Success Gate

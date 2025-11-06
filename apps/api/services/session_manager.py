@@ -3,7 +3,7 @@ Session Manager Service
 Manages user sessions with JWT tokens and cultural context integration
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Dict, List
 from enum import Enum
 from pydantic import BaseModel
@@ -266,7 +266,7 @@ class SessionManager:
             )
 
     @classmethod
-    def validate_access_token(cls, token: str) -> SessionValidationResult:
+    async def validate_access_token(cls, token: str) -> SessionValidationResult:
         """
         Validate JWT access token
 
@@ -294,20 +294,102 @@ class SessionManager:
             session_id = payload.get("session_id")
             cultural_context = payload.get("cultural_context", {})
 
-            # TODO: In production, verify session exists in database and is not revoked
-            # TODO: Update last_activity timestamp
+            # Production validation: verify session exists in database and is not revoked
+            from ..database.client import SessionRepository
+
+            # Verify session exists in database with exception handling
+            try:
+                session_row = await SessionRepository.get_session(session_id)
+            except Exception as e:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.error(f"Database error during session validation: {str(e)}")
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message=f"Database error during session validation: {str(e)}",
+                    requires_refresh=True,
+                )
+
+            if not session_row:
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message="Session not found in database",
+                    requires_refresh=True,
+                )
+
+            # Check if session is revoked or expired
+            session_status = session_row.get("session_status")
+            if session_status == "revoked":
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message="Session has been revoked",
+                    requires_refresh=True,
+                )
+            if session_status == "expired":
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message="Session has expired",
+                    requires_refresh=True,
+                )
+
+            # Check if session is expired according to database
+            expires_at = session_row.get("expires_at")
+            if expires_at and expires_at < datetime.now(timezone.utc):
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message="Session has expired",
+                    requires_refresh=True,
+                )
+
+            # Update last_activity timestamp with exception handling
+            try:
+                await SessionRepository.update_last_activity(session_id)
+            except Exception as e:
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.error(f"Database error updating last activity: {str(e)}")
+                # Don't fail validation for update errors, but log them
+                return SessionValidationResult(
+                    is_valid=False,
+                    error_message=f"Database error during session validation: {str(e)}",
+                    requires_refresh=True,
+                )
 
             # Check if token is close to expiry (within 1 hour)
             exp = payload.get("exp")
             if exp:
-                exp_datetime = datetime.utcfromtimestamp(exp)
-                time_until_expiry = exp_datetime - datetime.utcnow()
+                exp_datetime = datetime.fromtimestamp(exp, tz=timezone.utc)
+                time_until_expiry = exp_datetime - datetime.now(timezone.utc)
                 requires_refresh = time_until_expiry < timedelta(hours=1)
             else:
                 requires_refresh = False
 
+            # Construct SessionInfo from database row
+            session_info = SessionInfo(
+                session_id=session_row.get("id"),
+                user_id=session_row.get("user_id"),
+                device_id=session_row.get("device_id"),
+                device_type=session_row.get("device_type"),
+                platform=session_row.get("platform"),
+                created_at=session_row.get("created_at"),
+                expires_at=session_row.get("expires_at"),
+                last_activity=session_row.get("last_activity"),
+                cultural_context_snapshot=session_row.get(
+                    "cultural_context_snapshot", {}
+                ),
+                professional_session_mode=session_row.get(
+                    "professional_session_mode", False
+                ),
+                session_status=SessionStatus(
+                    session_row.get("session_status", "active")
+                ),
+            )
+
             return SessionValidationResult(
                 is_valid=True,
+                session=session_info,
                 user_id=user_id,
                 cultural_context=cultural_context,
                 requires_refresh=requires_refresh,
@@ -408,7 +490,7 @@ class SessionManager:
             )
 
     @staticmethod
-    def revoke_session(session_id: str) -> bool:
+    async def revoke_session(session_id: str) -> bool:
         """
         Revoke a session (logout)
 
@@ -418,11 +500,13 @@ class SessionManager:
         Returns:
             True if successful
         """
-        # TODO: In production, update session status to 'revoked' in database
-        return True
+        from ..database.client import SessionRepository
+
+        # In production, update session status to 'revoked' in database
+        return await SessionRepository.revoke_session(session_id)
 
     @staticmethod
-    def revoke_all_user_sessions(user_id: str) -> int:
+    async def revoke_all_user_sessions(user_id: str) -> int:
         """
         Revoke all sessions for a user (logout from all devices)
 
@@ -432,11 +516,13 @@ class SessionManager:
         Returns:
             Number of sessions revoked
         """
-        # TODO: In production, revoke all active sessions for user in database
-        return 0
+        from ..database.client import SessionRepository
+
+        # In production, revoke all active sessions for user in database
+        return await SessionRepository.revoke_all_user_sessions(user_id)
 
     @staticmethod
-    def get_active_sessions(user_id: str) -> List[SessionInfo]:
+    async def get_active_sessions(user_id: str) -> List[SessionInfo]:
         """
         Get all active sessions for a user
 
@@ -446,16 +532,40 @@ class SessionManager:
         Returns:
             List of active SessionInfo objects
         """
-        # TODO: In production, query database for active sessions
-        return []
+        from ..database.client import SessionRepository
+
+        # In production, query database for active sessions
+        session_rows = await SessionRepository.get_active_sessions(user_id)
+
+        # Convert database rows to SessionInfo objects
+        sessions = []
+        for row in session_rows:
+            session = SessionInfo(
+                session_id=row.get("id"),
+                user_id=row.get("user_id"),
+                device_id=row.get("device_id"),
+                device_type=row.get("device_type"),
+                platform=row.get("platform"),
+                created_at=row.get("created_at"),
+                expires_at=row.get("expires_at"),
+                last_activity=row.get("last_activity"),
+                cultural_context_snapshot=row.get("cultural_context_snapshot", {}),
+                professional_session_mode=row.get("professional_session_mode", False),
+                session_status=SessionStatus(row.get("session_status", "active")),
+            )
+            sessions.append(session)
+
+        return sessions
 
     @staticmethod
-    def cleanup_expired_sessions() -> int:
+    async def cleanup_expired_sessions() -> int:
         """
         Cleanup expired sessions (background task)
 
         Returns:
             Number of sessions cleaned up
         """
-        # TODO: In production, delete or mark as expired sessions older than expiry time
-        return 0
+        from ..database.client import SessionRepository
+
+        # In production, mark expired sessions
+        return await SessionRepository.cleanup_expired_sessions()

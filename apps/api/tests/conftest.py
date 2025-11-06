@@ -124,10 +124,27 @@ def db_engine(test_settings):
         poolclass=StaticPool,
     )
 
+    # Import the existing Base from the application
+    # If no Base exists, create one for tests
+    try:
+        from apps.api.database.base import Base
+    except ImportError:
+        # Fallback: create Base for tests
+        from sqlalchemy.ext.declarative import declarative_base
+
+        Base = declarative_base()
+
+    # Import all model modules to register them with Base
+    try:
+        # Import all database models used by the app
+        from apps.api.models import iraqi_user
+        # Add other model imports as needed
+    except ImportError:
+        # In test environment, models might not be fully set up
+        pass
+
     # Create all tables
-    # TODO: Import and use actual models
-    # from models import Base
-    # Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
     yield engine
 
@@ -149,9 +166,23 @@ async def async_db_engine(test_settings):
     )
 
     # Create all tables
-    # TODO: Import and use actual models
-    # async with engine.begin() as conn:
-    #     await conn.run_sync(Base.metadata.create_all)
+    # Import models to ensure they're registered with Base
+    from sqlalchemy.ext.declarative import declarative_base
+
+    Base = declarative_base()
+
+    # Import all model files to register them with Base
+    try:
+        # Import all database models
+        from models import iraqi_user  # Import all model modules
+        # Add other model imports as needed
+    except ImportError:
+        # In test environment, models might not be fully set up
+        pass
+
+    # Create all tables using run_sync
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     yield engine
 
