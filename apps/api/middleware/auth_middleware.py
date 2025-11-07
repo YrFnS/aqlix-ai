@@ -189,19 +189,13 @@ async def extract_cultural_context(request: Request) -> Dict:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
-            # Explicitly verify all JWT claims (nbf not required since SessionManager doesn't set it)
-            payload = jwt.decode(
-                token,
-                SessionManager.JWT_SECRET_KEY,
-                algorithms=[SessionManager.JWT_ALGORITHM],
-                options={
-                    "verify_signature": True,
-                    "verify_exp": True,
-                    "verify_iat": True,
-                    "require": ["exp", "iat"],
-                },
-            )
-            return payload.get("cultural_context", {})
+
+            # Use SessionManager for proper token validation (SECURITY FIX)
+            # This ensures consistent validation logic and proper error handling
+            validation_result = SessionManager.validate_access_token(token)
+
+            if validation_result.is_valid and validation_result.payload:
+                return validation_result.payload.get("cultural_context", {})
     except Exception:
         pass
 
@@ -294,19 +288,12 @@ class AuthMiddleware:
             auth_header = request.headers.get("Authorization")
             if auth_header and auth_header.startswith("Bearer "):
                 token = auth_header.split(" ")[1]
-                # Explicitly verify all JWT claims for security (nbf not required)
-                payload = jwt.decode(
-                    token,
-                    SessionManager.JWT_SECRET_KEY,
-                    algorithms=[SessionManager.JWT_ALGORITHM],
-                    options={
-                        "verify_signature": True,
-                        "verify_exp": True,
-                        "verify_iat": True,
-                        "require": ["exp", "iat"],
-                    },
-                )
-                identifier = payload.get("sub", identifier)
+
+                # Use SessionManager for proper token validation (SECURITY FIX)
+                validation_result = SessionManager.validate_access_token(token)
+
+                if validation_result.is_valid and validation_result.payload:
+                    identifier = validation_result.payload.get("sub", identifier)
         except Exception:
             pass
 

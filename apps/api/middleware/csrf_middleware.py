@@ -277,9 +277,9 @@ class CSRFMiddleware:
 
     async def _extract_session_id(self, request: Request) -> Optional[str]:
         """
-        Extract session ID from JWT token in request with proper claim validation
+        Extract session ID from JWT token in request with proper validation
 
-        Security: Validates exp, iat, nbf, and signature for all JWT tokens
+        Security: Uses SessionManager.validate_access_token() for comprehensive validation
 
         Args:
             request: FastAPI request
@@ -297,34 +297,17 @@ class CSRFMiddleware:
             # Extract token
             token = auth_header.split(" ")[1]
 
-            # Decode JWT with FULL claim validation (SECURITY FIX)
-            # This prevents accepting expired, tampered, or invalid tokens
-            # Note: We don't enforce nbf (not-before) since SessionManager doesn't set it
-            payload = jwt.decode(
-                token,
-                SessionManager.JWT_SECRET_KEY,
-                algorithms=[SessionManager.JWT_ALGORITHM],
-                options={
-                    "verify_signature": True,  # Verify HMAC signature
-                    "verify_exp": True,  # Verify expiration
-                    "verify_iat": True,  # Verify issued-at time
-                    "require": [
-                        "exp",
-                        "iat",
-                    ],  # Require expiration and issued-at claims
-                },
-            )
+            # Use SessionManager for proper token validation (SECURITY FIX)
+            # This ensures consistent validation logic and proper error handling
+            validation_result = SessionManager.validate_access_token(token)
 
-            return payload.get("session_id")
+            if validation_result.is_valid and validation_result.payload:
+                return validation_result.payload.get("session_id")
 
-        except jwt.ExpiredSignatureError:
-            # Token expired - don't extract session ID
             return None
-        except jwt.InvalidTokenError:
-            # Invalid token - don't extract session ID
-            return None
+
         except Exception:
-            # Any other error - fail safe
+            # Any error - fail safe
             return None
 
     def _is_token_still_valid(self, token_info) -> bool:
