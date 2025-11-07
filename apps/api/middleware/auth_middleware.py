@@ -203,25 +203,6 @@ async def extract_cultural_context(request: Request) -> Dict:
     return {}
 
 
-def require_auth(func: Callable) -> Callable:
-    """
-    Decorator to require authentication for FastAPI route
-
-    Usage:
-        @app.get("/protected")
-        @require_auth
-        async def protected_route(user: Dict = Depends(get_current_user)):
-            return {"message": f"Hello {user['user_id']}"}
-    """
-
-    async def wrapper(*args, **kwargs):
-        # This decorator is used alongside FastAPI's Depends(get_current_user)
-        # It serves as documentation and can include additional checks
-        return await func(*args, **kwargs)
-
-    return wrapper
-
-
 class AuthMiddleware:
     """
     FastAPI Middleware for authentication, cultural context, and rate limiting
