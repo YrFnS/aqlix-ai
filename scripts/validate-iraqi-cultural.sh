@@ -85,7 +85,7 @@ echo ""
 echo "💼 Checking Professional Domain Compliance..."
 
 # Check for appropriate professional terminology
-PROFESSIONAL_TERMS_FILE="$PROJECT_ROOT/docs/NAMING_CONVENTIONS.md"
+PROFESSIONAL_TERMS_FILE="$PROJECT_ROOT/NAMING_CONVENTIONS.md"
 if [ -f "$PROFESSIONAL_TERMS_FILE" ]; then
     report_success "NAMING_CONVENTIONS.md found"
 else
