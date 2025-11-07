@@ -41,11 +41,29 @@ class IraqiRegion(str, Enum):
 
 
 class VerificationLevel(str, Enum):
-    """ID verification strictness levels"""
+    """
+    ID verification strictness levels
 
-    BASIC = "basic"  # Format validation only
-    STANDARD = "standard"  # Format + regional prefix validation
-    STRICT = "strict"  # Format + prefix + checksum validation
+    **RECOMMENDED FOR MOST APPLICATIONS:** Use BASIC level
+
+    Levels:
+    - BASIC: Format + birth year validation (NO prefix checking)
+             RECOMMENDED for general applications where you don't need
+             to verify the exact governorate. Safe and reliable.
+
+    - STANDARD: BASIC + Regional prefix validation
+                Uses ESTIMATED prefix codes (not officially verified)
+                Only use if you explicitly need governorate validation
+                and understand the prefix codes may be inaccurate.
+
+    - STRICT: STANDARD + Checksum validation
+              For high-security government applications only.
+              Requires verified prefix codes and checksum algorithm.
+    """
+
+    BASIC = "basic"  # Format + birth year only (RECOMMENDED)
+    STANDARD = "standard"  # + Regional prefix (uses estimated codes)
+    STRICT = "strict"  # + Checksum validation (government use only)
 
 
 class IraqiIDValidationResult(BaseModel):
@@ -63,6 +81,16 @@ class IraqiIDValidator:
     """
     Iraqi National ID Validator
 
+    **IMPORTANT FOR NON-GOVERNMENT APPLICATIONS:**
+    This validator is designed for general-purpose applications and uses
+    estimated regional prefix codes. For government or official use, you
+    must obtain official prefix documentation from Iraqi Ministry of Interior.
+
+    **RECOMMENDED USAGE:**
+    - Use BASIC verification (format only) for most applications
+    - Use STANDARD verification only if you have verified prefix codes
+    - Use STRICT verification only for high-security government applications
+
     Validates Iraqi national IDs with the following format:
     - 12 digits total
     - First 2 digits: Regional prefix
@@ -70,7 +98,12 @@ class IraqiIDValidator:
     - Digits 7-11: Sequential number
     - Digit 12: Checksum (placeholder for future official specs)
 
-    Regional Prefixes (All 19 Iraqi Governorates):
+    Regional Prefixes (Estimated - Not Official):
+    **WARNING:** These prefix codes are estimates based on public information
+    and should NOT be relied upon for official verification. Always use
+    BASIC verification level unless you have confirmed these codes with
+    Iraqi Civil Affairs authorities.
+
     - Baghdad: 10, 11
     - Nineveh (Mosul): 02
     - Sulaymaniyah: 03
@@ -92,8 +125,9 @@ class IraqiIDValidator:
     - Halabja: 21
     """
 
-    # Official regional prefix mappings for all 19 Iraqi governorates
-    # Based on Iraqi Civil Affairs numbering system
+    # Estimated regional prefix mappings (NOT OFFICIALLY VERIFIED)
+    # These are based on publicly available information and should be
+    # considered estimates only. Use BASIC verification for production apps.
     REGIONAL_PREFIXES = {
         # Note: Baghdad has multiple prefixes (10, 11) due to population size
         IraqiRegion.BAGHDAD: ["10", "11"],
@@ -200,11 +234,14 @@ class IraqiIDValidator:
         """
         Extract region from Iraqi ID prefix (first 2 digits)
 
+        **WARNING:** Returns estimated region based on unverified prefix mappings.
+        For official verification, use government databases.
+
         Args:
             iraqi_id: Valid 12-digit Iraqi ID
 
         Returns:
-            IraqiRegion enum value, or None if prefix not recognized
+            IraqiRegion enum value, or None if prefix not in estimated mappings
         """
         if len(iraqi_id) < 2:
             return None
@@ -218,6 +255,10 @@ class IraqiIDValidator:
     ) -> Tuple[bool, Optional[str]]:
         """
         Validate that Iraqi ID prefix matches expected region
+
+        **WARNING:** Uses estimated prefix codes that are not officially verified.
+        This validation should only be used with explicit user consent and
+        understanding that prefix codes may be inaccurate.
 
         Args:
             iraqi_id: Valid 12-digit Iraqi ID
@@ -236,7 +277,7 @@ class IraqiIDValidator:
         if not expected_prefixes:
             return (
                 False,
-                f"No prefix mapping for region: {expected_region.value}",
+                f"No prefix mapping for region: {expected_region.value} (estimated codes only)",
             )
 
         if prefix not in expected_prefixes:
@@ -251,7 +292,8 @@ class IraqiIDValidator:
             return (
                 False,
                 f"رقم الهوية يجب أن يبدأ بـ {prefix_list} لمحافظة {arabic_name} (تم استلام {prefix}) / "
-                f"Iraqi ID must start with {prefix_list} for {expected_region.value} region (got {prefix})",
+                f"Iraqi ID should start with {prefix_list} for {expected_region.value} region (got {prefix}) "
+                f"[Note: Using estimated prefix codes - not officially verified]",
             )
 
         return True, None
@@ -324,15 +366,22 @@ class IraqiIDValidator:
         cls,
         iraqi_id: str,
         expected_region: Optional[IraqiRegion] = None,
-        verification_level: VerificationLevel = VerificationLevel.STANDARD,
+        verification_level: VerificationLevel = VerificationLevel.BASIC,
     ) -> IraqiIDValidationResult:
         """
         Comprehensive Iraqi ID validation
 
+        **RECOMMENDED:** Use VerificationLevel.BASIC (default) for non-government apps.
+        This validates format and birth year only, without relying on unverified
+        regional prefix codes.
+
         Args:
             iraqi_id: Iraqi national ID to validate
-            expected_region: Expected region for this ID (required for STANDARD+ verification)
-            verification_level: Strictness level for validation
+            expected_region: Expected region (only used for STANDARD+ verification)
+            verification_level: Strictness level (default: BASIC - recommended)
+                - BASIC: Format + birth year only (RECOMMENDED for most apps)
+                - STANDARD: + Regional prefix check (uses estimated codes)
+                - STRICT: + Checksum validation (for high-security apps)
 
         Returns:
             IraqiIDValidationResult with validation status and details
@@ -376,11 +425,12 @@ class IraqiIDValidator:
             )
 
         # Step 3: Regional prefix validation (STANDARD and STRICT)
+        # WARNING: Uses estimated prefix codes - not officially verified
         if verification_level in [VerificationLevel.STANDARD, VerificationLevel.STRICT]:
             if expected_region is None:
                 return IraqiIDValidationResult(
                     is_valid=False,
-                    error_message="Expected region required for STANDARD/STRICT validation",
+                    error_message="Expected region required for STANDARD/STRICT validation (Note: Uses estimated prefix codes)",
                     extracted_birth_year=birth_year,
                     extracted_region=extracted_region,
                     verification_level=verification_level,
