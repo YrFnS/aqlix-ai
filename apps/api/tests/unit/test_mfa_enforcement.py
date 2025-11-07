@@ -36,6 +36,7 @@ mfa_spec.loader.exec_module(mfa_manager)
 
 MFAFrequency = mfa_manager.MFAFrequency
 MFAVerificationResult = mfa_manager.MFAVerificationResult
+MFAManager = mfa_manager.MFAManager
 
 
 class TestMFAEnforcementBasics:
@@ -44,6 +45,7 @@ class TestMFAEnforcementBasics:
     def test_mfa_not_enabled_no_enforcement(self):
         """Test that MFA is not enforced when disabled"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=False,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
         )
@@ -55,6 +57,7 @@ class TestMFAEnforcementBasics:
     def test_suspicious_activity_always_enforces(self):
         """Test that suspicious activity always enforces MFA"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             is_suspicious_activity=True,
@@ -67,6 +70,7 @@ class TestMFAEnforcementBasics:
     def test_every_login_frequency_enforces(self):
         """Test EVERY_LOGIN frequency enforces MFA"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
         )
@@ -77,6 +81,7 @@ class TestMFAEnforcementBasics:
     def test_new_device_without_trust_token_enforces(self):
         """Test NEW_DEVICE frequency enforces for new devices"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.NEW_DEVICE,
             device_id=None,  # No device ID
@@ -92,6 +97,7 @@ class TestSensitiveOperations:
     def test_payment_operation_requires_mfa(self):
         """Test payment operations always require MFA"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             operation_type="payment",
@@ -104,6 +110,7 @@ class TestSensitiveOperations:
     def test_password_change_requires_mfa(self):
         """Test password change requires MFA"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             operation_type="password_change",
@@ -116,6 +123,7 @@ class TestSensitiveOperations:
     def test_transfer_operation_requires_mfa(self):
         """Test transfer operations require MFA"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             operation_type="transfer",
@@ -127,6 +135,7 @@ class TestSensitiveOperations:
     def test_mfa_disable_requires_mfa(self):
         """Test disabling MFA requires MFA verification"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             operation_type="mfa_disable",
@@ -139,6 +148,7 @@ class TestSensitiveOperations:
     def test_login_operation_respects_frequency(self):
         """Test login operations respect frequency settings"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             operation_type="login",
@@ -157,6 +167,7 @@ class TestPeriodicMFA:
         recent_login = datetime.now() - timedelta(days=3)
 
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=recent_login,
@@ -170,6 +181,7 @@ class TestPeriodicMFA:
         old_login = datetime.now() - timedelta(days=10)
 
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=old_login,
@@ -183,6 +195,7 @@ class TestPeriodicMFA:
         threshold_login = datetime.now() - timedelta(days=7)
 
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=threshold_login,
@@ -194,6 +207,7 @@ class TestPeriodicMFA:
     def test_periodic_mfa_without_last_login(self):
         """Test periodic MFA when last login is None"""
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=None,
@@ -209,6 +223,7 @@ class TestEnforcementStatus:
     def test_get_enforcement_status_enabled(self):
         """Test getting enforcement status when MFA enabled"""
         status = MFAEnforcementManager.get_enforcement_status(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
         )
@@ -220,6 +235,7 @@ class TestEnforcementStatus:
     def test_get_enforcement_status_disabled(self):
         """Test getting enforcement status when MFA disabled"""
         status = MFAEnforcementManager.get_enforcement_status(
+            user_id="test-user",
             mfa_enabled=False,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
         )
@@ -231,6 +247,7 @@ class TestEnforcementStatus:
     def test_get_enforcement_status_suspicious(self):
         """Test enforcement status with suspicious activity"""
         status = MFAEnforcementManager.get_enforcement_status(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
             is_suspicious_activity=True,
@@ -436,6 +453,54 @@ class TestEmailGeneration:
         assert "Hello" in email["body"]
 
 
+class TestDeviceTrustIntegration:
+    """Test device trust integration with MFA enforcement"""
+
+    def test_every_login_with_device_trust_checker(self):
+        """Test EVERY_LOGIN frequency with device trust checker"""
+        # With device trust checker provided
+        result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
+            mfa_enabled=True,
+            mfa_frequency=MFAFrequency.EVERY_LOGIN,
+            device_trust_checker=MFAManager.check_device_trust,
+            device_id="test-device",
+            trust_token="test-token",
+        )
+
+        # Device is not trusted (MFAManager.check_device_trust returns False by default)
+        assert result.should_enforce is True
+
+    def test_new_device_with_device_trust_checker(self):
+        """Test NEW_DEVICE frequency with device trust checker"""
+        result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
+            mfa_enabled=True,
+            mfa_frequency=MFAFrequency.NEW_DEVICE,
+            device_trust_checker=MFAManager.check_device_trust,
+            device_id="test-device",
+            trust_token="test-token",
+        )
+
+        # Device is not trusted (MFAManager.check_device_trust returns False by default)
+        assert result.should_enforce is True
+
+    def test_new_device_without_device_trust_checker(self):
+        """Test NEW_DEVICE frequency without device trust checker"""
+        result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
+            mfa_enabled=True,
+            mfa_frequency=MFAFrequency.NEW_DEVICE,
+            device_trust_checker=None,
+            device_id="test-device",
+            trust_token="test-token",
+        )
+
+        # Without device trust checker, should enforce MFA
+        assert result.should_enforce is True
+        assert "not available" in result.enforcement_reason.lower()
+
+
 class TestIntegrationScenarios:
     """Test complete MFA enforcement scenarios"""
 
@@ -443,6 +508,7 @@ class TestIntegrationScenarios:
         """Test standard login flow with MFA enabled"""
         # User has MFA enabled with EVERY_LOGIN frequency
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
             operation_type="login",
@@ -456,6 +522,7 @@ class TestIntegrationScenarios:
         # Even with MFA disabled, sensitive operations should still require it
         # But current implementation skips if MFA not enabled
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=False,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
             operation_type="payment",
@@ -469,6 +536,7 @@ class TestIntegrationScenarios:
         """Test suspicious activity overrides frequency settings"""
         # Even with SUSPICIOUS_ACTIVITY frequency, should enforce if activity is suspicious
         result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.SUSPICIOUS_ACTIVITY,
             is_suspicious_activity=True,
@@ -482,6 +550,7 @@ class TestIntegrationScenarios:
         """Test complete periodic verification flow"""
         # Recent login - no MFA
         recent_result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=datetime.now() - timedelta(days=3),
@@ -490,6 +559,7 @@ class TestIntegrationScenarios:
 
         # Old login - requires MFA
         old_result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.PERIODIC,
             last_login=datetime.now() - timedelta(days=10),
@@ -500,6 +570,7 @@ class TestIntegrationScenarios:
         """Test complete enforcement and validation flow"""
         # Step 1: Check if MFA should be enforced
         enforcement_result = MFAEnforcementManager.should_enforce_mfa(
+            user_id="test-user",
             mfa_enabled=True,
             mfa_frequency=MFAFrequency.EVERY_LOGIN,
         )

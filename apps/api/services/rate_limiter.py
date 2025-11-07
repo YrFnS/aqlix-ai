@@ -10,6 +10,7 @@ from typing import Optional, Dict, Tuple
 from datetime import datetime, time, timedelta
 import logging
 import asyncio
+from ..utils.async_lock_utils import AsyncLockInitializer
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,25 @@ logger = logging.getLogger(__name__)
 # Prayer time cache with TTL (reduces latency from 50-200ms to <1ms)
 _prayer_time_cache: Dict[str, Tuple[bool, datetime]] = {}
 _prayer_time_cache_ttl_seconds: int = 120  # 2 minutes TTL
-_prayer_time_cache_lock: asyncio.Lock = asyncio.Lock()
+_prayer_time_cache_lock: Optional[asyncio.Lock] = None
+_prayer_time_cache_lock_init: AsyncLockInitializer = AsyncLockInitializer()
+
+
+def _get_prayer_time_cache_lock() -> asyncio.Lock:
+    """
+    Get or create the prayer time cache lock lazily
+
+    Uses AsyncLockInitializer to prevent TOCTOU race where multiple
+    coroutines could create separate asyncio.Lock instances.
+
+    Returns:
+        asyncio.Lock instance
+    """
+    global _prayer_time_cache_lock
+    return _prayer_time_cache_lock_init.get_lock(
+        lambda: _prayer_time_cache_lock,
+        lambda lock: globals().update({"_prayer_time_cache_lock": lock}),
+    )
 
 
 async def is_prayer_time_cached(city: str = "baghdad") -> bool:
@@ -38,7 +57,7 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
     now = datetime.now()
 
     # Check cache first (with async lock for coroutine safety)
-    async with _prayer_time_cache_lock:
+    async with _get_prayer_time_cache_lock():
         if city in _prayer_time_cache:
             cached_result, cached_time = _prayer_time_cache[city]
             age_seconds = (now - cached_time).total_seconds()
@@ -60,7 +79,7 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
             logger.info(f"Current time is during {prayer_name} prayer time in {city}")
 
         # Update cache with async lock
-        async with _prayer_time_cache_lock:
+        async with _get_prayer_time_cache_lock():
             _prayer_time_cache[city] = (is_prayer, now)
 
         return is_prayer
@@ -68,7 +87,7 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
     except Exception as e:
         logger.error(f"Failed to check prayer time: {e}")
         # Return cached value if available, or False if not
-        async with _prayer_time_cache_lock:
+        async with _get_prayer_time_cache_lock():
             if city in _prayer_time_cache:
                 cached_result, _ = _prayer_time_cache[city]
                 return cached_result

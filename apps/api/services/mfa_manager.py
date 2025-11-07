@@ -8,7 +8,7 @@ from typing import Optional, Dict, Tuple
 from enum import Enum
 from pydantic import BaseModel
 import secrets
-import hashlib
+import bcrypt
 from uuid import uuid4
 
 
@@ -76,6 +76,8 @@ class MFAManager:
     - Cultural questions for additional verification
     - Device trust management
     - Adaptive MFA triggers
+
+    Security: Uses bcrypt for verification code hashing (OWASP recommendation)
     """
 
     # Verification code settings
@@ -85,6 +87,9 @@ class MFAManager:
 
     # Device trust settings
     TRUST_DURATION_DAYS = 30
+
+    # Bcrypt work factor (12-14 recommended by OWASP)
+    BCRYPT_ROUNDS = 12
 
     @staticmethod
     def generate_verification_code(length: int = 6) -> str:
@@ -104,20 +109,57 @@ class MFAManager:
         code = secrets.randbelow(max_num - min_num + 1) + min_num
         return str(code).zfill(length)
 
-    @staticmethod
-    def hash_verification_code(code: str, verification_id: str) -> str:
+    @classmethod
+    def hash_verification_code(cls, code: str, verification_id: str) -> str:
         """
-        Hash verification code for secure storage
+        Hash verification code for secure storage using bcrypt
+
+        Security: Uses bcrypt with configurable work factor to resist brute-force attacks.
+        bcrypt is designed for password-like secrets and includes automatic salting.
 
         Args:
             code: Verification code
             verification_id: Unique verification ID
 
         Returns:
-            Hashed code
+            bcrypt hashed code (includes salt)
         """
+        # Combine verification_id and code for unique hashing
+        # This prevents rainbow table attacks across different verification attempts
         data = f"{verification_id}:{code}"
-        return hashlib.sha256(data.encode()).hexdigest()
+
+        # Use bcrypt with salt generation
+        # bcrypt automatically handles salting and is resistant to brute-force
+        salt = bcrypt.gensalt(rounds=cls.BCRYPT_ROUNDS)
+        hashed = bcrypt.hashpw(data.encode("utf-8"), salt)
+
+        # Return as string for database storage
+        return hashed.decode("utf-8")
+
+    @classmethod
+    def verify_hashed_code(
+        cls, code: str, verification_id: str, stored_hash: str
+    ) -> bool:
+        """
+        Verify verification code against bcrypt hash
+
+        Args:
+            code: User-provided verification code
+            verification_id: Unique verification ID
+            stored_hash: Stored bcrypt hash
+
+        Returns:
+            True if code matches hash
+        """
+        # Reconstruct the data that was hashed
+        data = f"{verification_id}:{code}"
+
+        try:
+            # bcrypt.checkpw handles timing-safe comparison
+            return bcrypt.checkpw(data.encode("utf-8"), stored_hash.encode("utf-8"))
+        except Exception:
+            # Invalid hash format or verification error
+            return False
 
     @staticmethod
     def mask_phone_number(phone: str) -> str:
@@ -229,7 +271,7 @@ class MFAManager:
         verification_code = cls.generate_verification_code(cls.CODE_LENGTH)
         expires_at = datetime.now() + timedelta(minutes=cls.CODE_EXPIRY_MINUTES)
 
-        # Hash code for storage (in production, store in database)
+        # Hash code for storage using bcrypt (in production, store in database)
         hashed_code = cls.hash_verification_code(verification_code, verification_id)
 
         # Mask destination for privacy
@@ -261,12 +303,12 @@ class MFAManager:
         attempts_used: int = 0,
     ) -> MFAVerificationResult:
         """
-        Verify MFA code
+        Verify MFA code using bcrypt hash comparison
 
         Args:
             verification_id: Verification ID
             code: User-provided code
-            stored_hash: Stored hashed code
+            stored_hash: Stored bcrypt hash
             attempts_used: Number of attempts already used
 
         Returns:
@@ -282,10 +324,10 @@ class MFAManager:
                 attempts_remaining=0,
             )
 
-        # Hash provided code
-        provided_hash = cls.hash_verification_code(code, verification_id)
+        # Verify code using bcrypt (timing-safe comparison)
+        is_valid = cls.verify_hashed_code(code, verification_id, stored_hash)
 
-        if provided_hash != stored_hash:
+        if not is_valid:
             return MFAVerificationResult(
                 success=False,
                 verification_id=verification_id,

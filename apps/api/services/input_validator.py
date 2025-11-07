@@ -13,6 +13,7 @@ Provides centralized input validation for:
 """
 
 import re
+import ipaddress
 from typing import Optional, Tuple, List
 from enum import Enum
 from pydantic import BaseModel, validator
@@ -127,6 +128,61 @@ class InputValidator:
         re.compile(r"(\bDROP\b.*\bTABLE\b)", re.IGNORECASE),
         re.compile(r"(--|#|/\*|\*/)", re.IGNORECASE),  # SQL comments
     ]
+
+    # SSRF Protection: Private IP ranges and special addresses (OWASP Top 10 #A10)
+    PRIVATE_IP_RANGES = [
+        ipaddress.ip_network("127.0.0.0/8"),  # Loopback (localhost)
+        ipaddress.ip_network("10.0.0.0/8"),  # Private network
+        ipaddress.ip_network("172.16.0.0/12"),  # Private network
+        ipaddress.ip_network("192.168.0.0/16"),  # Private network
+        ipaddress.ip_network("169.254.0.0/16"),  # Link-local (AWS metadata)
+        ipaddress.ip_network("fc00::/7"),  # IPv6 Unique Local Addresses
+        ipaddress.ip_network("fe80::/10"),  # IPv6 Link-local
+        ipaddress.ip_network("::1/128"),  # IPv6 loopback
+        ipaddress.ip_network("0.0.0.0/8"),  # Special use
+        ipaddress.ip_network("224.0.0.0/4"),  # Multicast
+        ipaddress.ip_network("240.0.0.0/4"),  # Reserved
+    ]
+
+    LOCALHOST_HOSTNAMES = [
+        "localhost",
+        "localhost.localdomain",
+        "127.0.0.1",
+        "::1",
+        "[::1]",
+    ]
+
+    @staticmethod
+    def _is_private_ip(ip_str: str) -> bool:
+        """Check if IP address is private or reserved (SSRF protection)"""
+        try:
+            ip = ipaddress.ip_address(ip_str)
+            for network in InputValidator.PRIVATE_IP_RANGES:
+                if ip in network:
+                    return True
+            return False
+        except ValueError:
+            return False
+
+    @staticmethod
+    def _is_localhost_hostname(hostname: str) -> bool:
+        """Check if hostname is localhost variant (SSRF protection)"""
+        hostname_lower = hostname.lower()
+        return hostname_lower in InputValidator.LOCALHOST_HOSTNAMES
+
+    @staticmethod
+    def _extract_hostname_from_url(url: str) -> Optional[str]:
+        """Extract hostname/IP from URL"""
+        try:
+            parsed = urlparse(url)
+            hostname = parsed.hostname or parsed.netloc
+            if hostname and ":" in hostname and not hostname.startswith("["):
+                hostname = hostname.split(":")[0]
+            if hostname and hostname.startswith("[") and hostname.endswith("]"):
+                hostname = hostname[1:-1]
+            return hostname
+        except Exception:
+            return None
 
     @staticmethod
     def validate_email(email: str) -> InputValidationResult:
@@ -357,13 +413,16 @@ class InputValidator:
         )
 
     @staticmethod
-    def validate_url(url: str, require_https: bool = True) -> InputValidationResult:
+    def validate_url(
+        url: str, require_https: bool = True, block_private_ips: bool = True
+    ) -> InputValidationResult:
         """
-        Validate and sanitize URL
+        Validate and sanitize URL with SSRF protection
 
         Args:
             url: URL to validate
             require_https: Require HTTPS protocol
+            block_private_ips: Block private IPs and localhost (SSRF protection)
 
         Returns:
             InputValidationResult with validation status
@@ -422,6 +481,49 @@ class InputValidator:
                 security_warnings=security_warnings,
                 validation_details=validation_details,
             )
+
+        # SSRF Protection: Block private IPs and localhost (OWASP Top 10 #A10)
+        if block_private_ips:
+            hostname = InputValidator._extract_hostname_from_url(url)
+
+            if hostname:
+                validation_details["hostname"] = hostname
+
+                # Check for localhost hostnames
+                if InputValidator._is_localhost_hostname(hostname):
+                    security_warnings.append(
+                        "SSRF attempt detected: localhost access blocked"
+                    )
+                    return InputValidationResult(
+                        is_valid=False,
+                        error_message="URL targets localhost, which is blocked for security",
+                        validation_type=ValidationType.URL,
+                        security_warnings=security_warnings,
+                        validation_details=validation_details,
+                    )
+
+                # Check if hostname is an IP address
+                try:
+                    ip = ipaddress.ip_address(hostname)
+                    validation_details["is_ip_address"] = True
+                    validation_details["ip_type"] = (
+                        "IPv6" if ip.version == 6 else "IPv4"
+                    )
+
+                    if InputValidator._is_private_ip(hostname):
+                        security_warnings.append(
+                            "SSRF attempt detected: private IP access blocked"
+                        )
+                        return InputValidationResult(
+                            is_valid=False,
+                            error_message="URL targets private IP address, which is blocked for security",
+                            validation_type=ValidationType.URL,
+                            security_warnings=security_warnings,
+                            validation_details=validation_details,
+                        )
+                except ValueError:
+                    # Not an IP address, which is fine (it's a hostname)
+                    validation_details["is_ip_address"] = False
 
         # Check for dangerous patterns
         for pattern in InputValidator.DANGEROUS_PATTERNS:

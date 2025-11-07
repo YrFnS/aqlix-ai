@@ -33,20 +33,20 @@ jobs:
       - name: Build packages (required for typecheck)
         run: |
           echo "🏗️  Building workspace packages..."
-          bun run build:packages || echo "⚠️  Package build warnings (Phase 2 - non-blocking)"
-          echo "✅ Packages built (with warnings)"
+          bun run build:packages
+          echo "✅ Packages built successfully"
 
       - name: Run ESLint
         run: |
           echo "🔍 Running ESLint validation..."
-          bun run lint || echo "⚠️  ESLint warnings detected (Phase 2 - non-blocking)"
-          echo "✅ Lint validation complete (with warnings)"
+          bun run lint
+          echo "✅ Lint validation passed"
 
       - name: Run TypeScript type checking
         run: |
           echo "🔍 Running TypeScript type checking..."
-          bun run typecheck || echo "⚠️  TypeScript warnings detected (Phase 2 - non-blocking)"
-          echo "✅ TypeCheck complete (with warnings)"
+          bun run typecheck
+          echo "✅ TypeCheck passed"
 
   # Job 2: Build Validation (Medium)
   build:
@@ -70,14 +70,14 @@ jobs:
       - name: Build packages
         run: |
           echo "🏗️  Building packages..."
-          bun run build:packages || echo "⚠️  Package build warnings (Phase 2 - non-blocking)"
-          echo "✅ Packages built (with warnings)"
+          bun run build:packages
+          echo "✅ Packages built successfully"
 
       - name: Build applications
         run: |
           echo "🏗️  Building applications..."
-          cd apps/web && bun run build || echo "⚠️  Build warnings (Phase 2 - non-blocking)"
-          echo "✅ Production build complete (with warnings)"
+          cd apps/web && bun run build
+          echo "✅ Production build complete"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -111,8 +111,8 @@ jobs:
       - name: Run unit tests
         run: |
           echo "🧪 Running unit tests..."
-          bun run test:unit || echo "⚠️  Some unit tests failing (non-blocking during Phase 2)"
-          echo "✅ Core unit tests executed"
+          bun run test:unit
+          echo "✅ All unit tests passed"
 
       - name: Upload test results
         if: always()

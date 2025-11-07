@@ -4,10 +4,16 @@ Manages MFA enforcement logic and policy compliance for Iraqi AI Chat System
 """
 
 from datetime import datetime, timedelta
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Callable
 from pydantic import BaseModel
 
-from .mfa_manager import MFAMethod, MFAFrequency, MFASetupResult, MFAVerificationResult
+from .mfa_manager import (
+    MFAMethod,
+    MFAFrequency,
+    MFASetupResult,
+    MFAVerificationResult,
+    DeviceTrustResult,
+)
 
 
 class MFAEnforcementConfig(BaseModel):
@@ -61,6 +67,9 @@ class MFAEnforcementManager:
         user_id: str,
         mfa_enabled: bool,
         mfa_frequency: MFAFrequency,
+        device_trust_checker: Optional[
+            Callable[[str, str, str], DeviceTrustResult]
+        ] = None,
         device_id: Optional[str] = None,
         trust_token: Optional[str] = None,
         is_suspicious_activity: bool = False,
@@ -75,6 +84,7 @@ class MFAEnforcementManager:
             user_id: User ID for device trust verification
             mfa_enabled: Whether MFA is enabled for user
             mfa_frequency: MFA frequency setting
+            device_trust_checker: Function to check device trust (typically MFAManager.check_device_trust)
             device_id: Device ID
             trust_token: Device trust token
             is_suspicious_activity: Whether activity is suspicious
@@ -122,14 +132,13 @@ class MFAEnforcementManager:
         # Rule 3: EVERY_LOGIN frequency → Always enforce (but can skip for trusted devices)
         if mfa_frequency == MFAFrequency.EVERY_LOGIN:
             # Check if device is trusted (can skip)
-            if config.allow_trusted_device_skip and device_id and trust_token:
-                from .mfa_manager import MFAManager
-
-                device_trust = MFAManager.check_device_trust(
-                    user_id=user_id,
-                    device_id=device_id,
-                    trust_token=trust_token,
-                )
+            if (
+                config.allow_trusted_device_skip
+                and device_id
+                and trust_token
+                and device_trust_checker
+            ):
+                device_trust = device_trust_checker(user_id, device_id, trust_token)
                 if device_trust.is_trusted:
                     return MFAEnforcementResult(
                         should_enforce=False,
@@ -161,30 +170,36 @@ class MFAEnforcementManager:
                 )
 
             # Check device trust
-            from .mfa_manager import MFAManager
+            if device_trust_checker:
+                device_trust = device_trust_checker(user_id, device_id, trust_token)
 
-            device_trust = MFAManager.check_device_trust(
-                user_id=user_id,
-                device_id=device_id,
-                trust_token=trust_token,
-            )
+                if not device_trust.is_trusted:
+                    return MFAEnforcementResult(
+                        should_enforce=True,
+                        enforcement_reason="Untrusted device detected",
+                        can_skip=False,
+                        metadata={
+                            "frequency": "new_device",
+                            "device_status": "untrusted",
+                        },
+                    )
 
-            if not device_trust.is_trusted:
+                # Trusted device → no enforcement
+                return MFAEnforcementResult(
+                    should_enforce=False,
+                    enforcement_reason="Trusted device (MFA frequency: NEW_DEVICE)",
+                    can_skip=True,
+                    skip_reason="Device already trusted",
+                    metadata={"device_id": device_id},
+                )
+            else:
+                # No device trust checker provided, treat as untrusted
                 return MFAEnforcementResult(
                     should_enforce=True,
-                    enforcement_reason="Untrusted device detected",
+                    enforcement_reason="Device trust checker not available",
                     can_skip=False,
-                    metadata={"frequency": "new_device", "device_status": "untrusted"},
+                    metadata={"frequency": "new_device", "device_status": "unknown"},
                 )
-
-            # Trusted device → no enforcement
-            return MFAEnforcementResult(
-                should_enforce=False,
-                enforcement_reason="Trusted device (MFA frequency: NEW_DEVICE)",
-                can_skip=True,
-                skip_reason="Device already trusted",
-                metadata={"device_id": device_id},
-            )
 
         # Rule 5: PERIODIC frequency → Enforce if last login > 7 days
         if mfa_frequency == MFAFrequency.PERIODIC:
@@ -233,6 +248,9 @@ class MFAEnforcementManager:
         user_id: str,
         mfa_enabled: bool,
         mfa_frequency: MFAFrequency,
+        device_trust_checker: Optional[
+            Callable[[str, str, str], DeviceTrustResult]
+        ] = None,
         device_id: Optional[str] = None,
         trust_token: Optional[str] = None,
         is_suspicious_activity: bool = False,
@@ -244,6 +262,7 @@ class MFAEnforcementManager:
             user_id: User ID for device trust verification
             mfa_enabled: Whether MFA is enabled
             mfa_frequency: MFA frequency setting
+            device_trust_checker: Function to check device trust (typically MFAManager.check_device_trust)
             device_id: Device ID
             trust_token: Device trust token
             is_suspicious_activity: Whether activity is suspicious
@@ -255,6 +274,7 @@ class MFAEnforcementManager:
             user_id=user_id,
             mfa_enabled=mfa_enabled,
             mfa_frequency=mfa_frequency,
+            device_trust_checker=device_trust_checker,
             device_id=device_id,
             trust_token=trust_token,
             is_suspicious_activity=is_suspicious_activity,

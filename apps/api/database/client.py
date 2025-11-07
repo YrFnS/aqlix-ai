@@ -10,6 +10,7 @@ from typing import Optional, Dict, List, Any
 from contextlib import asynccontextmanager
 import asyncpg
 from datetime import datetime, timezone
+from ..utils.async_lock_utils import AsyncLockInitializer
 
 
 class DatabaseClient:
@@ -20,7 +21,23 @@ class DatabaseClient:
     """
 
     _pool: Optional[asyncpg.Pool] = None
-    _pool_lock: asyncio.Lock = asyncio.Lock()
+    _pool_lock: Optional[asyncio.Lock] = None
+    _pool_lock_init: AsyncLockInitializer = AsyncLockInitializer()
+
+    @classmethod
+    def _get_pool_lock(cls) -> asyncio.Lock:
+        """
+        Get or create the pool lock lazily with proper race protection
+
+        Uses AsyncLockInitializer to prevent TOCTOU race where multiple
+        coroutines could create separate asyncio.Lock instances.
+
+        Returns:
+            asyncio.Lock instance
+        """
+        return cls._pool_lock_init.get_lock(
+            lambda: cls._pool_lock, lambda lock: setattr(cls, "_pool_lock", lock)
+        )
 
     @classmethod
     async def get_pool(cls) -> asyncpg.Pool:
@@ -36,7 +53,7 @@ class DatabaseClient:
             return cls._pool
 
         # Acquire lock for pool creation
-        async with cls._pool_lock:
+        async with cls._get_pool_lock():
             # Double-check after acquiring lock
             if cls._pool is not None:
                 return cls._pool
@@ -333,21 +350,64 @@ class SessionRepository:
     @staticmethod
     async def revoke_session(session_id: str) -> bool:
         """
-        Revoke session by setting status to 'revoked'
+        Revoke session by setting status to 'revoked' and recording timestamp
 
         Args:
             session_id: Session ID
 
         Returns:
-            True if revoked
+            True if revoked successfully, False if session not found or already revoked
+
+        Security Notes:
+            - Sets session_status to 'revoked'
+            - Records revoked_at timestamp for audit trail
+            - Logs revocation event via security logger
+            - Supports configurable data retention policy (30 days default)
         """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
         query = """
         UPDATE iraqi_authentication_sessions
-        SET session_status = 'revoked'
-        WHERE id = $1
+        SET session_status = 'revoked',
+            revoked_at = $1
+        WHERE id = $2 AND session_status = 'active'
         """
-        result = await DatabaseClient.execute(query, session_id)
-        return "UPDATE 1" in result
+
+        now = datetime.now(timezone.utc)
+
+        try:
+            result = await DatabaseClient.execute(query, now, session_id)
+
+            # Check if session was actually updated
+            revoked = "UPDATE 1" in result
+
+            if revoked:
+                # Log successful revocation
+                from ..services.security_logger import get_security_logger
+
+                security_logger = get_security_logger()
+
+                # Get session details for logging
+                session = await SessionRepository.get_session(session_id)
+                if session:
+                    security_logger.log_session_revoked(
+                        user_id=session.get("user_id"),
+                        session_id=session_id,
+                        reason="manual_revocation",
+                        ip_address=session.get("ip_address"),
+                    )
+            else:
+                logger.warning(
+                    f"Session revocation failed: session {session_id} not found or already revoked"
+                )
+
+            return revoked
+
+        except Exception as e:
+            logger.error(f"Error revoking session {session_id}: {str(e)}")
+            return False
 
     @staticmethod
     async def revoke_all_user_sessions(user_id: str) -> int:
@@ -359,15 +419,68 @@ class SessionRepository:
 
         Returns:
             Number of sessions revoked
+
+        Security Notes:
+            - Revokes ALL active sessions for security incidents
+            - Records revoked_at timestamp for each session
+            - Logs bulk revocation event
+            - Used for compromised account scenarios
         """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
         query = """
         UPDATE iraqi_authentication_sessions
-        SET session_status = 'revoked'
-        WHERE user_id = $1 AND session_status = 'active'
+        SET session_status = 'revoked',
+            revoked_at = $1
+        WHERE user_id = $2 AND session_status = 'active'
         """
-        result = await DatabaseClient.execute(query, user_id)
-        # Extract count from "UPDATE N" string
-        return int(result.split(" ")[1]) if " " in result else 0
+
+        now = datetime.now(timezone.utc)
+
+        try:
+            result = await DatabaseClient.execute(query, now, user_id)
+
+            # Extract count from "UPDATE N" string
+            count = int(result.split(" ")[1]) if " " in result else 0
+
+            if count > 0:
+                # Log bulk revocation
+                from ..services.security_logger import (
+                    get_security_logger,
+                    SecurityEvent,
+                    SecurityEventType,
+                    SecurityEventSeverity,
+                )
+
+                security_logger = get_security_logger()
+                event = SecurityEvent(
+                    event_type=SecurityEventType.ALL_SESSIONS_REVOKED,
+                    severity=SecurityEventSeverity.HIGH,
+                    user_id=user_id,
+                    success=True,
+                    event_details={
+                        "sessions_revoked": count,
+                        "revocation_reason": "bulk_revocation",
+                        "revoked_at": now.isoformat(),
+                    },
+                    metadata={
+                        "event_name_ar": "إلغاء جميع الجلسات",
+                        "requires_notification": True,
+                    },
+                )
+                security_logger.log_event(event)
+
+                logger.info(f"Revoked {count} active sessions for user {user_id}")
+            else:
+                logger.info(f"No active sessions found for user {user_id}")
+
+            return count
+
+        except Exception as e:
+            logger.error(f"Error revoking all sessions for user {user_id}: {str(e)}")
+            return 0
 
     @staticmethod
     async def get_active_sessions(user_id: str) -> List[Dict[str, Any]]:
@@ -402,3 +515,84 @@ class SessionRepository:
         """
         result = await DatabaseClient.execute(query, datetime.now(timezone.utc))
         return int(result.split(" ")[1]) if " " in result else 0
+
+    @staticmethod
+    async def cleanup_revoked_sessions(retention_days: int = 30) -> int:
+        """
+        Delete revoked sessions older than retention period
+
+        Args:
+            retention_days: Number of days to retain revoked sessions (default: 30)
+
+        Returns:
+            Number of sessions deleted
+
+        Security Notes:
+            - Implements configurable data retention policy (30 days default)
+            - Only deletes sessions revoked longer than retention period
+            - Maintains audit trail for recent revocations
+            - Run as scheduled cleanup task
+
+        Implementation Notes:
+            - 30-day retention period is a business policy decision
+            - Maintains security audit trail while respecting data minimization
+            - Supports forensic investigation of recent security incidents
+        """
+        import logging
+
+        logger = logging.getLogger(__name__)
+
+        # Calculate cutoff date (e.g., 30 days ago)
+        from datetime import timedelta
+
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=retention_days)
+
+        query = """
+        DELETE FROM iraqi_authentication_sessions
+        WHERE session_status = 'revoked'
+          AND revoked_at IS NOT NULL
+          AND revoked_at < $1
+        """
+
+        try:
+            result = await DatabaseClient.execute(query, cutoff_date)
+
+            # Extract count from "DELETE N" string
+            count = int(result.split(" ")[1]) if " " in result else 0
+
+            if count > 0:
+                logger.info(
+                    f"Cleaned up {count} revoked sessions older than {retention_days} days"
+                )
+
+                # Log cleanup event
+                from ..services.security_logger import (
+                    get_security_logger,
+                    SecurityEvent,
+                    SecurityEventType,
+                    SecurityEventSeverity,
+                )
+
+                security_logger = get_security_logger()
+                event = SecurityEvent(
+                    event_type=SecurityEventType.DATA_DELETION,
+                    severity=SecurityEventSeverity.LOW,
+                    success=True,
+                    event_details={
+                        "cleanup_type": "revoked_sessions",
+                        "sessions_deleted": count,
+                        "retention_days": retention_days,
+                        "cutoff_date": cutoff_date.isoformat(),
+                    },
+                    metadata={
+                        "event_name_ar": "تنظيف الجلسات الملغاة",
+                        "compliance_action": True,
+                    },
+                )
+                security_logger.log_event(event)
+
+            return count
+
+        except Exception as e:
+            logger.error(f"Error cleaning up revoked sessions: {str(e)}")
+            return 0

@@ -116,22 +116,9 @@ async def verify_jwt_token(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        # Token is valid, return payload
-        # Explicitly verify signature, expiration, and other claims
-        payload = jwt.decode(
-            token,
-            SessionManager.JWT_SECRET_KEY,
-            algorithms=[SessionManager.JWT_ALGORITHM],
-            options={
-                "verify_signature": True,
-                "verify_exp": True,
-                "verify_iat": True,
-                "verify_nbf": True,
-                "require": ["exp", "iat", "nbf"],
-            },
-        )
-
-        return payload
+        # Token is valid, return decoded payload from validation result
+        # No need to decode again - validation already decoded and verified it
+        return validation_result.payload
 
     except Exception as e:
         raise HTTPException(
@@ -202,7 +189,7 @@ async def extract_cultural_context(request: Request) -> Dict:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             token = auth_header.split(" ")[1]
-            # Explicitly verify all JWT claims
+            # Explicitly verify all JWT claims (nbf not required since SessionManager doesn't set it)
             payload = jwt.decode(
                 token,
                 SessionManager.JWT_SECRET_KEY,
@@ -211,8 +198,7 @@ async def extract_cultural_context(request: Request) -> Dict:
                     "verify_signature": True,
                     "verify_exp": True,
                     "verify_iat": True,
-                    "verify_nbf": True,
-                    "require": ["exp", "iat", "nbf"],
+                    "require": ["exp", "iat"],
                 },
             )
             return payload.get("cultural_context", {})
@@ -308,7 +294,7 @@ class AuthMiddleware:
             auth_header = request.headers.get("Authorization")
             if auth_header and auth_header.startswith("Bearer "):
                 token = auth_header.split(" ")[1]
-                # Explicitly verify all JWT claims for security
+                # Explicitly verify all JWT claims for security (nbf not required)
                 payload = jwt.decode(
                     token,
                     SessionManager.JWT_SECRET_KEY,
@@ -317,8 +303,7 @@ class AuthMiddleware:
                         "verify_signature": True,
                         "verify_exp": True,
                         "verify_iat": True,
-                        "verify_nbf": True,
-                        "require": ["exp", "iat", "nbf"],
+                        "require": ["exp", "iat"],
                     },
                 )
                 identifier = payload.get("sub", identifier)

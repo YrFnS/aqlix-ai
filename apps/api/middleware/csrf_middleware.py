@@ -6,6 +6,7 @@ Validates CSRF tokens on state-changing requests with Iraqi regulatory complianc
 from fastapi import Request, HTTPException, status
 from fastapi.responses import Response
 from typing import Optional, Dict
+from datetime import datetime, timezone
 import os
 import jwt
 
@@ -276,7 +277,9 @@ class CSRFMiddleware:
 
     async def _extract_session_id(self, request: Request) -> Optional[str]:
         """
-        Extract session ID from JWT token in request
+        Extract session ID from JWT token in request with proper claim validation
+
+        Security: Validates exp, iat, nbf, and signature for all JWT tokens
 
         Args:
             request: FastAPI request
@@ -294,16 +297,34 @@ class CSRFMiddleware:
             # Extract token
             token = auth_header.split(" ")[1]
 
-            # Decode JWT to get session ID
+            # Decode JWT with FULL claim validation (SECURITY FIX)
+            # This prevents accepting expired, tampered, or invalid tokens
+            # Note: We don't enforce nbf (not-before) since SessionManager doesn't set it
             payload = jwt.decode(
                 token,
                 SessionManager.JWT_SECRET_KEY,
                 algorithms=[SessionManager.JWT_ALGORITHM],
+                options={
+                    "verify_signature": True,  # Verify HMAC signature
+                    "verify_exp": True,  # Verify expiration
+                    "verify_iat": True,  # Verify issued-at time
+                    "require": [
+                        "exp",
+                        "iat",
+                    ],  # Require expiration and issued-at claims
+                },
             )
 
             return payload.get("session_id")
 
+        except jwt.ExpiredSignatureError:
+            # Token expired - don't extract session ID
+            return None
+        except jwt.InvalidTokenError:
+            # Invalid token - don't extract session ID
+            return None
         except Exception:
+            # Any other error - fail safe
             return None
 
     def _is_token_still_valid(self, token_info) -> bool:
@@ -316,8 +337,6 @@ class CSRFMiddleware:
         Returns:
             True if token is still valid
         """
-        from datetime import datetime, timezone
-
         return (
             token_info.is_active and datetime.now(timezone.utc) < token_info.expires_at
         )
@@ -371,8 +390,6 @@ async def get_csrf_token_for_session(session_id: str) -> Optional[str]:
         return csrf_token_info.token
 
     # Check if token is still valid
-    from datetime import datetime, timezone
-
     if datetime.now(timezone.utc) > stored_token_info.expires_at:
         # Token expired, generate new one
         csrf_token_info = CSRFService.generate_csrf_token(session_id)

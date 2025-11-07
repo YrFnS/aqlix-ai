@@ -7,12 +7,15 @@ Implements 24-hour caching for performance and provides prayer time flexibility 
 API Documentation: https://aladhan.com/prayer-times-api
 """
 
+from __future__ import annotations
+
 import logging
 from datetime import datetime, timedelta
 from typing import Optional, Dict, List, Tuple
 from dataclasses import dataclass
 import httpx
 import asyncio
+from ..utils.async_lock_utils import AsyncLockInitializer
 
 
 # Configure logger
@@ -89,9 +92,23 @@ class PrayerTimesService:
     # In production, use Redis or similar distributed cache
     _cache: Dict[str, Dict] = {}
     _cache_expiry: Dict[str, datetime] = {}
-    _cache_lock: asyncio.Lock = (
-        asyncio.Lock()
-    )  # Async-safe cache access (coroutine synchronization)
+    _cache_lock: Optional[asyncio.Lock] = None
+    _cache_lock_init: AsyncLockInitializer = AsyncLockInitializer()
+
+    @classmethod
+    def _get_cache_lock(cls) -> asyncio.Lock:
+        """
+        Get or create the cache lock lazily
+
+        Uses AsyncLockInitializer to prevent TOCTOU race where multiple
+        coroutines could create separate asyncio.Lock instances.
+
+        Returns:
+            asyncio.Lock instance
+        """
+        return cls._cache_lock_init.get_lock(
+            lambda: cls._cache_lock, lambda lock: setattr(cls, "_cache_lock", lock)
+        )
 
     @classmethod
     async def get_prayer_times(
@@ -120,7 +137,7 @@ class PrayerTimesService:
         # Check cache first (with lock for thread safety)
         cache_key = f"{city}_{date.strftime('%Y-%m-%d')}"
 
-        async with cls._cache_lock:
+        async with cls._get_cache_lock():
             if cache_key in cls._cache and cache_key in cls._cache_expiry:
                 if datetime.now() < cls._cache_expiry[cache_key]:
                     logger.info(
@@ -134,7 +151,7 @@ class PrayerTimesService:
 
             if prayer_times:
                 # Cache for 24 hours (with lock for thread safety)
-                async with cls._cache_lock:
+                async with cls._get_cache_lock():
                     cls._cache[cache_key] = prayer_times
                     cls._cache_expiry[cache_key] = datetime.now() + timedelta(hours=24)
                 logger.info(
@@ -317,7 +334,7 @@ class PrayerTimesService:
     @classmethod
     async def clear_cache(cls):
         """Clear the prayer times cache (with lock for thread safety)"""
-        async with cls._cache_lock:
+        async with cls._get_cache_lock():
             cls._cache.clear()
             cls._cache_expiry.clear()
         logger.info("Prayer times cache cleared")

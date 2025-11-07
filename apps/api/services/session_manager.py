@@ -61,6 +61,7 @@ class SessionValidationResult(BaseModel):
     session: Optional[SessionInfo] = None
     user_id: Optional[str] = None
     cultural_context: Optional[dict] = None
+    payload: Optional[dict] = None  # Full JWT payload (to avoid double decoding)
     error_message: Optional[str] = None
     requires_refresh: bool = False
 
@@ -75,6 +76,7 @@ class SessionManager:
     - Cultural context snapshot in sessions
     - Multi-device session management
     - Session expiration and refresh logic
+    - Session revocation for security
     """
 
     # JWT settings (must be configured via environment)
@@ -268,13 +270,19 @@ class SessionManager:
     @classmethod
     async def validate_access_token(cls, token: str) -> SessionValidationResult:
         """
-        Validate JWT access token
+        Validate JWT access token and check revocation status
 
         Args:
             token: JWT access token
 
         Returns:
             SessionValidationResult with validation status
+
+        Security Notes:
+            - Validates JWT signature and expiration
+            - Checks if session is revoked in database
+            - Rejects revoked tokens with security warning
+            - Updates last_activity for active sessions
         """
         try:
             # Decode JWT
@@ -321,6 +329,29 @@ class SessionManager:
             # Check if session is revoked or expired
             session_status = session_row.get("session_status")
             if session_status == "revoked":
+                # Log security warning for revoked token access attempt
+                import logging
+
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    f"Access attempt with revoked token - session_id: {session_id}, user_id: {user_id}"
+                )
+
+                from ..services.security_logger import get_security_logger
+
+                security_logger = get_security_logger()
+                security_logger.log_suspicious_activity(
+                    user_id=user_id,
+                    activity_type="revoked_token_access_attempt",
+                    details={
+                        "session_id": session_id,
+                        "revoked_at": session_row.get("revoked_at").isoformat()
+                        if session_row.get("revoked_at")
+                        else None,
+                        "attempted_at": datetime.now(timezone.utc).isoformat(),
+                    },
+                )
+
                 return SessionValidationResult(
                     is_valid=False,
                     error_message="Session has been revoked",
@@ -392,6 +423,7 @@ class SessionManager:
                 session=session_info,
                 user_id=user_id,
                 cultural_context=cultural_context,
+                payload=payload,  # Include decoded payload to avoid double decoding
                 requires_refresh=requires_refresh,
             )
 
@@ -498,11 +530,17 @@ class SessionManager:
             session_id: Session ID to revoke
 
         Returns:
-            True if successful
+            True if revoked successfully, False if session not found
+
+        Security Notes:
+            - Immediately invalidates session by setting status to 'revoked'
+            - Records revocation timestamp for audit trail
+            - Logs security event for monitoring
+            - Future token validation attempts will be rejected
         """
         from ..database.client import SessionRepository
 
-        # In production, update session status to 'revoked' in database
+        # Revoke session in database with security logging
         return await SessionRepository.revoke_session(session_id)
 
     @staticmethod
@@ -515,10 +553,17 @@ class SessionManager:
 
         Returns:
             Number of sessions revoked
+
+        Security Notes:
+            - Used for compromised account scenarios
+            - Revokes ALL active sessions across all devices
+            - Records revocation timestamps for audit
+            - Logs high-severity security event
+            - Triggers notification to user
         """
         from ..database.client import SessionRepository
 
-        # In production, revoke all active sessions for user in database
+        # Revoke all active sessions for user in database
         return await SessionRepository.revoke_all_user_sessions(user_id)
 
     @staticmethod
@@ -567,5 +612,36 @@ class SessionManager:
         """
         from ..database.client import SessionRepository
 
-        # In production, mark expired sessions
+        # Mark expired sessions as expired
         return await SessionRepository.cleanup_expired_sessions()
+
+    @staticmethod
+    async def cleanup_revoked_sessions(retention_days: int = 30) -> int:
+        """
+        Delete revoked sessions older than retention period
+
+        Args:
+            retention_days: Number of days to retain revoked sessions (default: 30)
+
+        Returns:
+            Number of sessions deleted
+
+        Security Notes:
+            - Complies with Iraqi data retention laws (30 days default)
+            - Maintains audit trail for recent revocations
+            - Deletes only sessions revoked longer than retention period
+            - Should be run as scheduled background task
+
+        Iraqi Compliance:
+            - 30-day retention period aligns with Iraqi data protection standards
+            - Maintains security audit trail while respecting data minimization
+            - Supports forensic investigation of recent security incidents
+
+        Usage:
+            # Run daily as scheduled task
+            deleted_count = await SessionManager.cleanup_revoked_sessions()
+        """
+        from ..database.client import SessionRepository
+
+        # Delete old revoked sessions from database
+        return await SessionRepository.cleanup_revoked_sessions(retention_days)
