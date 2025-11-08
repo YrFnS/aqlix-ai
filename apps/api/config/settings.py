@@ -407,7 +407,7 @@ class Settings(BaseSettings):
         SECURITY: Only logs non-sensitive information.
         Never logs API keys, secrets, or credentials.
         """
-        print("🚀 Iraqi AI Chat System API Starting...")
+        print("[STARTUP] Iraqi AI Chat System API Starting...")
         print(f"  - Environment: {self.NODE_ENV}")
         print(f"  - Host: {self.HOST}:{self.PORT}")
         print(f"  - Debug Mode: {self.DEBUG}")
@@ -442,7 +442,7 @@ class Settings(BaseSettings):
         else:
             print("  - Payment Gateways: none configured")
 
-        print("✅ Configuration validated successfully")
+        print("[SUCCESS] Configuration validated successfully")
 
 
 # -------------------------------------------------------------------------
@@ -463,8 +463,8 @@ try:
         settings.log_startup_info()
 
 except Exception as e:
-    print(f"❌ Environment validation failed: {e}")
-    print("\n💡 Tips:")
+    print(f"[ERROR] Environment validation failed: {e}")
+    print("\n[INFO] Tips:")
     print("  - Check .env.example for required variables")
     print("  - Copy .env.example to .env")
     print("  - Ensure all required variables are set")

@@ -25,7 +25,7 @@ import logging
 # CRITICAL: Validate environment variables at startup
 # This import triggers immediate validation and will throw if variables are missing
 # ============================================================================
-from config import settings
+from apps.api.config import settings
 
 # ============================================================================
 # Logging Configuration

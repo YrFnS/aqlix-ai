@@ -12,7 +12,9 @@ test.describe("Keyboard Navigation", () => {
     await page.keyboard.press("Tab");
 
     // Verify focus moved to first focusable element (not body)
-    let focusedTag = await page.evaluate(() => document.activeElement?.tagName);
+    const focusedTag = await page.evaluate(
+      () => document.activeElement?.tagName,
+    );
     expect(focusedTag).not.toBe("BODY");
 
     // Should focus on first navigation link with href attribute
@@ -28,13 +30,13 @@ test.describe("Keyboard Navigation", () => {
 
     // Tab through navigation to next elements
     await page.keyboard.press("Tab");
-    let secondFocusedId = await page.evaluate(() =>
+    const secondFocusedId = await page.evaluate(() =>
       document.activeElement?.getAttribute("data-testid"),
     );
     expect(secondFocusedId).not.toBe(firstFocusedId);
 
     await page.keyboard.press("Tab");
-    let thirdFocusedId = await page.evaluate(() =>
+    const thirdFocusedId = await page.evaluate(() =>
       document.activeElement?.getAttribute("data-testid"),
     );
     expect(thirdFocusedId).not.toBe(secondFocusedId);

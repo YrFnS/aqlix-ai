@@ -1,6 +1,47 @@
-import { ExampleBasicForm } from "@/components/forms/example-basic-form";
-import { ExampleValidationForm } from "@/components/forms/example-validation-form";
-import { ExampleAsyncForm } from "@/components/forms/example-async-form";
+import dynamic from "next/dynamic";
+
+// Lazy load form components to improve initial page load performance
+const ExampleBasicForm = dynamic(
+  () =>
+    import("@/components/forms/example-basic-form").then(
+      (mod) => mod.ExampleBasicForm,
+    ),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    ),
+  },
+);
+
+const ExampleValidationForm = dynamic(
+  () =>
+    import("@/components/forms/example-validation-form").then(
+      (mod) => mod.ExampleValidationForm,
+    ),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    ),
+  },
+);
+
+const ExampleAsyncForm = dynamic(
+  () =>
+    import("@/components/forms/example-async-form").then(
+      (mod) => mod.ExampleAsyncForm,
+    ),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    ),
+  },
+);
 
 export default function FormsExamplePage() {
   return (

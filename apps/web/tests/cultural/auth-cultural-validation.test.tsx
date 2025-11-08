@@ -865,9 +865,10 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
   describe("⚖️ Political Neutrality Validation (Informational)", () => {
     test("NEUTRAL-01: No sectarian references in any auth page", () => {
       const pages = [
-        <RegisterForm culturalMode="both" />,
-        <LoginForm culturalMode="both" />,
+        <RegisterForm key="register-neutral" culturalMode="both" />,
+        <LoginForm key="login-neutral" culturalMode="both" />,
         <MFAForm
+          key="mfa-neutral"
           verificationId="test"
           method="email"
           destination="test@example.com"
@@ -893,8 +894,8 @@ describe("🕌 CULTURAL VALIDATION: Authentication System", () => {
 
     test("NEUTRAL-02: No tribal references in any auth page", () => {
       const pages = [
-        <RegisterForm culturalMode="both" />,
-        <LoginForm culturalMode="both" />,
+        <RegisterForm key="register-tribal" culturalMode="both" />,
+        <LoginForm key="login-tribal" culturalMode="both" />,
       ];
 
       pages.forEach((page) => {
