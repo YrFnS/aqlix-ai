@@ -95,7 +95,7 @@ This guide shows which command to use for each initial file when creating and ex
 
 ### Cultural Compliance Layer (17, 19-22)
 
-- **17_cultural_islamic_compliance_system.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+- **17_cultural_islamic_compliance_system.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp` ✅
   - _Reason: Requires PydanticAI agent for Iraqi cultural appropriateness and Islamic compliance validation_
 
 - **19_professional_domain_integration_system.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`

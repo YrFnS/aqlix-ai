@@ -2773,3 +2773,5 @@ https://snyk.io/
 https://github.com/guardrails-ai/guardrails
 https://langfuse.com/
 https://mem0.ai
+
+coderabbit --type uncommitted --prompt-only
