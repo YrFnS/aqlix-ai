@@ -115,7 +115,7 @@ This guide shows which command to use for each initial file when creating and ex
 - **23_payment_gateway_integration.md** → `/generate-prp` + `/execute-prp`
   - _Reason: ZainCash, FastPay, NassWallet API integration and webhook handling_
 
-- **24_pydantic_ai_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp`
+- **24_pydantic_ai_setup.md** → `/generate-pydantic-ai-prp` + `/execute-pydantic-ai-prp` ✅
   - _Reason: Core PydanticAI agent architecture setup with dependency injection_
 
 - **25_iraqi_ai_database_schema.md** → `/generate-prp` + `/execute-prp`
