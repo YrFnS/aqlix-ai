@@ -7,9 +7,9 @@ except ImportError:
 
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import UIDesignerDeps
-from .tools import UIDesignerTools
-from .models import DesignSpec
+from apps.api.agents.design.ui_designer.dependencies import UIDesignerDeps
+from apps.api.agents.design.ui_designer.tools import UIDesignerTools
+from apps.api.agents.design.ui_designer.models import DesignSpec
 
 
 import threading

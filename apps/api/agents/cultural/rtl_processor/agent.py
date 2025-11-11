@@ -16,8 +16,8 @@ except ImportError:
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
 from apps.api.agents.core.models import ArabicProcessingResult
-from .dependencies import RTLProcessorDeps
-from .tools import ArabicRTLTools
+from apps.api.agents.cultural.rtl_processor.dependencies import RTLProcessorDeps
+from apps.api.agents.cultural.rtl_processor.tools import ArabicRTLTools
 
 
 class ArabicRTLProcessor(BaseIraqiAgent[RTLProcessorDeps]):

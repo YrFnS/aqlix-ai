@@ -8,9 +8,13 @@ except ImportError:
 from typing import Optional
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import AIArchitectDeps
-from .tools import AIArchitectTools
-from .models import AgentArchitectureSpec, PydanticAIPattern, MultiAgentWorkflow
+from apps.api.agents.technical.ai_architect.dependencies import AIArchitectDeps
+from apps.api.agents.technical.ai_architect.tools import AIArchitectTools
+from apps.api.agents.technical.ai_architect.models import (
+    AgentArchitectureSpec,
+    PydanticAIPattern,
+    MultiAgentWorkflow,
+)
 
 
 class IraqiAIAgentArchitect(BaseIraqiAgent[AIArchitectDeps]):

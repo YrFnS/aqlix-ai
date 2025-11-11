@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Tuple, Callable
 from pydantic import BaseModel
 
-from .mfa_manager import (
+from apps.api.services.mfa_manager import (
     MFAMethod,
     MFAFrequency,
     MFASetupResult,

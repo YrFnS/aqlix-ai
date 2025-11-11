@@ -19,7 +19,7 @@ except ImportError:
         return None
 
 
-from .settings import settings
+from apps.api.agents.core.settings import settings
 
 
 class ModelProvider(str, Enum):

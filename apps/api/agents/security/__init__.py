@@ -1,8 +1,17 @@
 """Iraqi Security Agents - Security specialist, payment tester, payment guardian."""
 
-from .security_specialist import IraqiSecuritySpecialist, get_security_specialist
-from .payment_tester import IraqiPaymentTester, get_payment_tester
-from .payment_guardian import PaymentSecurityGuardian, get_payment_guardian
+from apps.api.agents.security.security_specialist import (
+    IraqiSecuritySpecialist,
+    get_security_specialist,
+)
+from apps.api.agents.security.payment_tester import (
+    IraqiPaymentTester,
+    get_payment_tester,
+)
+from apps.api.agents.security.payment_guardian import (
+    PaymentSecurityGuardian,
+    get_payment_guardian,
+)
 
 __all__ = [
     "IraqiSecuritySpecialist",

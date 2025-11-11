@@ -86,7 +86,7 @@ async function validateIslamicCompliance(content: string): Promise<{
  */
 export async function toBeIslamicallyCompliant(
   this: any,
-  received: string,
+  received: unknown,
   threshold: number = 0.9,
 ) {
   if (typeof received !== "string") {
@@ -125,7 +125,7 @@ export async function toBeIslamicallyCompliant(
 /**
  * Checks if content contains Islamic greetings
  */
-export function toContainIslamicGreeting(this: any, received: string) {
+export function toContainIslamicGreeting(this: any, received: unknown) {
   if (typeof received !== "string") {
     return {
       pass: false,
@@ -160,7 +160,10 @@ export function toContainIslamicGreeting(this: any, received: string) {
 /**
  * Checks if content avoids prohibited references
  */
-export async function toAvoidProhibitedReferences(this: any, received: string) {
+export async function toAvoidProhibitedReferences(
+  this: any,
+  received: unknown,
+) {
   if (typeof received !== "string") {
     return {
       pass: false,

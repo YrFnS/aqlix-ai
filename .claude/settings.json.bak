@@ -1,0 +1,44 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "WebSearch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/web_search_year.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/security.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/dependency.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/nextjs.sh",
+            "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/format.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/lint.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

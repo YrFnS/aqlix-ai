@@ -5,7 +5,7 @@ Tool functions for Iraqi business analysis and requirements engineering.
 """
 
 from typing import List, Dict, Any, Optional
-from .models import (
+from apps.api.agents.professional.business_analyst.models import (
     BusinessRequirement,
     UserStory,
     ROIAnalysis,

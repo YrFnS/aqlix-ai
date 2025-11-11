@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # FastAPI Backend
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: aqlix-api
+    ports:
+      - "${API_PORT:-8000}:8000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - DEBUG=${DEBUG:-false}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://user:password@postgres:5432/aqlix}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - ZAINCASH_API_KEY=${ZAINCASH_API_KEY}
+      - ZAINCASH_API_SECRET=${ZAINCASH_API_SECRET}
+      - FASTPAY_API_KEY=${FASTPAY_API_KEY}
+      - FASTPAY_API_SECRET=${FASTPAY_API_SECRET}
+      - NASSWALLET_API_KEY=${NASSWALLET_API_KEY}
+      - NASSWALLET_API_SECRET=${NASSWALLET_API_SECRET}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/api:/app/apps/api
+    networks:
+      - aqlix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  # ============================================================================
+  # Next.js Web Application
+  # ============================================================================
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: aqlix-web
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app/apps/web
+      - ./packages:/app/packages
+    networks:
+      - aqlix-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+
+  # ============================================================================
+  # PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:17-alpine
+    container_name: aqlix-postgres
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER:-aqlix}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-aqlix_dev_password}
+      - POSTGRES_DB=${DB_NAME:-aqlix}
+      - POSTGRES_INITDB_ARGS=-c log_min_duration_statement=0
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/api/database/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - aqlix-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-aqlix}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # Redis Cache
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: aqlix-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - aqlix-network
+    command: redis-server --appendonly yes --appendfsync everysec
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ============================================================================
+  # Optional: PgAdmin (PostgreSQL Management Tool)
+  # ============================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: aqlix-pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL:-admin@example.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD:-admin}
+    depends_on:
+      - postgres
+    networks:
+      - aqlix-network
+    profiles:
+      - debug
+
+  # ============================================================================
+  # Optional: Redis Insight (Redis Management Tool)
+  # ============================================================================
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    container_name: aqlix-redis-insight
+    ports:
+      - "${REDIS_INSIGHT_PORT:-8001}:8001"
+    depends_on:
+      - redis
+    networks:
+      - aqlix-network
+    profiles:
+      - debug
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  aqlix-network:
+    driver: bridge

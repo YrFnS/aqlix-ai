@@ -1,6 +1,6 @@
 """UI Designer Tools"""
 
-from .models import ColorPalette
+from apps.api.agents.design.ui_designer.models import ColorPalette
 
 
 class UIDesignerTools:

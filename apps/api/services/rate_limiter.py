@@ -10,7 +10,7 @@ from typing import Optional, Dict, Tuple
 from datetime import datetime, time, timedelta
 import logging
 import asyncio
-from ..utils.async_lock_utils import AsyncLockInitializer
+from apps.api.utils.async_lock_utils import AsyncLockInitializer
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ async def is_prayer_time_cached(city: str = "baghdad") -> bool:
 
     # Cache miss or expired - fetch fresh data
     try:
-        from .prayer_times_service import PrayerTimesService
+        from apps.api.services.prayer_times_service import PrayerTimesService
 
         # Check if current time is within prayer time window (15 minutes flexibility)
         is_prayer, prayer_name = await PrayerTimesService.is_prayer_time(

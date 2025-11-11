@@ -303,7 +303,7 @@ class SessionManager:
             cultural_context = payload.get("cultural_context", {})
 
             # Production validation: verify session exists in database and is not revoked
-            from ..database.client import SessionRepository
+            from apps.api.database.client import SessionRepository
 
             # Verify session exists in database with exception handling
             try:
@@ -337,7 +337,7 @@ class SessionManager:
                     f"Access attempt with revoked token - session_id: {session_id}, user_id: {user_id}"
                 )
 
-                from ..services.security_logger import get_security_logger
+                from apps.api.services.security_logger import get_security_logger
 
                 security_logger = get_security_logger()
                 security_logger.log_suspicious_activity(
@@ -538,7 +538,7 @@ class SessionManager:
             - Logs security event for monitoring
             - Future token validation attempts will be rejected
         """
-        from ..database.client import SessionRepository
+        from apps.api.database.client import SessionRepository
 
         # Revoke session in database with security logging
         return await SessionRepository.revoke_session(session_id)
@@ -561,7 +561,7 @@ class SessionManager:
             - Logs high-severity security event
             - Triggers notification to user
         """
-        from ..database.client import SessionRepository
+        from apps.api.database.client import SessionRepository
 
         # Revoke all active sessions for user in database
         return await SessionRepository.revoke_all_user_sessions(user_id)
@@ -577,7 +577,7 @@ class SessionManager:
         Returns:
             List of active SessionInfo objects
         """
-        from ..database.client import SessionRepository
+        from apps.api.database.client import SessionRepository
 
         # In production, query database for active sessions
         session_rows = await SessionRepository.get_active_sessions(user_id)
@@ -610,7 +610,7 @@ class SessionManager:
         Returns:
             Number of sessions cleaned up
         """
-        from ..database.client import SessionRepository
+        from apps.api.database.client import SessionRepository
 
         # Mark expired sessions as expired
         return await SessionRepository.cleanup_expired_sessions()
@@ -641,7 +641,7 @@ class SessionManager:
             # Run daily as scheduled task
             deleted_count = await SessionManager.cleanup_revoked_sessions()
         """
-        from ..database.client import SessionRepository
+        from apps.api.database.client import SessionRepository
 
         # Delete old revoked sessions from database
         return await SessionRepository.cleanup_revoked_sessions(retention_days)

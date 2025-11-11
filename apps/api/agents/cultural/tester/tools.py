@@ -6,7 +6,10 @@ Tool functions for generating and executing cultural compliance tests.
 
 from typing import List, Dict, Any, Optional
 import time
-from .models import CulturalTestScenario, CulturalTestResult
+from apps.api.agents.cultural.tester.models import (
+    CulturalTestScenario,
+    CulturalTestResult,
+)
 
 
 class CulturalTestingTools:

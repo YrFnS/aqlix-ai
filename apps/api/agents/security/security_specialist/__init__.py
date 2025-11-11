@@ -1,6 +1,6 @@
 """Iraqi Security Specialist - Application security with Iraqi compliance."""
 
-from .agent import (
+from apps.api.agents.security.security_specialist.agent import (
     IraqiSecuritySpecialist,
     get_security_specialist,
     SecuritySpecialistDeps,

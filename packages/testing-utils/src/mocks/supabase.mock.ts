@@ -53,8 +53,8 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
   let currentTable: string | null = null;
   let currentQuery: any = {};
 
-  const mockQuery = {
-    select: mock(function (columns = "*") {
+  const mockQuery: any = {
+    select: mock(function (this: any, _columns = "*") {
       if (latency > 0) wait(latency);
 
       if (shouldFail()) {
@@ -75,7 +75,7 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
       });
     }),
 
-    insert: mock(function (data: any) {
+    insert: mock(function (this: any, _data: any) {
       if (latency > 0) wait(latency);
 
       if (shouldFail()) {
@@ -88,14 +88,14 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
       }
 
       return Promise.resolve({
-        data: Array.isArray(data) ? data : [data],
+        data: Array.isArray(_data) ? _data : [_data],
         error: null,
         status: 201,
         statusText: "Created",
       });
     }),
 
-    update: mock(function (data: any) {
+    update: mock(function (this: any, _data: any) {
       if (latency > 0) wait(latency);
 
       if (shouldFail()) {
@@ -108,14 +108,14 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
       }
 
       return Promise.resolve({
-        data: [data],
+        data: [_data],
         error: null,
         status: 200,
         statusText: "OK",
       });
     }),
 
-    delete: mock(function () {
+    delete: mock(function (this: any) {
       if (latency > 0) wait(latency);
 
       if (shouldFail()) {
@@ -135,37 +135,37 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
       });
     }),
 
-    eq: mock(function (column: string, value: any) {
+    eq: mock(function (this: any, column: string, value: any) {
       currentQuery.eq = { column, value };
       return this;
     }),
 
-    neq: mock(function (column: string, value: any) {
+    neq: mock(function (this: any, column: string, value: any) {
       currentQuery.neq = { column, value };
       return this;
     }),
 
-    gt: mock(function (column: string, value: any) {
+    gt: mock(function (this: any, column: string, value: any) {
       currentQuery.gt = { column, value };
       return this;
     }),
 
-    lt: mock(function (column: string, value: any) {
+    lt: mock(function (this: any, column: string, value: any) {
       currentQuery.lt = { column, value };
       return this;
     }),
 
-    order: mock(function (column: string, options: any = {}) {
+    order: mock(function (this: any, column: string, options: any = {}) {
       currentQuery.order = { column, ...options };
       return this;
     }),
 
-    limit: mock(function (count: number) {
+    limit: mock(function (this: any, count: number) {
       currentQuery.limit = count;
       return this;
     }),
 
-    single: mock(function () {
+    single: mock(function (this: any) {
       return this.select().then((result: any) => ({
         ...result,
         data: result.data?.[0] || null,
@@ -227,15 +227,15 @@ export function createMockSupabaseClient(config: MockSupabaseConfig = {}) {
     },
 
     storage: {
-      from: mock((bucket: string) => ({
-        upload: mock(async (path: string, file: any) => {
+      from: mock((_bucketName: string) => ({
+        upload: mock(async (_filePath: string, _fileContent: any) => {
           await wait(latency);
           return {
-            data: { path },
+            data: { path: _filePath },
             error: null,
           };
         }),
-        download: mock(async (path: string) => {
+        download: mock(async (_filePath: string) => {
           await wait(latency);
           return {
             data: new Blob(["mock file content"]),

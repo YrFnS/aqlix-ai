@@ -6,7 +6,7 @@ Arabic text processing, and cultural compliance testing.
 """
 
 # Cultural Validator
-from .validator import (
+from apps.api.agents.cultural.validator import (
     IraqiCulturalValidator,
     get_cultural_validator,
     CulturalValidatorDeps,
@@ -14,7 +14,7 @@ from .validator import (
 )
 
 # RTL Processor
-from .rtl_processor import (
+from apps.api.agents.cultural.rtl_processor import (
     ArabicRTLProcessor,
     get_rtl_processor,
     RTLProcessorDeps,
@@ -22,7 +22,7 @@ from .rtl_processor import (
 )
 
 # Cultural Tester
-from .tester import (
+from apps.api.agents.cultural.tester import (
     IraqiCulturalTester,
     get_cultural_tester,
     CulturalTesterDeps,

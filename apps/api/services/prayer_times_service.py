@@ -15,7 +15,7 @@ from typing import Optional, Dict, List, Tuple
 from dataclasses import dataclass
 import httpx
 import asyncio
-from ..utils.async_lock_utils import AsyncLockInitializer
+from apps.api.utils.async_lock_utils import AsyncLockInitializer
 
 
 # Configure logger

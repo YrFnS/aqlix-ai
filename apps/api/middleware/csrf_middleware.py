@@ -11,12 +11,12 @@ import os
 import jwt
 
 try:
-    from ..services.csrf_service import (
+    from apps.api.services.csrf_service import (
         CSRFService,
         CSRFTokenRepository,
         CSRFTokenStatus,
     )
-    from ..services.session_manager import SessionManager
+    from apps.api.services.session_manager import SessionManager
 except ImportError:
     from services.csrf_service import (
         CSRFService,

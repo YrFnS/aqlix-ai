@@ -10,7 +10,8 @@
  */
 async function validateCulturalContent(
   content: string,
-  options?: { domain?: string },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _options?: { domain?: string },
 ): Promise<{
   score: number;
   violations: string[];

@@ -10,10 +10,7 @@ import { expect } from "bun:test";
  * This will be replaced with real implementation from @iraqi-ai/cultural-validators
  * in Task 6 when that package is created
  */
-async function validateCulturalContent(
-  content: string,
-  options?: { domain?: string },
-): Promise<{
+async function validateCulturalContent(content: string): Promise<{
   score: number;
   violations: string[];
   recommendations: string[];
@@ -70,7 +67,7 @@ async function validateCulturalContent(
  */
 export async function toBeCulturallyAppropriate(
   this: any,
-  received: string,
+  received: unknown,
   threshold: number = 0.95,
 ) {
   if (typeof received !== "string") {
@@ -110,7 +107,7 @@ export async function toBeCulturallyAppropriate(
 /**
  * Checks if content is politically neutral
  */
-export async function toBePoliticallyNeutral(this: any, received: string) {
+export async function toBePoliticallyNeutral(this: any, received: unknown) {
   if (typeof received !== "string") {
     return {
       pass: false,
@@ -142,7 +139,7 @@ export async function toBePoliticallyNeutral(this: any, received: string) {
 /**
  * Checks if content respects Iraqi family values
  */
-export async function toRespectIraqiFamilyValues(this: any, received: string) {
+export async function toRespectIraqiFamilyValues(this: any, received: unknown) {
   if (typeof received !== "string") {
     return {
       pass: false,

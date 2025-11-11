@@ -240,7 +240,7 @@ class MFAManager:
             MFASetupResult with verification details
         """
         # Import here to avoid circular imports
-        from .cultural_context_manager import CulturalContextManager
+        from apps.api.services.cultural_context_manager import CulturalContextManager
 
         # Check prayer time delay using Aladhan API
         should_delay, delay_reason = await CulturalContextManager.should_delay_mfa(

@@ -1,9 +1,16 @@
 """Iraqi AI Agent Architect - PydanticAI architecture with Iraqi context."""
 
-from .agent import IraqiAIAgentArchitect, get_ai_architect
-from .dependencies import AIArchitectDeps
-from .tools import AIArchitectTools
-from .models import AgentArchitectureSpec, PydanticAIPattern, MultiAgentWorkflow
+from apps.api.agents.technical.ai_architect.agent import (
+    IraqiAIAgentArchitect,
+    get_ai_architect,
+)
+from apps.api.agents.technical.ai_architect.dependencies import AIArchitectDeps
+from apps.api.agents.technical.ai_architect.tools import AIArchitectTools
+from apps.api.agents.technical.ai_architect.models import (
+    AgentArchitectureSpec,
+    PydanticAIPattern,
+    MultiAgentWorkflow,
+)
 
 __all__ = [
     "IraqiAIAgentArchitect",

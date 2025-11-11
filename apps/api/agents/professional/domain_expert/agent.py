@@ -15,9 +15,9 @@ except ImportError:
 
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import DomainExpertDeps
-from .tools import DomainExpertTools
-from .models import DomainSpecificResponse
+from apps.api.agents.professional.domain_expert.dependencies import DomainExpertDeps
+from apps.api.agents.professional.domain_expert.tools import DomainExpertTools
+from apps.api.agents.professional.domain_expert.models import DomainSpecificResponse
 
 
 class IraqiProfessionalDomainExpert(BaseIraqiAgent[DomainExpertDeps]):

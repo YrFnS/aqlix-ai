@@ -57,7 +57,29 @@ async def lifespan(app: FastAPI):
         logger.warning("⚠️  WARNING: DEBUG mode enabled in production!")
 
     # Initialize services here (database, redis, etc.)
-    # TODO: Initialize database connection pool
+    try:
+        # Initialize database migrations
+        from apps.api.services.migration_service import MigrationService
+
+        migration_service = MigrationService(settings.DATABASE_URL)
+
+        # Validate database connection
+        if await migration_service.validate_database_connection():
+            logger.info("✅ Database connection validated")
+
+            # Run migrations
+            if await migration_service.migrate_to_latest():
+                logger.info("✅ Database migrations completed")
+            else:
+                logger.error("⚠️  Database migrations failed - proceeding with caution")
+        else:
+            logger.error("❌ Database connection failed - critical error")
+            raise Exception("Cannot connect to database")
+    except Exception as e:
+        logger.error(f"⚠️  Database initialization failed: {e}")
+        if settings.is_production:
+            raise  # Fail hard in production
+
     # TODO: Initialize Redis connection
     # TODO: Initialize LLM client
 
@@ -94,7 +116,7 @@ app = FastAPI(
 # ============================================================================
 # Rate Limiting Setup
 # ============================================================================
-from services.rate_limiter import limiter
+from apps.api.services.rate_limiter import limiter
 
 # Register limiter with FastAPI app
 app.state.limiter = limiter
@@ -267,17 +289,19 @@ async def root():
 # ============================================================================
 # API Routes
 # ============================================================================
-from routes import auth
+from apps.api.routes import auth, chat, documents, payments
 
 # Include authentication routes
 app.include_router(auth.router)
 
-# TODO: Import and include additional routers here
-# Example:
-# from routes import chat, documents, payments
-# app.include_router(chat.router, prefix="/api/v1/chat", tags=["Chat"])
-# app.include_router(documents.router, prefix="/api/v1/documents", tags=["Documents"])
-# app.include_router(payments.router, prefix="/api/v1/payments", tags=["Payments"])
+# Include chat routes
+app.include_router(chat.router)
+
+# Include documents routes
+app.include_router(documents.router)
+
+# Include payments routes
+app.include_router(payments.router)
 
 
 # ============================================================================

@@ -1,7 +1,7 @@
 """DevOps Engineer Tools"""
 
 from typing import List, Dict, Any
-from .models import MonitoringAlert, DeploymentConfig
+from apps.api.agents.technical.devops.models import MonitoringAlert, DeploymentConfig
 
 
 class DevOpsTools:

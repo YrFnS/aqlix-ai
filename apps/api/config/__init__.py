@@ -17,6 +17,6 @@ Security:
     - All environment variables are validated at startup
 """
 
-from .settings import settings
+from apps.api.config.settings import settings
 
 __all__ = ["settings"]

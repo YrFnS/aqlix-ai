@@ -14,8 +14,8 @@ except ImportError:
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
 from apps.api.agents.core.models import CulturalValidationResult
-from .dependencies import CulturalValidatorDeps
-from .tools import CulturalValidationTools
+from apps.api.agents.cultural.validator.dependencies import CulturalValidatorDeps
+from apps.api.agents.cultural.validator.tools import CulturalValidationTools
 
 
 class IraqiCulturalValidator(BaseIraqiAgent[CulturalValidatorDeps]):

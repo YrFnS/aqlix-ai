@@ -11,8 +11,12 @@ from datetime import datetime, timezone
 
 # Import services
 try:
-    from ..services.auth_service import AuthService, RegistrationResult, LoginResult
-    from ..models.iraqi_user import (
+    from apps.api.services.auth_service import (
+        AuthService,
+        RegistrationResult,
+        LoginResult,
+    )
+    from apps.api.models.iraqi_user import (
         IraqiUserRegistration,
         LoginRequest,
         MFASetupRequest,
@@ -20,8 +24,8 @@ try:
         PasswordResetRequest,
         PasswordResetConfirmation,
     )
-    from ..middleware.auth_middleware import get_current_user_dependency
-    from ..database.client import SessionRepository
+    from apps.api.middleware.auth_middleware import get_current_user_dependency
+    from apps.api.database.client import SessionRepository
 except ImportError:
     from services.auth_service import AuthService, RegistrationResult, LoginResult
     from models.iraqi_user import (
@@ -437,8 +441,8 @@ async def setup_mfa(
     Returns:
         MFA setup details and verification code (masked)
     """
-    from ..services.mfa_manager import MFAManager, MFAMethod
-    from ..database.client import DatabaseClient
+    from apps.api.services.mfa_manager import MFAManager, MFAMethod
+    from apps.api.database.client import DatabaseClient
 
     # Validate MFA method
     try:
@@ -469,7 +473,7 @@ async def setup_mfa(
 
     # Get city from user profile/config, with fallback
     # Try to get from user profile first
-    from ..config.settings import settings
+    from apps.api.config.settings import settings
 
     city = user.get("region") or "baghdad"  # Fallback to default
     if not city or city not in ["baghdad", "basra", "mosul", "erbil"]:
@@ -499,7 +503,7 @@ async def setup_mfa(
 
         try:
             # Store MFA configuration in cultural_mfa_configuration table
-            from ..database.client import DatabaseClient
+            from apps.api.database.client import DatabaseClient
             import hashlib
             from datetime import datetime, timezone
 
@@ -607,7 +611,7 @@ async def setup_mfa(
 
         # Send verification code via NotificationService
         try:
-            from ..services.notification_service import NotificationService
+            from apps.api.services.notification_service import NotificationService
 
             notification_service = NotificationService()
             await notification_service.send_verification_code(

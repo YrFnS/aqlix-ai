@@ -89,14 +89,16 @@ const DOMAIN_TERMINOLOGY = {
   engineering: {
     positive: [
       /هندسة/,
+      /مهندس/,
       /مواصفة فنية/,
       /مخطط/,
       /تصميم/,
       /engineering/i,
       /technical/i,
       /design/i,
+      /construction/i,
     ],
-    required: ["هندسة", "مواصفة", "engineering"],
+    required: ["هندسة", "مواصفة", "engineering", "design"],
   },
   organizational: {
     positive: [
@@ -115,10 +117,12 @@ const DOMAIN_TERMINOLOGY = {
 /**
  * Professional disclaimers required for certain domains
  */
-const REQUIRED_DISCLAIMERS = {
+const REQUIRED_DISCLAIMERS: Record<ProfessionalDomain, string> = {
   legal: "يجب استشارة محامٍ مختص للحصول على المشورة القانونية الدقيقة",
   medical: "يرجى استشارة الطبيب المختص للحصول على التشخيص والعلاج الملائم",
   educational: "يجب اتباع المنهج المعتمد من وزارة التعليم",
+  engineering: "",
+  organizational: "",
 };
 
 /**

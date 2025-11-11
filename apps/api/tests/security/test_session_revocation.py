@@ -10,12 +10,12 @@ from uuid import uuid4
 from unittest.mock import Mock, patch, AsyncMock
 
 # Import modules to test
-from ...services.session_manager import (
+from apps.api.services.session_manager import (
     SessionManager,
     SessionStatus,
     SessionValidationResult,
 )
-from ...database.client import SessionRepository
+from apps.api.database.client import SessionRepository
 
 
 class TestSessionRevocation:

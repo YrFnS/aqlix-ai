@@ -9,9 +9,9 @@ except ImportError:
 
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import TechnicalDebuggerDeps
-from .tools import DebuggerTools
-from .models import DebugAnalysis, DebugIssue
+from apps.api.agents.technical.debugger.dependencies import TechnicalDebuggerDeps
+from apps.api.agents.technical.debugger.tools import DebuggerTools
+from apps.api.agents.technical.debugger.models import DebugAnalysis, DebugIssue
 
 
 class IraqiTechnicalDebugger(BaseIraqiAgent[TechnicalDebuggerDeps]):

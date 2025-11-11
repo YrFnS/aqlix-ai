@@ -10,7 +10,7 @@ from typing import Optional, Dict, List, Any
 from contextlib import asynccontextmanager
 import asyncpg
 from datetime import datetime, timezone
-from ..utils.async_lock_utils import AsyncLockInitializer
+from apps.api.utils.async_lock_utils import AsyncLockInitializer
 
 
 class DatabaseClient:
@@ -385,7 +385,7 @@ class SessionRepository:
 
             if revoked:
                 # Log successful revocation
-                from ..services.security_logger import get_security_logger
+                from apps.api.services.security_logger import get_security_logger
 
                 security_logger = get_security_logger()
 
@@ -447,7 +447,7 @@ class SessionRepository:
 
             if count > 0:
                 # Log bulk revocation
-                from ..services.security_logger import (
+                from apps.api.services.security_logger import (
                     get_security_logger,
                     SecurityEvent,
                     SecurityEventType,
@@ -566,7 +566,7 @@ class SessionRepository:
                 )
 
                 # Log cleanup event
-                from ..services.security_logger import (
+                from apps.api.services.security_logger import (
                     get_security_logger,
                     SecurityEvent,
                     SecurityEventType,

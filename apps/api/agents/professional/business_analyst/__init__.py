@@ -4,10 +4,15 @@ Iraqi Business Analyst Agent
 Business analysis with Iraqi market context and cultural awareness.
 """
 
-from .agent import IraqiBusinessAnalyst, get_business_analyst
-from .dependencies import BusinessAnalystDeps
-from .tools import BusinessAnalysisTools
-from .models import (
+from apps.api.agents.professional.business_analyst.agent import (
+    IraqiBusinessAnalyst,
+    get_business_analyst,
+)
+from apps.api.agents.professional.business_analyst.dependencies import (
+    BusinessAnalystDeps,
+)
+from apps.api.agents.professional.business_analyst.tools import BusinessAnalysisTools
+from apps.api.agents.professional.business_analyst.models import (
     BusinessRequirement,
     UserStory,
     ROIAnalysis,

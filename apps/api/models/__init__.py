@@ -3,7 +3,7 @@ API Models Package
 Contains Pydantic models for the Iraqi AI Chat System API
 """
 
-from .iraqi_user import (
+from apps.api.models.iraqi_user import (
     IraqiUserRegistration,
     CulturalPreferences,
     LoginRequest,

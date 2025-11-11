@@ -1,7 +1,10 @@
 """Product Manager Tools - Iraqi product management utilities."""
 
 from typing import List
-from .models import FeaturePriority, IraqiUserPersona
+from apps.api.agents.professional.product_manager.models import (
+    FeaturePriority,
+    IraqiUserPersona,
+)
 
 
 class ProductManagementTools:

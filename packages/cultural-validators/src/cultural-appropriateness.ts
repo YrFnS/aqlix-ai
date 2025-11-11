@@ -3,14 +3,8 @@
  * Combines Islamic compliance, political neutrality, and Iraqi cultural values
  */
 
-import {
-  validateIslamicCompliance,
-  type IslamicComplianceResult,
-} from "./islamic-compliance";
-import {
-  validatePoliticalNeutrality,
-  type PoliticalNeutralityResult,
-} from "./political-neutrality";
+import { validateIslamicCompliance } from "./islamic-compliance";
+import { validatePoliticalNeutrality } from "./political-neutrality";
 import {
   validateProfessionalDomain,
   type ProfessionalDomainResult,

@@ -1,6 +1,6 @@
 """Iraqi Accessibility Specialist - Arabic screen reader support."""
 
-from .agent import (
+from apps.api.agents.design.accessibility.agent import (
     IraqiAccessibilitySpecialist,
     get_accessibility_specialist,
     AccessibilitySpecialistDeps,

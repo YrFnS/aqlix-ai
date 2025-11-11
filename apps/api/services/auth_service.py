@@ -4,7 +4,7 @@ Comprehensive authentication service integrating all Iraqi-specific auth compone
 """
 
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
 import os
 import logging
@@ -15,33 +15,33 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import our specialized services
-from .iraqi_id_validator import (
+from apps.api.services.iraqi_id_validator import (
     IraqiIDValidator,
     IraqiRegion,
     VerificationLevel,
 )
-from .professional_license_validator import (
+from apps.api.services.professional_license_validator import (
     ProfessionalLicenseValidator,
     ProfessionalDomain,
     IssuingAuthority,
 )
-from .cultural_context_manager import (
+from apps.api.services.cultural_context_manager import (
     CulturalContextManager,
     IslamicComplianceLevel,
     CulturalGreeting,
 )
-from .mfa_manager import MFAManager, MFAMethod, MFAFrequency
-from .session_manager import SessionManager, TokenPair
-from .password_utils import PasswordUtils, PasswordStrengthResult
-from .account_lockout import AccountLockoutManager
-from .device_fingerprinting import DeviceFingerprintManager
-from .security_logger import (
+from apps.api.services.mfa_manager import MFAManager, MFAMethod, MFAFrequency
+from apps.api.services.session_manager import SessionManager, TokenPair
+from apps.api.services.password_utils import PasswordUtils, PasswordStrengthResult
+from apps.api.services.account_lockout import AccountLockoutManager
+from apps.api.services.device_fingerprinting import DeviceFingerprintManager
+from apps.api.services.security_logger import (
     get_security_logger,
     SecurityEventSeverity,
 )
 
-# Import models
-from ..models.iraqi_user import (
+# Import models using absolute imports
+from apps.api.models.iraqi_user import (
     IraqiUserRegistration,
     LoginRequest,
     AuthenticationResult,

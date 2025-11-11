@@ -160,9 +160,12 @@ export const arabicTextFixtures: ArabicTextFixture[] = [
  * Get a random Arabic text fixture
  */
 export function getRandomArabicText(): ArabicTextFixture {
-  return arabicTextFixtures[
-    Math.floor(Math.random() * arabicTextFixtures.length)
-  ];
+  const fixture =
+    arabicTextFixtures[Math.floor(Math.random() * arabicTextFixtures.length)];
+  if (!fixture) {
+    throw new Error("No Arabic text fixtures available");
+  }
+  return fixture;
 }
 
 /**

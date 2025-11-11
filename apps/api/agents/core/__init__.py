@@ -5,8 +5,8 @@ This module provides the foundational infrastructure for all Iraqi AI agents,
 including settings, model providers, base classes, and utilities.
 """
 
-from .settings import settings, IraqiAgentSettings
-from .providers import (
+from apps.api.agents.core.settings import settings, IraqiAgentSettings
+from apps.api.agents.core.providers import (
     get_llm_model,
     get_model_provider,
     IraqiModelProvider,

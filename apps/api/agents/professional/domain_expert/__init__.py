@@ -4,10 +4,13 @@ Iraqi Professional Domain Expert Agent
 Professional domain expertise (legal, medical, educational, engineering).
 """
 
-from .agent import IraqiProfessionalDomainExpert, get_domain_expert
-from .dependencies import DomainExpertDeps
-from .tools import DomainExpertTools
-from .models import (
+from apps.api.agents.professional.domain_expert.agent import (
+    IraqiProfessionalDomainExpert,
+    get_domain_expert,
+)
+from apps.api.agents.professional.domain_expert.dependencies import DomainExpertDeps
+from apps.api.agents.professional.domain_expert.tools import DomainExpertTools
+from apps.api.agents.professional.domain_expert.models import (
     ProfessionalTerminology,
     ProfessionalReference,
     DomainSpecificResponse,

@@ -1,0 +1,71 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Package managers
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml
+__pycache__
+*.pyc
+.Python
+env/
+venv/
+.venv
+
+# Development tools
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+
+# Build outputs
+dist
+build
+.next
+.bun
+.turbo
+coverage
+*.tsbuildinfo
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.circleci
+
+# Documentation
+docs
+README.md
+CONTRIBUTING.md
+
+# Tests
+__tests__
+tests
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+.test/
+
+# Temporary files
+tmp/
+temp/
+.tmp
+
+# OS files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile*
+.dockerignore

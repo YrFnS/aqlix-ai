@@ -16,6 +16,8 @@ const DIALECT_PATTERNS = {
   standard: [/كيف حالك/, /ما هو/, /من فضلك/, /شكراً جزيلاً/],
 };
 
+type IraqiDialect = "baghdad" | "basra" | "mosul" | "kurdish" | "standard";
+
 /**
  * Checks if text matches the specified Iraqi dialect
  *
@@ -27,8 +29,8 @@ const DIALECT_PATTERNS = {
  */
 export function toMatchIraqiDialect(
   this: any,
-  received: string,
-  expectedDialect: "baghdad" | "basra" | "mosul" | "kurdish" | "standard",
+  received: unknown,
+  expectedDialect: string,
 ) {
   if (typeof received !== "string") {
     return {
@@ -38,7 +40,7 @@ export function toMatchIraqiDialect(
     };
   }
 
-  const patterns = DIALECT_PATTERNS[expectedDialect];
+  const patterns = DIALECT_PATTERNS[expectedDialect as IraqiDialect];
   if (!patterns) {
     return {
       pass: false,
@@ -77,7 +79,7 @@ export function toMatchIraqiDialect(
 /**
  * Checks if text contains any Iraqi dialect markers
  */
-export function toContainIraqiDialect(this: any, received: string) {
+export function toContainIraqiDialect(this: any, received: unknown) {
   if (typeof received !== "string") {
     return {
       pass: false,
@@ -114,7 +116,7 @@ export function toContainIraqiDialect(this: any, received: string) {
 /**
  * Checks if text is in Standard Arabic (not dialectal)
  */
-export function toBeStandardArabic(this: any, received: string) {
+export function toBeStandardArabic(this: any, received: unknown) {
   if (typeof received !== "string") {
     return {
       pass: false,

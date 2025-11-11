@@ -132,6 +132,9 @@ export function createMockAnthropicClient(config: MockClaudeConfig = {}) {
           }
 
           const lastMessage = params.messages[params.messages.length - 1];
+          if (!lastMessage) {
+            throw new Error("No messages provided");
+          }
           const responseText = generateResponse(lastMessage.content);
 
           return {
@@ -165,6 +168,9 @@ export function createMockAnthropicClient(config: MockClaudeConfig = {}) {
         }
 
         const lastMessage = params.messages[params.messages.length - 1];
+        if (!lastMessage) {
+          throw new Error("No messages provided");
+        }
         const responseText = generateResponse(lastMessage.content);
 
         // Simulate streaming by yielding chunks

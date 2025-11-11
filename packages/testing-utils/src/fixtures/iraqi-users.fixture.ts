@@ -103,9 +103,12 @@ export const iraqiUserFixtures: IraqiUserFixture[] = [
  * Get a random Iraqi user fixture
  */
 export function getRandomIraqiUser(): IraqiUserFixture {
-  return iraqiUserFixtures[
-    Math.floor(Math.random() * iraqiUserFixtures.length)
-  ];
+  const fixture =
+    iraqiUserFixtures[Math.floor(Math.random() * iraqiUserFixtures.length)];
+  if (!fixture) {
+    throw new Error("No Iraqi user fixtures available");
+  }
+  return fixture;
 }
 
 /**

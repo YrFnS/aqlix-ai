@@ -13,8 +13,8 @@ from collections import defaultdict
 from datetime import timedelta
 
 try:
-    from ..services.session_manager import SessionManager
-    from ..services.cultural_context_manager import CulturalContextManager
+    from apps.api.services.session_manager import SessionManager
+    from apps.api.services.cultural_context_manager import CulturalContextManager
 except ImportError:
     from services.session_manager import SessionManager
     from services.cultural_context_manager import CulturalContextManager

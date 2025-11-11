@@ -8,9 +8,12 @@ except ImportError:
 from typing import Optional
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import ProductManagerDeps
-from .tools import ProductManagementTools
-from .models import ProductRoadmap, FeaturePriority
+from apps.api.agents.professional.product_manager.dependencies import ProductManagerDeps
+from apps.api.agents.professional.product_manager.tools import ProductManagementTools
+from apps.api.agents.professional.product_manager.models import (
+    ProductRoadmap,
+    FeaturePriority,
+)
 
 
 class IraqiProductManager(BaseIraqiAgent[ProductManagerDeps]):

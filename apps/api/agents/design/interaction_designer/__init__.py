@@ -1,6 +1,6 @@
 """Iraqi Interaction Designer - Culturally-appropriate interactions."""
 
-from .agent import (
+from apps.api.agents.design.interaction_designer.agent import (
     IraqiInteractionDesigner,
     get_interaction_designer,
     InteractionDesignerDeps,

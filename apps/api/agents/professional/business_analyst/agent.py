@@ -16,9 +16,11 @@ except ImportError:
 from datetime import datetime
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import BusinessAnalystDeps
-from .tools import BusinessAnalysisTools
-from .models import BusinessAnalysisReport
+from apps.api.agents.professional.business_analyst.dependencies import (
+    BusinessAnalystDeps,
+)
+from apps.api.agents.professional.business_analyst.tools import BusinessAnalysisTools
+from apps.api.agents.professional.business_analyst.models import BusinessAnalysisReport
 
 
 class IraqiBusinessAnalyst(BaseIraqiAgent[BusinessAnalystDeps]):

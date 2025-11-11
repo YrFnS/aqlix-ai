@@ -9,9 +9,12 @@ except ImportError:
 
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import DevOpsEngineerDeps
-from .tools import DevOpsTools
-from .models import InfrastructureHealthReport, MonitoringAlert
+from apps.api.agents.technical.devops.dependencies import DevOpsEngineerDeps
+from apps.api.agents.technical.devops.tools import DevOpsTools
+from apps.api.agents.technical.devops.models import (
+    InfrastructureHealthReport,
+    MonitoringAlert,
+)
 
 
 class IraqiDevOpsEngineer(BaseIraqiAgent[DevOpsEngineerDeps]):

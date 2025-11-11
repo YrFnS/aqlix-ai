@@ -133,14 +133,14 @@ export function createMockPaymentGateway(config: MockPaymentConfig) {
       },
     ),
 
-    cancel: mock(async (transactionId: string): Promise<boolean> => {
+    cancel: mock(async (_txnId: string): Promise<boolean> => {
       await wait(latency);
       return shouldSucceed();
     }),
 
-    getStatus: mock(async (transactionId: string): Promise<PaymentStatus> => {
+    getStatus: mock(async (txId: string): Promise<PaymentStatus> => {
       await wait(latency);
-      return transactions[transactionId]?.status || "completed";
+      return transactions[txId]?.status || "completed";
     }),
   };
 }

@@ -5,7 +5,10 @@ Tool functions for Iraqi professional domain expertise.
 """
 
 from typing import List, Dict, Any, Optional
-from .models import ProfessionalTerminology, ProfessionalReference
+from apps.api.agents.professional.domain_expert.models import (
+    ProfessionalTerminology,
+    ProfessionalReference,
+)
 
 
 class DomainExpertTools:

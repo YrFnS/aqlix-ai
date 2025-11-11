@@ -1,6 +1,6 @@
 """Iraqi Workflow Orchestrator - Multi-agent coordination."""
 
-from .agent import (
+from apps.api.agents.coordination.workflow_orchestrator.agent import (
     IraqiWorkflowOrchestrator,
     get_workflow_orchestrator,
     WorkflowOrchestratorDeps,

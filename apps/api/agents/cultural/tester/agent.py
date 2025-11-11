@@ -17,9 +17,13 @@ import time
 from typing import List, Optional
 from apps.api.agents.core.base_agent import BaseIraqiAgent
 from apps.api.agents.core.providers import get_llm_model
-from .dependencies import CulturalTesterDeps
-from .tools import CulturalTestingTools
-from .models import CulturalTestScenario, CulturalTestResult, CulturalTestReport
+from apps.api.agents.cultural.tester.dependencies import CulturalTesterDeps
+from apps.api.agents.cultural.tester.tools import CulturalTestingTools
+from apps.api.agents.cultural.tester.models import (
+    CulturalTestScenario,
+    CulturalTestResult,
+    CulturalTestReport,
+)
 
 
 class IraqiCulturalTester(BaseIraqiAgent[CulturalTesterDeps]):

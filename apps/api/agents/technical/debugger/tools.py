@@ -1,7 +1,7 @@
 """Technical Debugger Tools"""
 
 from typing import List, Dict, Any
-from .models import DebugIssue
+from apps.api.agents.technical.debugger.models import DebugIssue
 
 
 class DebuggerTools:

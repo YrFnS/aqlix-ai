@@ -17,9 +17,13 @@ except ImportError:
     RunContext = Any
     print("PydanticAI not available - using mock types")
 
-from .settings import settings, IraqiAgentSettings
-from .providers import get_llm_model, get_model_provider, IraqiModelProvider
-from .models import IraqiAgentDependencies, AgentPerformanceMetrics
+from apps.api.agents.core.settings import settings, IraqiAgentSettings
+from apps.api.agents.core.providers import (
+    get_llm_model,
+    get_model_provider,
+    IraqiModelProvider,
+)
+from apps.api.agents.core.models import IraqiAgentDependencies, AgentPerformanceMetrics
 
 # Type variable for dependencies
 DepsType = TypeVar("DepsType", bound=IraqiAgentDependencies)
