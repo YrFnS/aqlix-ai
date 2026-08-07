@@ -54,6 +54,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080002_p1_owner_membership_delete_fix.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080003_p1_workspace_archive_guard.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080004_p1_draft_workspace_integrity.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080005_p1_workspace_owner_select.sql
 
       - name: Verify workspace ownership and tenant isolation
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
@@ -72,4 +73,4 @@ jobs:
             exit 1
           fi
 
-          echo "P1 PostgreSQL schema, tenant integrity, and workspace isolation checks passed."
+          echo "P1 PostgreSQL schema, owner insert visibility, tenant integrity, and workspace isolation checks passed."
