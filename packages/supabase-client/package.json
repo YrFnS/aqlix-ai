@@ -1,7 +1,7 @@
 {
   "name": "@iraqi-ai/supabase-client",
-  "version": "1.1.0",
-  "description": "Request-scoped Supabase clients for the Kiteb rebuild",
+  "version": "1.0.0",
+  "description": "Request-scoped Supabase client utilities for the Kiteb rebuild",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
@@ -47,6 +47,21 @@
     "@types/bun": "latest",
     "next": "^15.5.5",
     "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "supabase",
+    "client",
+    "workspace",
+    "authentication",
+    "database",
+    "typescript"
+  ],
+  "author": "Iraqi AI Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YrFnS/aqlix-ai.git",
+    "directory": "packages/supabase-client"
   },
   "engines": {
     "node": ">=20.0.0",
