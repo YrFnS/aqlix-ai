@@ -1,0 +1,578 @@
+"use client";
+
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
+import { useRouter } from "next/navigation";
+import {
+  AlertTriangle,
+  Bot,
+  Clock3,
+  Cpu,
+  Hash,
+  LoaderCircle,
+  RotateCcw,
+  Send,
+  Sparkles,
+  Square,
+  UserRound,
+} from "lucide-react";
+import type {
+  Conversation,
+  ConversationMessage,
+  ConversationStreamEvent,
+} from "@iraqi-ai/types";
+import {
+  conversationMessageSchema,
+  conversationStreamEventSchema,
+} from "@iraqi-ai/types";
+import { Button } from "@/components/ui/button";
+import { MessageContent } from "./message-content";
+
+interface ConversationShellProps {
+  workspaceId: string;
+  conversation: Conversation;
+  initialMessages: ConversationMessage[];
+  canWrite: boolean;
+}
+
+type Notice = {
+  tone: "error" | "info";
+  message: string;
+} | null;
+
+const statusLabels = {
+  pending: "بانتظار المزود",
+  streaming: "جاري الكتابة",
+  complete: "مكتملة",
+  failed: "فشلت",
+  cancelled: "أُلغيت",
+} as const;
+
+function mergeMessages(
+  current: ConversationMessage[],
+  additions: Array<ConversationMessage | null>,
+): ConversationMessage[] {
+  const byId = new Map(current.map((message) => [message.id, message]));
+
+  for (const message of additions) {
+    if (message) byId.set(message.id, message);
+  }
+
+  return Array.from(byId.values()).sort(
+    (left, right) => left.sequence - right.sequence,
+  );
+}
+
+function replaceMessage(
+  current: ConversationMessage[],
+  replacement: ConversationMessage,
+): ConversationMessage[] {
+  return mergeMessages(current, [replacement]);
+}
+
+async function parseEventStream(
+  response: Response,
+  onEvent: (event: ConversationStreamEvent) => void,
+): Promise<void> {
+  if (!response.body) throw new Error("The response stream is unavailable.");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  const processFrame = (frame: string) => {
+    const data = frame
+      .split(/\r?\n/u)
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trimStart())
+      .join("\n")
+      .trim();
+
+    if (!data) return;
+
+    let value: unknown;
+    try {
+      value = JSON.parse(data);
+    } catch {
+      throw new Error("The server returned an invalid stream event.");
+    }
+
+    const parsed = conversationStreamEventSchema.safeParse(value);
+    if (!parsed.success) {
+      throw new Error("The server returned an unsupported stream event.");
+    }
+
+    onEvent(parsed.data);
+  };
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      while (true) {
+        const boundary = buffer.match(/\r?\n\r?\n/u);
+        if (!boundary || boundary.index === undefined) break;
+
+        const frame = buffer.slice(0, boundary.index);
+        buffer = buffer.slice(boundary.index + boundary[0].length);
+        processFrame(frame);
+      }
+    }
+
+    buffer += decoder.decode();
+    if (buffer.trim()) processFrame(buffer);
+  } finally {
+    reader.releaseLock();
+  }
+}
+
+function formatNumber(value: number): string {
+  return new Intl.NumberFormat("ar-IQ").format(value);
+}
+
+function MessageTelemetry({ message }: { message: ConversationMessage }) {
+  const generation = message.generation;
+  if (!generation) return null;
+
+  return (
+    <div className="mt-4 flex flex-wrap gap-2 text-[0.68rem] text-muted-foreground">
+      <span className="inline-flex items-center gap-1 rounded-full bg-secondary/70 px-2.5 py-1">
+        <Cpu className="h-3 w-3" aria-hidden="true" />
+        {generation.returnedModel ?? generation.requestedModel}
+      </span>
+      {generation.totalTokens !== null && (
+        <span className="inline-flex items-center gap-1 rounded-full bg-secondary/70 px-2.5 py-1">
+          <Hash className="h-3 w-3" aria-hidden="true" />
+          {formatNumber(generation.totalTokens)} token
+        </span>
+      )}
+      {generation.latencyMs !== null && (
+        <span className="inline-flex items-center gap-1 rounded-full bg-secondary/70 px-2.5 py-1">
+          <Clock3 className="h-3 w-3" aria-hidden="true" />
+          {(generation.latencyMs / 1000).toFixed(1)}s
+        </span>
+      )}
+      <span className="rounded-full bg-secondary/70 px-2.5 py-1">
+        {statusLabels[generation.status]}
+      </span>
+    </div>
+  );
+}
+
+function MessageBubble({
+  message,
+  canRetry,
+  onRetry,
+  retryDisabled,
+}: {
+  message: ConversationMessage;
+  canRetry: boolean;
+  onRetry: (messageId: string) => void;
+  retryDisabled: boolean;
+}) {
+  const isUser = message.role === "user";
+  const isActive = message.status === "pending" || message.status === "streaming";
+
+  return (
+    <article
+      className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
+      data-message-id={message.id}
+    >
+      {!isUser && (
+        <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Bot className="h-4 w-4" aria-hidden="true" />
+        </div>
+      )}
+
+      <div
+        className={
+          isUser
+            ? "max-w-[88%] rounded-3xl rounded-bl-lg bg-primary px-5 py-4 text-primary-foreground sm:max-w-[78%]"
+            : "max-w-[92%] rounded-3xl rounded-br-lg border border-border/70 bg-card px-5 py-4 text-foreground shadow-sm sm:max-w-[82%]"
+        }
+        aria-live={!isUser && isActive ? "polite" : undefined}
+      >
+        {message.content ? (
+          <MessageContent content={message.content} />
+        ) : isActive ? (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            {message.status === "pending"
+              ? "بانتظار بدء الاستجابة…"
+              : "جاري إنشاء الاستجابة…"}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">لا يوجد محتوى محفوظ.</p>
+        )}
+
+        {!isUser && <MessageTelemetry message={message} />}
+
+        {!isUser && message.status === "failed" && (
+          <div className="mt-4 rounded-2xl border border-destructive/25 bg-destructive/5 p-3 text-sm text-destructive">
+            <div className="flex items-start gap-2">
+              <AlertTriangle
+                className="mt-1 h-4 w-4 shrink-0"
+                aria-hidden="true"
+              />
+              <div>
+                <p className="font-semibold">
+                  {message.generation?.failureCode ?? "GENERATION_FAILED"}
+                </p>
+                <p className="mt-1 leading-6 text-foreground/70">
+                  {message.generation?.failureMessage ??
+                    "تعذر إكمال الاستجابة."}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isUser && canRetry && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-4 rounded-full"
+            disabled={retryDisabled}
+            onClick={() => onRetry(message.id)}
+          >
+            <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+            إعادة المحاولة
+          </Button>
+        )}
+      </div>
+
+      {isUser && (
+        <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-foreground text-background">
+          <UserRound className="h-4 w-4" aria-hidden="true" />
+        </div>
+      )}
+    </article>
+  );
+}
+
+export function ConversationShell({
+  workspaceId,
+  conversation,
+  initialMessages,
+  canWrite,
+}: ConversationShellProps) {
+  const router = useRouter();
+  const [messages, setMessages] = useState(initialMessages);
+  const [input, setInput] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [notice, setNotice] = useState<Notice>(null);
+  const controllerRef = useRef<AbortController | null>(null);
+  const endRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [messages]);
+
+  const refreshMessages = async () => {
+    const response = await fetch(
+      `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}`,
+      { cache: "no-store" },
+    );
+    const payload = (await response.json()) as {
+      ok?: boolean;
+      data?: { messages?: unknown };
+      error?: { message?: string };
+    };
+
+    if (!response.ok || !payload.ok) {
+      throw new Error(
+        payload.error?.message || "Conversation history could not be refreshed.",
+      );
+    }
+
+    const parsed = conversationMessageSchema.array().safeParse(
+      payload.data?.messages,
+    );
+    if (!parsed.success) {
+      throw new Error("Conversation history returned an invalid shape.");
+    }
+
+    setMessages(parsed.data);
+    router.refresh();
+  };
+
+  const startTurn = async (command: {
+    content?: string;
+    retryMessageId?: string;
+  }) => {
+    if (!canWrite || isStreaming) return;
+
+    const controller = new AbortController();
+    controllerRef.current = controller;
+    setIsStreaming(true);
+    setNotice(null);
+    let readyReceived = false;
+
+    try {
+      const response = await fetch(
+        `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}/stream`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...command,
+            direction: "auto",
+          }),
+          signal: controller.signal,
+        },
+      );
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!response.ok || !contentType.includes("text/event-stream")) {
+        const payload = (await response.json().catch(() => null)) as {
+          error?: { message?: string };
+        } | null;
+        throw new Error(
+          payload?.error?.message ||
+            `Generation request failed with status ${response.status}.`,
+        );
+      }
+
+      await parseEventStream(response, (event) => {
+        if (event.type === "ready") {
+          readyReceived = true;
+          setMessages((current) =>
+            mergeMessages(current, [event.userMessage, event.assistantMessage]),
+          );
+          if (command.content) setInput("");
+          return;
+        }
+
+        if (event.type === "delta") {
+          setMessages((current) =>
+            current.map((message) =>
+              message.id === event.messageId
+                ? {
+                    ...message,
+                    status: "streaming",
+                    content: `${message.content}${event.delta}`,
+                  }
+                : message,
+            ),
+          );
+          return;
+        }
+
+        if (event.type === "complete") {
+          setMessages((current) => replaceMessage(current, event.message));
+          setNotice({
+            tone: "info",
+            message: "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
+          });
+          return;
+        }
+
+        if (event.type === "failed") {
+          setMessages((current) => replaceMessage(current, event.message));
+          setNotice({
+            tone: "error",
+            message: `تعذر إكمال الاستجابة / Generation failed: ${event.code}`,
+          });
+          return;
+        }
+
+        if (event.type === "cancelled") {
+          setMessages((current) => replaceMessage(current, event.message));
+          setNotice({
+            tone: "info",
+            message: "تم إيقاف الاستجابة وحفظ النص الجزئي / Generation stopped and partial text saved.",
+          });
+        }
+      });
+
+      await refreshMessages();
+    } catch (error) {
+      if (controller.signal.aborted) {
+        await new Promise((resolve) => setTimeout(resolve, 250));
+        try {
+          await refreshMessages();
+        } catch {
+          setNotice({
+            tone: "error",
+            message:
+              "أُوقفت الاستجابة، لكن تعذر تحديث الحالة المحفوظة / Generation stopped, but the saved state could not be refreshed.",
+          });
+        }
+      } else {
+        setNotice({
+          tone: "error",
+          message:
+            error instanceof Error
+              ? error.message
+              : "تعذر بدء الاستجابة / Generation could not start.",
+        });
+
+        if (readyReceived) {
+          try {
+            await refreshMessages();
+          } catch {
+            // Keep the streamed state visible when refresh also fails.
+          }
+        }
+      }
+    } finally {
+      controllerRef.current = null;
+      setIsStreaming(false);
+    }
+  };
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const content = input.trim();
+    if (!content) return;
+    void startTurn({ content });
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      const content = input.trim();
+      if (content) void startTurn({ content });
+    }
+  };
+
+  const prompts = [
+    "لخّص الفكرة التالية بخطوات واضحة",
+    "Compare two approaches in Arabic and English",
+    "حوّل هذه الملاحظات إلى قرار عملي",
+  ];
+
+  return (
+    <section className="grid min-h-[70vh] overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm lg:grid-rows-[1fr_auto]">
+      <div className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]">
+        {messages.length === 0 ? (
+          <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Sparkles className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
+              ابدأ محادثة محفوظة
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
+              اكتب بالعربية أو English. ستُحفظ الرسائل وحالة التوليد داخل مساحة
+              العمل، ولن تُعرض استجابة وهمية عند غياب المزود.
+            </p>
+            {canWrite && (
+              <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+                {prompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    dir="auto"
+                    className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    onClick={() => setInput(prompt)}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {messages.map((message) => (
+              <MessageBubble
+                key={message.id}
+                message={message}
+                canRetry={
+                  canWrite &&
+                  message.role === "assistant" &&
+                  (message.status === "failed" || message.status === "cancelled")
+                }
+                retryDisabled={isStreaming}
+                onRetry={(messageId) =>
+                  void startTurn({ retryMessageId: messageId })
+                }
+              />
+            ))}
+            <div ref={endRef} />
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-border/70 bg-background/85 p-4 backdrop-blur sm:p-5">
+        {notice && (
+          <div
+            className={`mb-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${
+              notice.tone === "error"
+                ? "border-destructive/30 bg-destructive/10 text-destructive"
+                : "border-border bg-secondary/55 text-muted-foreground"
+            }`}
+            role={notice.tone === "error" ? "alert" : "status"}
+          >
+            {notice.message}
+          </div>
+        )}
+
+        {canWrite && conversation.status === "active" ? (
+          <form onSubmit={submit} className="space-y-3">
+            <label htmlFor="conversation-message" className="sr-only">
+              اكتب رسالة
+            </label>
+            <textarea
+              id="conversation-message"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              onKeyDown={handleKeyDown}
+              maxLength={20000}
+              rows={3}
+              dir="auto"
+              disabled={isStreaming}
+              placeholder="اكتب بالعربية أو English… (Enter للإرسال، Shift+Enter لسطر جديد)"
+              className="w-full resize-y rounded-3xl border border-input bg-card px-5 py-4 text-sm leading-7 outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-70"
+            />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs leading-6 text-muted-foreground">
+                تُرسل آخر الرسائل المحفوظة فقط، وتبقى الاستمرارية داخل PostgreSQL.
+              </p>
+              {isStreaming ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="rounded-full"
+                  onClick={() =>
+                    controllerRef.current?.abort(
+                      new DOMException("Cancelled by user", "AbortError"),
+                    )
+                  }
+                >
+                  <Square className="h-4 w-4" aria-hidden="true" />
+                  إيقاف وحفظ الجزئي
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="rounded-full"
+                  disabled={!input.trim()}
+                >
+                  <Send className="h-4 w-4" aria-hidden="true" />
+                  إرسال
+                </Button>
+              )}
+            </div>
+          </form>
+        ) : (
+          <div className="rounded-2xl bg-secondary/60 px-4 py-3 text-sm leading-7 text-muted-foreground">
+            {conversation.status === "archived"
+              ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
+              : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وحالة التوليد من دون إرسال أو إعادة محاولة."}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
