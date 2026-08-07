@@ -5,6 +5,7 @@ import {
   Archive,
   ArchiveRestore,
   ArrowRight,
+  ArrowUpLeft,
   FileSearch,
   MessageSquareText,
   PenLine,
@@ -26,13 +27,11 @@ import {
 
 export const metadata: Metadata = {
   title: "مساحة العمل",
-  description: "Persistent workspace shell.",
+  description: "Persistent workspace and bilingual conversation shell.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
-type SearchParams = Promise<
-  Record<string, string | string[] | undefined>
->;
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 const roleLabels = {
   owner: "مالك المساحة",
@@ -123,10 +122,13 @@ export default async function WorkspacePage({
                 )}
               </div>
 
-              <h1 className="mt-5 text-balance font-arabic-heading text-3xl font-semibold sm:text-5xl">
+              <h1
+                dir="auto"
+                className="mt-5 text-balance font-arabic-heading text-3xl font-semibold sm:text-5xl"
+              >
                 {workspace.name}
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
+              <p dir="auto" className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
                 {workspace.description ||
                   "لم يُضف وصف لهذه المساحة بعد. يمكن للمالك أو المحرر تحديثه من الإعدادات."}
               </p>
@@ -145,11 +147,7 @@ export default async function WorkspacePage({
 
               {isOwner && !isArchived && (
                 <form action={archiveWorkspaceAction}>
-                  <input
-                    type="hidden"
-                    name="workspaceId"
-                    value={workspace.id}
-                  />
+                  <input type="hidden" name="workspaceId" value={workspace.id} />
                   <Button
                     type="submit"
                     variant="outline"
@@ -163,11 +161,7 @@ export default async function WorkspacePage({
 
               {isOwner && isArchived && (
                 <form action={restoreWorkspaceAction}>
-                  <input
-                    type="hidden"
-                    name="workspaceId"
-                    value={workspace.id}
-                  />
+                  <input type="hidden" name="workspaceId" value={workspace.id} />
                   <Button
                     type="submit"
                     className="rounded-full bg-background text-foreground hover:bg-background/90"
@@ -183,14 +177,35 @@ export default async function WorkspacePage({
       </header>
 
       <section className="grid gap-4 md:grid-cols-3">
+        <Link
+          href={`/workspaces/${workspace.id}/conversations`}
+          className="group rounded-3xl border border-primary/30 bg-card p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-foreground/5"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+              <MessageSquareText className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
+              P2 · يعمل
+            </span>
+          </div>
+          <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
+            المحادثات
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            رسائل محفوظة، بث نصي، إيقاف مع حفظ الجزئي، إعادة محاولة، وحالة مزود
+            قابلة للفحص.
+          </p>
+          <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
+            فتح المحادثات
+            <ArrowUpLeft
+              className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+              aria-hidden="true"
+            />
+          </span>
+        </Link>
+
         {[
-          {
-            title: "المحادثة",
-            phase: "P2",
-            description:
-              "البث، الرسائل المحفوظة، الإلغاء، إعادة المحاولة، وفشل المزود.",
-            icon: MessageSquareText,
-          },
           {
             title: "المصادر",
             phase: "P3",
@@ -225,7 +240,7 @@ export default async function WorkspacePage({
               {description}
             </p>
             <p className="mt-5 text-xs font-semibold text-muted-foreground">
-              غير مفعّل في P1
+              غير مفعّل بعد
             </p>
           </article>
         ))}
@@ -238,19 +253,24 @@ export default async function WorkspacePage({
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-primary">يعمل في P1</p>
+              <p className="text-sm font-semibold text-primary">يعمل في P1 + P2</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                سياق محفوظ وحدود وصول حقيقية
+                سياق محفوظ ومحادثة قابلة للاستمرار
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                المساحة والعضوية والدور وحالة الأرشفة محفوظة في PostgreSQL، وتتحقق
-                قاعدة البيانات من الوصول لكل عملية. لا تُعرض محتويات محادثة أو
-                مستندات وهمية مكان المراحل التالية.
+                المساحة والعضوية والمحادثات والرسائل ومحاولات التوليد محفوظة في
+                PostgreSQL. عند غياب إعداد المزود تظهر حالة فشل صريحة ولا تُنتج
+                الواجهة إجابة بديلة.
               </p>
             </div>
           </div>
           <div className="rounded-2xl border border-border bg-secondary/50 px-5 py-4 text-sm text-muted-foreground">
-            اللغة الافتراضية: {workspace.defaultLanguage === "ar" ? "العربية" : workspace.defaultLanguage === "en" ? "English" : "تلقائي"}
+            اللغة الافتراضية:{" "}
+            {workspace.defaultLanguage === "ar"
+              ? "العربية"
+              : workspace.defaultLanguage === "en"
+                ? "English"
+                : "تلقائي"}
           </div>
         </div>
       </section>
