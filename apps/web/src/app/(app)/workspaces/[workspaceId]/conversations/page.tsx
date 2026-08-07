@@ -88,7 +88,10 @@ export default async function ConversationsPage({
     );
   }
 
-  const canWrite = workspace.role === "owner" || workspace.role === "editor";
+  const isWorkspaceArchived = workspace.archivedAt !== null;
+  const canWrite =
+    !isWorkspaceArchived &&
+    (workspace.role === "owner" || workspace.role === "editor");
   const visibleStatus = persistenceFailed
     ? "persistence-error"
     : firstValue(query.status);
@@ -109,7 +112,10 @@ export default async function ConversationsPage({
             <p className="text-sm font-semibold text-primary">
               P2 · Persistent bilingual conversation
             </p>
-            <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
+            <h1
+              dir="auto"
+              className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl"
+            >
               محادثات {workspace.name}
             </h1>
             <p className="mt-4 text-base leading-8 text-muted-foreground">
@@ -128,7 +134,9 @@ export default async function ConversationsPage({
         </div>
       </header>
 
-      <ConversationStatusNotice status={visibleStatus} />
+      <ConversationStatusNotice
+        status={isWorkspaceArchived ? "workspace-archived" : visibleStatus}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[0.72fr_1.28fr]">
         <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
@@ -170,9 +178,9 @@ export default async function ConversationsPage({
             </form>
           ) : (
             <div className="mt-7 rounded-2xl border border-border bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
-              عضويتك للقراءة فقط. يمكنك فتح المحادثات الحالية ومراجعة الرسائل
-              وحالة المزود، لكن إنشاء محادثة أو إرسال رسالة يحتاج دور المحرر أو
-              المالك.
+              {isWorkspaceArchived
+                ? "مساحة العمل مؤرشفة. يمكن مراجعة المحادثات، لكن إنشاء محادثة أو إرسال رسالة يتطلب استعادة المساحة أولاً."
+                : "عضويتك للقراءة فقط. يمكنك فتح المحادثات الحالية ومراجعة الرسائل وحالة المزود، لكن إنشاء محادثة أو إرسال رسالة يحتاج دور المحرر أو المالك."}
             </div>
           )}
 
@@ -221,7 +229,7 @@ export default async function ConversationsPage({
               <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
                 {canWrite
                   ? "أنشئ أول محادثة. لن نضع رسائل مثال أو استجابات غير صادرة عن المسار الحقيقي."
-                  : "لم تُشارك معك محادثة نشطة في هذه المساحة بعد."}
+                  : "لم تُشارك معك محادثة نشطة قابلة للكتابة في هذه المساحة."}
               </p>
             </div>
           )}
