@@ -1,7 +1,7 @@
 {
   "name": "iraqi-ai-chat-system",
   "version": "1.0.0",
-  "description": "Iraqi AI Chat System - Advanced AI chat with Arabic Iraqi dialect support, cultural compliance, and multi-modal capabilities",
+  "description": "Monorepo under controlled rebuild for an Arabic-first bilingual AI workspace",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -36,8 +36,9 @@
     "test:coverage": "bun test --coverage",
     "test:all": "concurrently -n \"UNIT,E2E,CULTURAL,ARABIC\" \"bun run test:unit\" \"bun run test:e2e\" \"bun run test:cultural\" \"bun run test:arabic\"",
     "test:ci": "bun run test:unit && bun run test:integration && bun run test:cultural && bun run test:arabic",
-    "lint": "bun run --filter \"*\" lint",
-    "lint:fix": "bun run --filter \"*\" lint --fix",
+    "lint": "bun run lint:web",
+    "lint:web": "bun run --filter @iraqi-ai/web lint",
+    "lint:fix": "bun run --filter @iraqi-ai/web lint:fix",
     "typecheck": "bun run --filter \"*\" typecheck",
     "typecheck:watch": "bun run --filter \"*\" typecheck --watch",
     "clean": "bun run --filter \"*\" clean && rm -rf node_modules/.cache dist build .next",
@@ -59,12 +60,11 @@
     "typescript": "^5.9.3"
   },
   "keywords": [
-    "iraqi",
-    "ai",
-    "chat",
     "arabic",
-    "cultural-ai",
-    "islamic",
+    "ai",
+    "workspace",
+    "documents",
+    "bilingual",
     "rtl",
     "bun",
     "monorepo"
@@ -73,7 +73,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iraqi-ai/aqlix-ai.git"
+    "url": "https://github.com/YrFnS/aqlix-ai.git"
   },
   "engines": {
     "node": ">=20.0.0",
