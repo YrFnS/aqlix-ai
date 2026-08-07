@@ -2,25 +2,21 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Override for Next.js
     "jsx": "preserve",
     "noEmit": true,
     "allowJs": true,
     "checkJs": false,
     "types": [],
-
-    // Next.js specific
     "plugins": [
       {
         "name": "next"
       }
     ],
-
-    // Path mappings (override base with Next.js patterns)
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@iraqi-ai/types": ["../../packages/types/src"],
+      "@iraqi-ai/contracts": ["../../packages/contracts/src"],
       "@iraqi-ai/ui": ["../../packages/ui/src"],
       "@iraqi-ai/features": ["../../packages/features/src"],
       "@iraqi-ai/api-client": ["../../packages/api-client/src"],
@@ -29,6 +25,7 @@
   },
   "references": [
     { "path": "../../packages/types" },
+    { "path": "../../packages/contracts" },
     { "path": "../../packages/ui" },
     { "path": "../../packages/features" },
     { "path": "../../packages/api-client" },
