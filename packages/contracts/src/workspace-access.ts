@@ -6,4 +6,4 @@ export const workspaceAccessSchema = workspaceSchema.extend({
 });
 
 export type WorkspaceAccess = z.infer<typeof workspaceAccessSchema>;
-export const workspaceListSchema = z.array(workspaceAccessSchema);
+export const workspaceAccessListSchema = z.array(workspaceAccessSchema);
