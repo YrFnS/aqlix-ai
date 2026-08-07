@@ -41,6 +41,7 @@ The first product loop is intentionally narrow:
 - [Roadmap](./02-REBUILD-ROADMAP.md)
 - [Implementation tracker](./03-IMPLEMENTATION-TRACKER.md)
 - [Decision log](./04-DECISION-LOG.md)
+- [Legacy system disposition](./05-LEGACY-DISPOSITION.md)
 
 ## Definition of a trustworthy release
 
