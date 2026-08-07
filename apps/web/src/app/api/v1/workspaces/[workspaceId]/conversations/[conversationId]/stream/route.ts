@@ -407,15 +407,15 @@ export async function POST(request: Request, context: RouteContext) {
             failureMessage: input.failureMessage,
           };
 
-          try {
-            await finishConversationGeneration(auth.context.supabase, {
-              workspaceId: parsed.data.workspaceId,
-              conversationId: parsed.data.conversationId,
-              messageId: turn.assistantMessageId,
-              generationId: turn.generationId,
-              ...finalInput,
-            });
+          await finishConversationGeneration(auth.context.supabase, {
+            workspaceId: parsed.data.workspaceId,
+            conversationId: parsed.data.conversationId,
+            messageId: turn.assistantMessageId,
+            generationId: turn.generationId,
+            ...finalInput,
+          });
 
+          try {
             const persisted = await getConversationMessage(
               auth.context.supabase,
               parsed.data.workspaceId,
@@ -424,12 +424,14 @@ export async function POST(request: Request, context: RouteContext) {
             );
             if (persisted) return persisted;
           } catch (error) {
-            console.error("Conversation generation finalization failed", {
+            console.error("Final conversation message reload failed", {
               requestId: auth.context.requestId,
               error,
             });
           }
 
+          // Finalization succeeded, so this representation is safe to emit even
+          // when the immediate read-back fails.
           return fallbackMessage(durableAssistantMessage, finalInput);
         };
 
@@ -493,25 +495,40 @@ export async function POST(request: Request, context: RouteContext) {
           send({ type: "complete", message: completed });
         } catch (error) {
           if (generationAbort.signal.aborted || isAbortError(error)) {
-            const cancelled = await persistFinal({
-              status: "cancelled",
-              failureCode: "STREAM_CANCELLED",
-              failureMessage: "Generation was cancelled by the user.",
-            });
-            send({ type: "cancelled", message: cancelled });
+            try {
+              const cancelled = await persistFinal({
+                status: "cancelled",
+                failureCode: "STREAM_CANCELLED",
+                failureMessage: "Generation was cancelled by the user.",
+              });
+              send({ type: "cancelled", message: cancelled });
+            } catch (persistenceError) {
+              console.error("Cancelled generation could not be finalized", {
+                requestId: auth.context.requestId,
+                persistenceError,
+              });
+            }
           } else {
             const failure = failureDetails(error);
-            const failed = await persistFinal({
-              status: "failed",
-              failureCode: failure.code,
-              failureMessage: failure.message,
-            });
-            send({
-              type: "failed",
-              message: failed,
-              code: failure.code,
-              retryable: failure.retryable,
-            });
+            try {
+              const failed = await persistFinal({
+                status: "failed",
+                failureCode: failure.code,
+                failureMessage: failure.message,
+              });
+              send({
+                type: "failed",
+                message: failed,
+                code: failure.code,
+                retryable: failure.retryable,
+              });
+            } catch (persistenceError) {
+              console.error("Failed generation could not be finalized", {
+                requestId: auth.context.requestId,
+                originalError: error,
+                persistenceError,
+              });
+            }
           }
         } finally {
           clearInterval(heartbeat);
