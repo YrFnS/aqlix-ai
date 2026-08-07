@@ -20,7 +20,6 @@ const nextConfig: NextConfig = {
 
   transpilePackages: [
     "@iraqi-ai/types",
-    "@iraqi-ai/contracts",
     "@iraqi-ai/ui",
     "@iraqi-ai/features",
     "@iraqi-ai/api-client",
