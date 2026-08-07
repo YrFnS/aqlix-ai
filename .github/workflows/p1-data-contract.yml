@@ -56,6 +56,9 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080004_p1_draft_workspace_integrity.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080005_p1_workspace_owner_select.sql
 
+      - name: Verify owner insert returning behavior
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_insert_returning.test.sql
+
       - name: Verify workspace ownership and tenant isolation
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
 
