@@ -34,12 +34,12 @@ describe("P2 provider and conversation boundary", () => {
     const provider = readWeb("src/lib/ai/openai-provider.ts");
 
     expect(provider).toContain('`${this.baseUrl}/responses`');
-    expect(provider).toContain('stream: true');
-    expect(provider).toContain('store: false');
-    expect(provider).toContain('response.output_text.delta');
-    expect(provider).toContain('response.completed');
-    expect(provider).not.toContain('NEXT_PUBLIC_OPENAI');
-    expect(provider).not.toContain('dangerouslySetInnerHTML');
+    expect(provider).toContain("stream: true");
+    expect(provider).toContain("store: false");
+    expect(provider).toContain("response.output_text.delta");
+    expect(provider).toContain("response.completed");
+    expect(provider).not.toContain("NEXT_PUBLIC_OPENAI");
+    expect(provider).not.toContain("dangerouslySetInnerHTML");
   });
 
   test("keeps provider secrets in a server-only capability module", () => {
@@ -47,11 +47,12 @@ describe("P2 provider and conversation boundary", () => {
     const publicEnvironment = readWeb("src/config/env.ts");
 
     expect(config).toContain('import "server-only"');
-    expect(config).toContain('process.env.OPENAI_API_KEY');
-    expect(config).toContain('P2_ALLOW_FIXTURE_PROVIDER');
-    expect(config).toContain('process.env.NODE_ENV === "production"');
-    expect(publicEnvironment).not.toContain('OPENAI_API_KEY');
-    expect(publicEnvironment).not.toContain('AI_PROVIDER');
+    expect(config).toContain("process.env.OPENAI_API_KEY");
+    expect(config).toContain("P2_ALLOW_FIXTURE_PROVIDER");
+    expect(config).toContain('config.APP_ENV === "production"');
+    expect(config).toContain('config.APP_ENV === "staging"');
+    expect(publicEnvironment).not.toContain("OPENAI_API_KEY");
+    expect(publicEnvironment).not.toContain("AI_PROVIDER");
   });
 
   test("normalizes provider events before sending them to the browser", () => {
