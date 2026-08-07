@@ -99,7 +99,7 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
 
   await registerWithForm(page, ownerEmail);
 
-  await page.getByLabel("اسم المساحة").fill(initialName);
+  await page.getByLabel("اسم المساحة", { exact: true }).fill(initialName);
   await page
     .getByLabel("وصف مختصر")
     .fill("سياق عربي English مع الرقم 2026 للتحقق من الاتجاه المختلط.");
@@ -154,7 +154,7 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
   await outsiderContext.close();
 
   await page.getByRole("link", { name: "الإعدادات" }).click();
-  await page.getByLabel("اسم المساحة").fill(updatedName);
+  await page.getByLabel("اسم المساحة", { exact: true }).fill(updatedName);
   await page
     .getByLabel("الوصف")
     .fill("Updated English وعربي مع اتجاه تلقائي محفوظ في PostgreSQL.");
