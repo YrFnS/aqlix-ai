@@ -65,6 +65,7 @@ async function requireConversationWriter(
   );
 
   if (!access) listRedirect(workspaceId, "not-found");
+  if (access.archivedAt) listRedirect(workspaceId, "workspace-archived");
   if (access.role === "viewer") listRedirect(workspaceId, "writer-required");
 
   return { ...context, access };
