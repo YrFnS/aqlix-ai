@@ -7,31 +7,254 @@ export type Json =
   | Json[];
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.5";
   };
   public: {
     Tables: {
-      test_users: {
+      attachments: {
         Row: {
-          created_at: string | null;
-          email: string;
+          byte_size: number;
+          created_at: string;
+          deleted_at: string | null;
+          failure_reason: string | null;
+          file_name: string;
           id: string;
-          name: string;
+          media_type: string;
+          status: string;
+          storage_path: string;
+          updated_at: string;
+          uploaded_by: string;
+          workspace_id: string;
         };
         Insert: {
-          created_at?: string | null;
-          email: string;
+          byte_size: number;
+          created_at?: string;
+          deleted_at?: string | null;
+          failure_reason?: string | null;
+          file_name: string;
           id?: string;
-          name: string;
+          media_type: string;
+          status?: string;
+          storage_path: string;
+          updated_at?: string;
+          uploaded_by: string;
+          workspace_id: string;
         };
         Update: {
-          created_at?: string | null;
-          email?: string;
+          byte_size?: number;
+          created_at?: string;
+          deleted_at?: string | null;
+          failure_reason?: string | null;
+          file_name?: string;
+          id?: string;
+          media_type?: string;
+          status?: string;
+          storage_path?: string;
+          updated_at?: string;
+          uploaded_by?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      conversations: {
+        Row: {
+          created_at: string;
+          created_by: string;
+          id: string;
+          status: string;
+          title: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          created_by: string;
+          id?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          created_by?: string;
+          id?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      drafts: {
+        Row: {
+          content: string;
+          conversation_id: string | null;
+          created_at: string;
+          created_by: string;
+          direction: string;
+          id: string;
+          status: string;
+          title: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        Insert: {
+          content?: string;
+          conversation_id?: string | null;
+          created_at?: string;
+          created_by: string;
+          direction?: string;
+          id?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          content?: string;
+          conversation_id?: string | null;
+          created_at?: string;
+          created_by?: string;
+          direction?: string;
+          id?: string;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      messages: {
+        Row: {
+          content: string;
+          conversation_id: string;
+          created_at: string;
+          created_by: string | null;
+          direction: string;
+          id: string;
+          role: string;
+          sequence: number;
+          status: string;
+          updated_at: string;
+          workspace_id: string;
+        };
+        Insert: {
+          content?: string;
+          conversation_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          direction?: string;
+          id?: string;
+          role: string;
+          sequence: number;
+          status?: string;
+          updated_at?: string;
+          workspace_id: string;
+        };
+        Update: {
+          content?: string;
+          conversation_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          direction?: string;
+          id?: string;
+          role?: string;
+          sequence?: number;
+          status?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      sources: {
+        Row: {
+          attachment_id: string;
+          content: string;
+          created_at: string;
+          end_offset: number | null;
+          id: string;
+          ordinal: number;
+          page_number: number | null;
+          start_offset: number | null;
+          workspace_id: string;
+        };
+        Insert: {
+          attachment_id: string;
+          content: string;
+          created_at?: string;
+          end_offset?: number | null;
+          id?: string;
+          ordinal: number;
+          page_number?: number | null;
+          start_offset?: number | null;
+          workspace_id: string;
+        };
+        Update: {
+          attachment_id?: string;
+          content?: string;
+          created_at?: string;
+          end_offset?: number | null;
+          id?: string;
+          ordinal?: number;
+          page_number?: number | null;
+          start_offset?: number | null;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      workspace_members: {
+        Row: {
+          created_at: string;
+          role: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          role: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          role?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [];
+      };
+      workspaces: {
+        Row: {
+          archived_at: string | null;
+          created_at: string;
+          default_language: string;
+          description: string | null;
+          id: string;
+          name: string;
+          owner_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          archived_at?: string | null;
+          created_at?: string;
+          default_language?: string;
+          description?: string | null;
+          id?: string;
+          name: string;
+          owner_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          created_at?: string;
+          default_language?: string;
+          description?: string | null;
           id?: string;
           name?: string;
+          owner_id?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -40,7 +263,19 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      has_workspace_role: {
+        Args: {
+          allowed_roles: string[];
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
+      is_workspace_member: {
+        Args: {
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
