@@ -35,7 +35,10 @@ export function WorkspaceCard({
               </span>
             )}
           </div>
-          <h2 className="mt-4 truncate font-arabic-heading text-xl font-semibold">
+          <h2
+            dir="auto"
+            className="mt-4 truncate font-arabic-heading text-xl font-semibold"
+          >
             {workspace.name}
           </h2>
         </div>
@@ -44,7 +47,10 @@ export function WorkspaceCard({
         </div>
       </div>
 
-      <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-7 text-muted-foreground">
+      <p
+        dir="auto"
+        className="mt-3 line-clamp-3 min-h-[4.5rem] text-sm leading-7 text-muted-foreground"
+      >
         {workspace.description ||
           "لا يوجد وصف بعد. أضف وصفاً يوضّح الغرض من هذه المساحة."}
       </p>
