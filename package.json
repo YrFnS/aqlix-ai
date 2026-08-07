@@ -16,7 +16,7 @@
     "dev:full": "concurrently -n \"WEB,API,TYPES\" -c \"blue,green,yellow\" \"bun run dev:web\" \"bun run dev:api\" \"bun run --filter @iraqi-ai/types dev:watch\"",
     "build": "bun run build:clean && bun run build:packages && bun run build:apps && bun run build:analyze",
     "build:clean": "rm -rf apps/web/.next apps/web/out apps/web/dist apps/api/dist packages/*/dist .bun/cache",
-    "build:packages": "bun run --filter \"./packages/*\" build",
+    "build:packages": "bun run --filter @iraqi-ai/types build && bun run --filter @iraqi-ai/arabic-nlp build && bun run --filter @iraqi-ai/api-client build && bun run --filter @iraqi-ai/supabase-client build && bun run --filter @iraqi-ai/cultural-validators build && bun run --filter @iraqi-ai/ui build && bun run --filter @iraqi-ai/features build && bun run --filter @iraqi-ai/arabic-test-utils build && bun run --filter @iraqi-ai/testing-utils build",
     "build:apps": "bun run --filter \"./apps/*\" build",
     "build:production": "NODE_ENV=production bun run build",
     "build:analyze": "bun run --filter \"./apps/*\" analyze",
