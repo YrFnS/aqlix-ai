@@ -51,6 +51,7 @@ P0 completion means the active web foundation is honestly scoped, buildable, and
 | Product-language and public-claims workflow | DONE | Arabic utility tests and unsupported-claim guard pass |
 | Modern Actions runtime | DONE | `actions/checkout@v6` and `oven-sh/setup-bun@v2` with read-only permissions |
 | Pin verified Bun runtime | DONE | Root `packageManager` pins Bun `1.3.14` |
+| Resilient frozen dependency install | DONE | Every required workflow uses a bounded retry and clears Bun's cache only after a failed or timed-out first attempt |
 | Licensing and provenance requirement | DONE | Third-party material remains quarantined pending the full inventory |
 | Full licensing and code-provenance inventory | PLANNED | Required before public or commercial release and before broad deletion |
 
@@ -64,7 +65,7 @@ Pull request `#2` must remain green for all of the following on its final head:
 - `Accessibility Foundation`
 - `Product Language & Claims Safeguards`
 
-The final documentation-only closeout commit is subject to the same gate before merge.
+The final reliability and documentation closeout commit is subject to the same gate before merge.
 
 ## P1 — Application shell and data contract
 
