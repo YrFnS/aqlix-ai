@@ -53,13 +53,14 @@ create table public.conversations (
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now()),
   constraint conversations_title_length check (char_length(btrim(title)) between 1 and 200),
-  constraint conversations_status check (status in ('active', 'archived'))
+  constraint conversations_status check (status in ('active', 'archived')),
+  constraint conversations_workspace_id_id_unique unique (workspace_id, id)
 );
 
 create table public.messages (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
-  conversation_id uuid not null references public.conversations(id) on delete cascade,
+  conversation_id uuid not null,
   created_by uuid references auth.users(id) on delete set null,
   role text not null,
   status text not null default 'pending',
@@ -74,7 +75,7 @@ create table public.messages (
   ),
   constraint messages_direction check (direction in ('auto', 'rtl', 'ltr')),
   constraint messages_sequence_nonnegative check (sequence >= 0),
-  unique (conversation_id, sequence),
+  constraint messages_conversation_sequence_unique unique (conversation_id, sequence),
   constraint messages_workspace_conversation_fk
     foreign key (workspace_id, conversation_id)
     references public.conversations(workspace_id, id)
@@ -100,13 +101,14 @@ create table public.attachments (
   constraint attachments_storage_path_length check (char_length(btrim(storage_path)) >= 1),
   constraint attachments_status check (
     status in ('pending', 'processing', 'ready', 'failed', 'deleted')
-  )
+  ),
+  constraint attachments_workspace_id_id_unique unique (workspace_id, id)
 );
 
 create table public.sources (
   id uuid primary key default gen_random_uuid(),
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
-  attachment_id uuid not null references public.attachments(id) on delete cascade,
+  attachment_id uuid not null,
   ordinal integer not null,
   content text not null,
   page_number integer,
@@ -121,7 +123,7 @@ create table public.sources (
   constraint sources_offset_order check (
     start_offset is null or end_offset is null or end_offset >= start_offset
   ),
-  unique (attachment_id, ordinal),
+  constraint sources_attachment_ordinal_unique unique (attachment_id, ordinal),
   constraint sources_workspace_attachment_fk
     foreign key (workspace_id, attachment_id)
     references public.attachments(workspace_id, id)
@@ -143,12 +145,6 @@ create table public.drafts (
   constraint drafts_direction check (direction in ('auto', 'rtl', 'ltr')),
   constraint drafts_status check (status in ('active', 'archived'))
 );
-
-alter table public.conversations
-  add constraint conversations_workspace_id_id_unique unique (workspace_id, id);
-
-alter table public.attachments
-  add constraint attachments_workspace_id_id_unique unique (workspace_id, id);
 
 create index workspaces_owner_updated_idx
   on public.workspaces(owner_id, updated_at desc);
