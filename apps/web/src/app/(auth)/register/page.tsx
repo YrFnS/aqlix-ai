@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
-import { RegisterForm } from "@/components/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Create Account | إنشاء حساب",
-  description: "Create your Iraqi AI Chat System account",
+  title: "إنشاء حساب",
+  description: "Registration is introduced with the P1 authentication boundary.",
 };
 
 export default function RegisterPage() {
-  return (
-    <div className="flex items-center justify-center py-8">
-      <RegisterForm
-        redirectTo="/auth/verify-email"
-        culturalMode="both"
-        showLoginLink={true}
-      />
-    </div>
-  );
+  redirect("/login");
 }
