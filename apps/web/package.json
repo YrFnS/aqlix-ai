@@ -1,7 +1,7 @@
 {
   "name": "@iraqi-ai/web",
   "version": "1.0.0",
-  "description": "Iraqi AI Chat System - Next.js 15 + React 19 Web Application",
+  "description": "Web application under controlled rebuild for an Arabic-first bilingual AI workspace",
   "private": true,
   "type": "module",
   "scripts": {
@@ -12,16 +12,21 @@
     "analyze": "ANALYZE=true next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "typecheck": "tsc --noEmit",
-    "typecheck:watch": "tsc --noEmit --watch",
-    "test": "bun test",
-    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit -p tsconfig.rebuild.json",
+    "typecheck:watch": "tsc --noEmit -p tsconfig.rebuild.json --watch",
+    "typecheck:legacy": "tsc --noEmit -p tsconfig.json",
+    "test": "bun test tests/rebuild",
+    "test:watch": "bun test tests/rebuild --watch",
+    "test:rebuild": "bun test tests/rebuild",
+    "test:rebuild:brand": "bun test tests/rebuild/brand-and-scope.test.ts",
+    "test:rebuild:rtl": "bun test tests/rebuild/rtl-foundation.test.ts",
+    "test:rebuild:accessibility": "bun test tests/rebuild/accessibility-foundation.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:unit": "bun test tests/unit",
-    "test:cultural": "bun test tests/unit/cultural-compliance.test.tsx",
-    "test:arabic": "playwright test tests/e2e/arabic-rtl.spec.ts tests/e2e/rtl-foundation.spec.ts tests/e2e/bidirectional-ui.spec.ts",
-    "test:accessibility": "bun test tests/unit/language-switcher-accessibility.test.tsx",
+    "test:unit:legacy": "bun test tests/unit",
+    "test:cultural:legacy": "bun test tests/unit/cultural-compliance.test.tsx",
+    "test:arabic:legacy": "playwright test tests/e2e/arabic-rtl.spec.ts tests/e2e/rtl-foundation.spec.ts tests/e2e/bidirectional-ui.spec.ts",
+    "test:accessibility:legacy": "bun test tests/unit/language-switcher-accessibility.test.tsx",
     "clean": "rm -rf .next out dist .turbo"
   },
   "dependencies": {
@@ -79,20 +84,20 @@
     "typescript": "^5.3.3"
   },
   "keywords": [
-    "iraqi",
-    "ai",
-    "chat",
-    "nextjs",
-    "react",
     "arabic",
+    "ai",
+    "workspace",
+    "documents",
+    "bilingual",
     "rtl",
-    "cultural-ai"
+    "nextjs",
+    "react"
   ],
   "author": "Iraqi AI Development Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iraqi-ai/aqlix-ai.git",
+    "url": "https://github.com/YrFnS/aqlix-ai.git",
     "directory": "apps/web"
   },
   "engines": {
