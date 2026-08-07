@@ -29,6 +29,7 @@ const aiEnvironmentSchema = z.object({
   AI_REQUEST_TIMEOUT_MS: integerFromEnvironment(60000, 5000, 180000),
   AI_MAX_OUTPUT_TOKENS: integerFromEnvironment(2048, 64, 8192),
   P2_ALLOW_FIXTURE_PROVIDER: z.boolean().default(false),
+  APP_ENV: z.enum(["development", "staging", "production", "test"]),
 });
 
 export type AiProviderName = z.infer<
@@ -50,6 +51,27 @@ function environmentBoolean(value: string | undefined): boolean {
   return value === "true";
 }
 
+function deploymentEnvironment():
+  | "development"
+  | "staging"
+  | "production"
+  | "test" {
+  const value =
+    process.env.APP_ENV?.trim() ||
+    process.env.NEXT_PUBLIC_APP_ENV?.trim() ||
+    "development";
+
+  if (
+    value === "staging" ||
+    value === "production" ||
+    value === "test"
+  ) {
+    return value;
+  }
+
+  return "development";
+}
+
 export function getAiRuntimeConfig(): AiRuntimeConfig {
   const parsed = aiEnvironmentSchema.safeParse({
     AI_PROVIDER: process.env.AI_PROVIDER?.trim() || "openai",
@@ -62,6 +84,7 @@ export function getAiRuntimeConfig(): AiRuntimeConfig {
     P2_ALLOW_FIXTURE_PROVIDER: environmentBoolean(
       process.env.P2_ALLOW_FIXTURE_PROVIDER,
     ),
+    APP_ENV: deploymentEnvironment(),
   });
 
   if (!parsed.success) {
@@ -77,11 +100,12 @@ export function getAiRuntimeConfig(): AiRuntimeConfig {
   if (config.AI_PROVIDER === "fixture") {
     if (
       !config.P2_ALLOW_FIXTURE_PROVIDER ||
-      process.env.NODE_ENV === "production"
+      config.APP_ENV === "production" ||
+      config.APP_ENV === "staging"
     ) {
       throw new AiProviderError(
         "PROVIDER_UNCONFIGURED",
-        "The deterministic fixture provider is disabled outside approved tests.",
+        "The deterministic fixture provider is disabled outside approved local and test environments.",
         false,
       );
     }
