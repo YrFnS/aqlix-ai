@@ -9,6 +9,7 @@
   "exclude": ["node_modules", ".next", "dist", "tests"],
   "files": [
     "next-env.d.ts",
+    "next.config.ts",
     "src/app/layout.tsx",
     "src/app/(marketing)/layout.tsx",
     "src/app/(marketing)/page.tsx",
@@ -25,6 +26,7 @@
     "src/components/providers/DirectionSync.tsx",
     "src/components/ui/button.tsx",
     "src/config/brand.ts",
+    "src/config/env.ts",
     "src/hooks/use-mobile.ts",
     "src/lib/fonts.ts",
     "src/lib/utils.ts",
