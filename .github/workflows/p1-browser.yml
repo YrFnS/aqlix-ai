@@ -1,0 +1,103 @@
+name: P1 Authenticated Browser Journey
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+
+jobs:
+  workspace-journey:
+    name: Account & Workspace Browser Journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium
+        working-directory: apps/web
+        run: bunx playwright install chromium --with-deps
+
+      - name: Start local Supabase
+        run: bunx supabase start
+
+      - name: Export local public configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL and a public key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Build web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Run authenticated P1 browser journey
+        working-directory: apps/web
+        run: bunx playwright test --config=playwright.p1.config.ts
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-browser-evidence
+          path: |
+            apps/web/playwright-report/p1
+            apps/web/test-results
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  browser-success:
+    name: P1 Browser Success Gate
+    runs-on: ubuntu-latest
+    needs: [workspace-journey]
+    if: always()
+
+    steps:
+      - name: Check browser journey
+        run: |
+          if [[ "${{ needs.workspace-journey.result }}" != "success" ]]; then
+            echo "P1 authenticated browser journey failed"
+            exit 1
+          fi
+
+          echo "P1 account, session, workspace lifecycle, responsive, and isolation journey passed."
