@@ -21,6 +21,14 @@ function formString(formData: FormData, key: string): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
 
+function optionalFormString(
+  formData: FormData,
+  key: string,
+): string | undefined {
+  const value = formString(formData, key)?.trim();
+  return value ? value : undefined;
+}
+
 function listRedirect(workspaceId: string, status: string): never {
   redirect(
     `/workspaces/${encodeURIComponent(workspaceId)}/conversations?status=${encodeURIComponent(status)}`,
@@ -77,7 +85,7 @@ export async function createConversationAction(
   const workspaceId = formString(formData, "workspaceId") ?? "";
   const parsed = createConversationInputSchema.safeParse({
     workspaceId,
-    title: formString(formData, "title"),
+    title: optionalFormString(formData, "title"),
   });
 
   if (!parsed.success) listRedirect(workspaceId, "invalid-input");
