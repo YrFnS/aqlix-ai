@@ -6,7 +6,7 @@ import type {
   WorkspaceRole,
 } from "@iraqi-ai/contracts";
 import { workspaceRoleSchema } from "@iraqi-ai/contracts";
-import type { Tables } from "@iraqi-ai/types";
+import type { Tables, TablesUpdate } from "@iraqi-ai/types";
 import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
 
 type WorkspaceRow = Tables<"workspaces">;
@@ -150,7 +150,7 @@ export async function updateWorkspace(
   supabase: SupabaseServerClient,
   input: UpdateWorkspaceInput,
 ): Promise<Workspace | null> {
-  const updates: Tables<"workspaces">["Update"] = {};
+  const updates: TablesUpdate<"workspaces"> = {};
 
   if (input.name !== undefined) updates.name = input.name;
   if (input.description !== undefined) {
