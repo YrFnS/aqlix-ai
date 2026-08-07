@@ -3,9 +3,8 @@ import { z } from "zod";
 /**
  * Public web configuration.
  *
- * P0 can compile and render without external services. Values become required
- * only when the capability that consumes them is enabled. Server secrets do
- * not belong in this browser-facing module or in Next.js build configuration.
+ * External values become required only when the capability that consumes them
+ * is used. Server secrets never belong in this browser-facing module.
  */
 const publicEnvSchema = z.object({
   NEXT_PUBLIC_API_URL: z.string().url("API URL must be valid"),
@@ -80,13 +79,14 @@ export interface SupabasePublicConfig {
   anonKey: string;
 }
 
-/**
- * Require Supabase browser configuration only when P1 enables that capability.
- */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(clientEnv.supabaseUrl && clientEnv.supabaseAnonKey);
+}
+
 export function requireSupabasePublicConfig(): SupabasePublicConfig {
   if (!clientEnv.supabaseUrl || !clientEnv.supabaseAnonKey) {
     throw new Error(
-      "Supabase browser configuration is required for the selected capability. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
+      "Supabase configuration is required for account and workspace capabilities. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
     );
   }
 
@@ -105,8 +105,6 @@ export function logEnvironmentStatus(): void {
   console.info("Web configuration loaded", {
     appEnv: clientEnv.appEnv,
     apiUrl: clientEnv.apiUrl,
-    supabaseConfigured: Boolean(
-      clientEnv.supabaseUrl && clientEnv.supabaseAnonKey,
-    ),
+    supabaseConfigured: isSupabaseConfigured(),
   });
 }

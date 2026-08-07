@@ -1,29 +1,20 @@
-/**
- * Supabase client for Server Components and Server Actions
- * Properly handles cookies for authentication in Next.js App Router
- * Uses @supabase/ssr for server-side rendering support
- */
-
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@iraqi-ai/types";
 import { getServerEnv } from "./env";
 
+type CookieToSet = {
+  name: string;
+  value: string;
+  options: CookieOptions;
+};
+
 /**
- * Create a Supabase client for Server Components
+ * Create a request-scoped Supabase client for Server Components, Server
+ * Actions, and Route Handlers.
  *
- * IMPORTANT: Create fresh instances, DO NOT use singleton pattern
- * CRITICAL: Must call cookies() to opt out of Next.js caching
- * Source: https://supabase.com/docs/guides/auth/server-side/nextjs
- *
- * @example
- * import { createClient } from '@iraqi-ai/supabase-client/server';
- *
- * export default async function ServerComponent() {
- *   const supabase = createClient();
- *   const { data } = await supabase.from('users').select();
- *   return <div>{JSON.stringify(data)}</div>;
- * }
+ * The caller's signed session is preserved through Next.js cookies. Database
+ * authorization remains enforced by PostgreSQL RLS.
  */
 export async function createClient() {
   const { url, anonKey } = getServerEnv();
@@ -31,22 +22,17 @@ export async function createClient() {
 
   return createServerClient<Database>(url, anonKey, {
     cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
+      getAll() {
+        return cookieStore.getAll();
       },
-      set(name: string, value: string, options: CookieOptions) {
+      setAll(cookiesToSet: CookieToSet[]) {
         try {
-          cookieStore.set({ name, value, ...options });
-        } catch (error) {
-          // Server Component cannot set cookies after rendering
-          // This is expected during Server Component rendering
-        }
-      },
-      remove(name: string, options: CookieOptions) {
-        try {
-          cookieStore.set({ name, value: "", ...options });
-        } catch (error) {
-          // Server Component cannot remove cookies after rendering
+          for (const { name, value, options } of cookiesToSet) {
+            cookieStore.set(name, value, options);
+          }
+        } catch {
+          // Server Components cannot mutate response cookies after rendering.
+          // Middleware refreshes sessions before protected routes are rendered.
         }
       },
     },
@@ -54,41 +40,9 @@ export async function createClient() {
 }
 
 /**
- * Create a Supabase client for Server Actions and Route Handlers
- * Allows setting and removing cookies during mutations
- *
- * @example
- * 'use server';
- * import { createActionClient } from '@iraqi-ai/supabase-client/server';
- *
- * export async function signIn(formData: FormData) {
- *   const supabase = createActionClient();
- *   await supabase.auth.signInWithPassword({
- *     email: formData.get('email') as string,
- *     password: formData.get('password') as string,
- *   });
- * }
+ * Semantic alias for mutation-oriented code. Both functions are request-scoped;
+ * Server Actions and Route Handlers can persist the returned cookie updates.
  */
-export async function createActionClient() {
-  const { url, anonKey } = getServerEnv();
-  const cookieStore = await cookies();
+export const createActionClient = createClient;
 
-  return createServerClient<Database>(url, anonKey, {
-    cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        cookieStore.set({ name, value, ...options });
-      },
-      remove(name: string, options: CookieOptions) {
-        cookieStore.set({ name, value: "", ...options });
-      },
-    },
-  });
-}
-
-/**
- * Type-safe reference to Supabase server client instance
- */
-export type SupabaseServerClient = ReturnType<typeof createClient>;
+export type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;

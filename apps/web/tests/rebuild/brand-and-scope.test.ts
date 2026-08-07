@@ -25,7 +25,8 @@ describe("rebuild brand and scope", () => {
     expect(brand.category.length).toBeGreaterThan(10);
     expect(brand.categoryAr).toMatch(/[\u0600-\u06ff]/u);
     expect(brand.descriptionAr).toMatch(/[\u0600-\u06ff]/u);
-    expect(brand.status).toBe("Product rebuild");
+    expect(brand.status).toBe("P1 workspace foundation");
+    expect(brand.links.workspace).toBe("/workspaces");
   });
 
   test("does not expose the retired product identity on primary surfaces", () => {

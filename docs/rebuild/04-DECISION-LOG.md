@@ -136,3 +136,83 @@ This log records product, brand, architecture, and delivery decisions that mater
 **Reason:** Earlier documentation described readiness without an executable foundation. The reset must establish the opposite habit.
 
 **Consequence:** P1 begins from a buildable, honestly scoped web foundation. P0 completion is not production readiness and does not approve the legacy backend, data model, deployment containers, or third-party provenance.
+
+## 2026-08-08 — Implement P1 on one focused branch and pull request
+
+**Decision:** Create `agent/p1-workspace-foundation` from the merged `develop` head and use draft pull request `#3` as the single P1 integration point.
+
+**Reason:** P1 crosses account access, sessions, database migrations, RLS, shared contracts, API routes, UI states, and browser validation. Keeping those changes together preserves the vertical slice while avoiding the branch proliferation that made earlier repository work difficult to follow.
+
+**Consequence:** P1 is merged only after one final head passes every required account, data, web, Arabic/RTL, accessibility, claims, and browser gate.
+
+## 2026-08-08 — Use Supabase Auth and PostgreSQL as the identity and persistence authority
+
+**Decision:** Use Supabase Auth for account/session identity and PostgreSQL for the authoritative workspace-domain data model.
+
+**Reason:** The repository already contained a Supabase client foundation, while Supabase provides one coherent session, database, migration, and row-level-security boundary for the first durable product slice.
+
+**Consequence:** The inherited `test_users` model and custom authentication fragments are superseded. No second user, session, workspace, or membership model is approved.
+
+## 2026-08-08 — Let Next.js own account and workspace operations
+
+**Decision:** Implement sign-in, sign-up, sign-out, session refresh, protected pages, workspace commands, and same-origin `/api/v1` workspace endpoints in the Next.js application.
+
+**Reason:** Routing basic account and workspace operations through both Next.js and FastAPI would create duplicate sessions, error envelopes, and data-access rules before the AI or document service is needed.
+
+**Consequence:** FastAPI remains audit scope and may return in P2/P3 for model streaming, document processing, retrieval, and background jobs. It must consume the same identity/workspace contract rather than becoming a second authority.
+
+## 2026-08-08 — Enforce authorization with workspace membership and RLS
+
+**Decision:** Model `owner`, `editor`, and `viewer` membership in PostgreSQL and enforce access through row-level-security policies on every workspace-owned table.
+
+**Reason:** Client checks and page redirects improve usability but cannot be the security boundary. The database must reject cross-workspace access and role-inappropriate mutations regardless of caller.
+
+**Consequence:** Owner membership is created in the workspace insert transaction. Editors may update workspace metadata and content, viewers are read-only, and archive/restore/delete/member management are owner-only.
+
+## 2026-08-08 — Keep server actions and API requests on the signed-in user session
+
+**Decision:** Normal P1 requests use the signed-in user's Supabase session and RLS. The service-role key is not required by account or workspace requests.
+
+**Reason:** Administrative bypass would hide authorization defects and increase the effect of a server-route mistake.
+
+**Consequence:** `SUPABASE_SERVICE_ROLE_KEY` remains restricted to a later narrowly approved administrative or background operation and never enters browser-visible configuration.
+
+## 2026-08-08 — Keep product contracts in the existing locked types package
+
+**Decision:** Place shared Zod commands, domain entities, membership roles, lifecycle commands, and API envelopes under `@iraqi-ai/types/contracts` instead of introducing a new workspace package.
+
+**Reason:** A temporary contracts package changed the Bun workspace graph without a regenerated committed lock. The existing types package already depends on Zod and is part of the verified lockfile.
+
+**Consequence:** Web actions, API routes, generated database types, and future service adapters use one runtime/type contract while frozen Bun installation remains reproducible.
+
+## 2026-08-08 — Use typed JSON envelopes and request IDs for workspace APIs
+
+**Decision:** Same-origin workspace APIs return a discriminated `ok: true | false` envelope with stable error codes and an `x-request-id` header.
+
+**Reason:** API clients need machine-readable `401`, `403`, `404`, `409`, `422`, and `503` behavior. Redirecting an API request to an HTML login page makes failure handling ambiguous.
+
+**Consequence:** API authentication is non-redirecting and session-derived; pages continue using user-friendly redirects and bilingual status states.
+
+## 2026-08-08 — Test the full account/workspace journey against local Supabase
+
+**Decision:** Add a minimal committed local Supabase configuration and a dedicated Chromium Playwright workflow that starts real local Auth, PostgREST, and PostgreSQL services.
+
+**Reason:** Source assertions and isolated SQL tests cannot prove session cookies, server actions, route protection, RLS-backed persistence, responsive navigation, offline feedback, and cross-account isolation work together.
+
+**Consequence:** Hosted test credentials are not required. The required browser gate creates real accounts and exercises create, reload, API read, update, archive, restore, delete, sign-out, keyboard, mobile, offline, and hydration behavior.
+
+## 2026-08-08 — Allow immutable owner visibility during workspace insert returning
+
+**Decision:** Permit a workspace row to be selected when `owner_id = auth.uid()` or the user has workspace membership.
+
+**Reason:** Supabase workspace creation uses `INSERT ... RETURNING`. The returned row is evaluated against the select policy during the same statement lifecycle in which the owner-membership trigger runs. Membership remains the general access model, but immutable `owner_id` is the safe owner path for immediate insert visibility.
+
+**Consequence:** The exact authenticated `INSERT ... RETURNING` case is covered by PostgreSQL CI. Other accounts still require membership and remain unable to infer or access the row.
+
+## 2026-08-08 — Do not combine broad legacy deletion with P1 implementation
+
+**Decision:** Record active, retained, audit, quarantine, deferred, and later-removal areas in `07-P1-INVENTORY.md`, but perform no broad cleanup in PR `#3`.
+
+**Reason:** Route, package, migration, artifact, and provenance cleanup has different rollback and review risks from the account/workspace vertical slice.
+
+**Consequence:** Later cleanup uses separate reversible pull requests with import evidence, deployed-data review, provenance preservation, and the same active gates.

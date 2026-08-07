@@ -1,5 +1,5 @@
 // Iraqi AI Chat System - Shared TypeScript Types
-// Core type definitions for cultural compliance and Arabic support
+// Core type definitions retained during the controlled product rebuild.
 
 export interface IraqiUser {
   id: string;
@@ -42,7 +42,7 @@ export interface ChatMessage {
 }
 
 export interface CulturalValidation {
-  score: number; // 0-100, 95+ required for approval
+  score: number;
   islamicCompliance: boolean;
   politicalNeutrality: boolean;
   professionalAppropriate: boolean;
@@ -52,7 +52,7 @@ export interface CulturalValidation {
 
 export interface PaymentGateway {
   provider: "zaincash" | "fastpay" | "nasswallet";
-  minimumAmount: number; // in IQD
+  minimumAmount: number;
   fees: {
     fixed: number;
     percentage: number;
@@ -60,17 +60,12 @@ export interface PaymentGateway {
   supported: boolean;
 }
 
-// Re-export RTL layout types (includes TextDirection, LanguageLocale, etc.)
 export * from "./rtl";
-
-// Re-export commonly used types (legacy, prefer using RTL types)
 export type LanguageCode = "ar" | "en" | "ar-IQ";
 export type DialectCode = "iraqi" | "standard";
-
-// Re-export environment types
 export * from "./env";
+export * from "./contracts";
 
-// Re-export Supabase database types
 export type {
   Database,
   Tables,

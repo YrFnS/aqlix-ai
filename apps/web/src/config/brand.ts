@@ -9,11 +9,12 @@ export const brand = {
     "An Arabic-first, bilingual AI workspace for turning conversations and documents into clear, reusable work.",
   descriptionAr:
     "مساحة عمل عربية أولاً، ثنائية اللغة، تحوّل المحادثات والمستندات إلى عمل واضح وقابل للاستخدام.",
-  status: "Product rebuild",
+  status: "P1 workspace foundation",
   links: {
     home: "/",
-    workspace: "/dashboard",
+    workspace: "/workspaces",
     signIn: "/login",
+    registration: "/register",
     documentation: "/docs",
   },
 } as const;

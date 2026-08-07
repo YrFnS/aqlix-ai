@@ -2,21 +2,16 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // Override for Next.js
     "jsx": "preserve",
     "noEmit": true,
     "allowJs": true,
     "checkJs": false,
     "types": [],
-
-    // Next.js specific
     "plugins": [
       {
         "name": "next"
       }
     ],
-
-    // Path mappings (override base with Next.js patterns)
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
