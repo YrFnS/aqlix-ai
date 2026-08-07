@@ -16,7 +16,6 @@
     "paths": {
       "@/*": ["./src/*"],
       "@iraqi-ai/types": ["../../packages/types/src"],
-      "@iraqi-ai/contracts": ["../../packages/contracts/src"],
       "@iraqi-ai/ui": ["../../packages/ui/src"],
       "@iraqi-ai/features": ["../../packages/features/src"],
       "@iraqi-ai/api-client": ["../../packages/api-client/src"],
@@ -25,7 +24,6 @@
   },
   "references": [
     { "path": "../../packages/types" },
-    { "path": "../../packages/contracts" },
     { "path": "../../packages/ui" },
     { "path": "../../packages/features" },
     { "path": "../../packages/api-client" },
