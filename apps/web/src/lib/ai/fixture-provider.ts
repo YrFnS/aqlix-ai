@@ -15,15 +15,16 @@ function delay(milliseconds: number, signal: AbortSignal): Promise<void> {
       return;
     }
 
-    const timer = setTimeout(() => {
-      signal.removeEventListener("abort", abort);
-      resolve();
-    }, milliseconds);
-
+    let timer: ReturnType<typeof setTimeout>;
     const abort = () => {
       clearTimeout(timer);
       reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
     };
+
+    timer = setTimeout(() => {
+      signal.removeEventListener("abort", abort);
+      resolve();
+    }, milliseconds);
 
     signal.addEventListener("abort", abort, { once: true });
   });
@@ -76,7 +77,10 @@ export class FixtureAiProvider implements AiProvider {
         inputTokens: Math.max(1, Math.ceil(prompt.length / 4)),
         outputTokens: Math.max(1, Math.ceil(response.length / 4)),
         reasoningTokens: 0,
-        totalTokens: Math.max(2, Math.ceil((prompt.length + response.length) / 4)),
+        totalTokens: Math.max(
+          2,
+          Math.ceil((prompt.length + response.length) / 4),
+        ),
       },
     };
   }
