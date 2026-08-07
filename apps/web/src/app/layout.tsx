@@ -2,18 +2,23 @@ import type { Metadata, Viewport } from "next";
 import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
 import { DirectionProvider } from "@/components/providers/DirectionProvider";
 import { DirectionSync } from "@/components/providers/DirectionSync";
+import { brand } from "@/config/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Iraqi AI Chat System",
-  description: "Advanced AI chat with Iraqi dialect support",
+  applicationName: brand.name,
+  title: {
+    default: `${brand.name} — ${brand.category}`,
+    template: `%s | ${brand.name}`,
+  },
+  description: brand.description,
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5, // Allow zoom for accessibility
-  userScalable: true, // Don't disable user scaling
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({
@@ -32,7 +37,7 @@ export default function RootLayout({
         ${amiri.variable}
       `.trim()}
     >
-      <body className="min-h-screen flex flex-col">
+      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-primary/20">
         <DirectionProvider>
           <DirectionSync />
           {children}
