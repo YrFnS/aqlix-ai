@@ -4,6 +4,7 @@ import { DirectionProvider } from "@/components/providers/DirectionProvider";
 import { DirectionSync } from "@/components/providers/DirectionSync";
 import { brand } from "@/config/brand";
 import "./globals.css";
+import "./rebuild.css";
 
 export const metadata: Metadata = {
   applicationName: brand.name,
