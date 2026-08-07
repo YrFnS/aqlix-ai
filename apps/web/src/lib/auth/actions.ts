@@ -6,16 +6,8 @@ import { z } from "zod";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
 
-const emailSchema = z
-  .string()
-  .trim()
-  .min(1, "البريد الإلكتروني مطلوب / Email is required")
-  .email("البريد الإلكتروني غير صحيح / Enter a valid email");
-
-const passwordSchema = z
-  .string()
-  .min(8, "كلمة المرور يجب أن تكون 8 أحرف على الأقل / Use at least 8 characters")
-  .max(72, "كلمة المرور طويلة جداً / Password is too long");
+const emailSchema = z.string().trim().min(1).email();
+const passwordSchema = z.string().min(8).max(72);
 
 const signInSchema = z.object({
   email: emailSchema,
@@ -29,28 +21,22 @@ const signUpSchema = z
     confirmPassword: z.string(),
   })
   .refine((input) => input.password === input.confirmPassword, {
-    message: "كلمتا المرور غير متطابقتين / Passwords do not match",
     path: ["confirmPassword"],
   });
-
-export interface AccountActionState {
-  status: "idle" | "error" | "success";
-  message?: string;
-  fieldErrors?: Record<string, string[]>;
-}
-
-export const initialAccountActionState: AccountActionState = {
-  status: "idle",
-};
-
-function getFieldErrors(error: z.ZodError): Record<string, string[]> {
-  return error.flatten().fieldErrors as Record<string, string[]>;
-}
 
 function getSafeNextPath(value: FormDataEntryValue | null): string {
   if (typeof value !== "string") return "/workspaces";
   if (!value.startsWith("/") || value.startsWith("//")) return "/workspaces";
   return value;
+}
+
+function accountRedirect(
+  page: "/login" | "/register",
+  status: string,
+  nextPath: string,
+): never {
+  const params = new URLSearchParams({ status, next: nextPath });
+  redirect(`${page}?${params.toString()}`);
 }
 
 async function getRequestOrigin(): Promise<string | null> {
@@ -64,19 +50,12 @@ async function getRequestOrigin(): Promise<string | null> {
   return `${protocol}://${host}`;
 }
 
-function configurationError(): AccountActionState {
-  return {
-    status: "error",
-    message:
-      "إعداد خدمة الحساب غير مكتمل بعد / Account service configuration is unavailable.",
-  };
-}
+export async function signInAction(formData: FormData): Promise<never> {
+  const nextPath = getSafeNextPath(formData.get("next"));
 
-export async function signInAction(
-  _previousState: AccountActionState,
-  formData: FormData,
-): Promise<AccountActionState> {
-  if (!isSupabaseConfigured()) return configurationError();
+  if (!isSupabaseConfigured()) {
+    accountRedirect("/login", "configuration", nextPath);
+  }
 
   const parsed = signInSchema.safeParse({
     email: formData.get("email"),
@@ -84,32 +63,25 @@ export async function signInAction(
   });
 
   if (!parsed.success) {
-    return {
-      status: "error",
-      message: "راجع بيانات الدخول / Review the sign-in fields.",
-      fieldErrors: getFieldErrors(parsed.error),
-    };
+    accountRedirect("/login", "invalid-input", nextPath);
   }
 
   const supabase = await createActionClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
-    return {
-      status: "error",
-      message:
-        "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور / Sign-in failed. Check the email and password.",
-    };
+    accountRedirect("/login", "invalid-credentials", nextPath);
   }
 
-  redirect(getSafeNextPath(formData.get("next")));
+  redirect(nextPath);
 }
 
-export async function signUpAction(
-  _previousState: AccountActionState,
-  formData: FormData,
-): Promise<AccountActionState> {
-  if (!isSupabaseConfigured()) return configurationError();
+export async function signUpAction(formData: FormData): Promise<never> {
+  const nextPath = getSafeNextPath(formData.get("next"));
+
+  if (!isSupabaseConfigured()) {
+    accountRedirect("/register", "configuration", nextPath);
+  }
 
   const parsed = signUpSchema.safeParse({
     email: formData.get("email"),
@@ -118,14 +90,9 @@ export async function signUpAction(
   });
 
   if (!parsed.success) {
-    return {
-      status: "error",
-      message: "راجع بيانات الحساب / Review the account fields.",
-      fieldErrors: getFieldErrors(parsed.error),
-    };
+    accountRedirect("/register", "invalid-input", nextPath);
   }
 
-  const nextPath = getSafeNextPath(formData.get("next"));
   const origin = await getRequestOrigin();
   const supabase = await createActionClient();
   const { data, error } = await supabase.auth.signUp({
@@ -141,22 +108,14 @@ export async function signUpAction(
   });
 
   if (error) {
-    return {
-      status: "error",
-      message:
-        "تعذر إنشاء الحساب حالياً / The account could not be created right now.",
-    };
+    accountRedirect("/register", "registration-failed", nextPath);
   }
 
   if (data.session) {
     redirect(nextPath);
   }
 
-  return {
-    status: "success",
-    message:
-      "تحقق من بريدك لإكمال إنشاء الحساب / Check your email to finish creating the account.",
-  };
+  accountRedirect("/login", "check-email", nextPath);
 }
 
 export async function signOutAction(): Promise<never> {
