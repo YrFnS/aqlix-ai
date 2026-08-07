@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 interface MobileMenuProps {
   items: Array<{ href: string; label: string }>;
@@ -11,50 +11,58 @@ interface MobileMenuProps {
 
 export function MobileMenu({ items }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const panelId = useId();
 
   return (
     <>
-      {/* Hamburger Button - 48x48px touch target */}
       <Button
         variant="ghost"
         size="icon"
         className="touch-target md:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle menu"
+        onClick={() => setIsOpen((open) => !open)}
+        aria-label={isOpen ? "إغلاق القائمة" : "فتح القائمة"}
         aria-expanded={isOpen}
+        aria-controls={panelId}
       >
-        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {isOpen ? (
+          <X className="h-6 w-6" aria-hidden="true" />
+        ) : (
+          <Menu className="h-6 w-6" aria-hidden="true" />
+        )}
       </Button>
 
-      {/* Mobile Menu Overlay */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-50 md:hidden"
-          onClick={() => setIsOpen(false)}
-        >
-          {/* Backdrop */}
-          <div className="fixed inset-0 bg-black/50" />
+        <div className="fixed inset-0 z-50 md:hidden">
+          <button
+            type="button"
+            className="fixed inset-0 bg-foreground/45 backdrop-blur-sm"
+            onClick={() => setIsOpen(false)}
+            aria-label="إغلاق قائمة التنقل"
+          />
 
-          {/* Menu Panel */}
-          <nav className="fixed top-0 right-0 h-full w-64 bg-background border-l p-6 safe-top">
-            <div className="flex justify-end mb-6">
+          <nav
+            id={panelId}
+            aria-label="التنقل على الهاتف"
+            className="safe-top fixed right-0 top-0 h-full w-72 border-l border-border bg-background p-6 shadow-2xl"
+          >
+            <div className="mb-6 flex justify-end">
               <Button
                 variant="ghost"
                 size="icon"
                 className="touch-target"
                 onClick={() => setIsOpen(false)}
-                aria-label="Close menu"
+                aria-label="إغلاق القائمة"
               >
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6" aria-hidden="true" />
               </Button>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {items.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="touch-target px-4 py-3 rounded-md hover:bg-accent text-lg"
+                  className="touch-target rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-accent"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.label}
