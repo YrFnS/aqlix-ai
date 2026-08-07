@@ -34,7 +34,6 @@
     "@hookform/resolvers": "^3.3.2",
     "@iraqi-ai/api-client": "workspace:*",
     "@iraqi-ai/arabic-nlp": "workspace:*",
-    "@iraqi-ai/contracts": "workspace:*",
     "@iraqi-ai/features": "workspace:*",
     "@iraqi-ai/supabase-client": "workspace:*",
     "@iraqi-ai/types": "workspace:*",
