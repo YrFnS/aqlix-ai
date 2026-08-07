@@ -68,7 +68,9 @@ Application checks improve error messages, but they do not replace database enfo
 
 ### 6. Shared Zod contracts define commands and responses
 
-The `@iraqi-ai/contracts` package contains runtime schemas and inferred TypeScript types for:
+Runtime schemas and inferred TypeScript types live under `@iraqi-ai/types/contracts`. Keeping them inside the existing locked shared package avoids adding a parallel workspace solely for contracts while still providing one import surface for the web application and future service adapters.
+
+The contracts cover:
 
 - workspace creation, rename, archive, restore, and deletion;
 - persisted workspace-domain objects;
