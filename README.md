@@ -4,46 +4,51 @@
 
 Kiteb is being rebuilt as an **Arabic-first, bilingual AI workspace for turning conversations and documents into clear, reusable work**.
 
-The repository previously presented a much broader “Iraqi AI Chat System” with agents, professional domains, payments, automation, voice, and compliance claims. The visible product and underlying integrations did not consistently support that story. The rebuild resets the product around one complete user journey.
+The repository previously presented a much broader system with agents, professional domains, payments, automation, voice, and compliance claims. The rebuild narrows the product to one complete journey:
+
+**Ask → Ground → Draft → Continue**
 
 ## Current status
 
-**Phase:** P0 complete — P1 is next  
-**Foundation pull request:** `#2` targeting `develop`  
-**Production ready:** No
+- **P0:** complete and merged to `develop`
+- **P1:** account and persistent workspace foundation in progress on `agent/p1-workspace-foundation`
+- **P1 pull request:** `#3` against `develop`
+- **Production ready:** No
 
-P0 establishes:
+P1 currently implements:
 
-- a focused product brief and phased roadmap;
-- a provisional brand system with centralized product copy;
-- an Arabic-first marketing and workspace shell;
-- retained Arabic typography, RTL, LTR, and mixed-text foundations;
-- an honest workspace entry screen without fake activity metrics;
-- capability-neutral account and middleware boundaries;
-- explicit separation between implemented, planned, deferred, quarantined, and audit-required work;
-- reproducible Bun-based checks for the active product graph.
+- Supabase email/password account creation, sign-in, confirmation, session refresh, and sign-out;
+- protected Next.js application routes;
+- persistent PostgreSQL workspaces and memberships;
+- owner, editor, and viewer authorization through row-level security;
+- workspace create, list, open, edit, archive, restore, and confirmed deletion;
+- typed same-origin `/api/v1` workspace endpoints with stable JSON errors and request IDs;
+- real loading, empty, inaccessible, persistence-failure, offline, and responsive-navigation states;
+- schema-ready conversation, message, attachment, source, and draft records for later phases;
+- PostgreSQL migration/RLS tests and a real two-account browser journey using local Supabase.
 
-The following are **not yet complete product capabilities**:
+P1 remains incomplete until the **final PR head** passes every required workflow, including the authenticated browser journey.
 
-- account registration, authentication, sessions, and authorization;
-- real streamed AI conversations;
-- persistent workspaces and message history;
-- document processing and source-grounded citations;
-- reusable draft creation and export;
-- live payment-gateway integrations;
-- production container and deployment validation;
-- verified security, privacy, accessibility, performance, cultural, dialect, or compliance claims.
+The following are not yet product capabilities:
+
+- real model streaming and persistent AI messages;
+- document upload, extraction, retrieval, and source citations;
+- editable reusable drafts, versioning, and export;
+- production containers and deployment validation;
+- backup and restore validation;
+- security, privacy, accessibility, cultural, dialect, legal, medical, or financial certification;
+- third-party code and asset provenance clearance.
 
 ## Product loop
 
-The first release is constrained to one workflow:
+The first trustworthy release must eventually let a user:
 
 1. **Ask** — begin with a question or task in Arabic or English.
-2. **Ground** — attach or select supporting documents and keep sources inspectable.
-3. **Draft** — turn the result into a summary, comparison, email, memo, checklist, or decision note.
-4. **Continue** — save the workspace, conversation, sources, and output for later work.
+2. **Ground** — attach supporting documents and inspect the source passages.
+3. **Draft** — turn the result into a reusable summary, comparison, email, memo, checklist, or decision note.
+4. **Continue** — close the application and return to the same authorized workspace, conversation, sources, and draft.
 
-Payments, multi-agent surfaces, workflow builders, voice, desktop automation, native mobile clients, and specialist legal or medical modes are deferred until the core loop is complete and validated.
+P1 builds the durable account, membership, workspace, and data contract required for that journey. P2–P4 implement the real conversation, documents/sources, and draft experiences.
 
 ## Rebuild source of truth
 
@@ -53,62 +58,99 @@ Payments, multi-agent surfaces, workflow builders, voice, desktop automation, na
 - [Roadmap](./docs/rebuild/02-REBUILD-ROADMAP.md)
 - [Implementation tracker](./docs/rebuild/03-IMPLEMENTATION-TRACKER.md)
 - [Decision log](./docs/rebuild/04-DECISION-LOG.md)
-- [Legacy system disposition](./docs/rebuild/05-LEGACY-DISPOSITION.md)
+- [Legacy disposition](./docs/rebuild/05-LEGACY-DISPOSITION.md)
+- [P1 architecture](./docs/rebuild/06-P1-ARCHITECTURE.md)
+- [P1 repository inventory](./docs/rebuild/07-P1-INVENTORY.md)
 
 ## Branch model
 
-The former active branch heads were preserved before rebuild work began:
+The former active heads are preserved as:
 
 - `legacy/main-2026-08-07`
 - `legacy/develop-2026-08-07`
 
-The P0 foundation was developed from `develop` on:
+P0 was merged through PR `#2`. P1 is developed on one focused branch and draft pull request:
 
-- `agent/product-rebuild-foundation`
+- `agent/p1-workspace-foundation`
+- PR `#3` → `develop`
 
-Starting from `develop` preserves potentially useful foundations for comparison. It does **not** approve all inherited code for continued use. Existing subsystems must be marked as retained, rewritten, quarantined, or removed.
+Starting from `develop` preserves potentially useful history. It does not approve inherited code for continued use. Existing subsystems remain active, retained, audit, quarantine, deferred, or later-removal scope as recorded in the inventory.
 
 ## Development
 
 ### Requirements
 
 - Bun `1.3.14`, pinned in the root `packageManager` field
+- Docker for the local Supabase stack
+- Supabase CLI through the locked root dependency (`bunx supabase`)
 - Node.js 20 or later where required by inherited packages
-- Python and backend dependencies only when auditing or implementing the API
-- configured environment variables only for the capability being exercised
+- Python only when auditing or later implementing the FastAPI capability service
 
-P0 web builds do not require placeholder backend, model, payment, database-admin, or Supabase credentials.
-
-### Web development
+### Install
 
 ```bash
 bun install --frozen-lockfile
+```
+
+### Run the web foundation without account services
+
+```bash
 bun run dev
 ```
 
-### Required active quality gates
+The marketing surfaces and clean production build do not require placeholder service credentials. Account and workspace routes fail closed and explain that Supabase configuration is unavailable.
+
+### Run P1 with local Supabase
+
+```bash
+bunx supabase start
+bunx supabase status -o env
+```
+
+Copy the local `API_URL` and anonymous/publishable key into `apps/web/.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<local public key>
+NEXT_PUBLIC_APP_ENV=development
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Then start the web application:
+
+```bash
+bun run dev
+```
+
+The service-role key is not required for normal account or workspace requests. Those requests use the signed-in user session and PostgreSQL RLS.
+
+Stop the local stack with:
+
+```bash
+bunx supabase stop --no-backup
+```
+
+## Active quality gates
 
 ```bash
 bun install --frozen-lockfile
 bun run build:packages
 bun run lint
 bun run typecheck
-bun run test:rebuild
+bun run test:p1
 cd apps/web && bun run build
 ```
 
-The P0 pull-request head passed all of those commands in GitHub Actions, together with:
+P1 also requires CI workflows that:
 
-- PR title, change-scope, and rebuild-safeguard validation;
-- Arabic and RTL foundation tests;
-- accessibility foundation safeguards;
-- product-language and public-claims safeguards.
+- apply all P1 migrations to PostgreSQL and validate owner membership, roles, tenant isolation, foreign keys, insert-returning visibility, and cascades;
+- start a local Supabase project and run the focused Chromium account/workspace journey.
 
-These checks prove that the current web foundation builds and that its declared safeguards execute. They are not production-readiness, accessibility-certification, cultural-compliance, security-compliance, or dialect-accuracy claims.
+The browser journey covers real signup/session cookies, mixed Arabic-English content, persistence after reload, typed API reads, second-account isolation, edit, archive, restore, offline feedback, responsive navigation, deletion, sign-out, keyboard use, and hydration errors.
 
-### Legacy audit commands
+## Legacy audit commands
 
-Inherited tests and broader workspace checks remain available under explicit legacy commands, including:
+Inherited tests and broad workspace checks remain available behind explicit legacy commands:
 
 ```bash
 bun run typecheck:legacy
@@ -117,32 +159,30 @@ bun run test:legacy:integration
 bun run test:legacy:e2e
 ```
 
-They are audit inputs, not approved release gates. Each failure must be classified as retained product work, legacy debt, missing provenance, or removable scope.
+They are audit inputs, not approved release gates. Failures must be classified as retained work, legacy debt, missing provenance, or removable scope.
 
-## Architecture under review
-
-The repository currently contains:
+## Architecture boundary
 
 ```text
 apps/
-├── web/       Next.js application and active P0 foundation
-└── api/       FastAPI application and legacy service implementations
+├── web/       Active Next.js account and workspace application
+├── api/       FastAPI capability service under audit for P2/P3
+└── mobile/    Deferred placeholder application
 
-packages/      Shared TypeScript packages
-examples/      Extracted or adapted reference material requiring provenance review
-docs/          Legacy documentation plus the rebuild source of truth
+packages/
+├── types/             Generated database types and shared runtime contracts
+├── supabase-client/   Request-scoped browser/server/middleware clients
+├── ui/                Selected shared RTL and input utilities
+├── arabic-nlp/        Retained Arabic text utilities
+└── ...                 Audit or quarantine packages listed in the P1 inventory
+
+supabase/
+├── config.toml        Minimal reproducible local Auth/API/DB project
+├── migrations/        Canonical P1 PostgreSQL schema and authorization changes
+└── tests/             Owner, role, tenant, FK, and cascade regression tests
 ```
 
-Provisionally reusable areas include:
-
-- Bun workspace structure;
-- Next.js route groups and selected layout primitives;
-- Arabic font loading and direction infrastructure;
-- selected bidirectional UI utilities;
-- evidence-based CI workflow structure;
-- selected Supabase and API foundations after audit.
-
-No legacy service is considered production-ready by inheritance. In particular, placeholder in-memory chat, simulated payment behavior, duplicate architecture, unfinished authentication, and unverified compliance systems must not be exposed as live capability.
+FastAPI is not a second identity or workspace authority. It may return for model streaming, document processing, retrieval, and background jobs only after audit, using the same account and workspace contract.
 
 ## Product and engineering rules
 
@@ -151,26 +191,28 @@ No legacy service is considered production-ready by inheritance. In particular, 
 3. Arabic and English receive equal product-quality treatment.
 4. Public claims require reproducible evidence.
 5. One complete vertical slice comes before scope expansion.
-6. Secrets, authorization, uploads, retention, and deletion are tested before beta.
-7. Third-party code and assets require documented origin and compatible licensing.
-8. Bun remains the single JavaScript package manager unless a later decision explicitly changes it.
-9. Active rebuild gates and legacy audit checks remain visibly separate until inherited scope is classified.
+6. Normal user traffic uses sessions and RLS, not administrative bypass.
+7. Secrets, authorization, uploads, retention, and deletion are tested before beta.
+8. Third-party code and assets require documented origin and compatible licensing.
+9. Bun remains the single JavaScript package manager unless a recorded decision changes it.
+10. Active rebuild gates and inherited legacy audits remain visibly separate.
+11. Broad legacy deletion is performed in separate reversible pull requests.
 
 ## Licensing and provenance
 
-Repository licensing and code provenance are under review. Historical package metadata or README statements should not be treated as a complete licensing determination for the entire repository.
+Repository licensing and code provenance remain under review. Historical package metadata or README statements are not a complete licensing determination for the repository.
 
-The repository history references extracted or adapted work from multiple external projects. Those areas must be inventoried with source, license, modification history, and release compatibility before public or commercial distribution.
+Extracted examples, adapted code, screenshots, reports, generated assets, specialist systems, payment integrations, and inherited benchmarks remain quarantined until their source, license, modifications, and release compatibility are documented.
 
 ## What “ready” will mean
 
-The first trustworthy release must let a user:
+The first trustworthy release must complete the whole Ask → Ground → Draft → Continue journey with:
 
-1. enter a persistent workspace;
-2. upload an Arabic or English document;
-3. ask a real model a question about it;
-4. inspect the supporting source passage;
-5. create and save a useful draft;
-6. close the application and return to the same work.
-
-That journey must be backed by persistent data, authorization checks, observable failures, and repeatable automated tests.
+- persistent authorized data;
+- a real model provider and observable failures;
+- inspectable source passages;
+- reusable saved drafts;
+- Arabic, English, RTL, LTR, mixed text, keyboard, and responsive validation;
+- reviewed secrets, uploads, retention, deletion, and logs;
+- reproducible deployment, backup, and restore;
+- documented third-party provenance.
