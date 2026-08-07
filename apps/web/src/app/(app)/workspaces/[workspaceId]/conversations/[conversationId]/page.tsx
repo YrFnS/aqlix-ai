@@ -111,7 +111,10 @@ export default async function ConversationPage({
     );
   }
 
-  const canWrite = workspace.role === "owner" || workspace.role === "editor";
+  const isWorkspaceArchived = workspace.archivedAt !== null;
+  const canWrite =
+    !isWorkspaceArchived &&
+    (workspace.role === "owner" || workspace.role === "editor");
   const isArchived = conversation.status === "archived";
   const visibleStatus = persistenceFailed
     ? "persistence-error"
@@ -119,7 +122,9 @@ export default async function ConversationPage({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <ConversationStatusNotice status={visibleStatus} />
+      <ConversationStatusNotice
+        status={isWorkspaceArchived ? "workspace-archived" : visibleStatus}
+      />
 
       <header className="relative overflow-hidden rounded-3xl border border-border/70 bg-foreground p-6 text-background sm:p-8">
         <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-primary/30 blur-3xl" />
@@ -152,8 +157,13 @@ export default async function ConversationPage({
                     : "قراءة فقط"}
               </span>
               <span className="rounded-full border border-background/20 px-3 py-1.5 text-xs font-semibold text-background/70">
-                {isArchived ? "مؤرشفة" : "نشطة"}
+                {isArchived ? "المحادثة مؤرشفة" : "المحادثة نشطة"}
               </span>
+              {isWorkspaceArchived && (
+                <span className="rounded-full border border-background/20 px-3 py-1.5 text-xs font-semibold text-background/70">
+                  مساحة العمل مؤرشفة
+                </span>
+              )}
             </div>
 
             <h1
@@ -214,6 +224,7 @@ export default async function ConversationPage({
         conversation={conversation}
         initialMessages={messages}
         canWrite={canWrite}
+        readOnlyReason={isWorkspaceArchived ? "workspace-archived" : "membership"}
       />
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -256,8 +267,9 @@ export default async function ConversationPage({
             </form>
           ) : (
             <p className="mt-6 text-sm leading-7 text-muted-foreground">
-              يمكن لحسابك قراءة العنوان والسجل، لكن تعديله يحتاج دور المحرر أو
-              المالك.
+              {isWorkspaceArchived
+                ? "مساحة العمل مؤرشفة، لذلك يبقى عنوان المحادثة والسجل للقراءة فقط حتى استعادة المساحة."
+                : "يمكن لحسابك قراءة العنوان والسجل، لكن تعديله يحتاج دور المحرر أو المالك."}
             </p>
           )}
 
@@ -305,7 +317,9 @@ export default async function ConversationPage({
             </form>
           ) : (
             <p className="mt-6 text-sm text-muted-foreground">
-              عضوية القراءة لا تسمح بالحذف.
+              {isWorkspaceArchived
+                ? "استعد مساحة العمل قبل حذف محادثة منها."
+                : "عضوية القراءة لا تسمح بالحذف."}
             </p>
           )}
         </div>
