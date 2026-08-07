@@ -2,37 +2,98 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowUpLeft,
+  BookOpen,
   FileText,
   Languages,
   LockKeyhole,
-  ShieldCheck,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
+import { isSupabaseConfigured } from "@/config/env";
+import { signInAction } from "@/lib/auth/actions";
 
 export const metadata: Metadata = {
-  title: "الحساب",
-  description: `Account access status for ${brand.name}`,
+  title: "تسجيل الدخول",
+  description: `Sign in to ${brand.name}`,
 };
 
-const productNotes = [
-  {
-    title: "العربية والإنجليزية",
-    description: "واجهة واتجاه نص ومحتوى مختلط كجزء أساسي من المنتج.",
-    icon: Languages,
-  },
-  {
-    title: "السياق والمستندات",
-    description: "المنتج يُعاد بناؤه حول مصادر قابلة للفحص ومسودات قابلة للحفظ.",
-    icon: FileText,
-  },
-  {
-    title: "حالة واضحة",
-    description: "لا نعرض الوظائف المخططة كأنها مكتملة أو جاهزة للإنتاج.",
-    icon: ShieldCheck,
-  },
-];
+type SearchParams = Promise<
+  Record<string, string | string[] | undefined>
+>;
 
-export default function LoginPage() {
+const statusMessages: Record<
+  string,
+  { tone: "error" | "success" | "info"; message: string }
+> = {
+  configuration: {
+    tone: "info",
+    message:
+      "خدمة الحساب غير مضبوطة في هذه البيئة بعد / Account service configuration is unavailable in this environment.",
+  },
+  "invalid-input": {
+    tone: "error",
+    message:
+      "اكتب بريداً صحيحاً وكلمة مرور من 8 أحرف على الأقل / Enter a valid email and a password of at least 8 characters.",
+  },
+  "invalid-credentials": {
+    tone: "error",
+    message:
+      "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور / Sign-in failed. Check the email and password.",
+  },
+  "check-email": {
+    tone: "success",
+    message:
+      "أرسل رابط التحقق إلى بريدك. افتحه لإكمال الحساب / A verification link was sent. Open it to finish creating the account.",
+  },
+  "signed-out": {
+    tone: "success",
+    message: "تم تسجيل الخروج بأمان / You have been signed out.",
+  },
+  "invalid-link": {
+    tone: "error",
+    message:
+      "رابط التحقق غير مكتمل أو غير صالح / The verification link is incomplete or invalid.",
+  },
+  "verification-failed": {
+    tone: "error",
+    message:
+      "تعذر التحقق من الرابط. اطلب رابطاً جديداً أو حاول لاحقاً / The link could not be verified. Request a new link or try again later.",
+  },
+};
+
+function firstValue(value: string | string[] | undefined): string | undefined {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function getSafeNextPath(value: string | string[] | undefined): string {
+  const candidate = firstValue(value);
+  if (!candidate?.startsWith("/") || candidate.startsWith("//")) {
+    return "/workspaces";
+  }
+  return candidate;
+}
+
+function statusClasses(tone: "error" | "success" | "info"): string {
+  if (tone === "error") {
+    return "border-destructive/30 bg-destructive/10 text-destructive";
+  }
+  if (tone === "success") {
+    return "border-primary/30 bg-primary/10 text-foreground";
+  }
+  return "border-border bg-secondary/60 text-muted-foreground";
+}
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await searchParams;
+  const configured = isSupabaseConfigured();
+  const nextPath = getSafeNextPath(params.next);
+  const statusKey = firstValue(params.status) ?? firstValue(params.reason);
+  const status = statusKey ? statusMessages[statusKey] : undefined;
+
   return (
     <div className="grid overflow-hidden rounded-[2rem] border border-border/70 bg-card shadow-2xl shadow-foreground/5 lg:grid-cols-[0.9fr_1.1fr]">
       <section className="relative hidden overflow-hidden bg-foreground p-10 text-background lg:flex lg:flex-col lg:justify-between">
@@ -45,13 +106,29 @@ export default function LoginPage() {
             ارجع إلى السياق، وأكمل العمل من حيث توقفت.
           </h1>
           <p className="mt-5 text-sm leading-8 text-background/65">
-            الوصول إلى الحساب جزء من P1. لن نعرض نموذج تسجيل دخول لا يملك عقد
-            مصادقة وتخزين وصلاحيات مكتمل.
+            جلسة واحدة موثوقة تقود إلى مساحات العمل والمحادثات والمصادر والمسودات
+            التابعة لك فقط.
           </p>
         </div>
 
         <div className="relative mt-12 space-y-4">
-          {productNotes.map(({ title, description, icon: Icon }) => (
+          {[
+            {
+              title: "العربية والإنجليزية",
+              description: "اتجاه صحيح للنص والواجهة والمحتوى المختلط.",
+              icon: Languages,
+            },
+            {
+              title: "مساحات محفوظة",
+              description: "سياق دائم يعود بعد إغلاق التطبيق وإعادة فتحه.",
+              icon: BookOpen,
+            },
+            {
+              title: "مصادر قابلة للفحص",
+              description: "المستندات والمقاطع الداعمة تبقى جزءاً من العمل.",
+              icon: FileText,
+            },
+          ].map(({ title, description, icon: Icon }) => (
             <div
               key={title}
               className="flex gap-4 rounded-2xl border border-background/15 bg-background/5 p-4"
@@ -71,37 +148,99 @@ export default function LoginPage() {
       </section>
 
       <section className="flex min-h-[620px] items-center justify-center p-6 sm:p-10 lg:p-14">
-        <div className="w-full max-w-md rounded-3xl border border-border/70 bg-background p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-md">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <LockKeyhole className="h-6 w-6" aria-hidden="true" />
           </div>
+
           <div className="mt-6 text-center">
-            <p className="text-sm font-semibold text-primary">P1 · Account boundary</p>
+            <p className="text-sm font-semibold text-primary">P1 · Account access</p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold">
-              الوصول إلى الحساب قيد إعادة البناء
+              تسجيل الدخول
             </h1>
-            <p className="mt-4 text-sm leading-7 text-muted-foreground">
-              سنفعّل التسجيل والدخول بعد اعتماد عقد واحد للمصادقة، التخزين،
-              الجلسات، والصلاحيات. حالياً يمكنك استكشاف أساس مساحة العمل وخطة
-              التنفيذ من دون إنشاء حساب تجريبي وهمي.
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              استخدم حسابك للوصول إلى مساحات العمل التي تملكها أو تشارك فيها.
             </p>
           </div>
 
-          <div className="mt-7 grid gap-3">
-            <Link
-              href={brand.links.workspace}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+          {status && (
+            <div
+              className={`mt-6 rounded-2xl border p-4 text-sm leading-7 ${statusClasses(status.tone)}`}
+              role={status.tone === "error" ? "alert" : "status"}
             >
-              استكشف أساس مساحة العمل
+              {status.message}
+            </div>
+          )}
+
+          <form action={signInAction} className="mt-7 space-y-5">
+            <input type="hidden" name="next" value={nextPath} />
+
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-sm font-semibold">
+                البريد الإلكتروني
+                <span className="mr-2 text-xs font-normal text-muted-foreground">
+                  Email
+                </span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                dir="ltr"
+                autoComplete="email"
+                required
+                disabled={!configured}
+                placeholder="name@example.com"
+                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-semibold">
+                كلمة المرور
+                <span className="mr-2 text-xs font-normal text-muted-foreground">
+                  Password
+                </span>
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                dir="ltr"
+                autoComplete="current-password"
+                minLength={8}
+                maxLength={72}
+                required
+                disabled={!configured}
+                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full rounded-full"
+              disabled={!configured}
+            >
+              تسجيل الدخول
               <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
-            </Link>
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            لا تملك حساباً؟{" "}
             <Link
-              href={brand.links.documentation}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+              href={`/register?next=${encodeURIComponent(nextPath)}`}
+              className="font-semibold text-primary hover:underline"
             >
-              راجع مرحلة P1
+              أنشئ حساباً
             </Link>
-          </div>
+          </p>
+
+          {!configured && (
+            <p className="mt-5 text-center text-xs leading-6 text-muted-foreground">
+              يلزم ضبط متغيري Supabase العامين لتفعيل الحسابات في هذه البيئة.
+            </p>
+          )}
         </div>
       </section>
     </div>
