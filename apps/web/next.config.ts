@@ -4,8 +4,8 @@ import type { NextConfig } from "next";
  * Next.js build configuration.
  *
  * External-service credentials are validated by the capability that consumes
- * them, not while Next.js loads this file. This keeps clean CI builds possible
- * without injecting placeholder backend, model, payment, or database secrets.
+ * them, not while Next.js loads this file. Clean CI builds therefore do not
+ * require placeholder database, provider, or administrative secrets.
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
 
   transpilePackages: [
     "@iraqi-ai/types",
+    "@iraqi-ai/contracts",
     "@iraqi-ai/ui",
     "@iraqi-ai/features",
     "@iraqi-ai/api-client",
