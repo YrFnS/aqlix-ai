@@ -1,17 +1,14 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { brand } from "@/config/brand";
 
 export const metadata: Metadata = {
   title: "الحساب",
-  description: `Sign in to ${brand.name}`,
+  description: `Account access status for ${brand.name}`,
 };
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthLayout({ children }: { children: ReactNode }) {
   const year = new Date().getFullYear();
 
   return (
