@@ -1,12 +1,13 @@
 import type {
   CreateWorkspaceInput,
+  Tables,
+  TablesUpdate,
   UpdateWorkspaceInput,
   Workspace,
   WorkspaceAccess,
   WorkspaceRole,
-} from "@iraqi-ai/contracts";
-import { workspaceRoleSchema } from "@iraqi-ai/contracts";
-import type { Tables, TablesUpdate } from "@iraqi-ai/types";
+} from "@iraqi-ai/types";
+import { workspaceRoleSchema } from "@iraqi-ai/types";
 import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
 
 type WorkspaceRow = Tables<"workspaces">;
@@ -67,23 +68,25 @@ export async function listWorkspaceAccess(
     roleByWorkspace.set(membership.workspace_id, parseRole(membership.role));
   }
 
-  let query = supabase
-    .from("workspaces")
-    .select("*")
-    .in("id", Array.from(roleByWorkspace.keys()))
-    .order("updated_at", { ascending: false });
+  const workspaceIds = Array.from(roleByWorkspace.keys());
+  const result = options?.includeArchived
+    ? await supabase
+        .from("workspaces")
+        .select("*")
+        .in("id", workspaceIds)
+        .order("updated_at", { ascending: false })
+    : await supabase
+        .from("workspaces")
+        .select("*")
+        .in("id", workspaceIds)
+        .is("archived_at", null)
+        .order("updated_at", { ascending: false });
 
-  if (!options?.includeArchived) {
-    query = query.is("archived_at", null);
+  if (result.error) {
+    repositoryError("list-workspaces", result.error.message);
   }
 
-  const { data: workspaces, error: workspaceError } = await query;
-
-  if (workspaceError) {
-    repositoryError("list-workspaces", workspaceError.message);
-  }
-
-  return (workspaces ?? []).map((row) => ({
+  return (result.data ?? []).map((row) => ({
     ...mapWorkspaceRow(row),
     role: roleByWorkspace.get(row.id) ?? "viewer",
   }));
