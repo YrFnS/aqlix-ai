@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { Workspace, WorkspaceAccess } from "@iraqi-ai/contracts";
 import {
   createWorkspaceInputSchema,
   deleteWorkspaceInputSchema,
@@ -65,14 +66,16 @@ export async function createWorkspaceAction(formData: FormData): Promise<never> 
   }
 
   const { user, supabase } = await requireAuthenticatedUser("/workspaces");
+  let workspace: WorkspaceAccess;
 
   try {
-    const workspace = await createWorkspace(supabase, user.id, parsed.data);
-    revalidatePath("/workspaces");
-    redirect(`/workspaces/${workspace.id}?status=created`);
+    workspace = await createWorkspace(supabase, user.id, parsed.data);
   } catch (error) {
     handleRepositoryFailure(error, "list");
   }
+
+  revalidatePath("/workspaces");
+  redirect(`/workspaces/${workspace.id}?status=created`);
 }
 
 export async function updateWorkspaceAction(formData: FormData): Promise<never> {
@@ -91,25 +94,27 @@ export async function updateWorkspaceAction(formData: FormData): Promise<never> 
   const { supabase } = await requireAuthenticatedUser(
     `/workspaces/${workspaceId}/settings`,
   );
+  let workspace: Workspace | null;
 
   try {
-    const workspace = await updateWorkspace(supabase, parsed.data);
-    if (!workspace) settingsStatusRedirect(workspaceId, "not-found");
-
-    revalidatePath("/workspaces");
-    revalidatePath(`/workspaces/${workspaceId}`);
-    settingsStatusRedirect(workspaceId, "updated");
+    workspace = await updateWorkspace(supabase, parsed.data);
   } catch (error) {
     handleRepositoryFailure(error, { workspaceId });
   }
+
+  if (!workspace) settingsStatusRedirect(workspaceId, "not-found");
+
+  revalidatePath("/workspaces");
+  revalidatePath(`/workspaces/${workspaceId}`);
+  settingsStatusRedirect(workspaceId, "updated");
 }
 
 async function requireOwner(workspaceId: string) {
   const context = await requireAuthenticatedUser(
     `/workspaces/${workspaceId}/settings`,
   );
+  let access: WorkspaceAccess | null;
 
-  let access;
   try {
     access = await getWorkspaceAccess(context.supabase, context.user.id, workspaceId);
   } catch (error) {
@@ -128,20 +133,22 @@ export async function archiveWorkspaceAction(formData: FormData): Promise<never>
   if (!parsed.success) workspaceStatusRedirect("invalid-input");
 
   const { supabase } = await requireOwner(parsed.data.workspaceId);
+  let workspace: Workspace | null;
 
   try {
-    const workspace = await setWorkspaceArchived(
+    workspace = await setWorkspaceArchived(
       supabase,
       parsed.data.workspaceId,
       true,
     );
-    if (!workspace) workspaceStatusRedirect("not-found");
-
-    revalidatePath("/workspaces");
-    workspaceStatusRedirect("archived");
   } catch (error) {
     handleRepositoryFailure(error, { workspaceId: parsed.data.workspaceId });
   }
+
+  if (!workspace) workspaceStatusRedirect("not-found");
+
+  revalidatePath("/workspaces");
+  workspaceStatusRedirect("archived");
 }
 
 export async function restoreWorkspaceAction(formData: FormData): Promise<never> {
@@ -150,20 +157,22 @@ export async function restoreWorkspaceAction(formData: FormData): Promise<never>
   if (!parsed.success) workspaceStatusRedirect("invalid-input");
 
   const { supabase } = await requireOwner(parsed.data.workspaceId);
+  let workspace: Workspace | null;
 
   try {
-    const workspace = await setWorkspaceArchived(
+    workspace = await setWorkspaceArchived(
       supabase,
       parsed.data.workspaceId,
       false,
     );
-    if (!workspace) workspaceStatusRedirect("not-found");
-
-    revalidatePath("/workspaces");
-    redirect(`/workspaces/${parsed.data.workspaceId}?status=restored`);
   } catch (error) {
     handleRepositoryFailure(error, { workspaceId: parsed.data.workspaceId });
   }
+
+  if (!workspace) workspaceStatusRedirect("not-found");
+
+  revalidatePath("/workspaces");
+  redirect(`/workspaces/${parsed.data.workspaceId}?status=restored`);
 }
 
 export async function deleteWorkspaceAction(formData: FormData): Promise<never> {
@@ -183,13 +192,15 @@ export async function deleteWorkspaceAction(formData: FormData): Promise<never> 
     settingsStatusRedirect(parsed.data.workspaceId, "confirmation-mismatch");
   }
 
+  let deleted: boolean;
   try {
-    const deleted = await deleteWorkspace(supabase, parsed.data.workspaceId);
-    if (!deleted) workspaceStatusRedirect("not-found");
-
-    revalidatePath("/workspaces");
-    workspaceStatusRedirect("deleted");
+    deleted = await deleteWorkspace(supabase, parsed.data.workspaceId);
   } catch (error) {
     handleRepositoryFailure(error, { workspaceId: parsed.data.workspaceId });
   }
+
+  if (!deleted) workspaceStatusRedirect("not-found");
+
+  revalidatePath("/workspaces");
+  workspaceStatusRedirect("deleted");
 }
