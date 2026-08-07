@@ -3,7 +3,7 @@
 Status values:
 
 - `DONE` — implemented, documented, and validated for its declared scope
-- `IN PROGRESS` — active on the rebuild branch
+- `IN PROGRESS` — active on the rebuild branch or awaiting its final required gate
 - `BLOCKED` — cannot be completed until a named dependency is resolved
 - `PLANNED` — accepted scope, not yet started
 - `DEFERRED` — deliberately outside the active product scope
@@ -12,9 +12,13 @@ Status values:
 ## Current phase
 
 **P0 — Reset and trustworthy foundation: DONE**  
-**Next:** P1 — application shell and data contract
+**P1 — Application shell and data contract: IN PROGRESS**  
+**Active branch:** `agent/p1-workspace-foundation`  
+**Draft pull request:** `#3`
 
-P0 completion means the active web foundation is honestly scoped, buildable, and protected by executable safeguards. It does **not** mean the product, backend, data layer, authentication, deployment, security program, accessibility program, or third-party provenance is complete.
+The P1 account, persistence, authorization, workspace lifecycle, API, state, and inventory work is implemented. P1 remains `IN PROGRESS` until the final branch head passes the authenticated browser journey together with every existing required workflow.
+
+P1 completion will prove a durable account/workspace boundary. It will not mean model streaming, document processing, retrieval, citations, draft editing, export, deployment readiness, security certification, accessibility certification, or provenance clearance is complete.
 
 ## P0 — Reset and trustworthy foundation
 
@@ -57,7 +61,7 @@ P0 completion means the active web foundation is honestly scoped, buildable, and
 
 ### P0 required workflow result
 
-Pull request `#2` must remain green for all of the following on its final head:
+Pull request `#2` passed:
 
 - `CI Quality Gates`
 - `PR Validation`
@@ -65,24 +69,61 @@ Pull request `#2` must remain green for all of the following on its final head:
 - `Accessibility Foundation`
 - `Product Language & Claims Safeguards`
 
-The final reliability and documentation closeout commit is subject to the same gate before merge.
-
 ## P1 — Application shell and data contract
 
-| Work item | Status | Notes |
+| Work item | Status | Evidence or next action |
 | --- | --- | --- |
-| Workspace information architecture | PLANNED | Home, workspace rail, conversation, sources, draft, and settings |
-| Persistent schema | PLANNED | Workspace, membership, conversation, message, attachment, source, and draft |
-| Persistence strategy decision | PLANNED | Select one authoritative database and migration path |
-| Authentication boundary audit | AUDIT | Existing Supabase and custom auth overlap is quarantined, not approved |
-| Authentication implementation | PLANNED | One provider and session lifecycle introduced end to end |
-| Authorization model | PLANNED | User, membership, and workspace ownership enforced server-side |
-| Typed API contract | PLANNED | Select one contract-generation and error-envelope strategy |
-| Environment and secret inventory | PLANNED | Public, server, build, local, staging, and production boundaries |
-| Empty, loading, failure, and permission states | PLANNED | Designed with the real shell and data contract |
-| RTL/LTR shell browser tests | PLANNED | Include mixed-direction, keyboard, responsive, and hydration behavior |
-| Route and package dependency inventory | PLANNED | Identify retained consumers and reversible deletion groups |
-| Database and migration inventory | PLANNED | Classify active, legacy, and removable tables and migrations |
+| Create focused P1 branch and draft PR | DONE | `agent/p1-workspace-foundation`, PR `#3` against `develop` |
+| P1 architecture decision record | DONE | `docs/rebuild/06-P1-ARCHITECTURE.md` |
+| Workspace information architecture | DONE | `/workspaces`, archive, detail, settings, loading, error, and inaccessible states |
+| Persistence strategy decision | DONE | Supabase Auth plus canonical PostgreSQL migrations; Next.js owns account/workspace operations |
+| Persistent workspace-domain schema | DONE | Workspace, membership, conversation, message, attachment, source, and draft tables |
+| Generated database type replacement | DONE | Former `test_users` placeholder superseded by the P1 migration contract |
+| Shared runtime/type contracts | DONE | Zod commands, entities, roles, lifecycle inputs, and API envelopes under `@iraqi-ai/types/contracts` |
+| Authentication boundary audit | DONE | Inherited overlapping auth fragments quarantined; one Supabase session boundary approved |
+| Sign-up and sign-in | DONE | Server actions, configured/unconfigured states, safe return paths |
+| Session refresh and protected routes | DONE | Request-scoped Supabase middleware client and server-validated `getUser()` |
+| Confirmation callback | DONE | PKCE code or email OTP verification through one safe internal callback |
+| Sign-out | DONE | Server action clears the active session and returns to a truthful account state |
+| Workspace creation | DONE | Session-derived owner, validated input, PostgreSQL persistence, owner membership trigger |
+| Workspace list and reload persistence | DONE | Membership-backed active/archive lists; no example or process-memory records |
+| Workspace edit | DONE | Owner/editor metadata mutation with viewer rejection |
+| Workspace archive and restore | DONE | Owner-only in UI, API, and database trigger guard |
+| Workspace deletion | DONE | Owner-only exact-name confirmation and database cascades |
+| Authorization model | DONE | Owner/editor/viewer RLS on every workspace-owned table |
+| Tenant foreign-key integrity | DONE | Messages, sources, and drafts cannot point across workspaces |
+| Owner insert-returning policy | DONE | Immutable owner path plus exact authenticated `INSERT ... RETURNING` regression test |
+| Typed same-origin workspace API | DONE | `/api/v1` collection, item, and lifecycle routes with request IDs and stable error codes |
+| Service-role restriction | DONE | Normal account/workspace paths use the signed-in session and RLS; no administrative bypass |
+| Environment and secret inventory | DONE | Public, server-only, local, CI, deferred, and restricted variables documented |
+| Route and package dependency inventory | DONE | `docs/rebuild/07-P1-INVENTORY.md` with reversible cleanup groups |
+| Database and migration inventory | DONE | Four foundational migrations plus owner-insert visibility policy classified and tested |
+| Empty state | DONE | No-workspace and empty-archive states contain no fabricated activity |
+| Loading state | DONE | List and detail loading shells with live-region semantics |
+| Runtime failure state | DONE | Route error boundary and persistence-specific status messages |
+| Missing/forbidden state | DONE | Shared non-disclosing inaccessible-workspace page and API `404` behavior |
+| Offline state | DONE | Browser connectivity notice without claiming offline persistence |
+| Responsive authenticated navigation | DONE | Real routes only, account identity, sign-out, labelled mobile overlay |
+| Mixed-direction content handling | DONE | User workspace name/description rendered with automatic text direction |
+| Contract tests | DONE | Shared input/envelope tests and active P1 source safeguards |
+| PostgreSQL migration and RLS workflow | DONE | PostgreSQL 16 applies all P1 migrations and tests roles, tenant isolation, FKs, and cascades |
+| Local Supabase project | DONE | Minimal Auth, PostgREST, and PostgreSQL configuration committed for reproducible browser CI |
+| Authenticated browser journey | IN PROGRESS | Final head must pass real two-account lifecycle, API, isolation, keyboard, mobile, offline, and hydration checks |
+| Final branch diff and PR description | IN PROGRESS | Update after final browser and all required workflow results are green |
+
+### P1 required workflow result
+
+The final PR `#3` head must pass all of the following before P1 can be marked `DONE` or merged:
+
+- `CI Quality Gates`
+- `PR Validation`
+- `Arabic & RTL Foundation`
+- `Accessibility Foundation`
+- `Product Language & Claims Safeguards`
+- `P1 Data Contract`
+- `P1 Authenticated Browser Journey`
+
+A failed gate is fixed or explicitly re-scoped with evidence; it is not bypassed by changing the completion label.
 
 ## P2 — Real bilingual conversation
 
@@ -90,7 +131,7 @@ The final reliability and documentation closeout commit is subject to the same g
 | --- | --- | --- |
 | Provider abstraction | AUDIT | Existing provider and agent code must prove value before reuse |
 | Streaming transport | PLANNED | Select one supported path; avoid duplicate SSE and WebSocket stacks |
-| Persistent conversation service | PLANNED | Replace process-memory storage |
+| Persistent conversation service | PLANNED | Use the P1 workspace/conversation/message schema; replace process-memory storage |
 | Failure, retry, cancellation, and timeout | PLANNED | Required before beta |
 | Cost and latency telemetry | PLANNED | No public targets before baseline data exists |
 | Arabic and English rendering tests | PLANNED | Include code, numbers, URLs, punctuation, markdown, and mixed text |
@@ -109,7 +150,7 @@ The final reliability and documentation closeout commit is subject to the same g
 
 | Work item | Status | Notes |
 | --- | --- | --- |
-| Draft data model | PLANNED | Preserve relationship to source conversation and documents |
+| Draft persistence contract | DONE | P1 schema preserves workspace and optional conversation provenance |
 | Draft canvas | PLANNED | Arabic, English, and mixed-direction editing |
 | Reusable output actions | PLANNED | Summary, comparison, email, memo, checklist, and decision note |
 | Versioning and provenance | PLANNED | Required before export |
@@ -119,9 +160,10 @@ The final reliability and documentation closeout commit is subject to the same g
 
 | Work item | Status | Notes |
 | --- | --- | --- |
-| Clean web build baseline | DONE | P0 Next.js build passes in clean CI with no placeholder service secrets |
+| Clean web build baseline | DONE | Next.js build passes in clean CI with no placeholder provider or administrative secrets |
+| Local account/data integration environment | DONE | P1 local Supabase stack is reproducible in CI |
 | Bun-only deployment path | PLANNED | Existing container and runtime commands still require audit and correction |
-| Full application deployment build | PLANNED | Web, API, migrations, workers, and runtime config together |
+| Full application deployment build | PLANNED | Web, future capability service, migrations, workers, and runtime config together |
 | Backup and restore exercise | PLANNED | Must be executed, not documented only |
 | Security and privacy review | PLANNED | Include authorization, uploads, secrets, retention, deletion, and logs |
 | Dependency and provenance review | PLANNED | Resolve extracted-example licensing before release |
