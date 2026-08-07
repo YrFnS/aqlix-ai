@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { AppNav } from "@/components/navigation/app-nav";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen bg-secondary/25">
       <AppNav />
