@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { FileText, Languages, ShieldCheck } from "lucide-react";
-import { LoginForm } from "@/components/auth";
+import Link from "next/link";
+import {
+  ArrowUpLeft,
+  FileText,
+  Languages,
+  LockKeyhole,
+  ShieldCheck,
+} from "lucide-react";
 import { brand } from "@/config/brand";
 
 export const metadata: Metadata = {
-  title: "تسجيل الدخول",
-  description: `Sign in to ${brand.name}`,
+  title: "الحساب",
+  description: `Account access status for ${brand.name}`,
 };
 
 const productNotes = [
@@ -39,8 +45,8 @@ export default function LoginPage() {
             ارجع إلى السياق، وأكمل العمل من حيث توقفت.
           </h1>
           <p className="mt-5 text-sm leading-8 text-background/65">
-            صفحة الدخول جزء من أساس إعادة البناء. الحفظ الدائم والمحادثة الحقيقية
-            والمستندات ستُفعّل بحسب مراحل التنفيذ الموثقة.
+            الوصول إلى الحساب جزء من P1. لن نعرض نموذج تسجيل دخول لا يملك عقد
+            مصادقة وتخزين وصلاحيات مكتمل.
           </p>
         </div>
 
@@ -66,11 +72,36 @@ export default function LoginPage() {
 
       <section className="flex min-h-[620px] items-center justify-center p-6 sm:p-10 lg:p-14">
         <div className="w-full max-w-md rounded-3xl border border-border/70 bg-background p-6 shadow-sm sm:p-8">
-          <LoginForm
-            redirectTo={brand.links.workspace}
-            culturalMode="both"
-            showRegisterLink={true}
-          />
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <LockKeyhole className="h-6 w-6" aria-hidden="true" />
+          </div>
+          <div className="mt-6 text-center">
+            <p className="text-sm font-semibold text-primary">P1 · Account boundary</p>
+            <h1 className="mt-3 font-arabic-heading text-3xl font-semibold">
+              الوصول إلى الحساب قيد إعادة البناء
+            </h1>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              سنفعّل التسجيل والدخول بعد اعتماد عقد واحد للمصادقة، التخزين،
+              الجلسات، والصلاحيات. حالياً يمكنك استكشاف أساس مساحة العمل وخطة
+              التنفيذ من دون إنشاء حساب تجريبي وهمي.
+            </p>
+          </div>
+
+          <div className="mt-7 grid gap-3">
+            <Link
+              href={brand.links.workspace}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+            >
+              استكشف أساس مساحة العمل
+              <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href={brand.links.documentation}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+            >
+              راجع مرحلة P1
+            </Link>
+          </div>
         </div>
       </section>
     </div>
