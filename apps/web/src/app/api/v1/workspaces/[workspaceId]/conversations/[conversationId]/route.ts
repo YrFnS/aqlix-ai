@@ -94,7 +94,12 @@ export async function GET(request: Request, context: RouteContext) {
     );
 
     return jsonSuccess(
-      { conversation, messages, workspaceRole: access.role },
+      {
+        conversation,
+        messages,
+        workspaceRole: access.role,
+        workspaceArchived: access.archivedAt !== null,
+      },
       { requestId: auth.context.requestId },
     );
   } catch (error) {
@@ -153,6 +158,14 @@ export async function PATCH(request: Request, context: RouteContext) {
         "NOT_FOUND",
         "Conversation was not found or is not available to this account.",
         { status: 404, requestId: auth.context.requestId },
+      );
+    }
+
+    if (access.archivedAt) {
+      return jsonFailure(
+        "CONFLICT",
+        "Archived workspaces are read-only. Restore the workspace before updating conversations.",
+        { status: 409, requestId: auth.context.requestId },
       );
     }
 
@@ -216,6 +229,14 @@ export async function DELETE(request: Request, context: RouteContext) {
         "NOT_FOUND",
         "Conversation was not found or is not available to this account.",
         { status: 404, requestId: auth.context.requestId },
+      );
+    }
+
+    if (access.archivedAt) {
+      return jsonFailure(
+        "CONFLICT",
+        "Archived workspaces are read-only. Restore the workspace before deleting conversations.",
+        { status: 409, requestId: auth.context.requestId },
       );
     }
 
