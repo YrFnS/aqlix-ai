@@ -4,31 +4,34 @@
 
 Kiteb is being rebuilt as an **Arabic-first, bilingual AI workspace for turning conversations and documents into clear, reusable work**.
 
-The repository previously presented a much broader “Iraqi AI Chat System” with agents, professional domains, payments, automation, voice, and compliance claims. The visible product and underlying integrations did not consistently support that story. This branch begins a controlled reset around one complete user journey.
+The repository previously presented a much broader “Iraqi AI Chat System” with agents, professional domains, payments, automation, voice, and compliance claims. The visible product and underlying integrations did not consistently support that story. The rebuild resets the product around one complete user journey.
 
 ## Current status
 
-**Phase:** P0 — reset and trustworthy foundation  
-**Active branch:** `agent/product-rebuild-foundation`  
+**Phase:** P0 complete — P1 is next  
+**Foundation pull request:** `#2` targeting `develop`  
 **Production ready:** No
 
-The current foundation includes:
+P0 establishes:
 
 - a focused product brief and phased roadmap;
 - a provisional brand system with centralized product copy;
 - an Arabic-first marketing and workspace shell;
 - retained Arabic typography, RTL, LTR, and mixed-text foundations;
 - an honest workspace entry screen without fake activity metrics;
-- explicit separation between implemented, planned, deferred, and audit-required work.
+- capability-neutral account and middleware boundaries;
+- explicit separation between implemented, planned, deferred, quarantined, and audit-required work;
+- reproducible Bun-based checks for the active product graph.
 
 The following are **not yet complete product capabilities**:
 
+- account registration, authentication, sessions, and authorization;
 - real streamed AI conversations;
 - persistent workspaces and message history;
 - document processing and source-grounded citations;
 - reusable draft creation and export;
 - live payment-gateway integrations;
-- production deployment validation;
+- production container and deployment validation;
 - verified security, privacy, accessibility, performance, cultural, dialect, or compliance claims.
 
 ## Product loop
@@ -50,6 +53,7 @@ Payments, multi-agent surfaces, workflow builders, voice, desktop automation, na
 - [Roadmap](./docs/rebuild/02-REBUILD-ROADMAP.md)
 - [Implementation tracker](./docs/rebuild/03-IMPLEMENTATION-TRACKER.md)
 - [Decision log](./docs/rebuild/04-DECISION-LOG.md)
+- [Legacy system disposition](./docs/rebuild/05-LEGACY-DISPOSITION.md)
 
 ## Branch model
 
@@ -58,7 +62,7 @@ The former active branch heads were preserved before rebuild work began:
 - `legacy/main-2026-08-07`
 - `legacy/develop-2026-08-07`
 
-The rebuild starts from `develop` on:
+The P0 foundation was developed from `develop` on:
 
 - `agent/product-rebuild-foundation`
 
@@ -68,29 +72,52 @@ Starting from `develop` preserves potentially useful foundations for comparison.
 
 ### Requirements
 
-- Bun
-- Node.js 20 or later where required by the current packages
-- Python and backend dependencies for API work
-- configured environment variables for any service being exercised
+- Bun `1.3.14`, pinned in the root `packageManager` field
+- Node.js 20 or later where required by inherited packages
+- Python and backend dependencies only when auditing or implementing the API
+- configured environment variables only for the capability being exercised
+
+P0 web builds do not require placeholder backend, model, payment, database-admin, or Supabase credentials.
 
 ### Web development
 
 ```bash
-bun install
+bun install --frozen-lockfile
 bun run dev
 ```
 
-### Intended quality gates
+### Required active quality gates
 
 ```bash
+bun install --frozen-lockfile
+bun run build:packages
 bun run lint
 bun run typecheck
-bun run build
-bun run test:unit
-bun run test:e2e
+bun run test:rebuild
+cd apps/web && bun run build
 ```
 
-These commands describe the repository’s intended workflow. A phase is not considered complete merely because commands are documented; they must run successfully in a clean, reproducible environment and in CI.
+The P0 pull-request head passed all of those commands in GitHub Actions, together with:
+
+- PR title, change-scope, and rebuild-safeguard validation;
+- Arabic and RTL foundation tests;
+- accessibility foundation safeguards;
+- product-language and public-claims safeguards.
+
+These checks prove that the current web foundation builds and that its declared safeguards execute. They are not production-readiness, accessibility-certification, cultural-compliance, security-compliance, or dialect-accuracy claims.
+
+### Legacy audit commands
+
+Inherited tests and broader workspace checks remain available under explicit legacy commands, including:
+
+```bash
+bun run typecheck:legacy
+bun run test:legacy
+bun run test:legacy:integration
+bun run test:legacy:e2e
+```
+
+They are audit inputs, not approved release gates. Each failure must be classified as retained product work, legacy debt, missing provenance, or removable scope.
 
 ## Architecture under review
 
@@ -98,7 +125,7 @@ The repository currently contains:
 
 ```text
 apps/
-├── web/       Next.js application
+├── web/       Next.js application and active P0 foundation
 └── api/       FastAPI application and legacy service implementations
 
 packages/      Shared TypeScript packages
@@ -112,10 +139,10 @@ Provisionally reusable areas include:
 - Next.js route groups and selected layout primitives;
 - Arabic font loading and direction infrastructure;
 - selected bidirectional UI utilities;
-- parts of the CI workflow structure;
+- evidence-based CI workflow structure;
 - selected Supabase and API foundations after audit.
 
-No legacy service is considered production-ready by inheritance. In particular, placeholder in-memory chat, simulated payment behavior, duplicate architecture, and unverified compliance systems must not be exposed as live capability.
+No legacy service is considered production-ready by inheritance. In particular, placeholder in-memory chat, simulated payment behavior, duplicate architecture, unfinished authentication, and unverified compliance systems must not be exposed as live capability.
 
 ## Product and engineering rules
 
@@ -127,6 +154,7 @@ No legacy service is considered production-ready by inheritance. In particular, 
 6. Secrets, authorization, uploads, retention, and deletion are tested before beta.
 7. Third-party code and assets require documented origin and compatible licensing.
 8. Bun remains the single JavaScript package manager unless a later decision explicitly changes it.
+9. Active rebuild gates and legacy audit checks remain visibly separate until inherited scope is classified.
 
 ## Licensing and provenance
 
