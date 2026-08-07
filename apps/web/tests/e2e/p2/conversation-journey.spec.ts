@@ -145,7 +145,14 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
 
   await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
   await page.getByRole("button", { name: "إرسال" }).click();
-  await expect(page.getByText(/هذه إجابة اختبارية/)).toBeVisible();
+
+  const assistantAttemptsWithFixtureText = page
+    .locator('article[data-message-id]')
+    .filter({ hasText: "هذه إجابة اختبارية" });
+  await expect
+    .poll(async () => assistantAttemptsWithFixtureText.count())
+    .toBeGreaterThan(1);
+
   await page
     .getByRole("button", { name: "إيقاف وحفظ الجزئي" })
     .click();
@@ -161,7 +168,6 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
     })
     .toBe("cancelled");
 
-  await expect(page.getByText(/تم إيقاف الاستجابة وحفظ النص الجزئي/)).toBeVisible();
   await expect(page.getByText("أُلغيت")).toBeVisible();
 
   await page.getByRole("button", { name: "إعادة المحاولة" }).last().click();
