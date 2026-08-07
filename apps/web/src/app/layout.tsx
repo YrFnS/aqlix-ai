@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
 import { DirectionProvider } from "@/components/providers/DirectionProvider";
@@ -22,11 +23,7 @@ export const viewport: Viewport = {
   userScalable: true,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="ar"
