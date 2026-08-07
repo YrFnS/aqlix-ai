@@ -38,6 +38,7 @@ interface ConversationShellProps {
   conversation: Conversation;
   initialMessages: ConversationMessage[];
   canWrite: boolean;
+  readOnlyReason: "workspace-archived" | "membership";
 }
 
 type Notice = {
@@ -264,6 +265,7 @@ export function ConversationShell({
   conversation,
   initialMessages,
   canWrite,
+  readOnlyReason,
 }: ConversationShellProps) {
   const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
@@ -371,7 +373,8 @@ export function ConversationShell({
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
-            message: "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
+            message:
+              "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
           });
           return;
         }
@@ -389,7 +392,8 @@ export function ConversationShell({
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
-            message: "تم إيقاف الاستجابة وحفظ النص الجزئي / Generation stopped and partial text saved.",
+            message:
+              "تم إيقاف الاستجابة وحفظ النص الجزئي / Generation stopped and partial text saved.",
           });
         }
       });
@@ -451,6 +455,11 @@ export function ConversationShell({
     "حوّل هذه الملاحظات إلى قرار عملي",
   ];
 
+  const readOnlyMessage =
+    readOnlyReason === "workspace-archived"
+      ? "مساحة العمل مؤرشفة. يمكنك مراجعة السجل، لكن يجب استعادة المساحة قبل إرسال رسالة أو إعادة محاولة."
+      : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وحالة التوليد من دون إرسال أو إعادة محاولة.";
+
   return (
     <section className="grid min-h-[70vh] overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm lg:grid-rows-[1fr_auto]">
       <div className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]">
@@ -491,7 +500,8 @@ export function ConversationShell({
                 canRetry={
                   canWrite &&
                   message.role === "assistant" &&
-                  (message.status === "failed" || message.status === "cancelled")
+                  (message.status === "failed" ||
+                    message.status === "cancelled")
                 }
                 retryDisabled={isStreaming}
                 onRetry={(messageId) =>
@@ -569,7 +579,7 @@ export function ConversationShell({
           <div className="rounded-2xl bg-secondary/60 px-4 py-3 text-sm leading-7 text-muted-foreground">
             {conversation.status === "archived"
               ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
-              : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وحالة التوليد من دون إرسال أو إعادة محاولة."}
+              : readOnlyMessage}
           </div>
         )}
       </div>
