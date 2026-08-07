@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { Workspace, WorkspaceAccess } from "@iraqi-ai/contracts";
+import type { Workspace, WorkspaceAccess } from "@iraqi-ai/types";
 import {
   createWorkspaceInputSchema,
   deleteWorkspaceInputSchema,
   updateWorkspaceInputSchema,
   workspaceIdInputSchema,
-} from "@iraqi-ai/contracts";
+} from "@iraqi-ai/types";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   createWorkspace,
