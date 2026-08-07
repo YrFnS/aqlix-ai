@@ -21,24 +21,35 @@ insert into public.workspaces (
   description,
   default_language
 )
-values (
-  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-  '11111111-1111-4111-8111-111111111111',
-  'مساحة الاختبار',
-  'Workspace isolation fixture',
-  'auto'
-);
+values
+  (
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '11111111-1111-4111-8111-111111111111',
+    'مساحة الاختبار',
+    'Workspace isolation fixture',
+    'auto'
+  ),
+  (
+    'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+    '11111111-1111-4111-8111-111111111111',
+    'مساحة ثانية',
+    'Cross-tenant integrity fixture',
+    'en'
+  );
 
 do $$
 begin
   if (
     select count(*)
     from public.workspace_members
-    where workspace_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
-      and user_id = '11111111-1111-4111-8111-111111111111'
+    where user_id = '11111111-1111-4111-8111-111111111111'
       and role = 'owner'
-  ) <> 1 then
-    raise exception 'owner membership was not created transactionally';
+      and workspace_id in (
+        'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+        'cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+      )
+  ) <> 2 then
+    raise exception 'owner memberships were not created transactionally';
   end if;
 end;
 $$;
@@ -54,6 +65,11 @@ values
     'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
     '33333333-3333-4333-8333-333333333333',
     'viewer'
+  ),
+  (
+    'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+    '22222222-2222-4222-8222-222222222222',
+    'editor'
   );
 
 select set_config(
@@ -78,18 +94,115 @@ begin
 end;
 $$;
 
+do $$
+begin
+  begin
+    update public.workspaces
+    set archived_at = timezone('utc', now())
+    where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+
+    raise exception 'editor archive unexpectedly succeeded';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  if (
+    select archived_at
+    from public.workspaces
+    where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+  ) is not null then
+    raise exception 'editor changed the archive state';
+  end if;
+end;
+$$;
+
 insert into public.conversations (
   id,
   workspace_id,
   created_by,
   title
 )
-values (
-  'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
-  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-  '22222222-2222-4222-8222-222222222222',
-  'محادثة الاختبار'
-);
+values
+  (
+    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '22222222-2222-4222-8222-222222222222',
+    'محادثة الاختبار'
+  ),
+  (
+    'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '22222222-2222-4222-8222-222222222222',
+    'محادثة حذف الرابط'
+  );
+
+insert into public.drafts (
+  id,
+  workspace_id,
+  conversation_id,
+  created_by,
+  title,
+  content
+)
+values
+  (
+    'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'dddddddd-dddd-4ddd-8ddd-dddddddddddd',
+    '22222222-2222-4222-8222-222222222222',
+    'مسودة مرتبطة',
+    'Draft should survive conversation deletion.'
+  ),
+  (
+    '99999999-9999-4999-8999-999999999999',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    '22222222-2222-4222-8222-222222222222',
+    'مسودة للحذف المتسلسل',
+    'Draft should be removed with its workspace.'
+  );
+
+do $$
+begin
+  begin
+    insert into public.drafts (
+      id,
+      workspace_id,
+      conversation_id,
+      created_by,
+      title
+    )
+    values (
+      'ffffffff-ffff-4fff-8fff-ffffffffffff',
+      'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+      'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+      '22222222-2222-4222-8222-222222222222',
+      'Cross-tenant draft'
+    );
+
+    raise exception 'cross-tenant draft unexpectedly succeeded';
+  exception
+    when foreign_key_violation then null;
+  end;
+end;
+$$;
+
+delete from public.conversations
+where id = 'dddddddd-dddd-4ddd-8ddd-dddddddddddd';
+
+do $$
+begin
+  if not exists (
+    select 1
+    from public.drafts
+    where id = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+      and workspace_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+      and conversation_id is null
+  ) then
+    raise exception 'draft did not preserve its workspace after conversation deletion';
+  end if;
+end;
+$$;
 
 select set_config(
   'request.jwt.claim.sub',
@@ -154,6 +267,14 @@ select set_config(
   false
 );
 
+update public.workspaces
+set archived_at = timezone('utc', now())
+where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+
+update public.workspaces
+set archived_at = null
+where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+
 do $$
 begin
   begin
@@ -172,7 +293,10 @@ end;
 $$;
 
 delete from public.workspaces
-where id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+where id in (
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+);
 
 reset role;
 
@@ -181,7 +305,10 @@ begin
   if exists (
     select 1
     from public.workspace_members
-    where workspace_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+    where workspace_id in (
+      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+      'cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+    )
   ) then
     raise exception 'workspace membership rows did not cascade on deletion';
   end if;
@@ -191,7 +318,18 @@ begin
     from public.conversations
     where workspace_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
   ) then
-    raise exception 'workspace content rows did not cascade on deletion';
+    raise exception 'workspace conversation rows did not cascade on deletion';
+  end if;
+
+  if exists (
+    select 1
+    from public.drafts
+    where workspace_id in (
+      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+      'cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+    )
+  ) then
+    raise exception 'workspace draft rows did not cascade on deletion';
   end if;
 end;
 $$;
