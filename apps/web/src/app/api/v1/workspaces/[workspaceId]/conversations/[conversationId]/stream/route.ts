@@ -13,6 +13,7 @@ import {
 } from "@/lib/ai";
 import { requireApiUser } from "@/lib/api/auth";
 import { jsonFailure, zodFieldErrors } from "@/lib/api/responses";
+import type { BegunConversationTurn } from "@/lib/conversations/repository";
 import {
   beginConversationTurn,
   checkpointConversationGeneration,
@@ -162,6 +163,14 @@ export async function POST(request: Request, context: RouteContext) {
       );
     }
 
+    if (access.archivedAt) {
+      return jsonFailure(
+        "CONFLICT",
+        "Archived workspaces are read-only. Restore the workspace before generating messages.",
+        { status: 409, requestId: auth.context.requestId },
+      );
+    }
+
     if (access.role === "viewer") {
       return jsonFailure(
         "FORBIDDEN",
@@ -204,7 +213,7 @@ export async function POST(request: Request, context: RouteContext) {
   }
 
   const providerIdentity = getRequestedProviderIdentity();
-  let turn;
+  let turn: BegunConversationTurn;
 
   try {
     turn = await beginConversationTurn(auth.context.supabase, {
@@ -228,24 +237,92 @@ export async function POST(request: Request, context: RouteContext) {
     );
   }
 
-  const [userMessage, assistantMessage] = await Promise.all([
-    turn.userMessageId
-      ? getConversationMessage(
-          auth.context.supabase,
-          parsed.data.workspaceId,
-          parsed.data.conversationId,
-          turn.userMessageId,
-        )
-      : Promise.resolve(null),
-    getConversationMessage(
-      auth.context.supabase,
-      parsed.data.workspaceId,
-      parsed.data.conversationId,
-      turn.assistantMessageId,
-    ),
-  ]);
+  let userMessage: ConversationMessage | null;
+  let assistantMessage: ConversationMessage | null;
+
+  try {
+    [userMessage, assistantMessage] = await Promise.all([
+      turn.userMessageId
+        ? getConversationMessage(
+            auth.context.supabase,
+            parsed.data.workspaceId,
+            parsed.data.conversationId,
+            turn.userMessageId,
+          )
+        : Promise.resolve(null),
+      getConversationMessage(
+        auth.context.supabase,
+        parsed.data.workspaceId,
+        parsed.data.conversationId,
+        turn.assistantMessageId,
+      ),
+    ]);
+  } catch (error) {
+    console.error("Conversation turn initialization failed", {
+      requestId: auth.context.requestId,
+      error,
+    });
+
+    try {
+      await finishConversationGeneration(auth.context.supabase, {
+        workspaceId: parsed.data.workspaceId,
+        conversationId: parsed.data.conversationId,
+        messageId: turn.assistantMessageId,
+        generationId: turn.generationId,
+        status: "failed",
+        content: "",
+        returnedModel: null,
+        providerResponseId: null,
+        inputTokens: null,
+        outputTokens: null,
+        reasoningTokens: null,
+        totalTokens: null,
+        firstTokenLatencyMs: null,
+        latencyMs: 0,
+        failureCode: "PERSISTENCE_ERROR",
+        failureMessage: "The durable turn could not be initialized.",
+      });
+    } catch (finalizationError) {
+      console.error("Conversation initialization finalization failed", {
+        requestId: auth.context.requestId,
+        finalizationError,
+      });
+    }
+
+    return jsonFailure(
+      "PERSISTENCE_ERROR",
+      "The assistant generation record could not be initialized.",
+      { status: 503, requestId: auth.context.requestId },
+    );
+  }
 
   if (!assistantMessage || !assistantMessage.generation) {
+    try {
+      await finishConversationGeneration(auth.context.supabase, {
+        workspaceId: parsed.data.workspaceId,
+        conversationId: parsed.data.conversationId,
+        messageId: turn.assistantMessageId,
+        generationId: turn.generationId,
+        status: "failed",
+        content: "",
+        returnedModel: null,
+        providerResponseId: null,
+        inputTokens: null,
+        outputTokens: null,
+        reasoningTokens: null,
+        totalTokens: null,
+        firstTokenLatencyMs: null,
+        latencyMs: 0,
+        failureCode: "PERSISTENCE_ERROR",
+        failureMessage: "The durable assistant generation record is unavailable.",
+      });
+    } catch (error) {
+      console.error("Missing generation finalization failed", {
+        requestId: auth.context.requestId,
+        error,
+      });
+    }
+
     return jsonFailure(
       "PERSISTENCE_ERROR",
       "The assistant generation record could not be loaded.",
@@ -253,6 +330,7 @@ export async function POST(request: Request, context: RouteContext) {
     );
   }
 
+  const durableAssistantMessage = assistantMessage;
   const generationAbort = new AbortController();
   const abortFromRequest = () => generationAbort.abort(request.signal.reason);
   if (request.signal.aborted) {
@@ -301,7 +379,7 @@ export async function POST(request: Request, context: RouteContext) {
           type: "ready",
           conversationId: parsed.data.conversationId,
           userMessage,
-          assistantMessage,
+          assistantMessage: durableAssistantMessage,
         });
 
         const heartbeat = setInterval(() => {
@@ -352,7 +430,7 @@ export async function POST(request: Request, context: RouteContext) {
             });
           }
 
-          return fallbackMessage(assistantMessage, finalInput);
+          return fallbackMessage(durableAssistantMessage, finalInput);
         };
 
         try {
