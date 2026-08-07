@@ -1,0 +1,73 @@
+name: P1 Data Contract
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  postgres-contract:
+    name: PostgreSQL Migration & RLS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: kiteb_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d kiteb_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: "5432"
+      PGDATABASE: kiteb_test
+      PGUSER: postgres
+      PGPASSWORD: postgres
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Prepare Supabase-compatible auth test harness
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_test_setup.sql
+
+      - name: Apply P1 migrations
+        run: |
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080001_p1_workspace_foundation.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080002_p1_owner_membership_delete_fix.sql
+
+      - name: Verify workspace ownership and tenant isolation
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
+
+  data-contract-success:
+    name: P1 Data Contract Success Gate
+    runs-on: ubuntu-latest
+    needs: [postgres-contract]
+    if: always()
+
+    steps:
+      - name: Check data contract
+        run: |
+          if [[ "${{ needs.postgres-contract.result }}" != "success" ]]; then
+            echo "P1 PostgreSQL migration or RLS validation failed"
+            exit 1
+          fi
+
+          echo "P1 PostgreSQL schema and workspace isolation checks passed."
