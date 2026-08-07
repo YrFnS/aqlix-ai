@@ -30,6 +30,10 @@ const messages: Record<
     tone: "error",
     text: "العضوية الحالية للقراءة فقط / The current membership is read-only.",
   },
+  "workspace-archived": {
+    tone: "info",
+    text: "مساحة العمل مؤرشفة وتعمل بوضع القراءة فقط. استعدها قبل تعديل المحادثات أو التوليد / The workspace is archived and read-only. Restore it before conversation changes or generation.",
+  },
   "not-found": {
     tone: "error",
     text: "المحادثة غير موجودة أو غير متاحة لهذا الحساب / Conversation not found or unavailable to this account.",
