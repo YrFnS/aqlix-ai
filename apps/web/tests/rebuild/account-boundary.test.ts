@@ -32,6 +32,17 @@ describe("P1 account boundary", () => {
     expect(callback).not.toContain("verifyOtp");
   });
 
+  test("keeps P0 middleware free from unfinished auth dependencies", () => {
+    const middleware = readSource("src/middleware.ts");
+
+    expect(middleware).toContain("x-kiteb-product-phase");
+    expect(middleware).toContain('"p0"');
+    expect(middleware).not.toContain("@/lib/supabase/middleware");
+    expect(middleware).not.toContain("createServerClient");
+    expect(middleware).not.toContain("PROTECTED_ROUTES");
+    expect(middleware).not.toContain("NEXT_PUBLIC_SUPABASE");
+  });
+
   test("does not present account access as an implemented capability", () => {
     const login = readSource("src/app/(auth)/login/page.tsx");
 
