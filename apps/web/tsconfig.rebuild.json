@@ -24,6 +24,8 @@
     "src/app/(auth)/verify-email/page.tsx",
     "src/app/auth/confirm/route.ts",
     "src/app/auth/error/page.tsx",
+    "src/app/examples/forms/page.tsx",
+    "src/app/test-errors/page.tsx",
     "src/components/navigation/marketing-nav.tsx",
     "src/components/navigation/mobile-menu.tsx",
     "src/components/navigation/app-nav.tsx",
