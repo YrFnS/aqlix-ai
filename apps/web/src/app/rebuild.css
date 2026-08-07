@@ -1,0 +1,53 @@
+:root {
+  --background: 43 43% 97%;
+  --foreground: 222 35% 11%;
+  --card: 40 33% 99%;
+  --card-foreground: 222 35% 11%;
+  --popover: 40 33% 99%;
+  --popover-foreground: 222 35% 11%;
+  --primary: 161 68% 25%;
+  --primary-foreground: 42 60% 98%;
+  --secondary: 42 25% 92%;
+  --secondary-foreground: 220 30% 16%;
+  --muted: 42 22% 93%;
+  --muted-foreground: 218 12% 42%;
+  --accent: 159 36% 90%;
+  --accent-foreground: 161 60% 20%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 40 16% 84%;
+  --input: 40 16% 84%;
+  --ring: 161 68% 25%;
+  --radius: 0.9rem;
+}
+
+.dark {
+  --background: 222 28% 8%;
+  --foreground: 42 35% 94%;
+  --card: 222 24% 11%;
+  --card-foreground: 42 35% 94%;
+  --popover: 222 24% 11%;
+  --popover-foreground: 42 35% 94%;
+  --primary: 158 53% 53%;
+  --primary-foreground: 222 32% 9%;
+  --secondary: 220 18% 16%;
+  --secondary-foreground: 42 30% 92%;
+  --muted: 220 16% 16%;
+  --muted-foreground: 42 12% 68%;
+  --accent: 158 22% 18%;
+  --accent-foreground: 158 60% 78%;
+  --destructive: 0 62% 42%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 14% 22%;
+  --input: 220 14% 22%;
+  --ring: 158 53% 53%;
+}
+
+body {
+  background-image: radial-gradient(
+    circle at 92% -8%,
+    hsl(var(--accent) / 0.48),
+    transparent 34rem
+  );
+  background-attachment: fixed;
+}

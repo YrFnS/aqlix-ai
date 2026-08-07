@@ -1,4 +1,4 @@
-name: Arabic & RTL Testing
+name: Arabic & RTL Foundation
 
 on:
   push:
@@ -6,155 +6,61 @@ on:
   pull_request:
     branches: [main, develop]
 
-# Cancel in-progress runs for the same workflow and branch
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  rtl-layout-tests:
-    name: RTL Layout Validation
+  rtl-foundation:
+    name: Arabic & RTL Foundation Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bash scripts/ci/install-dependencies.sh
 
-      - name: Install Playwright browsers
+      - name: Build shared packages in dependency order
+        run: bun run build:packages
+
+      - name: Test active RTL product foundation
+        run: bun run test:rtl
+
+      - name: Test Arabic processing package
+        run: bun run --filter @iraqi-ai/arabic-nlp test
+
+      - name: Test bidirectional UI utilities
+        run: bun run --filter @iraqi-ai/ui test
+
+      - name: Verify committed Arabic font configuration
         run: |
-          cd apps/web
-          bunx playwright install chromium --with-deps
-
-      - name: Run Arabic RTL tests
-        run: |
-          echo "🧪 Running Arabic/RTL E2E tests..."
-          bun run test:arabic
-          echo "✅ Arabic tests complete (Phase 1 - warnings allowed)"
-        id: arabic-tests
-
-      - name: Validate RTL accuracy threshold (99%+)
-        run: |
-          echo "✅ Arabic RTL tests passed"
-          echo "📊 Validating RTL accuracy threshold..."
-          # TODO Phase 2: Parse test results and validate >= 99% RTL accuracy
-          # TODO Phase 2: Parse test results and validate >= 85% Iraqi dialect recognition
-          # For now, allowing tests to proceed (Phase 1)
-          echo "⚠️  Phase 1: Threshold validation pending implementation"
-          echo "🎯 Target: >= 99% RTL accuracy"
-          echo "🎯 Target: >= 85% Iraqi dialect recognition"
-
-      - name: Upload RTL test screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: rtl-screenshots
-          path: apps/web/test-results/
-          retention-days: 7
-
-      - name: Upload Arabic test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: arabic-test-report
-          path: |
-            apps/web/playwright-report/
-            apps/web/test-results/
-          retention-days: 7
-
-  font-rendering-tests:
-    name: Arabic Font Rendering
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: |
-          cd apps/web
-          bunx playwright install chromium --with-deps
-
-      - name: Test Noto Sans Arabic rendering
-        run: |
-          echo "🔤 Testing Arabic font rendering..."
-          echo "✅ Noto Sans Arabic font loaded"
-          echo "✅ Amiri font loaded"
-          echo "✅ font-arabic class applied correctly"
-          # Note: Actual font rendering tested in E2E tests above
-
-      - name: Test mixed Arabic-English content
-        run: |
-          echo "📝 Testing mixed content rendering..."
-          echo "✅ Mixed Arabic-English text renders correctly"
-          echo "✅ Text direction switches properly"
-          echo "✅ Line height accommodates Arabic diacritics"
-
-  dialect-recognition-tests:
-    name: Iraqi Dialect Processing
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Test Iraqi dialect recognition
-        run: |
-          echo "🗣️  Testing Iraqi dialect recognition..."
-          echo "✅ Baghdad dialect recognized"
-          echo "✅ Basra dialect recognized"
-          echo "✅ Mosul dialect recognized"
-          echo "✅ Standard Arabic fallback works"
-          # Note: Dialect recognition tested in E2E tests
-
-      - name: Validate dialect-specific responses
-        run: |
-          echo "💬 Validating dialect-specific responses..."
-          echo "✅ Dialect preserved in responses"
-          echo "✅ Cultural context maintained"
-          echo "✅ Professional terminology consistent"
+          grep -q "Noto_Sans_Arabic" apps/web/src/lib/fonts.ts
+          grep -q "Cairo" apps/web/src/lib/fonts.ts
+          grep -q "Amiri" apps/web/src/lib/fonts.ts
+          grep -q 'display: "swap"' apps/web/src/lib/fonts.ts
 
   arabic-success:
-    name: Arabic Tests Success Gate
+    name: Arabic Foundation Success Gate
     runs-on: ubuntu-latest
-    needs: [rtl-layout-tests, font-rendering-tests, dialect-recognition-tests]
+    needs: [rtl-foundation]
     if: always()
 
     steps:
-      - name: Check all Arabic tests passed
+      - name: Check Arabic foundation tests
         run: |
-          if [[ "${{ needs.rtl-layout-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.font-rendering-tests.result }}" != "success" ]] || \
-             [[ "${{ needs.dialect-recognition-tests.result }}" != "success" ]]; then
-            echo "❌ Arabic/RTL validation failed"
+          if [[ "${{ needs.rtl-foundation.result }}" != "success" ]]; then
+            echo "Arabic and RTL foundation validation failed"
             exit 1
           fi
-          echo "✅ All Arabic/RTL tests passed!"
-          echo "📊 RTL accuracy: 99%+"
-          echo "📊 Iraqi dialect recognition: 85%+"
+
+          echo "Arabic text utilities, RTL defaults, and font configuration passed."
+          echo "No dialect-recognition or accuracy percentage is claimed by this workflow."

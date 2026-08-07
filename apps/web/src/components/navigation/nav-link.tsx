@@ -1,12 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface NavLinkProps {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
   exact?: boolean;
   className?: string;
   activeClassName?: string;
@@ -18,12 +19,10 @@ export function NavLink({
   children,
   exact = true,
   className,
-  activeClassName = "text-blue-600 font-semibold",
+  activeClassName = "font-semibold text-primary",
   onClick,
 }: NavLinkProps) {
   const pathname = usePathname();
-
-  // Determine if link is active
   const isActive = exact
     ? pathname === href
     : pathname === href || pathname.startsWith(`${href}/`);
@@ -32,8 +31,8 @@ export function NavLink({
     <Link
       href={href}
       className={cn(
-        "transition-colors hover:text-blue-600",
-        isActive ? activeClassName : "text-gray-700",
+        "transition-colors hover:text-foreground",
+        isActive ? activeClassName : "text-muted-foreground",
         className,
       )}
       onClick={onClick}
