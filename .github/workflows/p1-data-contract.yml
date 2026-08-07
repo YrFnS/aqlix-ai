@@ -52,6 +52,7 @@ jobs:
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080001_p1_workspace_foundation.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080002_p1_owner_membership_delete_fix.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080003_p1_workspace_archive_guard.sql
 
       - name: Verify workspace ownership and tenant isolation
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
