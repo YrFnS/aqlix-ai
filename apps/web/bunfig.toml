@@ -1,6 +1,3 @@
 [test]
-preload = [
-  "./tests/setup/global-setup.ts",
-  "./tests/setup/test-env.ts",
-  "./tests/setup/custom-matchers.ts"
-]
+# The active rebuild tests are deterministic source and utility checks and do
+# not require the legacy global DOM, environment, or custom-matcher preloads.
