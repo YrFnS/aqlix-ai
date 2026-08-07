@@ -10,6 +10,7 @@
   "files": [
     "next-env.d.ts",
     "next.config.ts",
+    "src/middleware.ts",
     "src/app/layout.tsx",
     "src/app/(marketing)/layout.tsx",
     "src/app/(marketing)/page.tsx",
