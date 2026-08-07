@@ -1,15 +1,6 @@
 "use client";
 
-/**
- * Login Form Component with RTL Support
- * Features:
- * - Email/password authentication
- * - RTL layout for Arabic text
- * - Device tracking for multi-session support
- * - Cultural greeting after successful login
- * - Iraqi dialect validation messages
- */
-
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +20,6 @@ import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/ui/form-error";
 import { signInAction, type SignInData } from "@/lib/auth/actions";
 
-// Validation schema with Iraqi cultural considerations
 const loginSchema = z.object({
   email: z
     .string()
@@ -62,6 +52,14 @@ export function LoginForm({
   const [isPending, startTransition] = useTransition();
   const [formError, setFormError] = useState<string | undefined>();
 
+  const isEnglishOnly = culturalMode === "en-US";
+  const isArabicOnly = culturalMode === "ar-IQ";
+  const copy = (arabic: string, english: string) => {
+    if (isEnglishOnly) return english;
+    if (isArabicOnly) return arabic;
+    return `${arabic} / ${english}`;
+  };
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -73,12 +71,10 @@ export function LoginForm({
   const onSubmit = async (values: LoginFormValues) => {
     setFormError(undefined);
 
-    // Get device information for session tracking
     const deviceData: SignInData = {
       ...values,
       deviceType: navigator.userAgent,
-      platform:
-        typeof window !== "undefined" ? window.navigator.platform : "unknown",
+      platform: window.navigator.platform || "unknown",
       deviceId: localStorage.getItem("deviceId") || generateDeviceId(),
     };
 
@@ -86,24 +82,24 @@ export function LoginForm({
       try {
         const result = await signInAction(deviceData);
 
-        if (result.success) {
-          if (result.data?.requiresMfa) {
-            // MFA required - redirect to MFA verification page
-            router.push(`/auth/mfa-verify?setupId=${result.data.mfaSetupId}`);
-          } else {
-            // Login successful - callback and redirect
-            if (onSuccess && result.data?.userId) {
-              onSuccess(result.data.userId);
-            }
-            router.push(redirectTo);
-          }
-        } else {
+        if (!result.success) {
           setFormError(
             result.error ||
               "فشل تسجيل الدخول / Login failed. Please try again.",
           );
+          return;
         }
-      } catch (error) {
+
+        if (result.data?.requiresMfa) {
+          router.push(`/auth/mfa-verify?setupId=${result.data.mfaSetupId}`);
+          return;
+        }
+
+        if (onSuccess && result.data?.userId) {
+          onSuccess(result.data.userId);
+        }
+        router.push(redirectTo);
+      } catch {
         setFormError(
           "حدث خطأ في النظام / System error occurred. Please try again later.",
         );
@@ -113,116 +109,52 @@ export function LoginForm({
 
   return (
     <div
-      className="w-full max-w-md space-y-6"
-      dir={culturalMode === "ar-IQ" ? "rtl" : "ltr"}
-      lang={
-        culturalMode === "en-US"
-          ? "en-US"
-          : culturalMode === "ar-IQ"
-            ? "ar-IQ"
-            : undefined
-      }
+      className="w-full space-y-7"
+      dir={isEnglishOnly ? "ltr" : "rtl"}
+      lang={isEnglishOnly ? "en-US" : isArabicOnly ? "ar-IQ" : undefined}
     >
-      {/* Cultural Greeting Header */}
-      <div className="space-y-2 text-center">
-        <h1
-          className="font-arabic text-2xl font-bold tracking-tight"
-          lang={
-            culturalMode === "en-US"
-              ? "en-US"
-              : culturalMode === "ar-IQ"
-                ? "ar-IQ"
-                : undefined
-          }
-        >
-          {culturalMode === "en-US" ? (
-            "Sign In"
-          ) : culturalMode === "ar-IQ" ? (
-            "تسجيل الدخول"
-          ) : (
-            <>
-              <span className="block" lang="ar-IQ">
-                السلام عليكم
-              </span>
-              <span
-                className="text-muted-foreground block text-base"
-                lang="en-US"
-              >
-                Welcome Back
-              </span>
-            </>
-          )}
+      <div className="space-y-3 text-center">
+        <h1 className="font-arabic-heading text-3xl font-semibold tracking-tight">
+          {copy("مرحباً بعودتك", "Welcome back")}
         </h1>
-        <p
-          className="text-muted-foreground text-sm"
-          lang={
-            culturalMode === "en-US"
-              ? "en-US"
-              : culturalMode === "ar-IQ"
-                ? "ar-IQ"
-                : undefined
-          }
-        >
-          {culturalMode === "en-US"
-            ? "Enter your credentials to access your account"
-            : culturalMode === "ar-IQ"
-              ? "أدخل بيانات الاعتماد للوصول إلى حسابك"
-              : "أدخل بيانات الاعتماد للوصول إلى حسابك"}
+        <p className="text-sm leading-7 text-muted-foreground">
+          {copy(
+            "أدخل بياناتك للمتابعة إلى مساحة العمل",
+            "Enter your details to continue to the workspace",
+          )}
         </p>
       </div>
 
-      {/* Login Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email Field */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-arabic">
-                  {culturalMode === "en-US" ? (
-                    "Email Address"
-                  ) : culturalMode === "ar-IQ" ? (
-                    "البريد الإلكتروني"
-                  ) : (
-                    <bdi>البريد الإلكتروني / Email</bdi>
-                  )}
-                </FormLabel>
+                <FormLabel>{copy("البريد الإلكتروني", "Email")}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="email"
-                    placeholder={
-                      culturalMode === "en-US"
-                        ? "name@example.com"
-                        : "name@example.com"
-                    }
+                    placeholder="name@example.com"
                     disabled={isPending}
                     autoComplete="email"
-                    dir="ltr" // Email always LTR
+                    dir="ltr"
+                    className="min-h-12 rounded-xl bg-card"
                   />
                 </FormControl>
-                <FormMessage className="font-arabic" />
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Password Field */}
           <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-arabic">
-                  {culturalMode === "en-US" ? (
-                    "Password"
-                  ) : culturalMode === "ar-IQ" ? (
-                    "كلمة المرور"
-                  ) : (
-                    <bdi>كلمة المرور / Password</bdi>
-                  )}
-                </FormLabel>
+                <FormLabel>{copy("كلمة المرور", "Password")}</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -230,80 +162,46 @@ export function LoginForm({
                     placeholder="••••••••"
                     disabled={isPending}
                     autoComplete="current-password"
-                    dir="ltr" // Password always LTR
+                    dir="ltr"
+                    className="min-h-12 rounded-xl bg-card"
                   />
                 </FormControl>
-                <FormMessage className="font-arabic" />
+                <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* Form-level Error */}
           {formError && <FormError error={formError} />}
 
-          {/* Submit Button */}
           <Button
             type="submit"
-            className="font-arabic w-full"
+            className="min-h-12 w-full rounded-xl font-semibold"
             disabled={isPending}
           >
-            {isPending ? (
-              culturalMode === "en-US" ? (
-                "Signing in..."
-              ) : culturalMode === "ar-IQ" ? (
-                "جاري تسجيل الدخول..."
-              ) : (
-                <bdi>جاري تسجيل الدخول... / Signing in...</bdi>
-              )
-            ) : culturalMode === "en-US" ? (
-              "Sign In"
-            ) : culturalMode === "ar-IQ" ? (
-              "تسجيل الدخول"
-            ) : (
-              <bdi>تسجيل الدخول / Sign In</bdi>
-            )}
+            {isPending
+              ? copy("جاري تسجيل الدخول...", "Signing in...")
+              : copy("تسجيل الدخول", "Sign in")}
           </Button>
         </form>
       </Form>
 
-      {/* Additional Links */}
-      <div className="space-y-2 text-center text-sm">
-        {/* Forgot Password Link */}
-        <a
-          href="/auth/password-reset"
-          className="text-primary hover:underline font-arabic block"
+      <div className="space-y-3 text-center text-sm">
+        <Link
+          href="/password-reset"
+          className="block font-medium text-primary hover:underline"
         >
-          {culturalMode === "en-US" ? (
-            "Forgot your password?"
-          ) : culturalMode === "ar-IQ" ? (
-            "نسيت كلمة المرور؟"
-          ) : (
-            <bdi>نسيت كلمة المرور؟ / Forgot password?</bdi>
-          )}
-        </a>
+          {copy("نسيت كلمة المرور؟", "Forgot your password?")}
+        </Link>
 
-        {/* Register Link */}
         {showRegisterLink && (
-          <p className="text-muted-foreground font-arabic">
-            {culturalMode === "en-US" ? (
-              "Don't have an account? "
-            ) : culturalMode === "ar-IQ" ? (
-              "ليس لديك حساب؟ "
-            ) : (
-              <bdi>ليس لديك حساب؟ / Don't have an account? </bdi>
-            )}
-            <a
-              href="/auth/register"
-              className="text-primary hover:underline font-bold"
+          <p className="text-muted-foreground">
+            {copy("ليس لديك حساب؟", "Don't have an account?")} {" "}
+            <Link
+              href="/register"
+              className="font-semibold text-primary hover:underline"
             >
-              {culturalMode === "en-US" ? (
-                "Register"
-              ) : culturalMode === "ar-IQ" ? (
-                "تسجيل حساب جديد"
-              ) : (
-                <bdi>تسجيل / Register</bdi>
-              )}
-            </a>
+              {copy("إنشاء حساب", "Create account")}
+            </Link>
           </p>
         )}
       </div>
@@ -311,20 +209,11 @@ export function LoginForm({
   );
 }
 
-/**
- * Generate a cryptographically secure unique device ID for session tracking
- * Uses crypto.randomUUID() for security instead of predictable Date.now() + Math.random()
- * Stores in localStorage for multi-session support
- */
 function generateDeviceId(): string {
-  // Use crypto.randomUUID() for cryptographically secure IDs
-  const deviceId =
-    typeof window !== "undefined" && window.crypto?.randomUUID
-      ? `device-${window.crypto.randomUUID()}`
-      : `device-fallback-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+  const deviceId = window.crypto?.randomUUID
+    ? `device-${window.crypto.randomUUID()}`
+    : `device-fallback-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
 
-  if (typeof window !== "undefined") {
-    localStorage.setItem("deviceId", deviceId);
-  }
+  localStorage.setItem("deviceId", deviceId);
   return deviceId;
 }
