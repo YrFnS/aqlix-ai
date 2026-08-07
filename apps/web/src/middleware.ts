@@ -1,17 +1,74 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { refreshSession } from "@iraqi-ai/supabase-client/middleware";
+import { isSupabaseConfigured } from "@/config/env";
 
-/**
- * P0 middleware is intentionally capability-neutral.
- *
- * The current workspace is a public product-direction preview. P1 will replace
- * this pass-through boundary only after one authentication provider, session
- * lifecycle, persistence model, and authorization contract are selected and
- * tested together.
- */
-export function middleware(_request: NextRequest): NextResponse {
-  const response = NextResponse.next();
-  response.headers.set("x-kiteb-product-phase", "p0");
+const protectedPrefixes = [
+  "/dashboard",
+  "/workspaces",
+  "/settings",
+  "/profile",
+];
+
+const accountRoutes = ["/login", "/register"];
+
+function matchesPrefix(pathname: string, prefixes: string[]): boolean {
+  return prefixes.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+function redirectWithCookies(
+  url: URL,
+  sourceResponse?: NextResponse,
+): NextResponse {
+  const redirectResponse = NextResponse.redirect(url);
+
+  if (sourceResponse) {
+    for (const cookie of sourceResponse.cookies.getAll()) {
+      redirectResponse.cookies.set(cookie);
+    }
+  }
+
+  return redirectResponse;
+}
+
+export async function middleware(request: NextRequest): Promise<NextResponse> {
+  const pathname = request.nextUrl.pathname;
+  const isProtected = matchesPrefix(pathname, protectedPrefixes);
+  const isAccountRoute = accountRoutes.includes(pathname);
+
+  if (!isSupabaseConfigured()) {
+    if (isProtected) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("reason", "configuration");
+      loginUrl.searchParams.set("next", pathname);
+      return redirectWithCookies(loginUrl);
+    }
+
+    const response = NextResponse.next();
+    response.headers.set("x-kiteb-product-phase", "p1");
+    response.headers.set("x-kiteb-auth-state", "unconfigured");
+    return response;
+  }
+
+  const { response, user } = await refreshSession(request);
+
+  if (isProtected && !user) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return redirectWithCookies(loginUrl, response);
+  }
+
+  if (isAccountRoute && user) {
+    return redirectWithCookies(new URL("/workspaces", request.url), response);
+  }
+
+  response.headers.set("x-kiteb-product-phase", "p1");
+  response.headers.set(
+    "x-kiteb-auth-state",
+    user ? "authenticated" : "anonymous",
+  );
   return response;
 }
 
