@@ -5,13 +5,17 @@ This directory is the source of truth for the controlled rebuild of the reposito
 ## Current status
 
 - Working product name: **Kiteb**
-- Status: **foundation and product reset**
-- Active branch: `agent/product-rebuild-foundation`
+- Phase: **P0 complete; P1 next**
+- Foundation pull request: `#2` targeting `develop`
+- Foundation branch: `agent/product-rebuild-foundation`
+- Production ready: **No**
 - Legacy snapshots:
   - `legacy/main-2026-08-07`
   - `legacy/develop-2026-08-07`
 
-`Kiteb` is a provisional working name. It must pass formal trademark, company-name, social-handle, and domain clearance before public launch.
+`Kiteb` is a provisional working name. It must pass formal trademark, company-name, social-handle, domain, and Arabic-language clearance before public launch or permanent namespace migration.
+
+P0 proves only that the active web foundation is honestly scoped, buildable, and protected by executable checks. Authentication, persistence, real AI responses, document processing, drafts, deployment, security review, and provenance remain later-phase work.
 
 ## Product direction
 
@@ -24,6 +28,20 @@ The first product loop is intentionally narrow:
 3. Turn the result into a useful draft, summary, decision, or action.
 4. Save the work in a persistent workspace.
 
+## P0 verified baseline
+
+The foundation pull request requires all of these workflows to pass on its final head:
+
+- `CI Quality Gates`
+- `PR Validation`
+- `Arabic & RTL Foundation`
+- `Accessibility Foundation`
+- `Product Language & Claims Safeguards`
+
+Together they execute dependency installation, dependency-ordered package builds, lint, focused TypeScript validation, rebuild tests, the optimized Next.js build, Arabic/RTL safeguards, accessibility safeguards, and public-claim hygiene.
+
+These checks do not certify production readiness, WCAG conformance, cultural or religious compliance, security compliance, or dialect accuracy.
+
 ## Operating rules
 
 1. Build one complete vertical slice before expanding scope.
@@ -33,6 +51,7 @@ The first product loop is intentionally narrow:
 5. Existing code is reusable only after it passes a product, architecture, security, and provenance review.
 6. Payments, workflow builders, desktop automation, voice, and specialist legal or medical claims remain out of scope until the core workspace is proven.
 7. Every phase must have explicit exit criteria and working tests.
+8. Active rebuild gates and inherited legacy audits remain visibly separate.
 
 ## Rebuild documents
 
