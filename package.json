@@ -29,6 +29,7 @@
     "test:brand": "bun run --filter @iraqi-ai/web test:rebuild:brand",
     "test:rtl": "bun run --filter @iraqi-ai/web test:rebuild:rtl",
     "test:accessibility": "bun run --filter @iraqi-ai/web test:rebuild:accessibility",
+    "test:e2e:p1": "bun run --filter @iraqi-ai/web test:e2e:p1",
     "test:unit": "bun run test:p1",
     "test:ci": "bun run test:p1",
     "test:legacy": "bun test packages/ test/ && bun run --filter \"./apps/*\" test",
