@@ -19,17 +19,20 @@ Status values:
 | Focused product brief | DONE | `docs/rebuild/00-PRODUCT-BRIEF.md` |
 | Provisional brand direction | DONE | `docs/rebuild/01-BRAND-DIRECTION.md` |
 | Phased roadmap | DONE | `docs/rebuild/02-REBUILD-ROADMAP.md` |
-| Decision log | IN PROGRESS | Record every scope and architecture decision |
-| Central brand configuration | IN PROGRESS | Add one source of truth for product copy |
-| Reworked homepage | IN PROGRESS | Replace framework placeholder with honest product direction |
-| Reworked marketing navigation and footer | IN PROGRESS | Remove former identity and stale date |
-| Reworked root metadata | IN PROGRESS | Use provisional brand and accurate description |
-| Remove fake dashboard analytics | IN PROGRESS | Replace with honest workspace-foundation state |
-| Rewrite root README | IN PROGRESS | Remove unsupported claims and document current state |
+| Decision log | DONE | `docs/rebuild/04-DECISION-LOG.md` |
+| Central brand configuration | DONE | `apps/web/src/config/brand.ts` |
+| Reworked homepage | DONE | Honest product direction and labelled preview |
+| Reworked marketing navigation and footer | DONE | Former identity and stale date removed |
+| Reworked root metadata | DONE | Provisional brand and accurate product description |
+| Reworked authentication shell | DONE | Brand, bilingual copy, and App Router links aligned |
+| Remove fake dashboard analytics | DONE | Replaced with workspace-foundation and roadmap states |
+| Rebuild visual tokens | DONE | Warm neutral and evergreen semantic theme |
+| Rewrite root README | DONE | Unsupported claims removed; current state documented |
+| Existing architecture disposition map | DONE | `docs/rebuild/05-LEGACY-DISPOSITION.md` |
+| Review complete branch diff | IN PROGRESS | Inspect scope and static risk before draft PR |
 | Build, lint, and type-check | BLOCKED | Requires an execution environment with repository access and dependencies |
-| Automated CI result | PLANNED | Run after branch changes are pushed |
+| Automated CI result | PLANNED | Open draft PR against `develop` to trigger pull-request workflows |
 | Licensing and code-provenance inventory | PLANNED | Required before code deletion, reuse, or public release |
-| Existing architecture disposition map | PLANNED | Mark each subsystem retain, rewrite, quarantine, or remove |
 
 ## P1 — Application shell and data contract
 
