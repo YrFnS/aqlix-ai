@@ -481,11 +481,11 @@ function calculateChecksum(iraqiId: string): number {
   const digits = iraqiId.slice(0, 11).split("").map(Number);
 
   // ICAO 9303 MRZ algorithm: weights = [7, 3, 1] repeating
-  const weights = [7, 3, 1];
-  const weightedSum = digits.reduce(
-    (sum, digit, index) => sum + digit * weights[index % 3],
-    0,
-  );
+  const weights = [7, 3, 1] as const;
+  const weightedSum = digits.reduce((sum, digit, index) => {
+    const weight = weights[index % weights.length] ?? 0;
+    return sum + digit * weight;
+  }, 0);
 
   // Checksum is the remainder when divided by 10
   return weightedSum % 10;
