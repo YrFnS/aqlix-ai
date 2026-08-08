@@ -195,7 +195,7 @@ export async function resolveAiRuntimeConfig(
       apiKey: runtime.apiKey,
       baseUrl: resolveOpenRouterBaseUrl(),
       appUrl: options.requestOrigin?.replace(/\/$/u, "") ?? null,
-      appTitle: "Kiteb",
+      appTitle: "AI Workspace",
     },
   };
 }
