@@ -19,6 +19,7 @@ describe("P5 OpenRouter BYOK boundary", () => {
       "src/app/api/v1/ai/model/route.ts",
       "src/components/ai/openrouter-settings.tsx",
       "src/lib/ai/openrouter-client.ts",
+      "src/lib/ai/openrouter-endpoint.ts",
       "src/lib/ai/openrouter-provider.ts",
       "src/lib/ai/user-settings.ts",
     ]) {
@@ -46,7 +47,8 @@ describe("P5 OpenRouter BYOK boundary", () => {
     );
     expect(repository).toContain("keyLastFour");
     expect(repository).not.toContain("localStorage");
-    expect(settingsRoute).not.toContain("apiKey: parsed.data.apiKey");
+    expect(settingsRoute).toContain("saveUserOpenRouterCredential");
+    expect(settingsRoute).not.toContain("jsonSuccess({ apiKey");
     expect(settingsRoute).not.toContain("console.log(parsed.data.apiKey");
     expect(settingsUi).toContain('type="password"');
     expect(settingsUi).not.toContain("localStorage");
@@ -92,6 +94,17 @@ describe("P5 OpenRouter BYOK boundary", () => {
     expect(factory).toContain("new OpenRouterChatProvider(config)");
     expect(config).not.toContain('default("gpt-');
     expect(provider).not.toContain('model: "');
+  });
+
+  test("allows a local fixture endpoint only outside staging and production", () => {
+    const endpoint = readWeb("src/lib/ai/openrouter-endpoint.ts");
+    const client = readWeb("src/lib/ai/openrouter-client.ts");
+
+    expect(endpoint).toContain("https://openrouter.ai/api/v1");
+    expect(endpoint).toContain('environment === "development"');
+    expect(endpoint).toContain('environment === "test"');
+    expect(endpoint).not.toContain('environment === "production" ||');
+    expect(client).toContain("resolveOpenRouterBaseUrl");
   });
 
   test("deploys without a platform-owned model key or model ID", () => {
