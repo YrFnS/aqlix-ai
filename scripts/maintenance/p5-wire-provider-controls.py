@@ -13,6 +13,8 @@ draft_contract = Path("packages/types/src/contracts/draft.ts")
 settings_component = Path(
     "apps/web/src/components/ai/openrouter-settings.tsx"
 )
+openrouter_client = Path("apps/web/src/lib/ai/openrouter-client.ts")
+ai_config = Path("apps/web/src/lib/ai/config.ts")
 tsconfig = Path("apps/web/tsconfig.rebuild.json")
 
 
@@ -175,6 +177,42 @@ component = component.replace(
 settings_component.write_text(component, encoding="utf-8")
 print(f"Updated catalog refresh and icon compatibility: {settings_component}")
 
+client = openrouter_client.read_text(encoding="utf-8")
+if 'from "./openrouter-endpoint"' not in client:
+    client = client.replace(
+        '} from "@iraqi-ai/types";\n\n',
+        '} from "@iraqi-ai/types";\nimport { resolveOpenRouterBaseUrl } from "./openrouter-endpoint";\n\n',
+        1,
+    )
+client = client.replace(
+    'const OPENROUTER_API_URL = "https://openrouter.ai/api/v1";\n',
+    "",
+    1,
+)
+client = client.replace(
+    "response = await fetch(`${OPENROUTER_API_URL}${path}`, {",
+    "response = await fetch(`${resolveOpenRouterBaseUrl()}${path}`, {",
+    1,
+)
+openrouter_client.write_text(client, encoding="utf-8")
+print(f"Wired safe OpenRouter endpoint resolution: {openrouter_client}")
+
+config_source = ai_config.read_text(encoding="utf-8")
+if 'from "./openrouter-endpoint"' not in config_source:
+    config_source = config_source.replace(
+        'import { AiProviderError } from "./provider";\n',
+        'import { resolveOpenRouterBaseUrl } from "./openrouter-endpoint";\n'
+        'import { AiProviderError } from "./provider";\n',
+        1,
+    )
+config_source = config_source.replace(
+    "baseUrl: config.OPENROUTER_BASE_URL.replace(/\\/$/u, \"\"),",
+    "baseUrl: resolveOpenRouterBaseUrl(),",
+    1,
+)
+ai_config.write_text(config_source, encoding="utf-8")
+print(f"Wired safe OpenRouter endpoint resolution: {ai_config}")
+
 config = tsconfig.read_text(encoding="utf-8")
 insertions = (
     (
@@ -198,6 +236,7 @@ insertions = (
         '    "src/lib/ai/openai-provider.ts",\n',
         '    "src/lib/ai/openai-provider.ts",\n'
         '    "src/lib/ai/openrouter-client.ts",\n'
+        '    "src/lib/ai/openrouter-endpoint.ts",\n'
         '    "src/lib/ai/openrouter-provider.ts",\n'
         '    "src/lib/ai/openrouter-stream.ts",\n'
         '    "src/lib/ai/user-settings.ts",\n',
