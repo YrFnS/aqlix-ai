@@ -570,7 +570,12 @@ export async function POST(request: Request, context: RouteContext) {
             );
           }
 
-          const provider = createAiProvider();
+          const provider = createAiProvider({
+            supabase: auth.context.supabase,
+            workspaceId: parsed.data.workspaceId,
+            operation: "conversation",
+            generationId: turn.generationId,
+          });
           const history = await getConversationProviderHistory(
             auth.context.supabase,
             parsed.data.workspaceId,

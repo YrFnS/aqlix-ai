@@ -406,7 +406,12 @@ export async function POST(request: Request, context: RouteContext) {
         };
 
         try {
-          const provider = createAiProvider();
+          const provider = createAiProvider({
+            supabase: auth.context.supabase,
+            workspaceId: parsed.data.workspaceId,
+            operation: "draft",
+            generationId: begun.generationId,
+          });
 
           for await (const event of provider.stream({
             messages: prompt.messages,
