@@ -1,22 +1,25 @@
 import "server-only";
 
-import { getAiRuntimeConfig } from "./config";
+import type { AiRuntimeConfig } from "./config";
 import {
   ControlledAiProvider,
   type AiProviderControlContext,
 } from "./controlled-provider";
 import { FixtureAiProvider } from "./fixture-provider";
 import { OpenAiResponsesProvider } from "./openai-provider";
+import { OpenRouterChatProvider } from "./openrouter-provider";
 import type { AiProvider } from "./provider";
 
 export function createAiProvider(
+  config: AiRuntimeConfig,
   controls?: AiProviderControlContext,
 ): AiProvider {
-  const config = getAiRuntimeConfig();
   const provider =
     config.provider === "fixture"
       ? new FixtureAiProvider()
-      : new OpenAiResponsesProvider(config);
+      : config.provider === "openai"
+        ? new OpenAiResponsesProvider(config)
+        : new OpenRouterChatProvider(config);
 
   return controls
     ? new ControlledAiProvider(provider, config.maxOutputTokens, controls)
