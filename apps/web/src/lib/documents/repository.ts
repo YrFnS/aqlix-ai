@@ -349,19 +349,12 @@ export async function removeDocumentObject(
   supabase: SupabaseServerClient,
   objectPath: string,
 ): Promise<void> {
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from(DOCUMENT_STORAGE_BUCKET)
     .remove([objectPath]);
 
   if (error) {
     repositoryError("delete-document-object", error.message);
-  }
-
-  if (!data || data.length !== 1) {
-    repositoryError(
-      "delete-document-object",
-      "The private document object was not removed.",
-    );
   }
 }
 
