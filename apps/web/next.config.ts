@@ -6,12 +6,19 @@ import type { NextConfig } from "next";
  * External-service credentials are validated by the capability that consumes
  * them, not while Next.js loads this file. Clean CI builds therefore do not
  * require placeholder database, provider, or administrative secrets.
+ *
+ * The inherited repository still contains quarantined components and routes
+ * that are outside the approved P0-P5 product graph. Next.js uses the focused
+ * rebuild tsconfig for development and production type validation so those
+ * dormant files cannot silently become release dependencies. Type errors stay
+ * fatal for every file that is part of the active graph.
  */
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   typescript: {
     ignoreBuildErrors: false,
+    tsconfigPath: "tsconfig.rebuild.json",
   },
 
   eslint: {
