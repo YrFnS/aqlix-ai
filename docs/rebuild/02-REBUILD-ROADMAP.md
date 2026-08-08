@@ -10,10 +10,18 @@ The rebuild is organized around complete, testable product slices. Phase numbers
 | P1 | Account, workspace, persistence, and authorization | DONE |
 | P2 | Persistent bilingual conversation | DONE |
 | P3 | Private documents, inspectable sources, and grounded citations | DONE |
-| P4 | Durable drafts and reusable work | Final exact-head closeout |
-| P5 | Operational readiness | Next |
+| P4 | Durable drafts and reusable work | DONE |
+| P5 | Operational readiness | IN PROGRESS |
 
 Feature completion through P4 does not imply production readiness. P5 owns the evidence required for beta and public release.
+
+Current P5 position:
+
+- P5.0 local release baseline implemented and proven on an implementation head;
+- final exact-head confirmation still required after documentation safeguards;
+- P5.1 staging Blueprint, migration path, and rollback runbook committed;
+- no hosted staging deployment or rollback exercise has been completed;
+- production ready remains **No**.
 
 ## P0 — Reset and trustworthy foundation
 
@@ -29,7 +37,7 @@ Create one source of truth, narrow the product, remove misleading presentation, 
 - removed fake metrics and unsupported readiness, performance, compliance, and payment claims;
 - retained selected Arabic, RTL, mixed-text, and layout foundations;
 - quarantined incomplete inherited capabilities;
-- standardized on Bun;
+- standardized on Bun for dependency and workspace management;
 - separated active rebuild gates from legacy audits;
 - documented provenance review as a release requirement.
 
@@ -156,7 +164,7 @@ Complete Ask → Ground → Draft → Continue by turning a persisted conversati
 
 ### Exit evidence
 
-P4 Durable Draft Data Contract and P4 Ask Ground Draft Continue Journey passed on the implementation head. The documentation closeout head must repeat the entire P0–P4 matrix before PR `#6` leaves draft.
+P4 Durable Draft Data Contract and P4 Ask Ground Draft Continue Journey passed with the full P0–P3 matrix. PR `#6` merged to `develop` at `bb96c3300ec86118f03b0acd142209be3994d424`.
 
 ### Deliberately deferred
 
@@ -171,24 +179,58 @@ P4 Durable Draft Data Contract and P4 Ask Ground Draft Continue Journey passed o
 
 Turn the proven local product loop into a deployable, observable, recoverable, cost-controlled, reviewed beta and production system.
 
-### P5.0 — Architecture, environments, and ownership
+### P5.0 — Architecture, environments, ownership, and local release baseline
 
-- define development, test, staging, and production environments;
-- select one production topology;
-- define service and data owners;
-- document secrets, domains, certificates, queues, database, Storage, and provider dependencies;
-- record beta and production exit criteria;
-- define rollback and incident decision authority.
+#### Implemented
+
+- development, test, staging, and production environment contracts;
+- one stateless Next.js topology backed by hosted Supabase and a server-only provider;
+- release, service, data, provider-cost, security/privacy, observability, and incident roles;
+- non-secret liveness and fail-closed readiness endpoints;
+- immutable release identity from explicit, Render, or GitHub commit metadata;
+- fixture-provider rejection in staging and production;
+- frozen Bun `1.3.14` dependency and workspace path;
+- Node.js `24.14.1` Next.js production compiler and server path;
+- root React/React DOM `19.1.1` for the active web graph;
+- nested mobile React 18 isolation;
+- external shared-UI React peer dependencies;
+- full production build, process startup, liveness, and Supabase-backed readiness workflow;
+- non-secret evidence artifact.
+
+#### Remaining closeout
+
+- repeat every operational and P0–P4 gate on the final documentation head;
+- update PR and tracker evidence without adding an unvalidated commit afterward.
 
 ### P5.1 — Deployment and migrations
 
-- create one Bun-only release path for the active web application;
-- validate production Next.js build and startup;
-- automate ordered database migrations;
-- validate Storage bucket and policy creation;
-- add pre-deploy and post-deploy health checks;
-- document forward migration, rollback, and failed-deploy recovery;
-- exercise a staging deployment from a clean environment.
+#### Implemented as infrastructure intent
+
+- manual Render staging Blueprint in Frankfurt;
+- pinned Node and Bun versions;
+- frozen dependency installation;
+- exact commit and external-URL derivation;
+- separate secret placeholders;
+- paid pre-deploy migration command;
+- migration history inspection;
+- dry run before apply;
+- production migration approval lock;
+- health-based traffic promotion;
+- graceful shutdown window;
+- application rollback runbook;
+- expand-and-contract schema guidance;
+- forward-only database recovery runbook.
+
+#### Still required
+
+- provision a separate hosted Supabase staging project;
+- provision the Render staging service;
+- execute a clean manual deployment;
+- verify Storage policies and migrations against staging;
+- run the authenticated staging smoke checklist;
+- exercise application rollback;
+- rehearse a forward recovery migration;
+- record evidence without secrets.
 
 ### P5.2 — Provider controls
 
