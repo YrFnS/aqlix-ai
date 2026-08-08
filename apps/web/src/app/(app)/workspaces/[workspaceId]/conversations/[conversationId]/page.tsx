@@ -37,7 +37,8 @@ import {
 
 export const metadata: Metadata = {
   title: "محادثة",
-  description: "Persistent bilingual streamed conversation.",
+  description:
+    "Persistent bilingual streamed conversation with optional inspectable workspace citations.",
 };
 
 type PageParams = Promise<{ workspaceId: string; conversationId: string }>;
@@ -173,8 +174,8 @@ export default async function ConversationPage({
               {conversation.title}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
-              الرسائل، النص الجزئي، حالة المزود، النموذج، الرموز، وزمن الاستجابة
-              تُعاد من السجل المحفوظ داخل مساحة العمل.
+              الرسائل، النص الجزئي، حالة المزود، النموذج، الرموز، زمن الاستجابة،
+              والمراجع الاختيارية تُعاد من السجل المحفوظ داخل مساحة العمل.
             </p>
           </div>
 
@@ -296,8 +297,8 @@ export default async function ConversationPage({
                 حذف المحادثة
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                يحذف هذا الإجراء الرسائل ومحاولات التوليد المرتبطة عبر علاقات قاعدة
-                البيانات. مساحة العمل نفسها لا تتأثر.
+                يحذف هذا الإجراء الرسائل ومحاولات التوليد والمراجع المرتبطة عبر
+                علاقات قاعدة البيانات. مساحة العمل نفسها لا تتأثر.
               </p>
             </div>
           </div>
@@ -332,9 +333,9 @@ export default async function ConversationPage({
             aria-hidden="true"
           />
           <p>
-            هذه المرحلة تستخدم المحادثة النصية فقط. المستندات والمصادر القابلة
-            للفحص تدخل في P3، ولا تدّعي أي استجابة هنا أنها مستندة إلى مصدر غير
-            موجود في السجل.
+            وضع المصادر اختياري وغير مفعّل افتراضياً. عند تفعيله تبحث المحادثة
+            في المقاطع الجاهزة داخل هذه المساحة فقط، ولا تحفظ الاستجابة كمكتملة
+            بلا مرجع صالح. المحادثة العادية لا تُوصف تلقائياً بأنها موثقة.
           </p>
         </div>
       </section>

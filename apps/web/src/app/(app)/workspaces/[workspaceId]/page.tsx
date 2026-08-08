@@ -27,7 +27,7 @@ import {
 
 export const metadata: Metadata = {
   title: "مساحة العمل",
-  description: "Persistent workspace and bilingual conversation shell.",
+  description: "Persistent workspace, conversations, and private source passages.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -128,7 +128,10 @@ export default async function WorkspacePage({
               >
                 {workspace.name}
               </h1>
-              <p dir="auto" className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
+              <p
+                dir="auto"
+                className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base"
+              >
                 {workspace.description ||
                   "لم يُضف وصف لهذه المساحة بعد. يمكن للمالك أو المحرر تحديثه من الإعدادات."}
               </p>
@@ -186,15 +189,15 @@ export default async function WorkspacePage({
               <MessageSquareText className="h-5 w-5" aria-hidden="true" />
             </div>
             <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P2 · يعمل
+              P2 + P3 · يعمل
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
             المحادثات
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            رسائل محفوظة، بث نصي، إيقاف مع حفظ الجزئي، إعادة محاولة، وحالة مزود
-            قابلة للفحص.
+            رسائل متدفقة ومحفوظة، إيقاف وإعادة محاولة، ووضع مصادر اختياري يحفظ
+            مراجع قابلة للفتح إلى المقاطع نفسها.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
             فتح المحادثات
@@ -205,45 +208,53 @@ export default async function WorkspacePage({
           </span>
         </Link>
 
-        {[
-          {
-            title: "المصادر",
-            phase: "P3",
-            description:
-              "رفع المستند، الاستخراج، الاسترجاع، وفتح المقطع الداعم.",
-            icon: FileSearch,
-          },
-          {
-            title: "المسودة",
-            phase: "P4",
-            description:
-              "تحرير الناتج، حفظ نسخه، ربطه بالمصادر، ثم التصدير.",
-            icon: PenLine,
-          },
-        ].map(({ title, phase, description, icon: Icon }) => (
-          <article
-            key={phase}
-            className="rounded-3xl border border-border/70 bg-card p-6"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div className="rounded-2xl bg-secondary p-3 text-primary">
-                <Icon className="h-5 w-5" aria-hidden="true" />
-              </div>
-              <span className="rounded-full border border-border px-2.5 py-1 text-[0.65rem] font-semibold text-muted-foreground">
-                {phase}
-              </span>
+        <Link
+          href={`/workspaces/${workspace.id}/sources`}
+          className="group rounded-3xl border border-primary/30 bg-card p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-foreground/5"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+              <FileSearch className="h-5 w-5" aria-hidden="true" />
             </div>
-            <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
-              {title}
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              {description}
-            </p>
-            <p className="mt-5 text-xs font-semibold text-muted-foreground">
-              غير مفعّل بعد
-            </p>
-          </article>
-        ))}
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
+              P3 · يعمل
+            </span>
+          </div>
+          <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
+            المصادر
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            ملفات TXT وMarkdown خاصة، تحقق صارم، مقاطع بخطوط حقيقية، بحث داخل
+            المساحة، وتنزيل وحذف منسقان.
+          </p>
+          <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
+            فتح المصادر
+            <ArrowUpLeft
+              className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+              aria-hidden="true"
+            />
+          </span>
+        </Link>
+
+        <article className="rounded-3xl border border-border/70 bg-card p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="rounded-2xl bg-secondary p-3 text-primary">
+              <PenLine className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <span className="rounded-full border border-border px-2.5 py-1 text-[0.65rem] font-semibold text-muted-foreground">
+              P4
+            </span>
+          </div>
+          <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
+            المسودة
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+            تحرير الناتج، حفظ نسخه، ربطه بالمصادر، ثم التصدير.
+          </p>
+          <p className="mt-5 text-xs font-semibold text-muted-foreground">
+            غير مفعّل بعد
+          </p>
+        </article>
       </section>
 
       <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
@@ -253,14 +264,17 @@ export default async function WorkspacePage({
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-primary">يعمل في P1 + P2</p>
+              <p className="text-sm font-semibold text-primary">
+                يعمل في P1 + P2 + P3
+              </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                سياق محفوظ ومحادثة قابلة للاستمرار
+                سياق محفوظ، محادثة مستمرة، ومراجع قابلة للفحص
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                المساحة والعضوية والمحادثات والرسائل ومحاولات التوليد محفوظة في
-                PostgreSQL. عند غياب إعداد المزود تظهر حالة فشل صريحة ولا تُنتج
-                الواجهة إجابة بديلة.
+                الحساب والمساحة والمحادثات والملفات والمقاطع والمراجع كلها تخضع
+                للجلسة وRLS. وضع المصادر غير مفعّل افتراضياً؛ عند تفعيله تبحث
+                المحادثة في المقاطع الجاهزة فقط، وترفض اكتمال الإجابة بلا مرجع
+                صالح، وتحفظ لقطة واضحة حتى إذا حُذف المصدر لاحقاً.
               </p>
             </div>
           </div>

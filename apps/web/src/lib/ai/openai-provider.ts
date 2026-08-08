@@ -36,6 +36,9 @@ interface OpenAiEvent {
   };
 }
 
+const baseInstructions =
+  "You are Kiteb, a clear bilingual work assistant. Reply in the language used by the user unless they ask for another language. Preserve code, numbers, URLs, and mixed Arabic-English text accurately. Do not claim access to documents or sources unless explicit source passages are supplied in these instructions.";
+
 function providerErrorForStatus(
   status: number,
   message: string,
@@ -219,8 +222,9 @@ export class OpenAiResponsesProvider implements AiProvider {
         },
         body: JSON.stringify({
           model: this.requestedModel,
-          instructions:
-            "You are Kiteb, a clear bilingual work assistant. Reply in the language used by the user unless they ask for another language. Preserve code, numbers, URLs, and mixed Arabic-English text accurately. Do not claim access to documents or sources unless they are present in the conversation.",
+          instructions: input.instructions
+            ? `${baseInstructions}\n\n${input.instructions}`
+            : baseInstructions,
           input: input.messages.map((message) => ({
             role: message.role,
             content: message.content,

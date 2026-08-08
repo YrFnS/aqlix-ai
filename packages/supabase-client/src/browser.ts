@@ -5,8 +5,14 @@
  */
 
 import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@iraqi-ai/types";
 import { getBrowserEnv } from "./env";
+
+/**
+ * Type-safe browser client surface shared by callers and generated declarations.
+ */
+export type SupabaseBrowserClient = SupabaseClient<Database>;
 
 /**
  * Create a Supabase client for browser/Client Components
@@ -23,14 +29,8 @@ import { getBrowserEnv } from "./env";
  *   // Use supabase for queries, auth, etc.
  * }
  */
-export function createClient() {
+export function createClient(): SupabaseBrowserClient {
   const { url, anonKey } = getBrowserEnv();
 
   return createBrowserClient<Database>(url, anonKey);
 }
-
-/**
- * Type-safe reference to Supabase client instance
- * Use this type for function parameters and component props
- */
-export type SupabaseBrowserClient = ReturnType<typeof createClient>;

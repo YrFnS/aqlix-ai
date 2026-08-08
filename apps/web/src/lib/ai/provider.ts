@@ -31,6 +31,7 @@ export type AiProviderStreamEvent =
 export interface AiProviderStreamInput {
   messages: AiInputMessage[];
   signal: AbortSignal;
+  instructions?: string;
 }
 
 export interface AiProvider {

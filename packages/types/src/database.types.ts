@@ -19,15 +19,76 @@ export type Database = {
   };
   public: {
     Tables: {
+      attachment_processing_runs: TableDefinition<
+        {
+          attachment_id: string;
+          attempt: number;
+          character_count: number;
+          completed_at: string | null;
+          created_at: string;
+          created_by: string;
+          failure_code: string | null;
+          failure_message: string | null;
+          id: string;
+          processor: string;
+          processor_version: string;
+          source_count: number;
+          started_at: string;
+          status: string;
+          updated_at: string;
+          workspace_id: string;
+        },
+        {
+          attachment_id: string;
+          attempt: number;
+          character_count?: number;
+          completed_at?: string | null;
+          created_at?: string;
+          created_by: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          id?: string;
+          processor: string;
+          processor_version: string;
+          source_count?: number;
+          started_at?: string;
+          status?: string;
+          updated_at?: string;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string;
+          attempt?: number;
+          character_count?: number;
+          completed_at?: string | null;
+          created_at?: string;
+          created_by?: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          id?: string;
+          processor?: string;
+          processor_version?: string;
+          source_count?: number;
+          started_at?: string;
+          status?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        }
+      >;
       attachments: TableDefinition<
         {
           byte_size: number;
+          content_sha256: string | null;
           created_at: string;
           deleted_at: string | null;
+          failure_code: string | null;
           failure_reason: string | null;
           file_name: string;
           id: string;
           media_type: string;
+          processed_at: string | null;
+          processor_version: string | null;
+          source_count: number;
           status: string;
           storage_path: string;
           updated_at: string;
@@ -36,12 +97,17 @@ export type Database = {
         },
         {
           byte_size: number;
+          content_sha256?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          failure_code?: string | null;
           failure_reason?: string | null;
           file_name: string;
           id?: string;
           media_type: string;
+          processed_at?: string | null;
+          processor_version?: string | null;
+          source_count?: number;
           status?: string;
           storage_path: string;
           updated_at?: string;
@@ -50,12 +116,17 @@ export type Database = {
         },
         {
           byte_size?: number;
+          content_sha256?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          failure_code?: string | null;
           failure_reason?: string | null;
           file_name?: string;
           id?: string;
           media_type?: string;
+          processed_at?: string | null;
+          processor_version?: string | null;
+          source_count?: number;
           status?: string;
           storage_path?: string;
           updated_at?: string;
@@ -130,8 +201,62 @@ export type Database = {
           workspace_id?: string;
         }
       >;
+      message_citations: TableDefinition<
+        {
+          attachment_id: string | null;
+          citation_order: number;
+          conversation_id: string;
+          created_at: string;
+          end_line_snapshot: number | null;
+          file_name_snapshot: string;
+          id: string;
+          label: string;
+          media_type_snapshot: string;
+          message_id: string;
+          page_number_snapshot: number | null;
+          source_id: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order: number;
+          conversation_id: string;
+          created_at?: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot: string;
+          id?: string;
+          label: string;
+          media_type_snapshot: string;
+          message_id: string;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot?: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order?: number;
+          conversation_id?: string;
+          created_at?: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot?: string;
+          id?: string;
+          label?: string;
+          media_type_snapshot?: string;
+          message_id?: string;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot?: number;
+          start_line_snapshot?: number | null;
+          workspace_id?: string;
+        }
+      >;
       message_generations: TableDefinition<
         {
+          citation_count: number;
           completed_at: string | null;
           conversation_id: string;
           created_at: string;
@@ -139,6 +264,7 @@ export type Database = {
           failure_code: string | null;
           failure_message: string | null;
           first_token_latency_ms: number | null;
+          grounding_mode: string;
           id: string;
           input_tokens: number | null;
           latency_ms: number | null;
@@ -148,6 +274,7 @@ export type Database = {
           provider_response_id: string | null;
           reasoning_tokens: number | null;
           requested_model: string;
+          retrieved_source_count: number;
           returned_model: string | null;
           started_at: string;
           status: string;
@@ -156,6 +283,7 @@ export type Database = {
           workspace_id: string;
         },
         {
+          citation_count?: number;
           completed_at?: string | null;
           conversation_id: string;
           created_at?: string;
@@ -163,6 +291,7 @@ export type Database = {
           failure_code?: string | null;
           failure_message?: string | null;
           first_token_latency_ms?: number | null;
+          grounding_mode?: string;
           id?: string;
           input_tokens?: number | null;
           latency_ms?: number | null;
@@ -172,6 +301,7 @@ export type Database = {
           provider_response_id?: string | null;
           reasoning_tokens?: number | null;
           requested_model: string;
+          retrieved_source_count?: number;
           returned_model?: string | null;
           started_at?: string;
           status?: string;
@@ -180,6 +310,7 @@ export type Database = {
           workspace_id: string;
         },
         {
+          citation_count?: number;
           completed_at?: string | null;
           conversation_id?: string;
           created_at?: string;
@@ -187,6 +318,7 @@ export type Database = {
           failure_code?: string | null;
           failure_message?: string | null;
           first_token_latency_ms?: number | null;
+          grounding_mode?: string;
           id?: string;
           input_tokens?: number | null;
           latency_ms?: number | null;
@@ -196,6 +328,7 @@ export type Database = {
           provider_response_id?: string | null;
           reasoning_tokens?: number | null;
           requested_model?: string;
+          retrieved_source_count?: number;
           returned_model?: string | null;
           started_at?: string;
           status?: string;
@@ -250,10 +383,13 @@ export type Database = {
           attachment_id: string;
           content: string;
           created_at: string;
+          end_line: number | null;
           end_offset: number | null;
           id: string;
           ordinal: number;
           page_number: number | null;
+          search_vector: unknown;
+          start_line: number | null;
           start_offset: number | null;
           workspace_id: string;
         },
@@ -261,10 +397,13 @@ export type Database = {
           attachment_id: string;
           content: string;
           created_at?: string;
+          end_line?: number | null;
           end_offset?: number | null;
           id?: string;
           ordinal: number;
           page_number?: number | null;
+          search_vector?: never;
+          start_line?: number | null;
           start_offset?: number | null;
           workspace_id: string;
         },
@@ -272,10 +411,13 @@ export type Database = {
           attachment_id?: string;
           content?: string;
           created_at?: string;
+          end_line?: number | null;
           end_offset?: number | null;
           id?: string;
           ordinal?: number;
           page_number?: number | null;
+          search_vector?: never;
+          start_line?: number | null;
           start_offset?: number | null;
           workspace_id?: string;
         }
@@ -337,6 +479,26 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      attachment_id_from_storage_path: {
+        Args: { object_name: string };
+        Returns: string | null;
+      };
+      begin_attachment_processing: {
+        Args: {
+          normalized_media_type: string;
+          original_byte_size: number;
+          original_content_sha256: string;
+          original_file_name: string;
+          requested_processor: string;
+          requested_processor_version: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          attachment_id: string;
+          object_path: string;
+          processing_run_id: string;
+        }[];
+      };
       begin_conversation_turn: {
         Args: {
           message_content: string | null;
@@ -356,6 +518,18 @@ export type Database = {
           user_sequence: number | null;
         }[];
       };
+      can_delete_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
+      };
+      can_insert_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
+      };
+      can_read_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
+      };
       checkpoint_conversation_generation: {
         Args: {
           first_token_ms?: number | null;
@@ -363,6 +537,33 @@ export type Database = {
           target_conversation_id: string;
           target_generation_id: string;
           target_message_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      delete_attachment_record: {
+        Args: {
+          target_attachment_id: string;
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
+      fail_attachment_processing: {
+        Args: {
+          processing_failure_code: string;
+          processing_failure_message: string;
+          target_attachment_id: string;
+          target_processing_run_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      finalize_attachment_processing: {
+        Args: {
+          extracted_passages: Json;
+          normalized_character_count: number;
+          target_attachment_id: string;
+          target_processing_run_id: string;
           target_workspace_id: string;
         };
         Returns: undefined;
@@ -388,6 +589,25 @@ export type Database = {
         };
         Returns: undefined;
       };
+      finish_grounded_conversation_generation: {
+        Args: {
+          cited_sources?: Json;
+          final_content: string;
+          first_token_ms?: number | null;
+          provider_input_tokens?: number | null;
+          provider_output_tokens?: number | null;
+          provider_reasoning_tokens?: number | null;
+          provider_response_identifier?: string | null;
+          provider_total_tokens?: number | null;
+          returned_provider_model?: string | null;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+          total_latency_ms?: number | null;
+        };
+        Returns: undefined;
+      };
       has_workspace_role: {
         Args: {
           allowed_roles: string[];
@@ -395,11 +615,51 @@ export type Database = {
         };
         Returns: boolean;
       };
+      is_workspace_active: {
+        Args: { target_workspace_id: string };
+        Returns: boolean;
+      };
       is_workspace_member: {
+        Args: { target_workspace_id: string };
+        Returns: boolean;
+      };
+      normalize_mixed_script_search_text: {
+        Args: { value: string };
+        Returns: string;
+      };
+      search_workspace_sources: {
         Args: {
+          result_limit?: number;
+          source_query: string;
           target_workspace_id: string;
         };
-        Returns: boolean;
+        Returns: {
+          attachment_id: string;
+          content: string;
+          end_line: number | null;
+          file_name: string;
+          media_type: string;
+          ordinal: number;
+          page_number: number | null;
+          rank: number;
+          source_id: string;
+          start_line: number | null;
+        }[];
+      };
+      set_generation_grounding_context: {
+        Args: {
+          requested_grounding_mode: string;
+          retrieved_sources: number;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      workspace_id_from_storage_path: {
+        Args: { object_name: string };
+        Returns: string | null;
       };
     };
     Enums: {
@@ -466,8 +726,8 @@ export type TablesInsert<
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
-      }
+      Insert: infer I;
+    }
       ? I
       : never
     : never;
@@ -491,8 +751,8 @@ export type TablesUpdate<
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
-      }
+      Update: infer U;
+    }
       ? U
       : never
     : never;

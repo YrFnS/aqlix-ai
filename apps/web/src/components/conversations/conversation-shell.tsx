@@ -13,6 +13,7 @@ import {
   Bot,
   Clock3,
   Cpu,
+  FileSearch,
   Hash,
   RefreshCw,
   RotateCcw,
@@ -25,12 +26,14 @@ import type {
   Conversation,
   ConversationMessage,
   ConversationStreamEvent,
+  GroundingMode,
 } from "@iraqi-ai/types";
 import {
   conversationMessageSchema,
   conversationStreamEventSchema,
 } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
+import { MessageCitations } from "./message-citations";
 import { MessageContent } from "./message-content";
 
 interface ConversationShellProps {
@@ -149,6 +152,14 @@ function MessageTelemetry({ message }: { message: ConversationMessage }) {
         <Cpu className="h-3 w-3" aria-hidden="true" />
         {generation.returnedModel ?? generation.requestedModel}
       </span>
+      {generation.groundingMode === "workspace_sources" && (
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-primary">
+          <FileSearch className="h-3 w-3" aria-hidden="true" />
+          {formatNumber(generation.citationCount)} مرجع من {formatNumber(
+            generation.retrievedSourceCount,
+          )} مقطع
+        </span>
+      )}
       {generation.totalTokens !== null && (
         <span className="inline-flex items-center gap-1 rounded-full bg-secondary/70 px-2.5 py-1">
           <Hash className="h-3 w-3" aria-hidden="true" />
@@ -169,11 +180,13 @@ function MessageTelemetry({ message }: { message: ConversationMessage }) {
 }
 
 function MessageBubble({
+  workspaceId,
   message,
   canRetry,
   onRetry,
   retryDisabled,
 }: {
+  workspaceId: string;
   message: ConversationMessage;
   canRetry: boolean;
   onRetry: (messageId: string) => void;
@@ -215,6 +228,12 @@ function MessageBubble({
         )}
 
         {!isUser && <MessageTelemetry message={message} />}
+        {!isUser && (
+          <MessageCitations
+            workspaceId={workspaceId}
+            citations={message.citations}
+          />
+        )}
 
         {!isUser && message.status === "failed" && (
           <div className="mt-4 rounded-2xl border border-destructive/25 bg-destructive/5 p-3 text-sm text-destructive">
@@ -270,6 +289,7 @@ export function ConversationShell({
   const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
+  const [groundingMode, setGroundingMode] = useState<GroundingMode>("off");
   const [isStreaming, setIsStreaming] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
   const controllerRef = useRef<AbortController | null>(null);
@@ -328,6 +348,7 @@ export function ConversationShell({
           body: JSON.stringify({
             ...command,
             direction: "auto",
+            groundingMode,
           }),
           signal: controller.signal,
         },
@@ -374,7 +395,9 @@ export function ConversationShell({
           setNotice({
             tone: "info",
             message:
-              "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
+              event.message.citations.length > 0
+                ? "تم حفظ الاستجابة والمراجع القابلة للفتح / Response and inspectable citations saved."
+                : "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
           });
           return;
         }
@@ -472,8 +495,8 @@ export function ConversationShell({
               ابدأ محادثة محفوظة
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
-              اكتب بالعربية أو English. ستُحفظ الرسائل وحالة التوليد داخل مساحة
-              العمل، ولن تُعرض استجابة وهمية عند غياب المزود.
+              اكتب بالعربية أو English. فعّل وضع المصادر عندما تريد إجابة تعتمد
+              فقط على المقاطع المحفوظة وتعرض مراجع قابلة للفتح.
             </p>
             {canWrite && (
               <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
@@ -496,6 +519,7 @@ export function ConversationShell({
             {messages.map((message) => (
               <MessageBubble
                 key={message.id}
+                workspaceId={workspaceId}
                 message={message}
                 canRetry={
                   canWrite &&
@@ -530,6 +554,41 @@ export function ConversationShell({
 
         {canWrite && conversation.status === "active" ? (
           <form onSubmit={submit} className="space-y-3">
+            <label
+              htmlFor="conversation-grounding"
+              className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3 text-sm transition-colors ${
+                groundingMode === "workspace_sources"
+                  ? "border-primary/35 bg-primary/10"
+                  : "border-border bg-card hover:bg-secondary/45"
+              }`}
+            >
+              <input
+                id="conversation-grounding"
+                type="checkbox"
+                className="mt-1 h-4 w-4 accent-primary"
+                checked={groundingMode === "workspace_sources"}
+                disabled={isStreaming}
+                onChange={(event) =>
+                  setGroundingMode(
+                    event.target.checked ? "workspace_sources" : "off",
+                  )
+                }
+              />
+              <FileSearch
+                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <span>
+                <span className="block font-semibold">
+                  استخدام مصادر مساحة العمل / Use workspace sources
+                </span>
+                <span className="mt-1 block text-xs leading-6 text-muted-foreground">
+                  يبحث في المقاطع الجاهزة فقط، يرفض الإجابة عند غياب دليل مناسب،
+                  ويحفظ كل مرجع مع رابط للمقطع نفسه.
+                </span>
+              </span>
+            </label>
+
             <label htmlFor="conversation-message" className="sr-only">
               اكتب رسالة
             </label>
@@ -547,7 +606,9 @@ export function ConversationShell({
             />
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs leading-6 text-muted-foreground">
-                تُرسل آخر الرسائل المحفوظة فقط، وتبقى الاستمرارية داخل PostgreSQL.
+                {groundingMode === "workspace_sources"
+                  ? "لن تُعرض الاستجابة كمكتملة ما لم تتضمن مرجعاً صالحاً من هذه المساحة."
+                  : "تُرسل آخر الرسائل المحفوظة فقط، وتبقى الاستمرارية داخل PostgreSQL."}
               </p>
               {isStreaming ? (
                 <Button

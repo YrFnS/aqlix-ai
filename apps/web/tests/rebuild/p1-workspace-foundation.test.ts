@@ -92,15 +92,22 @@ describe("P1 workspace foundation", () => {
     expect(migration).toContain("is_workspace_member");
   });
 
-  test("keeps P1 intact while activating only the declared P2 capability", () => {
+  test("keeps P1 intact while activating P2 conversations and grounded P3 sources", () => {
     const detail = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/page.tsx",
     );
+    const sources = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/sources/page.tsx",
+    );
 
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/conversations`);
-    expect(detail).toContain("P2 · يعمل");
-    expect(detail).toContain('phase: "P3"');
-    expect(detail).toContain('phase: "P4"');
+    expect(detail).toContain("P2 + P3 · يعمل");
+    expect(detail).toContain("مراجع قابلة للفتح");
+    expect(detail).toContain(`/workspaces/${"${workspace.id}"}/sources`);
+    expect(detail).toContain("P3 · يعمل");
+    expect(detail).toContain("ترفض اكتمال الإجابة بلا مرجع");
+    expect(sources).toContain("Private bucket · RLS · 2 MiB");
+    expect(detail).toContain("P4");
     expect(detail).toContain("غير مفعّل بعد");
     expect(detail).not.toMatch(/production[- ]ready/i);
   });
