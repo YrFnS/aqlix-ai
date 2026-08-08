@@ -25,6 +25,7 @@
     "build:cache:clear": "rm -rf .bun/cache && rm -rf node_modules/.cache",
     "start": "concurrently -n \"WEB,API\" -c \"blue,green\" \"bun run --filter ./apps/web start\" \"bun run --filter ./apps/api start\"",
     "start:release": "bun run --filter @iraqi-ai/web start:release",
+    "validate:release-env": "bun scripts/operations/validate-runtime-env.ts",
     "test": "bun run test:p5",
     "test:p1": "bun run --filter @iraqi-ai/types test && bun run test:rebuild",
     "test:p2": "bun run --filter @iraqi-ai/types test && bun run test:rebuild",
