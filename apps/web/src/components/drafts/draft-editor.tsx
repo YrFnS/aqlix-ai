@@ -20,8 +20,7 @@ import {
   FileClock,
   FileWarning,
   GitBranch,
-  LoaderCircle,
-  Quote,
+  RefreshCw,
   RotateCcw,
   Save,
   Send,
@@ -220,6 +219,10 @@ function generationLabel(status: DraftGeneration["status"]): string {
   return labels[status];
 }
 
+function errorMessage(error: unknown, fallback: string): string {
+  return error instanceof Error ? error.message : fallback;
+}
+
 export function DraftEditor({
   workspaceId,
   initialDetail,
@@ -242,15 +245,17 @@ export function DraftEditor({
   const [instruction, setInstruction] = useState(
     actionOptions[0]?.instruction ?? "Improve the draft.",
   );
-  const [proposal, setProposal] = useState<DraftGeneration | null>(() =>
+  const initialProposal =
     initialDetail.generations.find((generation) =>
       ["pending", "streaming", "complete", "failed", "cancelled"].includes(
         generation.status,
       ),
-    ) ?? null,
+    ) ?? null;
+  const [proposal, setProposal] = useState<DraftGeneration | null>(
+    initialProposal,
   );
   const [proposalText, setProposalText] = useState(
-    proposal?.proposedContent ?? "",
+    initialProposal?.proposedContent ?? "",
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [proposalError, setProposalError] = useState<string | null>(null);
@@ -260,6 +265,7 @@ export function DraftEditor({
     () => isDraftEditorDirty(detail.draft, editor),
     [detail.draft, editor],
   );
+  const draftArchived = detail.draft.status === "archived";
   const saveState = isSaving
     ? "saving"
     : saveError
@@ -280,6 +286,12 @@ export function DraftEditor({
     setSaveError(null);
   }, []);
 
+  const parseDetailPayload = (payload: unknown): DraftDetail => {
+    const parsed = draftDetailSchema.safeParse(payload);
+    if (!parsed.success) throw new Error("Draft state returned an invalid shape.");
+    return parsed.data;
+  };
+
   const reloadDetail = useCallback(async (): Promise<DraftDetail> => {
     const response = await fetch(
       `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}`,
@@ -295,13 +307,9 @@ export function DraftEditor({
       throw new Error(payload.error?.message || "Draft state could not be reloaded.");
     }
 
-    const parsed = draftDetailSchema.safeParse(payload.data?.detail);
-    if (!parsed.success) {
-      throw new Error("Draft state returned an invalid shape.");
-    }
-
-    setDetail(parsed.data);
-    return parsed.data;
+    const next = parseDetailPayload(payload.data?.detail);
+    setDetail(next);
+    return next;
   }, [detail.draft.id, workspaceId]);
 
   const saveDraft = useCallback(async () => {
@@ -333,12 +341,8 @@ export function DraftEditor({
         throw new Error(payload.error?.message || "The draft could not be saved.");
       }
 
-      const parsed = draftDetailSchema.safeParse(payload.data?.detail);
-      if (!parsed.success) {
-        throw new Error("The saved draft returned an invalid shape.");
-      }
-
-      acceptDetail(parsed.data);
+      const next = parseDetailPayload(payload.data?.detail);
+      acceptDetail(next);
       setNotice({
         tone: "success",
         message: payload.data?.createdVersion
@@ -347,10 +351,10 @@ export function DraftEditor({
       });
       router.refresh();
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "تعذر حفظ المسودة / Draft save failed.";
+      const message = errorMessage(
+        error,
+        "تعذر حفظ المسودة / Draft save failed.",
+      );
       setSaveError(message);
       setNotice({ tone: "error", message });
     } finally {
@@ -417,14 +421,13 @@ export function DraftEditor({
   };
 
   const restoreVersion = async (versionNumber: number) => {
-    if (!canEdit || dirty || isSaving) {
-      if (dirty) {
-        setNotice({
-          tone: "error",
-          message:
-            "احفظ أو ألغِ تغييرات المحرر قبل استعادة إصدار / Save or clear editor changes before restoring a version.",
-        });
-      }
+    if (!canEdit || isSaving) return;
+    if (dirty) {
+      setNotice({
+        tone: "error",
+        message:
+          "احفظ أو ألغِ تغييرات المحرر قبل استعادة إصدار / Save or clear editor changes before restoring a version.",
+      });
       return;
     }
 
@@ -451,9 +454,7 @@ export function DraftEditor({
         throw new Error(payload.error?.message || "Version restore failed.");
       }
 
-      const parsed = draftDetailSchema.safeParse(payload.data?.detail);
-      if (!parsed.success) throw new Error("Restored draft returned an invalid shape.");
-      acceptDetail(parsed.data);
+      acceptDetail(parseDetailPayload(payload.data?.detail));
       setNotice({
         tone: "success",
         message:
@@ -463,8 +464,7 @@ export function DraftEditor({
     } catch (error) {
       setNotice({
         tone: "error",
-        message:
-          error instanceof Error ? error.message : "Version restore failed.",
+        message: errorMessage(error, "Version restore failed."),
       });
     } finally {
       setIsSaving(false);
@@ -472,14 +472,13 @@ export function DraftEditor({
   };
 
   const setArchived = async (archived: boolean) => {
-    if (!canManageLifecycle || dirty || isGenerating) {
-      if (dirty) {
-        setNotice({
-          tone: "error",
-          message:
-            "احفظ التغييرات قبل تغيير حالة المسودة / Save changes before changing draft state.",
-        });
-      }
+    if (!canManageLifecycle || isGenerating) return;
+    if (dirty) {
+      setNotice({
+        tone: "error",
+        message:
+          "احفظ التغييرات قبل تغيير حالة المسودة / Save changes before changing draft state.",
+      });
       return;
     }
 
@@ -500,19 +499,16 @@ export function DraftEditor({
         throw new Error(payload.error?.message || "Draft lifecycle failed.");
       }
 
-      if (archived) {
-        router.push(`/workspaces/${workspaceId}/drafts?status=archived`);
-      } else {
-        router.push(
-          `/workspaces/${workspaceId}/drafts/${detail.draft.id}?status=reopened`,
-        );
-      }
+      router.push(
+        archived
+          ? `/workspaces/${workspaceId}/drafts?status=archived`
+          : `/workspaces/${workspaceId}/drafts/${detail.draft.id}?status=reopened`,
+      );
       router.refresh();
     } catch (error) {
       setNotice({
         tone: "error",
-        message:
-          error instanceof Error ? error.message : "Draft lifecycle failed.",
+        message: errorMessage(error, "Draft lifecycle failed."),
       });
     }
   };
@@ -542,8 +538,7 @@ export function DraftEditor({
     } catch (error) {
       setNotice({
         tone: "error",
-        message:
-          error instanceof Error ? error.message : "Draft deletion failed.",
+        message: errorMessage(error, "Draft deletion failed."),
       });
     }
   };
@@ -642,9 +637,7 @@ export function DraftEditor({
           );
         }
       } else {
-        setProposalError(
-          error instanceof Error ? error.message : "Draft proposal failed.",
-        );
+        setProposalError(errorMessage(error, "Draft proposal failed."));
       }
     } finally {
       proposalController.current = null;
@@ -669,9 +662,7 @@ export function DraftEditor({
         throw new Error(payload.error?.message || "Proposal apply failed.");
       }
 
-      const parsed = draftDetailSchema.safeParse(payload.data?.detail);
-      if (!parsed.success) throw new Error("Applied draft returned an invalid shape.");
-      acceptDetail(parsed.data);
+      acceptDetail(parseDetailPayload(payload.data?.detail));
       setProposal(null);
       setProposalText("");
       setNotice({
@@ -681,9 +672,7 @@ export function DraftEditor({
       });
       router.refresh();
     } catch (error) {
-      setProposalError(
-        error instanceof Error ? error.message : "Proposal apply failed.",
-      );
+      setProposalError(errorMessage(error, "Proposal apply failed."));
     }
   };
 
@@ -704,9 +693,7 @@ export function DraftEditor({
         throw new Error(payload.error?.message || "Proposal discard failed.");
       }
 
-      const parsed = draftDetailSchema.safeParse(payload.data?.detail);
-      if (!parsed.success) throw new Error("Discarded draft returned an invalid shape.");
-      setDetail(parsed.data);
+      setDetail(parseDetailPayload(payload.data?.detail));
       setProposal(null);
       setProposalText("");
       setNotice({
@@ -716,14 +703,9 @@ export function DraftEditor({
       });
       router.refresh();
     } catch (error) {
-      setProposalError(
-        error instanceof Error ? error.message : "Proposal discard failed.",
-      );
+      setProposalError(errorMessage(error, "Proposal discard failed."));
     }
   };
-
-  const draftArchived = detail.draft.status === "archived";
-  const latestVersions = detail.versions;
 
   return (
     <div className="space-y-6">
@@ -763,7 +745,7 @@ export function DraftEditor({
               aria-live="polite"
             >
               {saveState === "saving" ? (
-                <LoaderCircle className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
+                <RefreshCw className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
               ) : saveState === "saved" ? (
                 <Check className="h-3.5 w-3.5" aria-hidden="true" />
               ) : saveState === "error" ? (
@@ -785,6 +767,7 @@ export function DraftEditor({
             <label className="space-y-2 text-sm font-semibold sm:col-span-2">
               <span>العنوان</span>
               <input
+                aria-label="عنوان المسودة"
                 value={editor.title}
                 onChange={(event) => updateEditor({ title: event.target.value })}
                 maxLength={200}
@@ -797,6 +780,7 @@ export function DraftEditor({
             <label className="space-y-2 text-sm font-semibold">
               <span>نوع العمل</span>
               <select
+                aria-label="نوع المسودة"
                 value={editor.kind}
                 onChange={(event) =>
                   updateEditor({ kind: event.target.value as DraftKind })
@@ -815,6 +799,7 @@ export function DraftEditor({
             <label className="space-y-2 text-sm font-semibold">
               <span>اتجاه المحتوى</span>
               <select
+                aria-label="اتجاه محتوى المسودة"
                 value={editor.direction}
                 onChange={(event) =>
                   updateEditor({
@@ -833,6 +818,7 @@ export function DraftEditor({
             <label className="space-y-2 text-sm font-semibold sm:col-span-2">
               <span>المحتوى</span>
               <textarea
+                aria-label="محتوى المسودة"
                 value={editor.content}
                 onChange={(event) => updateEditor({ content: event.target.value })}
                 maxLength={100000}
@@ -870,10 +856,7 @@ export function DraftEditor({
                   onClick={() => void saveDraft()}
                 >
                   {isSaving ? (
-                    <LoaderCircle
-                      className="h-4 w-4 animate-spin"
-                      aria-hidden="true"
-                    />
+                    <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
                     <Save className="h-4 w-4" aria-hidden="true" />
                   )}
@@ -924,23 +907,19 @@ export function DraftEditor({
                     </>
                   );
 
-                  if (provenance.sourceId && provenance.attachmentId) {
-                    return (
-                      <Link
-                        key={provenance.id}
-                        href={`/workspaces/${workspaceId}/sources/${provenance.attachmentId}#source-${provenance.sourceId}`}
-                        className="flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-background px-3 py-2 text-xs transition-colors hover:border-primary/40 hover:bg-secondary"
-                      >
-                        {body}
-                        <ExternalLink
-                          className="h-3.5 w-3.5 shrink-0"
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    );
-                  }
-
-                  return (
+                  return provenance.sourceId && provenance.attachmentId ? (
+                    <Link
+                      key={provenance.id}
+                      href={`/workspaces/${workspaceId}/sources/${provenance.attachmentId}#source-${provenance.sourceId}`}
+                      className="flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-background px-3 py-2 text-xs transition-colors hover:border-primary/40 hover:bg-secondary"
+                    >
+                      {body}
+                      <ExternalLink
+                        className="h-3.5 w-3.5 shrink-0"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  ) : (
                     <div
                       key={provenance.id}
                       className="flex min-h-11 items-center gap-2 rounded-2xl border border-dashed border-border bg-secondary/45 px-3 py-2 text-xs"
@@ -1013,6 +992,7 @@ export function DraftEditor({
               <label className="space-y-2 text-sm font-semibold">
                 <span>الإجراء</span>
                 <select
+                  aria-label="إجراء اقتراح المسودة"
                   value={action}
                   disabled={isGenerating}
                   onChange={(event) => {
@@ -1037,6 +1017,7 @@ export function DraftEditor({
               <label className="space-y-2 text-sm font-semibold">
                 <span>التعليمات</span>
                 <textarea
+                  aria-label="تعليمات اقتراح المسودة"
                   value={instruction}
                   onChange={(event) => setInstruction(event.target.value)}
                   maxLength={2000}
@@ -1174,7 +1155,7 @@ export function DraftEditor({
         </div>
 
         <div className="mt-6 space-y-3">
-          {latestVersions.map((version) => (
+          {detail.versions.map((version) => (
             <article
               key={version.id}
               className="rounded-2xl border border-border/70 bg-background p-4"
