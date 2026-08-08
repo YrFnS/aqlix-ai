@@ -17,7 +17,7 @@ const publicEnvironmentSchema = z.enum([
   "production",
 ]);
 
-const providerSchema = z.enum(["openai", "fixture"]);
+const providerSchema = z.enum(["openrouter", "openai", "fixture"]);
 
 function environmentBoolean(
   value: string | undefined,
@@ -63,6 +63,7 @@ const runtimeSchema = z
     supabaseAnonKey: z.string().trim().min(1, "Supabase public key is required"),
     provider: providerSchema,
     openAiApiKey: z.string().trim().min(1).optional(),
+    openAiModel: z.string().trim().min(1).max(255).optional(),
     fixtureProviderAllowed: z.boolean(),
     probeDependencies: z.boolean(),
     readinessTimeoutMs: z.number().int().min(250).max(10000),
@@ -88,19 +89,28 @@ const runtimeSchema = z
         });
       }
 
-      if (value.provider !== "openai") {
+      if (value.provider === "fixture") {
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["provider"],
           message: "The fixture provider is forbidden in staging and production",
         });
       }
+    }
 
+    if (value.provider === "openai") {
       if (!value.openAiApiKey) {
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["openAiApiKey"],
-          message: "The configured production provider requires a server key",
+          message: "Managed OpenAI mode requires a server key",
+        });
+      }
+      if (!value.openAiModel) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["openAiModel"],
+          message: "Managed OpenAI mode requires an explicit model ID",
         });
       }
     }
@@ -127,7 +137,7 @@ export interface OperationalRuntimeContract {
   releaseSha: string | null;
   supabaseUrl: string;
   supabaseAnonKey: string;
-  provider: "openai" | "fixture";
+  provider: "openrouter" | "openai" | "fixture";
   probeDependencies: boolean;
   readinessTimeoutMs: number;
 }
@@ -157,8 +167,9 @@ export function parseOperationalRuntimeContract(
     supabaseUrl: environment.NEXT_PUBLIC_SUPABASE_URL?.trim() || "",
     supabaseAnonKey:
       environment.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || "",
-    provider: environment.AI_PROVIDER?.trim() || "openai",
+    provider: environment.AI_PROVIDER?.trim() || "openrouter",
     openAiApiKey: environment.OPENAI_API_KEY?.trim() || undefined,
+    openAiModel: environment.OPENAI_MODEL?.trim() || undefined,
     fixtureProviderAllowed: environmentBoolean(
       environment.P2_ALLOW_FIXTURE_PROVIDER,
       false,
