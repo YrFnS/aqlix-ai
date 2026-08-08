@@ -35,6 +35,21 @@ function environmentInteger(
   return Number.parseInt(value, 10);
 }
 
+/**
+ * Resolve one immutable deployment identity without requiring each platform to
+ * copy its native commit variable into another secret or dashboard value.
+ */
+export function resolveReleaseSha(
+  environment: Readonly<Record<string, string | undefined>>,
+): string | null {
+  return (
+    environment.RELEASE_SHA?.trim() ||
+    environment.RENDER_GIT_COMMIT?.trim() ||
+    environment.GITHUB_SHA?.trim() ||
+    null
+  );
+}
+
 const runtimeSchema = z
   .object({
     appEnvironment: operationalEnvironmentSchema,
@@ -138,7 +153,7 @@ export function parseOperationalRuntimeContract(
     appEnvironment,
     publicEnvironment:
       environment.NEXT_PUBLIC_APP_ENV?.trim() || "development",
-    releaseSha: environment.RELEASE_SHA?.trim() || undefined,
+    releaseSha: resolveReleaseSha(environment) ?? undefined,
     supabaseUrl: environment.NEXT_PUBLIC_SUPABASE_URL?.trim() || "",
     supabaseAnonKey:
       environment.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || "",
