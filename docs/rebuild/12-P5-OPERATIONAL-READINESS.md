@@ -10,6 +10,8 @@ P0–P4 prove the local product loop:
 
 P5 does not add a broader product surface. It turns the proven loop into a deployable, observable, recoverable, cost-controlled, reviewed beta and production system.
 
+**P5.0 local operational baseline:** implemented and validated on an implementation head; final PR closeout still requires exact-head repetition.  
+**P5.1 hosted staging rehearsal:** not executed.  
 **Production ready: No.**
 
 This record is the P5 architecture, environment, ownership, and exit-criteria source of truth. Public readiness claims remain blocked until every named production gate has evidence.
@@ -49,8 +51,12 @@ one stateless Next.js web service
 ### Active runtime
 
 - One stateless Next.js web service owns the public application, authenticated routes, same-origin APIs, conversation streaming, document handling, draft operations, and health endpoints.
-- Bun `1.3.14` remains the only JavaScript package manager and release command runner.
-- The web service is built from one Git commit and receives a required `RELEASE_SHA` in staging and production.
+- Bun `1.3.14` owns dependency installation, the committed lockfile, workspace scripts, package builds, tests, and release-command orchestration.
+- Node.js `24.14.1` executes the supported Next.js production compiler and self-hosted server.
+- Root `react` and `react-dom` are pinned to `19.1.1` so Next, the web workspace, and shared UI resolve one runtime.
+- The deferred mobile workspace keeps React 18 nested under its own workspace and cannot control the active web runtime.
+- `@iraqi-ai/ui` declares React as a peer and builds for the browser with package imports externalized; it does not bundle another React copy.
+- The web service is built from one Git commit and receives a required immutable release identity in staging and production.
 - The service is horizontally replaceable. PostgreSQL and private Storage remain the durable authorities.
 
 ### Managed data services
@@ -94,8 +100,8 @@ All ready environments require:
 
 Staging and production also require:
 
-- `RELEASE_SHA`
-- `OPENAI_API_KEY`
+- one release identity from `RELEASE_SHA`, `RENDER_GIT_COMMIT`, or `GITHUB_SHA`;
+- `OPENAI_API_KEY`.
 
 Operational health controls:
 
@@ -107,7 +113,7 @@ Provider-specific model and timeout variables remain defined by the existing ser
 ### Environment rules
 
 - `APP_ENV` and `NEXT_PUBLIC_APP_ENV` must agree in staging and production.
-- `RELEASE_SHA` must identify the deployed Git commit in staging and production.
+- The resolved release SHA must identify the deployed Git commit in staging and production.
 - `AI_PROVIDER=fixture` is rejected in staging and production.
 - Fixture use requires `P2_ALLOW_FIXTURE_PROVIDER=true` and a development or test environment.
 - Runtime readiness fails closed when required configuration is invalid.
@@ -218,17 +224,37 @@ Purpose: prove the process is configured to serve the selected environment.
 
 Provider availability and budget validation require the protected P5.2 smoke path, not a public readiness probe.
 
-## Bun-only release commands
+## Bun-managed Node release commands
 
 P5 establishes dedicated commands separate from fast compile-mode browser builds:
 
 ```bash
 bun install --frozen-lockfile
+bun run validate:release-env
 bun run build:release
 bun run start:release
 ```
 
-`build:release` builds shared packages, then executes a full Next.js production build for the active web service. `start:release` starts only that web service. The inherited FastAPI and mobile placeholders are not started by the P5 release path.
+Bun resolves the lockfile, builds shared packages, and invokes the release scripts. `build:release` runs the full Next.js production compiler under Node LTS. `start:release` starts only the Next.js web service under Node LTS. The inherited FastAPI and mobile placeholders are not started by the P5 release path.
+
+## P5.0 validation evidence
+
+The implementation-head operational workflow proved all of the following together:
+
+- frozen Bun installation;
+- root React 19 and React DOM 19;
+- mobile React 18 isolation;
+- external shared-UI package dependencies;
+- release environment preflight;
+- deployment-script syntax;
+- focused TypeScript and P0–P5 tests;
+- full Next.js production rendering;
+- Node production-server startup;
+- liveness response;
+- readiness response with configuration and Supabase Auth checks passing;
+- non-secret evidence artifact upload.
+
+The final documentation head must repeat this gate before P5.0 is closed in the tracker.
 
 ## P5.0 acceptance criteria
 
@@ -239,8 +265,10 @@ P5.0 is complete only when:
 - staging and production configuration rules reject invalid or fixture-provider deployments;
 - liveness and readiness endpoints are implemented and tested;
 - readiness fails closed and does not expose secrets;
-- one Bun-only release build and startup path exists;
+- a frozen Bun dependency path and Node LTS Next release path exist;
+- one React runtime owns the active web graph;
 - a workflow starts local dependencies, launches the release build, and verifies both health endpoints;
+- the final exact PR head repeats every required operational and P0–P4 regression gate;
 - README, roadmap, tracker, and pull request state remain honest about production readiness.
 
 ## Beta gate
