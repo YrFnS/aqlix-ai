@@ -61,6 +61,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080009_p3_mixed_script_search.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080010_p3_storage_object_integrity.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080011_p3_grounded_citations.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080012_p3_ranked_broad_source_search.sql
 
       - name: Re-run P1 ownership and isolation regressions
         run: |
@@ -90,4 +91,4 @@ jobs:
             exit 1
           fi
 
-          echo "P3 bounded uploads, registered object integrity, mixed-script search, persistent citations, deleted-source snapshots, role isolation, archive guards, and cascades passed."
+          echo "P3 bounded uploads, registered object integrity, ranked natural-language search, persistent citations, deleted-source snapshots, role isolation, archive guards, and cascades passed."
