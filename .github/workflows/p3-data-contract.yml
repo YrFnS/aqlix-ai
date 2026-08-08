@@ -58,6 +58,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080006_p2_conversation_generations.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080007_p2_archived_workspace_guard.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080008_p3_document_sources.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080009_p3_mixed_script_search.sql
 
       - name: Re-run P1 ownership and isolation regressions
         run: |
@@ -84,4 +85,4 @@ jobs:
             exit 1
           fi
 
-          echo "P3 bounded uploads, processing attempts, deterministic passages, search, role isolation, archive guards, and cascades passed."
+          echo "P3 bounded uploads, processing attempts, mixed-script search, role isolation, archive guards, and cascades passed."
