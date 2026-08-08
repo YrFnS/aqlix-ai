@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   conversationStreamEventSchema,
   createConversationInputSchema,
+  messageCitationSchema,
   providerFailureCodeSchema,
   streamConversationInputSchema,
   updateConversationInputSchema,
@@ -12,9 +13,12 @@ const conversationId = "4b7e02ab-6bb0-4fc7-9ad6-c58e2480f86a";
 const messageId = "5c8f13bc-7cc1-4ad8-8be7-d69f3591097b";
 const generationId = "6d9024cd-8dd2-4be9-9cf8-e7a046a21a8c";
 const userId = "7ea135de-9ee3-4cfa-ad09-f8b157b32b9d";
+const sourceId = "8fb246ef-aff4-4d0b-8e1a-09c268c43cae";
+const attachmentId = "90c357f0-b105-4e1c-9f2b-10d379d54dbf";
+const citationId = "a1d46801-c216-4f2d-803c-21e48ae65ec0";
 const timestamp = "2026-08-08T00:00:00.000Z";
 
-describe("P2 conversation contracts", () => {
+describe("P2 and P3 conversation contracts", () => {
   test("normalizes conversation titles", () => {
     expect(
       createConversationInputSchema.parse({
@@ -46,15 +50,17 @@ describe("P2 conversation contracts", () => {
       conversationId,
       content: "مرحبا English 2026",
       direction: "auto",
+      groundingMode: "off",
     });
 
     expect(
-      streamConversationInputSchema.safeParse({
+      streamConversationInputSchema.parse({
         workspaceId,
         conversationId,
         retryMessageId: messageId,
-      }).success,
-    ).toBe(true);
+        groundingMode: "workspace_sources",
+      }).groundingMode,
+    ).toBe("workspace_sources");
 
     expect(
       streamConversationInputSchema.safeParse({
@@ -71,7 +77,7 @@ describe("P2 conversation contracts", () => {
     ).toBe(false);
   });
 
-  test("validates normalized completion events with telemetry", () => {
+  test("validates normalized completion events with citation telemetry", () => {
     const event = conversationStreamEventSchema.parse({
       type: "complete",
       message: {
@@ -81,7 +87,7 @@ describe("P2 conversation contracts", () => {
         createdBy: userId,
         role: "assistant",
         status: "complete",
-        content: "تم / done",
+        content: "تم / done [S1]",
         direction: "auto",
         sequence: 1,
         createdAt: timestamp,
@@ -97,6 +103,9 @@ describe("P2 conversation contracts", () => {
           returnedModel: "gpt-5-mini",
           providerResponseId: "resp_123",
           status: "complete",
+          groundingMode: "workspace_sources",
+          retrievedSourceCount: 2,
+          citationCount: 1,
           inputTokens: 10,
           outputTokens: 20,
           reasoningTokens: 0,
@@ -110,10 +119,55 @@ describe("P2 conversation contracts", () => {
           createdAt: timestamp,
           updatedAt: timestamp,
         },
+        citations: [
+          {
+            id: citationId,
+            workspaceId,
+            conversationId,
+            messageId,
+            sourceId,
+            attachmentId,
+            citationOrder: 0,
+            label: "S1",
+            fileNameSnapshot: "قرار المشروع.md",
+            mediaTypeSnapshot: "text/markdown",
+            sourceOrdinalSnapshot: 0,
+            pageNumberSnapshot: null,
+            startLineSnapshot: 1,
+            endLineSnapshot: 3,
+            createdAt: timestamp,
+          },
+        ],
       },
     });
 
     expect(event.type).toBe("complete");
+    if (event.type === "complete") {
+      expect(event.message.citations[0]?.label).toBe("S1");
+      expect(event.message.generation?.citationCount).toBe(1);
+    }
+  });
+
+  test("preserves deleted source snapshots without a live target", () => {
+    expect(
+      messageCitationSchema.parse({
+        id: citationId,
+        workspaceId,
+        conversationId,
+        messageId,
+        sourceId: null,
+        attachmentId: null,
+        citationOrder: 0,
+        label: "S1",
+        fileNameSnapshot: "deleted.txt",
+        mediaTypeSnapshot: "text/plain",
+        sourceOrdinalSnapshot: 2,
+        pageNumberSnapshot: null,
+        startLineSnapshot: 8,
+        endLineSnapshot: 10,
+        createdAt: timestamp,
+      }).fileNameSnapshot,
+    ).toBe("deleted.txt");
   });
 
   test("rejects unsupported stream event types", () => {
@@ -125,10 +179,15 @@ describe("P2 conversation contracts", () => {
     ).toBe(false);
   });
 
-  test("keeps provider failures machine-readable", () => {
+  test("keeps provider and grounding failures machine-readable", () => {
     expect(providerFailureCodeSchema.options).toContain(
       "PROVIDER_UNCONFIGURED",
     );
+    expect(providerFailureCodeSchema.options).toContain(
+      "NO_RELEVANT_SOURCES",
+    );
+    expect(providerFailureCodeSchema.options).toContain("CITATION_REQUIRED");
+    expect(providerFailureCodeSchema.options).toContain("CITATION_INVALID");
     expect(providerFailureCodeSchema.options).toContain("STREAM_CANCELLED");
     expect(providerFailureCodeSchema.options).toContain("PERSISTENCE_ERROR");
   });
