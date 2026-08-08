@@ -11,7 +11,8 @@ import {
   AiProviderError,
   createAiProvider,
   emptyProviderUsage,
-  getRequestedProviderIdentity,
+  getFallbackProviderIdentity,
+  resolveAiRuntimeConfig,
   isAbortError,
 } from "@/lib/ai";
 import { requireApiUser } from "@/lib/api/auth";
@@ -204,7 +205,32 @@ export async function POST(request: Request, context: RouteContext) {
     );
   }
 
-  const providerIdentity = getRequestedProviderIdentity();
+  let aiRuntimeConfig: Awaited<
+    ReturnType<typeof resolveAiRuntimeConfig>
+  > | null = null;
+  let providerConfigurationFailure: AiProviderError | null = null;
+
+  try {
+    aiRuntimeConfig = await resolveAiRuntimeConfig(auth.context.supabase, {
+      requestOrigin: new URL(request.url).origin,
+    });
+  } catch (error) {
+    providerConfigurationFailure =
+      error instanceof AiProviderError
+        ? error
+        : new AiProviderError(
+            "UNKNOWN_PROVIDER_ERROR",
+            "The user AI connection could not be resolved.",
+            true,
+          );
+  }
+
+  const providerIdentity = aiRuntimeConfig
+    ? {
+        provider: aiRuntimeConfig.provider,
+        requestedModel: aiRuntimeConfig.requestedModel,
+      }
+    : getFallbackProviderIdentity();
   let begun: BegunDraftGeneration;
 
   try {
@@ -406,7 +432,18 @@ export async function POST(request: Request, context: RouteContext) {
         };
 
         try {
-          const provider = createAiProvider({
+          if (providerConfigurationFailure || !aiRuntimeConfig) {
+            throw (
+              providerConfigurationFailure ??
+              new AiProviderError(
+                "PROVIDER_UNCONFIGURED",
+                "Connect OpenRouter and select a model in AI settings.",
+                false,
+              )
+            );
+          }
+
+          const provider = createAiProvider(aiRuntimeConfig, {
             supabase: auth.context.supabase,
             workspaceId: parsed.data.workspaceId,
             operation: "draft",
