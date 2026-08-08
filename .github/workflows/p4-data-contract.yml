@@ -86,6 +86,7 @@ jobs:
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080013_p4_drafts_and_versions.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080014_p4_draft_generation_guards.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080015_p4_origin_delete_integrity.sql
 
       - name: Verify P4 durable draft lifecycle
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p4_draft_lifecycle.test.sql
@@ -104,4 +105,4 @@ jobs:
             exit 1
           fi
 
-          echo "P1-P3 regressions passed at their schema boundaries; P4 immutable versions, no-op saves, stale-write rejection, provenance snapshots, apply/discard/cancel proposal states, role isolation, archive guards, and cascades passed after forward migration."
+          echo "P1-P3 regressions passed at their schema boundaries; P4 immutable versions, no-op saves, stale-write rejection, provenance snapshots, apply/discard/cancel proposal states, role isolation, archive guards, origin detachment, and cascades passed after forward migration."
