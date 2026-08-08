@@ -9,8 +9,10 @@ This directory is the source of truth for the controlled rebuild of the reposito
 - P1 — account, workspace, persistence, and authorization: **complete and merged**
 - P2 — persistent bilingual conversation: **complete and merged**
 - P3 — private documents, inspectable passages, and grounded citations: **complete and merged**
-- P4 — durable drafts and reusable work: **implemented; PR `#6` in exact-head closeout**
-- Next: **P5 — operational readiness**
+- P4 — durable drafts and reusable work: **complete and merged**
+- P5 — operational readiness: **in progress on draft PR `#7`**
+- P5.0 local release baseline: **implemented and validated on an implementation head**
+- Hosted staging deployment: **not completed**
 - Production ready: **No**
 - Legacy snapshots:
   - `legacy/main-2026-08-07`
@@ -76,9 +78,32 @@ P0–P4 implement and validate this loop against persistent authorized data. P5 
 - Apply as a new version or discard without changing accepted work.
 - Draft archive, restore, reopen, delete, viewer read/export-only access, and outsider isolation.
 
+## P5 operational baseline
+
+The active branch now includes:
+
+- explicit development, test, staging, and production environment contracts;
+- release, service, data, provider-cost, security/privacy, observability, and incident ownership;
+- one stateless Next.js topology backed by hosted Supabase and a server-only provider;
+- Bun `1.3.14` for frozen dependency installation, workspaces, package builds, tests, and orchestration;
+- Node.js `24.14.1` for the supported Next.js production compiler and server;
+- one root React/React DOM `19.1.1` runtime for Next, web, and shared UI;
+- nested mobile React 18 isolation;
+- external shared-UI peer dependencies rather than a bundled React copy;
+- focused fatal release TypeScript checking;
+- standalone global unmatched-route rendering;
+- non-secret liveness and fail-closed readiness endpoints;
+- exact release identity;
+- a full production build, production-server startup, liveness, and Supabase-backed readiness gate;
+- a manual Render staging Blueprint;
+- ordered Supabase migration dry run and apply scripts;
+- application rollback and forward database recovery runbooks.
+
+The hosted staging project and service have not been provisioned through this work. The Blueprint is infrastructure intent, not deployment evidence.
+
 ## Validation
 
-P4 requires all of these workflows on one exact head:
+The active branch requires all of these workflows on one exact head:
 
 - `CI Quality Gates`
 - `PR Validation`
@@ -93,10 +118,9 @@ P4 requires all of these workflows on one exact head:
 - `P3 Private Document Source Journey`
 - `P4 Durable Draft Data Contract`
 - `P4 Ask Ground Draft Continue Journey`
+- `P5 Operational Baseline`
 
-The P4 data gate validates P1–P3 at their own schema boundaries, migrates forward, then proves immutable versions, no-op saves, stale conflicts, provenance, proposal apply/discard/cancel/failure, role isolation, archive guards, origin detachment, deleted-source snapshots, and cascades.
-
-The P4 browser gate completes the real local journey from sign-up through source upload, grounded answer, all six draft structures, save/reload, copy/export, versions/restore, proposal lifecycle, viewer/outsider isolation, archive/restore, mobile layout, deletion, sign-out, and hydration monitoring.
+The P5 gate verifies frozen installation, runtime alignment, deployment-script safeguards, P0–P5 tests, the full Next.js production renderer, Node production startup, liveness, readiness, and non-secret evidence output.
 
 The browser journeys use an explicitly enabled deterministic fixture provider. They prove application mechanics, not external provider availability or model quality.
 
@@ -104,7 +128,7 @@ The browser journeys use an explicitly enabled deterministic fixture provider. T
 
 The rebuild does not yet certify or claim:
 
-- production deployment readiness;
+- hosted staging or production deployment readiness;
 - protected live-provider availability or output quality;
 - account/workspace quotas, rate limits, or provider budgets;
 - monitoring or incident-response readiness;
@@ -130,7 +154,9 @@ The rebuild does not yet certify or claim:
 9. Deleted sources remain explicitly unavailable rather than silently re-linked.
 10. Active rebuild gates and inherited legacy audits remain visibly separate.
 11. Third-party code and assets require documented origin and compatible licensing.
-12. Bun remains the single JavaScript package manager unless a recorded decision changes it.
+12. Bun remains the single JavaScript package manager; Node LTS executes the Next.js production runtime.
+13. Hosted migrations are forward-only and cannot use reset or history repair as normal rollback.
+14. Production ready remains **No** until every production gate has evidence.
 
 ## Rebuild documents
 
@@ -146,19 +172,23 @@ The rebuild does not yet certify or claim:
 - [P3 private source architecture](./09-P3-ARCHITECTURE.md)
 - [P3 grounded conversation architecture](./10-P3-GROUNDED-CONVERSATIONS.md)
 - [P4 draft architecture](./11-P4-ARCHITECTURE.md)
+- [P5 operational readiness](./12-P5-OPERATIONAL-READINESS.md)
+- [P5 deployment, migration, and rollback](./13-P5-DEPLOYMENT-AND-ROLLBACK.md)
 
-## Next phase: P5
+## Remaining P5 sequence
 
-P5 begins only after P4 is merged. Its first tasks are:
-
-1. define one production deployment topology and Bun-only release path;
-2. add protected live-provider smoke validation and cost controls;
-3. implement account/workspace quotas and rate limits;
-4. add structured monitoring, alerts, and incident response;
-5. execute database and object-storage backup and restore exercises;
-6. review sessions, RLS, prompts, uploads, retention, deletion, and logs;
-7. audit dependencies, licenses, code, and assets for release provenance;
-8. define production migration, rollback, disaster recovery, beta, and launch gates.
+1. Repeat P5.0 and every P0–P4 regression on the final documentation head.
+2. Provision a separate hosted Supabase staging project and Render staging service.
+3. Execute the clean migration, deployment, readiness, and authenticated smoke path.
+4. Exercise application rollback and forward database recovery.
+5. Add protected live-provider smoke validation and cost controls.
+6. Implement account/workspace quotas, rate limits, concurrency limits, and provider budgets.
+7. Add structured monitoring, alerts, log redaction, retention, and incident response.
+8. Execute database and object-storage backup and restore exercises.
+9. Review sessions, RLS, prompts, uploads, retention, deletion, and logs.
+10. Validate keyboard, screen-reader, RTL/LTR, mixed-text, reflow, and mobile behavior.
+11. Audit dependencies, licenses, code, fonts, screenshots, generated material, and assets.
+12. Make named beta and production readiness decisions.
 
 ## Definition of a trustworthy release
 
