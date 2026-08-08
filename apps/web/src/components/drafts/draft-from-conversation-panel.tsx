@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FilePlus2, RefreshCw } from "lucide-react";
-import type { DraftKind } from "@iraqi-ai/types";
+import type { ConversationMessage, DraftKind } from "@iraqi-ai/types";
+import { conversationMessageSchema } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
 
 interface AssistantMessageOption {
@@ -32,6 +33,21 @@ function preview(value: string): string {
     : `${normalized.slice(0, 87).trimEnd()}…`;
 }
 
+function reusableMessagesFrom(
+  messages: ConversationMessage[],
+): AssistantMessageOption[] {
+  return messages
+    .filter(
+      (message) => message.role === "assistant" && message.status === "complete",
+    )
+    .map((message) => ({
+      id: message.id,
+      sequence: message.sequence,
+      content: message.content,
+      citationCount: message.citations.length,
+    }));
+}
+
 export function DraftFromConversationPanel({
   workspaceId,
   conversationId,
@@ -44,14 +60,22 @@ export function DraftFromConversationPanel({
   canWrite: boolean;
 }) {
   const router = useRouter();
+  const [availableMessages, setAvailableMessages] = useState(messages);
   const orderedMessages = useMemo(
-    () => [...messages].sort((left, right) => right.sequence - left.sequence),
-    [messages],
+    () =>
+      [...availableMessages].sort(
+        (left, right) => right.sequence - left.sequence,
+      ),
+    [availableMessages],
   );
   const [messageId, setMessageId] = useState(orderedMessages[0]?.id ?? "");
   const [kind, setKind] = useState<Exclude<DraftKind, "freeform">>("summary");
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAvailableMessages(messages);
+  }, [messages]);
 
   useEffect(() => {
     setMessageId((current) => {
@@ -62,7 +86,55 @@ export function DraftFromConversationPanel({
     });
   }, [orderedMessages]);
 
-  if (messages.length === 0) {
+  useEffect(() => {
+    if (availableMessages.length > 0) return;
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const loadPersistedMessages = async () => {
+      try {
+        const response = await fetch(
+          `/api/v1/workspaces/${workspaceId}/conversations/${conversationId}`,
+          { cache: "no-store" },
+        );
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          data?: { messages?: unknown };
+        };
+
+        if (response.ok && payload.ok) {
+          const parsed = conversationMessageSchema.array().safeParse(
+            payload.data?.messages,
+          );
+          if (parsed.success) {
+            const completed = reusableMessagesFrom(parsed.data);
+            if (!cancelled && completed.length > 0) {
+              setAvailableMessages(completed);
+              return;
+            }
+          }
+        }
+      } catch {
+        // The main conversation surface owns visible request failures. This
+        // helper retries only while the first completed answer is not yet
+        // available to the server-rendered sibling panel.
+      }
+
+      if (!cancelled) {
+        timer = setTimeout(() => void loadPersistedMessages(), 750);
+      }
+    };
+
+    void loadPersistedMessages();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [availableMessages.length, conversationId, workspaceId]);
+
+  if (availableMessages.length === 0) {
     return (
       <section className="rounded-3xl border border-dashed border-border bg-card p-6 sm:p-8">
         <p className="text-sm font-semibold text-primary">P4 · Draft</p>
