@@ -168,7 +168,7 @@ describe("P5 health and release boundaries", () => {
     expect(architecture).toContain("Production ready: No");
   });
 
-  test("exposes a Bun-only release path and focused fatal typecheck", () => {
+  test("uses Bun for dependency control and Node LTS for Next release execution", () => {
     const webPackage = readWeb("package.json");
     const rootPackage = readRepo("package.json");
     const nextConfig = readWeb("next.config.ts");
@@ -176,10 +176,14 @@ describe("P5 health and release boundaries", () => {
       "scripts/operations/validate-runtime-env.ts",
     );
 
-    expect(webPackage).toContain('"build:release": "next build"');
     expect(webPackage).toContain(
-      '"start:release": "next start -H 0.0.0.0"',
+      '"build:release": "node ../../node_modules/next/dist/bin/next build"',
     );
+    expect(webPackage).toContain(
+      '"start:release": "node ../../node_modules/next/dist/bin/next start -H 0.0.0.0"',
+    );
+    expect(webPackage).toContain('"node": ">=24.14.1 <25.0.0"');
+    expect(webPackage).toContain('"bun": ">=1.3.14 <2.0.0"');
     expect(rootPackage).toContain('"build:release"');
     expect(rootPackage).toContain('"start:release"');
     expect(rootPackage).toContain('"validate:release-env"');
@@ -215,6 +219,7 @@ describe("P5 health and release boundaries", () => {
     expect(blueprint).toContain("preDeployCommand: bash scripts/render/pre-deploy.sh");
     expect(blueprint).toContain("healthCheckPath: /api/health/ready");
     expect(blueprint).toContain("maxShutdownDelaySeconds: 60");
+    expect(blueprint).toContain("key: NODE_VERSION\n        value: 24.14.1");
     expect(blueprint).toContain("key: BUN_VERSION\n        value: 1.3.14");
     expect(blueprint).toContain("key: SKIP_INSTALL_DEPS\n        value: \"true\"");
 
@@ -282,11 +287,14 @@ describe("P5 health and release boundaries", () => {
     expect(runbook).not.toContain("staging deployment is complete");
   });
 
-  test("runs the release startup and deployment script safeguards in CI", () => {
+  test("pins Node LTS and runs release startup safeguards in CI", () => {
     const workflow = readRepo(
       ".github/workflows/p5-operational-baseline.yml",
     );
 
+    expect(workflow).toContain("uses: actions/setup-node@v6");
+    expect(workflow).toContain("node-version: 24.14.1");
+    expect(workflow).toContain("package-manager-cache: false");
     expect(workflow).toContain(
       "bash -n scripts/render/build.sh scripts/render/pre-deploy.sh",
     );
