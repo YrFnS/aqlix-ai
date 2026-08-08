@@ -20,18 +20,20 @@ const publicSurface = [
   .join("\n");
 
 describe("rebuild brand and scope", () => {
-  test("defines bilingual product copy from one source of truth", () => {
-    expect(brand.name).toBe("Kiteb");
+  test("uses neutral bilingual product copy while the permanent name is pending", () => {
+    expect(brand.name).toBe("AI Workspace");
+    expect(brand.shortName).toBe("Workspace");
     expect(brand.category.length).toBeGreaterThan(10);
     expect(brand.categoryAr).toMatch(/[\u0600-\u06ff]/u);
     expect(brand.descriptionAr).toMatch(/[\u0600-\u06ff]/u);
-    expect(brand.status).toBe("P1 workspace foundation");
+    expect(brand.status).toBe("Product name pending");
     expect(brand.links.workspace).toBe("/workspaces");
   });
 
-  test("does not expose the retired product identity on primary surfaces", () => {
+  test("does not expose retired or rejected product identities on primary surfaces", () => {
     expect(publicSurface).not.toMatch(/Iraqi AI Chat System/i);
     expect(publicSurface).not.toMatch(/Aqlix AI/i);
+    expect(publicSurface).not.toMatch(/Kiteb/i);
   });
 
   test("does not publish unsupported readiness or compliance metrics", () => {
