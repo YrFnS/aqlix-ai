@@ -33,8 +33,11 @@ interface RawUserAiSettings {
   updated_at: string | null;
 }
 
-interface RawOpenRouterRuntime {
+interface RawOpenRouterCredential {
   api_key: string;
+}
+
+interface RawOpenRouterRuntime extends RawOpenRouterCredential {
   model_id: string;
 }
 
@@ -153,6 +156,25 @@ export async function selectUserOpenRouterModel(
     "set_user_openrouter_model",
     { requested_model_id: modelId },
   );
+}
+
+export async function resolveUserOpenRouterCredential(
+  supabase: SupabaseServerClient,
+): Promise<string | null> {
+  const { data, error } = await rpcClient(supabase)<RawOpenRouterCredential[]>(
+    "resolve_user_openrouter_credential",
+  );
+
+  if (error) {
+    throw new UserAiSettingsRepositoryError(
+      "resolve-openrouter-credential",
+      error.message,
+      error.code,
+    );
+  }
+
+  const apiKey = data?.[0]?.api_key;
+  return apiKey && apiKey.length >= 16 ? apiKey : null;
 }
 
 export async function resolveUserOpenRouterRuntime(
