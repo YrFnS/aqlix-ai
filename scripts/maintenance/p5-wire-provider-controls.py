@@ -15,6 +15,9 @@ settings_component = Path(
 )
 openrouter_client = Path("apps/web/src/lib/ai/openrouter-client.ts")
 ai_config = Path("apps/web/src/lib/ai/config.ts")
+operational_test = Path(
+    "apps/web/tests/rebuild/p5-operational-baseline.test.ts"
+)
 tsconfig = Path("apps/web/tsconfig.rebuild.json")
 
 
@@ -212,6 +215,102 @@ config_source = config_source.replace(
 )
 ai_config.write_text(config_source, encoding="utf-8")
 print(f"Wired safe OpenRouter endpoint resolution: {ai_config}")
+
+ops = operational_test.read_text(encoding="utf-8")
+ops = ops.replace(
+    'test("requires a release identity and provider key in production-like environments", () => {\n'
+    '    try {\n'
+    '      parseOperationalRuntimeContract({\n'
+    '        APP_ENV: "production",\n'
+    '        NEXT_PUBLIC_APP_ENV: "production",\n'
+    '        NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",\n'
+    '        NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",\n'
+    '        AI_PROVIDER: "openai",\n'
+    '      });\n'
+    '      throw new Error("Expected production configuration to fail");\n'
+    '    } catch (error) {\n'
+    '      expect(error).toBeInstanceOf(OperationalRuntimeConfigurationError);\n'
+    '      expect(\n'
+    '        (error as OperationalRuntimeConfigurationError).issuePaths,\n'
+    '      ).toEqual(["openAiApiKey", "releaseSha"]);\n'
+    '    }\n'
+    '  });',
+    'test("requires a release identity but no platform model key for OpenRouter", () => {\n'
+    '    try {\n'
+    '      parseOperationalRuntimeContract({\n'
+    '        APP_ENV: "production",\n'
+    '        NEXT_PUBLIC_APP_ENV: "production",\n'
+    '        NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",\n'
+    '        NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",\n'
+    '        AI_PROVIDER: "openrouter",\n'
+    '      });\n'
+    '      throw new Error("Expected production configuration to fail");\n'
+    '    } catch (error) {\n'
+    '      expect(error).toBeInstanceOf(OperationalRuntimeConfigurationError);\n'
+    '      expect(\n'
+    '        (error as OperationalRuntimeConfigurationError).issuePaths,\n'
+    '      ).toEqual(["releaseSha"]);\n'
+    '    }\n'
+    '  });',
+)
+ops = ops.replace(
+    '        AI_PROVIDER: "openai",\n'
+    '        OPENAI_API_KEY: "server-only-provider-key",',
+    '        AI_PROVIDER: "openrouter",',
+    1,
+)
+ops = ops.replace('      provider: "openai",', '      provider: "openrouter",', 1)
+if 'managed OpenAI mode requires both key and model' not in ops:
+    marker = '  test("accepts a bounded production runtime contract", () => {'
+    insertion = '''  test("managed OpenAI mode requires both key and model", () => {
+    expect(() =>
+      parseOperationalRuntimeContract({
+        APP_ENV: "production",
+        NEXT_PUBLIC_APP_ENV: "production",
+        RELEASE_SHA: "abcdef1234567890",
+        NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
+        AI_PROVIDER: "openai",
+        OPENAI_API_KEY: "server-only-provider-key",
+      }),
+    ).toThrow(OperationalRuntimeConfigurationError);
+  });
+
+'''
+    if marker not in ops:
+        raise SystemExit("Could not add managed OpenAI operational test")
+    ops = ops.replace(marker, insertion + marker, 1)
+ops = ops.replace(
+    '    expect(template).toContain("<server-only-openai-key>");',
+    '    expect(template).toContain("AI_PROVIDER=openrouter");\n'
+    '    expect(template).not.toContain("OPENAI_API_KEY=");\n'
+    '    expect(template).not.toContain("OPENROUTER_API_KEY=");',
+    1,
+)
+ops = ops.replace(
+    '      "OPENAI_API_KEY",\n',
+    '',
+    1,
+)
+if 'expect(blueprint).toContain("key: AI_PROVIDER\\n        value: openrouter")' not in ops:
+    marker = '    expect(blueprint).toContain("key: SKIP_INSTALL_DEPS\\n        value: \\\"true\\\"");\n'
+    addition = marker + '    expect(blueprint).toContain("key: AI_PROVIDER\\n        value: openrouter");\n'
+    if marker not in ops:
+        raise SystemExit("Could not add OpenRouter Render assertion")
+    ops = ops.replace(marker, addition, 1)
+if 'expect(blueprint).not.toContain("OPENAI_API_KEY")' not in ops:
+    marker = '    expect(blueprint).not.toContain("SUPABASE_SERVICE_ROLE_KEY");\n'
+    addition = (
+        '    expect(blueprint).not.toContain("OPENAI_API_KEY");\n'
+        '    expect(blueprint).not.toContain("OPENAI_MODEL");\n'
+        '    expect(blueprint).not.toContain("OPENROUTER_API_KEY");\n'
+        + marker
+    )
+    if marker not in ops:
+        raise SystemExit("Could not add provider-secret Render safeguards")
+    ops = ops.replace(marker, addition, 1)
+operational_test.write_text(ops, encoding="utf-8")
+print(f"Aligned OpenRouter operational safeguards: {operational_test}")
 
 config = tsconfig.read_text(encoding="utf-8")
 insertions = (
