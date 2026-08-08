@@ -48,35 +48,44 @@ jobs:
       - name: Prepare Supabase-compatible auth harness
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_test_setup.sql
 
-      - name: Apply P1 through P4 migrations
+      - name: Apply P1 migrations
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080001_p1_workspace_foundation.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080002_p1_owner_membership_delete_fix.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080003_p1_workspace_archive_guard.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080004_p1_draft_workspace_integrity.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080005_p1_workspace_owner_select.sql
+
+      - name: Verify P1 ownership and isolation at the P1 boundary
+        run: |
+          psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_insert_returning.test.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
+
+      - name: Apply P2 migrations
+        run: |
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080006_p2_conversation_generations.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080007_p2_archived_workspace_guard.sql
+
+      - name: Verify P2 conversation lifecycle at the P2 boundary
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p2_conversation_lifecycle.test.sql
+
+      - name: Apply P3 migrations
+        run: |
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080008_p3_document_sources.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080009_p3_mixed_script_search.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080010_p3_storage_object_integrity.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080011_p3_grounded_citations.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080012_p3_ranked_broad_source_search.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080013_p4_drafts_and_versions.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080014_p4_draft_generation_guards.sql
 
-      - name: Re-run P1 ownership and isolation regressions
-        run: |
-          psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_insert_returning.test.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/tests/p1_workspace_rls.test.sql
-
-      - name: Re-run P2 conversation regressions
-        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p2_conversation_lifecycle.test.sql
-
-      - name: Re-run P3 source and citation regressions
+      - name: Verify P3 sources and citations at the P3 boundary
         run: |
           psql -v ON_ERROR_STOP=1 -f supabase/tests/p3_document_sources.test.sql
           psql -v ON_ERROR_STOP=1 -f supabase/tests/p3_grounded_citations.test.sql
+
+      - name: Apply P4 migrations
+        run: |
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080013_p4_drafts_and_versions.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080014_p4_draft_generation_guards.sql
 
       - name: Verify P4 durable draft lifecycle
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p4_draft_lifecycle.test.sql
@@ -95,4 +104,4 @@ jobs:
             exit 1
           fi
 
-          echo "P4 immutable versions, no-op saves, stale-write rejection, provenance snapshots, apply/discard/cancel proposal states, role isolation, archive guards, and cascades passed."
+          echo "P1-P3 regressions passed at their schema boundaries; P4 immutable versions, no-op saves, stale-write rejection, provenance snapshots, apply/discard/cancel proposal states, role isolation, archive guards, and cascades passed after forward migration."
