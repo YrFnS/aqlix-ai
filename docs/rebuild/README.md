@@ -4,21 +4,24 @@ This directory is the source of truth for the controlled rebuild of the reposito
 
 ## Current status
 
-- Working product name: **Kiteb**
+- Product name: **Kiteb**
+- Recommended repository slug: **`kiteb`**
 - P0 — reset and trustworthy foundation: **complete and merged**
 - P1 — account, workspace, persistence, and authorization: **complete and merged**
 - P2 — persistent bilingual conversation: **complete and merged**
 - P3 — private documents, inspectable passages, and grounded citations: **complete and merged**
 - P4 — durable drafts and reusable work: **complete and merged**
 - P5 — operational readiness: **in progress on draft PR `#7`**
-- P5.0 local release baseline: **implemented and validated on an implementation head**
+- P5.0 local release baseline: **implemented; final exact-head gate required**
+- P5.1 hosted deployment contract: **implemented as infrastructure intent; not deployed**
+- P5.2 OpenRouter BYOK foundation: **implemented; final exact-head gate required**
 - Hosted staging deployment: **not completed**
 - Production ready: **No**
 - Legacy snapshots:
   - `legacy/main-2026-08-07`
   - `legacy/develop-2026-08-07`
 
-`Kiteb` is a provisional working name. It must pass formal trademark, company-name, social-handle, domain, and Arabic-language clearance before public launch or permanent namespace migration.
+Kiteb still requires formal trademark, company-name, social-handle, domain, and Arabic-language clearance before public launch or permanent package-namespace migration.
 
 ## Product direction
 
@@ -31,7 +34,7 @@ The complete product loop is:
 3. **Draft** — convert a completed answer into editable reusable work.
 4. **Continue** — review a provider proposal, then apply it as a new version or discard it.
 
-P0–P4 implement and validate this loop against persistent authorized data. P5 addresses deployment, operations, security/privacy review, budgets, monitoring, backup/restore, and release readiness.
+P0–P4 implement and validate this loop against persistent authorized data. P5 addresses deployment, user-owned provider access, dynamic models, operations, security/privacy review, quotas, monitoring, backup/restore, and release readiness.
 
 ## Delivered through P4
 
@@ -73,18 +76,18 @@ P0–P4 implement and validate this loop against persistent authorized data. P5 
 - `Ctrl+S` / `Cmd+S` and leave warning for unsaved changes.
 - Immutable versions, no-op-save detection, stale-write protection, snapshot inspection, and restore-as-new-version.
 - UTF-8 TXT, Markdown, and standalone escaped HTML export.
-- Separate streamed provider proposals for improve, shorten, expand, translate, continue, or custom revision.
+- Separate streamed proposals for improve, shorten, expand, translate, continue, or custom revision.
 - Stop with partial proposal persistence.
 - Apply as a new version or discard without changing accepted work.
 - Draft archive, restore, reopen, delete, viewer read/export-only access, and outsider isolation.
 
 ## P5 operational baseline
 
-The active branch now includes:
+The active branch includes:
 
 - explicit development, test, staging, and production environment contracts;
-- release, service, data, provider-cost, security/privacy, observability, and incident ownership;
-- one stateless Next.js topology backed by hosted Supabase and a server-only provider;
+- release, service, data, provider-control, security/privacy, observability, and incident ownership;
+- one stateless Next.js topology backed by hosted Supabase and a server-only provider boundary;
 - Bun `1.3.14` for frozen dependency installation, workspaces, package builds, tests, and orchestration;
 - Node.js `24.14.1` for the supported Next.js production compiler and server;
 - one root React/React DOM `19.1.1` runtime for Next, web, and shared UI;
@@ -100,6 +103,29 @@ The active branch now includes:
 - application rollback and forward database recovery runbooks.
 
 The hosted staging project and service have not been provisioned through this work. The Blueprint is infrastructure intent, not deployment evidence.
+
+## P5 OpenRouter BYOK foundation
+
+The selected provider path does not require Kiteb to own or deploy an OpenRouter key.
+
+Implemented:
+
+- authenticated AI settings page;
+- user key validation before persistence;
+- encrypted key storage in Supabase Vault;
+- masked metadata only in browser responses and public account tables;
+- account-scoped RLS and outsider isolation;
+- live current model catalog for the connected account;
+- search, sorting, free-only filtering, refresh, pricing/context display, and model-ID copy;
+- manual exact model-ID validation;
+- selected model persisted per account rather than hardcoded in the application;
+- selected-model streaming for conversations and draft continuation;
+- normalized usage, model, latency, and failure telemetry;
+- disconnect and Vault-secret deletion;
+- explicit failure when no user key/model is configured;
+- no provider key or model ID in the Render deployment contract.
+
+Managed OpenAI remains optional compatibility mode only when a deployment intentionally supplies both its key and model. It is not required by the OpenRouter BYOK topology.
 
 ## Validation
 
@@ -119,18 +145,22 @@ The active branch requires all of these workflows on one exact head:
 - `P4 Durable Draft Data Contract`
 - `P4 Ask Ground Draft Continue Journey`
 - `P5 Operational Baseline`
+- `P5 OpenRouter BYOK Journey`
 
-The P5 gate verifies frozen installation, runtime alignment, deployment-script safeguards, P0–P5 tests, the full Next.js production renderer, Node production startup, liveness, readiness, and non-secret evidence output.
+The P5 operational gate verifies frozen installation, runtime alignment, deployment-script safeguards, P0–P5 tests, the full Next.js production renderer, Node production startup, liveness, readiness, and non-secret evidence output.
 
-The browser journeys use an explicitly enabled deterministic fixture provider. They prove application mechanics, not external provider availability or model quality.
+The P5 OpenRouter gate verifies local Supabase Vault behavior, two-account credential isolation, live-catalog mechanics, dynamic model selection, selected-model streaming, persisted telemetry, disconnect, and explicit post-disconnect failure against a deterministic OpenRouter-compatible API.
+
+That deterministic gate proves application mechanics. It does not prove current public OpenRouter uptime, output quality, or permanent free pricing.
 
 ## Explicit boundaries
 
 The rebuild does not yet certify or claim:
 
 - hosted staging or production deployment readiness;
-- protected live-provider availability or output quality;
-- account/workspace quotas, rate limits, or provider budgets;
+- public-provider availability or output quality;
+- permanent free-model availability;
+- account/workspace quotas, rate limits, or abuse readiness;
 - monitoring or incident-response readiness;
 - tested backup and restore;
 - complete security or privacy review;
@@ -148,15 +178,18 @@ The rebuild does not yet certify or claim:
 3. Arabic and English receive equal product-quality treatment.
 4. Public claims require reproducible evidence.
 5. PostgreSQL remains the durable application authority.
-6. Normal user traffic uses sessions and RLS, not administrative bypass.
-7. Provider output cannot silently overwrite accepted work.
-8. Terminal stream events must represent successfully persisted states.
-9. Deleted sources remain explicitly unavailable rather than silently re-linked.
-10. Active rebuild gates and inherited legacy audits remain visibly separate.
-11. Third-party code and assets require documented origin and compatible licensing.
-12. Bun remains the single JavaScript package manager; Node LTS executes the Next.js production runtime.
-13. Hosted migrations are forward-only and cannot use reset or history repair as normal rollback.
-14. Production ready remains **No** until every production gate has evidence.
+6. Supabase Vault is the encrypted authority for connected user provider keys.
+7. Normal user traffic uses sessions and RLS, not administrative bypass.
+8. The browser never receives a decrypted stored provider key.
+9. Models are selected from current provider data rather than a hardcoded production list.
+10. Provider output cannot silently overwrite accepted work.
+11. Terminal stream events must represent successfully persisted states.
+12. Deleted sources remain explicitly unavailable rather than silently re-linked.
+13. Active rebuild gates and inherited legacy audits remain visibly separate.
+14. Third-party code and assets require documented origin and compatible licensing.
+15. Bun remains the JavaScript package manager; Node LTS executes the Next.js production runtime.
+16. Hosted migrations are forward-only and cannot use reset or history repair as normal rollback.
+17. Production ready remains **No** until every production gate has evidence.
 
 ## Rebuild documents
 
@@ -177,18 +210,17 @@ The rebuild does not yet certify or claim:
 
 ## Remaining P5 sequence
 
-1. Repeat P5.0 and every P0–P4 regression on the final documentation head.
+1. Finish the exact-head OpenRouter BYOK and release-startup gates.
 2. Provision a separate hosted Supabase staging project and Render staging service.
 3. Execute the clean migration, deployment, readiness, and authenticated smoke path.
 4. Exercise application rollback and forward database recovery.
-5. Add protected live-provider smoke validation and cost controls.
-6. Implement account/workspace quotas, rate limits, concurrency limits, and provider budgets.
-7. Add structured monitoring, alerts, log redaction, retention, and incident response.
-8. Execute database and object-storage backup and restore exercises.
-9. Review sessions, RLS, prompts, uploads, retention, deletion, and logs.
-10. Validate keyboard, screen-reader, RTL/LTR, mixed-text, reflow, and mobile behavior.
-11. Audit dependencies, licenses, code, fonts, screenshots, generated material, and assets.
-12. Make named beta and production readiness decisions.
+5. Complete account/workspace quotas, rate limits, concurrency limits, retry limits, and circuit breaking.
+6. Add structured monitoring, alerts, log redaction, retention, and incident response.
+7. Execute database and object-storage backup and restore exercises.
+8. Review sessions, RLS, Vault, prompts, uploads, retention, deletion, and logs.
+9. Validate keyboard, screen-reader, RTL/LTR, mixed-text, reflow, and mobile behavior.
+10. Audit dependencies, licenses, code, fonts, screenshots, generated material, and assets.
+11. Make named beta and production readiness decisions.
 
 ## Definition of a trustworthy release
 
@@ -197,9 +229,9 @@ A public release is ready only when:
 - visible behavior and documentation match;
 - the complete product loop works against persistent authorized data;
 - production deployment, migration, rollback, backup, and restore are reproducible;
-- provider budgets, rate limits, and abuse controls exist;
+- provider request ceilings, rate limits, and abuse controls exist even with BYOK;
 - monitoring and incident response are exercised;
-- security, privacy, retention, deletion, and logging are reviewed;
+- security, privacy, Vault, retention, deletion, and logging are reviewed;
 - Arabic, English, RTL, LTR, mixed text, keyboard use, and responsive layouts are validated;
 - third-party code and assets have documented compatible provenance;
 - every public claim has named evidence and ownership.
