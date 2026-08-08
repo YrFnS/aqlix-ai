@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   BookOpen,
+  Cpu,
   FileText,
   LogOut,
   Menu,
@@ -22,6 +23,12 @@ const navItems = [
     label: "مساحات العمل",
     icon: BookOpen,
     exact: false,
+  },
+  {
+    href: "/settings/ai",
+    label: "إعدادات الذكاء الاصطناعي",
+    icon: Cpu,
+    exact: true,
   },
   {
     href: "/docs",
@@ -116,13 +123,14 @@ export function AppNav({ userEmail }: AppNavProps) {
                   dir="ltr"
                   className="text-[0.65rem] font-semibold text-primary"
                 >
-                  P1–P4
+                  P1–P5
                 </span>
               </div>
               <p className="mt-2 text-xs leading-6 text-muted-foreground">
                 الحساب والمساحة والمحادثات والمصادر والمراجع والمسودات والإصدارات
-                تعمل الآن ضمن Ask → Ground → Draft → Continue. الجاهزية التشغيلية
-                والإطلاق العام يبقيان ضمن P5.
+                تعمل ضمن Ask → Ground → Draft → Continue. اتصال النموذج أصبح
+                مملوكاً للمستخدم عبر OpenRouter، بينما تبقى الجاهزية التشغيلية
+                والإطلاق العام ضمن P5.
               </p>
             </div>
 
