@@ -4,13 +4,12 @@ import {
   aiGenerationDenialCodeSchema,
   workspaceAiLimitsSchema,
   type AiGenerationOperation,
-  type ProviderFailureCode,
   type UpdateWorkspaceAiLimitsInput,
   type WorkspaceAiLimits,
 } from "@iraqi-ai/types";
 import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
 import { z } from "zod";
-import { AiProviderError, type AiInputMessage, type AiProviderUsage } from "./provider";
+import { AiProviderError, type AiInputMessage } from "./provider";
 
 interface RpcErrorShape {
   message: string;
@@ -145,10 +144,18 @@ export function estimateProviderInputTokens(
     bytes += 16;
   }
 
+  // Reservation is intentionally conservative and provider-independent. Final
+  // accounting is replaced atomically with provider-reported token usage when
+  // the durable generation reaches a terminal state.
   return Math.min(10_000_000, Math.max(1, bytes));
 }
 
-function denialMessage(code: ProviderFailureCode): string {
+function denialMessage(
+  code:
+    | "PROVIDER_DISABLED"
+    | "PROVIDER_BUDGET_EXCEEDED"
+    | "PROVIDER_CONCURRENCY_LIMIT",
+): string {
   switch (code) {
     case "PROVIDER_DISABLED":
       return "AI generation is disabled for this workspace.";
@@ -156,8 +163,6 @@ function denialMessage(code: ProviderFailureCode): string {
       return "This workspace already has the maximum number of active generations.";
     case "PROVIDER_BUDGET_EXCEEDED":
       return "This workspace has reached its current daily AI budget.";
-    default:
-      return "AI generation is unavailable for this workspace.";
   }
 }
 
@@ -199,129 +204,4 @@ export async function reserveAiGenerationPermit(
 
   if (!row.permit_id) repositoryFailure("reserve-ai-generation-permit", null);
   return row.permit_id;
-}
-
-interface PermittedTerminalInput {
-  workspaceId: string;
-  permitId: string;
-  providerStarted: boolean;
-  status: "complete" | "failed" | "cancelled";
-  content: string;
-  returnedModel: string | null;
-  providerResponseId: string | null;
-  usage: AiProviderUsage;
-  firstTokenLatencyMs: number | null;
-  latencyMs: number;
-  failureCode: ProviderFailureCode | null;
-  failureMessage: string | null;
-}
-
-export async function finishPermittedConversationGeneration(
-  supabase: SupabaseServerClient,
-  input: PermittedTerminalInput & {
-    conversationId: string;
-    messageId: string;
-    generationId: string;
-  },
-): Promise<void> {
-  const { error } = await rpcClient(supabase).rpc(
-    "finish_permitted_conversation_generation",
-    {
-      target_workspace_id: input.workspaceId,
-      target_conversation_id: input.conversationId,
-      target_message_id: input.messageId,
-      target_generation_id: input.generationId,
-      target_permit_id: input.permitId,
-      did_start_provider: input.providerStarted,
-      final_status: input.status,
-      final_content: input.content,
-      returned_provider_model: input.returnedModel,
-      provider_response_identifier: input.providerResponseId,
-      provider_input_tokens: input.usage.inputTokens,
-      provider_output_tokens: input.usage.outputTokens,
-      provider_reasoning_tokens: input.usage.reasoningTokens,
-      provider_total_tokens: input.usage.totalTokens,
-      first_token_ms: input.firstTokenLatencyMs,
-      total_latency_ms: input.latencyMs,
-      provider_failure_code: input.failureCode,
-      provider_failure_message: input.failureMessage,
-    },
-  );
-
-  if (error) repositoryFailure("finish-permitted-conversation", error);
-}
-
-export async function finishPermittedGroundedConversationGeneration(
-  supabase: SupabaseServerClient,
-  input: Omit<PermittedTerminalInput, "status" | "failureCode" | "failureMessage"> & {
-    conversationId: string;
-    messageId: string;
-    generationId: string;
-    citations: Array<{
-      citationOrder: number;
-      label: string;
-      sourceId: string;
-    }>;
-  },
-): Promise<void> {
-  const { error } = await rpcClient(supabase).rpc(
-    "finish_permitted_grounded_conversation_generation",
-    {
-      target_workspace_id: input.workspaceId,
-      target_conversation_id: input.conversationId,
-      target_message_id: input.messageId,
-      target_generation_id: input.generationId,
-      target_permit_id: input.permitId,
-      did_start_provider: input.providerStarted,
-      final_content: input.content,
-      returned_provider_model: input.returnedModel,
-      provider_response_identifier: input.providerResponseId,
-      provider_input_tokens: input.usage.inputTokens,
-      provider_output_tokens: input.usage.outputTokens,
-      provider_reasoning_tokens: input.usage.reasoningTokens,
-      provider_total_tokens: input.usage.totalTokens,
-      first_token_ms: input.firstTokenLatencyMs,
-      total_latency_ms: input.latencyMs,
-      cited_sources: input.citations.map((citation) => ({
-        citation_order: citation.citationOrder,
-        label: citation.label,
-        source_id: citation.sourceId,
-      })),
-    },
-  );
-
-  if (error) repositoryFailure("finish-permitted-grounded-conversation", error);
-}
-
-export async function finishPermittedDraftGeneration(
-  supabase: SupabaseServerClient,
-  input: PermittedTerminalInput & {
-    draftId: string;
-    generationId: string;
-  },
-): Promise<void> {
-  const { error } = await rpcClient(supabase).rpc(
-    "finish_permitted_draft_generation",
-    {
-      target_workspace_id: input.workspaceId,
-      target_draft_id: input.draftId,
-      target_generation_id: input.generationId,
-      target_permit_id: input.permitId,
-      did_start_provider: input.providerStarted,
-      final_status: input.status,
-      final_content: input.content,
-      returned_provider_model: input.returnedModel,
-      provider_response_identifier: input.providerResponseId,
-      provider_input_tokens: input.usage.inputTokens,
-      provider_output_tokens: input.usage.outputTokens,
-      provider_reasoning_tokens: input.usage.reasoningTokens,
-      provider_total_tokens: input.usage.totalTokens,
-      first_token_ms: input.firstTokenLatencyMs,
-      total_latency_ms: input.latencyMs,
-      provider_failure_code: input.failureCode,
-      provider_failure_message: input.failureMessage,
-    },
-  );
-
-  if (error) repositoryFailure("finish-permitted-draft", error);
 }
