@@ -201,8 +201,62 @@ export type Database = {
           workspace_id?: string;
         }
       >;
+      message_citations: TableDefinition<
+        {
+          attachment_id: string | null;
+          citation_order: number;
+          conversation_id: string;
+          created_at: string;
+          end_line_snapshot: number | null;
+          file_name_snapshot: string;
+          id: string;
+          label: string;
+          media_type_snapshot: string;
+          message_id: string;
+          page_number_snapshot: number | null;
+          source_id: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order: number;
+          conversation_id: string;
+          created_at?: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot: string;
+          id?: string;
+          label: string;
+          media_type_snapshot: string;
+          message_id: string;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot?: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order?: number;
+          conversation_id?: string;
+          created_at?: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot?: string;
+          id?: string;
+          label?: string;
+          media_type_snapshot?: string;
+          message_id?: string;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot?: number;
+          start_line_snapshot?: number | null;
+          workspace_id?: string;
+        }
+      >;
       message_generations: TableDefinition<
         {
+          citation_count: number;
           completed_at: string | null;
           conversation_id: string;
           created_at: string;
@@ -210,6 +264,7 @@ export type Database = {
           failure_code: string | null;
           failure_message: string | null;
           first_token_latency_ms: number | null;
+          grounding_mode: string;
           id: string;
           input_tokens: number | null;
           latency_ms: number | null;
@@ -219,6 +274,7 @@ export type Database = {
           provider_response_id: string | null;
           reasoning_tokens: number | null;
           requested_model: string;
+          retrieved_source_count: number;
           returned_model: string | null;
           started_at: string;
           status: string;
@@ -227,6 +283,7 @@ export type Database = {
           workspace_id: string;
         },
         {
+          citation_count?: number;
           completed_at?: string | null;
           conversation_id: string;
           created_at?: string;
@@ -234,6 +291,7 @@ export type Database = {
           failure_code?: string | null;
           failure_message?: string | null;
           first_token_latency_ms?: number | null;
+          grounding_mode?: string;
           id?: string;
           input_tokens?: number | null;
           latency_ms?: number | null;
@@ -243,6 +301,7 @@ export type Database = {
           provider_response_id?: string | null;
           reasoning_tokens?: number | null;
           requested_model: string;
+          retrieved_source_count?: number;
           returned_model?: string | null;
           started_at?: string;
           status?: string;
@@ -251,6 +310,7 @@ export type Database = {
           workspace_id: string;
         },
         {
+          citation_count?: number;
           completed_at?: string | null;
           conversation_id?: string;
           created_at?: string;
@@ -258,6 +318,7 @@ export type Database = {
           failure_code?: string | null;
           failure_message?: string | null;
           first_token_latency_ms?: number | null;
+          grounding_mode?: string;
           id?: string;
           input_tokens?: number | null;
           latency_ms?: number | null;
@@ -267,6 +328,7 @@ export type Database = {
           provider_response_id?: string | null;
           reasoning_tokens?: number | null;
           requested_model?: string;
+          retrieved_source_count?: number;
           returned_model?: string | null;
           started_at?: string;
           status?: string;
@@ -417,6 +479,10 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      attachment_id_from_storage_path: {
+        Args: { object_name: string };
+        Returns: string | null;
+      };
       begin_attachment_processing: {
         Args: {
           normalized_media_type: string;
@@ -451,6 +517,18 @@ export type Database = {
           user_message_id: string | null;
           user_sequence: number | null;
         }[];
+      };
+      can_delete_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
+      };
+      can_insert_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
+      };
+      can_read_workspace_document_object: {
+        Args: { object_name: string };
+        Returns: boolean;
       };
       checkpoint_conversation_generation: {
         Args: {
@@ -511,6 +589,25 @@ export type Database = {
         };
         Returns: undefined;
       };
+      finish_grounded_conversation_generation: {
+        Args: {
+          cited_sources?: Json;
+          final_content: string;
+          first_token_ms?: number | null;
+          provider_input_tokens?: number | null;
+          provider_output_tokens?: number | null;
+          provider_reasoning_tokens?: number | null;
+          provider_response_identifier?: string | null;
+          provider_total_tokens?: number | null;
+          returned_provider_model?: string | null;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+          total_latency_ms?: number | null;
+        };
+        Returns: undefined;
+      };
       has_workspace_role: {
         Args: {
           allowed_roles: string[];
@@ -519,16 +616,16 @@ export type Database = {
         Returns: boolean;
       };
       is_workspace_active: {
-        Args: {
-          target_workspace_id: string;
-        };
+        Args: { target_workspace_id: string };
         Returns: boolean;
       };
       is_workspace_member: {
-        Args: {
-          target_workspace_id: string;
-        };
+        Args: { target_workspace_id: string };
         Returns: boolean;
+      };
+      normalize_mixed_script_search_text: {
+        Args: { value: string };
+        Returns: string;
       };
       search_workspace_sources: {
         Args: {
@@ -549,10 +646,19 @@ export type Database = {
           start_line: number | null;
         }[];
       };
-      workspace_id_from_storage_path: {
+      set_generation_grounding_context: {
         Args: {
-          object_name: string;
+          requested_grounding_mode: string;
+          retrieved_sources: number;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
         };
+        Returns: undefined;
+      };
+      workspace_id_from_storage_path: {
+        Args: { object_name: string };
         Returns: string | null;
       };
     };
