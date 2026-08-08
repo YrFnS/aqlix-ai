@@ -106,7 +106,7 @@ export async function updateWorkspaceAction(formData: FormData): Promise<never> 
 
   revalidatePath("/workspaces");
   revalidatePath(`/workspaces/${workspaceId}`);
-  settingsStatusRedirect(workspaceId, "updated");
+  redirect(`/workspaces/${encodeURIComponent(workspaceId)}?status=updated`);
 }
 
 async function requireOwner(workspaceId: string) {
