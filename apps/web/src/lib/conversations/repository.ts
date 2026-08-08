@@ -1,11 +1,11 @@
-import type {
-  AiInputMessage,
-} from "@/lib/ai/provider";
+import type { AiInputMessage } from "@/lib/ai/provider";
 import type {
   Conversation,
   ConversationMessage,
   ConversationSummary,
   CreateConversationInput,
+  GroundingMode,
+  MessageCitation,
   MessageGeneration,
   ProviderFailureCode,
   Tables,
@@ -15,6 +15,7 @@ import type {
 import {
   contentDirectionSchema,
   conversationStatusSchema,
+  groundingModeSchema,
   messageRoleSchema,
   messageStatusSchema,
 } from "@iraqi-ai/types";
@@ -23,6 +24,7 @@ import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
 type ConversationRow = Tables<"conversations">;
 type MessageRow = Tables<"messages">;
 type GenerationRow = Tables<"message_generations">;
+type CitationRow = Tables<"message_citations">;
 
 export class ConversationRepositoryError extends Error {
   constructor(
@@ -62,6 +64,11 @@ function parseDirection(value: string): "auto" | "rtl" | "ltr" {
   return parsed.success ? parsed.data : "auto";
 }
 
+function parseGroundingMode(value: string): GroundingMode {
+  const parsed = groundingModeSchema.safeParse(value);
+  return parsed.success ? parsed.data : "off";
+}
+
 export function mapConversationRow(row: ConversationRow): Conversation {
   return {
     id: row.id,
@@ -86,6 +93,9 @@ export function mapGenerationRow(row: GenerationRow): MessageGeneration {
     returnedModel: row.returned_model,
     providerResponseId: row.provider_response_id,
     status: parseMessageStatus(row.status),
+    groundingMode: parseGroundingMode(row.grounding_mode),
+    retrievedSourceCount: row.retrieved_source_count,
+    citationCount: row.citation_count,
     inputTokens: row.input_tokens,
     outputTokens: row.output_tokens,
     reasoningTokens: row.reasoning_tokens,
@@ -101,9 +111,30 @@ export function mapGenerationRow(row: GenerationRow): MessageGeneration {
   };
 }
 
+export function mapCitationRow(row: CitationRow): MessageCitation {
+  return {
+    id: row.id,
+    workspaceId: row.workspace_id,
+    conversationId: row.conversation_id,
+    messageId: row.message_id,
+    sourceId: row.source_id,
+    attachmentId: row.attachment_id,
+    citationOrder: row.citation_order,
+    label: row.label,
+    fileNameSnapshot: row.file_name_snapshot,
+    mediaTypeSnapshot: row.media_type_snapshot,
+    sourceOrdinalSnapshot: row.source_ordinal_snapshot,
+    pageNumberSnapshot: row.page_number_snapshot,
+    startLineSnapshot: row.start_line_snapshot,
+    endLineSnapshot: row.end_line_snapshot,
+    createdAt: row.created_at,
+  };
+}
+
 export function mapMessageRow(
   row: MessageRow,
   generation: GenerationRow | null = null,
+  citations: CitationRow[] = [],
 ): ConversationMessage {
   return {
     id: row.id,
@@ -118,6 +149,7 @@ export function mapMessageRow(
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     generation: generation ? mapGenerationRow(generation) : null,
+    citations: citations.map(mapCitationRow),
   };
 }
 
@@ -283,25 +315,53 @@ export async function listConversationMessages(
     .map((message) => message.id);
 
   const generationByMessage = new Map<string, GenerationRow>();
-  if (assistantMessageIds.length > 0) {
-    const { data: generations, error: generationError } = await supabase
-      .from("message_generations")
-      .select("*")
-      .eq("workspace_id", workspaceId)
-      .eq("conversation_id", conversationId)
-      .in("message_id", assistantMessageIds);
+  const citationsByMessage = new Map<string, CitationRow[]>();
 
-    if (generationError) {
-      repositoryError("list-message-generations", generationError.message);
+  if (assistantMessageIds.length > 0) {
+    const [generationResult, citationResult] = await Promise.all([
+      supabase
+        .from("message_generations")
+        .select("*")
+        .eq("workspace_id", workspaceId)
+        .eq("conversation_id", conversationId)
+        .in("message_id", assistantMessageIds),
+      supabase
+        .from("message_citations")
+        .select("*")
+        .eq("workspace_id", workspaceId)
+        .eq("conversation_id", conversationId)
+        .in("message_id", assistantMessageIds)
+        .order("citation_order", { ascending: true }),
+    ]);
+
+    if (generationResult.error) {
+      repositoryError(
+        "list-message-generations",
+        generationResult.error.message,
+      );
     }
 
-    for (const generation of generations ?? []) {
+    if (citationResult.error) {
+      repositoryError("list-message-citations", citationResult.error.message);
+    }
+
+    for (const generation of generationResult.data ?? []) {
       generationByMessage.set(generation.message_id, generation);
+    }
+
+    for (const citation of citationResult.data ?? []) {
+      const current = citationsByMessage.get(citation.message_id) ?? [];
+      current.push(citation);
+      citationsByMessage.set(citation.message_id, current);
     }
   }
 
   return messages.map((message) =>
-    mapMessageRow(message, generationByMessage.get(message.id) ?? null),
+    mapMessageRow(
+      message,
+      generationByMessage.get(message.id) ?? null,
+      citationsByMessage.get(message.id) ?? [],
+    ),
   );
 }
 
@@ -323,20 +383,38 @@ export async function getConversationMessage(
   if (!message) return null;
 
   let generation: GenerationRow | null = null;
-  if (message.role === "assistant") {
-    const { data, error } = await supabase
-      .from("message_generations")
-      .select("*")
-      .eq("workspace_id", workspaceId)
-      .eq("conversation_id", conversationId)
-      .eq("message_id", messageId)
-      .maybeSingle();
+  let citations: CitationRow[] = [];
 
-    if (error) repositoryError("get-message-generation", error.message);
-    generation = data;
+  if (message.role === "assistant") {
+    const [generationResult, citationResult] = await Promise.all([
+      supabase
+        .from("message_generations")
+        .select("*")
+        .eq("workspace_id", workspaceId)
+        .eq("conversation_id", conversationId)
+        .eq("message_id", messageId)
+        .maybeSingle(),
+      supabase
+        .from("message_citations")
+        .select("*")
+        .eq("workspace_id", workspaceId)
+        .eq("conversation_id", conversationId)
+        .eq("message_id", messageId)
+        .order("citation_order", { ascending: true }),
+    ]);
+
+    if (generationResult.error) {
+      repositoryError("get-message-generation", generationResult.error.message);
+    }
+    if (citationResult.error) {
+      repositoryError("get-message-citations", citationResult.error.message);
+    }
+
+    generation = generationResult.data;
+    citations = citationResult.data ?? [];
   }
 
-  return mapMessageRow(message, generation);
+  return mapMessageRow(message, generation, citations);
 }
 
 export interface BegunConversationTurn {
@@ -382,6 +460,29 @@ export async function beginConversationTurn(
     assistantSequence: row.assistant_sequence,
     promptContent: row.prompt_content,
   };
+}
+
+export async function setGenerationGroundingContext(
+  supabase: SupabaseServerClient,
+  input: {
+    workspaceId: string;
+    conversationId: string;
+    messageId: string;
+    generationId: string;
+    groundingMode: GroundingMode;
+    retrievedSourceCount: number;
+  },
+): Promise<void> {
+  const { error } = await supabase.rpc("set_generation_grounding_context", {
+    target_workspace_id: input.workspaceId,
+    target_conversation_id: input.conversationId,
+    target_message_id: input.messageId,
+    target_generation_id: input.generationId,
+    requested_grounding_mode: input.groundingMode,
+    retrieved_sources: input.retrievedSourceCount,
+  });
+
+  if (error) repositoryError("set-generation-grounding", error.message);
 }
 
 export async function checkpointConversationGeneration(
@@ -448,6 +549,56 @@ export async function finishConversationGeneration(
   });
 
   if (error) repositoryError("finish-generation", error.message);
+}
+
+export async function finishGroundedConversationGeneration(
+  supabase: SupabaseServerClient,
+  input: {
+    workspaceId: string;
+    conversationId: string;
+    messageId: string;
+    generationId: string;
+    content: string;
+    returnedModel: string | null;
+    providerResponseId: string | null;
+    inputTokens: number | null;
+    outputTokens: number | null;
+    reasoningTokens: number | null;
+    totalTokens: number | null;
+    firstTokenLatencyMs: number | null;
+    latencyMs: number;
+    citations: Array<{
+      citationOrder: number;
+      label: string;
+      sourceId: string;
+    }>;
+  },
+): Promise<void> {
+  const { error } = await supabase.rpc(
+    "finish_grounded_conversation_generation",
+    {
+      target_workspace_id: input.workspaceId,
+      target_conversation_id: input.conversationId,
+      target_message_id: input.messageId,
+      target_generation_id: input.generationId,
+      final_content: input.content,
+      returned_provider_model: input.returnedModel,
+      provider_response_identifier: input.providerResponseId,
+      provider_input_tokens: input.inputTokens,
+      provider_output_tokens: input.outputTokens,
+      provider_reasoning_tokens: input.reasoningTokens,
+      provider_total_tokens: input.totalTokens,
+      first_token_ms: input.firstTokenLatencyMs,
+      total_latency_ms: input.latencyMs,
+      cited_sources: input.citations.map((citation) => ({
+        citation_order: citation.citationOrder,
+        label: citation.label,
+        source_id: citation.sourceId,
+      })),
+    },
+  );
+
+  if (error) repositoryError("finish-grounded-generation", error.message);
 }
 
 export async function getConversationProviderHistory(
