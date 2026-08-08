@@ -10,7 +10,6 @@ import {
   Check,
   Clipboard,
   KeyRound,
-  LoaderCircle,
   PlugZap,
   RefreshCw,
   Search,
@@ -123,7 +122,7 @@ function ModelCard({
           onClick={() => onSelect(model.id)}
         >
           {selecting ? (
-            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
           ) : selected ? (
             <Check className="h-4 w-4" aria-hidden="true" />
           ) : (
@@ -187,6 +186,7 @@ export function OpenRouterSettings({
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [selectingModel, setSelectingModel] = useState<string | null>(null);
   const [manualModelId, setManualModelId] = useState("");
+  const [refreshIndex, setRefreshIndex] = useState(0);
 
   const currentModel = useMemo(
     () => catalog?.models.find((model) => model.id === settings.modelId) ?? null,
@@ -246,7 +246,7 @@ export function OpenRouterSettings({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [freeOnly, query, settings.connected, sort]);
+  }, [freeOnly, query, refreshIndex, settings.connected, sort]);
 
   const connect = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -412,7 +412,7 @@ export function OpenRouterSettings({
                 onClick={() => void disconnect()}
               >
                 {disconnecting ? (
-                  <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
                   <Unplug className="h-4 w-4" aria-hidden="true" />
                 )}
@@ -446,7 +446,7 @@ export function OpenRouterSettings({
                 disabled={!apiKey.trim() || connecting}
               >
                 {connecting ? (
-                  <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
                   <PlugZap className="h-4 w-4" aria-hidden="true" />
                 )}
@@ -575,7 +575,7 @@ export function OpenRouterSettings({
                 variant="ghost"
                 className="rounded-full"
                 disabled={catalogLoading}
-                onClick={() => setQuery((current) => `${current} ` .trimEnd())}
+                onClick={() => setRefreshIndex((value) => value + 1)}
               >
                 <RefreshCw className={catalogLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} aria-hidden="true" />
                 Refresh
@@ -584,7 +584,7 @@ export function OpenRouterSettings({
 
             {catalogLoading && !catalog ? (
               <div className="mt-6 flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-border">
-                <LoaderCircle className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
+                <RefreshCw className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
               </div>
             ) : catalog?.models.length ? (
               <div className="mt-6 grid gap-4 xl:grid-cols-2">
