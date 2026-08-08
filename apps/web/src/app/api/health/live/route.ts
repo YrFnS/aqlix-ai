@@ -1,3 +1,5 @@
+import { resolveReleaseSha } from "@/lib/operations/runtime-contract";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -7,7 +9,7 @@ export async function GET() {
     {
       status: "alive",
       service: "kiteb-web",
-      release: process.env.RELEASE_SHA?.trim().slice(0, 12) || "unversioned",
+      release: resolveReleaseSha(process.env)?.slice(0, 12) ?? "unversioned",
       timestamp: new Date().toISOString(),
       uptimeSeconds: Math.max(0, Math.floor(process.uptime())),
       requestId,
