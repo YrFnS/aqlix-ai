@@ -1,6 +1,7 @@
 import "server-only";
 
 import { isArabicText } from "@/lib/utils/rtl";
+import { chunkFixtureText } from "./fixture-chunks";
 import {
   AiProviderError,
   type AiProvider,
@@ -57,11 +58,6 @@ function fixtureResponse(prompt: string, instructions?: string): string {
   return "This is a deterministic streamed and persisted test response. It preserves English, العربية, numbers such as 2026, and URLs.";
 }
 
-function chunksFor(value: string): string[] {
-  const chunks = value.match(/.{1,12}(?:\s|$)/gu);
-  return chunks?.filter(Boolean) ?? [value];
-}
-
 export class FixtureAiProvider implements AiProvider {
   readonly name = "fixture";
   readonly requestedModel = "fixture-bilingual-v1";
@@ -83,7 +79,7 @@ export class FixtureAiProvider implements AiProvider {
     const response = fixtureResponse(prompt, input.instructions);
     const chunkDelay = prompt.includes("[fixture:slow]") ? 180 : 25;
 
-    for (const chunk of chunksFor(response)) {
+    for (const chunk of chunkFixtureText(response)) {
       await delay(chunkDelay, input.signal);
       yield { type: "delta", delta: chunk };
     }
