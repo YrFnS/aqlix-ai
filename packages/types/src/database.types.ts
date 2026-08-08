@@ -19,15 +19,76 @@ export type Database = {
   };
   public: {
     Tables: {
+      attachment_processing_runs: TableDefinition<
+        {
+          attachment_id: string;
+          attempt: number;
+          character_count: number;
+          completed_at: string | null;
+          created_at: string;
+          created_by: string;
+          failure_code: string | null;
+          failure_message: string | null;
+          id: string;
+          processor: string;
+          processor_version: string;
+          source_count: number;
+          started_at: string;
+          status: string;
+          updated_at: string;
+          workspace_id: string;
+        },
+        {
+          attachment_id: string;
+          attempt: number;
+          character_count?: number;
+          completed_at?: string | null;
+          created_at?: string;
+          created_by: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          id?: string;
+          processor: string;
+          processor_version: string;
+          source_count?: number;
+          started_at?: string;
+          status?: string;
+          updated_at?: string;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string;
+          attempt?: number;
+          character_count?: number;
+          completed_at?: string | null;
+          created_at?: string;
+          created_by?: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          id?: string;
+          processor?: string;
+          processor_version?: string;
+          source_count?: number;
+          started_at?: string;
+          status?: string;
+          updated_at?: string;
+          workspace_id?: string;
+        }
+      >;
       attachments: TableDefinition<
         {
           byte_size: number;
+          content_sha256: string | null;
           created_at: string;
           deleted_at: string | null;
+          failure_code: string | null;
           failure_reason: string | null;
           file_name: string;
           id: string;
           media_type: string;
+          processed_at: string | null;
+          processor_version: string | null;
+          source_count: number;
           status: string;
           storage_path: string;
           updated_at: string;
@@ -36,12 +97,17 @@ export type Database = {
         },
         {
           byte_size: number;
+          content_sha256?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          failure_code?: string | null;
           failure_reason?: string | null;
           file_name: string;
           id?: string;
           media_type: string;
+          processed_at?: string | null;
+          processor_version?: string | null;
+          source_count?: number;
           status?: string;
           storage_path: string;
           updated_at?: string;
@@ -50,12 +116,17 @@ export type Database = {
         },
         {
           byte_size?: number;
+          content_sha256?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          failure_code?: string | null;
           failure_reason?: string | null;
           file_name?: string;
           id?: string;
           media_type?: string;
+          processed_at?: string | null;
+          processor_version?: string | null;
+          source_count?: number;
           status?: string;
           storage_path?: string;
           updated_at?: string;
@@ -250,10 +321,13 @@ export type Database = {
           attachment_id: string;
           content: string;
           created_at: string;
+          end_line: number | null;
           end_offset: number | null;
           id: string;
           ordinal: number;
           page_number: number | null;
+          search_vector: unknown;
+          start_line: number | null;
           start_offset: number | null;
           workspace_id: string;
         },
@@ -261,10 +335,13 @@ export type Database = {
           attachment_id: string;
           content: string;
           created_at?: string;
+          end_line?: number | null;
           end_offset?: number | null;
           id?: string;
           ordinal: number;
           page_number?: number | null;
+          search_vector?: never;
+          start_line?: number | null;
           start_offset?: number | null;
           workspace_id: string;
         },
@@ -272,10 +349,13 @@ export type Database = {
           attachment_id?: string;
           content?: string;
           created_at?: string;
+          end_line?: number | null;
           end_offset?: number | null;
           id?: string;
           ordinal?: number;
           page_number?: number | null;
+          search_vector?: never;
+          start_line?: number | null;
           start_offset?: number | null;
           workspace_id?: string;
         }
@@ -337,6 +417,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      begin_attachment_processing: {
+        Args: {
+          normalized_media_type: string;
+          original_byte_size: number;
+          original_content_sha256: string;
+          original_file_name: string;
+          requested_processor: string;
+          requested_processor_version: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          attachment_id: string;
+          object_path: string;
+          processing_run_id: string;
+        }[];
+      };
       begin_conversation_turn: {
         Args: {
           message_content: string | null;
@@ -363,6 +459,33 @@ export type Database = {
           target_conversation_id: string;
           target_generation_id: string;
           target_message_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      delete_attachment_record: {
+        Args: {
+          target_attachment_id: string;
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
+      fail_attachment_processing: {
+        Args: {
+          processing_failure_code: string;
+          processing_failure_message: string;
+          target_attachment_id: string;
+          target_processing_run_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      finalize_attachment_processing: {
+        Args: {
+          extracted_passages: Json;
+          normalized_character_count: number;
+          target_attachment_id: string;
+          target_processing_run_id: string;
           target_workspace_id: string;
         };
         Returns: undefined;
@@ -395,11 +518,42 @@ export type Database = {
         };
         Returns: boolean;
       };
+      is_workspace_active: {
+        Args: {
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
       is_workspace_member: {
         Args: {
           target_workspace_id: string;
         };
         Returns: boolean;
+      };
+      search_workspace_sources: {
+        Args: {
+          result_limit?: number;
+          source_query: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          attachment_id: string;
+          content: string;
+          end_line: number | null;
+          file_name: string;
+          media_type: string;
+          ordinal: number;
+          page_number: number | null;
+          rank: number;
+          source_id: string;
+          start_line: number | null;
+        }[];
+      };
+      workspace_id_from_storage_path: {
+        Args: {
+          object_name: string;
+        };
+        Returns: string | null;
       };
     };
     Enums: {
@@ -466,8 +620,8 @@ export type TablesInsert<
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Insert: infer I;
-      }
+      Insert: infer I;
+    }
       ? I
       : never
     : never;
@@ -491,8 +645,8 @@ export type TablesUpdate<
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-        Update: infer U;
-      }
+      Update: infer U;
+    }
       ? U
       : never
     : never;
