@@ -6,6 +6,7 @@ import {
   resolveUserOpenRouterRuntime,
   UserAiSettingsRepositoryError,
 } from "./user-settings";
+import { resolveOpenRouterBaseUrl } from "./openrouter-endpoint";
 import { AiProviderError } from "./provider";
 
 const integerFromEnvironment = (
@@ -33,10 +34,6 @@ const aiEnvironmentSchema = z.object({
     .string()
     .url()
     .default("https://api.openai.com/v1"),
-  OPENROUTER_BASE_URL: z
-    .string()
-    .url()
-    .default("https://openrouter.ai/api/v1"),
   AI_REQUEST_TIMEOUT_MS: integerFromEnvironment(60000, 5000, 180000),
   AI_MAX_OUTPUT_TOKENS: integerFromEnvironment(2048, 64, 8192),
   P2_ALLOW_FIXTURE_PROVIDER: z.boolean().default(false),
@@ -100,9 +97,6 @@ function parseAiEnvironment() {
     OPENAI_MODEL: process.env.OPENAI_MODEL?.trim() || undefined,
     OPENAI_BASE_URL:
       process.env.OPENAI_BASE_URL?.trim() || "https://api.openai.com/v1",
-    OPENROUTER_BASE_URL:
-      process.env.OPENROUTER_BASE_URL?.trim() ||
-      "https://openrouter.ai/api/v1",
     AI_REQUEST_TIMEOUT_MS: process.env.AI_REQUEST_TIMEOUT_MS,
     AI_MAX_OUTPUT_TOKENS: process.env.AI_MAX_OUTPUT_TOKENS,
     P2_ALLOW_FIXTURE_PROVIDER: environmentBoolean(
@@ -199,7 +193,7 @@ export async function resolveAiRuntimeConfig(
     maxOutputTokens: config.AI_MAX_OUTPUT_TOKENS,
     openrouter: {
       apiKey: runtime.apiKey,
-      baseUrl: config.OPENROUTER_BASE_URL.replace(/\/$/u, ""),
+      baseUrl: resolveOpenRouterBaseUrl(),
       appUrl: options.requestOrigin?.replace(/\/$/u, "") ?? null,
       appTitle: "Kiteb",
     },
