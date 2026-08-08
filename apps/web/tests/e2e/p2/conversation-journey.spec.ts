@@ -196,7 +196,9 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
 
   await composer.fill("[fixture:fail] اختبر فشل المزود");
   await page.getByRole("button", { name: "إرسال" }).click();
-  await expect(page.getByText("PROVIDER_UNAVAILABLE")).toBeVisible();
+  await expect(
+    page.getByText("PROVIDER_UNAVAILABLE", { exact: true }),
+  ).toBeVisible();
 
   payload = await conversationPayload(
     context.request,
