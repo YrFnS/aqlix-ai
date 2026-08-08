@@ -184,15 +184,33 @@ export type Source = z.infer<typeof sourceSchema>;
 
 export const draftStatusSchema = z.enum(["active", "archived"]);
 
+export const draftKindSchema = z.enum([
+  "freeform",
+  "summary",
+  "comparison",
+  "email",
+  "memo",
+  "checklist",
+  "decision_note",
+]);
+export type DraftKind = z.infer<typeof draftKindSchema>;
+
 export const draftSchema = z.object({
   id: entityIdSchema,
   workspaceId: entityIdSchema,
   conversationId: entityIdSchema.nullable(),
+  originMessageId: entityIdSchema.nullable(),
   createdBy: entityIdSchema,
   title: z.string().min(1).max(200),
-  content: z.string(),
+  content: z.string().max(100000),
   direction: contentDirectionSchema,
+  kind: draftKindSchema,
   status: draftStatusSchema,
+  currentVersion: z.number().int().positive(),
+  versionCount: z.number().int().positive(),
+  provenanceCount: z.number().int().nonnegative(),
+  lastSavedAt: isoTimestampSchema,
+  archivedAt: isoTimestampSchema.nullable(),
   createdAt: isoTimestampSchema,
   updatedAt: isoTimestampSchema,
 });

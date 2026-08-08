@@ -18,6 +18,7 @@ import type {
 import { Button } from "@/components/ui/button";
 import { ConversationShell } from "@/components/conversations/conversation-shell";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
+import { DraftFromConversationPanel } from "@/components/drafts/draft-from-conversation-panel";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   archiveConversationAction,
@@ -38,7 +39,7 @@ import {
 export const metadata: Metadata = {
   title: "محادثة",
   description:
-    "Persistent bilingual streamed conversation with optional inspectable workspace citations.",
+    "Persistent bilingual conversation with optional sources and reusable drafts.",
 };
 
 type PageParams = Promise<{ workspaceId: string; conversationId: string }>;
@@ -120,6 +121,16 @@ export default async function ConversationPage({
   const visibleStatus = persistenceFailed
     ? "persistence-error"
     : firstValue(query.status);
+  const reusableMessages = messages
+    .filter(
+      (message) => message.role === "assistant" && message.status === "complete",
+    )
+    .map((message) => ({
+      id: message.id,
+      sequence: message.sequence,
+      content: message.content,
+      citationCount: message.citations.length,
+    }));
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -175,7 +186,8 @@ export default async function ConversationPage({
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
               الرسائل، النص الجزئي، حالة المزود، النموذج، الرموز، زمن الاستجابة،
-              والمراجع الاختيارية تُعاد من السجل المحفوظ داخل مساحة العمل.
+              والمراجع الاختيارية تُعاد من السجل المحفوظ. يمكن تحويل أي إجابة
+              مكتملة إلى مسودة ذات إصدارات ومنشأ محفوظ.
             </p>
           </div>
 
@@ -226,6 +238,13 @@ export default async function ConversationPage({
         initialMessages={messages}
         canWrite={canWrite}
         readOnlyReason={isWorkspaceArchived ? "workspace-archived" : "membership"}
+      />
+
+      <DraftFromConversationPanel
+        workspaceId={workspace.id}
+        conversationId={conversation.id}
+        messages={reusableMessages}
+        canWrite={canWrite}
       />
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -335,7 +354,8 @@ export default async function ConversationPage({
           <p>
             وضع المصادر اختياري وغير مفعّل افتراضياً. عند تفعيله تبحث المحادثة
             في المقاطع الجاهزة داخل هذه المساحة فقط، ولا تحفظ الاستجابة كمكتملة
-            بلا مرجع صالح. المحادثة العادية لا تُوصف تلقائياً بأنها موثقة.
+            بلا مرجع صالح. تحويل الإجابة إلى مسودة ينسخ المراجع الحالية كلقطة
+            منشأ قابلة للفحص.
           </p>
         </div>
       </section>

@@ -111,7 +111,11 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   );
   await page.getByRole("button", { name: "إرسال" }).click();
 
-  await expect(page.getByText(/هذه إجابة اختبارية متدفقة ومحفوظة/)).toBeVisible();
+  const completedAssistantMessage = page
+    .locator('article[data-message-id]')
+    .filter({ hasText: /هذه إجابة اختبارية متدفقة ومحفوظة/ })
+    .first();
+  await expect(completedAssistantMessage).toBeVisible();
   await expect(page.getByText("fixture-bilingual-v1")).toBeVisible();
   await expect(page.getByText(/تم حفظ الاستجابة والمحادثة/)).toBeVisible();
 
@@ -140,7 +144,7 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   expect(payload.data.messages[1]?.generation?.totalTokens).toBeGreaterThan(0);
 
   await page.reload();
-  await expect(page.getByText(/هذه إجابة اختبارية متدفقة ومحفوظة/)).toBeVisible();
+  await expect(completedAssistantMessage).toBeVisible();
   await expect(page.getByText("fixture-bilingual-v1")).toBeVisible();
 
   await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");

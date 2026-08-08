@@ -1,0 +1,113 @@
+name: P4 Ask Ground Draft Continue Journey
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+  APP_ENV: "test"
+  AI_PROVIDER: "fixture"
+  P2_ALLOW_FIXTURE_PROVIDER: "true"
+  AI_REQUEST_TIMEOUT_MS: "15000"
+
+jobs:
+  draft-journey:
+    name: Durable Draft Browser & Provider Journey
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium
+        working-directory: apps/web
+        run: bunx playwright install chromium --with-deps
+
+      - name: Start local Supabase with private Storage
+        run: bunx supabase start
+
+      - name: Export local public and test-admin configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, a public key, and a test admin key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Validate active P4 contracts
+        run: |
+          bun run typecheck
+          bun run test:p4
+
+      - name: Build web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Run Ask Ground Draft Continue journey
+        run: bun run test:e2e:p4
+
+      - name: Upload draft browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p4-durable-draft-browser-evidence
+          path: |
+            apps/web/playwright-report/p4
+            apps/web/test-results
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  browser-success:
+    name: P4 Durable Draft Browser Success Gate
+    runs-on: ubuntu-latest
+    needs: [draft-journey]
+    if: always()
+
+    steps:
+      - name: Check complete product journey
+        run: |
+          if [[ "${{ needs.draft-journey.result }}" != "success" ]]; then
+            echo "P4 Ask Ground Draft Continue browser journey failed"
+            exit 1
+          fi
+
+          echo "P4 grounded conversion, all draft structures, explicit save, immutable versions, restore, provenance, UTF-8 exports, proposal discard/apply/cancel/failure, role isolation, archive, deletion, responsive, and hydration checks passed."
