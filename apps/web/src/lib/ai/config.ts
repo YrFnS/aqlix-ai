@@ -1,6 +1,11 @@
 import "server-only";
 
 import { z } from "zod";
+import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
+import {
+  resolveUserOpenRouterRuntime,
+  UserAiSettingsRepositoryError,
+} from "./user-settings";
 import { AiProviderError } from "./provider";
 
 const integerFromEnvironment = (
@@ -19,13 +24,19 @@ const integerFromEnvironment = (
   );
 
 const aiEnvironmentSchema = z.object({
-  AI_PROVIDER: z.enum(["openai", "fixture"]).default("openai"),
+  AI_PROVIDER: z
+    .enum(["openrouter", "openai", "fixture"])
+    .default("openrouter"),
   OPENAI_API_KEY: z.string().trim().min(1).optional(),
-  OPENAI_MODEL: z.string().trim().min(1).max(160).default("gpt-5-mini"),
+  OPENAI_MODEL: z.string().trim().min(1).max(255).optional(),
   OPENAI_BASE_URL: z
     .string()
     .url()
     .default("https://api.openai.com/v1"),
+  OPENROUTER_BASE_URL: z
+    .string()
+    .url()
+    .default("https://openrouter.ai/api/v1"),
   AI_REQUEST_TIMEOUT_MS: integerFromEnvironment(60000, 5000, 180000),
   AI_MAX_OUTPUT_TOKENS: integerFromEnvironment(2048, 64, 8192),
   P2_ALLOW_FIXTURE_PROVIDER: z.boolean().default(false),
@@ -41,10 +52,20 @@ export interface AiRuntimeConfig {
   requestedModel: string;
   requestTimeoutMs: number;
   maxOutputTokens: number;
+  openrouter?: {
+    apiKey: string;
+    baseUrl: string;
+    appUrl: string | null;
+    appTitle: string;
+  };
   openai?: {
     apiKey: string;
     baseUrl: string;
   };
+}
+
+interface ResolveAiRuntimeOptions {
+  requestOrigin?: string;
 }
 
 function environmentBoolean(value: string | undefined): boolean {
@@ -72,13 +93,16 @@ function deploymentEnvironment():
   return "development";
 }
 
-export function getAiRuntimeConfig(): AiRuntimeConfig {
+function parseAiEnvironment() {
   const parsed = aiEnvironmentSchema.safeParse({
-    AI_PROVIDER: process.env.AI_PROVIDER?.trim() || "openai",
+    AI_PROVIDER: process.env.AI_PROVIDER?.trim() || "openrouter",
     OPENAI_API_KEY: process.env.OPENAI_API_KEY?.trim() || undefined,
-    OPENAI_MODEL: process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
+    OPENAI_MODEL: process.env.OPENAI_MODEL?.trim() || undefined,
     OPENAI_BASE_URL:
       process.env.OPENAI_BASE_URL?.trim() || "https://api.openai.com/v1",
+    OPENROUTER_BASE_URL:
+      process.env.OPENROUTER_BASE_URL?.trim() ||
+      "https://openrouter.ai/api/v1",
     AI_REQUEST_TIMEOUT_MS: process.env.AI_REQUEST_TIMEOUT_MS,
     AI_MAX_OUTPUT_TOKENS: process.env.AI_MAX_OUTPUT_TOKENS,
     P2_ALLOW_FIXTURE_PROVIDER: environmentBoolean(
@@ -95,7 +119,14 @@ export function getAiRuntimeConfig(): AiRuntimeConfig {
     );
   }
 
-  const config = parsed.data;
+  return parsed.data;
+}
+
+export async function resolveAiRuntimeConfig(
+  supabase: SupabaseServerClient,
+  options: ResolveAiRuntimeOptions = {},
+): Promise<AiRuntimeConfig> {
+  const config = parseAiEnvironment();
 
   if (config.AI_PROVIDER === "fixture") {
     if (
@@ -118,38 +149,85 @@ export function getAiRuntimeConfig(): AiRuntimeConfig {
     };
   }
 
-  if (!config.OPENAI_API_KEY) {
+  if (config.AI_PROVIDER === "openai") {
+    if (!config.OPENAI_API_KEY || !config.OPENAI_MODEL) {
+      throw new AiProviderError(
+        "PROVIDER_UNCONFIGURED",
+        "Managed OpenAI generation requires both a server key and an explicit model ID.",
+        false,
+      );
+    }
+
+    return {
+      provider: "openai",
+      requestedModel: config.OPENAI_MODEL,
+      requestTimeoutMs: config.AI_REQUEST_TIMEOUT_MS,
+      maxOutputTokens: config.AI_MAX_OUTPUT_TOKENS,
+      openai: {
+        apiKey: config.OPENAI_API_KEY,
+        baseUrl: config.OPENAI_BASE_URL.replace(/\/$/u, ""),
+      },
+    };
+  }
+
+  let runtime;
+  try {
+    runtime = await resolveUserOpenRouterRuntime(supabase);
+  } catch (error) {
+    if (error instanceof UserAiSettingsRepositoryError) {
+      throw new AiProviderError(
+        "PERSISTENCE_ERROR",
+        "The saved OpenRouter connection could not be resolved.",
+        true,
+      );
+    }
+    throw error;
+  }
+
+  if (!runtime) {
     throw new AiProviderError(
       "PROVIDER_UNCONFIGURED",
-      "OpenAI generation is not configured in this environment.",
+      "Connect an OpenRouter key and select a live model in AI settings before generating.",
       false,
     );
   }
 
   return {
-    provider: "openai",
-    requestedModel: config.OPENAI_MODEL,
+    provider: "openrouter",
+    requestedModel: runtime.modelId,
     requestTimeoutMs: config.AI_REQUEST_TIMEOUT_MS,
     maxOutputTokens: config.AI_MAX_OUTPUT_TOKENS,
-    openai: {
-      apiKey: config.OPENAI_API_KEY,
-      baseUrl: config.OPENAI_BASE_URL.replace(/\/$/u, ""),
+    openrouter: {
+      apiKey: runtime.apiKey,
+      baseUrl: config.OPENROUTER_BASE_URL.replace(/\/$/u, ""),
+      appUrl: options.requestOrigin?.replace(/\/$/u, "") ?? null,
+      appTitle: "Kiteb",
     },
   };
 }
 
-export function getRequestedProviderIdentity(): {
+export function getFallbackProviderIdentity(): {
   provider: AiProviderName;
   requestedModel: string;
 } {
-  const provider =
-    process.env.AI_PROVIDER?.trim() === "fixture" ? "fixture" : "openai";
+  const config = parseAiEnvironment();
+
+  if (config.AI_PROVIDER === "fixture") {
+    return {
+      provider: "fixture",
+      requestedModel: "fixture-bilingual-v1",
+    };
+  }
+
+  if (config.AI_PROVIDER === "openai") {
+    return {
+      provider: "openai",
+      requestedModel: config.OPENAI_MODEL || "unconfigured",
+    };
+  }
 
   return {
-    provider,
-    requestedModel:
-      provider === "fixture"
-        ? "fixture-bilingual-v1"
-        : process.env.OPENAI_MODEL?.trim() || "gpt-5-mini",
+    provider: "openrouter",
+    requestedModel: "unconfigured",
   };
 }
