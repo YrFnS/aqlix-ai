@@ -30,28 +30,52 @@ describe("P2 provider and conversation boundary", () => {
     }
   });
 
-  test("uses the OpenAI Responses stream without provider-side history", () => {
+  test("uses the user-selected OpenRouter stream as the primary provider", () => {
+    const provider = readWeb("src/lib/ai/openrouter-provider.ts");
+    const config = readWeb("src/lib/ai/config.ts");
+
+    expect(provider).toContain("/chat/completions");
+    expect(provider).toContain("model: this.requestedModel");
+    expect(provider).toContain("stream: true");
+    expect(provider).toContain("parseOpenRouterStream");
+    expect(config).toContain('default("openrouter")');
+    expect(config).toContain("resolveUserOpenRouterRuntime");
+    expect(config).not.toContain('default("gpt-');
+    expect(provider).not.toContain("NEXT_PUBLIC_OPENROUTER");
+    expect(provider).not.toContain("dangerouslySetInnerHTML");
+  });
+
+  test("retains explicit managed OpenAI compatibility without provider-side history", () => {
     const provider = readWeb("src/lib/ai/openai-provider.ts");
+    const config = readWeb("src/lib/ai/config.ts");
 
     expect(provider).toContain('`${this.baseUrl}/responses`');
     expect(provider).toContain("stream: true");
     expect(provider).toContain("store: false");
     expect(provider).toContain("response.output_text.delta");
     expect(provider).toContain("response.completed");
+    expect(config).toContain("!config.OPENAI_API_KEY || !config.OPENAI_MODEL");
     expect(provider).not.toContain("NEXT_PUBLIC_OPENAI");
-    expect(provider).not.toContain("dangerouslySetInnerHTML");
   });
 
-  test("keeps provider secrets in a server-only capability module", () => {
+  test("keeps credentials in server-only modules and Vault-backed settings", () => {
     const config = readWeb("src/lib/ai/config.ts");
+    const settings = readWeb("src/lib/ai/user-settings.ts");
+    const migration = readRepo(
+      "supabase/migrations/202608080018_p5_user_openrouter_settings.sql",
+    );
     const publicEnvironment = readWeb("src/config/env.ts");
 
     expect(config).toContain('import "server-only"');
-    expect(config).toContain("process.env.OPENAI_API_KEY");
+    expect(settings).toContain('import "server-only"');
+    expect(config).toContain("resolveUserOpenRouterRuntime");
+    expect(migration).toContain("vault.create_secret");
+    expect(migration).toContain("vault.decrypted_secrets");
     expect(config).toContain("P2_ALLOW_FIXTURE_PROVIDER");
     expect(config).toContain('config.APP_ENV === "production"');
     expect(config).toContain('config.APP_ENV === "staging"');
     expect(publicEnvironment).not.toContain("OPENAI_API_KEY");
+    expect(publicEnvironment).not.toContain("OPENROUTER_API_KEY");
     expect(publicEnvironment).not.toContain("AI_PROVIDER");
   });
 
@@ -76,6 +100,7 @@ describe("P2 provider and conversation boundary", () => {
 
     expect(streamRoute).toContain("finishConversationGeneration");
     expect(streamRoute).toContain("checkpointConversationGeneration");
+    expect(streamRoute).toContain("resolveAiRuntimeConfig");
     expect(client).toContain("conversationStreamEventSchema.safeParse");
     expect(client).toContain("AbortController");
     expect(client).toContain("retryMessageId");
