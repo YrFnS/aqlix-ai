@@ -124,6 +124,19 @@ describe("P5 health and release boundaries", () => {
     expect(route).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
   });
 
+  test("isolates unmatched routes from the interactive root layout", () => {
+    const nextConfig = readWeb("next.config.ts");
+    const globalNotFound = readWeb("src/app/global-not-found.tsx");
+
+    expect(nextConfig).toContain("globalNotFound: true");
+    expect(globalNotFound).toContain("<html");
+    expect(globalNotFound).toContain("<body");
+    expect(globalNotFound).toContain("الصفحة غير موجودة");
+    expect(globalNotFound).not.toContain("DirectionProvider");
+    expect(globalNotFound).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
+    expect(globalNotFound).not.toContain("OPENAI_API_KEY");
+  });
+
   test("defines the P5 topology, ownership, and release gates", () => {
     const architecture = readRepo(
       "docs/rebuild/12-P5-OPERATIONAL-READINESS.md",
