@@ -110,19 +110,19 @@ export function AppNav({ userEmail }: AppNavProps) {
             <div className="rounded-2xl border border-border/70 bg-secondary/60 p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-semibold text-foreground">
-                  مساحة عمل موثقة
+                  رحلة عمل محفوظة
                 </p>
                 <span
                   dir="ltr"
                   className="text-[0.65rem] font-semibold text-primary"
                 >
-                  P1–P3
+                  P1–P4
                 </span>
               </div>
               <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                الحساب والعضوية وRLS، المحادثات المتدفقة، والملفات الخاصة مع
-                المقاطع والمراجع القابلة للفتح تعمل الآن. المسودات والتصدير تبقى
-                ضمن P4.
+                الحساب والمساحة والمحادثات والمصادر والمراجع والمسودات والإصدارات
+                تعمل الآن ضمن Ask → Ground → Draft → Continue. الجاهزية التشغيلية
+                والإطلاق العام يبقيان ضمن P5.
               </p>
             </div>
 
