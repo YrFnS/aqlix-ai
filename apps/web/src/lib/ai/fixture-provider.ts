@@ -15,13 +15,12 @@ function delay(milliseconds: number, signal: AbortSignal): Promise<void> {
       return;
     }
 
-    let timer: ReturnType<typeof setTimeout>;
-    const abort = () => {
+    function abort() {
       clearTimeout(timer);
       reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
-    };
+    }
 
-    timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       signal.removeEventListener("abort", abort);
       resolve();
     }, milliseconds);
