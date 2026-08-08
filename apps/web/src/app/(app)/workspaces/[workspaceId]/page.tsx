@@ -189,15 +189,15 @@ export default async function WorkspacePage({
               <MessageSquareText className="h-5 w-5" aria-hidden="true" />
             </div>
             <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P2 · يعمل
+              P2 + P3 · يعمل
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
             المحادثات
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            رسائل محفوظة، بث نصي، إيقاف مع حفظ الجزئي، إعادة محاولة، وحالة مزود
-            قابلة للفحص.
+            رسائل متدفقة ومحفوظة، إيقاف وإعادة محاولة، ووضع مصادر اختياري يحفظ
+            مراجع قابلة للفتح إلى المقاطع نفسها.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
             فتح المحادثات
@@ -217,7 +217,7 @@ export default async function WorkspacePage({
               <FileSearch className="h-5 w-5" aria-hidden="true" />
             </div>
             <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P3 · أساس يعمل
+              P3 · يعمل
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
@@ -265,15 +265,16 @@ export default async function WorkspacePage({
             </div>
             <div>
               <p className="text-sm font-semibold text-primary">
-                يعمل في P1 + P2 + أساس P3
+                يعمل في P1 + P2 + P3
               </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                سياق محفوظ، محادثة مستمرة، ومصادر خاصة
+                سياق محفوظ، محادثة مستمرة، ومراجع قابلة للفحص
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                الحساب والمساحة والمحادثات والملفات والمقاطع كلها تخضع للجلسة وRLS.
-                ربط الإجابات بالمقاطع كمراجع دائمة يبقى الخطوة التالية داخل P3،
-                لذلك لا تصف المحادثة الحالية نفسها بأنها موثقة تلقائياً.
+                الحساب والمساحة والمحادثات والملفات والمقاطع والمراجع كلها تخضع
+                للجلسة وRLS. وضع المصادر غير مفعّل افتراضياً؛ عند تفعيله تبحث
+                المحادثة في المقاطع الجاهزة فقط، وترفض اكتمال الإجابة بلا مرجع
+                صالح، وتحفظ لقطة واضحة حتى إذا حُذف المصدر لاحقاً.
               </p>
             </div>
           </div>
