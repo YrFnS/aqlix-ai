@@ -2,7 +2,6 @@ import {
   expect,
   test,
   type APIRequestContext,
-  type BrowserContext,
   type Page,
 } from "@playwright/test";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -211,7 +210,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
   await expect(page.getByText(/الأسطر/)).toBeVisible();
 
-  let payload = await documentPayload(
+  const payload = await documentPayload(
     context.request,
     workspaceId!,
     attachmentId!,
