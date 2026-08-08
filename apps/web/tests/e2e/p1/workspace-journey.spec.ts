@@ -162,11 +162,9 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
   await page.getByRole("button", { name: "حفظ التغييرات" }).click();
 
   await expect(page).toHaveURL(
-    new RegExp(`/workspaces/${workspaceId}/settings\\?status=updated$`),
+    new RegExp(`/workspaces/${workspaceId}\\?status=updated$`),
   );
   await expect(page.getByText("تم حفظ إعدادات مساحة العمل")).toBeVisible();
-
-  await page.getByRole("link", { name: "العودة إلى المساحة" }).click();
   await expect(
     page.getByRole("heading", { name: updatedName }),
   ).toBeVisible();
