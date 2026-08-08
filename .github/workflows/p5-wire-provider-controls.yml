@@ -45,6 +45,8 @@ jobs:
             apps/web/tsconfig.rebuild.json
           grep -Fq 'setRefreshIndex((value) => value + 1)' \
             apps/web/src/components/ai/openrouter-settings.tsx
+          grep -Fq 'resolveOpenRouterBaseUrl' \
+            apps/web/src/lib/ai/openrouter-client.ts
 
       - name: Commit generated wiring
         shell: bash
@@ -56,6 +58,8 @@ jobs:
             'apps/web/src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts' \
             'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts' \
             apps/web/src/components/ai/openrouter-settings.tsx \
+            apps/web/src/lib/ai/config.ts \
+            apps/web/src/lib/ai/openrouter-client.ts \
             apps/web/tsconfig.rebuild.json \
             packages/types/src/contracts/conversation.ts \
             packages/types/src/contracts/draft.ts
