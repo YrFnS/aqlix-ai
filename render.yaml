@@ -27,13 +27,9 @@ services:
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
       - key: AI_PROVIDER
-        value: openai
+        value: openrouter
       - key: P2_ALLOW_FIXTURE_PROVIDER
         value: "false"
-      - key: OPENAI_MODEL
-        value: gpt-5-mini
-      - key: OPENAI_BASE_URL
-        value: https://api.openai.com/v1
       - key: AI_REQUEST_TIMEOUT_MS
         value: "60000"
       - key: AI_MAX_OUTPUT_TOKENS
@@ -45,8 +41,6 @@ services:
       - key: NEXT_PUBLIC_SUPABASE_URL
         sync: false
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-        sync: false
-      - key: OPENAI_API_KEY
         sync: false
       - key: SUPABASE_ACCESS_TOKEN
         sync: false
