@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "next dev --turbo --port 3000",
     "build": "next build --experimental-build-mode=compile",
-    "build:release": "next build",
+    "build:release": "node ../../node_modules/next/dist/bin/next build",
     "build:standalone": "next build && next export",
     "start": "next start",
-    "start:release": "next start -H 0.0.0.0",
+    "start:release": "node ../../node_modules/next/dist/bin/next start -H 0.0.0.0",
     "analyze": "ANALYZE=true next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -113,7 +113,7 @@
     "directory": "apps/web"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "bun": ">=1.0.0"
+    "node": ">=24.14.1 <25.0.0",
+    "bun": ">=1.3.14 <2.0.0"
   }
 }
