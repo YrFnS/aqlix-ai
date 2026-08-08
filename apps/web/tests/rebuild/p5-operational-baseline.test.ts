@@ -136,9 +136,12 @@ describe("P5 health and release boundaries", () => {
     expect(architecture).toContain("Production ready: No");
   });
 
-  test("exposes a Bun-only release path", () => {
+  test("exposes a Bun-only release path and preflight", () => {
     const webPackage = readWeb("package.json");
     const rootPackage = readRepo("package.json");
+    const preflight = readRepo(
+      "scripts/operations/validate-runtime-env.ts",
+    );
 
     expect(webPackage).toContain('"build:release": "next build"');
     expect(webPackage).toContain(
@@ -146,7 +149,33 @@ describe("P5 health and release boundaries", () => {
     );
     expect(rootPackage).toContain('"build:release"');
     expect(rootPackage).toContain('"start:release"');
+    expect(rootPackage).toContain('"validate:release-env"');
+    expect(preflight).toContain("parseOperationalRuntimeContract");
+    expect(preflight).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(rootPackage).not.toContain('"build:release": "npm');
     expect(rootPackage).not.toContain('"build:release": "yarn');
+  });
+
+  test("commits only a non-secret release environment template", () => {
+    const template = readWeb(".env.release.example");
+
+    expect(template).toContain("APP_ENV=staging");
+    expect(template).toContain("RELEASE_SHA=");
+    expect(template).toContain("READINESS_PROBE_DEPENDENCIES=true");
+    expect(template).toContain("<server-only-openai-key>");
+    expect(template).not.toMatch(/sk-[A-Za-z0-9_-]{20,}/u);
+    expect(template).not.toContain("SUPABASE_SERVICE_ROLE_KEY=");
+  });
+
+  test("runs the release startup and health probe in CI", () => {
+    const workflow = readRepo(
+      ".github/workflows/p5-operational-baseline.yml",
+    );
+
+    expect(workflow).toContain("bun run validate:release-env");
+    expect(workflow).toContain("bun run build:release");
+    expect(workflow).toContain("bun run start:release");
+    expect(workflow).toContain("/api/health/live");
+    expect(workflow).toContain("/api/health/ready");
   });
 });
