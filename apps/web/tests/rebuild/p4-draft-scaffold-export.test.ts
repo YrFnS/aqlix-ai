@@ -90,11 +90,11 @@ describe("P4 draft exports", () => {
     expect(text.contentType).toBe("text/plain; charset=utf-8");
     expect(text.body).toContain(draft.title);
     expect(text.body).toContain(draft.content);
-    expect(text.downloadName).toEndWith(".txt");
+    expect(text.downloadName.endsWith(".txt")).toBe(true);
 
     expect(markdown.contentType).toBe("text/markdown; charset=utf-8");
-    expect(markdown.body).toStartWith(`# ${draft.title}`);
-    expect(markdown.downloadName).toEndWith(".md");
+    expect(markdown.body.startsWith(`# ${draft.title}`)).toBe(true);
+    expect(markdown.downloadName.endsWith(".md")).toBe(true);
   });
 
   test("builds standalone safe HTML without scripts or remote resources", () => {
@@ -106,7 +106,7 @@ describe("P4 draft exports", () => {
     expect(html.body).toContain("&lt;script&gt;");
     expect(html.body).not.toContain("<script>");
     expect(html.body).not.toMatch(/https?:\/\//u);
-    expect(html.downloadName).toEndWith(".html");
+    expect(html.downloadName.endsWith(".html")).toBe(true);
   });
 
   test("uses RFC 5987 UTF-8 download filenames with a safe fallback", () => {
