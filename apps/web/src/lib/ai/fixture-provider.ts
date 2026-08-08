@@ -30,8 +30,69 @@ function delay(milliseconds: number, signal: AbortSignal): Promise<void> {
   });
 }
 
+interface FixtureDraftPayload {
+  action?: string;
+  instruction?: string;
+  draftContent?: string;
+}
+
+function fixtureDraftResponse(prompt: string): string {
+  let payload: FixtureDraftPayload = {};
+  try {
+    payload = JSON.parse(prompt) as FixtureDraftPayload;
+  } catch {
+    // Invalid fixture data is handled with a bounded deterministic proposal.
+  }
+
+  const content = payload.draftContent ?? "";
+  const instruction = payload.instruction?.trim() ?? "";
+  const arabic = isArabicText(content);
+
+  switch (payload.action) {
+    case "shorten": {
+      const compact = content.replace(/\s+/gu, " ").trim();
+      return compact.length <= 120
+        ? compact
+        : `${compact.slice(0, 117).trimEnd()}…`;
+    }
+    case "expand":
+      return `${content}\n\n${
+        arabic
+          ? "تفصيل اختباري إضافي يوسّع الفكرة ويحافظ على العربية وEnglish والأرقام 2026."
+          : "Additional deterministic detail expands the idea while preserving English, العربية, and 2026."
+      }`;
+    case "translate_ar":
+      return `نسخة عربية اختبارية محفوظة.\n\n${content}`;
+    case "translate_en":
+      return `Deterministic English translation proposal.\n\n${content}`;
+    case "continue":
+      return `${content}\n\n${
+        arabic
+          ? "استمرار اختباري جديد للمسودة من النقطة الحالية."
+          : "A new deterministic continuation follows from the current ending."
+      }`;
+    case "custom":
+      return `${content}\n\n${
+        arabic ? "تعديل مخصص اختباري:" : "Deterministic custom revision:"
+      } ${instruction}`.trim();
+    case "improve":
+    default:
+      return `${content}\n\n${
+        arabic
+          ? "صياغة اختبارية محسّنة بوضوح أكبر مع الحفاظ على المعنى والمراجع [S1]."
+          : "A clearer deterministic revision preserves the meaning and citation [S1]."
+      }`;
+  }
+}
+
 function fixtureResponse(prompt: string, instructions?: string): string {
   const grounded = instructions?.includes("KITEB_GROUNDING_V1") ?? false;
+  const draftContinuation =
+    instructions?.includes("KITEB_DRAFT_CONTINUATION_V1") ?? false;
+
+  if (draftContinuation) {
+    return fixtureDraftResponse(prompt);
+  }
 
   if (grounded && prompt.includes("[fixture:no-citation]")) {
     return isArabicText(prompt)
