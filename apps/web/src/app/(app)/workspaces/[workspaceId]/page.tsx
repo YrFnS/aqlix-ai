@@ -27,7 +27,8 @@ import {
 
 export const metadata: Metadata = {
   title: "مساحة العمل",
-  description: "Persistent workspace, conversations, and private source passages.",
+  description:
+    "Persistent workspace with conversations, private sources, and durable reusable drafts.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -236,25 +237,33 @@ export default async function WorkspacePage({
           </span>
         </Link>
 
-        <article className="rounded-3xl border border-border/70 bg-card p-6">
+        <Link
+          href={`/workspaces/${workspace.id}/drafts`}
+          className="group rounded-3xl border border-primary/30 bg-card p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-foreground/5"
+        >
           <div className="flex items-start justify-between gap-4">
-            <div className="rounded-2xl bg-secondary p-3 text-primary">
+            <div className="rounded-2xl bg-primary/10 p-3 text-primary">
               <PenLine className="h-5 w-5" aria-hidden="true" />
             </div>
-            <span className="rounded-full border border-border px-2.5 py-1 text-[0.65rem] font-semibold text-muted-foreground">
-              P4
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
+              P4 · يعمل
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
-            المسودة
+            المسودات
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            تحرير الناتج، حفظ نسخه، ربطه بالمصادر، ثم التصدير.
+            حوّل الإجابات إلى عمل قابل للتحرير، احفظ إصدارات غير قابلة لإعادة
+            الكتابة، افحص المنشأ، صدّر UTF-8، وراجع اقتراحاً قبل تطبيقه.
           </p>
-          <p className="mt-5 text-xs font-semibold text-muted-foreground">
-            غير مفعّل بعد
-          </p>
-        </article>
+          <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
+            فتح المسودات
+            <ArrowUpLeft
+              className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+              aria-hidden="true"
+            />
+          </span>
+        </Link>
       </section>
 
       <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
@@ -265,16 +274,15 @@ export default async function WorkspacePage({
             </div>
             <div>
               <p className="text-sm font-semibold text-primary">
-                يعمل في P1 + P2 + P3
+                يعمل في P1 + P2 + P3 + P4
               </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                سياق محفوظ، محادثة مستمرة، ومراجع قابلة للفحص
+                Ask → Ground → Draft → Continue
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                الحساب والمساحة والمحادثات والملفات والمقاطع والمراجع كلها تخضع
-                للجلسة وRLS. وضع المصادر غير مفعّل افتراضياً؛ عند تفعيله تبحث
-                المحادثة في المقاطع الجاهزة فقط، وترفض اكتمال الإجابة بلا مرجع
-                صالح، وتحفظ لقطة واضحة حتى إذا حُذف المصدر لاحقاً.
+                الحساب والمساحة والمحادثات والمصادر والمراجع والمسودات والإصدارات
+                كلها تخضع للجلسة وRLS. الاقتراحات الآلية تبقى منفصلة عن العمل
+                المقبول حتى تطبيقها صراحةً كإصدار جديد.
               </p>
             </div>
           </div>
