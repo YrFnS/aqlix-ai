@@ -47,6 +47,8 @@ jobs:
             apps/web/src/components/ai/openrouter-settings.tsx
           grep -Fq 'resolveOpenRouterBaseUrl' \
             apps/web/src/lib/ai/openrouter-client.ts
+          grep -Fq 'requires a release identity but no platform model key for OpenRouter' \
+            apps/web/tests/rebuild/p5-operational-baseline.test.ts
 
       - name: Commit generated wiring
         shell: bash
@@ -60,6 +62,7 @@ jobs:
             apps/web/src/components/ai/openrouter-settings.tsx \
             apps/web/src/lib/ai/config.ts \
             apps/web/src/lib/ai/openrouter-client.ts \
+            apps/web/tests/rebuild/p5-operational-baseline.test.ts \
             apps/web/tsconfig.rebuild.json \
             packages/types/src/contracts/conversation.ts \
             packages/types/src/contracts/draft.ts
