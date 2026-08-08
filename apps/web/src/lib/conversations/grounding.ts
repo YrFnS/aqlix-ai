@@ -1,4 +1,7 @@
+import "server-only";
+
 import type { ProviderFailureCode, SourceSearchResult } from "@iraqi-ai/types";
+import { AiProviderError } from "@/lib/ai/provider";
 
 export const MAX_GROUNDING_SOURCES = 6;
 
@@ -12,16 +15,15 @@ export interface ResolvedGroundedCitation {
   sourceId: string;
 }
 
-export class GroundingResolutionError extends Error {
+export class GroundingResolutionError extends AiProviderError {
   constructor(
-    public readonly code: Extract<
+    code: Extract<
       ProviderFailureCode,
       "NO_RELEVANT_SOURCES" | "CITATION_REQUIRED" | "CITATION_INVALID"
     >,
     message: string,
-    public readonly retryable = true,
   ) {
-    super(message);
+    super(code, message, true);
     this.name = "GroundingResolutionError";
   }
 }
