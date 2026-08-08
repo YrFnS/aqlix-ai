@@ -13,16 +13,29 @@ import {
 } from "@/lib/ai";
 import { requireApiUser } from "@/lib/api/auth";
 import { jsonFailure, zodFieldErrors } from "@/lib/api/responses";
+import {
+  buildGroundingInstructions,
+  labelGroundingSources,
+  MAX_GROUNDING_SOURCES,
+  resolveGroundedCitations,
+  type LabeledGroundingSource,
+} from "@/lib/conversations/grounding";
 import type { BegunConversationTurn } from "@/lib/conversations/repository";
 import {
   beginConversationTurn,
   checkpointConversationGeneration,
   finishConversationGeneration,
+  finishGroundedConversationGeneration,
   getConversation,
   getConversationMessage,
   getConversationProviderHistory,
+  setGenerationGroundingContext,
   ConversationRepositoryError,
 } from "@/lib/conversations/repository";
+import {
+  searchWorkspaceSources,
+  DocumentRepositoryError,
+} from "@/lib/documents/repository";
 import { getWorkspaceAccess } from "@/lib/workspaces/repository";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +43,12 @@ export const runtime = "nodejs";
 
 type RouteContext = {
   params: Promise<{ workspaceId: string; conversationId: string }>;
+};
+
+type StreamFailure = {
+  code: ProviderFailureCode;
+  message: string;
+  retryable: boolean;
 };
 
 const encoder = new TextEncoder();
@@ -55,6 +74,7 @@ function fallbackMessage(
     latencyMs: number;
     failureCode: ProviderFailureCode | null;
     failureMessage: string | null;
+    citationCount?: number;
   },
 ): ConversationMessage {
   const now = new Date().toISOString();
@@ -76,6 +96,8 @@ function fallbackMessage(
           totalTokens: input.totalTokens,
           firstTokenLatencyMs: input.firstTokenLatencyMs,
           latencyMs: input.latencyMs,
+          citationCount:
+            input.citationCount ?? source.generation.citationCount,
           failureCode: input.failureCode,
           failureMessage: input.failureMessage,
           completedAt: now,
@@ -85,11 +107,7 @@ function fallbackMessage(
   };
 }
 
-function failureDetails(error: unknown): {
-  code: ProviderFailureCode;
-  message: string;
-  retryable: boolean;
-} {
+function failureDetails(error: unknown): StreamFailure {
   if (error instanceof AiProviderError) {
     return {
       code: error.code,
@@ -98,10 +116,13 @@ function failureDetails(error: unknown): {
     };
   }
 
-  if (error instanceof ConversationRepositoryError) {
+  if (
+    error instanceof ConversationRepositoryError ||
+    error instanceof DocumentRepositoryError
+  ) {
     return {
       code: "PERSISTENCE_ERROR",
-      message: "Conversation state could not be persisted.",
+      message: "Conversation or source state could not be persisted.",
       retryable: true,
     };
   }
@@ -138,6 +159,7 @@ export async function POST(request: Request, context: RouteContext) {
     content: bodyRecord.content,
     direction: bodyRecord.direction,
     retryMessageId: bodyRecord.retryMessageId,
+    groundingMode: bodyRecord.groundingMode,
   });
 
   if (!parsed.success) {
@@ -235,6 +257,63 @@ export async function POST(request: Request, context: RouteContext) {
       "The conversation turn could not be created.",
       { status: 503, requestId: auth.context.requestId },
     );
+  }
+
+  let groundingSources: LabeledGroundingSource[] = [];
+  let groundingInstructions: string | undefined;
+  let initialFailure: StreamFailure | null = null;
+
+  if (parsed.data.groundingMode === "workspace_sources") {
+    try {
+      const results = await searchWorkspaceSources(auth.context.supabase, {
+        workspaceId: parsed.data.workspaceId,
+        query: turn.promptContent.trim().slice(0, 500),
+        limit: MAX_GROUNDING_SOURCES,
+      });
+      groundingSources = labelGroundingSources(results);
+
+      await setGenerationGroundingContext(auth.context.supabase, {
+        workspaceId: parsed.data.workspaceId,
+        conversationId: parsed.data.conversationId,
+        messageId: turn.assistantMessageId,
+        generationId: turn.generationId,
+        groundingMode: "workspace_sources",
+        retrievedSourceCount: groundingSources.length,
+      });
+
+      if (groundingSources.length === 0) {
+        initialFailure = {
+          code: "NO_RELEVANT_SOURCES",
+          message:
+            "No relevant ready passage was found in this workspace. No provider answer was generated.",
+          retryable: true,
+        };
+      } else {
+        groundingInstructions = buildGroundingInstructions(groundingSources);
+      }
+    } catch (error) {
+      console.error("Grounding preparation failed", {
+        requestId: auth.context.requestId,
+        error,
+      });
+      initialFailure = failureDetails(error);
+
+      try {
+        await setGenerationGroundingContext(auth.context.supabase, {
+          workspaceId: parsed.data.workspaceId,
+          conversationId: parsed.data.conversationId,
+          messageId: turn.assistantMessageId,
+          generationId: turn.generationId,
+          groundingMode: "workspace_sources",
+          retrievedSourceCount: 0,
+        });
+      } catch (contextError) {
+        console.error("Grounding failure context could not be recorded", {
+          requestId: auth.context.requestId,
+          contextError,
+        });
+      }
+    }
   }
 
   let userMessage: ConversationMessage | null;
@@ -386,35 +465,12 @@ export async function POST(request: Request, context: RouteContext) {
           send({ type: "heartbeat", at: new Date().toISOString() });
         }, 15000);
 
-        const persistFinal = async (input: {
+        const reloadOrFallback = async (input: {
           status: "complete" | "failed" | "cancelled";
           failureCode: ProviderFailureCode | null;
           failureMessage: string | null;
+          citationCount?: number;
         }): Promise<ConversationMessage> => {
-          const latencyMs = Math.max(0, Math.round(performance.now() - startedAt));
-          const finalInput = {
-            status: input.status,
-            content,
-            returnedModel,
-            providerResponseId,
-            inputTokens: usage.inputTokens,
-            outputTokens: usage.outputTokens,
-            reasoningTokens: usage.reasoningTokens,
-            totalTokens: usage.totalTokens,
-            firstTokenLatencyMs,
-            latencyMs,
-            failureCode: input.failureCode,
-            failureMessage: input.failureMessage,
-          };
-
-          await finishConversationGeneration(auth.context.supabase, {
-            workspaceId: parsed.data.workspaceId,
-            conversationId: parsed.data.conversationId,
-            messageId: turn.assistantMessageId,
-            generationId: turn.generationId,
-            ...finalInput,
-          });
-
           try {
             const persisted = await getConversationMessage(
               auth.context.supabase,
@@ -430,12 +486,90 @@ export async function POST(request: Request, context: RouteContext) {
             });
           }
 
-          // Finalization succeeded, so this representation is safe to emit even
-          // when the immediate read-back fails.
-          return fallbackMessage(durableAssistantMessage, finalInput);
+          return fallbackMessage(durableAssistantMessage, {
+            status: input.status,
+            content,
+            returnedModel,
+            providerResponseId,
+            inputTokens: usage.inputTokens,
+            outputTokens: usage.outputTokens,
+            reasoningTokens: usage.reasoningTokens,
+            totalTokens: usage.totalTokens,
+            firstTokenLatencyMs,
+            latencyMs: Math.max(0, Math.round(performance.now() - startedAt)),
+            failureCode: input.failureCode,
+            failureMessage: input.failureMessage,
+            citationCount: input.citationCount,
+          });
+        };
+
+        const persistFinal = async (input: {
+          status: "complete" | "failed" | "cancelled";
+          failureCode: ProviderFailureCode | null;
+          failureMessage: string | null;
+        }): Promise<ConversationMessage> => {
+          const latencyMs = Math.max(0, Math.round(performance.now() - startedAt));
+
+          await finishConversationGeneration(auth.context.supabase, {
+            workspaceId: parsed.data.workspaceId,
+            conversationId: parsed.data.conversationId,
+            messageId: turn.assistantMessageId,
+            generationId: turn.generationId,
+            status: input.status,
+            content,
+            returnedModel,
+            providerResponseId,
+            inputTokens: usage.inputTokens,
+            outputTokens: usage.outputTokens,
+            reasoningTokens: usage.reasoningTokens,
+            totalTokens: usage.totalTokens,
+            firstTokenLatencyMs,
+            latencyMs,
+            failureCode: input.failureCode,
+            failureMessage: input.failureMessage,
+          });
+
+          return reloadOrFallback(input);
+        };
+
+        const persistGroundedComplete = async (): Promise<ConversationMessage> => {
+          const citations = resolveGroundedCitations(content, groundingSources);
+          const latencyMs = Math.max(0, Math.round(performance.now() - startedAt));
+
+          await finishGroundedConversationGeneration(auth.context.supabase, {
+            workspaceId: parsed.data.workspaceId,
+            conversationId: parsed.data.conversationId,
+            messageId: turn.assistantMessageId,
+            generationId: turn.generationId,
+            content,
+            returnedModel,
+            providerResponseId,
+            inputTokens: usage.inputTokens,
+            outputTokens: usage.outputTokens,
+            reasoningTokens: usage.reasoningTokens,
+            totalTokens: usage.totalTokens,
+            firstTokenLatencyMs,
+            latencyMs,
+            citations,
+          });
+
+          return reloadOrFallback({
+            status: "complete",
+            failureCode: null,
+            failureMessage: null,
+            citationCount: citations.length,
+          });
         };
 
         try {
+          if (initialFailure) {
+            throw new AiProviderError(
+              initialFailure.code,
+              initialFailure.message,
+              initialFailure.retryable,
+            );
+          }
+
           const provider = createAiProvider();
           const history = await getConversationProviderHistory(
             auth.context.supabase,
@@ -446,6 +580,7 @@ export async function POST(request: Request, context: RouteContext) {
           for await (const event of provider.stream({
             messages: history,
             signal: generationAbort.signal,
+            instructions: groundingInstructions,
           })) {
             if (event.type === "delta") {
               if (firstTokenLatencyMs === null) {
@@ -487,11 +622,14 @@ export async function POST(request: Request, context: RouteContext) {
             usage = event.usage;
           }
 
-          const completed = await persistFinal({
-            status: "complete",
-            failureCode: null,
-            failureMessage: null,
-          });
+          const completed =
+            parsed.data.groundingMode === "workspace_sources"
+              ? await persistGroundedComplete()
+              : await persistFinal({
+                  status: "complete",
+                  failureCode: null,
+                  failureMessage: null,
+                });
           send({ type: "complete", message: completed });
         } catch (error) {
           if (generationAbort.signal.aborted || isAbortError(error)) {
