@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 import "./rebuild.css";
 
@@ -21,12 +22,12 @@ export default function GlobalNotFound() {
               لم نتمكن من العثور على الصفحة المطلوبة. The requested page does
               not exist.
             </p>
-            <a
+            <Link
               href="/"
               className="mt-7 inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               العودة إلى البداية
-            </a>
+            </Link>
           </section>
         </main>
       </body>
