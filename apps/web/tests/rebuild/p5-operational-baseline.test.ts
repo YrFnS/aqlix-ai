@@ -66,25 +66,45 @@ describe("P5 operational runtime contract", () => {
     ).toThrow(OperationalRuntimeConfigurationError);
   });
 
-  test("requires a release identity and provider key in production-like environments", () => {
+  test("requires a release identity but no platform model key for OpenRouter", () => {
     try {
       parseOperationalRuntimeContract({
         APP_ENV: "production",
         NEXT_PUBLIC_APP_ENV: "production",
         NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
         NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
-        AI_PROVIDER: "openai",
+        AI_PROVIDER: "openrouter",
       });
       throw new Error("Expected production configuration to fail");
     } catch (error) {
       expect(error).toBeInstanceOf(OperationalRuntimeConfigurationError);
       expect(
         (error as OperationalRuntimeConfigurationError).issuePaths,
-      ).toEqual(["openAiApiKey", "releaseSha"]);
+      ).toEqual(["releaseSha"]);
     }
   });
 
-  test("accepts a bounded production runtime contract", () => {
+  test("managed OpenAI mode requires both key and model", () => {
+    try {
+      parseOperationalRuntimeContract({
+        APP_ENV: "production",
+        NEXT_PUBLIC_APP_ENV: "production",
+        RELEASE_SHA: "abcdef1234567890",
+        NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
+        AI_PROVIDER: "openai",
+        OPENAI_API_KEY: "server-only-provider-key",
+      });
+      throw new Error("Expected managed OpenAI configuration to fail");
+    } catch (error) {
+      expect(error).toBeInstanceOf(OperationalRuntimeConfigurationError);
+      expect(
+        (error as OperationalRuntimeConfigurationError).issuePaths,
+      ).toEqual(["openAiModel"]);
+    }
+  });
+
+  test("accepts a bounded production OpenRouter runtime contract", () => {
     expect(
       parseOperationalRuntimeContract({
         APP_ENV: "production",
@@ -92,15 +112,14 @@ describe("P5 operational runtime contract", () => {
         RENDER_GIT_COMMIT: "abcdef1234567890",
         NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co/",
         NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
-        AI_PROVIDER: "openai",
-        OPENAI_API_KEY: "server-only-provider-key",
+        AI_PROVIDER: "openrouter",
       }),
     ).toMatchObject({
       appEnvironment: "production",
       publicEnvironment: "production",
       releaseSha: "abcdef1234567890",
       supabaseUrl: "https://example.supabase.co",
-      provider: "openai",
+      provider: "openrouter",
       probeDependencies: true,
       readinessTimeoutMs: 2000,
     });
@@ -227,7 +246,9 @@ describe("P5 health and release boundaries", () => {
     expect(template).toContain("APP_ENV=staging");
     expect(template).toContain("RELEASE_SHA=");
     expect(template).toContain("READINESS_PROBE_DEPENDENCIES=true");
-    expect(template).toContain("<server-only-openai-key>");
+    expect(template).toContain("AI_PROVIDER=openrouter");
+    expect(template).not.toContain("OPENAI_API_KEY=");
+    expect(template).not.toContain("OPENROUTER_API_KEY=");
     expect(template).not.toMatch(/sk-[A-Za-z0-9_-]{20,}/u);
     expect(template).not.toContain("SUPABASE_SERVICE_ROLE_KEY=");
   });
@@ -247,11 +268,11 @@ describe("P5 health and release boundaries", () => {
     expect(blueprint).toContain("key: NODE_VERSION\n        value: 24.14.1");
     expect(blueprint).toContain("key: BUN_VERSION\n        value: 1.3.14");
     expect(blueprint).toContain("key: SKIP_INSTALL_DEPS\n        value: \"true\"");
+    expect(blueprint).toContain("key: AI_PROVIDER\n        value: openrouter");
 
     for (const secret of [
       "NEXT_PUBLIC_SUPABASE_URL",
       "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-      "OPENAI_API_KEY",
       "SUPABASE_ACCESS_TOKEN",
       "SUPABASE_DB_PASSWORD",
       "SUPABASE_PROJECT_ID",
@@ -260,6 +281,9 @@ describe("P5 health and release boundaries", () => {
       expect(blueprint).not.toContain(`key: ${secret}\n        value:`);
     }
 
+    expect(blueprint).not.toContain("OPENAI_API_KEY");
+    expect(blueprint).not.toContain("OPENAI_MODEL");
+    expect(blueprint).not.toContain("OPENROUTER_API_KEY");
     expect(blueprint).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(blueprint).not.toContain("ALLOW_PRODUCTION_MIGRATIONS");
   });
