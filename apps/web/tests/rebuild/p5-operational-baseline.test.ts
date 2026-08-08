@@ -196,6 +196,31 @@ describe("P5 health and release boundaries", () => {
     expect(rootPackage).not.toContain('"build:release": "yarn');
   });
 
+  test("keeps one React 19 runtime for Next and isolates mobile React 18", () => {
+    const rootPackage = readRepo("package.json");
+    const uiPackage = readRepo("packages/ui/package.json");
+    const lockfile = readRepo("bun.lock");
+
+    expect(rootPackage).toContain('"react": "19.1.1"');
+    expect(rootPackage).toContain('"react-dom": "19.1.1"');
+
+    expect(uiPackage).toContain(
+      '"build:js": "bun build src/index.ts --outdir dist --format esm --target browser --packages external"',
+    );
+    expect(uiPackage).toContain('"peerDependencies"');
+    expect(uiPackage).toContain('"react": "^19.0.0"');
+    expect(uiPackage).toContain('"react-dom": "^19.0.0"');
+    expect(uiPackage).not.toContain("--target bun");
+
+    expect(lockfile).toContain('"react": ["react@19.1.1"');
+    expect(lockfile).toContain('"react-dom": ["react-dom@19.1.1"');
+    expect(lockfile).toContain(
+      '"@iraqi-ai/mobile/react": ["react@18.3.1"',
+    );
+    expect(lockfile).not.toContain('"@iraqi-ai/web/react":');
+    expect(lockfile).not.toContain('"@iraqi-ai/ui/react":');
+  });
+
   test("commits only a non-secret release environment template", () => {
     const template = readWeb(".env.release.example");
 
