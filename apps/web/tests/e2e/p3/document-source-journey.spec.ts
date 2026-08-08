@@ -398,7 +398,11 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(page).toHaveURL(/\/workspaces\?status=archived$/);
   await page.goto(`/workspaces/${workspaceId}/sources`);
   await expect(page.locator("#document-file")).toHaveCount(0);
-  await expect(page.getByText(/مساحة العمل مؤرشفة/)).toBeVisible();
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: "مساحة العمل مؤرشفة وتعمل بوضع القراءة فقط" }),
+  ).toBeVisible();
 
   const archivedUpload = await context.request.post(
     `/api/v1/workspaces/${workspaceId}/sources`,
