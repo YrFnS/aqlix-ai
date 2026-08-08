@@ -22,11 +22,11 @@ Status values:
 
 P4 merged through PR `#6` at `bb96c3300ec86118f03b0acd142209be3994d424` after the complete P0–P4 matrix passed.
 
-P5.0’s local release baseline has passed on an implementation head: frozen Bun installation, aligned React runtime, external shared-UI dependencies, full Node production build, production startup, liveness, and Supabase-backed readiness. The final documentation head must repeat the exact gate before P5.0 is marked done.
+P5.0’s local release baseline is implemented. P5.1’s Render Blueprint, ordered migration path, and rollback runbook are committed. P5.2’s OpenRouter BYOK, Vault credential storage, live catalog, dynamic model selection, and selected-model generation path are implemented. These P5 slices remain `IN PROGRESS` until the final exact PR head passes every required gate.
 
-P5.1’s Render Blueprint, ordered migration path, and rollback runbook are committed. A hosted staging Supabase project, Render deployment, smoke test, rollback, and forward recovery exercise have **not** been completed.
+A hosted staging Supabase project, Render deployment, smoke test, rollback, and forward recovery exercise have **not** been completed.
 
-Production deployment, provider availability, security/privacy review, accessibility review, backup/restore, monitoring, quotas, and provenance clearance remain incomplete.
+Production deployment, quotas, monitoring, backup/restore, security/privacy review, accessibility review, and provenance clearance remain incomplete.
 
 ## P0 — Reset and trustworthy foundation
 
@@ -35,7 +35,7 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Preserve divergent repository history | DONE | `legacy/main-2026-08-07`, `legacy/develop-2026-08-07` |
 | Establish rebuild source of truth | DONE | `docs/rebuild/` |
 | Narrow product loop | DONE | Ask → Ground → Draft → Continue |
-| Provisional working identity | DONE | Central Kiteb configuration and honest clearance warning |
+| Working product identity | DONE | Kiteb configuration and clearance warning |
 | Remove unsupported public claims and fake analytics | DONE | Public-claims safeguards and rebuilt surfaces |
 | Retain Arabic, RTL, and mixed-text foundations | DONE | Fonts, direction utilities, focused tests |
 | Quarantine incomplete inherited capabilities | DONE | Legacy disposition and honest route states |
@@ -66,7 +66,7 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Persistent conversation lifecycle | DONE | Create, open, rename, archive, restore, delete |
 | Ordered durable messages | DONE | PostgreSQL sequence allocation |
 | Provider attempt telemetry | DONE | `message_generations` |
-| Server-only provider abstraction | DONE | OpenAI Responses adapter plus deterministic test fixture |
+| Server-only provider abstraction | DONE | Normalized provider interface and test fixture |
 | One normalized streaming transport | DONE | `ready`, `delta`, `complete`, `failed`, `cancelled`, `heartbeat` |
 | Stop/cancel partial persistence | DONE | AbortController plus durable cancelled state |
 | Retry history preservation | DONE | New assistant attempt, old attempt retained |
@@ -76,7 +76,7 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Archived conversation/workspace guards | DONE | Page, API, stream, and PostgreSQL boundaries |
 | PostgreSQL lifecycle tests | DONE | P2 Conversation Data Contract |
 | Full browser journey | DONE | P2 Bilingual Conversation Journey |
-| Live external-provider smoke test | PLANNED | P5 protected environment evidence |
+| OpenRouter selected-user runtime | IN PROGRESS | P5.2 exact-head gate |
 | Merge | DONE | PR `#4` |
 
 ## P3 — Private documents, inspectable sources, and grounded citations
@@ -160,10 +160,9 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Shared UI dependency externalization | DONE | Browser target, peer React, `--packages external` |
 | Focused fatal release type graph | DONE | `tsconfig.rebuild.json`, build errors not ignored |
 | Global unmatched-route boundary | DONE | Standalone Arabic-first `global-not-found.tsx` |
-| Full production build | DONE | P5 Operational Baseline implementation-head run |
-| Production process startup | DONE | Next Node server startup evidence |
-| Liveness/readiness evidence | DONE | Non-secret workflow artifact |
-| Final exact-head operational rerun | IN PROGRESS | Required after tracker/docs safeguards |
+| Full production build | IN PROGRESS | Final exact-head P5 Operational Baseline |
+| Production process startup | IN PROGRESS | Final exact-head P5 Operational Baseline |
+| Liveness/readiness evidence | IN PROGRESS | Final exact-head non-secret artifact |
 
 ## P5.1 — Staging deployment, migrations, and rollback
 
@@ -178,6 +177,7 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Production migration lock | DONE | Explicit `ALLOW_PRODUCTION_MIGRATIONS=true` required |
 | Health-based traffic promotion | DONE | `/api/health/ready` Blueprint path |
 | Graceful shutdown | DONE | 60-second maximum shutdown delay |
+| OpenRouter deployment without provider secret | DONE | No platform key or model in Blueprint |
 | Application rollback runbook | DONE | `13-P5-DEPLOYMENT-AND-ROLLBACK.md` |
 | Forward-only database recovery | DONE | Expand/contract and new corrective migration guidance |
 | Separate hosted Supabase staging project | BLOCKED | Requires external project provisioning and credentials |
@@ -187,19 +187,50 @@ Production deployment, provider availability, security/privacy review, accessibi
 | Application rollback exercise | BLOCKED | Depends on at least two hosted staging releases |
 | Forward recovery rehearsal | BLOCKED | Depends on isolated hosted staging database |
 
-## P5.2–P5.8 — Remaining operational readiness
+## P5.2 — OpenRouter BYOK and dynamic models
+
+| Work item | Status | Evidence / gate |
+| --- | --- | --- |
+| OpenRouter account settings contracts | DONE | `ai-settings.ts` and contract tests |
+| Account-scoped settings page | DONE | `/settings/ai` |
+| Key validation before storage | DONE | OpenRouter current-key endpoint through server route |
+| Encrypted key storage | DONE | Supabase Vault migration and RPC |
+| Masked settings response | DONE | Last four, label, free-tier metadata only |
+| Public table contains no raw key | DONE | `user_ai_settings` metadata plus Vault UUID |
+| Account RLS and outsider isolation | DONE | Own-row policy and two-account test contract |
+| Live user-filtered model catalog | DONE | OpenRouter `/models/user`, `no-store` |
+| Search and sort | DONE | Name/ID/description plus context/price/newest sorting |
+| Free-only filter | DONE | Current catalog price and `:free` observation |
+| Model metadata display | DONE | Context, modalities, current pricing |
+| Copy model ID | DONE | Clipboard control |
+| Manual model ID entry | DONE | Same exact validation path as cards |
+| Exact current model validation | DONE | Must match current user catalog before persistence |
+| No hardcoded production model | DONE | Selected model resolved from user settings |
+| Conversation selected-model runtime | DONE | OpenRouter server stream path |
+| Draft selected-model runtime | DONE | Same account runtime in continuation route |
+| Normalized provider failures | DONE | Auth, budget, rate limit, timeout, unavailable, invalid response |
+| Usage/model telemetry persistence | DONE | Existing generation records |
+| Disconnect deletes Vault secret | DONE | RPC and cleanup trigger |
+| Failure after disconnect | DONE | Persisted `PROVIDER_UNCONFIGURED` |
+| Local deterministic OpenRouter API | DONE | Test-only endpoint override |
+| Vault SQL lifecycle gate | IN PROGRESS | Final exact-head P5 OpenRouter BYOK Journey |
+| Full Chromium BYOK journey | IN PROGRESS | Final exact-head P5 OpenRouter BYOK Journey |
+| Disposable real-key staging smoke | BLOCKED | Requires hosted staging and approved disposable user key |
+
+## P5.3–P5.8 — Remaining operational readiness
 
 | Work item | Status | Notes |
 | --- | --- | --- |
-| Protected live-provider smoke test | PLANNED | Cost-controlled key and explicit evidence |
-| Account/workspace quotas | PLANNED | Messages, tokens, uploads, storage, drafts, exports |
+| Account/workspace quotas | PLANNED | Messages, output ceilings, uploads, storage, drafts, exports |
 | Rate limits and abuse controls | PLANNED | Account, workspace, IP, provider, upload |
-| Provider budgets and circuit breakers | PLANNED | Spend caps, concurrency, fail-closed behavior |
-| Monitoring and structured logs | PLANNED | Frontend, routes, database, Storage, provider |
+| Concurrent-generation leases | PLANNED | Protect server resources even with BYOK |
+| Retry limits and circuit breakers | PLANNED | Provider and model failure containment |
+| Monitoring and structured logs | PLANNED | Frontend, routes, database, Storage, Vault, provider |
 | Alerting and incident response | PLANNED | Named owners and tested procedures |
 | Database backup and restore exercise | PLANNED | Execute, measure, and document |
 | Object-storage backup/restore strategy | PLANNED | Original private documents and deletion semantics |
-| Security and privacy review | PLANNED | Sessions, RLS, prompts, uploads, retention, deletion, logs |
+| Vault deletion and reconnection exercise | PLANNED | Never export user secrets into backups/evidence |
+| Security and privacy review | PLANNED | Sessions, RLS, Vault, prompts, uploads, retention, deletion, logs |
 | Accessibility validation beyond foundation | PLANNED | Keyboard, screen reader, contrast, reflow, focus |
 | Dependency and provenance clearance | PLANNED | Code, packages, fonts, assets, screenshots, generated material |
 | Beta readiness gate | PLANNED | Named evidence and unresolved-risk register |
@@ -221,6 +252,7 @@ Production deployment, provider availability, security/privacy review, accessibi
 - `P4 Durable Draft Data Contract`
 - `P4 Ask Ground Draft Continue Journey`
 - `P5 Operational Baseline`
+- `P5 OpenRouter BYOK Journey`
 
 ## Deferred product areas
 
