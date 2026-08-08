@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { FileText, LoaderCircle, Upload } from "lucide-react";
+import { FileText, RefreshCw, Upload } from "lucide-react";
 import { DOCUMENT_MAX_BYTES } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
 
@@ -172,7 +172,7 @@ export function DocumentUploadForm({
         disabled={!file || isUploading || Boolean(error)}
       >
         {isUploading ? (
-          <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
         ) : (
           <Upload className="h-4 w-4" aria-hidden="true" />
         )}
