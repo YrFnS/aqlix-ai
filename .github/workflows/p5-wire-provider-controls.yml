@@ -1,4 +1,4 @@
-name: P5 One-Time Provider Control Wiring
+name: P5 One-Time OpenRouter Wiring
 
 on:
   push:
@@ -12,12 +12,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: p5-provider-control-wiring
+  group: p5-openrouter-wiring
   cancel-in-progress: false
 
 jobs:
-  wire-provider-controls:
-    name: Wire controlled provider contexts
+  wire-openrouter:
+    name: Wire user runtime, model IDs, and active graph
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -28,19 +28,25 @@ jobs:
           ref: agent/p5-operational-readiness
           fetch-depth: 0
 
-      - name: Apply targeted route edits
+      - name: Apply targeted edits
         run: python scripts/maintenance/p5-wire-provider-controls.py
 
-      - name: Verify both operations are wired
+      - name: Verify both generation paths and settings graph
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq 'operation: "conversation"' \
+          grep -Fq 'resolveAiRuntimeConfig' \
             'apps/web/src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts'
-          grep -Fq 'operation: "draft"' \
+          grep -Fq 'createAiProvider(aiRuntimeConfig, {' \
             'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts'
+          grep -Fq 'requestedModel: z.string().min(1).max(255)' \
+            packages/types/src/contracts/conversation.ts
+          grep -Fq 'src/app/api/v1/ai/models/route.ts' \
+            apps/web/tsconfig.rebuild.json
+          grep -Fq 'setRefreshIndex((value) => value + 1)' \
+            apps/web/src/components/ai/openrouter-settings.tsx
 
-      - name: Commit route wiring
+      - name: Commit generated wiring
         shell: bash
         run: |
           set -euo pipefail
@@ -48,6 +54,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
             'apps/web/src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts' \
-            'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts'
-          git commit -m "feat(p5): enforce AI permits on both generation paths"
+            'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts' \
+            apps/web/src/components/ai/openrouter-settings.tsx \
+            apps/web/tsconfig.rebuild.json \
+            packages/types/src/contracts/conversation.ts \
+            packages/types/src/contracts/draft.ts
+
+          if git diff --cached --quiet; then
+            echo "OpenRouter wiring is already current."
+            exit 0
+          fi
+
+          git commit -m "feat(p5): complete OpenRouter runtime wiring"
+          git pull --rebase origin agent/p5-operational-readiness
           git push origin HEAD:agent/p5-operational-readiness
