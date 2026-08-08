@@ -17,9 +17,9 @@ Feature completion through P4 does not imply production readiness. P5 owns the e
 
 Current P5 position:
 
-- P5.0 local release baseline implemented and proven on an implementation head;
-- final exact-head confirmation still required after documentation safeguards;
+- P5.0 local release baseline implemented; final exact-head confirmation remains required;
 - P5.1 staging Blueprint, migration path, and rollback runbook committed;
+- P5.2 OpenRouter BYOK, Vault storage, live model discovery, and selected-model streaming implemented; final exact-head journey remains required;
 - no hosted staging deployment or rollback exercise has been completed;
 - production ready remains **No**.
 
@@ -33,7 +33,7 @@ Create one source of truth, narrow the product, remove misleading presentation, 
 
 - preserved former branch heads;
 - focused the product on Ask → Ground → Draft → Continue;
-- introduced the provisional Kiteb identity with explicit clearance requirements;
+- selected the working Kiteb identity with explicit clearance requirements;
 - removed fake metrics and unsupported readiness, performance, compliance, and payment claims;
 - retained selected Arabic, RTL, mixed-text, and layout foundations;
 - quarantined incomplete inherited capabilities;
@@ -81,7 +81,6 @@ Add one real, durable Arabic/English conversation path without creating a second
 - persistent conversations and ordered messages;
 - atomic turn creation and sequence allocation;
 - server-only provider abstraction;
-- OpenAI Responses streaming adapter with `store: false`;
 - normalized `ready`, `delta`, `complete`, `failed`, `cancelled`, and `heartbeat` events;
 - provider attempt telemetry;
 - Stop with partial persistence;
@@ -91,6 +90,8 @@ Add one real, durable Arabic/English conversation path without creating a second
 - owner/editor write, viewer read, outsider isolation;
 - archived conversation/workspace guards;
 - deterministic local/test fixture rejected in staging and production.
+
+P2 initially proved the boundary with an OpenAI adapter and deterministic fixture. P5 extends the same normalized boundary with account-scoped OpenRouter BYOK rather than replacing the conversation authority.
 
 ### Exit evidence
 
@@ -184,8 +185,8 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 #### Implemented
 
 - development, test, staging, and production environment contracts;
-- one stateless Next.js topology backed by hosted Supabase and a server-only provider;
-- release, service, data, provider-cost, security/privacy, observability, and incident roles;
+- one stateless Next.js topology backed by hosted Supabase and a server-only provider boundary;
+- release, service, data, provider-control, security/privacy, observability, and incident roles;
 - non-secret liveness and fail-closed readiness endpoints;
 - immutable release identity from explicit, Render, or GitHub commit metadata;
 - fixture-provider rejection in staging and production;
@@ -210,7 +211,8 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 - pinned Node and Bun versions;
 - frozen dependency installation;
 - exact commit and external-URL derivation;
-- separate secret placeholders;
+- separate Supabase secret placeholders;
+- no platform provider key or hardcoded model for OpenRouter BYOK;
 - paid pre-deploy migration command;
 - migration history inspection;
 - dry run before apply;
@@ -226,32 +228,52 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 - provision a separate hosted Supabase staging project;
 - provision the Render staging service;
 - execute a clean manual deployment;
-- verify Storage policies and migrations against staging;
+- verify Storage, Vault, and RLS policies against staging;
 - run the authenticated staging smoke checklist;
 - exercise application rollback;
 - rehearse a forward recovery migration;
 - record evidence without secrets.
 
-### P5.2 — Provider controls
+### P5.2 — OpenRouter BYOK and live model selection
 
-- execute a protected real-provider smoke test;
-- add account and workspace message/token budgets;
-- add provider spend caps and circuit breakers;
-- add request timeouts, concurrency limits, and retry policy;
-- define model selection and change control;
-- measure first-token latency, total latency, errors, and token use without public quality claims.
+#### Implemented
+
+- account-scoped AI settings page;
+- user-owned key validation against OpenRouter before persistence;
+- encrypted key storage in Supabase Vault;
+- masked public settings metadata only;
+- per-account RLS and credential isolation;
+- current user-filtered OpenRouter catalog loaded with `no-store` semantics;
+- live search, sorting, free-only filtering, pricing/context display, and refresh;
+- model-ID copy and manual paste support;
+- exact current model validation before persistence;
+- dynamic selected-model resolution for conversations and draft continuation;
+- normalized OpenRouter streaming and usage telemetry;
+- explicit authentication, budget, rate-limit, timeout, unavailable, and invalid-response failures;
+- disconnect removes the Vault secret;
+- missing key/model fails explicitly without a platform fallback;
+- deployment no longer requires a provider key or model ID;
+- deterministic OpenRouter-compatible API, Vault SQL contract, and Chromium journey.
+
+#### Remaining closeout
+
+- obtain exact-head success for Vault, catalog, selected-model streaming, disconnect, and two-account isolation;
+- exercise one disposable real user key in an approved staging account without recording the secret or generated content;
+- document current public-provider observations as time-bound evidence, not an uptime or quality guarantee.
 
 ### P5.3 — Quotas, rate limits, and abuse controls
 
 - limit account creation and authentication abuse;
-- limit messages, concurrent streams, uploads, storage, searches, drafts, and exports;
+- limit messages, concurrent streams, output ceilings, uploads, storage, searches, drafts, and exports;
 - add account, workspace, and IP controls where appropriate;
+- preserve BYOK while enforcing application resource protection;
+- add retry limits and provider circuit breaking;
 - keep error responses non-disclosing;
 - validate fail-closed behavior when quota services are unavailable.
 
 ### P5.4 — Monitoring and incident response
 
-- structured request IDs and logs across browser, routes, database, Storage, and provider;
+- structured request IDs and logs across browser, routes, database, Storage, Vault, and provider;
 - metrics for availability, latency, errors, saturation, token use, and storage;
 - dashboards and actionable alerts;
 - log redaction and retention rules;
@@ -263,6 +285,7 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 
 - define PostgreSQL backup schedule and retention;
 - define original-object backup and restore strategy;
+- define Vault credential deletion/reconnection behavior without exporting user secrets;
 - test full workspace recovery including conversations, citations, drafts, versions, and provenance;
 - verify deleted data is not silently restored into active state;
 - measure recovery-point and recovery-time results;
@@ -271,9 +294,10 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 ### P5.6 — Security and privacy review
 
 - review session, cookie, CSRF, request-origin, and redirect behavior;
-- review every RLS and Storage policy;
+- review every RLS, Storage, and Vault boundary;
 - review security-definer functions and grants;
 - review prompt data, provider retention, logging, and redaction;
+- review key connection, replacement, disconnect, and account deletion behavior;
 - review upload, parser, retention, deletion, and download behavior;
 - define data classification and retention periods;
 - add dependency and secret scanning;
@@ -282,8 +306,8 @@ Turn the proven local product loop into a deployable, observable, recoverable, c
 
 ### P5.7 — Accessibility and product-quality validation
 
-- keyboard-only walkthrough of the full product loop;
-- screen-reader validation for forms, streams, citations, editor state, versions, and proposals;
+- keyboard-only walkthrough of the full product loop and AI settings;
+- screen-reader validation for forms, streams, citations, editor state, versions, proposals, catalog filters, and model selection;
 - focus management and route transition review;
 - contrast, zoom, reflow, reduced-motion, RTL, LTR, mixed text, and mobile validation;
 - Arabic and English copy review;
@@ -303,7 +327,7 @@ P5 is complete only when:
 
 - deployment from a clean environment is reproducible;
 - migrations and rollback are exercised;
-- a protected live-provider path is verified with budgets and rate limits;
+- the authenticated user-owned provider path is verified with application quotas and abuse controls;
 - monitoring and alerts are active;
 - backup and restore are executed successfully;
 - security/privacy findings are resolved or explicitly accepted by an owner;
