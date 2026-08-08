@@ -163,41 +163,254 @@ export type Database = {
           workspace_id?: string;
         }
       >;
-      drafts: TableDefinition<
+      draft_generations: TableDefinition<
         {
-          content: string;
-          conversation_id: string | null;
+          action: string;
+          applied_at: string | null;
+          base_version: number;
+          completed_at: string | null;
           created_at: string;
           created_by: string;
-          direction: string;
+          discarded_at: string | null;
+          draft_id: string;
+          failure_code: string | null;
+          failure_message: string | null;
+          first_token_latency_ms: number | null;
           id: string;
+          input_tokens: number | null;
+          instruction: string;
+          latency_ms: number | null;
+          output_tokens: number | null;
+          proposed_content: string;
+          provider: string;
+          provider_response_id: string | null;
+          reasoning_tokens: number | null;
+          requested_model: string;
+          returned_model: string | null;
+          started_at: string;
           status: string;
-          title: string;
+          total_tokens: number | null;
           updated_at: string;
           workspace_id: string;
         },
         {
-          content?: string;
-          conversation_id?: string | null;
+          action: string;
+          applied_at?: string | null;
+          base_version: number;
+          completed_at?: string | null;
           created_at?: string;
           created_by: string;
-          direction?: string;
+          discarded_at?: string | null;
+          draft_id: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          first_token_latency_ms?: number | null;
           id?: string;
+          input_tokens?: number | null;
+          instruction: string;
+          latency_ms?: number | null;
+          output_tokens?: number | null;
+          proposed_content?: string;
+          provider: string;
+          provider_response_id?: string | null;
+          reasoning_tokens?: number | null;
+          requested_model: string;
+          returned_model?: string | null;
+          started_at?: string;
           status?: string;
-          title?: string;
+          total_tokens?: number | null;
           updated_at?: string;
           workspace_id: string;
         },
         {
+          action?: string;
+          applied_at?: string | null;
+          base_version?: number;
+          completed_at?: string | null;
+          created_at?: string;
+          created_by?: string;
+          discarded_at?: string | null;
+          draft_id?: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          first_token_latency_ms?: number | null;
+          id?: string;
+          input_tokens?: number | null;
+          instruction?: string;
+          latency_ms?: number | null;
+          output_tokens?: number | null;
+          proposed_content?: string;
+          provider?: string;
+          provider_response_id?: string | null;
+          reasoning_tokens?: number | null;
+          requested_model?: string;
+          returned_model?: string | null;
+          started_at?: string;
+          status?: string;
+          total_tokens?: number | null;
+          updated_at?: string;
+          workspace_id?: string;
+        }
+      >;
+      draft_provenance: TableDefinition<
+        {
+          attachment_id: string | null;
+          citation_order: number;
+          conversation_id: string | null;
+          created_at: string;
+          draft_id: string;
+          end_line_snapshot: number | null;
+          file_name_snapshot: string;
+          id: string;
+          label: string;
+          media_type_snapshot: string;
+          origin_message_id: string | null;
+          page_number_snapshot: number | null;
+          source_id: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order: number;
+          conversation_id?: string | null;
+          created_at?: string;
+          draft_id: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot: string;
+          id?: string;
+          label: string;
+          media_type_snapshot: string;
+          origin_message_id?: string | null;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot: number;
+          start_line_snapshot?: number | null;
+          workspace_id: string;
+        },
+        {
+          attachment_id?: string | null;
+          citation_order?: number;
+          conversation_id?: string | null;
+          created_at?: string;
+          draft_id?: string;
+          end_line_snapshot?: number | null;
+          file_name_snapshot?: string;
+          id?: string;
+          label?: string;
+          media_type_snapshot?: string;
+          origin_message_id?: string | null;
+          page_number_snapshot?: number | null;
+          source_id?: string | null;
+          source_ordinal_snapshot?: number;
+          start_line_snapshot?: number | null;
+          workspace_id?: string;
+        }
+      >;
+      draft_versions: TableDefinition<
+        {
+          content: string;
+          created_at: string;
+          created_by: string;
+          direction: string;
+          draft_id: string;
+          generation_id: string | null;
+          id: string;
+          kind: string;
+          restored_from_version: number | null;
+          source_kind: string;
+          title: string;
+          version_number: number;
+          workspace_id: string;
+        },
+        {
+          content: string;
+          created_at?: string;
+          created_by: string;
+          direction: string;
+          draft_id: string;
+          generation_id?: string | null;
+          id?: string;
+          kind: string;
+          restored_from_version?: number | null;
+          source_kind: string;
+          title: string;
+          version_number: number;
+          workspace_id: string;
+        },
+        {
+          content?: string;
+          created_at?: string;
+          created_by?: string;
+          direction?: string;
+          draft_id?: string;
+          generation_id?: string | null;
+          id?: string;
+          kind?: string;
+          restored_from_version?: number | null;
+          source_kind?: string;
+          title?: string;
+          version_number?: number;
+          workspace_id?: string;
+        }
+      >;
+      drafts: TableDefinition<
+        {
+          archived_at: string | null;
+          content: string;
+          conversation_id: string | null;
+          created_at: string;
+          created_by: string;
+          current_version: number;
+          direction: string;
+          id: string;
+          kind: string;
+          last_saved_at: string;
+          origin_message_id: string | null;
+          provenance_count: number;
+          status: string;
+          title: string;
+          updated_at: string;
+          version_count: number;
+          workspace_id: string;
+        },
+        {
+          archived_at?: string | null;
+          content?: string;
+          conversation_id?: string | null;
+          created_at?: string;
+          created_by: string;
+          current_version?: number;
+          direction?: string;
+          id?: string;
+          kind?: string;
+          last_saved_at?: string;
+          origin_message_id?: string | null;
+          provenance_count?: number;
+          status?: string;
+          title?: string;
+          updated_at?: string;
+          version_count?: number;
+          workspace_id: string;
+        },
+        {
+          archived_at?: string | null;
           content?: string;
           conversation_id?: string | null;
           created_at?: string;
           created_by?: string;
+          current_version?: number;
           direction?: string;
           id?: string;
+          kind?: string;
+          last_saved_at?: string;
+          origin_message_id?: string | null;
+          provenance_count?: number;
           status?: string;
           title?: string;
           updated_at?: string;
+          version_count?: number;
           workspace_id?: string;
         }
       >;
@@ -479,6 +692,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      apply_draft_generation: {
+        Args: {
+          target_draft_id: string;
+          target_generation_id: string;
+          target_workspace_id: string;
+        };
+        Returns: number;
+      };
       attachment_id_from_storage_path: {
         Args: { object_name: string };
         Returns: string | null;
@@ -518,6 +739,24 @@ export type Database = {
           user_sequence: number | null;
         }[];
       };
+      begin_draft_generation: {
+        Args: {
+          requested_action: string;
+          requested_instruction: string;
+          requested_model: string;
+          requested_provider: string;
+          target_draft_id: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          base_content: string;
+          base_direction: string;
+          base_title: string;
+          base_version: number;
+          draft_kind: string;
+          generation_id: string;
+        }[];
+      };
       can_delete_workspace_document_object: {
         Args: { object_name: string };
         Returns: boolean;
@@ -541,9 +780,50 @@ export type Database = {
         };
         Returns: undefined;
       };
+      checkpoint_draft_generation: {
+        Args: {
+          first_token_ms?: number | null;
+          partial_content: string;
+          target_draft_id: string;
+          target_generation_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      create_draft_from_message: {
+        Args: {
+          requested_content: string;
+          requested_direction: string;
+          requested_kind: string;
+          requested_title: string;
+          target_conversation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          current_version: number;
+          draft_id: string;
+          provenance_count: number;
+        }[];
+      };
       delete_attachment_record: {
         Args: {
           target_attachment_id: string;
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
+      delete_draft_record: {
+        Args: {
+          target_draft_id: string;
+          target_workspace_id: string;
+        };
+        Returns: boolean;
+      };
+      discard_draft_generation: {
+        Args: {
+          target_draft_id: string;
+          target_generation_id: string;
           target_workspace_id: string;
         };
         Returns: boolean;
@@ -589,6 +869,26 @@ export type Database = {
         };
         Returns: undefined;
       };
+      finish_draft_generation: {
+        Args: {
+          final_content: string;
+          final_status: string;
+          first_token_ms?: number | null;
+          provider_failure_code?: string | null;
+          provider_failure_message?: string | null;
+          provider_input_tokens?: number | null;
+          provider_output_tokens?: number | null;
+          provider_reasoning_tokens?: number | null;
+          provider_response_identifier?: string | null;
+          provider_total_tokens?: number | null;
+          returned_provider_model?: string | null;
+          target_draft_id: string;
+          target_generation_id: string;
+          target_workspace_id: string;
+          total_latency_ms?: number | null;
+        };
+        Returns: undefined;
+      };
       finish_grounded_conversation_generation: {
         Args: {
           cited_sources?: Json;
@@ -627,6 +927,23 @@ export type Database = {
         Args: { value: string };
         Returns: string;
       };
+      save_draft_version: {
+        Args: {
+          expected_version: number;
+          requested_content: string;
+          requested_direction: string;
+          requested_kind: string;
+          requested_restored_from_version?: number | null;
+          requested_source_kind?: string;
+          requested_title: string;
+          target_draft_id: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          created: boolean;
+          version_number: number;
+        }[];
+      };
       search_workspace_sources: {
         Args: {
           result_limit?: number;
@@ -645,6 +962,14 @@ export type Database = {
           source_id: string;
           start_line: number | null;
         }[];
+      };
+      set_draft_archived: {
+        Args: {
+          should_archive: boolean;
+          target_draft_id: string;
+          target_workspace_id: string;
+        };
+        Returns: boolean;
       };
       set_generation_grounding_context: {
         Args: {
@@ -781,7 +1106,7 @@ export type CompositeTypes<
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
