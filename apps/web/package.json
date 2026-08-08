@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "next dev --turbo --port 3000",
     "build": "next build --experimental-build-mode=compile",
+    "build:release": "next build",
     "build:standalone": "next build && next export",
     "start": "next start",
+    "start:release": "next start -H 0.0.0.0",
     "analyze": "ANALYZE=true next build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -25,6 +27,7 @@
     "test:rebuild:p2": "bun test tests/rebuild/p2-provider-boundary.test.ts",
     "test:rebuild:p3": "bun test tests/rebuild/p3-document-processor.test.ts tests/rebuild/p3-document-source-boundary.test.ts",
     "test:rebuild:p4": "bun test tests/rebuild/p4-draft-scaffold-export.test.ts tests/rebuild/p4-draft-boundary.test.ts",
+    "test:rebuild:p5": "bun test tests/rebuild/p5-operational-baseline.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:p1": "playwright test --config=playwright.p1.config.ts",
     "test:e2e:p2": "playwright test --config=playwright.p2.config.ts",
