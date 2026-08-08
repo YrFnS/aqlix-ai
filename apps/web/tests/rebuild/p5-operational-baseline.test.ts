@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import {
   OperationalRuntimeConfigurationError,
   parseOperationalRuntimeContract,
+  resolveReleaseSha,
 } from "../../src/lib/operations/runtime-contract";
 
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
@@ -37,13 +38,30 @@ describe("P5 operational runtime contract", () => {
     });
   });
 
+  test("resolves explicit and platform release identities in priority order", () => {
+    expect(
+      resolveReleaseSha({
+        RELEASE_SHA: "1111111111111111",
+        RENDER_GIT_COMMIT: "2222222222222222",
+        GITHUB_SHA: "3333333333333333",
+      }),
+    ).toBe("1111111111111111");
+    expect(
+      resolveReleaseSha({ RENDER_GIT_COMMIT: "2222222222222222" }),
+    ).toBe("2222222222222222");
+    expect(resolveReleaseSha({ GITHUB_SHA: "3333333333333333" })).toBe(
+      "3333333333333333",
+    );
+    expect(resolveReleaseSha({})).toBeNull();
+  });
+
   test("rejects the fixture provider in staging", () => {
     expect(() =>
       parseOperationalRuntimeContract({
         ...localEnvironment,
         APP_ENV: "staging",
         NEXT_PUBLIC_APP_ENV: "staging",
-        RELEASE_SHA: "abcdef1234567",
+        RENDER_GIT_COMMIT: "abcdef1234567",
       }),
     ).toThrow(OperationalRuntimeConfigurationError);
   });
@@ -71,7 +89,7 @@ describe("P5 operational runtime contract", () => {
       parseOperationalRuntimeContract({
         APP_ENV: "production",
         NEXT_PUBLIC_APP_ENV: "production",
-        RELEASE_SHA: "abcdef1234567890",
+        RENDER_GIT_COMMIT: "abcdef1234567890",
         NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co/",
         NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
         AI_PROVIDER: "openai",
@@ -106,6 +124,7 @@ describe("P5 health and release boundaries", () => {
 
     expect(liveness).toContain('status: "alive"');
     expect(liveness).toContain('service: "kiteb-web"');
+    expect(liveness).toContain("resolveReleaseSha");
     expect(liveness).not.toContain("Supabase");
     expect(liveness).not.toContain("OPENAI_API_KEY");
     expect(liveness).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
@@ -184,11 +203,93 @@ describe("P5 health and release boundaries", () => {
     expect(template).not.toContain("SUPABASE_SERVICE_ROLE_KEY=");
   });
 
-  test("runs the release startup and health probe in CI", () => {
+  test("defines a manual fail-closed Render staging service", () => {
+    const blueprint = readRepo("render.yaml");
+
+    expect(blueprint).toContain("name: kiteb-staging");
+    expect(blueprint).toContain("runtime: node");
+    expect(blueprint).toContain("branch: develop");
+    expect(blueprint).toContain("region: frankfurt");
+    expect(blueprint).toContain("plan: starter");
+    expect(blueprint).toContain("autoDeployTrigger: off");
+    expect(blueprint).toContain("preDeployCommand: bash scripts/render/pre-deploy.sh");
+    expect(blueprint).toContain("healthCheckPath: /api/health/ready");
+    expect(blueprint).toContain("maxShutdownDelaySeconds: 60");
+    expect(blueprint).toContain("key: BUN_VERSION\n        value: 1.3.14");
+    expect(blueprint).toContain("key: SKIP_INSTALL_DEPS\n        value: \"true\"");
+
+    for (const secret of [
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "OPENAI_API_KEY",
+      "SUPABASE_ACCESS_TOKEN",
+      "SUPABASE_DB_PASSWORD",
+      "SUPABASE_PROJECT_ID",
+    ]) {
+      expect(blueprint).toContain(`key: ${secret}\n        sync: false`);
+      expect(blueprint).not.toContain(`key: ${secret}\n        value:`);
+    }
+
+    expect(blueprint).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
+    expect(blueprint).not.toContain("ALLOW_PRODUCTION_MIGRATIONS");
+  });
+
+  test("builds from Render's immutable release metadata", () => {
+    const buildScript = readRepo("scripts/render/build.sh");
+
+    expect(buildScript).toContain("RENDER_GIT_COMMIT");
+    expect(buildScript).toContain("RENDER_EXTERNAL_URL");
+    expect(buildScript).toContain("scripts/ci/install-dependencies.sh");
+    expect(buildScript).toContain("bun run validate:release-env");
+    expect(buildScript).toContain("bun run build:release");
+    expect(buildScript).not.toContain("npm install");
+    expect(buildScript).not.toContain("yarn");
+  });
+
+  test("dry-runs and applies only committed migrations before deployment", () => {
+    const migrationScript = readRepo("scripts/render/pre-deploy.sh");
+    const dryRunIndex = migrationScript.indexOf(
+      "bunx supabase db push --linked --dry-run --yes",
+    );
+    const applyIndex = migrationScript.indexOf(
+      "bunx supabase db push --linked --yes",
+    );
+
+    expect(migrationScript).toContain("SUPABASE_ACCESS_TOKEN");
+    expect(migrationScript).toContain("SUPABASE_DB_PASSWORD");
+    expect(migrationScript).toContain("SUPABASE_PROJECT_ID");
+    expect(migrationScript).toContain("ALLOW_PRODUCTION_MIGRATIONS");
+    expect(migrationScript).toContain("supabase migration list --linked");
+    expect(dryRunIndex).toBeGreaterThan(-1);
+    expect(applyIndex).toBeGreaterThan(dryRunIndex);
+    expect(migrationScript).not.toContain("supabase db reset");
+    expect(migrationScript).not.toContain("migration repair");
+    expect(migrationScript).not.toContain("--include-all");
+    expect(migrationScript).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
+  });
+
+  test("documents forward-only database recovery without claiming a deploy", () => {
+    const runbook = readRepo(
+      "docs/rebuild/13-P5-DEPLOYMENT-AND-ROLLBACK.md",
+    );
+
+    expect(runbook).toContain(
+      "No hosted staging deployment has been executed or approved yet",
+    );
+    expect(runbook).toContain("Hosted database rollback is **forward recovery**");
+    expect(runbook).toContain("expand-and-contract");
+    expect(runbook).toContain("Production ready: No");
+    expect(runbook).not.toContain("staging deployment is complete");
+  });
+
+  test("runs the release startup and deployment script safeguards in CI", () => {
     const workflow = readRepo(
       ".github/workflows/p5-operational-baseline.yml",
     );
 
+    expect(workflow).toContain(
+      "bash -n scripts/render/build.sh scripts/render/pre-deploy.sh",
+    );
     expect(workflow).toContain("bun run validate:release-env");
     expect(workflow).toContain("bun run build:release");
     expect(workflow).toContain("bun run start:release");
