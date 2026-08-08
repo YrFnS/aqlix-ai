@@ -8,7 +8,7 @@ const repoRoot = resolve(webRoot, "../..");
 const readRepo = (path: string) =>
   readFileSync(resolve(repoRoot, path), "utf8");
 
-describe("P3 Storage object integrity", () => {
+describe("P3 Storage object and retrieval integrity", () => {
   test("binds each private object to an exact registered attachment path", () => {
     const migration = readRepo(
       "supabase/migrations/202608080010_p3_storage_object_integrity.sql",
@@ -37,6 +37,20 @@ describe("P3 Storage object integrity", () => {
     expect(policyMigration).toContain(
       "public.normalize_mixed_script_search_text(btrim(source_query))",
     );
+  });
+
+  test("ranks strict matches first while allowing broad natural questions", () => {
+    const migration = readRepo(
+      "supabase/migrations/202608080012_p3_ranked_broad_source_search.sql",
+    );
+
+    expect(migration).toContain("strict_query");
+    expect(migration).toContain("broad_query");
+    expect(migration).toContain("tsvector_to_array");
+    expect(migration).toContain("string_agg(quote_literal(lexeme), ' | '");
+    expect(migration).toContain("source.search_vector @@ broad_query");
+    expect(migration).toContain("source.search_vector @@ strict_query");
+    expect(migration).toContain("limit 24");
   });
 
   test("keeps Storage authorization in PostgreSQL policies rather than app claims", () => {
