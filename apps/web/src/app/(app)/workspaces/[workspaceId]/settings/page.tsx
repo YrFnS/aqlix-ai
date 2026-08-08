@@ -9,9 +9,14 @@ import {
   ShieldAlert,
   Trash2,
 } from "lucide-react";
-import type { WorkspaceAccess } from "@iraqi-ai/types";
+import type { WorkspaceAccess, WorkspaceAiLimits } from "@iraqi-ai/types";
+import { WorkspaceAiLimitsPanel } from "@/components/ai/workspace-ai-limits";
 import { Button } from "@/components/ui/button";
 import { WorkspaceStatusNotice } from "@/components/workspaces/workspace-status-notice";
+import {
+  AiControlRepositoryError,
+  getWorkspaceAiLimits,
+} from "@/lib/ai/controls";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   archiveWorkspaceAction,
@@ -26,7 +31,7 @@ import {
 
 export const metadata: Metadata = {
   title: "إعدادات مساحة العمل",
-  description: "Workspace settings and lifecycle controls.",
+  description: "Workspace settings, AI resource controls, and lifecycle.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -50,7 +55,9 @@ export default async function WorkspaceSettingsPage({
   const returnTo = `/workspaces/${workspaceId}/settings`;
   const { user, supabase } = await requireAuthenticatedUser(returnTo);
   let workspace: WorkspaceAccess | null = null;
+  let aiLimits: WorkspaceAiLimits | null = null;
   let persistenceFailed = false;
+  let aiLimitsFailed = false;
 
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
@@ -63,6 +70,22 @@ export default async function WorkspaceSettingsPage({
       });
     } else {
       console.error("Unexpected workspace settings failure", error);
+    }
+  }
+
+  if (workspace) {
+    try {
+      aiLimits = await getWorkspaceAiLimits(supabase, workspace.id);
+    } catch (error) {
+      aiLimitsFailed = true;
+      if (error instanceof AiControlRepositoryError) {
+        console.error("Workspace AI limits failed", {
+          operation: error.operation,
+          message: error.message,
+        });
+      } else {
+        console.error("Unexpected workspace AI limits failure", error);
+      }
     }
   }
 
@@ -104,13 +127,20 @@ export default async function WorkspaceSettingsPage({
             <Settings className="h-5 w-5" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-primary">P1 · Workspace lifecycle</p>
+            <p className="text-sm font-semibold text-primary">
+              Workspace settings
+            </p>
             <h1 className="mt-2 font-arabic-heading text-3xl font-semibold sm:text-4xl">
               إعدادات {workspace.name}
             </h1>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              دورك الحالي: {workspace.role === "owner" ? "مالك" : workspace.role === "editor" ? "محرر" : "قارئ"}.
-              تتحقق قاعدة البيانات من الدور مرة أخرى عند كل تغيير.
+              دورك الحالي:{" "}
+              {workspace.role === "owner"
+                ? "مالك"
+                : workspace.role === "editor"
+                  ? "محرر"
+                  : "قارئ"}
+              . تتحقق قاعدة البيانات من الدور مرة أخرى عند كل تغيير.
             </p>
           </div>
         </div>
@@ -129,8 +159,9 @@ export default async function WorkspaceSettingsPage({
                 وصول للقراءة فقط
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                يمكنك فتح محتوى المساحة، لكن تعديل الاسم أو الوصف أو اللغة يحتاج
-                دور المالك أو المحرر. الأرشفة والحذف متاحان للمالك فقط.
+                يمكنك فتح محتوى المساحة ومراجعة استهلاك الذكاء الاصطناعي، لكن
+                تعديل الاسم أو الوصف أو اللغة يحتاج دور المالك أو المحرر. حدود
+                الذكاء الاصطناعي والأرشفة والحذف متاحة للمالك فقط.
               </p>
             </div>
           </div>
@@ -138,7 +169,9 @@ export default async function WorkspaceSettingsPage({
       ) : (
         <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
           <div>
-            <p className="text-sm font-semibold text-primary">المعلومات الأساسية</p>
+            <p className="text-sm font-semibold text-primary">
+              المعلومات الأساسية
+            </p>
             <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
               اسم المساحة ووصفها
             </h2>
@@ -204,9 +237,38 @@ export default async function WorkspaceSettingsPage({
         </section>
       )}
 
+      {aiLimits ? (
+        <WorkspaceAiLimitsPanel
+          workspaceId={workspace.id}
+          initialLimits={aiLimits}
+          workspaceRole={workspace.role}
+          workspaceArchived={isArchived}
+        />
+      ) : (
+        <section className="rounded-3xl border border-destructive/25 bg-destructive/5 p-6 sm:p-8">
+          <div className="flex gap-4">
+            <div className="h-fit rounded-2xl bg-destructive/10 p-3 text-destructive">
+              <ShieldAlert className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="font-arabic-heading text-2xl font-semibold">
+                تعذر تحميل حدود الذكاء الاصطناعي
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {aiLimitsFailed
+                  ? "لم تُعرض أرقام بديلة أو تقديرات. أعد تحميل الصفحة للتحقق من حالة PostgreSQL."
+                  : "لا توجد حالة حدود محفوظة لهذه المساحة."}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
+
       {isOwner && (
         <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-          <p className="text-sm font-semibold text-primary">إدارة دورة الحياة</p>
+          <p className="text-sm font-semibold text-primary">
+            إدارة دورة الحياة
+          </p>
           <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
             الأرشفة والحذف
           </h2>
@@ -238,7 +300,9 @@ export default async function WorkspaceSettingsPage({
               </div>
 
               <form
-                action={isArchived ? restoreWorkspaceAction : archiveWorkspaceAction}
+                action={
+                  isArchived ? restoreWorkspaceAction : archiveWorkspaceAction
+                }
                 className="mt-5"
               >
                 <input type="hidden" name="workspaceId" value={workspace.id} />
