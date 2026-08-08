@@ -136,9 +136,10 @@ describe("P5 health and release boundaries", () => {
     expect(architecture).toContain("Production ready: No");
   });
 
-  test("exposes a Bun-only release path and preflight", () => {
+  test("exposes a Bun-only release path and focused fatal typecheck", () => {
     const webPackage = readWeb("package.json");
     const rootPackage = readRepo("package.json");
+    const nextConfig = readWeb("next.config.ts");
     const preflight = readRepo(
       "scripts/operations/validate-runtime-env.ts",
     );
@@ -150,6 +151,9 @@ describe("P5 health and release boundaries", () => {
     expect(rootPackage).toContain('"build:release"');
     expect(rootPackage).toContain('"start:release"');
     expect(rootPackage).toContain('"validate:release-env"');
+    expect(nextConfig).toContain('tsconfigPath: "tsconfig.rebuild.json"');
+    expect(nextConfig).toContain("ignoreBuildErrors: false");
+    expect(nextConfig).not.toContain("ignoreBuildErrors: true");
     expect(preflight).toContain("parseOperationalRuntimeContract");
     expect(preflight).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(rootPackage).not.toContain('"build:release": "npm');
