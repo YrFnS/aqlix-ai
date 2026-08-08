@@ -172,7 +172,8 @@ export async function restoreWorkspaceAction(formData: FormData): Promise<never>
   if (!workspace) workspaceStatusRedirect("not-found");
 
   revalidatePath("/workspaces");
-  redirect(`/workspaces/${parsed.data.workspaceId}?status=restored`);
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}`);
+  workspaceStatusRedirect("restored");
 }
 
 export async function deleteWorkspaceAction(formData: FormData): Promise<never> {
