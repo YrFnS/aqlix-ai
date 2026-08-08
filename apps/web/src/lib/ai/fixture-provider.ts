@@ -29,7 +29,27 @@ function delay(milliseconds: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-function fixtureResponse(prompt: string): string {
+function fixtureResponse(prompt: string, instructions?: string): string {
+  const grounded = instructions?.includes("KITEB_GROUNDING_V1") ?? false;
+
+  if (grounded && prompt.includes("[fixture:no-citation]")) {
+    return isArabicText(prompt)
+      ? "هذه إجابة اختبارية بلا مرجع مقصود لاختبار الرفض."
+      : "This deterministic answer intentionally omits a citation.";
+  }
+
+  if (grounded && prompt.includes("[fixture:bad-citation]")) {
+    return isArabicText(prompt)
+      ? "هذه إجابة اختبارية تحمل مرجعاً غير موجود [S99]."
+      : "This deterministic answer cites an unavailable label [S99].";
+  }
+
+  if (grounded) {
+    return isArabicText(prompt)
+      ? "استناداً إلى المقطع المحفوظ، تدعم مساحة العمل هذه الإجابة [S1]."
+      : "The saved workspace passage supports this deterministic answer [S1].";
+  }
+
   if (isArabicText(prompt)) {
     return "هذه إجابة اختبارية متدفقة ومحفوظة. تحافظ على العربية وEnglish والأرقام 2026 والروابط كما هي.";
   }
@@ -60,7 +80,7 @@ export class FixtureAiProvider implements AiProvider {
       );
     }
 
-    const response = fixtureResponse(prompt);
+    const response = fixtureResponse(prompt, input.instructions);
     const chunkDelay = prompt.includes("[fixture:slow]") ? 180 : 25;
 
     for (const chunk of chunksFor(response)) {
