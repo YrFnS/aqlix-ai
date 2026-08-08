@@ -253,10 +253,10 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
 
   await page.getByRole("button", { name: "استعادة" }).click();
   await expect(page).toHaveURL(
-    new RegExp(
-      `/workspaces/${workspaceId}/conversations/${conversationId}\\?status=restored$`,
-    ),
+    new RegExp(`/workspaces/${workspaceId}/conversations\\?status=restored$`),
   );
+  await expect(page.getByText(/أعيدت المحادثة إلى القائمة النشطة/)).toBeVisible();
+  await page.getByRole("link", { name: "فتح المحادثة" }).click();
   await expect(page.getByLabel("اكتب رسالة")).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
