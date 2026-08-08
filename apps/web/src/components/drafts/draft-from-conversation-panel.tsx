@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FilePlus2, RefreshCw } from "lucide-react";
 import type { DraftKind } from "@iraqi-ai/types";
@@ -52,6 +52,15 @@ export function DraftFromConversationPanel({
   const [kind, setKind] = useState<Exclude<DraftKind, "freeform">>("summary");
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMessageId((current) => {
+      if (orderedMessages.some((message) => message.id === current)) {
+        return current;
+      }
+      return orderedMessages[0]?.id ?? "";
+    });
+  }, [orderedMessages]);
 
   if (messages.length === 0) {
     return (
