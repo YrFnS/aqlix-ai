@@ -81,7 +81,10 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   ).toHaveCount(0);
   await freeCard.getByRole("button", { name: "Use model" }).click();
   await expect(page.getByText(`Model selected: ${freeModelId}`)).toBeVisible();
-  await expect(page.getByText(freeModelId, { exact: true })).toBeVisible();
+  const currentModelSummary = page
+    .getByText("Current model", { exact: true })
+    .locator("..");
+  await expect(currentModelSummary).toContainText(freeModelId);
 
   const outsiderContext = await browser.newContext({
     baseURL: "http://127.0.0.1:3000",
