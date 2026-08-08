@@ -14,7 +14,7 @@ import {
   Clock3,
   Cpu,
   Hash,
-  LoaderCircle,
+  RefreshCw,
   RotateCcw,
   Send,
   Sparkles,
@@ -205,7 +205,7 @@ function MessageBubble({
           <MessageContent content={message.content} />
         ) : isActive ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
             {message.status === "pending"
               ? "بانتظار بدء الاستجابة…"
               : "جاري إنشاء الاستجابة…"}
