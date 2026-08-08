@@ -53,11 +53,15 @@ export const conversationMessageContentSchema = z
   .min(1, "Message content is required")
   .max(20000, "Message content must be 20000 characters or fewer");
 
+export const groundingModeSchema = z.enum(["off", "workspace_sources"]);
+export type GroundingMode = z.infer<typeof groundingModeSchema>;
+
 export const streamConversationInputSchema = conversationIdInputSchema
   .extend({
     content: conversationMessageContentSchema.optional(),
     direction: contentDirectionSchema.optional().default("auto"),
     retryMessageId: entityIdSchema.optional(),
+    groundingMode: groundingModeSchema.optional().default("off"),
   })
   .superRefine((input, context) => {
     const hasContent = input.content !== undefined;
@@ -86,12 +90,35 @@ export const providerFailureCodeSchema = z.enum([
   "PROVIDER_TIMEOUT",
   "PROVIDER_UNAVAILABLE",
   "PROVIDER_RESPONSE_INVALID",
+  "NO_RELEVANT_SOURCES",
+  "CITATION_REQUIRED",
+  "CITATION_INVALID",
   "STREAM_CANCELLED",
   "PERSISTENCE_ERROR",
   "UNKNOWN_PROVIDER_ERROR",
 ]);
 
 export type ProviderFailureCode = z.infer<typeof providerFailureCodeSchema>;
+
+export const messageCitationSchema = z.object({
+  id: entityIdSchema,
+  workspaceId: entityIdSchema,
+  conversationId: entityIdSchema,
+  messageId: entityIdSchema,
+  sourceId: entityIdSchema.nullable(),
+  attachmentId: entityIdSchema.nullable(),
+  citationOrder: z.number().int().nonnegative(),
+  label: z.string().regex(/^S[1-9][0-9]*$/u),
+  fileNameSnapshot: z.string().min(1).max(255),
+  mediaTypeSnapshot: z.string().min(1).max(255),
+  sourceOrdinalSnapshot: z.number().int().nonnegative(),
+  pageNumberSnapshot: z.number().int().positive().nullable(),
+  startLineSnapshot: z.number().int().positive().nullable(),
+  endLineSnapshot: z.number().int().positive().nullable(),
+  createdAt: isoTimestampSchema,
+});
+
+export type MessageCitation = z.infer<typeof messageCitationSchema>;
 
 export const messageGenerationSchema = z.object({
   id: entityIdSchema,
@@ -104,6 +131,9 @@ export const messageGenerationSchema = z.object({
   returnedModel: z.string().min(1).max(160).nullable(),
   providerResponseId: z.string().max(255).nullable(),
   status: generationStatusSchema,
+  groundingMode: groundingModeSchema,
+  retrievedSourceCount: z.number().int().nonnegative(),
+  citationCount: z.number().int().nonnegative(),
   inputTokens: z.number().int().nonnegative().nullable(),
   outputTokens: z.number().int().nonnegative().nullable(),
   reasoningTokens: z.number().int().nonnegative().nullable(),
@@ -122,6 +152,7 @@ export type MessageGeneration = z.infer<typeof messageGenerationSchema>;
 
 export const conversationMessageSchema = messageSchema.extend({
   generation: messageGenerationSchema.nullable(),
+  citations: messageCitationSchema.array(),
 });
 
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
