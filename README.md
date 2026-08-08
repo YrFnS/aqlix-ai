@@ -1,6 +1,6 @@
 # Kiteb — Product Rebuild
 
-> **Kiteb is a provisional working name.** Trademark, company-name, domain, handle, and Arabic-language clearance are required before public launch or permanent namespace migration.
+> **Kiteb is the selected working product name.** Trademark, company-name, domain, handle, and Arabic-language clearance are still required before public launch. The recommended repository slug is `kiteb`.
 
 Kiteb is an **Arabic-first, bilingual AI workspace for turning conversations and documents into clear, reusable work**.
 
@@ -16,12 +16,13 @@ The rebuild deliberately narrows the inherited repository to one trustworthy pro
 - **P3 — private documents, inspectable sources, and grounded citations:** complete and merged
 - **P4 — durable drafts and reusable work:** complete and merged
 - **P5 — operational readiness:** in progress on draft PR `#7`
+- **OpenRouter BYOK foundation:** implemented; final exact-head validation in progress
 - **Hosted staging deployment completed:** No
 - **Production ready:** No
 
 P0–P4 prove the complete application loop against local Supabase Auth, PostgreSQL, RLS, private Storage, the normalized provider boundary, and Chromium.
 
-P5 has established a reproducible local production baseline: a frozen Bun install, one React 19 runtime for the active Next.js application, externalized shared-UI peer dependencies, a full Node LTS production build, production server startup, liveness, and dependency-aware readiness. It does not yet prove a hosted staging deployment, a live-provider path, quotas, monitoring, backup/restore, security/privacy review, accessibility review, provenance clearance, or public-launch readiness.
+P5 has established a reproducible local release baseline and is adding user-owned OpenRouter credentials, a live model catalog, deployment safeguards, quotas, monitoring, recovery, and release review. It does not yet prove a hosted staging deployment, current public-provider availability, backup/restore, security/privacy clearance, or public-launch readiness.
 
 ## What works now
 
@@ -32,7 +33,7 @@ P5 has established a reproducible local production baseline: a frozen Bun instal
 - Stream assistant output through one normalized server-sent-event contract.
 - Stop a response while preserving partial text.
 - Retry failed or cancelled attempts without overwriting history.
-- Inspect provider, model, token, latency, cancellation, and failure state.
+- Inspect provider, selected model, token, latency, cancellation, and failure state.
 
 ### Ground
 
@@ -62,13 +63,13 @@ PDF, DOCX, OCR, images, spreadsheets, presentations, archives, audio, and video 
 - Edit Arabic, English, or mixed-direction content.
 - See explicit saved, unsaved, saving, and failed-save states.
 - Save with `Ctrl+S` / `Cmd+S`.
-- Create immutable versions only when accepted content actually changes.
+- Create immutable versions only when accepted content changes.
 - Restore an older snapshot as a new version rather than rewriting history.
 - Archive, restore, reopen, and delete drafts.
 
 ### Continue
 
-- Request a bounded provider proposal to improve, shorten, expand, translate, continue, or custom-revise the accepted draft.
+- Request a bounded proposal to improve, shorten, expand, translate, continue, or custom-revise the accepted draft.
 - Stream the proposal into a separate review panel.
 - Keep accepted content unchanged during generation.
 - Stop and preserve partial proposal text.
@@ -88,9 +89,36 @@ PDF, DOCX, OCR, images, spreadsheets, presentations, archives, audio, and video 
 
 PDF and DOCX export are not implemented or claimed.
 
+## OpenRouter: user-owned key and live models
+
+Kiteb does not require a platform-owned OpenRouter or OpenAI key for the selected production design.
+
+Each signed-in user can open **AI Settings** and:
+
+1. paste their own OpenRouter API key;
+2. validate it before storage;
+3. store it encrypted in Supabase Vault;
+4. search the current model catalog available to that key;
+5. filter free models;
+6. sort and inspect model metadata;
+7. copy or paste an exact model ID;
+8. validate and select that model;
+9. change models later without a deployment;
+10. disconnect and remove the stored Vault secret.
+
+Important boundaries:
+
+- The raw key is never returned to the browser after connection.
+- Public tables store only masked metadata, the selected model ID, and a Vault secret reference.
+- Model names are not hardcoded into production configuration.
+- A selected model is validated against the live user-filtered catalog before persistence.
+- A missing key or model produces an explicit persisted `PROVIDER_UNCONFIGURED` failure.
+- Model price, availability, context length, and free-tier status can change at OpenRouter; Kiteb displays current catalog data rather than promising permanence.
+- Managed OpenAI remains an optional compatibility mode when a deployment explicitly supplies both a server key and model ID. It is not required by the OpenRouter BYOK path.
+
 ## Authorization model
 
-Normal account, workspace, conversation, source, citation, and draft traffic uses the signed-in request-scoped Supabase client. It does not use the service-role key.
+Normal account, workspace, conversation, source, citation, draft, and AI-settings traffic uses the signed-in request-scoped Supabase client. It does not use the service-role key.
 
 | Capability | Owner | Editor | Viewer | Outsider |
 | --- | ---: | ---: | ---: | ---: |
@@ -102,6 +130,8 @@ Normal account, workspace, conversation, source, citation, and draft traffic use
 | Export accepted drafts | Yes | Yes | Yes | No |
 | Start/apply/discard proposals | Yes | Yes | No | No |
 | Archive/restore/delete drafts | Yes | Yes | No | No |
+
+AI provider settings are account-scoped rather than workspace-scoped. Each authenticated account can read and change only its own masked settings, Vault credential, and selected model.
 
 Archived workspaces are read-only for every role. Archived drafts remain readable and exportable, but cannot be edited or sent to a provider until restored.
 
@@ -118,9 +148,10 @@ PostgreSQL remains authoritative for:
 - current draft state;
 - immutable draft versions;
 - draft provenance snapshots;
-- draft proposal attempts and telemetry.
+- draft proposal attempts and telemetry;
+- masked AI connection metadata and selected model IDs.
 
-Supabase Storage owns original private document bytes. Provider-hosted conversation or draft state is not used as the application source of truth.
+Supabase Storage owns original private document bytes. Supabase Vault owns encrypted user OpenRouter keys. Provider-hosted conversation or draft state is not used as the application source of truth.
 
 ## Operational baseline
 
@@ -136,7 +167,8 @@ Supabase Storage owns original private document bytes. Provider-hosted conversat
 
 - `GET /api/health/live` proves the web process can answer HTTP without calling dependencies.
 - `GET /api/health/ready` validates the operational environment and performs a bounded Supabase Auth health probe.
-- Readiness returns stable non-secret failure codes and never calls the model provider or spends tokens.
+- Readiness returns stable non-secret failure codes.
+- Readiness never decrypts user keys, lists models, calls OpenRouter, or spends user credits.
 
 ### Staging delivery intent
 
@@ -152,13 +184,34 @@ The Blueprint and runbooks define:
 - health-based traffic promotion;
 - application rollback;
 - forward-only database recovery;
-- production migration lock.
+- production migration lock;
+- OpenRouter BYOK without a platform provider secret or hardcoded model.
 
 They are infrastructure intent, not evidence that a hosted staging service has already been provisioned.
 
 ## Validation
 
-The current branch keeps the complete P0–P4 matrix and adds the P5 operational baseline:
+The current branch keeps the complete P0–P4 matrix and adds:
+
+- **P5 Operational Baseline**
+- **P5 OpenRouter BYOK Journey**
+
+The OpenRouter gate uses a deterministic local OpenRouter-compatible API and local Supabase Vault. It verifies:
+
+- key validation before storage;
+- encrypted Vault storage;
+- masked settings responses;
+- account isolation;
+- live catalog search and free-only filtering;
+- exact dynamic model validation;
+- selected-model conversation streaming;
+- persisted provider/model/token telemetry;
+- Vault deletion on disconnect;
+- explicit generation failure after disconnect.
+
+This proves Kiteb's integration mechanics without committing a real user key or claiming public-provider uptime or model quality.
+
+The full exact-head matrix includes:
 
 - **CI Quality Gates**
 - **PR Validation**
@@ -174,23 +227,7 @@ The current branch keeps the complete P0–P4 matrix and adds the P5 operational
 - **P4 Durable Draft Data Contract**
 - **P4 Ask Ground Draft Continue Journey**
 - **P5 Operational Baseline**
-
-The P5 baseline validates:
-
-- the release environment contract;
-- staging/production rejection of the fixture provider;
-- exact release identity;
-- frozen Bun installation;
-- one React runtime for the active web graph;
-- shared UI externalization;
-- deployment-script syntax and fail-closed migration safeguards;
-- focused TypeScript and P0–P5 tests;
-- a full Next.js production build;
-- Node production-server startup;
-- liveness and Supabase-backed readiness;
-- non-secret operational evidence artifacts.
-
-The browser journeys use an explicitly enabled deterministic fixture provider. They prove application streaming, persistence, authorization, and lifecycle mechanics. They do not prove external provider availability or model quality.
+- **P5 OpenRouter BYOK Journey**
 
 ## Rebuild source of truth
 
@@ -218,7 +255,7 @@ The browser journeys use an explicitly enabled deterministic fixture provider. T
 - Node.js `24.14.1` for the Next.js release build and server
 - Docker for local Supabase
 - Supabase CLI through the locked root dependency
-- an OpenAI API key only when intentionally exercising the real provider adapter
+- an OpenRouter account and user-owned API key only when exercising the real provider path
 
 ### Install
 
@@ -233,7 +270,7 @@ bunx supabase start
 bunx supabase status -o env
 ```
 
-Configure `apps/web/.env.local` with the local public values:
+Configure `apps/web/.env.local` with local public values:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
@@ -241,25 +278,38 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<local-public-key>
 NEXT_PUBLIC_APP_ENV=development
 APP_ENV=development
 NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-For the real provider adapter, add server-only values:
-
-```env
-AI_PROVIDER=openai
-OPENAI_API_KEY=<server-only-key>
-OPENAI_MODEL=gpt-5-mini
-OPENAI_BASE_URL=https://api.openai.com/v1
+AI_PROVIDER=openrouter
 AI_REQUEST_TIMEOUT_MS=60000
 AI_MAX_OUTPUT_TOKENS=2048
 ```
 
-For deterministic local integration testing only:
+Run the application, register, then connect the personal key and choose a current model at `/settings/ai`. No OpenRouter key or model ID is required in `.env.local`.
+
+For deterministic local fixture-provider testing only:
 
 ```env
 APP_ENV=test
 AI_PROVIDER=fixture
 P2_ALLOW_FIXTURE_PROVIDER=true
+```
+
+For the dedicated OpenRouter-compatible integration harness only:
+
+```env
+APP_ENV=test
+AI_PROVIDER=openrouter
+OPENROUTER_BASE_URL=http://127.0.0.1:4011/api/v1
+```
+
+The base-URL override is ignored in staging and production.
+
+Optional managed OpenAI compatibility mode:
+
+```env
+AI_PROVIDER=openai
+OPENAI_API_KEY=<server-only-key>
+OPENAI_MODEL=<explicit-current-model-id>
+OPENAI_BASE_URL=https://api.openai.com/v1
 ```
 
 Staging and production reject the fixture provider even when the opt-in flag is present.
@@ -300,6 +350,7 @@ bun run test:e2e:p1
 bun run test:e2e:p2
 bun run test:e2e:p3
 bun run test:e2e:p4
+bun run test:e2e:p5
 ```
 
 Stop local Supabase with:
@@ -324,23 +375,23 @@ packages/
 └── ...                 Audit or quarantine packages listed in rebuild inventories
 
 supabase/
-├── config.toml        Reproducible local Auth/API/DB/Storage project
+├── config.toml        Reproducible local Auth/API/DB/Storage/Vault project
 ├── migrations/        Canonical authorization and lifecycle contracts
-└── tests/             P1–P4 ownership, isolation, lifecycle, and cascade regressions
+└── tests/             Ownership, isolation, lifecycle, Vault, and cascade regressions
 ```
 
-FastAPI is not a second identity, workspace, conversation, document, or draft authority. It may return for isolated background work only after audit, using the same account and workspace contract.
+FastAPI is not a second identity, workspace, conversation, document, draft, credential, or model authority. It may return for isolated background work only after audit, using the same account and workspace contract.
 
 ## Remaining P5 work
 
-1. Provision a separate hosted Supabase staging project.
-2. Execute one clean manual Render deployment through the migration and readiness path.
-3. Run the authenticated staging smoke checklist.
-4. Exercise application rollback and forward database recovery.
-5. Add a protected real-provider smoke path with cost controls.
-6. Add account/workspace quotas, rate limits, concurrency limits, and provider budgets.
+1. Finish the exact-head OpenRouter BYOK and release-startup gates.
+2. Provision a separate hosted Supabase staging project.
+3. Execute one clean manual Render deployment through the migration and readiness path.
+4. Run the authenticated staging smoke checklist with a disposable user-owned OpenRouter key.
+5. Exercise application rollback and forward database recovery.
+6. Add account/workspace quotas, rate limits, concurrency limits, and request ceilings.
 7. Add structured logs, dashboards, actionable alerts, and incident response.
-8. Execute database and private-object backup/restore exercises.
+8. Execute database, private-object, and Vault deletion/recovery exercises.
 9. Complete security, privacy, retention, deletion, accessibility, and bilingual quality reviews.
 10. Clear third-party dependency, code, font, asset, screenshot, and generated-material provenance.
 
@@ -350,9 +401,9 @@ A public release is ready only when:
 
 - visible behavior matches documentation;
 - deployment, migrations, rollback, backup, and restore are reproducible;
-- provider budgets and abuse controls exist;
+- provider request ceilings and abuse controls exist even with BYOK;
 - monitoring and incident response are exercised;
-- secrets, sessions, RLS, uploads, retention, deletion, and logs are reviewed;
+- secrets, Vault, sessions, RLS, uploads, retention, deletion, and logs are reviewed;
 - Arabic, English, RTL, LTR, mixed text, keyboard use, and responsive layouts are validated;
 - third-party code and assets have documented provenance and compatible licensing;
 - public claims have named evidence and owners.
