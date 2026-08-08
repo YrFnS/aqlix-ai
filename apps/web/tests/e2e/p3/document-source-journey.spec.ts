@@ -281,16 +281,20 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await page
     .getByRole("button", { name: "رفع واستخراج المقاطع" })
     .click();
-  await expect(page.getByRole("alert")).toContainText("DUPLICATE_DOCUMENT");
+  await expect(
+    page.getByRole("alert").filter({ hasText: "DUPLICATE_DOCUMENT" }),
+  ).toBeVisible();
 
   await page.locator("#document-file").setInputFiles({
     name: "report.pdf",
     mimeType: "application/pdf",
     buffer: Buffer.from("%PDF-1.7"),
   });
-  await expect(page.getByRole("alert")).toContainText(
-    "Only TXT and Markdown are supported",
-  );
+  await expect(
+    page
+      .getByRole("alert")
+      .filter({ hasText: "Only TXT and Markdown are supported" }),
+  ).toBeVisible();
 
   const invalidUtf8 = await context.request.post(
     `/api/v1/workspaces/${workspaceId}/sources`,
@@ -328,7 +332,9 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await register(viewerPage, viewerEmail);
   await addViewerMembership(workspaceId!, viewerEmail);
   await viewerPage.goto(`/workspaces/${workspaceId}/sources`);
-  await expect(viewerPage.getByRole("heading", { name: markdownFileName })).toBeVisible();
+  await expect(
+    viewerPage.getByRole("heading", { name: markdownFileName }),
+  ).toBeVisible();
   await expect(viewerPage.locator("#document-file")).toHaveCount(0);
   await expect(viewerPage.getByText(/عضويتك للقراءة فقط/)).toBeVisible();
 
@@ -425,7 +431,9 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${workspaceId}/sources\\?status=deleted$`),
   );
-  await expect(page.getByRole("heading", { name: markdownFileName })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: markdownFileName }),
+  ).toHaveCount(0);
 
   const deletedApi = await context.request.get(
     `/api/v1/workspaces/${workspaceId}/sources/${attachmentId}`,
