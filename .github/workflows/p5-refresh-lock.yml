@@ -1,0 +1,62 @@
+name: P5 One-Time Lockfile Refresh
+
+on:
+  push:
+    branches: [agent/p5-operational-readiness]
+    paths:
+      - package.json
+      - packages/ui/package.json
+      - .github/workflows/p5-refresh-lock.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p5-lockfile-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh-lockfile:
+    name: Regenerate Bun lockfile
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout P5 branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/p5-operational-readiness
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Regenerate lockfile without lifecycle scripts
+        run: bun install --lockfile-only --ignore-scripts
+
+      - name: Verify root React runtime alignment
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '"react": ["react@19.1.1"' bun.lock
+          grep -Fq '"react-dom": ["react-dom@19.1.1"' bun.lock
+          grep -Fq '"@iraqi-ai/mobile/react": ["react@18.3.1"' bun.lock
+
+      - name: Commit refreshed lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if git diff --quiet -- bun.lock; then
+            echo "bun.lock is already aligned."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore(p5): align Bun lockfile with React 19 runtime"
+          git push origin HEAD:agent/p5-operational-readiness
