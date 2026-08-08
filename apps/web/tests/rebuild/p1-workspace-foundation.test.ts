@@ -92,15 +92,16 @@ describe("P1 workspace foundation", () => {
     expect(migration).toContain("is_workspace_member");
   });
 
-  test("does not pretend P2 through P4 capabilities are active", () => {
+  test("keeps P1 intact while activating only the declared P2 capability", () => {
     const detail = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/page.tsx",
     );
 
-    expect(detail).toContain("غير مفعّل في P1");
-    expect(detail).toContain('phase: "P2"');
+    expect(detail).toContain(`/workspaces/${"${workspace.id}"}/conversations`);
+    expect(detail).toContain("P2 · يعمل");
     expect(detail).toContain('phase: "P3"');
     expect(detail).toContain('phase: "P4"');
+    expect(detail).toContain("غير مفعّل بعد");
     expect(detail).not.toMatch(/production[- ]ready/i);
   });
 

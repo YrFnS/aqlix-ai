@@ -6,14 +6,21 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+type TableDefinition<Row, Insert, Update> = {
+  Row: Row;
+  Insert: Insert;
+  Update: Update;
+  Relationships: [];
+};
+
 export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "13.0.5";
   };
   public: {
     Tables: {
-      attachments: {
-        Row: {
+      attachments: TableDefinition<
+        {
           byte_size: number;
           created_at: string;
           deleted_at: string | null;
@@ -26,8 +33,8 @@ export type Database = {
           updated_at: string;
           uploaded_by: string;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           byte_size: number;
           created_at?: string;
           deleted_at?: string | null;
@@ -40,8 +47,8 @@ export type Database = {
           updated_at?: string;
           uploaded_by: string;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           byte_size?: number;
           created_at?: string;
           deleted_at?: string | null;
@@ -54,11 +61,10 @@ export type Database = {
           updated_at?: string;
           uploaded_by?: string;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      conversations: {
-        Row: {
+        }
+      >;
+      conversations: TableDefinition<
+        {
           created_at: string;
           created_by: string;
           id: string;
@@ -66,8 +72,8 @@ export type Database = {
           title: string;
           updated_at: string;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           created_at?: string;
           created_by: string;
           id?: string;
@@ -75,8 +81,8 @@ export type Database = {
           title?: string;
           updated_at?: string;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           created_at?: string;
           created_by?: string;
           id?: string;
@@ -84,11 +90,10 @@ export type Database = {
           title?: string;
           updated_at?: string;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      drafts: {
-        Row: {
+        }
+      >;
+      drafts: TableDefinition<
+        {
           content: string;
           conversation_id: string | null;
           created_at: string;
@@ -99,8 +104,8 @@ export type Database = {
           title: string;
           updated_at: string;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           content?: string;
           conversation_id?: string | null;
           created_at?: string;
@@ -111,8 +116,8 @@ export type Database = {
           title?: string;
           updated_at?: string;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           content?: string;
           conversation_id?: string | null;
           created_at?: string;
@@ -123,11 +128,84 @@ export type Database = {
           title?: string;
           updated_at?: string;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      messages: {
-        Row: {
+        }
+      >;
+      message_generations: TableDefinition<
+        {
+          completed_at: string | null;
+          conversation_id: string;
+          created_at: string;
+          created_by: string;
+          failure_code: string | null;
+          failure_message: string | null;
+          first_token_latency_ms: number | null;
+          id: string;
+          input_tokens: number | null;
+          latency_ms: number | null;
+          message_id: string;
+          output_tokens: number | null;
+          provider: string;
+          provider_response_id: string | null;
+          reasoning_tokens: number | null;
+          requested_model: string;
+          returned_model: string | null;
+          started_at: string;
+          status: string;
+          total_tokens: number | null;
+          updated_at: string;
+          workspace_id: string;
+        },
+        {
+          completed_at?: string | null;
+          conversation_id: string;
+          created_at?: string;
+          created_by: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          first_token_latency_ms?: number | null;
+          id?: string;
+          input_tokens?: number | null;
+          latency_ms?: number | null;
+          message_id: string;
+          output_tokens?: number | null;
+          provider: string;
+          provider_response_id?: string | null;
+          reasoning_tokens?: number | null;
+          requested_model: string;
+          returned_model?: string | null;
+          started_at?: string;
+          status?: string;
+          total_tokens?: number | null;
+          updated_at?: string;
+          workspace_id: string;
+        },
+        {
+          completed_at?: string | null;
+          conversation_id?: string;
+          created_at?: string;
+          created_by?: string;
+          failure_code?: string | null;
+          failure_message?: string | null;
+          first_token_latency_ms?: number | null;
+          id?: string;
+          input_tokens?: number | null;
+          latency_ms?: number | null;
+          message_id?: string;
+          output_tokens?: number | null;
+          provider?: string;
+          provider_response_id?: string | null;
+          reasoning_tokens?: number | null;
+          requested_model?: string;
+          returned_model?: string | null;
+          started_at?: string;
+          status?: string;
+          total_tokens?: number | null;
+          updated_at?: string;
+          workspace_id?: string;
+        }
+      >;
+      messages: TableDefinition<
+        {
           content: string;
           conversation_id: string;
           created_at: string;
@@ -139,8 +217,8 @@ export type Database = {
           status: string;
           updated_at: string;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           content?: string;
           conversation_id: string;
           created_at?: string;
@@ -152,8 +230,8 @@ export type Database = {
           status?: string;
           updated_at?: string;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           content?: string;
           conversation_id?: string;
           created_at?: string;
@@ -165,11 +243,10 @@ export type Database = {
           status?: string;
           updated_at?: string;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      sources: {
-        Row: {
+        }
+      >;
+      sources: TableDefinition<
+        {
           attachment_id: string;
           content: string;
           created_at: string;
@@ -179,8 +256,8 @@ export type Database = {
           page_number: number | null;
           start_offset: number | null;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           attachment_id: string;
           content: string;
           created_at?: string;
@@ -190,8 +267,8 @@ export type Database = {
           page_number?: number | null;
           start_offset?: number | null;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           attachment_id?: string;
           content?: string;
           created_at?: string;
@@ -201,32 +278,30 @@ export type Database = {
           page_number?: number | null;
           start_offset?: number | null;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      workspace_members: {
-        Row: {
+        }
+      >;
+      workspace_members: TableDefinition<
+        {
           created_at: string;
           role: string;
           user_id: string;
           workspace_id: string;
-        };
-        Insert: {
+        },
+        {
           created_at?: string;
           role: string;
           user_id: string;
           workspace_id: string;
-        };
-        Update: {
+        },
+        {
           created_at?: string;
           role?: string;
           user_id?: string;
           workspace_id?: string;
-        };
-        Relationships: [];
-      };
-      workspaces: {
-        Row: {
+        }
+      >;
+      workspaces: TableDefinition<
+        {
           archived_at: string | null;
           created_at: string;
           default_language: string;
@@ -235,8 +310,8 @@ export type Database = {
           name: string;
           owner_id: string;
           updated_at: string;
-        };
-        Insert: {
+        },
+        {
           archived_at?: string | null;
           created_at?: string;
           default_language?: string;
@@ -245,8 +320,8 @@ export type Database = {
           name: string;
           owner_id: string;
           updated_at?: string;
-        };
-        Update: {
+        },
+        {
           archived_at?: string | null;
           created_at?: string;
           default_language?: string;
@@ -255,14 +330,64 @@ export type Database = {
           name?: string;
           owner_id?: string;
           updated_at?: string;
-        };
-        Relationships: [];
-      };
+        }
+      >;
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
+      begin_conversation_turn: {
+        Args: {
+          message_content: string | null;
+          message_direction: string;
+          requested_model: string;
+          requested_provider: string;
+          retry_message_id?: string | null;
+          target_conversation_id: string;
+          target_workspace_id: string;
+        };
+        Returns: {
+          assistant_message_id: string;
+          assistant_sequence: number;
+          generation_id: string;
+          prompt_content: string;
+          user_message_id: string | null;
+          user_sequence: number | null;
+        }[];
+      };
+      checkpoint_conversation_generation: {
+        Args: {
+          first_token_ms?: number | null;
+          partial_content: string;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+        };
+        Returns: undefined;
+      };
+      finish_conversation_generation: {
+        Args: {
+          final_content: string;
+          final_status: string;
+          first_token_ms?: number | null;
+          provider_failure_code?: string | null;
+          provider_failure_message?: string | null;
+          provider_input_tokens?: number | null;
+          provider_output_tokens?: number | null;
+          provider_reasoning_tokens?: number | null;
+          provider_response_identifier?: string | null;
+          provider_total_tokens?: number | null;
+          returned_provider_model?: string | null;
+          target_conversation_id: string;
+          target_generation_id: string;
+          target_message_id: string;
+          target_workspace_id: string;
+          total_latency_ms?: number | null;
+        };
+        Returns: undefined;
+      };
       has_workspace_role: {
         Args: {
           allowed_roles: string[];

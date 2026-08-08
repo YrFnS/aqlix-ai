@@ -106,7 +106,7 @@ export async function updateWorkspaceAction(formData: FormData): Promise<never> 
 
   revalidatePath("/workspaces");
   revalidatePath(`/workspaces/${workspaceId}`);
-  settingsStatusRedirect(workspaceId, "updated");
+  redirect(`/workspaces/${encodeURIComponent(workspaceId)}?status=updated`);
 }
 
 async function requireOwner(workspaceId: string) {
@@ -172,7 +172,8 @@ export async function restoreWorkspaceAction(formData: FormData): Promise<never>
   if (!workspace) workspaceStatusRedirect("not-found");
 
   revalidatePath("/workspaces");
-  redirect(`/workspaces/${parsed.data.workspaceId}?status=restored`);
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}`);
+  workspaceStatusRedirect("restored");
 }
 
 export async function deleteWorkspaceAction(formData: FormData): Promise<never> {
