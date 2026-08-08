@@ -55,8 +55,11 @@ test("binds private objects to registered attachments and normalizes mixed-scrip
   await register(page, email);
   await page.getByLabel("اسم المساحة", { exact: true }).fill(workspaceName);
   await page.getByRole("button", { name: "إنشاء مساحة العمل" }).click();
+  await expect(page).toHaveURL(
+    /\/workspaces\/[0-9a-f-]+\?status=created$/,
+  );
   const workspaceId = new URL(page.url()).pathname.split("/").pop();
-  expect(workspaceId).toBeTruthy();
+  expect(workspaceId).toMatch(/^[0-9a-f-]{36}$/);
 
   await page.getByRole("link", { name: /فتح المصادر/ }).click();
   await page.locator("#document-file").setInputFiles({
