@@ -181,10 +181,12 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
   await page.getByRole("link", { name: "فتح المساحة" }).click();
 
   await page.getByRole("button", { name: "استعادة" }).click();
-  await expect(page).toHaveURL(
-    new RegExp(`/workspaces/${workspaceId}\\?status=restored$`),
-  );
+  await expect(page).toHaveURL(/\/workspaces\?status=restored$/);
   await expect(page.getByText("أعيدت مساحة العمل")).toBeVisible();
+  await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
+  await page.getByRole("link", { name: "فتح المساحة" }).click();
+  await expect(page).toHaveURL(new RegExp(`/workspaces/${workspaceId}$`));
+  await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
 
   await context.setOffline(true);
   await expect(page.getByText(/الاتصال غير متاح/)).toBeVisible();
