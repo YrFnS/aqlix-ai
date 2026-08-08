@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { Conversation } from "@iraqi-ai/types";
 import {
   conversationIdInputSchema,
   createConversationInputSchema,
@@ -94,21 +95,19 @@ export async function createConversationAction(
     parsed.data.workspaceId,
     `/workspaces/${parsed.data.workspaceId}/conversations`,
   );
+  let conversation: Conversation;
 
   try {
-    const conversation = await createConversation(
-      supabase,
-      user.id,
-      parsed.data,
-    );
-    revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
-    redirect(
-      `/workspaces/${parsed.data.workspaceId}/conversations/${conversation.id}?status=created`,
-    );
+    conversation = await createConversation(supabase, user.id, parsed.data);
   } catch (error) {
     logFailure(error, "create");
     listRedirect(parsed.data.workspaceId, "persistence-error");
   }
+
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
+  redirect(
+    `/workspaces/${parsed.data.workspaceId}/conversations/${conversation.id}?status=created`,
+  );
 }
 
 export async function renameConversationAction(
@@ -130,26 +129,10 @@ export async function renameConversationAction(
     parsed.data.workspaceId,
     `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}`,
   );
+  let conversation: Conversation | null;
 
   try {
-    const conversation = await updateConversation(supabase, parsed.data);
-    if (!conversation) {
-      detailRedirect(
-        parsed.data.workspaceId,
-        parsed.data.conversationId,
-        "not-found",
-      );
-    }
-
-    revalidatePath(
-      `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}`,
-    );
-    revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
-    detailRedirect(
-      parsed.data.workspaceId,
-      parsed.data.conversationId,
-      "updated",
-    );
+    conversation = await updateConversation(supabase, parsed.data);
   } catch (error) {
     logFailure(error, "rename");
     detailRedirect(
@@ -158,6 +141,24 @@ export async function renameConversationAction(
       "persistence-error",
     );
   }
+
+  if (!conversation) {
+    detailRedirect(
+      parsed.data.workspaceId,
+      parsed.data.conversationId,
+      "not-found",
+    );
+  }
+
+  revalidatePath(
+    `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}`,
+  );
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
+  detailRedirect(
+    parsed.data.workspaceId,
+    parsed.data.conversationId,
+    "updated",
+  );
 }
 
 async function setConversationStatus(
@@ -178,23 +179,10 @@ async function setConversationStatus(
     parsed.data.workspaceId,
     `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}`,
   );
+  let conversation: Conversation | null;
 
   try {
-    const conversation = await updateConversation(supabase, parsed.data);
-    if (!conversation) listRedirect(parsed.data.workspaceId, "not-found");
-
-    revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
-    revalidatePath(
-      `/workspaces/${parsed.data.workspaceId}/conversations/archived`,
-    );
-
-    if (status === "active") {
-      redirect(
-        `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}?status=restored`,
-      );
-    }
-
-    listRedirect(parsed.data.workspaceId, "archived");
+    conversation = await updateConversation(supabase, parsed.data);
   } catch (error) {
     logFailure(error, status);
     detailRedirect(
@@ -203,6 +191,21 @@ async function setConversationStatus(
       "persistence-error",
     );
   }
+
+  if (!conversation) listRedirect(parsed.data.workspaceId, "not-found");
+
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
+  revalidatePath(
+    `/workspaces/${parsed.data.workspaceId}/conversations/archived`,
+  );
+
+  if (status === "active") {
+    redirect(
+      `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}?status=restored`,
+    );
+  }
+
+  listRedirect(parsed.data.workspaceId, "archived");
 }
 
 export async function archiveConversationAction(
@@ -233,17 +236,14 @@ export async function deleteConversationAction(
     parsed.data.workspaceId,
     `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}`,
   );
+  let deleted: boolean;
 
   try {
-    const deleted = await deleteConversation(
+    deleted = await deleteConversation(
       supabase,
       parsed.data.workspaceId,
       parsed.data.conversationId,
     );
-    if (!deleted) listRedirect(parsed.data.workspaceId, "not-found");
-
-    revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
-    listRedirect(parsed.data.workspaceId, "deleted");
   } catch (error) {
     logFailure(error, "delete");
     detailRedirect(
@@ -252,4 +252,9 @@ export async function deleteConversationAction(
       "persistence-error",
     );
   }
+
+  if (!deleted) listRedirect(parsed.data.workspaceId, "not-found");
+
+  revalidatePath(`/workspaces/${parsed.data.workspaceId}/conversations`);
+  listRedirect(parsed.data.workspaceId, "deleted");
 }
