@@ -96,12 +96,15 @@ describe("P1 workspace foundation", () => {
     const detail = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/page.tsx",
     );
+    const sources = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/sources/page.tsx",
+    );
 
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/conversations`);
     expect(detail).toContain("P2 · يعمل");
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/sources`);
     expect(detail).toContain("P3 · أساس يعمل");
-    expect(detail).toContain("Private bucket · RLS · 2 MiB");
+    expect(sources).toContain("Private bucket · RLS · 2 MiB");
     expect(detail).toContain("P4");
     expect(detail).toContain("غير مفعّل بعد");
     expect(detail).not.toMatch(/production[- ]ready/i);
