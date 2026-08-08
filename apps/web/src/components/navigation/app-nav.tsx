@@ -110,18 +110,19 @@ export function AppNav({ userEmail }: AppNavProps) {
             <div className="rounded-2xl border border-border/70 bg-secondary/60 p-4">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-semibold text-foreground">
-                  أساس مساحة العمل
+                  مساحة عمل موثقة
                 </p>
                 <span
                   dir="ltr"
                   className="text-[0.65rem] font-semibold text-primary"
                 >
-                  P1
+                  P1–P3
                 </span>
               </div>
               <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                الحسابات، العضوية، التخزين، والصلاحيات تدخل الآن كحدود حقيقية.
-                المحادثة والمستندات والمسودات تبقى مراحل لاحقة.
+                الحساب والعضوية وRLS، المحادثات المتدفقة، والملفات الخاصة مع
+                المقاطع والمراجع القابلة للفتح تعمل الآن. المسودات والتصدير تبقى
+                ضمن P4.
               </p>
             </div>
 
