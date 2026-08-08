@@ -1,0 +1,53 @@
+name: P5 One-Time Provider Control Wiring
+
+on:
+  push:
+    branches: [agent/p5-operational-readiness]
+    paths:
+      - scripts/maintenance/p5-wire-provider-controls.py
+      - .github/workflows/p5-wire-provider-controls.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: p5-provider-control-wiring
+  cancel-in-progress: false
+
+jobs:
+  wire-provider-controls:
+    name: Wire controlled provider contexts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout P5 branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/p5-operational-readiness
+          fetch-depth: 0
+
+      - name: Apply targeted route edits
+        run: python scripts/maintenance/p5-wire-provider-controls.py
+
+      - name: Verify both operations are wired
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'operation: "conversation"' \
+            'apps/web/src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts'
+          grep -Fq 'operation: "draft"' \
+            'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts'
+
+      - name: Commit route wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            'apps/web/src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts' \
+            'apps/web/src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/stream/route.ts'
+          git commit -m "feat(p5): enforce AI permits on both generation paths"
+          git push origin HEAD:agent/p5-operational-readiness
