@@ -40,6 +40,7 @@
     "test:e2e:p2": "bun run --filter @iraqi-ai/web test:e2e:p2",
     "test:e2e:p3": "bun run --filter @iraqi-ai/web test:e2e:p3",
     "test:e2e:p4": "bun run --filter @iraqi-ai/web test:e2e:p4",
+    "test:e2e:p5": "bun run --filter @iraqi-ai/web test:e2e:p5",
     "test:unit": "bun run test:p5",
     "test:ci": "bun run test:p5",
     "test:legacy": "bun test packages/ test/ && bun run --filter \"./apps/*\" test",
