@@ -14,11 +14,14 @@ The rebuild deliberately narrows the inherited repository to one trustworthy pro
 - **P1 — account, workspace, persistence, and authorization:** complete and merged
 - **P2 — persistent bilingual conversation:** complete and merged
 - **P3 — private documents, inspectable sources, and grounded citations:** complete and merged
-- **P4 — durable drafts and reusable work:** implemented on PR `#6`, in final exact-head closeout
-- **Next:** P5 — operational readiness
+- **P4 — durable drafts and reusable work:** complete and merged
+- **P5 — operational readiness:** in progress on draft PR `#7`
+- **Hosted staging deployment completed:** No
 - **Production ready:** No
 
-P4 completion proves the core application loop against local Supabase Auth, PostgreSQL, RLS, private Storage, the normalized provider boundary, and Chromium. It does not certify production deployment, security, privacy, accessibility, model quality, or public-launch readiness.
+P0–P4 prove the complete application loop against local Supabase Auth, PostgreSQL, RLS, private Storage, the normalized provider boundary, and Chromium.
+
+P5 has established a reproducible local production baseline: a frozen Bun install, one React 19 runtime for the active Next.js application, externalized shared-UI peer dependencies, a full Node LTS production build, production server startup, liveness, and dependency-aware readiness. It does not yet prove a hosted staging deployment, a live-provider path, quotas, monitoring, backup/restore, security/privacy review, accessibility review, provenance clearance, or public-launch readiness.
 
 ## What works now
 
@@ -119,9 +122,43 @@ PostgreSQL remains authoritative for:
 
 Supabase Storage owns original private document bytes. Provider-hosted conversation or draft state is not used as the application source of truth.
 
+## Operational baseline
+
+### Runtime ownership
+
+- **Bun `1.3.14`** owns dependency installation, the committed lockfile, workspace scripts, package builds, tests, and command orchestration.
+- **Node.js `24.14.1`** executes the supported Next.js production compiler and self-hosted server.
+- Root `react` and `react-dom` are pinned to `19.1.1` for Next and the web workspace.
+- The deferred mobile workspace retains its nested React 18 dependency without changing the active web runtime.
+- `@iraqi-ai/ui` treats React as a peer and externalizes package imports instead of bundling another React copy.
+
+### Health endpoints
+
+- `GET /api/health/live` proves the web process can answer HTTP without calling dependencies.
+- `GET /api/health/ready` validates the operational environment and performs a bounded Supabase Auth health probe.
+- Readiness returns stable non-secret failure codes and never calls the model provider or spends tokens.
+
+### Staging delivery intent
+
+The committed first rehearsal target is one manually promoted Render service in Frankfurt backed by a separate hosted Supabase staging project.
+
+The Blueprint and runbooks define:
+
+- immutable release identity;
+- frozen dependency installation;
+- full production build and startup;
+- ordered migration history inspection;
+- migration dry run before apply;
+- health-based traffic promotion;
+- application rollback;
+- forward-only database recovery;
+- production migration lock.
+
+They are infrastructure intent, not evidence that a hosted staging service has already been provisioned.
+
 ## Validation
 
-The P4 branch requires the complete P0–P4 matrix:
+The current branch keeps the complete P0–P4 matrix and adds the P5 operational baseline:
 
 - **CI Quality Gates**
 - **PR Validation**
@@ -136,42 +173,22 @@ The P4 branch requires the complete P0–P4 matrix:
 - **P3 Private Document Source Journey**
 - **P4 Durable Draft Data Contract**
 - **P4 Ask Ground Draft Continue Journey**
+- **P5 Operational Baseline**
 
-The P4 PostgreSQL gate validates each earlier phase at its own schema boundary, migrates forward, then proves:
+The P5 baseline validates:
 
-- direct authenticated draft-history mutation is revoked;
-- atomic draft creation from a completed assistant message;
-- copied citation provenance;
-- immutable version one;
-- no-op save detection;
-- manual versions;
-- stale-write rejection;
-- restore as a new version;
-- proposal checkpoint, completion, apply, discard, cancellation, and failure;
-- stale proposal rejection;
-- viewer and outsider isolation;
-- archived draft and workspace guards;
-- deleted-source snapshots;
-- atomic origin detachment before conversation deletion;
-- draft-child cascades.
-
-The P4 Chromium journey validates:
-
-- real sign-up and workspace creation;
-- private document upload and grounded cited answer;
-- all six draft structures;
-- explicit edit/save/reload behavior;
-- clipboard copy;
-- TXT, Markdown, and safe HTML export;
-- version inspection and restore;
-- provider proposal discard, apply, Stop, partial persistence, and failure;
-- deleted-source provenance;
-- viewer read/export-only behavior;
-- outsider non-disclosure;
-- draft archive/restore;
-- workspace read-only behavior;
-- responsive mobile layout;
-- deletion, sign-out, and hydration monitoring.
+- the release environment contract;
+- staging/production rejection of the fixture provider;
+- exact release identity;
+- frozen Bun installation;
+- one React runtime for the active web graph;
+- shared UI externalization;
+- deployment-script syntax and fail-closed migration safeguards;
+- focused TypeScript and P0–P5 tests;
+- a full Next.js production build;
+- Node production-server startup;
+- liveness and Supabase-backed readiness;
+- non-secret operational evidence artifacts.
 
 The browser journeys use an explicitly enabled deterministic fixture provider. They prove application streaming, persistence, authorization, and lifecycle mechanics. They do not prove external provider availability or model quality.
 
@@ -190,15 +207,17 @@ The browser journeys use an explicitly enabled deterministic fixture provider. T
 - [P3 source architecture](./docs/rebuild/09-P3-ARCHITECTURE.md)
 - [P3 grounded conversation architecture](./docs/rebuild/10-P3-GROUNDED-CONVERSATIONS.md)
 - [P4 draft architecture](./docs/rebuild/11-P4-ARCHITECTURE.md)
+- [P5 operational readiness](./docs/rebuild/12-P5-OPERATIONAL-READINESS.md)
+- [P5 deployment and rollback](./docs/rebuild/13-P5-DEPLOYMENT-AND-ROLLBACK.md)
 
 ## Development
 
 ### Requirements
 
 - Bun `1.3.14`, pinned in the root `packageManager` field
+- Node.js `24.14.1` for the Next.js release build and server
 - Docker for local Supabase
 - Supabase CLI through the locked root dependency
-- Node.js 20 or later where required by inherited packages
 - an OpenAI API key only when intentionally exercising the real provider adapter
 
 ### Install
@@ -245,7 +264,7 @@ P2_ALLOW_FIXTURE_PROVIDER=true
 
 Staging and production reject the fixture provider even when the opt-in flag is present.
 
-### Run
+### Run locally
 
 ```bash
 bun run dev
@@ -258,9 +277,21 @@ bun install --frozen-lockfile
 bun run build:packages
 bun run lint
 bun run typecheck
-bun run test:p4
+bun run test:p5
 cd apps/web && bun run build
 ```
+
+### Release build and startup
+
+With the complete runtime environment configured:
+
+```bash
+bun run validate:release-env
+bun run build:release
+bun run start:release
+```
+
+Bun invokes the scripts; the Next.js production build and server execute under the pinned Node LTS runtime.
 
 With local Supabase configured:
 
@@ -283,12 +314,12 @@ bunx supabase stop --no-backup
 apps/
 ├── web/       Active Next.js product application
 ├── api/       Inherited FastAPI capability service under audit
-└── mobile/    Deferred placeholder application
+└── mobile/    Deferred placeholder application with isolated React 18
 
 packages/
 ├── types/             Generated database types and runtime contracts
 ├── supabase-client/   Request-scoped browser/server/middleware clients
-├── ui/                Selected shared RTL and input utilities
+├── ui/                Shared browser-targeted UI with external peer dependencies
 ├── arabic-nlp/        Retained Arabic text utilities
 └── ...                 Audit or quarantine packages listed in rebuild inventories
 
@@ -300,20 +331,18 @@ supabase/
 
 FastAPI is not a second identity, workspace, conversation, document, or draft authority. It may return for isolated background work only after audit, using the same account and workspace contract.
 
-## Next phase: P5 operational readiness
+## Remaining P5 work
 
-P5 begins after P4 is merged. Its required outcomes include:
-
-1. one documented deployment topology and Bun-only release path;
-2. protected real-provider smoke validation in a cost-controlled environment;
-3. account/workspace quotas, rate limits, and provider budgets;
-4. monitoring, structured logs, alerts, and incident response;
-5. reproducible database and object-storage backup and restore exercises;
-6. security and privacy review for sessions, RLS, prompts, uploads, retention, deletion, and logs;
-7. dependency, license, asset, and code-provenance clearance;
-8. production migration, rollback, and disaster-recovery procedures;
-9. measured accessibility and responsive validation beyond the focused foundation;
-10. explicit beta and production exit criteria.
+1. Provision a separate hosted Supabase staging project.
+2. Execute one clean manual Render deployment through the migration and readiness path.
+3. Run the authenticated staging smoke checklist.
+4. Exercise application rollback and forward database recovery.
+5. Add a protected real-provider smoke path with cost controls.
+6. Add account/workspace quotas, rate limits, concurrency limits, and provider budgets.
+7. Add structured logs, dashboards, actionable alerts, and incident response.
+8. Execute database and private-object backup/restore exercises.
+9. Complete security, privacy, retention, deletion, accessibility, and bilingual quality reviews.
+10. Clear third-party dependency, code, font, asset, screenshot, and generated-material provenance.
 
 ## What “ready” will mean
 
