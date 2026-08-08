@@ -12,6 +12,8 @@ services:
     healthCheckPath: /api/health/ready
     maxShutdownDelaySeconds: 60
     envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
       - key: BUN_VERSION
         value: 1.3.14
       - key: SKIP_INSTALL_DEPS
