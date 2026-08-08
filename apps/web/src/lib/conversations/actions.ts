@@ -200,9 +200,7 @@ async function setConversationStatus(
   );
 
   if (status === "active") {
-    redirect(
-      `/workspaces/${parsed.data.workspaceId}/conversations/${parsed.data.conversationId}?status=restored`,
-    );
+    listRedirect(parsed.data.workspaceId, "restored");
   }
 
   listRedirect(parsed.data.workspaceId, "archived");
