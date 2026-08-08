@@ -15,14 +15,18 @@ Status values:
 **P1 — Account, workspace, persistence, and authorization: DONE**  
 **P2 — Persistent bilingual conversation: DONE**  
 **P3 — Private documents, inspectable sources, and grounded citations: DONE**  
-**P4 — Durable drafts and reusable work: IN PROGRESS — final exact-head closeout**  
-**Active branch:** `agent/p4-drafts-reusable-work`  
-**Draft pull request:** `#6`  
-**Next:** P5 — operational readiness
+**P4 — Durable drafts and reusable work: DONE**  
+**P5 — Operational readiness: IN PROGRESS**  
+**Active branch:** `agent/p5-operational-readiness`  
+**Draft pull request:** `#7`
 
-P4’s implementation, PostgreSQL contract, unit boundary, production build, and complete **Ask → Ground → Draft → Continue** Chromium journey have passed. The pull request remains draft until the final documentation head repeats the entire P0–P4 matrix.
+P4 merged through PR `#6` at `bb96c3300ec86118f03b0acd142209be3994d424` after the complete P0–P4 matrix passed.
 
-P4 completion does not mean production deployment, provider availability, security/privacy certification, accessibility certification, backup/restore, monitoring, quotas, or provenance clearance is complete.
+P5.0’s local release baseline has passed on an implementation head: frozen Bun installation, aligned React runtime, external shared-UI dependencies, full Node production build, production startup, liveness, and Supabase-backed readiness. The final documentation head must repeat the exact gate before P5.0 is marked done.
+
+P5.1’s Render Blueprint, ordered migration path, and rollback runbook are committed. A hosted staging Supabase project, Render deployment, smoke test, rollback, and forward recovery exercise have **not** been completed.
+
+Production deployment, provider availability, security/privacy review, accessibility review, backup/restore, monitoring, quotas, and provenance clearance remain incomplete.
 
 ## P0 — Reset and trustworthy foundation
 
@@ -35,7 +39,7 @@ P4 completion does not mean production deployment, provider availability, securi
 | Remove unsupported public claims and fake analytics | DONE | Public-claims safeguards and rebuilt surfaces |
 | Retain Arabic, RTL, and mixed-text foundations | DONE | Fonts, direction utilities, focused tests |
 | Quarantine incomplete inherited capabilities | DONE | Legacy disposition and honest route states |
-| Bun-only active workflow | DONE | Bun `1.3.14`, frozen install, supported Actions |
+| Bun-managed active workflow | DONE | Bun `1.3.14`, frozen install, supported Actions |
 | Active lint, type, test, and build gates | DONE | CI Quality Gates and PR Validation |
 | Full release provenance clearance | PLANNED | Required in P5 before public/commercial distribution |
 
@@ -137,9 +141,71 @@ P4 completion does not mean production deployment, provider availability, securi
 | Shared contracts and unit boundaries | DONE | Draft contract, scaffold, export, dirty-state, source safeguards |
 | PostgreSQL P4 lifecycle gate | DONE | P4 Durable Draft Data Contract |
 | Complete browser journey | DONE | P4 Ask Ground Draft Continue Journey |
-| Final documentation-head matrix | IN PROGRESS | Required before PR `#6` leaves draft and merges |
+| Exact-head matrix and merge | DONE | PR `#6`, merge `bb96c3300ec86118f03b0acd142209be3994d424` |
 
-### P4 required exact-head workflows
+## P5.0 — Operational architecture and local release baseline
+
+| Work item | Status | Evidence |
+| --- | --- | --- |
+| P5 architecture and release threat model | DONE | `12-P5-OPERATIONAL-READINESS.md` |
+| Environment contract | DONE | Development, test, staging, production validation |
+| Ownership and incident authority | DONE | Release, service, data, provider, security, observability roles |
+| Release identity | DONE | Explicit, Render, and GitHub commit SHA resolution |
+| Fixture-provider production rejection | DONE | Runtime schema and tests |
+| Liveness endpoint | DONE | `/api/health/live` |
+| Fail-closed readiness endpoint | DONE | `/api/health/ready`, bounded Supabase Auth probe |
+| Bun dependency/workspace path | DONE | Bun `1.3.14`, frozen `bun.lock` |
+| Node Next.js release runtime | DONE | Node `24.14.1` build and start scripts |
+| Single active React runtime | DONE | Root React/React DOM `19.1.1`; mobile React 18 nested |
+| Shared UI dependency externalization | DONE | Browser target, peer React, `--packages external` |
+| Focused fatal release type graph | DONE | `tsconfig.rebuild.json`, build errors not ignored |
+| Global unmatched-route boundary | DONE | Standalone Arabic-first `global-not-found.tsx` |
+| Full production build | DONE | P5 Operational Baseline implementation-head run |
+| Production process startup | DONE | Next Node server startup evidence |
+| Liveness/readiness evidence | DONE | Non-secret workflow artifact |
+| Final exact-head operational rerun | IN PROGRESS | Required after tracker/docs safeguards |
+
+## P5.1 — Staging deployment, migrations, and rollback
+
+| Work item | Status | Evidence / blocker |
+| --- | --- | --- |
+| Render staging topology | DONE | `render.yaml`: Frankfurt, starter, manual promotion |
+| Pinned staging runtimes | DONE | Node `24.14.1`, Bun `1.3.14` |
+| Frozen build script | DONE | `scripts/render/build.sh` |
+| Ordered migration pre-deploy | DONE | `scripts/render/pre-deploy.sh` |
+| Migration history inspection | DONE | Linked migration list before/after |
+| Migration dry run before apply | DONE | `supabase db push --dry-run` before apply |
+| Production migration lock | DONE | Explicit `ALLOW_PRODUCTION_MIGRATIONS=true` required |
+| Health-based traffic promotion | DONE | `/api/health/ready` Blueprint path |
+| Graceful shutdown | DONE | 60-second maximum shutdown delay |
+| Application rollback runbook | DONE | `13-P5-DEPLOYMENT-AND-ROLLBACK.md` |
+| Forward-only database recovery | DONE | Expand/contract and new corrective migration guidance |
+| Separate hosted Supabase staging project | BLOCKED | Requires external project provisioning and credentials |
+| Render staging service | BLOCKED | Requires external account/service provisioning |
+| Clean hosted staging deployment | BLOCKED | Depends on staging services and secrets |
+| Authenticated staging smoke checklist | BLOCKED | Depends on successful hosted deployment |
+| Application rollback exercise | BLOCKED | Depends on at least two hosted staging releases |
+| Forward recovery rehearsal | BLOCKED | Depends on isolated hosted staging database |
+
+## P5.2–P5.8 — Remaining operational readiness
+
+| Work item | Status | Notes |
+| --- | --- | --- |
+| Protected live-provider smoke test | PLANNED | Cost-controlled key and explicit evidence |
+| Account/workspace quotas | PLANNED | Messages, tokens, uploads, storage, drafts, exports |
+| Rate limits and abuse controls | PLANNED | Account, workspace, IP, provider, upload |
+| Provider budgets and circuit breakers | PLANNED | Spend caps, concurrency, fail-closed behavior |
+| Monitoring and structured logs | PLANNED | Frontend, routes, database, Storage, provider |
+| Alerting and incident response | PLANNED | Named owners and tested procedures |
+| Database backup and restore exercise | PLANNED | Execute, measure, and document |
+| Object-storage backup/restore strategy | PLANNED | Original private documents and deletion semantics |
+| Security and privacy review | PLANNED | Sessions, RLS, prompts, uploads, retention, deletion, logs |
+| Accessibility validation beyond foundation | PLANNED | Keyboard, screen reader, contrast, reflow, focus |
+| Dependency and provenance clearance | PLANNED | Code, packages, fonts, assets, screenshots, generated material |
+| Beta readiness gate | PLANNED | Named evidence and unresolved-risk register |
+| Production readiness gate | PLANNED | No inferred readiness from feature completion |
+
+### Current exact-head workflow requirements
 
 - `CI Quality Gates`
 - `PR Validation`
@@ -154,27 +220,7 @@ P4 completion does not mean production deployment, provider availability, securi
 - `P3 Private Document Source Journey`
 - `P4 Durable Draft Data Contract`
 - `P4 Ask Ground Draft Continue Journey`
-
-## P5 — Operational readiness
-
-| Work item | Status | Notes |
-| --- | --- | --- |
-| P5 architecture and release threat model | PLANNED | Define environments, topology, ownership, and exit criteria first |
-| Bun-only production deployment path | PLANNED | Web, migrations, Storage, provider, rollback |
-| Protected live-provider smoke test | PLANNED | Cost-controlled key and explicit evidence |
-| Account/workspace quotas | PLANNED | Messages, tokens, uploads, storage, drafts, exports |
-| Rate limits and abuse controls | PLANNED | Account, workspace, IP, provider, upload |
-| Provider budgets and circuit breakers | PLANNED | Spend caps and fail-closed behavior |
-| Monitoring and structured logs | PLANNED | Frontend, API, database, Storage, provider |
-| Alerting and incident response | PLANNED | Named owners and tested procedures |
-| Database backup and restore exercise | PLANNED | Execute, measure, and document |
-| Object-storage backup/restore strategy | PLANNED | Original private documents and deletion semantics |
-| Production migration and rollback | PLANNED | Forward/rollback procedures and data compatibility |
-| Security and privacy review | PLANNED | Sessions, RLS, prompts, uploads, retention, deletion, logs |
-| Accessibility validation beyond foundation | PLANNED | Keyboard, screen reader, contrast, reflow, focus |
-| Dependency and provenance clearance | PLANNED | Code, packages, fonts, assets, screenshots, generated material |
-| Beta readiness gate | PLANNED | Named evidence and unresolved-risk register |
-| Production readiness gate | PLANNED | No inferred readiness from feature completion |
+- `P5 Operational Baseline`
 
 ## Deferred product areas
 
