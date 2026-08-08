@@ -1,7 +1,4 @@
-import "server-only";
-
-import type { SourceSearchResult } from "@iraqi-ai/types";
-import { AiProviderError } from "@/lib/ai/provider";
+import type { ProviderFailureCode, SourceSearchResult } from "@iraqi-ai/types";
 
 export const MAX_GROUNDING_SOURCES = 6;
 
@@ -13,6 +10,20 @@ export interface ResolvedGroundedCitation {
   citationOrder: number;
   label: string;
   sourceId: string;
+}
+
+export class GroundingResolutionError extends Error {
+  constructor(
+    public readonly code: Extract<
+      ProviderFailureCode,
+      "NO_RELEVANT_SOURCES" | "CITATION_REQUIRED" | "CITATION_INVALID"
+    >,
+    message: string,
+    public readonly retryable = true,
+  ) {
+    super(message);
+    this.name = "GroundingResolutionError";
+  }
 }
 
 export function labelGroundingSources(
@@ -36,10 +47,9 @@ export function buildGroundingInstructions(
   sources: LabeledGroundingSource[],
 ): string {
   if (sources.length === 0) {
-    throw new AiProviderError(
+    throw new GroundingResolutionError(
       "NO_RELEVANT_SOURCES",
       "No relevant workspace source passage was found.",
-      true,
     );
   }
 
@@ -84,20 +94,18 @@ export function resolveGroundedCitations(
   }
 
   if (labels.length === 0) {
-    throw new AiProviderError(
+    throw new GroundingResolutionError(
       "CITATION_REQUIRED",
       "A grounded response completed without a valid source citation.",
-      true,
     );
   }
 
   const citations = labels.map((label, citationOrder) => {
     const source = sourceByLabel.get(label);
     if (!source) {
-      throw new AiProviderError(
+      throw new GroundingResolutionError(
         "CITATION_INVALID",
         `The grounded response cited unavailable label ${label}.`,
-        true,
       );
     }
 
@@ -109,10 +117,9 @@ export function resolveGroundedCitations(
   });
 
   if (citations.length > MAX_GROUNDING_SOURCES) {
-    throw new AiProviderError(
+    throw new GroundingResolutionError(
       "CITATION_INVALID",
       "The grounded response exceeded the supported citation count.",
-      true,
     );
   }
 
