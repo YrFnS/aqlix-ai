@@ -111,9 +111,13 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     .fill("What does the English roadmap confirm about the launch milestone?");
   await page.getByRole("button", { name: "إرسال" }).click();
 
-  await expect(
-    page.getByText(/saved workspace passage supports this deterministic answer/i),
-  ).toBeVisible();
+  const groundedAssistantMessage = page
+    .locator('article[data-message-id]')
+    .filter({
+      hasText: /saved workspace passage supports this deterministic answer/i,
+    })
+    .first();
+  await expect(groundedAssistantMessage).toBeVisible();
   await expect(page.getByText(/Response and inspectable citations saved/)).toBeVisible();
   const citationLink = page.getByRole("link", {
     name: new RegExp(`فتح المرجع S1 من ${documentName}`),
@@ -164,9 +168,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   expect(deleteResponse.status()).toBe(200);
 
   await page.goto(conversationUrl);
-  await expect(
-    page.getByText(/saved workspace passage supports this deterministic answer/i),
-  ).toBeVisible();
+  await expect(groundedAssistantMessage).toBeVisible();
   await expect(
     page.getByTitle(
       "The original source was deleted or is no longer available.",
