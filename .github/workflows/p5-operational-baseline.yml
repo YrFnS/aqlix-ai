@@ -68,6 +68,7 @@ jobs:
 
       - name: Validate operational contracts
         run: |
+          bash -n scripts/render/build.sh scripts/render/pre-deploy.sh
           bun run validate:release-env
           bun run lint
           bun run typecheck
@@ -157,4 +158,4 @@ jobs:
             exit 1
           fi
 
-          echo "P5 environment preflight, Bun release build, process startup, liveness, fail-closed readiness, and bounded Supabase dependency probe passed."
+          echo "P5 environment preflight, deployment script syntax, Bun release build, process startup, liveness, fail-closed readiness, and bounded Supabase dependency probe passed."
