@@ -7,8 +7,8 @@ import type {
   OpenRouterModelCatalogQuery,
   OpenRouterModelSort,
 } from "@iraqi-ai/types";
+import { resolveOpenRouterBaseUrl } from "./openrouter-endpoint";
 
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1";
 const MAX_PROVIDER_ERROR_LENGTH = 500;
 
 interface OpenRouterKeyResponse {
@@ -172,7 +172,7 @@ async function openRouterGet(
 ): Promise<Response> {
   let response: Response;
   try {
-    response = await fetch(`${OPENROUTER_API_URL}${path}`, {
+    response = await fetch(`${resolveOpenRouterBaseUrl()}${path}`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${apiKey}`,
