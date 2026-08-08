@@ -27,7 +27,7 @@ env:
 
 jobs:
   operational-baseline:
-    name: Bun Release Startup & Health Contract
+    name: Node Release Startup & Health Contract
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -35,10 +35,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Setup Bun
+      - name: Setup Node LTS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.14.1
+          package-manager-cache: false
+
+      - name: Setup Bun package manager
         uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
+      - name: Install dependencies with Bun
         run: bash scripts/ci/install-dependencies.sh
 
       - name: Start local Supabase
@@ -68,17 +74,19 @@ jobs:
 
       - name: Validate operational contracts
         run: |
+          node --version
+          bun --version
           bash -n scripts/render/build.sh scripts/render/pre-deploy.sh
           bun run validate:release-env
           bun run lint
           bun run typecheck
           bun run test:p5
 
-      - name: Build release web application
+      - name: Build release web application with Node
         working-directory: apps/web
         run: bun run build:release
 
-      - name: Start release web service
+      - name: Start release web service with Node
         shell: bash
         run: |
           set -euo pipefail
@@ -158,4 +166,4 @@ jobs:
             exit 1
           fi
 
-          echo "P5 environment preflight, deployment script syntax, Bun release build, process startup, liveness, fail-closed readiness, and bounded Supabase dependency probe passed."
+          echo "P5 environment preflight, deployment script syntax, Bun-managed Node release build, Node process startup, liveness, fail-closed readiness, and bounded Supabase dependency probe passed."
