@@ -9,7 +9,7 @@ export async function GET() {
   const response = Response.json(
     {
       status: readiness.ready ? "ready" : "not_ready",
-      service: "kiteb-web",
+      service: "ai-workspace-web",
       environment: readiness.environment,
       release: readiness.release,
       provider: readiness.provider,

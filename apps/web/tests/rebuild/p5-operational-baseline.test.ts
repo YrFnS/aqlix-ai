@@ -11,9 +11,9 @@ import {
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repoRoot = resolve(webRoot, "../..");
 const readWeb = (path: string) =>
-  readFileSync(resolve(webRoot, path), "utf8");
+  readFileSync(resolve(webRoot, path), "utf8").replaceAll("\r\n", "\n");
 const readRepo = (path: string) =>
-  readFileSync(resolve(repoRoot, path), "utf8");
+  readFileSync(resolve(repoRoot, path), "utf8").replaceAll("\r\n", "\n");
 
 const localEnvironment = {
   APP_ENV: "test",
@@ -47,8 +47,11 @@ describe("P5 operational runtime contract", () => {
       }),
     ).toBe("1111111111111111");
     expect(
-      resolveReleaseSha({ RENDER_GIT_COMMIT: "2222222222222222" }),
-    ).toBe("2222222222222222");
+      resolveReleaseSha({ VERCEL_GIT_COMMIT_SHA: "4444444444444444" }),
+    ).toBe("4444444444444444");
+    expect(resolveReleaseSha({ RENDER_GIT_COMMIT: "2222222222222222" })).toBe(
+      "2222222222222222",
+    );
     expect(resolveReleaseSha({ GITHUB_SHA: "3333333333333333" })).toBe(
       "3333333333333333",
     );
@@ -142,7 +145,7 @@ describe("P5 health and release boundaries", () => {
     const liveness = readWeb("src/app/api/health/live/route.ts");
 
     expect(liveness).toContain('status: "alive"');
-    expect(liveness).toContain('service: "kiteb-web"');
+    expect(liveness).toContain('service: "ai-workspace-web"');
     expect(liveness).toContain("resolveReleaseSha");
     expect(liveness).not.toContain("Supabase");
     expect(liveness).not.toContain("OPENAI_API_KEY");
@@ -191,9 +194,7 @@ describe("P5 health and release boundaries", () => {
     const webPackage = readWeb("package.json");
     const rootPackage = readRepo("package.json");
     const nextConfig = readWeb("next.config.ts");
-    const preflight = readRepo(
-      "scripts/operations/validate-runtime-env.ts",
-    );
+    const preflight = readRepo("scripts/operations/validate-runtime-env.ts");
 
     expect(webPackage).toContain(
       '"build:release": "node ../../node_modules/next/dist/bin/next build"',
@@ -233,9 +234,7 @@ describe("P5 health and release boundaries", () => {
 
     expect(lockfile).toContain('"react": ["react@19.1.1"');
     expect(lockfile).toContain('"react-dom": ["react-dom@19.1.1"');
-    expect(lockfile).toContain(
-      '"@iraqi-ai/mobile/react": ["react@18.3.1"',
-    );
+    expect(lockfile).toContain('"@iraqi-ai/mobile/react": ["react@18.3.1"');
     expect(lockfile).not.toContain('"@iraqi-ai/web/react":');
     expect(lockfile).not.toContain('"@iraqi-ai/ui/react":');
   });
@@ -262,12 +261,16 @@ describe("P5 health and release boundaries", () => {
     expect(blueprint).toContain("region: frankfurt");
     expect(blueprint).toContain("plan: starter");
     expect(blueprint).toContain("autoDeployTrigger: off");
-    expect(blueprint).toContain("preDeployCommand: bash scripts/render/pre-deploy.sh");
+    expect(blueprint).toContain(
+      "preDeployCommand: bash scripts/render/pre-deploy.sh",
+    );
     expect(blueprint).toContain("healthCheckPath: /api/health/ready");
     expect(blueprint).toContain("maxShutdownDelaySeconds: 60");
     expect(blueprint).toContain("key: NODE_VERSION\n        value: 24.14.1");
     expect(blueprint).toContain("key: BUN_VERSION\n        value: 1.3.14");
-    expect(blueprint).toContain("key: SKIP_INSTALL_DEPS\n        value: \"true\"");
+    expect(blueprint).toContain(
+      'key: SKIP_INSTALL_DEPS\n        value: "true"',
+    );
     expect(blueprint).toContain("key: AI_PROVIDER\n        value: openrouter");
 
     for (const secret of [
@@ -323,23 +326,21 @@ describe("P5 health and release boundaries", () => {
   });
 
   test("documents forward-only database recovery without claiming a deploy", () => {
-    const runbook = readRepo(
-      "docs/rebuild/13-P5-DEPLOYMENT-AND-ROLLBACK.md",
-    );
+    const runbook = readRepo("docs/rebuild/13-P5-DEPLOYMENT-AND-ROLLBACK.md");
 
     expect(runbook).toContain(
       "No hosted staging deployment has been executed or approved yet",
     );
-    expect(runbook).toContain("Hosted database rollback is **forward recovery**");
+    expect(runbook).toContain(
+      "Hosted database rollback is **forward recovery**",
+    );
     expect(runbook).toContain("expand-and-contract");
     expect(runbook).toContain("Production ready: No");
     expect(runbook).not.toContain("staging deployment is complete");
   });
 
   test("pins Node LTS and runs release startup safeguards in CI", () => {
-    const workflow = readRepo(
-      ".github/workflows/p5-operational-baseline.yml",
-    );
+    const workflow = readRepo(".github/workflows/p5-operational-baseline.yml");
 
     expect(workflow).toContain("uses: actions/setup-node@v6");
     expect(workflow).toContain("node-version: 24.14.1");

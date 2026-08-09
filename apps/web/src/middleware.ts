@@ -47,8 +47,8 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     }
 
     const response = NextResponse.next();
-    response.headers.set("x-kiteb-product-phase", "p1");
-    response.headers.set("x-kiteb-auth-state", "unconfigured");
+    response.headers.set("x-ai-workspace-product-phase", "p1");
+    response.headers.set("x-ai-workspace-auth-state", "unconfigured");
     return response;
   }
 
@@ -64,9 +64,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return redirectWithCookies(new URL("/workspaces", request.url), response);
   }
 
-  response.headers.set("x-kiteb-product-phase", "p1");
+  response.headers.set("x-ai-workspace-product-phase", "p1");
   response.headers.set(
-    "x-kiteb-auth-state",
+    "x-ai-workspace-auth-state",
     user ? "authenticated" : "anonymous",
   );
   return response;

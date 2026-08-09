@@ -6,9 +6,9 @@ import { fileURLToPath } from "node:url";
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repoRoot = resolve(webRoot, "../..");
 const readWeb = (path: string) =>
-  readFileSync(resolve(webRoot, path), "utf8");
+  readFileSync(resolve(webRoot, path), "utf8").replaceAll("\r\n", "\n");
 const readRepo = (path: string) =>
-  readFileSync(resolve(repoRoot, path), "utf8");
+  readFileSync(resolve(repoRoot, path), "utf8").replaceAll("\r\n", "\n");
 
 describe("P5 OpenRouter BYOK boundary", () => {
   test("ships the authenticated settings, catalog, and model routes", () => {
@@ -33,11 +33,11 @@ describe("P5 OpenRouter BYOK boundary", () => {
     );
     const repository = readWeb("src/lib/ai/user-settings.ts");
     const settingsRoute = readWeb("src/app/api/v1/ai/settings/route.ts");
-    const settingsUi = readWeb(
-      "src/components/ai/openrouter-settings.tsx",
-    );
+    const settingsUi = readWeb("src/components/ai/openrouter-settings.tsx");
 
-    expect(migration).toContain("create extension if not exists supabase_vault");
+    expect(migration).toContain(
+      "create extension if not exists supabase_vault",
+    );
     expect(migration).toContain("vault.create_secret");
     expect(migration).toContain("vault.update_secret");
     expect(migration).toContain("vault.decrypted_secrets");
@@ -62,7 +62,7 @@ describe("P5 OpenRouter BYOK boundary", () => {
 
     expect(client).toContain('openRouterGet("/models/user", apiKey)');
     expect(client).toContain('cache: "no-store"');
-    expect(client).toContain("model.outputModalities.includes(\"text\")");
+    expect(client).toContain('model.outputModalities.includes("text")');
     expect(client).toContain('id.endsWith(":free")');
     expect(route).toContain("openRouterModelCatalogQuerySchema");
     expect(ui).toContain("Search by model name or ID");
@@ -119,6 +119,8 @@ describe("P5 OpenRouter BYOK boundary", () => {
     expect(releaseTemplate).toContain("AI_PROVIDER=openrouter");
     expect(releaseTemplate).not.toContain("OPENAI_API_KEY=");
     expect(releaseTemplate).not.toContain("OPENROUTER_API_KEY=");
-    expect(runtime).toContain('provider: environment.AI_PROVIDER?.trim() || "openrouter"');
+    expect(runtime).toContain(
+      'provider: environment.AI_PROVIDER?.trim() || "openrouter"',
+    );
   });
 });

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { brand } from "@/config/brand";
 import "./globals.css";
 import "./rebuild.css";
 
 export const metadata: Metadata = {
-  title: "الصفحة غير موجودة | Kiteb",
-  description: "The requested Kiteb page does not exist.",
+  title: `الصفحة غير موجودة | ${brand.name}`,
+  description: `The requested ${brand.name} page does not exist.`,
 };
 
 export default function GlobalNotFound() {

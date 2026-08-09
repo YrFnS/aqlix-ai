@@ -6,9 +6,9 @@ import { fileURLToPath } from "node:url";
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repoRoot = resolve(webRoot, "../..");
 const readWeb = (path: string) =>
-  readFileSync(resolve(webRoot, path), "utf8");
+  readFileSync(resolve(webRoot, path), "utf8").replaceAll("\r\n", "\n");
 const readRepo = (path: string) =>
-  readFileSync(resolve(repoRoot, path), "utf8");
+  readFileSync(resolve(repoRoot, path), "utf8").replaceAll("\r\n", "\n");
 
 describe("P3 private document source boundary", () => {
   test("ships the active source route graph", () => {
@@ -39,7 +39,7 @@ describe("P3 private document source boundary", () => {
     expect(collectionRoute).toContain("requireApiUser");
     expect(itemRoute).toContain("requireApiUser");
     expect(repository).toContain("DOCUMENT_STORAGE_BUCKET");
-    expect(repository).toContain('.from(DOCUMENT_STORAGE_BUCKET)');
+    expect(repository).toContain(".from(DOCUMENT_STORAGE_BUCKET)");
     expect(repository).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(collectionRoute).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
   });

@@ -151,6 +151,7 @@ playwright/.cache/
 e2e-results/
 screenshots/
 test-screenshots/
+dogfood-output/
 
 # Storybook
 storybook-static/
@@ -166,6 +167,7 @@ repo-structure/
 *.tsbuildinfo
 .turbo/
 .vercel/
+supabase/.temp/
 .contentlayer/
 *.mcp.json
 .mcp.json.example

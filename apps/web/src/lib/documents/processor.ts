@@ -5,7 +5,7 @@ import {
   type ExtractedPassageInput,
 } from "@iraqi-ai/types";
 
-export const DOCUMENT_PROCESSOR_NAME = "kiteb-text";
+export const DOCUMENT_PROCESSOR_NAME = "tuppra-text";
 export const DOCUMENT_PROCESSOR_VERSION = "1.0.0";
 
 const MAX_LINE_CHARACTERS = 20_000;

@@ -19,9 +19,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <span className="font-arabic-heading text-2xl font-semibold tracking-tight">
               {brand.name}
             </span>
-            <span className="hidden rounded-full border border-border bg-card px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.14em] text-muted-foreground sm:inline-flex">
-              {brand.status}
-            </span>
           </Link>
           <Link
             href={brand.links.documentation}
@@ -41,9 +38,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <p>
             © {year} {brand.name}. Product rebuild in progress.
           </p>
-          <p>
-            اسم عمل مؤقت · لا توجد مطالبة بالجاهزية التجارية أو القانونية.
-          </p>
+          <p>اسم عمل مؤقت · لا توجد مطالبة بالجاهزية التجارية أو القانونية.</p>
         </div>
       </footer>
     </div>

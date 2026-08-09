@@ -36,7 +36,7 @@ describe("P1 account boundary", () => {
   test("refreshes server sessions and protects the P1 application routes", () => {
     const middleware = readSource("src/middleware.ts");
 
-    expect(middleware).toContain("x-kiteb-product-phase");
+    expect(middleware).toContain("x-ai-workspace-product-phase");
     expect(middleware).toContain('"p1"');
     expect(middleware).toContain("refreshSession");
     expect(middleware).toContain('"/workspaces"');

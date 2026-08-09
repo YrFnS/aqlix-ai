@@ -8,12 +8,14 @@ export function Footer() {
     <footer className="mt-auto border-t border-border/70 bg-card/50">
       <div className="container-responsive grid gap-8 py-10 sm:grid-cols-[1fr_auto] sm:items-end">
         <div className="max-w-xl space-y-3">
-          <p className="font-arabic-heading text-xl font-semibold">{brand.name}</p>
+          <p className="font-arabic-heading text-xl font-semibold">
+            {brand.name}
+          </p>
           <p className="text-sm leading-7 text-muted-foreground">
             {brand.descriptionAr}
           </p>
           <p className="text-xs leading-6 text-muted-foreground">
-            Kiteb هو اسم عمل مؤقت خلال إعادة بناء المنتج، وليس إعلاناً عن
+            اسم المنتج النهائي قيد المراجعة، وهذه المعاينة ليست إعلاناً عن
             جاهزية تجارية أو قانونية.
           </p>
         </div>

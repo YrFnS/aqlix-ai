@@ -8,7 +8,7 @@ export async function GET() {
   const response = Response.json(
     {
       status: "alive",
-      service: "kiteb-web",
+      service: "ai-workspace-web",
       release: resolveReleaseSha(process.env)?.slice(0, 12) ?? "unversioned",
       timestamp: new Date().toISOString(),
       uptimeSeconds: Math.max(0, Math.floor(process.uptime())),

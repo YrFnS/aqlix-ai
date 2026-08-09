@@ -11,7 +11,8 @@ const password = "P4-Durable-Draft-Test-2026!";
 
 function requiredEnvironment(name: string): string {
   const value = process.env[name]?.trim();
-  if (!value) throw new Error(`${name} is required for the P4 browser journey.`);
+  if (!value)
+    throw new Error(`${name} is required for the P4 browser journey.`);
   return value;
 }
 
@@ -190,7 +191,9 @@ async function createAdditionalDraft(
   const payload = (await response.json()) as {
     ok?: boolean;
     data?: {
-      detail?: { draft?: { id?: string; kind?: string; currentVersion?: number } };
+      detail?: {
+        draft?: { id?: string; kind?: string; currentVersion?: number };
+      };
     };
   };
   expect(payload.ok).toBe(true);
@@ -247,9 +250,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
   });
-  await page
-    .getByRole("button", { name: "رفع واستخراج المقاطع" })
-    .click();
+  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/sources\/[0-9a-f-]+\?status=uploaded$/,
   );
@@ -258,9 +259,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
   await page.getByLabel("عنوان اختياري").fill("P4 launch decision");
-  await page
-    .getByRole("button", { name: "إنشاء وفتح المحادثة" })
-    .click();
+  await page.getByRole("button", { name: "إنشاء وفتح المحادثة" }).click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
@@ -273,9 +272,14 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     .fill("What does the English roadmap confirm about the launch milestone?");
   await page.getByRole("button", { name: "إرسال" }).click();
   await expect(
-    page.getByText(/saved workspace passage supports this deterministic answer/i),
+    page.getByText(
+      "The saved workspace passage supports this deterministic answer [S1].",
+      { exact: true },
+    ),
   ).toBeVisible();
-  await expect(page.getByText(/Response and inspectable citations saved/)).toBeVisible();
+  await expect(
+    page.getByText(/Response and inspectable citations saved/),
+  ).toBeVisible();
 
   const conversation = await conversationPayload(
     context.request,
@@ -301,12 +305,16 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   const primaryDraftId = new URL(page.url()).pathname.split("/").pop();
   expect(primaryDraftId).toBeTruthy();
 
-  await expect(page.getByText(/Draft, version one, and provenance saved/)).toBeVisible();
+  await expect(
+    page.getByText(/Draft, version one, and provenance saved/),
+  ).toBeVisible();
   await expect(page.getByLabel("عنوان المسودة", { exact: true })).toHaveValue(
     "مذكرة — P4 launch decision",
   );
   await expect(draftContentEditor(page)).toHaveValue(/\[S1\]/u);
-  await expect(page.getByRole("link").filter({ hasText: documentName })).toBeVisible();
+  await expect(
+    page.getByRole("link").filter({ hasText: documentName }),
+  ).toBeVisible();
 
   let draft = await draftPayload(
     context.request,
@@ -368,9 +376,12 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(draftContentEditor(page)).toHaveValue(editedContent);
   await page.getByRole("button", { name: "نسخ" }).click();
   await expect(page.getByRole("button", { name: "نُسخ" })).toBeVisible();
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(
-    editedContent,
-  );
+  expect(
+    (await page.evaluate(() => navigator.clipboard.readText())).replaceAll(
+      "\r\n",
+      "\n",
+    ),
+  ).toBe(editedContent);
 
   const htmlExport = await context.request.get(
     `/api/v1/workspaces/${workspaceId}/drafts/${primaryDraftId}/export?format=html`,
@@ -395,7 +406,9 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(await markdownExport.text()).toContain("# مذكرة — P4 launch decision");
 
   await page.getByRole("button", { name: "استعادة" }).last().click();
-  await expect(page.getByText(/Snapshot restored as a new immutable version/)).toBeVisible();
+  await expect(
+    page.getByText(/Snapshot restored as a new immutable version/),
+  ).toBeVisible();
   draft = await draftPayload(context.request, workspaceId!, primaryDraftId!);
   expect(draft.data.detail.draft.currentVersion).toBe(3);
   expect(draft.data.detail.versions[0]).toMatchObject({
@@ -405,26 +418,37 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   });
   expect(draft.data.detail.draft.content).toBe(initialContent);
 
-  await page.getByRole("link", { name: /عرض اللقطة/ }).last().click();
+  await page
+    .getByRole("link", { name: /عرض اللقطة/ })
+    .last()
+    .click();
   await expect(page.getByRole("heading", { name: "الإصدار 1" })).toBeVisible();
   await expect(page.getByText(/هذه اللقطة غير قابلة للتعديل/)).toBeVisible();
   await page.getByRole("link", { name: "العودة إلى المسودة" }).click();
 
   await page.getByLabel("إجراء اقتراح المسودة").selectOption("improve");
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
-  await expect(page.getByRole("heading", { name: "جاهز للمراجعة" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "جاهز للمراجعة" }),
+  ).toBeVisible();
   await expect(page.getByText(/صياغة اختبارية محسّنة/)).toBeVisible();
   await page.getByRole("button", { name: "رفض الاقتراح" }).click();
-  await expect(page.getByText(/Proposal discarded; accepted work is unchanged/)).toBeVisible();
+  await expect(
+    page.getByText(/Proposal discarded; accepted work is unchanged/),
+  ).toBeVisible();
   draft = await draftPayload(context.request, workspaceId!, primaryDraftId!);
   expect(draft.data.detail.draft.currentVersion).toBe(3);
   expect(draft.data.detail.generations[0]?.status).toBe("discarded");
 
   await page.getByLabel("إجراء اقتراح المسودة").selectOption("expand");
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
-  await expect(page.getByRole("heading", { name: "جاهز للمراجعة" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "جاهز للمراجعة" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "تطبيق كإصدار جديد" }).click();
-  await expect(page.getByText(/Proposal applied as a new immutable version/)).toBeVisible();
+  await expect(
+    page.getByText(/Proposal applied as a new immutable version/),
+  ).toBeVisible();
   draft = await draftPayload(context.request, workspaceId!, primaryDraftId!);
   expect(draft.data.detail.draft.currentVersion).toBe(4);
   expect(draft.data.detail.versions[0]?.sourceKind).toBe("ai");
@@ -435,16 +459,22 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     .getByLabel("تعليمات اقتراح المسودة")
     .fill("[fixture:slow] Continue slowly and preserve [S1].");
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
-  await expect(page.getByRole("button", { name: "إيقاف وحفظ الجزئي" })).toBeVisible();
-  await page.waitForTimeout(300);
+  await expect(
+    page.getByRole("button", { name: "إيقاف وحفظ الجزئي" }),
+  ).toBeVisible();
+  await expect(page.locator("pre")).toBeVisible();
   await page.getByRole("button", { name: "إيقاف وحفظ الجزئي" }).click();
-  await expect(page.getByRole("heading", { name: "أُلغي وحُفظ الجزئي" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "أُلغي وحُفظ الجزئي" }),
+  ).toBeVisible();
   draft = await draftPayload(context.request, workspaceId!, primaryDraftId!);
   expect(draft.data.detail.generations[0]).toMatchObject({
     status: "cancelled",
     failureCode: "STREAM_CANCELLED",
   });
-  expect(draft.data.detail.generations[0]?.proposedContent.length).toBeGreaterThan(0);
+  expect(
+    draft.data.detail.generations[0]?.proposedContent.length,
+  ).toBeGreaterThan(0);
 
   await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");
   await page
@@ -485,8 +515,12 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await addViewerMembership(workspaceId!, viewerEmail);
   await viewerPage.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
   await expect(draftContentEditor(viewerPage)).not.toBeEditable();
-  await expect(viewerPage.getByRole("button", { name: "حفظ إصدار" })).toHaveCount(0);
-  await expect(viewerPage.getByRole("button", { name: "بدء اقتراح" })).toHaveCount(0);
+  await expect(
+    viewerPage.getByRole("button", { name: "حفظ إصدار" }),
+  ).toHaveCount(0);
+  await expect(
+    viewerPage.getByRole("button", { name: "بدء اقتراح" }),
+  ).toHaveCount(0);
   const viewerExport = await viewerContext.request.get(
     `/api/v1/workspaces/${workspaceId}/drafts/${primaryDraftId}/export?format=txt`,
   );
@@ -517,7 +551,9 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     `/api/v1/workspaces/${workspaceId}/drafts/${primaryDraftId}`,
   );
   expect(outsiderApi.status()).toBe(404);
-  await outsiderPage.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
+  await outsiderPage.goto(
+    `/workspaces/${workspaceId}/drafts/${primaryDraftId}`,
+  );
   await expect(
     outsiderPage.getByRole("heading", { name: "المسودة غير متاحة" }),
   ).toBeVisible();
@@ -531,7 +567,9 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await page.getByRole("link", { name: "أرشيف المسودات" }).click();
   await page.getByRole("link", { name: "فتح المسودة" }).click();
   await expect(draftContentEditor(page)).not.toBeEditable();
-  await expect(page.getByRole("button", { name: "استعادة إلى العمل" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "استعادة إلى العمل" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "استعادة إلى العمل" }).click();
   await expect(page).toHaveURL(
     new RegExp(

@@ -12,7 +12,8 @@ const password = "P3-Document-Source-Test-2026!";
 
 function requiredEnvironment(name: string): string {
   const value = process.env[name]?.trim();
-  if (!value) throw new Error(`${name} is required for the P3 browser journey.`);
+  if (!value)
+    throw new Error(`${name} is required for the P3 browser journey.`);
   return value;
 }
 
@@ -64,7 +65,9 @@ function isolatedSupabaseClient(key = publicKey): SupabaseClient<Database> {
   });
 }
 
-async function signedUserClient(email: string): Promise<SupabaseClient<Database>> {
+async function signedUserClient(
+  email: string,
+): Promise<SupabaseClient<Database>> {
   const client = isolatedSupabaseClient();
   const { error } = await client.auth.signInWithPassword({ email, password });
   if (error) throw error;
@@ -192,9 +195,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     mimeType: "text/markdown",
     buffer: markdownBytes,
   });
-  await page
-    .getByRole("button", { name: "رفع واستخراج المقاطع" })
-    .click();
+  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
 
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/sources\/[0-9a-f-]+\?status=uploaded$/,
@@ -249,7 +250,9 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   expect(signedLocation).toBeTruthy();
   const downloaded = await context.request.get(signedLocation!);
   expect(downloaded.status()).toBe(200);
-  expect(Buffer.from(await downloaded.body()).toString("utf8")).toBe(markdownText);
+  expect(Buffer.from(await downloaded.body()).toString("utf8")).toBe(
+    markdownText,
+  );
 
   const ownerStorageClient = await signedUserClient(ownerEmail);
   const ownerDownload = await ownerStorageClient.storage
@@ -278,9 +281,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     mimeType: "text/markdown",
     buffer: markdownBytes,
   });
-  await page
-    .getByRole("button", { name: "رفع واستخراج المقاطع" })
-    .click();
+  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
   await expect(
     page.getByRole("alert").filter({ hasText: "DUPLICATE_DOCUMENT" }),
   ).toBeVisible();
@@ -379,9 +380,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     `/api/v1/workspaces/${workspaceId}/sources/${attachmentId}`,
   );
   expect(outsiderApi.status()).toBe(404);
-  await outsiderPage.goto(
-    `/workspaces/${workspaceId}/sources/${attachmentId}`,
-  );
+  await outsiderPage.goto(`/workspaces/${workspaceId}/sources/${attachmentId}`);
   await expect(
     outsiderPage.getByRole("heading", { name: "المستند غير متاح" }),
   ).toBeVisible();
@@ -443,10 +442,11 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     `/api/v1/workspaces/${workspaceId}/sources/${attachmentId}`,
   );
   expect(deletedApi.status()).toBe(404);
-  const deletedObject = await ownerStorageClient.storage
-    .from(DOCUMENT_STORAGE_BUCKET)
-    .download(storagePath);
-  expect(deletedObject.error).toBeTruthy();
+  const deletedObjectDirectory = await isolatedSupabaseClient(adminKey)
+    .storage.from(DOCUMENT_STORAGE_BUCKET)
+    .list(`${workspaceId}/${attachmentId}`);
+  expect(deletedObjectDirectory.error).toBeNull();
+  expect(deletedObjectDirectory.data).toEqual([]);
 
   await page.getByRole("button", { name: "تسجيل الخروج" }).click();
   await expect(page).toHaveURL(/\/login\?status=signed-out$/);

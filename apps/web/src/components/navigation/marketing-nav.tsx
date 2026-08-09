@@ -19,7 +19,7 @@ const mobileItems = [
 
 export function MarketingNav() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85">
       <nav className="container-responsive flex h-16 items-center justify-between gap-4">
         <Link
           href={brand.links.home}
@@ -28,9 +28,6 @@ export function MarketingNav() {
         >
           <span className="font-arabic-heading text-2xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary">
             {brand.name}
-          </span>
-          <span className="hidden rounded-full border border-border/80 bg-card px-2.5 py-1 text-[0.65rem] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:inline-flex">
-            {brand.status}
           </span>
         </Link>
 

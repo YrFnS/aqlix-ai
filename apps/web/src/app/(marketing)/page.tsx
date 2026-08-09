@@ -85,8 +85,8 @@ export default function Home() {
               <span className="text-primary">عمل واضح.</span>
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-9 text-muted-foreground sm:text-xl">
-              {brand.descriptionAr} نبني مساراً واحداً متكاملاً: سؤال، مصادر قابلة
-              للفحص، ثم مسودة يمكنك حفظها وتطويرها.
+              {brand.descriptionAr} نبني مساراً واحداً متكاملاً: سؤال، مصادر
+              قابلة للفحص، ثم مسودة يمكنك حفظها وتطويرها.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -111,9 +111,11 @@ export default function Home() {
                 aria-hidden="true"
               />
               <p>
-                <strong className="font-semibold text-foreground">حالة صادقة:</strong>{" "}
-                Kiteb اسم عمل مؤقت، والمنتج في مرحلة إعادة البناء. هذه الصفحة تشرح
-                الاتجاه المعتمد ولا تدّعي اكتمال الوظائف بعد.
+                <strong className="font-semibold text-foreground">
+                  حالة صادقة:
+                </strong>{" "}
+                اسم المنتج النهائي قيد المراجعة، والمنتج في مرحلة إعادة البناء.
+                هذه الصفحة تشرح الاتجاه المعتمد ولا تدّعي اكتمال الوظائف بعد.
               </p>
             </div>
           </div>
@@ -140,7 +142,9 @@ export default function Home() {
                       <p className="text-xs font-semibold text-muted-foreground">
                         المصادر
                       </p>
-                      <span className="text-[0.65rem] text-muted-foreground">2</span>
+                      <span className="text-[0.65rem] text-muted-foreground">
+                        2
+                      </span>
                     </div>
                     <div className="space-y-3">
                       <div className="rounded-xl border border-border/70 bg-card p-3">
@@ -183,14 +187,18 @@ export default function Home() {
                       </div>
                       <div className="space-y-3 text-sm leading-7 text-muted-foreground">
                         <p>
-                          اتُّفق على تثبيت نطاق الإصدار الأول، مع حصر التنفيذ في مسار
-                          المستندات والمحادثة والمسودات.
-                          <sup className="mx-1 font-semibold text-primary">1</sup>
+                          اتُّفق على تثبيت نطاق الإصدار الأول، مع حصر التنفيذ في
+                          مسار المستندات والمحادثة والمسودات.
+                          <sup className="mx-1 font-semibold text-primary">
+                            1
+                          </sup>
                         </p>
                         <p>
-                          تحتاج سياسة الاحتفاظ بالملفات ومسؤولية مراجعة المصادر إلى
-                          قرار موثّق قبل الاختبار المغلق.
-                          <sup className="mx-1 font-semibold text-primary">2</sup>
+                          تحتاج سياسة الاحتفاظ بالملفات ومسؤولية مراجعة المصادر
+                          إلى قرار موثّق قبل الاختبار المغلق.
+                          <sup className="mx-1 font-semibold text-primary">
+                            2
+                          </sup>
                         </p>
                       </div>
                     </div>
@@ -218,10 +226,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="product" className="border-b border-border/70 bg-card/40 py-20 sm:py-28">
+      <section
+        id="product"
+        className="border-b border-border/70 bg-card/40 py-20 sm:py-28"
+      >
         <div className="container-responsive">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">مسار المنتج الأول</p>
+            <p className="text-sm font-semibold text-primary">
+              مسار المنتج الأول
+            </p>
             <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
               لا مزيد من العروض المنفصلة. مسار واحد من السؤال إلى العمل.
             </h2>
@@ -232,28 +245,33 @@ export default function Home() {
           </div>
 
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {workflow.map(({ step, title, titleEn, description, icon: Icon }) => (
-              <article
-                key={step}
-                className="group rounded-3xl border border-border/80 bg-background p-6 transition-transform hover:-translate-y-1"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+            {workflow.map(
+              ({ step, title, titleEn, description, icon: Icon }) => (
+                <article
+                  key={step}
+                  className="group rounded-3xl border border-border/80 bg-background p-6 transition-transform hover:-translate-y-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <span className="text-xs font-semibold tracking-[0.18em] text-muted-foreground">
+                      {step}
+                    </span>
                   </div>
-                  <span className="text-xs font-semibold tracking-[0.18em] text-muted-foreground">
-                    {step}
-                  </span>
-                </div>
-                <h3 className="mt-7 text-xl font-semibold">{title}</h3>
-                <p dir="ltr" className="mt-1 text-xs uppercase tracking-[0.16em] text-primary">
-                  {titleEn}
-                </p>
-                <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                  {description}
-                </p>
-              </article>
-            ))}
+                  <h3 className="mt-7 text-xl font-semibold">{title}</h3>
+                  <p
+                    dir="ltr"
+                    className="mt-1 text-xs uppercase tracking-[0.16em] text-primary"
+                  >
+                    {titleEn}
+                  </p>
+                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                    {description}
+                  </p>
+                </article>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -261,7 +279,9 @@ export default function Home() {
       <section id="principles" className="py-20 sm:py-28">
         <div className="container-responsive grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
           <div className="max-w-xl lg:sticky lg:top-28">
-            <p className="text-sm font-semibold text-primary">مبادئ إعادة البناء</p>
+            <p className="text-sm font-semibold text-primary">
+              مبادئ إعادة البناء
+            </p>
             <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
               منتج أكثر هدوءاً، وأكثر دقة، وأسهل في الثقة.
             </h2>
@@ -305,9 +325,9 @@ export default function Home() {
               نبدأ برحلة واحدة تعمل فعلاً، ثم نضيف القدرات التي يثبت احتياجها.
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-8 text-background/70">
-              الدفعات، الوكلاء المتعددون، الصوت، الأتمتة، والتخصصات المهنية مؤجلة
-              إلى أن يكتمل مسار السؤال والمصدر والمسودة ببيانات حقيقية واختبارات
-              قابلة للتكرار.
+              الدفعات، الوكلاء المتعددون، الصوت، الأتمتة، والتخصصات المهنية
+              مؤجلة إلى أن يكتمل مسار السؤال والمصدر والمسودة ببيانات حقيقية
+              واختبارات قابلة للتكرار.
             </p>
           </div>
           <Link

@@ -15,18 +15,18 @@ const publicSurface = [
   "src/components/navigation/marketing-nav.tsx",
   "src/components/navigation/app-nav.tsx",
   "src/app/components/footer.tsx",
+  "src/lib/documents/processor.ts",
 ]
   .map(readSource)
   .join("\n");
 
 describe("rebuild brand and scope", () => {
-  test("uses neutral bilingual product copy while the permanent name is pending", () => {
-    expect(brand.name).toBe("AI Workspace");
-    expect(brand.shortName).toBe("Workspace");
+  test("uses the Tuppra demo identity with bilingual product copy", () => {
+    expect(brand.name).toBe("Tuppra");
+    expect(brand.shortName).toBe("Tuppra");
     expect(brand.category.length).toBeGreaterThan(10);
     expect(brand.categoryAr).toMatch(/[\u0600-\u06ff]/u);
     expect(brand.descriptionAr).toMatch(/[\u0600-\u06ff]/u);
-    expect(brand.status).toBe("Product name pending");
     expect(brand.links.workspace).toBe("/workspaces");
   });
 
@@ -55,6 +55,8 @@ describe("rebuild brand and scope", () => {
       readSource("src/components/navigation/app-nav.tsx"),
     ].join("\n");
 
-    expect(navigation).not.toMatch(/payment|workflow builder|medical|legal agent/i);
+    expect(navigation).not.toMatch(
+      /payment|workflow builder|medical|legal agent/i,
+    );
   });
 });

@@ -8,11 +8,11 @@ import {
   FileText,
   ShieldCheck,
 } from "lucide-react";
+import { brand } from "@/config/brand";
 
 export const metadata: Metadata = {
   title: "خطة المنتج",
-  description:
-    "Verified Kiteb rebuild status, product loop, active capabilities, and operational-readiness boundaries.",
+  description: `Verified ${brand.name} rebuild status, product loop, active capabilities, and operational-readiness boundaries.`,
 };
 
 const phases = [
@@ -89,16 +89,16 @@ export default function ProductPlanPage() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-background/20 bg-background/5 px-3 py-1.5 text-xs font-semibold text-background/75">
                 <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
-                Kiteb · provisional working name
+                {brand.name}
               </div>
               <h1 className="mt-6 text-balance font-arabic-heading text-4xl font-semibold sm:text-6xl">
                 خطة منتج قابلة للتحقق، لا قائمة وعود
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-9 text-background/65 sm:text-lg">
-                Kiteb مساحة عمل عربية أولاً وثنائية اللغة لتحويل المحادثات
-                والمستندات إلى عمل واضح وقابل لإعادة الاستخدام. الحلقة الأساسية
-                تعمل الآن على فرع P4، بينما تبقى الجاهزية التشغيلية والإطلاق العام
-                ضمن P5.
+                {brand.name} مساحة عمل عربية أولاً وثنائية اللغة لتحويل
+                المحادثات والمستندات إلى عمل واضح وقابل لإعادة الاستخدام. الحلقة
+                الأساسية تعمل الآن على فرع P4، بينما تبقى الجاهزية التشغيلية
+                والإطلاق العام ضمن P5.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
@@ -117,7 +117,10 @@ export default function ProductPlanPage() {
 
             <div className="rounded-3xl border border-background/15 bg-background/5 p-5 backdrop-blur">
               <div className="flex items-center gap-3">
-                <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+                <ShieldCheck
+                  className="h-5 w-5 text-primary"
+                  aria-hidden="true"
+                />
                 <p className="text-sm font-semibold">نطاق مثبت بالاختبارات</p>
               </div>
               <p className="mt-3 text-sm leading-7 text-background/60">
@@ -205,15 +208,17 @@ export default function ProductPlanPage() {
               رحلة محفوظة ومعزولة
             </h2>
             <p className="mt-4 text-sm leading-8 text-muted-foreground">
-              يمكن للمالك أو المحرر إنشاء مساحة، رفع مصدر مدعوم، الحصول على إجابة
-              موثقة، تحويلها إلى مسودة، حفظ الإصدارات، استعادة لقطة، تصدير UTF-8،
-              ومراجعة اقتراح قبل تطبيقه. القارئ يراجع ويصدّر فقط، والحساب الخارجي
-              لا يرى البيانات.
+              يمكن للمالك أو المحرر إنشاء مساحة، رفع مصدر مدعوم، الحصول على
+              إجابة موثقة، تحويلها إلى مسودة، حفظ الإصدارات، استعادة لقطة، تصدير
+              UTF-8، ومراجعة اقتراح قبل تطبيقه. القارئ يراجع ويصدّر فقط، والحساب
+              الخارجي لا يرى البيانات.
             </p>
           </article>
 
           <article className="rounded-3xl border border-destructive/20 bg-card p-6 sm:p-8">
-            <p className="text-sm font-semibold text-destructive">غير معتمد بعد</p>
+            <p className="text-sm font-semibold text-destructive">
+              غير معتمد بعد
+            </p>
             <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
               الإطلاق العام والاعتماد
             </h2>

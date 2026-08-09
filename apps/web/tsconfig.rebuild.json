@@ -5,8 +5,8 @@
     "incremental": false,
     "noEmit": true
   },
-  "include": [],
-  "exclude": ["node_modules", ".next", "dist", "tests"],
+  "include": [".next/types/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tests"],
   "files": [
     "next-env.d.ts",
     "next.config.ts",

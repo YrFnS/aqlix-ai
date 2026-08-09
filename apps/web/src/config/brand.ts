@@ -1,8 +1,6 @@
 export const brand = {
-  // Temporary neutral descriptor. Do not replace this with a permanent product
-  // name until naming, domain, handle, and trademark checks are complete.
-  name: "AI Workspace",
-  shortName: "Workspace",
+  name: "Tuppra",
+  shortName: "Tuppra",
   category: "Arabic-first AI workspace",
   categoryAr: "مساحة عمل عربية أولاً بالذكاء الاصطناعي",
   tagline: "Bring the context. Turn it into work.",
@@ -11,7 +9,6 @@ export const brand = {
     "An Arabic-first, bilingual AI workspace for turning conversations and documents into clear, reusable work.",
   descriptionAr:
     "مساحة عمل عربية أولاً، ثنائية اللغة، تحوّل المحادثات والمستندات إلى عمل واضح وقابل للاستخدام.",
-  status: "Product name pending",
   links: {
     home: "/",
     workspace: "/workspaces",
