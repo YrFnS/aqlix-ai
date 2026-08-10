@@ -62,6 +62,13 @@ export function AccessibilityRuntime() {
   const focusFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
+    document.documentElement.dataset.appHydrated = "true";
+    return () => {
+      delete document.documentElement.dataset.appHydrated;
+    };
+  }, []);
+
+  useEffect(() => {
     setAnnouncement("");
     const timer = window.setTimeout(() => {
       const title = document.title.split("|")[0]?.trim() || "الصفحة";
