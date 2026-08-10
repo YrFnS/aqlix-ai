@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const baseURL = "http://127.0.0.1:3000";
+const desktopViewport = { width: 1440, height: 900 };
 
 export default defineConfig({
   testDir: "./tests/e2e/p5",
@@ -22,9 +23,8 @@ export default defineConfig({
     ["json", { outputFile: "test-results/p5-authenticated/results.json" }],
   ],
   use: {
-    ...devices["Desktop Chrome"],
     baseURL,
-    viewport: { width: 1440, height: 900 },
+    viewport: desktopViewport,
     locale: "ar-IQ",
     timezoneId: "Asia/Baghdad",
     actionTimeout: 20000,
@@ -36,7 +36,27 @@ export default defineConfig({
   projects: [
     {
       name: "p5-authenticated-chromium",
-      use: { browserName: "chromium" },
+      use: {
+        ...devices["Desktop Chrome"],
+        browserName: "chromium",
+        viewport: desktopViewport,
+      },
+    },
+    {
+      name: "p5-authenticated-firefox",
+      use: {
+        ...devices["Desktop Firefox"],
+        browserName: "firefox",
+        viewport: desktopViewport,
+      },
+    },
+    {
+      name: "p5-authenticated-webkit",
+      use: {
+        ...devices["Desktop Safari"],
+        browserName: "webkit",
+        viewport: desktopViewport,
+      },
     },
   ],
   webServer: {
