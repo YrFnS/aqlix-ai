@@ -8,13 +8,14 @@ import type {
   ConversationSummary,
   WorkspaceAccess,
 } from "@iraqi-ai/types";
-import { Button } from "@/components/ui/button";
-import { PageShell } from "@/components/ui/page-shell";
 import { ConversationInspector } from "@/components/conversations/conversation-inspector";
 import { ConversationShell } from "@/components/conversations/conversation-shell";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { ConversationSwitcher } from "@/components/conversations/conversation-switcher";
 import { ConversationWorkspaceFrame } from "@/components/conversations/conversation-workspace-frame";
+import { ClientReadyBoundary } from "@/components/system/client-ready-boundary";
+import { Button } from "@/components/ui/button";
+import { PageShell } from "@/components/ui/page-shell";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   getConversation,
@@ -148,15 +149,17 @@ export default async function ConversationPage({
           />
         }
       >
-        <ConversationShell
-          workspaceId={workspace.id}
-          conversation={conversation}
-          initialMessages={messages}
-          canWrite={canWrite}
-          readOnlyReason={
-            isWorkspaceArchived ? "workspace-archived" : "membership"
-          }
-        />
+        <ClientReadyBoundary name="conversation">
+          <ConversationShell
+            workspaceId={workspace.id}
+            conversation={conversation}
+            initialMessages={messages}
+            canWrite={canWrite}
+            readOnlyReason={
+              isWorkspaceArchived ? "workspace-archived" : "membership"
+            }
+          />
+        </ClientReadyBoundary>
       </ConversationWorkspaceFrame>
     </PageShell>
   );
