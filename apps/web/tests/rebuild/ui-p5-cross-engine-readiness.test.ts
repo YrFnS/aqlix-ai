@@ -38,14 +38,17 @@ describe("UI P5 authenticated cross-engine readiness", () => {
     );
   });
 
-  test("does not remount a newly opened draft after navigation", () => {
+  test("hands a newly created durable draft to a fresh document", () => {
     const conversion = readWeb(
       "src/components/drafts/draft-from-conversation-panel.tsx",
     );
 
+    expect(conversion).toContain("window.location.assign(");
     expect(conversion).toContain(
-      "router.push(`/workspaces/${workspaceId}/drafts/${draftId}?status=created`)",
+      "`/workspaces/${workspaceId}/drafts/${draftId}?status=created`",
     );
+    expect(conversion).not.toContain("useRouter");
+    expect(conversion).not.toContain("router.push");
     expect(conversion).not.toContain("router.refresh();");
   });
 
