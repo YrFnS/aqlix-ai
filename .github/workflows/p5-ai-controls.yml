@@ -2,9 +2,9 @@ name: P5 AI Resource Controls
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   pull_request:
-    branches: [develop]
+    branches: [main]
 
 permissions:
   contents: read
@@ -22,7 +22,7 @@ env:
 
 jobs:
   ai-controls:
-    name: PostgreSQL Budgets Concurrency & Lease Recovery
+    name: PostgreSQL Budgets Concurrency & Privilege Boundaries
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -66,13 +66,14 @@ jobs:
           bun test packages/types/src/contracts/ai-controls.test.ts
           bun test apps/web/tests/rebuild/p5-ai-controls-boundary.test.ts
 
-      - name: Verify quotas concurrency settlement and expiry recovery
+      - name: Verify quotas concurrency settlement expiry and privileges
         shell: bash
         run: |
           set -euo pipefail
           psql "$P5_TEST_DB_URL" \
             -v ON_ERROR_STOP=1 \
             -f supabase/tests/p5_ai_generation_controls.test.sql \
+            -f supabase/tests/p5_ai_generation_privileges.test.sql \
             | tee p5-ai-controls.log
 
       - name: Upload non-secret control evidence
@@ -98,8 +99,8 @@ jobs:
       - name: Check AI resource controls
         run: |
           if [[ "${{ needs.ai-controls.result }}" != "success" ]]; then
-            echo "P5 request, token, concurrency, settlement, expiry, or role control validation failed"
+            echo "P5 request, token, concurrency, settlement, expiry, privilege, or role control validation failed"
             exit 1
           fi
 
-          echo "P5 owner limits, viewer visibility, editor permits, daily request/input/output ceilings, concurrency denial, atomic terminal settlement, expired-lease recovery, draft parity, archive guards, and outsider isolation passed."
+          echo "P5 owner limits, viewer visibility, editor permits, daily request/input/output ceilings, concurrency denial, trigger-owned terminal settlement, creator-bound conversation mutation, expired-lease recovery, draft parity, archive guards, and outsider isolation passed."
