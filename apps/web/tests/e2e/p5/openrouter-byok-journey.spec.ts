@@ -66,12 +66,12 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
 
   await page.getByLabel("OpenRouter API key").fill(apiKey);
   await page.getByRole("button", { name: "Validate and connect" }).click();
-  await expect(page.getByText(/Connected · •••• 2026/)).toBeVisible();
-  await expect(page.getByText(/Free-tier key/)).toBeVisible();
+  await expect(page.getByText(/متصل · •••• 2026/)).toBeVisible();
+  await expect(page.getByText(/مفتاح خطة مجانية/)).toBeVisible();
   await expect(page.getByLabel("OpenRouter API key")).toHaveCount(0);
 
   await page.getByLabel("Search OpenRouter models").fill("fixture");
-  await page.getByText("Free only").click();
+  await page.getByLabel("Free only").check();
   const freeCard = page
     .locator("article")
     .filter({ hasText: "Live Free Fixture Model" });
@@ -80,9 +80,11 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
     page.locator("article").filter({ hasText: "Live Paid Fixture Model" }),
   ).toHaveCount(0);
   await freeCard.getByRole("button", { name: "Use model" }).click();
-  await expect(page.getByText(`Model selected: ${freeModelId}`)).toBeVisible();
+  await expect(
+    page.getByText(`تم اختيار النموذج: ${freeModelId}`),
+  ).toBeVisible();
   const currentModelSummary = page
-    .getByText("Current model", { exact: true })
+    .getByText("النموذج الحالي", { exact: true })
     .locator("..");
   await expect(currentModelSummary).toContainText(freeModelId);
 
@@ -93,7 +95,7 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await register(outsiderPage, outsiderEmail);
   await outsiderPage.goto("/settings/ai");
   await expect(outsiderPage.getByLabel("OpenRouter API key")).toBeVisible();
-  await expect(outsiderPage.getByText(/Connected · ••••/)).toHaveCount(0);
+  await expect(outsiderPage.getByText(/متصل · ••••/)).toHaveCount(0);
   const outsiderSettings = await outsiderContext.request.get(
     "/api/v1/ai/settings",
   );
