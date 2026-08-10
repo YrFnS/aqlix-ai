@@ -28,7 +28,7 @@ import {
 export const metadata: Metadata = {
   title: "مساحة العمل",
   description:
-    "Persistent workspace with conversations, private sources, and durable reusable drafts.",
+    "محادثات ومصادر ومسودات منظمة داخل مساحة واحدة لكل مشروع أو مهمة.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -189,16 +189,16 @@ export default async function WorkspacePage({
             <div className="rounded-2xl bg-primary/10 p-3 text-primary">
               <MessageSquareText className="h-5 w-5" aria-hidden="true" />
             </div>
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P2 + P3 · يعمل
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
+              اسأل وتابع
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
             المحادثات
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            رسائل متدفقة ومحفوظة، إيقاف وإعادة محاولة، ووضع مصادر اختياري يحفظ
-            مراجع قابلة للفتح إلى المقاطع نفسها.
+            ابدأ سؤالاً جديداً، تابع محادثاتك السابقة، واستخدم مصادر المساحة عندما
+            تحتاج إلى إجابة مرتبطة بسياقك.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
             فتح المحادثات
@@ -217,16 +217,16 @@ export default async function WorkspacePage({
             <div className="rounded-2xl bg-primary/10 p-3 text-primary">
               <FileSearch className="h-5 w-5" aria-hidden="true" />
             </div>
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P3 · يعمل
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
+              أضف سياقك
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
             المصادر
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            ملفات TXT وMarkdown خاصة، تحقق صارم، مقاطع بخطوط حقيقية، بحث داخل
-            المساحة، وتنزيل وحذف منسقان.
+            أضف ملفاتك النصية، ابحث داخلها، وافتح المقطع الذي يدعم الإجابة أو
+            الفكرة التي تعمل عليها.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
             فتح المصادر
@@ -245,16 +245,16 @@ export default async function WorkspacePage({
             <div className="rounded-2xl bg-primary/10 p-3 text-primary">
               <PenLine className="h-5 w-5" aria-hidden="true" />
             </div>
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              P4 · يعمل
+            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
+              حوّل الإجابة إلى عمل
             </span>
           </div>
           <h2 className="mt-6 font-arabic-heading text-xl font-semibold">
             المسودات
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            حوّل الإجابات إلى عمل قابل للتحرير، احفظ إصدارات غير قابلة لإعادة
-            الكتابة، افحص المنشأ، صدّر UTF-8، وراجع اقتراحاً قبل تطبيقه.
+            حوّل أفضل إجابة إلى ملخص أو رسالة أو مذكرة، ثم حررها واحفظ نسخها
+            وصدّرها عندما تصبح جاهزة.
           </p>
           <span className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-primary">
             فتح المسودات
@@ -274,15 +274,14 @@ export default async function WorkspacePage({
             </div>
             <div>
               <p className="text-sm font-semibold text-primary">
-                يعمل في P1 + P2 + P3 + P4
+                رحلة واحدة متصلة
               </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                Ask → Ground → Draft → Continue
+                اسأل، استند إلى مصادرك، ثم اكتب
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-                الحساب والمساحة والمحادثات والمصادر والمراجع والمسودات والإصدارات
-                كلها تخضع للجلسة وRLS. الاقتراحات الآلية تبقى منفصلة عن العمل
-                المقبول حتى تطبيقها صراحةً كإصدار جديد.
+                ابدأ من المحادثة، أضف سياقاً من ملفاتك عند الحاجة، ثم انقل النتيجة
+                إلى مسودة يمكنك مراجعتها وتطويرها دون فقدان عملك السابق.
               </p>
             </div>
           </div>
