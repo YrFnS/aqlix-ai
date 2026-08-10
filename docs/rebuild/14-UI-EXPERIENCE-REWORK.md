@@ -3,7 +3,7 @@
 **Branch:** `agent/ui-experience-rework`  
 **Base:** `main` at `a19f75a43d9f37e6558a964b0dd5b3d72c729876`  
 **Draft pull request:** `#10`  
-**Status:** UI P0 engineering complete; browser review waived; UI P1–P4 source implementation complete
+**Status:** UI P0 engineering and UI P1–P5 source implementation complete; browser review waived
 
 This branch improves Tuppra's interface without changing its authenticated data, authorization, provider, source, citation, draft, or operational contracts.
 
@@ -27,9 +27,10 @@ This remains a waiver, not evidence that the following checks passed:
 
 - light and dark visual review;
 - RTL, LTR, and mixed-direction visual review;
-- keyboard focus-order review;
-- mobile reflow review;
-- reduced-motion browser review.
+- keyboard focus-order review in a real browser;
+- mobile and tablet reflow review on physical or emulated devices;
+- reduced-motion browser review;
+- animation and streaming performance review under representative device conditions.
 
 The residual visual risk remains open and must be revisited before the interface is represented as release-ready.
 
@@ -207,58 +208,102 @@ UI P3 source implementation is complete. The waived browser-review items remain 
 - did not add local or session storage for credentials or model state;
 - retained the absence of a platform-owned OpenRouter key or fixed model ID.
 
-### Regression coverage
-
-Focused P4 safeguards verify:
-
-- source and draft detail routes render through focused workspace components rather than oversized legacy heroes;
-- source discovery remains searchable, workspace-scoped, privately stored, and honest about supported formats;
-- passage navigation, exact anchors, copying, safe rendering, processing metadata, and deletion remain wired;
-- active and archived draft libraries remain searchable and cards remain fully interactive;
-- accepted editing, immutable versions, proposal review, provenance, export, and lifecycle controls stay separated;
-- BYOK connection, masked credentials, live catalog search, free filtering, exact-model validation, and selected-model state remain present;
-- existing P3 source boundaries, P4 draft boundaries, and P5 OpenRouter boundaries remain intact.
-
 ### Validation evidence
 
-The P4 implementation head `346ea0a121fcdf782ecb6a4287944543834d86ae` passed every normal repository safeguard:
-
-1. frozen Bun dependency installation;
-2. all shared-package builds;
-3. ESLint and focused TypeScript validation;
-4. **44 shared contract tests across 8 files**;
-5. **145 active web rebuild tests across 23 files** with 987 assertions;
-6. the optimized Next.js web build and artifact upload;
-7. PR scope validation;
-8. Arabic and RTL foundation checks;
-9. accessibility foundation checks;
-10. product language and public-claims safeguards;
-11. Arabic text and bidirectional-input utility tests.
+The recorded P4 implementation passed every normal repository safeguard, including **44 shared contract tests across 8 files**, **145 active web rebuild tests across 23 files**, the optimized Next.js build, PR scope validation, Arabic and RTL checks, accessibility checks, and claims safeguards.
 
 Validation and review caught and corrected:
 
 - a client component prop named `document` shadowing the browser `document` object during scroll locking;
 - an unused draft icon import rejected by exact TypeScript validation;
-- an existing source-boundary safeguard that needed to follow the new safe-rendering component boundary;
-- focused regression coverage was added before P4 was recorded as source-complete.
+- an existing source-boundary safeguard that needed to follow the new safe-rendering component boundary.
 
 ### Completion boundary
 
-UI P4 source implementation is complete. The previously waived browser-review items remain unverified and continue as residual risk.
+UI P4 source implementation is complete. The waived browser-review items remain residual risk.
 
-## Next phase — UI P5 final quality pass
+## UI P5 — Final quality hardening
 
-P5 should focus on evidence and polish rather than another structural redesign:
+### Keyboard and assistive-technology runtime
 
-- full light and dark browser review;
-- Arabic RTL, English LTR, and mixed-direction review;
-- keyboard focus order, menu, sheet, dialog, and editor workflow review;
+- added one global skip link that focuses and scrolls the real `main` element instead of relying on inconsistent route IDs;
+- added polite route announcements derived from the active document title after pathname changes;
+- added a global focus boundary for visible modal dialogs with Tab and Shift+Tab containment;
+- restores focus to the launching control when the final modal closes;
+- preserves each component's existing Escape handling, route cleanup, and scroll locking rather than creating a second lifecycle authority;
+- retains browser zoom up to the existing supported maximum and adds `viewport-fit=cover` for safe-area-aware layouts.
+
+### Mobile, contrast, and reduced-transparency resilience
+
+- added dynamic-viewport-height support for modern mobile browsers while retaining the existing fallback;
+- added safe-area utility rules for inset-aware inline and block padding;
+- preserved 100% text-size adjustment and added touch-action handling for links and buttons;
+- added focus scroll margins so keyboard targets are less likely to remain hidden behind sticky application chrome;
+- added `prefers-reduced-transparency` fallbacks that remove backdrop blur and restore opaque semantic surfaces;
+- added stronger semantic tokens and focus outlines for `prefers-contrast: more`;
+- added forced-colour fallbacks for Canvas, CanvasText, Highlight focus, active navigation, shadows, blur, and decorative glow suppression.
+
+### Loading, failure, and offline states
+
+- introduced shared responsive `RouteLoadingState` and `RouteFailureState` primitives using the same page, surface, focus, radius, and elevation system as normal product routes;
+- migrated the root loading boundary and conversation, source, and draft library loading routes to one responsive skeleton language;
+- replaced legacy root and global error screens with honest Arabic-first recovery surfaces;
+- replaced conversation, source, and draft route errors that still exposed implementation-phase labels;
+- retained development-only error detail while production surfaces expose only a safe digest reference;
+- preserved explicit retry and return paths without presenting substitute data or implying that failed work was saved;
+- redesigned the offline notice as an inset-aware semantic surface and explicitly warns users not to assume a new save or generation completed while disconnected.
+
+### Regression coverage
+
+Focused P5 safeguards verify:
+
+- installation of the global skip link, route announcer, modal focus containment, and focus restoration;
+- mobile viewport, safe-area, reduced-transparency, higher-contrast, and forced-colour fallbacks;
+- removal of legacy blue, red, grey, English-only, and implementation-phase failure surfaces;
+- use of one responsive loading boundary across the primary work libraries;
+- semantic, safe-area-aware offline messaging;
+- continued ownership of page and surface primitives through the shared loading and failure boundaries.
+
+### Validation findings corrected
+
+The P5 validation pass caught and corrected:
+
+- two stale source assertions that still expected root loading markup and one exact offline phrase inside individual route files instead of following the new shared boundary;
+- strict TypeScript uncertainty around the first and last focusable elements after an empty-list guard;
+- a separate stylesheet using Tailwind `@layer` without owning the matching Tailwind directives; the fallback rules now compile as ordinary global CSS.
+
+### Exact-head evidence before this status record
+
+The P5 implementation head `db38e3aa174506087431f929266859f21ab44f39` passed:
+
+1. frozen Bun dependency installation;
+2. all shared-package builds;
+3. ESLint and focused strict TypeScript validation;
+4. **44 shared contract tests across 8 files** with 93 assertions;
+5. **150 active web rebuild tests across 24 files** with 1,053 assertions;
+6. the optimized Next.js web build and build artifact upload;
+7. PR title and scope validation;
+8. Arabic and RTL foundation checks;
+9. accessibility foundation checks;
+10. product language and public-claims safeguards;
+11. Arabic text and bidirectional-input utility tests.
+
+### Completion boundary
+
+UI P5 source implementation and automated quality hardening are complete. All planned UI source phases P0–P5 are implemented on this branch.
+
+The explicitly waived browser and physical-device review remains unverified. This document therefore does **not** claim final visual approval, public-release readiness, or production readiness.
+
+## Remaining human gate
+
+Before any release-readiness claim, the residual review should still cover:
+
+- light and dark appearance in supported browsers;
+- Arabic RTL, English LTR, and mixed-direction content;
+- complete keyboard order and real focus behavior across menus, sheets, dialogs, editors, and destructive flows;
 - mobile and tablet reflow across marketing, account, shell, conversation, source, draft, and settings surfaces;
-- reduced-motion browser review;
-- animation and streaming performance review;
-- loading, empty, failure, offline, archived, viewer, and destructive states;
-- accessibility finishing and final regression evidence;
-- cleanup of remaining legacy visual inconsistencies before any release-readiness claim.
+- reduced-motion and reduced-transparency behavior;
+- streaming, long-document, and animation performance on representative devices.
 
 ## Guardrails
 
