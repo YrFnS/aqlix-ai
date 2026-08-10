@@ -1,0 +1,236 @@
+name: UI P5 Authenticated Product Quality
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/ui-p5-authenticated-product.yml"
+      - "apps/web/package.json"
+      - "apps/web/playwright.p4.config.ts"
+      - "apps/web/playwright.p5.config.ts"
+      - "apps/web/src/**"
+      - "apps/web/tests/e2e/p4/draft-journey.spec.ts"
+      - "apps/web/tests/e2e/p5/openrouter-byok-journey.spec.ts"
+      - "apps/web/tests/fixtures/openrouter-mock-server.ts"
+      - "packages/**"
+      - "supabase/**"
+      - "package.json"
+      - "bun.lock"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+  APP_ENV: "test"
+  AI_REQUEST_TIMEOUT_MS: "15000"
+  AI_MAX_OUTPUT_TOKENS: "1024"
+
+jobs:
+  ask-ground-draft:
+    name: Workspace, source, conversation & draft journey
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AI_PROVIDER: "fixture"
+      P2_ALLOW_FIXTURE_PROVIDER: "true"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Start isolated local Supabase
+        run: bunx supabase start
+
+      - name: Export isolated Supabase configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, a public key, and a test admin key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Build production web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Run authenticated Ask Ground Draft Continue journey
+        working-directory: apps/web
+        run: >-
+          bunx playwright test
+          tests/e2e/p4/draft-journey.spec.ts
+          --config=playwright.p4.config.ts
+
+      - name: Upload authenticated product evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-p5-authenticated-product-evidence
+          path: |
+            apps/web/playwright-report/p4
+            apps/web/test-results
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop isolated local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  openrouter-byok:
+    name: AI settings, Vault isolation & selected-model streaming
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AI_PROVIDER: "openrouter"
+      OPENROUTER_BASE_URL: "http://127.0.0.1:4011/api/v1"
+      P2_ALLOW_FIXTURE_PROVIDER: "false"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Start isolated local Supabase with Vault
+        run: bunx supabase start
+
+      - name: Export isolated Auth, database, and admin configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "${DB_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, DB_URL, a public key, and a test admin key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
+          echo "P5_TEST_DB_URL=$DB_URL" >> "$GITHUB_ENV"
+
+      - name: Verify encrypted Vault and account isolation
+        run: >-
+          psql "$P5_TEST_DB_URL"
+          -v ON_ERROR_STOP=1
+          -f supabase/tests/p5_user_openrouter_settings.test.sql
+
+      - name: Start deterministic OpenRouter API
+        shell: bash
+        run: |
+          set -euo pipefail
+          bun apps/web/tests/fixtures/openrouter-mock-server.ts > p5-openrouter-mock.log 2>&1 &
+          echo $! > p5-openrouter-mock.pid
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4011/api/v1/health > /dev/null; then
+              exit 0
+            fi
+            if [[ "$attempt" == "30" ]]; then
+              cat p5-openrouter-mock.log || true
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Build production web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Run authenticated OpenRouter BYOK journey
+        working-directory: apps/web
+        run: >-
+          bunx playwright test
+          tests/e2e/p5/openrouter-byok-journey.spec.ts
+          --config=playwright.p5.config.ts
+
+      - name: Upload authenticated AI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-p5-authenticated-ai-evidence
+          path: |
+            apps/web/playwright-report/p5
+            apps/web/test-results
+            p5-openrouter-mock.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop deterministic OpenRouter API
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f p5-openrouter-mock.pid ]]; then
+            kill "$(cat p5-openrouter-mock.pid)" 2>/dev/null || true
+          fi
+
+      - name: Stop isolated local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  authenticated-success:
+    name: UI P5 Authenticated Success Gate
+    runs-on: ubuntu-24.04
+    needs: [ask-ground-draft, openrouter-byok]
+    if: always()
+
+    steps:
+      - name: Check all authenticated journeys
+        shell: bash
+        run: |
+          if [[ "${{ needs.ask-ground-draft.result }}" != "success" ]] || \
+             [[ "${{ needs.openrouter-byok.result }}" != "success" ]]; then
+            echo "One or more authenticated P5 product journeys failed"
+            exit 1
+          fi
+
+          echo "Authenticated workspace, private source, grounded conversation, citation, durable draft, proposal, role-isolation, BYOK, Vault, model-selection, streaming, and disconnect journeys passed."
