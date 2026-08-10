@@ -35,7 +35,7 @@ describe("focused work surfaces", () => {
     expect(surface).not.toContain('xl:grid-cols-[1.3fr_0.7fr]');
   });
 
-  test("keeps AI connection simple and bounds the visible model catalog", () => {
+  test("keeps AI connection simple, Arabic-first, and visibly bounded", () => {
     const page = readWeb("src/app/(app)/settings/ai/page.tsx");
     const settings = readWeb("src/components/ai/openrouter-settings.tsx");
 
@@ -47,7 +47,34 @@ describe("focused work surfaces", () => {
     expect(settings).toContain('xl:grid-cols-[20rem_minmax(0,1fr)]');
     expect(settings).toContain("التفاصيل والأسعار");
     expect(settings).toContain("عرض المزيد من النماذج");
+    expect(settings).toContain("مفتاح OpenRouter API");
+    expect(settings).toContain("تحقق واتصل");
+    expect(settings).toContain("النماذج المجانية فقط");
+    expect(settings).not.toContain(">Validate and connect<");
+    expect(settings).not.toContain(">Disconnect<");
+    expect(settings).not.toContain(">Free only<");
+    expect(settings).not.toContain(">Use model<");
     expect(settings).not.toContain("OpenRouter BYOK");
     expect(settings).not.toContain("Supabase Vault");
+  });
+
+  test("keeps draft conversion and source inspection free from phase and database internals", () => {
+    const converter = readWeb(
+      "src/components/drafts/draft-from-conversation-panel.tsx",
+    );
+    const sourceDetail = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/sources/[attachmentId]/page.tsx",
+    );
+
+    expect(converter).toContain("إجابة محفوظة → مسودة");
+    expect(converter).toContain("تُحفظ المراجع المرتبطة مع المسودة");
+    expect(converter).not.toMatch(/\bP4\b/u);
+    expect(converter).not.toContain("حتمي");
+    expect(converter).not.toContain("اتصالاً إضافياً بالمزود");
+
+    expect(sourceDetail).toContain("التفاصيل التقنية وسجل المعالجة");
+    expect(sourceDetail).toContain("خاص بمساحة العمل");
+    expect(sourceDetail).not.toContain("PostgreSQL");
+    expect(sourceDetail).not.toContain("offsets ");
   });
 });
