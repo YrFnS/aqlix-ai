@@ -56,7 +56,7 @@ test("homepage keeps RTL, skip navigation, and critical accessibility intact", a
   await expect(page.locator("html")).toHaveAttribute("lang", /^ar(?:-|$)/u);
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "أحضر السياق",
+    /من سؤال مبعثر إلى\s*مسودة موثّقة/u,
   );
   await expectNoHorizontalOverflow(page);
 
@@ -163,11 +163,7 @@ test.describe("user preference modes", () => {
     page,
   }) => {
     await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
-    await page.addInitScript(() => {
-      document.documentElement.classList.add("dark");
-    });
     await page.goto("/");
-    await page.evaluate(() => document.documentElement.classList.add("dark"));
     await settleFonts(page);
 
     const preferences = await page.evaluate(() => ({
