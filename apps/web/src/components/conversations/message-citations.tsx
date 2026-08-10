@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { ExternalLink, FileWarning, Quote } from "lucide-react";
+import { FileSearch, FileWarning, Quote } from "lucide-react";
 import type { MessageCitation } from "@iraqi-ai/types";
 
 function citationLocator(citation: MessageCitation): string {
@@ -15,17 +17,19 @@ function citationLocator(citation: MessageCitation): string {
 export function MessageCitations({
   workspaceId,
   citations,
+  onInspect,
 }: {
   workspaceId: string;
   citations: MessageCitation[];
+  onInspect?: (citation: MessageCitation) => void;
 }) {
   if (citations.length === 0) return null;
 
   return (
-    <div className="mt-4 border-t border-border/70 pt-4">
+    <div className="mt-4 border-t border-line/70 pt-4">
       <div className="flex items-center gap-2 text-xs font-semibold text-foreground">
         <Quote className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-        المقاطع الداعمة المحفوظة
+        المراجع المحفوظة
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {citations.map((citation) => {
@@ -34,25 +38,41 @@ export function MessageCitations({
               <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[0.65rem] font-semibold text-primary">
                 [{citation.label}]
               </span>
-              <span dir="auto" className="max-w-48 truncate font-semibold">
+              <span dir="auto" className="max-w-44 truncate font-semibold">
                 {citation.fileNameSnapshot}
               </span>
-              <span className="text-muted-foreground">
-                {citationLocator(citation)}
-              </span>
+              <span className="text-ink-muted">{citationLocator(citation)}</span>
             </>
           );
 
           if (citation.sourceId && citation.attachmentId) {
+            const className =
+              "inline-flex min-h-10 items-center gap-2 rounded-xl border border-line/80 bg-surface-raised px-3 py-2 text-xs outline-none transition-[border-color,background-color,box-shadow] duration-fast hover:border-primary/35 hover:bg-brand-soft/45 focus-visible:ring-4 focus-visible:ring-ring/20";
+
+            if (onInspect) {
+              return (
+                <button
+                  key={citation.id}
+                  type="button"
+                  className={className}
+                  onClick={() => onInspect(citation)}
+                  aria-label={`معاينة المرجع ${citation.label} من ${citation.fileNameSnapshot}`}
+                >
+                  {content}
+                  <FileSearch className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              );
+            }
+
             return (
               <Link
                 key={citation.id}
                 href={`/workspaces/${workspaceId}/sources/${citation.attachmentId}#source-${citation.sourceId}`}
-                className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-border bg-background px-3 py-2 text-xs transition-colors hover:border-primary/40 hover:bg-secondary"
+                className={className}
                 aria-label={`فتح المرجع ${citation.label} من ${citation.fileNameSnapshot}`}
               >
                 {content}
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                <FileSearch className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             );
           }
@@ -60,12 +80,12 @@ export function MessageCitations({
           return (
             <div
               key={citation.id}
-              className="inline-flex min-h-10 items-center gap-2 rounded-2xl border border-dashed border-border bg-secondary/45 px-3 py-2 text-xs"
+              className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-dashed border-line bg-surface-sunken px-3 py-2 text-xs"
               title="The original source was deleted or is no longer available."
             >
               {content}
               <FileWarning
-                className="h-3.5 w-3.5 text-muted-foreground"
+                className="h-3.5 w-3.5 text-ink-muted"
                 aria-hidden="true"
               />
               <span className="sr-only">المصدر الأصلي غير متاح</span>
