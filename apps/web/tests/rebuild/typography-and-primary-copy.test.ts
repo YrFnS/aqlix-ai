@@ -36,7 +36,28 @@ describe("primary authenticated shell copy", () => {
   test("describes user work instead of implementation phases", () => {
     const navigation = readSource("src/components/navigation/app-nav.tsx");
     const workspaces = readSource("src/app/(app)/workspaces/page.tsx");
-    const primaryShell = `${navigation}\n${workspaces}`;
+    const workspaceDetail = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/page.tsx",
+    );
+    const conversations = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/conversations/page.tsx",
+    );
+    const sources = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/sources/page.tsx",
+    );
+    const drafts = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/drafts/page.tsx",
+    );
+    const aiSettings = readSource("src/app/(app)/settings/ai/page.tsx");
+    const primaryShell = [
+      navigation,
+      workspaces,
+      workspaceDetail,
+      conversations,
+      sources,
+      drafts,
+      aiSettings,
+    ].join("\n");
 
     expect(navigation).toContain("من السؤال إلى العمل");
     expect(navigation).toContain("ابدأ بمحادثة");
@@ -46,9 +67,18 @@ describe("primary authenticated shell copy", () => {
     expect(workspaces).toContain("اجمع محادثاتك ومصادرك ومسوداتك");
     expect(workspaces).toContain("تبقى المساحة خاصة بحسابك");
 
+    expect(workspaceDetail).toContain("اسأل، استند إلى مصادرك، ثم اكتب");
+    expect(workspaceDetail).toContain("حوّل الإجابة إلى عمل");
+    expect(conversations).toContain("اسأل، تابع، وارجع إلى إجاباتك");
+    expect(sources).toContain("أضف السياق الذي تريد الرجوع إليه");
+    expect(drafts).toContain("حوّل الإجابات إلى عمل قابل للاستخدام");
+    expect(aiSettings).toContain("اختر كيف تتصل بالنماذج");
+
     expect(primaryShell).not.toMatch(/\bP[0-5]\b/u);
     expect(primaryShell).not.toMatch(/PostgreSQL|\bRLS\b/iu);
     expect(primaryShell).not.toMatch(/قاعدة البيانات|معاملة قاعدة/iu);
+    expect(primaryShell).not.toMatch(/UTF-8|\bBYOK\b|Vault/iu);
+    expect(primaryShell).not.toMatch(/Private bucket|immutable versions|provenance/iu);
     expect(primaryShell).not.toMatch(/جاهزية تشغيلية|إطلاق عام/iu);
   });
 });
