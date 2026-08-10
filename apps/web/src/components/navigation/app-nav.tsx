@@ -10,7 +10,6 @@ import {
   useReducedMotion,
 } from "motion/react";
 import {
-  Archive,
   BookOpen,
   ChevronDown,
   ChevronLeft,
@@ -292,14 +291,15 @@ function NavigationPanel({
             title={collapsed ? label : undefined}
             className={cn(
               "group flex min-h-11 items-center rounded-xl text-sm font-medium outline-none transition-[color,background-color,box-shadow] duration-fast ease-standard focus-visible:ring-4 focus-visible:ring-ring/20",
-              collapsed
-                ? "justify-center px-2"
-                : "gap-3 px-3",
+              collapsed ? "justify-center px-2" : "gap-3 px-3",
             )}
             activeClassName="bg-brand-soft text-primary shadow-surface-xs hover:text-primary"
             onClick={onNavigate}
           >
-            <Icon className="h-[1.05rem] w-[1.05rem] shrink-0" aria-hidden="true" />
+            <Icon
+              className="h-[1.05rem] w-[1.05rem] shrink-0"
+              aria-hidden="true"
+            />
             <span className={collapsed ? "sr-only" : "truncate"}>{label}</span>
           </NavLink>
         ))}
@@ -327,9 +327,7 @@ function NavigationPanel({
                     title={collapsed ? label : undefined}
                     className={cn(
                       "group flex min-h-11 items-center rounded-xl text-sm font-medium outline-none transition-[color,background-color,box-shadow] duration-fast ease-standard focus-visible:ring-4 focus-visible:ring-ring/20",
-                      collapsed
-                        ? "justify-center px-2"
-                        : "gap-3 px-3",
+                      collapsed ? "justify-center px-2" : "gap-3 px-3",
                     )}
                     activeClassName="bg-primary text-primary-foreground shadow-surface-sm hover:text-primary-foreground"
                     onClick={onNavigate}
@@ -551,7 +549,7 @@ export function AppNav({ userEmail, children }: AppNavProps) {
       <div className="flex min-h-svh">
         <aside
           className={cn(
-            "sticky top-0 hidden h-svh shrink-0 overflow-hidden border-l border-line/80 bg-surface/92 backdrop-blur-xl transition-[width] duration-slow ease-emphasized md:block",
+            "sticky top-0 hidden h-svh shrink-0 overflow-hidden border-l border-line/80 bg-surface/95 backdrop-blur-xl transition-[width] duration-slow ease-emphasized md:block",
             isCollapsed ? "w-[5.25rem]" : "w-72",
           )}
           aria-label="شريط مساحة العمل"
@@ -938,7 +936,10 @@ export function AppNav({ userEmail, children }: AppNavProps) {
                             </span>
                           </span>
                           {active ? (
-                            <span className="h-2 w-2 rounded-full bg-primary" aria-label="الصفحة الحالية" />
+                            <span
+                              className="h-2 w-2 rounded-full bg-primary"
+                              aria-label="الصفحة الحالية"
+                            />
                           ) : (
                             <ChevronLeft
                               className="h-4 w-4 text-ink-subtle transition-transform duration-fast group-hover:-translate-x-0.5"
