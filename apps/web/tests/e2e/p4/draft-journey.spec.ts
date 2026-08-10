@@ -276,8 +276,13 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(messageId).toBeTruthy();
   expect(sourceId).toBeTruthy();
 
-  await page.getByLabel("نوع البداية").selectOption("memo");
-  await page.getByRole("button", { name: "إنشاء المسودة" }).click();
+  const conversationDetails = page.getByRole("complementary", {
+    name: "تفاصيل المحادثة",
+  });
+  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
+  await conversationDetails
+    .getByRole("button", { name: "إنشاء المسودة" })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/,
   );
