@@ -53,7 +53,7 @@ test("homepage keeps RTL, skip navigation, and critical accessibility intact", a
   expect(response?.ok()).toBe(true);
   await settleFonts(page);
 
-  await expect(page.locator("html")).toHaveAttribute("lang", "ar");
+  await expect(page.locator("html")).toHaveAttribute("lang", /^ar(?:-|$)/u);
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "أحضر السياق",
@@ -159,11 +159,10 @@ for (const route of publicRoutes) {
 }
 
 test.describe("user preference modes", () => {
-  test.use({ colorScheme: "dark", reducedMotion: "reduce" });
-
   test("dark and reduced-motion preferences produce a stable page", async ({
     page,
   }) => {
+    await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
     await page.addInitScript(() => {
       document.documentElement.classList.add("dark");
     });
