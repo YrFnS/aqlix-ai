@@ -29,6 +29,7 @@ describe("UI P5 final quality pass", () => {
     expect(runtime).toContain("event.key !== \"Tab\"");
     expect(runtime).toContain('[role="dialog"][aria-modal="true"]');
     expect(runtime).toContain("restoreFocusRef");
+    expect(runtime).toContain('dataset.appHydrated = "true"');
   });
 
   test("turns public mobile navigation into a modal focus boundary", () => {
@@ -156,8 +157,11 @@ describe("UI P5 final quality pass", () => {
     expect(productJourney).toContain("تطبيق كإصدار جديد");
     expect(productJourney).toContain("viewerPatch.status()).toBe(403)");
     expect(productJourney).toContain("outsiderApi.status()).toBe(404)");
+    expect(productJourney).toContain("waitForHydration");
+    expect(productJourney).not.toContain("grantPermissions");
     expect(byokJourney).toContain("Free-tier key");
     expect(byokJourney).toContain("PROVIDER_UNCONFIGURED");
+    expect(byokJourney).toContain("waitForHydration");
     expect(workflow).toContain(
       "playwright install --with-deps chromium firefox webkit",
     );
