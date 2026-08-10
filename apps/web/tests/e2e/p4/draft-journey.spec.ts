@@ -65,6 +65,7 @@ type DraftPayloadDetail = {
     id: string;
     title: string;
     content: string;
+    kind: string;
     currentVersion: number;
     versionCount: number;
     provenanceCount: number;
@@ -117,7 +118,6 @@ async function createDraftFromMessage(
   conversationId: string,
   messageId: string,
   kind: string,
-  title: string,
 ) {
   const { response, payload } = await requestJson(
     request,
@@ -127,22 +127,22 @@ async function createDraftFromMessage(
       conversationId,
       messageId,
       kind,
-      title,
-      direction: "auto",
     },
   );
   expect(response.status()).toBe(201);
   expect(payload).toMatchObject({
     ok: true,
     data: {
-      draft: {
-        title,
-        kind,
-        currentVersion: 1,
+      detail: {
+        draft: {
+          kind,
+          currentVersion: 1,
+          provenanceCount: 1,
+        },
       },
     },
   });
-  return payload.data.draft.id as string;
+  return payload.data.detail.draft.id as string;
 }
 
 async function expectDraftListContains(
@@ -152,7 +152,7 @@ async function expectDraftListContains(
   status: "active" | "archived",
 ) {
   const response = await request.get(
-    `/api/v1/workspaces/${workspaceId}/drafts?status=${status}`,
+    `/api/v1/workspaces/${workspaceId}/drafts?archived=${status === "archived"}`,
   );
   expect(response.status()).toBe(200);
   const payload = await response.json();
@@ -282,6 +282,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     primaryDraftId!,
   );
   expect(primaryDraft.data.draft).toMatchObject({
+    kind: "memo",
     currentVersion: 1,
     versionCount: 1,
     provenanceCount: 1,
@@ -327,7 +328,10 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     },
   );
   expect(noOp.response.status()).toBe(200);
-  expect(noOp.payload.data).toMatchObject({ changed: false });
+  expect(noOp.payload.data).toMatchObject({
+    createdVersion: false,
+    detail: { draft: { currentVersion: 2 } },
+  });
 
   const staleWrite = await requestJson(
     context.request,
@@ -344,7 +348,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(staleWrite.response.status()).toBe(409);
   expect(staleWrite.payload).toMatchObject({
     ok: false,
-    error: { code: "DRAFT_VERSION_CONFLICT" },
+    error: { code: "CONFLICT" },
   });
 
   await page.getByRole("link", { name: "فتح الإصدار 1" }).click();
@@ -461,6 +465,28 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await page.getByRole("button", { name: "بدء الاقتراح" }).click();
   await expect(page.getByText(/PROVIDER_FAILURE/)).toBeVisible();
 
+  for (const kind of [
+    "summary",
+    "comparison",
+    "email",
+    "checklist",
+    "decision_note",
+  ]) {
+    const draftId = await createDraftFromMessage(
+      context.request,
+      workspaceId!,
+      conversationId!,
+      messageId!,
+      kind,
+    );
+    const created = await draftPayload(context.request, workspaceId!, draftId);
+    expect(created.data.draft).toMatchObject({
+      kind,
+      currentVersion: 1,
+      provenanceCount: 1,
+    });
+  }
+
   const viewerContext = await browser.newContext({
     baseURL: "http://127.0.0.1:3000",
   });
@@ -560,29 +586,6 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     "active",
   );
 
-  for (const kind of [
-    "summary",
-    "comparison",
-    "email",
-    "checklist",
-    "decision_note",
-  ]) {
-    const draftId = await createDraftFromMessage(
-      context.request,
-      workspaceId!,
-      conversationId!,
-      messageId!,
-      kind,
-      `${kind} launch draft`,
-    );
-    const created = await draftPayload(context.request, workspaceId!, draftId);
-    expect(created.data.draft).toMatchObject({
-      title: `${kind} launch draft`,
-      currentVersion: 1,
-      provenanceCount: 1,
-    });
-  }
-
   await page.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
   await page.getByRole("button", { name: "أرشفة المسودة" }).click();
   await expect(page).toHaveURL(
@@ -608,7 +611,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   const deleteDraft = await context.request.delete(
     `/api/v1/workspaces/${workspaceId}/drafts/${primaryDraftId}`,
   );
-  expect(deleteDraft.status()).toBe(403);
+  expect(deleteDraft.status()).toBe(409);
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole("button", { name: "فتح التنقل" })).toBeVisible();
