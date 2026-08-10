@@ -8,7 +8,7 @@ export default defineConfig({
   outputDir: "test-results/p5-authenticated/artifacts",
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 1 : 0,
+  retries: 0,
   workers: 1,
   reporter: [
     ["line"],
