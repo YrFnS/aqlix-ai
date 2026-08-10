@@ -34,9 +34,9 @@ env:
 
 jobs:
   ask-ground-draft:
-    name: Workspace, source, conversation & draft journey
+    name: Workspace, source, conversation & draft journey — 3 engines
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       AI_PROVIDER: "fixture"
       P2_ALLOW_FIXTURE_PROVIDER: "true"
@@ -51,8 +51,8 @@ jobs:
       - name: Install dependencies
         run: bash scripts/ci/install-dependencies.sh
 
-      - name: Install Chromium
-        run: bunx playwright install --with-deps chromium
+      - name: Install Chromium, Firefox, and WebKit
+        run: bunx playwright install --with-deps chromium firefox webkit
 
       - name: Start isolated local Supabase
         run: bunx supabase start
@@ -85,7 +85,7 @@ jobs:
         working-directory: apps/web
         run: bun run build
 
-      - name: Run authenticated source-to-draft product journey
+      - name: Run authenticated source-to-draft journey across all engines
         working-directory: apps/web
         run: >-
           bunx playwright test
@@ -108,9 +108,9 @@ jobs:
         run: bunx supabase stop --no-backup
 
   openrouter-byok:
-    name: AI settings, Vault isolation & selected-model streaming
+    name: AI settings, Vault isolation & selected-model streaming — 3 engines
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       AI_PROVIDER: "openrouter"
       OPENROUTER_BASE_URL: "http://127.0.0.1:4011/api/v1"
@@ -126,8 +126,8 @@ jobs:
       - name: Install dependencies
         run: bash scripts/ci/install-dependencies.sh
 
-      - name: Install Chromium
-        run: bunx playwright install --with-deps chromium
+      - name: Install Chromium, Firefox, and WebKit
+        run: bunx playwright install --with-deps chromium firefox webkit
 
       - name: Start isolated local Supabase with Vault
         run: bunx supabase start
@@ -185,7 +185,7 @@ jobs:
         working-directory: apps/web
         run: bun run build
 
-      - name: Run authenticated OpenRouter BYOK journey
+      - name: Run authenticated OpenRouter BYOK journey across all engines
         working-directory: apps/web
         run: >-
           bunx playwright test
@@ -232,4 +232,4 @@ jobs:
             exit 1
           fi
 
-          echo "Authenticated workspace, private source, grounded conversation, citation inspection, durable draft editing, proposal application, role isolation, BYOK, Vault, model selection, streaming, and disconnect journeys passed."
+          echo "Chromium, Firefox, and WebKit authenticated workspace, private source, grounded conversation, citation inspection, durable draft editing, proposal application, role isolation, BYOK, Vault, model selection, streaming, and disconnect journeys passed."
