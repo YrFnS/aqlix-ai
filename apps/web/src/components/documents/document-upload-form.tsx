@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  useEffect,
+  useRef,
   useState,
   type DragEvent,
   type FormEvent,
@@ -63,10 +65,19 @@ export function DocumentUploadForm({
   workspaceArchived,
 }: DocumentUploadFormProps) {
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const selectedBeforeHydration = inputRef.current?.files?.[0] ?? null;
+    if (!selectedBeforeHydration) return;
+
+    setFile(selectedBeforeHydration);
+    setError(localFileError(selectedBeforeHydration));
+  }, []);
 
   const chooseFile = (selected: File | null) => {
     setFile(selected);
@@ -186,6 +197,7 @@ export function DocumentUploadForm({
         </span>
       </label>
       <input
+        ref={inputRef}
         id="document-file"
         name="file"
         type="file"
