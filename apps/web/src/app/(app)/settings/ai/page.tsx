@@ -3,6 +3,9 @@ import Link from "next/link";
 import { ArrowRight, KeyRound, Router, ShieldCheck } from "lucide-react";
 import type { UserAiSettings } from "@iraqi-ai/types";
 import { OpenRouterSettings } from "@/components/ai/openrouter-settings";
+import { Button } from "@/components/ui/button";
+import { PageHeader, PageShell } from "@/components/ui/page-shell";
+import { Surface } from "@/components/ui/surface";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   getUserAiSettings,
@@ -46,72 +49,108 @@ export default async function AiSettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <header className="relative overflow-hidden rounded-3xl border border-border/70 bg-foreground p-6 text-background sm:p-8">
-        <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-primary/30 blur-3xl" />
-        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <Link
-              href="/workspaces"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-background/20 bg-background/5 px-4 text-sm font-semibold text-background transition-colors hover:bg-background/10"
-            >
+    <PageShell width="wide" className="space-y-8">
+      <PageHeader
+        eyebrow="اتصال الذكاء الاصطناعي"
+        title="مفتاحك، نموذجك، وحدودك"
+        description="اربط مفتاح OpenRouter الخاص بحسابك، ثم اختر نموذجاً من القائمة الحية. لا تعتمد المنصة على مفتاح مركزي ولا تفرض نموذجاً ثابتاً قد يتغير أو يختفي."
+        actions={
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href="/workspaces">
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              العودة إلى مساحات العمل
+              مساحات العمل
             </Link>
+          </Button>
+        }
+      />
 
-            <p className="mt-7 text-sm font-semibold text-primary-foreground/80">
-              P5 · User-owned AI connection
-            </p>
-            <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
-              إعدادات الذكاء الاصطناعي
-            </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
-              اربط مفتاح OpenRouter الخاص بك واختر نموذجاً من القائمة الحية.
-              المنصة لا تحتاج مفتاح نموذج مركزي، ولا تفرض اسماً ثابتاً لنموذج قد
-              يتغير أو يختفي لاحقاً.
-            </p>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="flex items-center gap-4"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+            <KeyRound className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs text-ink-muted">ملكية المفتاح</p>
+            <p className="mt-1 text-sm font-semibold">BYOK</p>
           </div>
-
-          <div className="grid grid-cols-2 gap-3 text-center text-xs">
-            <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-4">
-              <KeyRound className="mx-auto h-5 w-5" aria-hidden="true" />
-              <p className="mt-2 font-semibold">BYOK</p>
-              <p className="mt-1 text-background/55">Your key</p>
-            </div>
-            <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-4">
-              <Router className="mx-auto h-5 w-5" aria-hidden="true" />
-              <p className="mt-2 font-semibold">Live</p>
-              <p className="mt-1 text-background/55">Model catalog</p>
-            </div>
+        </Surface>
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="flex items-center gap-4"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+            <Router className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs text-ink-muted">قائمة النماذج</p>
+            <p className="mt-1 text-sm font-semibold">Live catalog</p>
           </div>
-        </div>
-      </header>
+        </Surface>
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="flex items-center gap-4"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs text-ink-muted">تخزين بيانات الاعتماد</p>
+            <p className="mt-1 text-sm font-semibold">Supabase Vault</p>
+          </div>
+        </Surface>
+      </div>
 
       {persistenceFailed ? (
-        <section className="rounded-3xl border border-destructive/25 bg-destructive/5 p-6 sm:p-8">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="2xl"
+          padding="lg"
+          className="border-destructive/25 bg-destructive/10"
+        >
           <h2 className="font-arabic-heading text-2xl font-semibold">
             تعذر تحميل اتصال الذكاء الاصطناعي
           </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
+          <p className="mt-3 text-sm leading-7 text-ink-muted">
             لم تُعرض حالة افتراضية على أنها محفوظة. تحقق من تطبيق migrations وVault
             ثم أعد تحميل الصفحة.
           </p>
-        </section>
+        </Surface>
       ) : (
         <OpenRouterSettings initialSettings={settings} />
       )}
 
-      <section className="rounded-3xl border border-border/70 bg-secondary/35 p-5 text-sm leading-7 text-muted-foreground">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+      <Surface
+        tone="muted"
+        elevation="none"
+        radius="xl"
+        padding="sm"
+      >
+        <div className="flex items-start gap-3 text-sm leading-7 text-ink-muted">
+          <ShieldCheck
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
           <p>
-            يُخزن المفتاح مشفراً في Supabase Vault ولا يظهر مجدداً في واجهة
-            الإعدادات. حدّد أيضاً سقف إنفاق للمفتاح من OpenRouter؛ النماذج المجانية
-            وتوفرها وحدودها قد تتغير، لذلك تُقرأ القائمة عند الاستخدام بدلاً من
-            تثبيتها في الكود.
+            يُخزن المفتاح مشفراً في Supabase Vault ولا يظهر مجدداً في الواجهة.
+            حدّد أيضاً سقف إنفاق للمفتاح من OpenRouter؛ توفر النماذج وأسعارها
+            وحدودها قد تتغير، لذلك تُقرأ القائمة عند الاستخدام بدلاً من تثبيتها
+            في الكود.
           </p>
         </div>
-      </section>
-    </div>
+      </Surface>
+    </PageShell>
   );
 }
