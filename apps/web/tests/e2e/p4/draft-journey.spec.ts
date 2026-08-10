@@ -60,41 +60,44 @@ async function conversationPayload(
   }>;
 }
 
+type DraftPayloadDetail = {
+  draft: {
+    id: string;
+    title: string;
+    content: string;
+    currentVersion: number;
+    versionCount: number;
+    provenanceCount: number;
+    status: string;
+    archivedAt: string | null;
+  };
+  provenance: Array<{
+    sourceId: string | null;
+    originMessageId: string | null;
+  }>;
+  versions: Array<{
+    versionNumber: number;
+    sourceKind: string;
+    content: string;
+    generationId: string | null;
+    restoredFromVersion: number | null;
+  }>;
+};
+
 async function draftPayload(
   request: APIRequestContext,
   workspaceId: string,
   draftId: string,
-) {
+): Promise<{ ok: true; data: DraftPayloadDetail }> {
   const response = await request.get(
     `/api/v1/workspaces/${workspaceId}/drafts/${draftId}`,
   );
   expect(response.status()).toBe(200);
-  return response.json() as Promise<{
+  const payload = (await response.json()) as {
     ok: true;
-    data: {
-      draft: {
-        id: string;
-        title: string;
-        content: string;
-        currentVersion: number;
-        versionCount: number;
-        provenanceCount: number;
-        status: string;
-        archivedAt: string | null;
-      };
-      provenance: Array<{
-        sourceId: string | null;
-        originMessageId: string | null;
-      }>;
-      versions: Array<{
-        versionNumber: number;
-        sourceKind: string;
-        content: string;
-        generationId: string | null;
-        restoredFromVersion: number | null;
-      }>;
-    };
-  }>;
+    data: { detail: DraftPayloadDetail };
+  };
+  return { ok: payload.ok, data: payload.data.detail };
 }
 
 async function requestJson(
