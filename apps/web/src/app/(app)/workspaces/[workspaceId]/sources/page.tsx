@@ -5,18 +5,32 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowUpLeft,
+  CheckCircle2,
   FileSearch,
   FileText,
   Search,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import type {
   Attachment,
   SourceSearchResult,
   WorkspaceAccess,
 } from "@iraqi-ai/types";
+import {
+  MotionSurface,
+  Stagger,
+  StaggerItem,
+} from "@/components/motion/motion-primitives";
 import { DocumentStatusNotice } from "@/components/documents/document-status-notice";
 import { DocumentUploadForm } from "@/components/documents/document-upload-form";
+import { Button } from "@/components/ui/button";
+import {
+  PageHeader,
+  PageSection,
+  PageShell,
+} from "@/components/ui/page-shell";
+import { Surface } from "@/components/ui/surface";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   listWorkspaceDocuments,
@@ -56,87 +70,102 @@ function formatTimestamp(value: string): string {
 const statusLabels: Record<Attachment["status"], string> = {
   pending: "بانتظار المعالجة",
   processing: "قيد المعالجة",
-  ready: "جاهز",
-  failed: "فشل",
+  ready: "جاهز للبحث",
+  failed: "تعذرت المعالجة",
   deleted: "محذوف",
 };
 
 function DocumentCard({ document }: { document: Attachment }) {
+  const ready = document.status === "ready";
+  const failed = document.status === "failed";
+
   return (
-    <article className="flex h-full flex-col rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <span
-            className={`inline-flex rounded-full px-2.5 py-1 text-[0.68rem] font-semibold ${
-              document.status === "ready"
-                ? "bg-primary/10 text-primary"
-                : document.status === "failed"
-                  ? "bg-destructive/10 text-destructive"
-                  : "bg-secondary text-muted-foreground"
-            }`}
+    <StaggerItem className="h-full">
+      <MotionSurface className="h-full">
+        <Link
+          href={`/workspaces/${document.workspaceId}/sources/${document.id}`}
+          className="group block h-full rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+          aria-label={`فتح المصدر ${document.fileName}`}
+        >
+          <Surface
+            tone="raised"
+            elevation="xs"
+            radius="2xl"
+            padding="md"
+            className="flex h-full flex-col transition-[border-color,box-shadow] duration-base ease-standard group-hover:border-primary/25 group-hover:shadow-surface-md"
           >
-            {statusLabels[document.status]}
-          </span>
-          <h2
-            dir="auto"
-            className="mt-4 break-words font-arabic-heading text-xl font-semibold"
-          >
-            {document.fileName}
-          </h2>
-        </div>
-        <div className="rounded-2xl bg-secondary p-3 text-primary">
-          <FileText className="h-5 w-5" aria-hidden="true" />
-        </div>
-      </div>
-
-      <dl className="mt-5 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt>الحجم</dt>
-          <dd dir="ltr" className="mt-1 font-semibold text-foreground">
-            {formatBytes(document.byteSize)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt>المقاطع</dt>
-          <dd className="mt-1 font-semibold text-foreground">
-            {document.sourceCount}
-          </dd>
-        </div>
-      </dl>
-
-      <p className="mt-4 text-xs leading-6 text-muted-foreground">
-        {formatTimestamp(document.createdAt)} · {document.mediaType}
-      </p>
-
-      {document.status === "failed" && (
-        <div className="mt-4 rounded-2xl border border-destructive/25 bg-destructive/5 p-3 text-xs leading-6">
-          <div className="flex gap-2 text-destructive">
-            <AlertTriangle
-              className="mt-1 h-3.5 w-3.5 shrink-0"
-              aria-hidden="true"
-            />
-            <div>
-              <p className="font-semibold">
-                {document.failureCode ?? "PROCESSING_FAILED"}
-              </p>
-              {document.failureReason && (
-                <p className="mt-1 text-muted-foreground">
-                  {document.failureReason}
-                </p>
-              )}
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.68rem] font-semibold ${
+                    ready
+                      ? "bg-brand-soft text-primary"
+                      : failed
+                        ? "bg-destructive/10 text-destructive"
+                        : "bg-surface-sunken text-ink-muted"
+                  }`}
+                >
+                  {ready ? (
+                    <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
+                  ) : failed ? (
+                    <AlertTriangle className="h-3 w-3" aria-hidden="true" />
+                  ) : (
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-current"
+                      aria-hidden="true"
+                    />
+                  )}
+                  {statusLabels[document.status]}
+                </span>
+                <h2
+                  dir="auto"
+                  className="mt-4 line-clamp-2 break-words font-arabic-heading text-xl font-semibold"
+                >
+                  {document.fileName}
+                </h2>
+              </div>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line/70 bg-surface-sunken text-primary">
+                <FileText className="h-5 w-5" aria-hidden="true" />
+              </span>
             </div>
-          </div>
-        </div>
-      )}
 
-      <Link
-        href={`/workspaces/${document.workspaceId}/sources/${document.id}`}
-        className="mt-auto inline-flex min-h-11 items-center justify-center gap-2 border-t border-border/70 pt-5 text-sm font-semibold text-primary"
-      >
-        فتح المقاطع والحالة
-        <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
-      </Link>
-    </article>
+            <dl className="mt-5 grid grid-cols-2 gap-3 text-xs">
+              <div className="rounded-xl bg-surface-sunken/70 p-3">
+                <dt className="text-ink-subtle">الحجم</dt>
+                <dd dir="ltr" className="mt-1 font-semibold text-foreground">
+                  {formatBytes(document.byteSize)}
+                </dd>
+              </div>
+              <div className="rounded-xl bg-surface-sunken/70 p-3">
+                <dt className="text-ink-subtle">المقاطع</dt>
+                <dd className="mt-1 font-semibold text-foreground">
+                  {document.sourceCount.toLocaleString("ar-IQ")}
+                </dd>
+              </div>
+            </dl>
+
+            {failed ? (
+              <p className="mt-4 line-clamp-2 text-xs leading-6 text-destructive">
+                {document.failureReason ??
+                  "فشلت المعالجة ولم تُنشأ مقاطع بديلة."}
+              </p>
+            ) : (
+              <p className="mt-4 text-xs leading-6 text-ink-muted">
+                {formatTimestamp(document.createdAt)} · {document.mediaType}
+              </p>
+            )}
+
+            <span className="mt-auto flex items-center justify-between border-t border-line/70 pt-4 text-sm font-semibold text-primary">
+              فتح المستند والمقاطع
+              <ArrowUpLeft
+                className="h-4 w-4 transition-transform duration-fast group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+                aria-hidden="true"
+              />
+            </span>
+          </Surface>
+        </Link>
+      </MotionSurface>
+    </StaggerItem>
   );
 }
 
@@ -154,32 +183,44 @@ function SearchResultCard({
       : `المقطع ${result.ordinal + 1}`;
 
   return (
-    <article className="rounded-3xl border border-border/70 bg-card p-5 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p dir="auto" className="font-semibold">
-            {result.fileName}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">{locator}</p>
+    <Link
+      href={`/workspaces/${workspaceId}/sources/${result.attachmentId}#source-${result.sourceId}`}
+      className="group block rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+      aria-label={`فتح ${locator} من ${result.fileName}`}
+    >
+      <Surface
+        tone="raised"
+        elevation="xs"
+        radius="2xl"
+        padding="md"
+        className="transition-[border-color,box-shadow] duration-fast group-hover:border-primary/25 group-hover:shadow-surface-sm"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p dir="auto" className="truncate font-semibold text-foreground">
+              {result.fileName}
+            </p>
+            <p className="mt-1 text-xs text-ink-muted">{locator}</p>
+          </div>
+          <span className="rounded-full bg-brand-soft px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
+            مقطع مطابق
+          </span>
         </div>
-        <span className="rounded-full bg-secondary px-2.5 py-1 text-[0.68rem] text-muted-foreground">
-          rank {result.rank.toFixed(3)}
+        <p
+          dir="auto"
+          className="mt-4 line-clamp-5 whitespace-pre-wrap text-sm leading-8 text-ink-muted"
+        >
+          {result.content}
+        </p>
+        <span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-primary">
+          فحص المقطع داخل المستند
+          <ArrowUpLeft
+            className="h-3.5 w-3.5 transition-transform duration-fast group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden="true"
+          />
         </span>
-      </div>
-      <p
-        dir="auto"
-        className="mt-4 line-clamp-6 whitespace-pre-wrap text-sm leading-8 text-muted-foreground"
-      >
-        {result.content}
-      </p>
-      <Link
-        href={`/workspaces/${workspaceId}/sources/${result.attachmentId}#source-${result.sourceId}`}
-        className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-secondary"
-      >
-        فتح المقطع الداعم
-        <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
-      </Link>
-    </article>
+      </Surface>
+    </Link>
   );
 }
 
@@ -233,16 +274,15 @@ export default async function WorkspaceSourcesPage({
 
   if (!workspace) {
     return (
-      <div className="mx-auto max-w-5xl space-y-6">
+      <PageShell width="default">
         <DocumentStatusNotice status="persistence-error" />
-        <Link
-          href="/workspaces"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold"
-        >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى المساحات
-        </Link>
-      </div>
+        <Button asChild variant="outline" className="w-fit rounded-full">
+          <Link href="/workspaces">
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            العودة إلى المساحات
+          </Link>
+        </Button>
+      </PageShell>
     );
   }
 
@@ -255,168 +295,241 @@ export default async function WorkspaceSourcesPage({
     : workspaceArchived
       ? "workspace-archived"
       : firstValue(queryParams.status);
+  const readyCount = documents.filter(
+    (document) => document.status === "ready",
+  ).length;
+  const failedCount = documents.filter(
+    (document) => document.status === "failed",
+  ).length;
+  const passageCount = documents.reduce(
+    (total, document) => total + document.sourceCount,
+    0,
+  );
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <header className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <Link
-          href={`/workspaces/${workspace.id}`}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-secondary"
-        >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى مساحة العمل
-        </Link>
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">
-              P3 · Private documents and inspectable passages
-            </p>
-            <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
-              مصادر {workspace.name}
-            </h1>
-            <p className="mt-4 text-base leading-8 text-muted-foreground">
-              الملفات أصلية وخاصة، والمقاطع قابلة للبحث والفتح بسطر حقيقي. يدعم
-              هذا المسار TXT وMarkdown بصيغة UTF-8 فقط؛ لا يدّعي دعم PDF أو OCR.
-            </p>
-          </div>
-          <div className="flex items-center gap-3 rounded-2xl bg-secondary/60 px-4 py-3 text-sm text-muted-foreground">
-            <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-            Private bucket · RLS · 2 MiB
-          </div>
-        </div>
-      </header>
+    <PageShell width="wide" className="space-y-8">
+      <PageHeader
+        eyebrow="مكتبة المصادر"
+        title={<span dir="auto">مصادر {workspace.name}</span>}
+        description={
+          <>
+            ارفع مستندات نصية خاصة، ابحث في المقاطع المستخرجة، ثم افتح الدليل
+            نفسه داخل المستند. يدعم هذا المسار TXT وMarkdown بصيغة UTF-8 فقط؛
+            لا يدّعي دعم PDF أو OCR.
+          </>
+        }
+        actions={
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href={`/workspaces/${workspace.id}`}>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              مساحة العمل
+            </Link>
+          </Button>
+        }
+      />
 
       <DocumentStatusNotice status={visibleStatus} />
 
-      <div className="grid gap-6 xl:grid-cols-[0.72fr_1.28fr]">
-        <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-primary">إضافة مصدر</p>
-              <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                ملف خاص ومقاطع حقيقية
-              </h2>
-            </div>
-            <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-              <FileSearch className="h-5 w-5" aria-hidden="true" />
-            </div>
-          </div>
-
-          <div className="mt-7">
-            <DocumentUploadForm
-              workspaceId={workspace.id}
-              canWrite={canWrite}
-              workspaceArchived={workspaceArchived}
-            />
-          </div>
-
-          <div className="mt-6 rounded-2xl bg-secondary/55 p-4 text-xs leading-6 text-muted-foreground">
-            لا تُرسل الملفات إلى نموذج أثناء الاستخراج. يتم فك UTF-8 وتقسيم النص
-            بشكل حتمي، ثم تخزين المقاطع وفهرستها داخل PostgreSQL.
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-primary">البحث في المقاطع</p>
-              <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                افتح الدليل نفسه
-              </h2>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {documents.length} مستند
-            </p>
-          </div>
-
-          <form method="get" className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <label htmlFor="source-query" className="sr-only">
-              البحث في المصادر
-            </label>
-            <input
-              id="source-query"
-              name="q"
-              defaultValue={query}
-              maxLength={500}
-              dir="auto"
-              placeholder="ابحث عن كلمة أو عبارة عربية أو English"
-              className="min-h-12 flex-1 rounded-2xl border border-input bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            />
-            <button
-              type="submit"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground"
+      <Stagger className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "المستندات", value: documents.length },
+          { label: "جاهزة للبحث", value: readyCount },
+          { label: "المقاطع", value: passageCount },
+          { label: "تحتاج انتباهاً", value: failedCount },
+        ].map((metric) => (
+          <StaggerItem key={metric.label}>
+            <Surface
+              tone="raised"
+              elevation="xs"
+              radius="xl"
+              padding="sm"
+              className="h-full"
             >
-              <Search className="h-4 w-4" aria-hidden="true" />
-              بحث
-            </button>
-          </form>
+              <p className="text-xs text-ink-muted">{metric.label}</p>
+              <p className="mt-2 text-2xl font-semibold">
+                {metric.value.toLocaleString("ar-IQ")}
+              </p>
+            </Surface>
+          </StaggerItem>
+        ))}
+      </Stagger>
 
-          {query ? (
-            results.length > 0 ? (
-              <div className="mt-7 space-y-4">
-                {results.map((result) => (
-                  <SearchResultCard
-                    key={result.sourceId}
-                    workspaceId={workspace.id}
-                    result={result}
-                  />
-                ))}
+      <div className="grid gap-8 xl:grid-cols-[21rem_minmax(0,1fr)]">
+        <aside className="xl:sticky xl:top-24 xl:self-start">
+          <Surface
+            tone="raised"
+            elevation="sm"
+            radius="2xl"
+            padding="md"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold text-primary">مصدر جديد</p>
+                <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
+                  أضف ملفاً إلى السياق
+                </h2>
               </div>
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+                <FileSearch className="h-5 w-5" aria-hidden="true" />
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-ink-muted">
+              يبقى الملف خاصاً بالمساحة، وتُستخرج المقاطع حتمياً من دون إرسال
+              الملف إلى نموذج أثناء المعالجة.
+            </p>
+            <div className="mt-5">
+              <DocumentUploadForm
+                workspaceId={workspace.id}
+                canWrite={canWrite}
+                workspaceArchived={workspaceArchived}
+              />
+            </div>
+          </Surface>
+
+          <Surface
+            tone="muted"
+            elevation="none"
+            radius="xl"
+            padding="sm"
+            className="mt-4 text-xs leading-6 text-ink-muted"
+          >
+            <div className="flex items-start gap-3">
+              <ShieldCheck
+                className="mt-1 h-4 w-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+              <p>
+                Private bucket · RLS · 2 MiB. البحث محصور في هذه المساحة ولا
+                يستبدل غياب الدليل بنتيجة عامة.
+              </p>
+            </div>
+          </Surface>
+        </aside>
+
+        <div className="min-w-0 space-y-10">
+          <PageSection
+            title="ابحث داخل المقاطع"
+            description="استخدم كلمة أو عبارة عربية أو English للعثور على المقاطع المحفوظة وفتحها في موضعها الأصلي."
+          >
+            <Surface
+              tone="raised"
+              elevation="xs"
+              radius="2xl"
+              padding="sm"
+            >
+              <form method="get" className="flex flex-col gap-3 sm:flex-row">
+                <label htmlFor="source-query" className="sr-only">
+                  البحث في المصادر
+                </label>
+                <div className="relative min-w-0 flex-1">
+                  <Search
+                    className="pointer-events-none absolute inset-y-0 start-4 my-auto h-4 w-4 text-ink-subtle"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="source-query"
+                    name="q"
+                    defaultValue={query}
+                    maxLength={500}
+                    dir="auto"
+                    placeholder="ابحث عن كلمة أو عبارة عربية أو English"
+                    className="min-h-12 w-full rounded-xl border border-input bg-surface-raised ps-11 pe-4 text-sm outline-none transition-[border-color,box-shadow] duration-fast placeholder:text-ink-subtle focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
+                  />
+                </div>
+                <Button type="submit" className="rounded-xl px-5">
+                  <Search className="h-4 w-4" aria-hidden="true" />
+                  بحث
+                </Button>
+                {query ? (
+                  <Button asChild variant="ghost" className="rounded-xl">
+                    <Link href={`/workspaces/${workspace.id}/sources`}>
+                      <X className="h-4 w-4" aria-hidden="true" />
+                      مسح
+                    </Link>
+                  </Button>
+                ) : null}
+              </form>
+            </Surface>
+
+            {query ? (
+              results.length > 0 ? (
+                <div className="space-y-3">
+                  <p className="text-xs text-ink-muted">
+                    {results.length.toLocaleString("ar-IQ")} مقطعاً مطابقاً لعبارة
+                    البحث
+                  </p>
+                  {results.map((result) => (
+                    <SearchResultCard
+                      key={result.sourceId}
+                      workspaceId={workspace.id}
+                      result={result}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <Surface
+                  tone="muted"
+                  elevation="none"
+                  radius="2xl"
+                  padding="lg"
+                  className="text-center"
+                >
+                  <Search
+                    className="mx-auto h-6 w-6 text-primary"
+                    aria-hidden="true"
+                  />
+                  <h3 className="mt-4 font-arabic-heading text-xl font-semibold">
+                    لا يوجد مقطع مطابق
+                  </h3>
+                  <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-ink-muted">
+                    غيّر عبارة البحث أو أضف مستنداً يحتوي على السياق المطلوب. لا
+                    تُنشأ إجابة عامة بديلة عند غياب دليل محفوظ.
+                  </p>
+                </Surface>
+              )
+            ) : null}
+          </PageSection>
+
+          <PageSection
+            title="المستندات"
+            description="كل بطاقة تفتح المستند، مقاطعه، سجل المعالجة، وبياناته الخاصة."
+            actions={
+              <span className="rounded-full bg-surface-sunken px-3 py-1.5 text-xs font-semibold text-ink-muted">
+                {documents.length.toLocaleString("ar-IQ")} مستند
+              </span>
+            }
+          >
+            {documents.length > 0 ? (
+              <Stagger className="grid gap-4 md:grid-cols-2">
+                {documents.map((document) => (
+                  <DocumentCard key={document.id} document={document} />
+                ))}
+              </Stagger>
             ) : (
-              <div className="mt-7 rounded-3xl border border-dashed border-border bg-secondary/35 p-8 text-center">
-                <Search
-                  className="mx-auto h-6 w-6 text-primary"
+              <Surface
+                tone="muted"
+                elevation="none"
+                radius="2xl"
+                padding="lg"
+                className="text-center"
+              >
+                <FileText
+                  className="mx-auto h-7 w-7 text-primary"
                   aria-hidden="true"
                 />
-                <h3 className="mt-4 font-arabic-heading text-xl font-semibold">
-                  لا يوجد مقطع مطابق
+                <h3 className="mt-4 font-arabic-heading text-2xl font-semibold">
+                  المكتبة فارغة
                 </h3>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  لم تُنشأ إجابة عامة بديلة. غيّر عبارة البحث أو أضف مستنداً
-                  يحتوي على السياق المطلوب.
+                <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-ink-muted">
+                  {canWrite
+                    ? "أضف أول ملف TXT أو Markdown. لن نعرض مستندات مثال أو مقاطع غير مستخرجة من الملف الحقيقي."
+                    : "لم يُضف محرر أو مالك مستنداً إلى هذه المساحة بعد."}
                 </p>
-              </div>
-            )
-          ) : (
-            <div className="mt-7 rounded-3xl bg-secondary/35 p-6 text-sm leading-8 text-muted-foreground">
-              يستخدم البحث فهرس PostgreSQL داخل مساحة العمل فقط. لا توجد نتائج
-              من الإنترنت أو من مساحات أخرى.
-            </div>
-          )}
-        </section>
-      </div>
-
-      <section>
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-primary">المستندات المحفوظة</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              الحالة والمقاطع بعد إعادة التحميل
-            </h2>
-          </div>
+              </Surface>
+            )}
+          </PageSection>
         </div>
-
-        {documents.length > 0 ? (
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {documents.map((document) => (
-              <DocumentCard key={document.id} document={document} />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-6 flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-card p-8 text-center">
-            <FileText className="h-7 w-7 text-primary" aria-hidden="true" />
-            <h3 className="mt-4 font-arabic-heading text-xl font-semibold">
-              لا توجد مصادر محفوظة
-            </h3>
-            <p className="mt-3 max-w-lg text-sm leading-7 text-muted-foreground">
-              {canWrite
-                ? "ارفع ملف TXT أو Markdown حقيقياً. لن تظهر بيانات مثال أو نتائج مفبركة."
-                : "لم يشارك معك مستند محفوظ في هذه المساحة بعد."}
-            </p>
-          </div>
-        )}
-      </section>
-    </div>
+      </div>
+    </PageShell>
   );
 }
