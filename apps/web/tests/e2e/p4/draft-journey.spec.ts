@@ -262,8 +262,11 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(
     page.getByText(/Draft, version one, and provenance saved/),
   ).toBeVisible();
-  await expect(page.getByText("launch-decision.md")).toBeVisible();
-  await expect(page.getByRole("link", { name: /فتح المصدر/ })).toHaveAttribute(
+  const sourceLink = page.getByRole("link", {
+    name: /فتح المصدر S1 من launch-decision\.md/,
+  });
+  await expect(sourceLink).toBeVisible();
+  await expect(sourceLink).toHaveAttribute(
     "href",
     new RegExp(
       `/workspaces/${workspaceId}/sources/${attachmentId}#source-${sourceId}`,
