@@ -1,43 +1,61 @@
 import Link from "next/link";
+import { ArrowUpLeft } from "lucide-react";
+import { BrandMark } from "@/components/brand/brand-mark";
 import { brand } from "@/config/brand";
+
+const links = [
+  { href: "/#product", label: "كيف يعمل" },
+  { href: "/#capabilities", label: "القدرات" },
+  { href: "/#principles", label: "المبادئ" },
+  { href: brand.links.documentation, label: "المستندات" },
+] as const;
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-auto border-t border-border/70 bg-card/50">
-      <div className="container-responsive grid gap-8 py-10 sm:grid-cols-[1fr_auto] sm:items-end">
-        <div className="max-w-xl space-y-3">
-          <p className="font-arabic-heading text-xl font-semibold">
-            {brand.name}
+    <footer className="mt-auto border-t border-line/70 bg-surface-sunken/45">
+      <div className="container-responsive grid gap-10 py-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div className="max-w-2xl">
+          <BrandMark size="sm" />
+          <p className="mt-5 max-w-xl text-sm leading-7 text-ink-muted">
+            {brand.descriptionAr} اسأل، أضف السياق، ثم حوّل النتيجة إلى عمل يمكنك
+            حفظه ومتابعته.
           </p>
-          <p className="text-sm leading-7 text-muted-foreground">
-            {brand.descriptionAr}
-          </p>
-          <p className="text-xs leading-6 text-muted-foreground">
-            اسم المنتج النهائي قيد المراجعة، وهذه المعاينة ليست إعلاناً عن
-            جاهزية تجارية أو قانونية.
+          <p className="mt-4 max-w-xl text-xs leading-6 text-ink-subtle">
+            وصف القدرات على هذه الصفحة يقتصر على المسار المنفذ، ولا يتضمن ادعاءات
+            امتثال أو جاهزية قانونية غير موثقة.
           </p>
         </div>
 
-        <div className="space-y-3 text-sm text-muted-foreground sm:text-left">
-          <div className="flex flex-wrap gap-x-5 gap-y-2 sm:justify-end">
-            <Link
-              href={brand.links.documentation}
-              className="transition-colors hover:text-foreground"
-            >
-              المستندات
-            </Link>
+        <div className="space-y-5 lg:text-left">
+          <nav
+            aria-label="روابط تذييل الصفحة"
+            className="flex flex-wrap gap-x-5 gap-y-3 lg:justify-end"
+          >
+            {links.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-md text-sm font-medium text-ink-muted outline-none transition-colors hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/20"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex flex-col gap-3 text-xs text-ink-subtle sm:flex-row sm:items-center sm:justify-between lg:justify-end lg:gap-6">
+            <p>
+              © {year} {brand.name}
+            </p>
             <Link
               href={brand.links.signIn}
-              className="transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-2 rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-4 focus-visible:ring-ring/20"
             >
               تسجيل الدخول
+              <ArrowUpLeft className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
-          <p>
-            © {year} {brand.name}. Product rebuild in progress.
-          </p>
         </div>
       </div>
     </footer>
