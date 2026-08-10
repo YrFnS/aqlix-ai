@@ -1,0 +1,77 @@
+import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const readSource = (path: string) =>
+  readFileSync(resolve(webRoot, path), "utf8");
+
+describe("UI experience P0 foundation", () => {
+  test("owns the product tokens in one authoritative stylesheet", () => {
+    const layout = readSource("src/app/layout.tsx");
+    const globals = readSource("src/app/globals.css");
+    const globalNotFound = readSource("src/app/global-not-found.tsx");
+    const retiredRebuildStyles = readSource("src/app/rebuild.css");
+
+    expect(layout).toContain('import "./globals.css"');
+    expect(layout).not.toContain('import "./rebuild.css"');
+    expect(globalNotFound).not.toContain('import "./rebuild.css"');
+    expect(globals).toContain("--surface-canvas:");
+    expect(globals).toContain("--surface-raised:");
+    expect(globals).toContain("--radius-2xl:");
+    expect(globals).toContain("--shadow-lg:");
+    expect(globals).toContain("--motion-duration-base:");
+    expect(retiredRebuildStyles).not.toContain("--background:");
+  });
+
+  test("loads explicit Latin and Arabic font variables", () => {
+    const fonts = readSource("src/lib/fonts.ts");
+    const layout = readSource("src/app/layout.tsx");
+    const tailwind = readSource("tailwind.config.ts");
+
+    expect(fonts).toContain("Inter");
+    expect(fonts).toContain('variable: "--font-inter"');
+    expect(layout).toContain("${inter.variable}");
+    expect(tailwind).toContain('"var(--font-inter)"');
+    expect(tailwind).toContain('"var(--font-noto-sans-arabic)"');
+  });
+
+  test("shares restrained motion defaults and respects user preferences", () => {
+    const layout = readSource("src/app/layout.tsx");
+    const provider = readSource("src/components/providers/MotionProvider.tsx");
+    const motion = readSource("src/lib/motion.ts");
+    const globals = readSource("src/app/globals.css");
+
+    expect(layout).toContain("<MotionProvider>{children}</MotionProvider>");
+    expect(layout).toContain('data-ui-foundation="p0"');
+    expect(provider).toContain('reducedMotion="user"');
+    expect(provider).toContain("motionTransition");
+    expect(motion).toContain("motionSpring");
+    expect(motion).toContain("staggerContainerVariants");
+    expect(globals).toContain("@media (prefers-reduced-motion: reduce)");
+  });
+
+  test("provides reusable shell and surface primitives on a real route", () => {
+    const shell = readSource("src/components/ui/page-shell.tsx");
+    const surface = readSource("src/components/ui/surface.tsx");
+    const loading = readSource("src/app/loading.tsx");
+    const appLayout = readSource("src/app/(app)/layout.tsx");
+
+    expect(shell).toContain('data-slot="page-shell"');
+    expect(shell).toContain('data-slot="page-header"');
+    expect(surface).toContain('data-slot="surface"');
+    expect(surface).toContain("surfaceVariants");
+    expect(loading).toContain("<PageShell");
+    expect(loading).toContain("<Surface");
+    expect(appLayout).toContain("<PageReveal");
+  });
+
+  test("uses semantic focus and elevation tokens in shared buttons", () => {
+    const button = readSource("src/components/ui/button.tsx");
+
+    expect(button).toContain("focus-visible:ring-ring/20");
+    expect(button).toContain("shadow-surface-xs");
+    expect(button).not.toContain("focus-visible:ring-[#2E8B57]");
+  });
+});

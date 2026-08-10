@@ -1,30 +1,29 @@
 import type * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-[#2E8B57] focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-sm text-sm font-semibold outline-none transition-[color,background-color,border-color,box-shadow,transform] duration-fast ease-standard disabled:pointer-events-none disabled:opacity-50 focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-surface-xs hover:-translate-y-px hover:bg-primary/90 hover:shadow-surface-sm active:translate-y-0",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-destructive-foreground shadow-surface-xs hover:-translate-y-px hover:bg-destructive/90 active:translate-y-0 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border border-line bg-surface-raised text-foreground shadow-surface-xs hover:-translate-y-px hover:border-line-strong hover:bg-accent hover:text-accent-foreground hover:shadow-surface-sm active:translate-y-0",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground shadow-surface-xs hover:-translate-y-px hover:bg-secondary/80 active:translate-y-0",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "text-foreground hover:bg-accent hover:text-accent-foreground",
+        link: "rounded-none text-primary underline-offset-4 hover:underline",
       },
       size: {
         default: "min-h-[44px] px-4 py-2 has-[>svg]:px-3",
-        sm: "min-h-[44px] rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "min-h-[44px] rounded-md px-6 has-[>svg]:px-4",
+        sm: "min-h-[44px] gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "min-h-[48px] rounded-md px-6 has-[>svg]:px-4",
         icon: "min-h-[44px] min-w-[44px]",
       },
     },

@@ -5,7 +5,6 @@ const config: Config = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    // Include workspace packages that use Tailwind
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
     "../../packages/features/src/**/*.{js,ts,jsx,tsx}",
   ],
@@ -45,34 +44,77 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        canvas: "hsl(var(--surface-canvas))",
+        surface: {
+          DEFAULT: "hsl(var(--surface-base))",
+          raised: "hsl(var(--surface-raised))",
+          sunken: "hsl(var(--surface-sunken))",
+          overlay: "hsl(var(--surface-overlay))",
+        },
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          muted: "hsl(var(--ink-muted))",
+          subtle: "hsl(var(--ink-subtle))",
+        },
+        line: {
+          DEFAULT: "hsl(var(--line))",
+          strong: "hsl(var(--line-strong))",
+        },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          foreground: "hsl(var(--brand-foreground))",
+          soft: "hsl(var(--brand-soft))",
+        },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        xs: "var(--radius-xs)",
+        sm: "var(--radius-sm)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+        "2xl": "var(--radius-2xl)",
+      },
+      boxShadow: {
+        "surface-xs": "var(--shadow-xs)",
+        "surface-sm": "var(--shadow-sm)",
+        "surface-md": "var(--shadow-md)",
+        "surface-lg": "var(--shadow-lg)",
+      },
+      transitionDuration: {
+        fast: "var(--motion-duration-fast)",
+        base: "var(--motion-duration-base)",
+        slow: "var(--motion-duration-slow)",
+      },
+      transitionTimingFunction: {
+        standard: "var(--motion-ease-standard)",
+        emphasized: "var(--motion-ease-emphasized)",
+        exit: "var(--motion-ease-exit)",
       },
       fontFamily: {
-        // Arabic fonts
+        sans: [
+          "var(--font-inter)",
+          "var(--font-noto-sans-arabic)",
+          "system-ui",
+          "sans-serif",
+        ],
         arabic: [
-          "var(--font-arabic-primary)", // Noto Sans Arabic
-          "Tahoma", // Excellent fallback for Arabic
-          "Arial Unicode MS", // Unicode support
-          "sans-serif", // System default
+          "var(--font-noto-sans-arabic)",
+          "Tahoma",
+          "Arial Unicode MS",
+          "sans-serif",
         ],
         "arabic-heading": [
-          "var(--font-arabic-heading)", // Cairo
-          "var(--font-arabic-primary)", // Fallback to primary
+          "var(--font-cairo)",
+          "var(--font-noto-sans-arabic)",
           "Tahoma",
           "sans-serif",
         ],
         "arabic-formal": [
-          "var(--font-arabic-formal)", // Amiri
-          "var(--font-arabic-primary)", // Fallback to primary
+          "var(--font-amiri)",
+          "var(--font-noto-sans-arabic)",
           "Tahoma",
-          "serif", // Serif fallback for formal
+          "serif",
         ],
-        // English font (existing)
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
     },
   },

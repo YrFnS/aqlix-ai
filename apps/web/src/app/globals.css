@@ -1,4 +1,4 @@
-/* RTL Layout Styles */
+/* RTL layout foundations */
 @import "../styles/rtl.css";
 
 @tailwind base;
@@ -7,79 +7,250 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 40%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    color-scheme: light;
+
+    /* UI P0: living paper + intelligent ink */
+    --surface-canvas: 43 36% 96%;
+    --surface-base: 42 34% 98%;
+    --surface-raised: 42 55% 100%;
+    --surface-sunken: 42 20% 93%;
+    --surface-overlay: 42 48% 99%;
+    --ink: 222 34% 11%;
+    --ink-muted: 219 12% 40%;
+    --ink-subtle: 218 10% 52%;
+    --line: 40 17% 82%;
+    --line-strong: 40 15% 72%;
+    --brand: 160 66% 24%;
+    --brand-foreground: 44 55% 98%;
+    --brand-soft: 157 31% 89%;
+
+    /* Existing semantic aliases remain stable for current components. */
+    --background: var(--surface-canvas);
+    --foreground: var(--ink);
+    --card: var(--surface-base);
+    --card-foreground: var(--ink);
+    --popover: var(--surface-overlay);
+    --popover-foreground: var(--ink);
+    --primary: var(--brand);
+    --primary-foreground: var(--brand-foreground);
+    --secondary: 42 22% 91%;
+    --secondary-foreground: 222 28% 16%;
+    --muted: var(--surface-sunken);
+    --muted-foreground: var(--ink-muted);
+    --accent: var(--brand-soft);
+    --accent-foreground: 160 56% 20%;
+    --destructive: 2 70% 49%;
+    --destructive-foreground: 0 0% 100%;
+    --border: var(--line);
+    --input: var(--line-strong);
+    --ring: var(--brand);
+
+    /* Typography supplied by next/font on the root element. */
+    --font-ui-sans: var(--font-inter);
+    --font-arabic-primary: var(--font-noto-sans-arabic);
+    --font-arabic-heading: var(--font-cairo);
+    --font-arabic-formal: var(--font-amiri);
+
+    /* Shape hierarchy */
+    --radius-xs: 0.5rem;
+    --radius-sm: 0.75rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 1.75rem;
+    --radius-2xl: 2.25rem;
+    --radius: var(--radius-md);
+
+    /* Elevation hierarchy */
+    --shadow-color: 222 34% 11%;
+    --shadow-xs: 0 1px 2px hsl(var(--shadow-color) / 0.04);
+    --shadow-sm: 0 1px 3px hsl(var(--shadow-color) / 0.06),
+      0 1px 2px hsl(var(--shadow-color) / 0.04);
+    --shadow-md: 0 16px 50px -28px hsl(var(--shadow-color) / 0.24),
+      0 2px 8px hsl(var(--shadow-color) / 0.05);
+    --shadow-lg: 0 24px 70px -30px hsl(var(--shadow-color) / 0.34),
+      0 8px 24px hsl(var(--shadow-color) / 0.08);
+
+    /* Shared motion language */
+    --motion-duration-fast: 140ms;
+    --motion-duration-base: 220ms;
+    --motion-duration-slow: 360ms;
+    --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+    --motion-ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+    --motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+    /* Arabic reading scale */
+    --text-xs-arabic: 0.875rem;
+    --text-sm-arabic: 1rem;
+    --text-base-arabic: 1.125rem;
+    --text-lg-arabic: 1.25rem;
+    --text-xl-arabic: 1.5rem;
+    --text-2xl-arabic: 1.875rem;
+    --text-3xl-arabic: 2.25rem;
+    --leading-tight-arabic: 1.4;
+    --leading-snug-arabic: 1.5;
+    --leading-normal-arabic: 1.6;
+    --leading-relaxed-arabic: 1.7;
+    --leading-loose-arabic: 1.8;
+    --tracking-tighter-arabic: -0.02em;
+    --tracking-tight-arabic: -0.01em;
+    --tracking-normal-arabic: 0;
+    --tracking-wide-arabic: 0.02em;
+    --tracking-wider-arabic: 0.04em;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    color-scheme: dark;
+    --surface-canvas: 222 25% 8%;
+    --surface-base: 222 22% 11%;
+    --surface-raised: 221 21% 13%;
+    --surface-sunken: 220 17% 15%;
+    --surface-overlay: 221 22% 12%;
+    --ink: 42 30% 94%;
+    --ink-muted: 42 11% 68%;
+    --ink-subtle: 42 9% 55%;
+    --line: 220 14% 23%;
+    --line-strong: 220 14% 30%;
+    --brand: 157 52% 55%;
+    --brand-foreground: 222 28% 9%;
+    --brand-soft: 158 23% 18%;
+    --secondary: 221 18% 16%;
+    --secondary-foreground: 42 24% 92%;
+    --accent-foreground: 157 55% 78%;
+    --destructive: 2 61% 43%;
+    --destructive-foreground: 0 0% 100%;
+    --shadow-color: 220 50% 2%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    min-width: 320px;
+    scroll-behavior: smooth;
+    background: hsl(var(--surface-canvas));
+  }
+
   body {
-    @apply bg-background text-foreground;
+    min-height: 100svh;
+    margin: 0;
+    background-color: hsl(var(--surface-canvas));
+    background-image:
+      radial-gradient(
+        circle at 88% -12%,
+        hsl(var(--brand-soft) / 0.72),
+        transparent 31rem
+      ),
+      radial-gradient(
+        circle at 4% 8%,
+        hsl(var(--brand) / 0.07),
+        transparent 27rem
+      ),
+      linear-gradient(
+        180deg,
+        hsl(var(--surface-raised) / 0.38),
+        transparent 20rem
+      );
+    color: hsl(var(--ink));
+    font-family: var(--font-ui-sans), var(--font-arabic-primary), Tahoma,
+      system-ui, sans-serif;
+    font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: hsl(var(--brand) / 0.18);
+    color: hsl(var(--ink));
+  }
+
+  :where(a, button, input, textarea, select, [tabindex]) {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a {
+    text-underline-offset: 0.22em;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
   }
 }
 
-/* Responsive Container Utilities */
+@layer components {
+  .app-shell {
+    position: relative;
+    isolation: isolate;
+    min-height: 100svh;
+    background:
+      linear-gradient(
+        180deg,
+        hsl(var(--surface-raised) / 0.24),
+        transparent 18rem
+      ),
+      hsl(var(--surface-canvas) / 0.72);
+  }
+
+  .app-shell::before {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    background-image:
+      linear-gradient(hsl(var(--ink) / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--ink) / 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 72%);
+    mask-image: linear-gradient(to bottom, black, transparent 72%);
+  }
+
+  .app-main {
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-frame {
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+  }
+
+  .interactive-lift {
+    transition:
+      transform var(--motion-duration-fast) var(--motion-ease-standard),
+      border-color var(--motion-duration-fast) var(--motion-ease-standard),
+      background-color var(--motion-duration-fast) var(--motion-ease-standard),
+      box-shadow var(--motion-duration-base) var(--motion-ease-standard);
+  }
+
+  .interactive-lift:hover {
+    transform: translateY(-2px);
+    border-color: hsl(var(--brand) / 0.28);
+    box-shadow: var(--shadow-md);
+  }
+}
+
 @layer utilities {
   .container-responsive {
     @apply container mx-auto px-4 sm:px-6 lg:px-8;
   }
-}
 
-/* Responsive Typography Scale */
-@layer utilities {
   .text-heading-1 {
-    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl;
   }
 
   .text-heading-2 {
-    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold;
+    @apply text-xl font-semibold tracking-tight sm:text-2xl md:text-3xl lg:text-4xl;
   }
 
   .text-heading-3 {
-    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold;
+    @apply text-lg font-semibold sm:text-xl md:text-2xl lg:text-3xl;
   }
 
   .text-body-large {
@@ -89,21 +260,15 @@
   .text-body {
     @apply text-sm sm:text-base;
   }
-}
 
-/* Touch Target Utilities */
-@layer utilities {
   .touch-target {
-    @apply min-h-[3rem] min-w-[3rem]; /* 48px minimum */
+    @apply min-h-[3rem] min-w-[3rem];
   }
 
   .touch-target-large {
-    @apply min-h-[3.5rem] min-w-[3.5rem]; /* 56px for primary actions */
+    @apply min-h-[3.5rem] min-w-[3.5rem];
   }
-}
 
-/* Responsive Spacing Scale */
-@layer utilities {
   .section-spacing {
     @apply py-8 sm:py-12 md:py-16 lg:py-20;
   }
@@ -111,258 +276,111 @@
   .element-spacing {
     @apply space-y-4 sm:space-y-6 md:space-y-8;
   }
-}
 
-/* Safe Area Insets for Mobile (notch/home indicator) */
-@supports (padding: env(safe-area-inset-bottom)) {
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ========================================
-   Arabic Typography System
-   ========================================
-   Comprehensive Arabic font system with:
-   - CSS custom properties for Arabic typography
-   - Arabic-optimized font sizes and spacing
-   - Font feature settings for proper rendering
-   - Responsive typography for mobile devices
-   - Dark mode support
-   ======================================== */
-
-@layer base {
-  :root {
-    /* Arabic-Optimized Font Sizes */
-    /* Arabic text needs slightly larger sizes for readability */
-    --text-xs-arabic: 0.875rem; /* 14px */
-    --text-sm-arabic: 1rem; /* 16px - base for Arabic */
-    --text-base-arabic: 1.125rem; /* 18px - comfortable reading */
-    --text-lg-arabic: 1.25rem; /* 20px */
-    --text-xl-arabic: 1.5rem; /* 24px */
-    --text-2xl-arabic: 1.875rem; /* 30px */
-    --text-3xl-arabic: 2.25rem; /* 36px */
-
-    /* Arabic-Optimized Line Heights */
-    /* Arabic needs 1.5-1.8x font size for proper readability */
-    --leading-tight-arabic: 1.4;
-    --leading-snug-arabic: 1.5;
-    --leading-normal-arabic: 1.6; /* Default for body text */
-    --leading-relaxed-arabic: 1.7; /* Formal documents */
-    --leading-loose-arabic: 1.8; /* Educational content */
-
-    /* Arabic Letter Spacing */
-    /* 0em is standard, 0.02-0.04em helps readability at small sizes */
-    --tracking-tighter-arabic: -0.02em;
-    --tracking-tight-arabic: -0.01em;
-    --tracking-normal-arabic: 0em; /* Default for Arabic */
-    --tracking-wide-arabic: 0.02em; /* Small text readability */
-    --tracking-wider-arabic: 0.04em; /* Very small text */
-  }
-}
-
-/* Base Arabic Font Class with Font Feature Settings */
-@layer base {
-  .font-arabic {
-    /* Font features for proper Arabic rendering */
-    font-feature-settings:
-      "liga" 1,
-      /* Ligatures for character connection */ "calt" 1,
-      /* Contextual alternates for context forms */ "kern" 1; /* Kerning for proper spacing */
-
-    /* Font smoothing for better rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    /* Text rendering optimization */
+  .font-arabic,
+  .font-arabic-heading,
+  .font-arabic-formal {
+    font-feature-settings: "liga" 1, "calt" 1, "kern" 1;
     text-rendering: optimizeLegibility;
+  }
+
+  .font-arabic {
+    font-family: var(--font-arabic-primary), Tahoma, sans-serif;
   }
 
   .font-arabic-heading {
-    /* Inherit base Arabic font features */
-    font-feature-settings:
-      "liga" 1,
-      "calt" 1,
-      "kern" 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    font-family: var(--font-arabic-heading), var(--font-arabic-primary), Tahoma,
+      sans-serif;
   }
 
   .font-arabic-formal {
-    /* Inherit base Arabic font features */
-    font-feature-settings:
-      "liga" 1,
-      "calt" 1,
-      "kern" 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    font-family: var(--font-arabic-formal), var(--font-arabic-primary), serif;
   }
-}
 
-/* Arabic Typography Utilities */
-@layer utilities {
-  /* Arabic Text Sizes */
   .text-xs-arabic {
     font-size: var(--text-xs-arabic);
   }
+
   .text-sm-arabic {
     font-size: var(--text-sm-arabic);
   }
+
   .text-base-arabic {
     font-size: var(--text-base-arabic);
   }
+
   .text-lg-arabic {
     font-size: var(--text-lg-arabic);
   }
+
   .text-xl-arabic {
     font-size: var(--text-xl-arabic);
   }
+
   .text-2xl-arabic {
     font-size: var(--text-2xl-arabic);
   }
+
   .text-3xl-arabic {
     font-size: var(--text-3xl-arabic);
   }
 
-  /* Arabic Line Heights */
   .leading-tight-arabic {
     line-height: var(--leading-tight-arabic);
   }
+
   .leading-snug-arabic {
     line-height: var(--leading-snug-arabic);
   }
+
   .leading-normal-arabic {
     line-height: var(--leading-normal-arabic);
   }
+
   .leading-relaxed-arabic {
     line-height: var(--leading-relaxed-arabic);
   }
+
   .leading-loose-arabic {
     line-height: var(--leading-loose-arabic);
   }
 
-  /* Arabic Letter Spacing */
   .tracking-tighter-arabic {
     letter-spacing: var(--tracking-tighter-arabic);
   }
+
   .tracking-tight-arabic {
     letter-spacing: var(--tracking-tight-arabic);
   }
+
   .tracking-normal-arabic {
     letter-spacing: var(--tracking-normal-arabic);
   }
+
   .tracking-wide-arabic {
     letter-spacing: var(--tracking-wide-arabic);
   }
+
   .tracking-wider-arabic {
     letter-spacing: var(--tracking-wider-arabic);
   }
-}
 
-/* Responsive Arabic Typography */
-@layer utilities {
-  /* Mobile: Slightly smaller for screen real estate */
-  @media (max-width: 768px) {
-    :root {
-      --text-base-arabic: 1rem; /* 16px on mobile */
-      --text-lg-arabic: 1.125rem; /* 18px on mobile */
-      --text-xl-arabic: 1.25rem; /* 20px on mobile */
-    }
-  }
-
-  /* Small mobile: Even more compact */
-  @media (max-width: 480px) {
-    :root {
-      --text-base-arabic: 0.9375rem; /* 15px on small mobile */
-      --leading-normal-arabic: 1.5; /* Tighter for small screens */
-    }
-  }
-}
-
-/* Dark Mode Arabic Typography */
-@layer utilities {
-  .dark .font-arabic {
-    /* Slightly adjust font smoothing for dark backgrounds */
-    -webkit-font-smoothing: auto;
-  }
-
-  .dark .font-arabic-heading {
-    -webkit-font-smoothing: auto;
-  }
-
-  .dark .font-arabic-formal {
-    -webkit-font-smoothing: auto;
-  }
-}
-
-/* Print Styles for Arabic */
-@media print {
-  .font-arabic,
-  .font-arabic-heading,
-  .font-arabic-formal {
-    /* Use serif for printed Arabic documents */
-    font-family: "Times New Roman", serif;
-    color: #000;
-    background: #fff;
-  }
-}
-
-/* ========================================
-   Bidirectional Text Isolation Utilities
-   ========================================
-   Unicode Bidirectional Algorithm (UAX #9) support
-   for mixed Arabic-English content
-   ======================================== */
-
-@layer utilities {
-  /* Bidirectional Isolation for inline mixed content */
   .bidi-isolate {
     unicode-bidi: isolate;
   }
 
-  /* Bidirectional Isolation Override (for forcing direction) */
   .bidi-isolate-override {
     unicode-bidi: isolate-override;
   }
 
-  /* Plain Text Embedding (treats content as plain text) */
   .bidi-plaintext {
     unicode-bidi: plaintext;
   }
 
-  /* Bidirectional Embed (legacy support) */
   .bidi-embed {
     unicode-bidi: embed;
   }
-}
 
-/* ========================================
-   Performance Optimizations
-   ========================================
-   Custom utilities to prevent layout shift (CLS)
-   and optimize rendering performance
-
-   Note: Tailwind CSS includes aspect-* utilities by default
-   (aspect-video, aspect-square, aspect-auto)
-   ======================================== */
-
-@layer utilities {
-  /* Additional Aspect Ratios not in Tailwind */
   .aspect-portrait {
     aspect-ratio: 3 / 4;
   }
@@ -375,7 +393,6 @@
     aspect-ratio: 21 / 9;
   }
 
-  /* CSS Containment for Performance - Limits layout recalculation */
   .contain-layout {
     contain: layout;
   }
@@ -400,30 +417,90 @@
     contain: content;
   }
 
-  /* GPU Acceleration Hints */
   .gpu-accelerate {
     transform: translateZ(0);
     backface-visibility: hidden;
   }
 
-  /* Skeleton Loading States - Prevents layout shift */
-  .skeleton {
-    @apply animate-pulse bg-muted rounded;
+  .skeleton,
+  .skeleton-text,
+  .skeleton-heading,
+  .skeleton-avatar,
+  .skeleton-button {
+    @apply animate-pulse rounded bg-muted;
   }
 
   .skeleton-text {
-    @apply skeleton h-4 w-full;
+    @apply h-4 w-full;
   }
 
   .skeleton-heading {
-    @apply skeleton h-8 w-3/4;
+    @apply h-8 w-3/4;
   }
 
   .skeleton-avatar {
-    @apply skeleton h-12 w-12 rounded-full;
+    @apply h-12 w-12 rounded-full;
   }
 
   .skeleton-button {
-    @apply skeleton h-10 w-24;
+    @apply h-11 w-24;
+  }
+}
+
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --text-base-arabic: 1rem;
+    --text-lg-arabic: 1.125rem;
+    --text-xl-arabic: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --text-base-arabic: 0.9375rem;
+    --leading-normal-arabic: 1.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .interactive-lift:hover {
+    transform: none;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .font-arabic,
+  .font-arabic-heading,
+  .font-arabic-formal {
+    font-family: "Times New Roman", serif;
   }
 }

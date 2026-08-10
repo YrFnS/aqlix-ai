@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
-import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
+import { amiri, cairo, inter, notoSansArabic } from "@/lib/fonts";
 import { DirectionProvider } from "@/components/providers/DirectionProvider";
 import { DirectionSync } from "@/components/providers/DirectionSync";
+import { MotionProvider } from "@/components/providers/MotionProvider";
 import { brand } from "@/config/brand";
 import "./globals.css";
-import "./rebuild.css";
 
 export const metadata: Metadata = {
   applicationName: brand.name,
@@ -30,15 +30,19 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       dir="rtl"
       suppressHydrationWarning
       className={`
+        ${inter.variable}
         ${notoSansArabic.variable}
         ${cairo.variable}
         ${amiri.variable}
       `.trim()}
     >
-      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-primary/20">
+      <body
+        data-ui-foundation="p0"
+        className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased selection:bg-primary/20"
+      >
         <DirectionProvider>
           <DirectionSync />
-          {children}
+          <MotionProvider>{children}</MotionProvider>
         </DirectionProvider>
       </body>
     </html>

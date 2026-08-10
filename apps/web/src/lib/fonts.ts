@@ -1,4 +1,10 @@
-import { Amiri, Cairo, Noto_Sans_Arabic } from "next/font/google";
+import { Amiri, Cairo, Inter, Noto_Sans_Arabic } from "next/font/google";
+
+export const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const notoSansArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
