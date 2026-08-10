@@ -1,0 +1,131 @@
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    overflow-wrap: break-word;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    scroll-margin-block: 5rem;
+  }
+
+  :where(button, [role="button"], a[href]) {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .safe-inline {
+    padding-inline-start: max(1rem, env(safe-area-inset-left));
+    padding-inline-end: max(1rem, env(safe-area-inset-right));
+  }
+
+  .safe-block-start {
+    padding-block-start: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-block-end {
+    padding-block-end: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+@supports (height: 100dvh) {
+  body,
+  .app-shell {
+    min-height: 100dvh;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  [class*="bg-canvas/"] {
+    background-color: hsl(var(--surface-canvas)) !important;
+  }
+
+  [class*="bg-surface-overlay/"] {
+    background-color: hsl(var(--surface-overlay)) !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --line: 40 16% 64%;
+    --line-strong: 40 18% 48%;
+    --ink-muted: 219 16% 28%;
+    --ink-subtle: 218 14% 36%;
+  }
+
+  .dark {
+    --line: 220 14% 48%;
+    --line-strong: 220 16% 62%;
+    --ink-muted: 42 16% 82%;
+    --ink-subtle: 42 14% 72%;
+  }
+
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+}
+
+@media (forced-colors: active) {
+  html,
+  body,
+  .app-shell {
+    background: Canvas !important;
+    color: CanvasText !important;
+    background-image: none !important;
+  }
+
+  .app-shell::before,
+  [aria-hidden="true"][class*="blur-3xl"] {
+    display: none !important;
+  }
+
+  [class*="shadow-"] {
+    box-shadow: none !important;
+  }
+
+  [class*="backdrop-blur"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  :where(a, button, input, textarea, select, summary, [role="dialog"]) {
+    forced-color-adjust: auto;
+  }
+
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 3px solid Highlight !important;
+    outline-offset: 3px !important;
+  }
+
+  [aria-current="page"],
+  [aria-pressed="true"] {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
+
+@media print {
+  [role="status"].sr-only,
+  a[href="#main-content"] {
+    display: none !important;
+  }
+}
