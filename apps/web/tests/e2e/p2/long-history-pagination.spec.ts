@@ -182,7 +182,7 @@ test("paginates long bilingual history with stable scroll and visible citations"
   ).toContainText("#5");
   await expect(
     draftSource.locator(`option[value="${citedMessage.id}"]`),
-  ).toContainText("1 refs");
+  ).toContainText("1 مرجع");
 
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.getByRole("button", { name: "تحميل رسائل أقدم" })).toBeVisible();
