@@ -12,13 +12,12 @@ import {
 } from "lucide-react";
 import type {
   Conversation,
-  ConversationMessage,
+  ConversationMessagePage,
   WorkspaceAccess,
 } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
 import { ConversationShell } from "@/components/conversations/conversation-shell";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
-import { DraftFromConversationPanel } from "@/components/drafts/draft-from-conversation-panel";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   archiveConversationAction,
@@ -28,9 +27,12 @@ import {
 } from "@/lib/conversations/actions";
 import {
   getConversation,
-  listConversationMessages,
   ConversationRepositoryError,
 } from "@/lib/conversations/repository";
+import {
+  DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+  listConversationMessagePage,
+} from "@/lib/conversations/message-pages";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -62,7 +64,11 @@ export default async function ConversationPage({
   const { user, supabase } = await requireAuthenticatedUser(returnTo);
   let workspace: WorkspaceAccess | null = null;
   let conversation: Conversation | null = null;
-  let messages: ConversationMessage[] = [];
+  let messagePage: ConversationMessagePage = {
+    messages: [],
+    hasMore: false,
+    nextCursor: null,
+  };
   let persistenceFailed = false;
 
   try {
@@ -74,11 +80,11 @@ export default async function ConversationPage({
         conversationId,
       );
       if (conversation) {
-        messages = await listConversationMessages(
-          supabase,
+        messagePage = await listConversationMessagePage(supabase, {
           workspaceId,
           conversationId,
-        );
+          limit: DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+        });
       }
     }
   } catch (error) {
@@ -121,16 +127,6 @@ export default async function ConversationPage({
   const visibleStatus = persistenceFailed
     ? "persistence-error"
     : firstValue(query.status);
-  const reusableMessages = messages
-    .filter(
-      (message) => message.role === "assistant" && message.status === "complete",
-    )
-    .map((message) => ({
-      id: message.id,
-      sequence: message.sequence,
-      content: message.content,
-      citationCount: message.citations.length,
-    }));
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
@@ -234,16 +230,9 @@ export default async function ConversationPage({
       <ConversationShell
         workspaceId={workspace.id}
         conversation={conversation}
-        initialMessages={messages}
+        initialPage={messagePage}
         canWrite={canWrite}
         readOnlyReason={isWorkspaceArchived ? "workspace-archived" : "membership"}
-      />
-
-      <DraftFromConversationPanel
-        workspaceId={workspace.id}
-        conversationId={conversation.id}
-        messages={reusableMessages}
-        canWrite={canWrite}
       />
 
       <section className="grid gap-6 lg:grid-cols-2">
