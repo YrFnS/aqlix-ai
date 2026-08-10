@@ -4,8 +4,11 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const repoRoot = resolve(webRoot, "../..");
 const readSource = (path: string) =>
   readFileSync(resolve(webRoot, path), "utf8");
+const readRepoSource = (path: string) =>
+  readFileSync(resolve(repoRoot, path), "utf8");
 
 describe("UI experience P0 foundation", () => {
   test("owns the product tokens in one authoritative stylesheet", () => {
@@ -35,6 +38,24 @@ describe("UI experience P0 foundation", () => {
     expect(layout).toContain("${inter.variable}");
     expect(tailwind).toContain('"var(--font-inter)"');
     expect(tailwind).toContain('"var(--font-noto-sans-arabic)"');
+  });
+
+  test("uses the current Motion package without legacy imports", () => {
+    const provider = readSource("src/components/providers/MotionProvider.tsx");
+    const primitives = readSource(
+      "src/components/motion/motion-primitives.tsx",
+    );
+    const motion = readSource("src/lib/motion.ts");
+    const webPackage = readSource("package.json");
+    const sharedUiPackage = readRepoSource("packages/ui/package.json");
+
+    expect(provider).toContain('from "motion/react"');
+    expect(primitives).toContain('from "motion/react"');
+    expect(motion).toContain('from "motion/react"');
+    expect(webPackage).toContain('"motion": "12.43.0"');
+    expect(sharedUiPackage).toContain('"motion": "12.43.0"');
+    expect(webPackage).not.toContain('"framer-motion"');
+    expect(sharedUiPackage).not.toContain('"framer-motion"');
   });
 
   test("shares restrained motion defaults and respects user preferences", () => {
