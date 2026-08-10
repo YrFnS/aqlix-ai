@@ -81,11 +81,12 @@ describe("UI experience P0 foundation", () => {
     expect(globals).toContain("@media (prefers-reduced-motion: reduce)");
   });
 
-  test("provides reusable shell and surface primitives on a real route", () => {
+  test("provides reusable shell and surface primitives on real routes", () => {
     const shell = readSource("src/components/ui/page-shell.tsx");
     const surface = readSource("src/components/ui/surface.tsx");
     const loading = readSource("src/app/loading.tsx");
     const appLayout = readSource("src/app/(app)/layout.tsx");
+    const appNavigation = readSource("src/components/navigation/app-nav.tsx");
 
     expect(shell).toContain('data-slot="page-shell"');
     expect(shell).toContain('data-slot="page-header"');
@@ -93,7 +94,8 @@ describe("UI experience P0 foundation", () => {
     expect(surface).toContain("surfaceVariants");
     expect(loading).toContain("<PageShell");
     expect(loading).toContain("<Surface");
-    expect(appLayout).toContain("<PageReveal");
+    expect(appLayout).toContain("<AppNav");
+    expect(appNavigation).toContain("key={pathname}");
   });
 
   test("migrates representative workspace surfaces to the shared system", () => {
