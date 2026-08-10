@@ -4,10 +4,10 @@ import { BrandMark } from "@/components/brand/brand-mark";
 import { brand } from "@/config/brand";
 
 const links = [
-  { href: "/#product", label: "كيف يعمل" },
+  { href: "/#how-it-works", label: "كيف يعمل" },
   { href: "/#capabilities", label: "القدرات" },
   { href: "/#principles", label: "المبادئ" },
-  { href: brand.links.documentation, label: "المستندات" },
+  { href: brand.links.documentation, label: "الدليل" },
 ] as const;
 
 export function Footer() {
@@ -23,8 +23,9 @@ export function Footer() {
             حفظه ومتابعته.
           </p>
           <p className="mt-4 max-w-xl text-xs leading-6 text-ink-subtle">
-            وصف القدرات على هذه الصفحة يقتصر على المسار المنفذ، ولا يتضمن ادعاءات
-            امتثال أو جاهزية قانونية غير موثقة.
+            يوضح الدليل أنواع الملفات والحدود الحالية قبل أن تبدأ. Tuppra is an
+            Arabic-first bilingual AI workspace، ولا تعرض قدرات أو ادعاءات غير
+            منفذة.
           </p>
         </div>
 

@@ -1,7 +1,7 @@
 {
   "name": "@iraqi-ai/web",
   "version": "1.0.0",
-  "description": "Web application under controlled rebuild for an Arabic-first bilingual AI workspace",
+  "description": "Tuppra web application for an Arabic-first bilingual AI workspace",
   "private": true,
   "type": "module",
   "scripts": {
@@ -34,6 +34,8 @@
     "test:e2e:p3": "playwright test --config=playwright.p3.config.ts",
     "test:e2e:p4": "playwright test --config=playwright.p4.config.ts",
     "test:e2e:p5": "playwright test --config=playwright.p5.config.ts",
+    "test:e2e:visual": "playwright test --config=playwright.visual.config.ts",
+    "test:e2e:visual:update": "playwright test --config=playwright.visual.config.ts --update-snapshots",
     "test:e2e:ui": "playwright test --ui",
     "test:unit:legacy": "bun test --preload ./tests/setup/global-setup.ts --preload ./tests/setup/test-env.ts --preload ./tests/setup/custom-matchers.ts tests/unit",
     "test:cultural:legacy": "bun test --preload ./tests/setup/global-setup.ts --preload ./tests/setup/test-env.ts --preload ./tests/setup/custom-matchers.ts tests/unit/cultural-compliance.test.tsx",
@@ -96,6 +98,7 @@
     "typescript": "^5.3.3"
   },
   "keywords": [
+    "tuppra",
     "arabic",
     "ai",
     "workspace",
@@ -106,11 +109,11 @@
     "nextjs",
     "react"
   ],
-  "author": "Iraqi AI Development Team",
+  "author": "Tuppra",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YrFnS/aqlix-ai.git",
+    "url": "https://github.com/YrFnS/tuppra.git",
     "directory": "apps/web"
   },
   "engines": {

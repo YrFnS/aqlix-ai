@@ -123,8 +123,8 @@ export default async function WorkspaceDraftsPage({
     <PageShell width="wide" className="space-y-8">
       <PageHeader
         eyebrow="مكتبة العمل"
-        title={<span dir="auto">مسودات {workspace.name}</span>}
-        description="حرّر العمل المقبول، راجع الإصدارات غير القابلة لإعادة الكتابة، وافتح منشأ المراجع من مساحة واحدة. تبقى اقتراحات الذكاء الاصطناعي منفصلة حتى تطبيقها صراحةً."
+        title="حوّل الإجابات إلى عمل قابل للاستخدام"
+        description="حرّر المسودات، ارجع إلى النسخ السابقة، وافتح المراجع المرتبطة قبل التصدير أو مشاركة النتيجة."
         actions={
           <>
             <Button asChild variant="outline" className="rounded-full">
@@ -149,7 +149,7 @@ export default async function WorkspaceDraftsPage({
         {[
           { label: "المسودات النشطة", value: drafts.length, icon: FileClock },
           { label: "الإصدارات المحفوظة", value: versionCount, icon: GitBranch },
-          { label: "مراجع المنشأ", value: provenanceCount, icon: Quote },
+          { label: "المراجع", value: provenanceCount, icon: Quote },
         ].map(({ label, value, icon: Icon }) => (
           <StaggerItem key={label}>
             <Surface
@@ -175,7 +175,7 @@ export default async function WorkspaceDraftsPage({
 
       <PageSection
         title="العمل النشط"
-        description="ابحث بالعنوان أو المحتوى، ثم افتح المسودة في محررها وإصداراتها ومراجعة الاقتراحات."
+        description="ابحث بالعنوان أو المحتوى، ثم افتح المسودة للتحرير أو مراجعة النسخ السابقة والمراجع."
       >
         <Surface
           tone="raised"

@@ -85,7 +85,7 @@ describe("P3 private document source boundary", () => {
     const processor = readWeb("src/lib/documents/processor.ts");
     const inheritedService = readRepo("apps/api/services/documents_service.py");
 
-    expect(page).toContain("لا يدّعي دعم PDF أو OCR");
+    expect(page).toContain("دعم PDF وOCR غير متاح حالياً");
     expect(processor).toContain("Only UTF-8 text and Markdown");
     expect(processor).not.toContain("pdf");
     expect(processor).not.toContain("ocr");

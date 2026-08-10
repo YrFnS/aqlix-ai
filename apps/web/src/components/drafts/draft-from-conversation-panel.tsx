@@ -225,11 +225,11 @@ export function DraftFromConversationPanel({
           <FilePlus2 className="h-4 w-4" aria-hidden="true" />
         </span>
         <div>
-          <p className="text-xs font-semibold text-primary">تحويل إلى مسودة</p>
-          <h2 className="mt-1 text-sm font-semibold">ابدأ من إجابة محفوظة</h2>
+          <p className="text-xs font-semibold text-primary">إجابة محفوظة → مسودة</p>
+          <h2 className="mt-1 text-sm font-semibold">ابدأ من إجابة مكتملة</h2>
           <p className="mt-2 text-xs leading-6 text-ink-muted">
-            لا يجري هذا الإجراء اتصالاً إضافياً بالمزوّد، ويحتفظ بمنشأ الإجابة
-            ومراجعها.
+            تُحفظ المراجع المرتبطة مع المسودة حتى تستطيع فتح المصدر ومراجعة
+            الدليل أثناء التحرير.
           </p>
         </div>
       </div>

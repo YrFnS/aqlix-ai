@@ -80,6 +80,22 @@ export type StreamConversationInput = z.infer<
   typeof streamConversationInputSchema
 >;
 
+export const conversationMessageCursorSchema = z.number().int().nonnegative();
+export const conversationMessagePageLimitSchema = z
+  .number()
+  .int()
+  .min(1)
+  .max(50);
+
+export const listConversationMessagesInputSchema = conversationIdInputSchema.extend({
+  beforeSequence: conversationMessageCursorSchema.optional(),
+  limit: conversationMessagePageLimitSchema.optional().default(40),
+});
+
+export type ListConversationMessagesInput = z.infer<
+  typeof listConversationMessagesInputSchema
+>;
+
 export const generationStatusSchema = messageStatusSchema;
 export type GenerationStatus = z.infer<typeof generationStatusSchema>;
 
@@ -159,6 +175,16 @@ export const conversationMessageSchema = messageSchema.extend({
 });
 
 export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
+
+export const conversationMessagePageSchema = z.object({
+  messages: conversationMessageSchema.array(),
+  hasMore: z.boolean(),
+  nextCursor: conversationMessageCursorSchema.nullable(),
+});
+
+export type ConversationMessagePage = z.infer<
+  typeof conversationMessagePageSchema
+>;
 
 export const conversationSummarySchema = conversationSchema.extend({
   messageCount: z.number().int().nonnegative(),

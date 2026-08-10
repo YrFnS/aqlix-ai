@@ -1,1304 +1,155 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  AlertTriangle,
-  Archive,
-  ArchiveRestore,
-  Check,
-  Clipboard,
-  Download,
-  ExternalLink,
-  FileClock,
-  FileWarning,
-  PenLine,
-  Quote,
-  RotateCcw,
-  Save,
-  Send,
-  ShieldCheck,
-  Sparkles,
-  Square,
-  Trash2,
-  X,
-} from "lucide-react";
-import type {
-  DraftDetail,
-  DraftGeneration,
-  DraftGenerationAction,
-  DraftKind,
-  DraftProposalStreamEvent,
-} from "@iraqi-ai/types";
-import {
-  draftDetailSchema,
-  draftProposalStreamEventSchema,
-} from "@iraqi-ai/types";
+import { ExternalLink, FileClock, RotateCcw } from "lucide-react";
 import { ActivityOrb } from "@/components/conversations/activity-orb";
 import { Button } from "@/components/ui/button";
-import { Surface } from "@/components/ui/surface";
+import { DraftAssistantPanel } from "./draft-assistant-panel";
 import {
-  draftEditorValue,
-  isDraftEditorDirty,
-  type DraftEditorValue,
-} from "@/lib/drafts/editor-state";
+  DraftEditorProvider,
+  type DraftEditorProps,
+  useDraftEditorContext,
+} from "./draft-editor-context";
+import { DraftEditorMain } from "./draft-editor-main";
+import { DraftToolsPanel } from "./draft-tools-panel";
 import { DraftWorkspaceFrame } from "./draft-workspace-frame";
 
-interface DraftEditorProps {
-  workspaceId: string;
-  initialDetail: DraftDetail;
-  canEdit: boolean;
-  canManageLifecycle: boolean;
-  workspaceArchived: boolean;
-}
-
-type Notice = {
-  tone: "success" | "error" | "info";
-  message: string;
-} | null;
-
+// The workbench keeps accepted writing and AI proposal review as separate modes.
 type ViewMode = "editor" | "proposal";
 
-const kindOptions: Array<{ value: DraftKind; label: string }> = [
-  { value: "freeform", label: "مسودة حرة" },
-  { value: "summary", label: "ملخص" },
-  { value: "comparison", label: "مقارنة" },
-  { value: "email", label: "رسالة" },
-  { value: "memo", label: "مذكرة" },
-  { value: "checklist", label: "قائمة عمل" },
-  { value: "decision_note", label: "ملاحظة قرار" },
-];
-
-const actionOptions: Array<{
-  value: DraftGenerationAction;
-  label: string;
-  instruction: string;
-}> = [
-  {
-    value: "improve",
-    label: "تحسين الوضوح",
-    instruction: "Improve clarity and structure while preserving the meaning.",
-  },
-  {
-    value: "shorten",
-    label: "اختصار",
-    instruction: "Shorten the draft without losing its essential meaning.",
-  },
-  {
-    value: "expand",
-    label: "توسيع",
-    instruction: "Expand the draft with useful detail and better transitions.",
-  },
-  {
-    value: "translate_ar",
-    label: "ترجمة إلى العربية",
-    instruction: "Translate the complete draft into clear Arabic.",
-  },
-  {
-    value: "translate_en",
-    label: "Translate to English",
-    instruction: "Translate the complete draft into clear English.",
-  },
-  {
-    value: "continue",
-    label: "متابعة الكتابة",
-    instruction: "Continue the draft naturally from its current ending.",
-  },
-  {
-    value: "custom",
-    label: "تعليمات مخصصة",
-    instruction: "Revise the draft according to this instruction.",
-  },
-];
-
-function parseDetail(value: unknown): DraftDetail {
-  const parsed = draftDetailSchema.safeParse(value);
-  if (!parsed.success) throw new Error("Draft state returned an invalid shape.");
-  return parsed.data;
-}
-
-function mergeGeneration(
-  detail: DraftDetail,
-  generation: DraftGeneration,
-): DraftDetail {
-  const byId = new Map(
-    detail.generations.map((candidate) => [candidate.id, candidate]),
-  );
-  byId.set(generation.id, generation);
-  return {
-    ...detail,
-    generations: Array.from(byId.values()).sort((left, right) =>
-      right.createdAt.localeCompare(left.createdAt),
-    ),
-  };
-}
-
-async function parseEventStream(
-  response: Response,
-  onEvent: (event: DraftProposalStreamEvent) => void,
-): Promise<void> {
-  if (!response.body) throw new Error("The proposal stream is unavailable.");
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  const processFrame = (frame: string) => {
-    const data = frame
-      .split(/\r?\n/u)
-      .filter((line) => line.startsWith("data:"))
-      .map((line) => line.slice(5).trimStart())
-      .join("\n")
-      .trim();
-    if (!data) return;
-
-    const parsed = draftProposalStreamEventSchema.safeParse(JSON.parse(data));
-    if (!parsed.success) {
-      throw new Error("The server returned an unsupported proposal event.");
-    }
-    onEvent(parsed.data);
-  };
-
-  try {
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-
-      while (true) {
-        const boundary = buffer.match(/\r?\n\r?\n/u);
-        if (!boundary || boundary.index === undefined) break;
-        const frame = buffer.slice(0, boundary.index);
-        buffer = buffer.slice(boundary.index + boundary[0].length);
-        processFrame(frame);
-      }
-    }
-
-    buffer += decoder.decode();
-    if (buffer.trim()) processFrame(buffer);
-  } finally {
-    reader.releaseLock();
-  }
-}
-
-function formatTimestamp(value: string): string {
-  return new Intl.DateTimeFormat("ar-IQ", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
-function provenanceLocator(
-  provenance: DraftDetail["provenance"][number],
-): string {
-  if (provenance.pageNumberSnapshot) {
-    return `صفحة ${provenance.pageNumberSnapshot}`;
-  }
-  if (provenance.startLineSnapshot && provenance.endLineSnapshot) {
-    return `الأسطر ${provenance.startLineSnapshot}–${provenance.endLineSnapshot}`;
-  }
-  return `المقطع ${provenance.sourceOrdinalSnapshot + 1}`;
-}
-
-function generationLabel(status: DraftGeneration["status"]): string {
-  return {
-    pending: "بانتظار المزود",
-    streaming: "جاري تشكيل الاقتراح",
-    complete: "جاهز للمراجعة",
-    failed: "فشل",
-    cancelled: "أُلغي وحُفظ الجزئي",
-    applied: "طُبق",
-    discarded: "رُفض",
-  }[status];
-}
-
-function errorMessage(error: unknown, fallback: string): string {
-  return error instanceof Error ? error.message : fallback;
-}
-
-function contentPreview(value: string): string {
-  const normalized = value.replace(/\s+/gu, " ").trim();
-  return normalized.length <= 86
-    ? normalized
-    : `${normalized.slice(0, 83).trimEnd()}…`;
-}
-
-export function DraftEditor({
-  workspaceId,
-  initialDetail,
-  canEdit,
-  canManageLifecycle,
-  workspaceArchived,
-}: DraftEditorProps) {
-  const router = useRouter();
-  const [detail, setDetail] = useState(initialDetail);
-  const [editor, setEditor] = useState<DraftEditorValue>(() =>
-    draftEditorValue(initialDetail.draft),
-  );
-  const [viewMode, setViewMode] = useState<ViewMode>("editor");
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
-  const [notice, setNotice] = useState<Notice>(null);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "failed">(
-    "idle",
-  );
-  const [action, setAction] = useState<DraftGenerationAction>("improve");
-  const [instruction, setInstruction] = useState(
-    actionOptions[0]?.instruction ?? "Improve the draft.",
-  );
-  const firstProposal =
-    initialDetail.generations.find((generation) =>
-      ["pending", "streaming", "complete", "failed", "cancelled"].includes(
-        generation.status,
-      ),
-    ) ?? null;
-  const [proposal, setProposal] = useState<DraftGeneration | null>(firstProposal);
-  const [proposalText, setProposalText] = useState(
-    firstProposal?.proposedContent ?? "",
-  );
-  const [proposalError, setProposalError] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const proposalController = useRef<AbortController | null>(null);
-
-  const dirty = useMemo(
-    () => isDraftEditorDirty(detail.draft, editor),
-    [detail.draft, editor],
-  );
-  const draftArchived = detail.draft.status === "archived";
-
-  const syncDetail = useCallback((next: DraftDetail) => {
-    setDetail(next);
-    setEditor(draftEditorValue(next.draft));
-    setSaveError(null);
-  }, []);
-
-  const updateEditor = (patch: Partial<DraftEditorValue>) => {
-    setEditor((current) => ({ ...current, ...patch }));
-    setSaveError(null);
-    setNotice(null);
-  };
-
-  const reloadDetail = useCallback(async () => {
-    const response = await fetch(
-      `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}`,
-      { cache: "no-store" },
-    );
-    const payload = (await response.json()) as {
-      ok?: boolean;
-      data?: { detail?: unknown };
-      error?: { message?: string };
-    };
-    if (!response.ok || payload.ok !== true) {
-      throw new Error(payload.error?.message || "Draft state could not be reloaded.");
-    }
-    const next = parseDetail(payload.data?.detail);
-    setDetail(next);
-    return next;
-  }, [detail.draft.id, workspaceId]);
-
-  const saveDraft = useCallback(async () => {
-    if (!canEdit || !dirty || isSaving) return;
-    setIsSaving(true);
-    setSaveError(null);
-    setNotice(null);
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}`,
-        {
-          method: "PATCH",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            expectedVersion: detail.draft.currentVersion,
-            ...editor,
-          }),
-        },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        data?: { detail?: unknown; createdVersion?: boolean };
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "The draft could not be saved.");
-      }
-
-      syncDetail(parseDetail(payload.data?.detail));
-      setNotice({
-        tone: "success",
-        message: payload.data?.createdVersion
-          ? "حُفظ إصدار جديد / New immutable version saved."
-          : "لا توجد تغييرات جديدة للحفظ / No new changes to save.",
-      });
-      router.refresh();
-    } catch (error) {
-      const message = errorMessage(error, "تعذر حفظ المسودة / Draft save failed.");
-      setSaveError(message);
-      setNotice({ tone: "error", message });
-    } finally {
-      setIsSaving(false);
-    }
-  }, [
-    canEdit,
-    detail.draft.currentVersion,
-    detail.draft.id,
-    dirty,
-    editor,
-    isSaving,
-    router,
-    syncDetail,
+function DraftVersionSidebar() {
+  const {
     workspaceId,
-  ]);
+    detail,
+    canEdit,
+    dirty,
+    isSaving,
+    restoreVersion,
+  } = useDraftEditorContext();
 
-  useEffect(() => {
-    const onBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (!dirty) return;
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [dirty]);
-
-  useEffect(() => {
-    const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-        event.preventDefault();
-        void saveDraft();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [saveDraft]);
-
-  const copyEditor = async () => {
-    try {
-      await navigator.clipboard.writeText(editor.content);
-      setCopyState("copied");
-      window.setTimeout(() => setCopyState("idle"), 1600);
-    } catch {
-      setCopyState("failed");
-    }
-  };
-
-  const download = (format: "txt" | "md" | "html") => {
-    if (dirty) {
-      setNotice({
-        tone: "error",
-        message:
-          "احفظ التغييرات قبل التصدير / Save changes before exporting the accepted version.",
-      });
-      return;
-    }
-    window.location.assign(
-      `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/export?format=${format}`,
-    );
-  };
-
-  const restoreVersion = async (versionNumber: number) => {
-    if (!canEdit || isSaving || dirty) {
-      if (dirty) {
-        setNotice({
-          tone: "error",
-          message:
-            "احفظ أو ألغِ تغييرات المحرر قبل استعادة إصدار / Save or clear editor changes before restoring a version.",
-        });
-      }
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            expectedVersion: detail.draft.currentVersion,
-            restoreVersion: versionNumber,
-          }),
-        },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        data?: { detail?: unknown };
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "Version restore failed.");
-      }
-      syncDetail(parseDetail(payload.data?.detail));
-      setViewMode("editor");
-      setNotice({
-        tone: "success",
-        message:
-          "أُعيدت النسخة كإصدار جديد / Snapshot restored as a new immutable version.",
-      });
-      router.refresh();
-    } catch (error) {
-      setNotice({ tone: "error", message: errorMessage(error, "Version restore failed.") });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const setArchived = async (archived: boolean) => {
-    if (!canManageLifecycle || dirty || isGenerating) {
-      if (dirty) {
-        setNotice({
-          tone: "error",
-          message:
-            "احفظ التغييرات قبل تغيير حالة المسودة / Save changes before changing draft state.",
-        });
-      }
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/archive`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ archived }),
-        },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "Draft lifecycle failed.");
-      }
-      router.push(
-        archived
-          ? `/workspaces/${workspaceId}/drafts?status=archived`
-          : `/workspaces/${workspaceId}/drafts/${detail.draft.id}?status=reopened`,
-      );
-      router.refresh();
-    } catch (error) {
-      setNotice({ tone: "error", message: errorMessage(error, "Draft lifecycle failed.") });
-    }
-  };
-
-  const removeDraft = async () => {
-    if (!canManageLifecycle || dirty || isGenerating) return;
-    if (
-      !window.confirm(
-        "حذف المسودة وكل إصداراتها ومحاولات الاستمرار؟\n\nDelete this draft, every version, and every proposal?",
-      )
-    ) {
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}`,
-        { method: "DELETE" },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "Draft deletion failed.");
-      }
-      router.push(`/workspaces/${workspaceId}/drafts?status=deleted`);
-      router.refresh();
-    } catch (error) {
-      setNotice({ tone: "error", message: errorMessage(error, "Draft deletion failed.") });
-    }
-  };
-
-  const startProposal = async () => {
-    if (!canEdit || isGenerating) return;
-    if (dirty) {
-      setProposalError(
-        "احفظ التغييرات قبل طلب اقتراح / Save the accepted draft before requesting a proposal.",
-      );
-      return;
-    }
-    const boundedInstruction = instruction.trim();
-    if (!boundedInstruction) {
-      setProposalError("تعليمات الاستمرار مطلوبة / A revision instruction is required.");
-      return;
-    }
-
-    const controller = new AbortController();
-    proposalController.current = controller;
-    setViewMode("proposal");
-    setIsGenerating(true);
-    setProposalError(null);
-    setProposal(null);
-    setProposalText("");
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/continue/stream`,
-        {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ action, instruction: boundedInstruction }),
-          signal: controller.signal,
-        },
-      );
-      const contentType = response.headers.get("content-type") ?? "";
-      if (!response.ok || !contentType.includes("text/event-stream")) {
-        const payload = (await response.json().catch(() => null)) as {
-          error?: { message?: string };
-        } | null;
-        throw new Error(
-          payload?.error?.message ||
-            `Draft proposal failed with status ${response.status}.`,
-        );
-      }
-
-      await parseEventStream(response, (event) => {
-        if (event.type === "ready") {
-          setProposal(event.generation);
-          setProposalText(event.generation.proposedContent);
-          setDetail((current) => mergeGeneration(current, event.generation));
-        } else if (event.type === "delta") {
-          setProposalText((current) => `${current}${event.delta}`);
-          setProposal((current) =>
-            current
-              ? {
-                  ...current,
-                  status: "streaming",
-                  proposedContent: `${current.proposedContent}${event.delta}`,
-                }
-              : current,
-          );
-        } else if (
-          event.type === "complete" ||
-          event.type === "failed" ||
-          event.type === "cancelled"
-        ) {
-          setProposal(event.generation);
-          setProposalText(event.generation.proposedContent);
-          setDetail((current) => mergeGeneration(current, event.generation));
-          if (event.type === "failed") {
-            setProposalError(
-              `${event.code}: ${event.generation.failureMessage ?? "Proposal failed."}`,
-            );
-          }
-        }
-      });
-    } catch (error) {
-      if (controller.signal.aborted) {
-        await new Promise((resolve) => window.setTimeout(resolve, 250));
-        try {
-          const refreshed = await reloadDetail();
-          const latest = refreshed.generations[0] ?? null;
-          setProposal(latest);
-          setProposalText(latest?.proposedContent ?? "");
-        } catch {
-          setProposalError(
-            "أُوقف الاقتراح لكن تعذر تحديث حالته المحفوظة / Proposal stopped, but saved state could not be refreshed.",
-          );
-        }
-      } else {
-        setProposalError(errorMessage(error, "Draft proposal failed."));
-      }
-    } finally {
-      proposalController.current = null;
-      setIsGenerating(false);
-    }
-  };
-
-  const settleProposal = async (decision: "apply" | "discard") => {
-    if (!proposal || proposal.status !== "complete") return;
-    if (decision === "apply" && dirty) return;
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/continue/${proposal.id}/${decision}`,
-        { method: "POST" },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        data?: { detail?: unknown };
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || `Proposal ${decision} failed.`);
-      }
-
-      const next = parseDetail(payload.data?.detail);
-      if (decision === "apply") syncDetail(next);
-      else setDetail(next);
-      setProposal(null);
-      setProposalText("");
-      setViewMode("editor");
-      setNotice({
-        tone: decision === "apply" ? "success" : "info",
-        message:
-          decision === "apply"
-            ? "طُبق الاقتراح كإصدار جديد / Proposal applied as a new immutable version."
-            : "رُفض الاقتراح وبقي العمل المقبول دون تغيير / Proposal discarded; accepted work is unchanged.",
-      });
-      router.refresh();
-    } catch (error) {
-      setProposalError(errorMessage(error, `Proposal ${decision} failed.`));
-    }
-  };
-
-  const toolbar = (
-    <div className="inline-flex rounded-xl border border-line/75 bg-surface-sunken p-1">
-      {(["editor", "proposal"] as const).map((mode) => (
-        <button
-          key={mode}
-          type="button"
-          aria-pressed={viewMode === mode}
-          onClick={() => setViewMode(mode)}
-          className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
-            viewMode === mode
-              ? "bg-surface-raised text-foreground shadow-surface-xs"
-              : "text-ink-muted hover:text-foreground"
-          }`}
+  return (
+    <div className="space-y-2 p-3">
+      <div className="px-2 pb-2">
+        <p className="text-xs font-semibold text-primary">سجل الإصدارات</p>
+        <p className="mt-1 text-xs leading-6 text-ink-muted">
+          كل حفظ مهم يضيف لقطة جديدة بدلاً من استبدال التاريخ.
+        </p>
+      </div>
+      {detail.versions.map((version) => (
+        <article
+          key={version.id}
+          className="rounded-xl border border-line/75 bg-surface-raised p-3 shadow-surface-xs"
         >
-          {mode === "editor" ? (
-            <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
-          ) : (
-            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-          )}
-          {mode === "editor" ? "المحرر" : "الاقتراح"}
-          {mode === "proposal" && (proposal || isGenerating) ? (
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-          ) : null}
-        </button>
+          <div className="flex items-center justify-between gap-2">
+            <span className="rounded-full bg-brand-soft px-2 py-1 text-[0.68rem] font-semibold text-primary">
+              v{version.versionNumber}
+            </span>
+            <span className="text-[0.68rem] text-ink-subtle">
+              {version.sourceKind}
+            </span>
+          </div>
+          <p dir="auto" className="mt-2 line-clamp-2 text-xs font-semibold">
+            {version.title}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Button asChild variant="ghost" size="sm" className="rounded-lg">
+              <Link
+                href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
+              >
+                فتح
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            </Button>
+            {canEdit && version.versionNumber !== detail.draft.currentVersion ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="rounded-lg"
+                disabled={dirty || isSaving}
+                onClick={() => void restoreVersion(version.versionNumber)}
+              >
+                <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                استعادة
+              </Button>
+            ) : null}
+          </div>
+        </article>
       ))}
     </div>
   );
+}
 
-  const versionsPanel = (
-    <div className="p-3">
-      <div className="px-2 pb-4">
-        <p className="text-xs font-semibold text-primary">سجل الإصدارات</p>
-        <p className="mt-1 text-xs leading-5 text-ink-muted">
-          كل حفظ أو تطبيق ينشئ لقطة جديدة ولا يعيد كتابة التاريخ.
-        </p>
-      </div>
-      <div className="relative ms-3 border-s border-line/80 ps-4">
-        {detail.versions.map((version) => {
-          const current = version.versionNumber === detail.draft.currentVersion;
-          return (
-            <article key={version.id} className="relative pb-5 last:pb-0">
-              <span
-                className={`absolute -start-[1.28rem] top-3 h-2.5 w-2.5 rounded-full border-2 border-surface-sunken ${
-                  current ? "bg-primary" : "bg-line-strong"
-                }`}
-                aria-hidden="true"
-              />
-              <div
-                className={`rounded-xl border p-3 ${
-                  current
-                    ? "border-primary/25 bg-brand-soft/55"
-                    : "border-line/70 bg-surface-raised"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs font-semibold text-primary">
-                    v{version.versionNumber}
-                  </span>
-                  <span className="rounded-full bg-surface-sunken px-2 py-0.5 text-[0.65rem] text-ink-muted">
-                    {version.sourceKind}
-                  </span>
-                </div>
-                <p dir="auto" className="mt-2 truncate text-xs font-semibold">
-                  {version.title}
-                </p>
-                <p dir="auto" className="mt-2 line-clamp-2 text-xs leading-5 text-ink-muted">
-                  {contentPreview(version.content) || "Empty snapshot"}
-                </p>
-                <time
-                  dateTime={version.createdAt}
-                  className="mt-2 block text-[0.68rem] text-ink-subtle"
-                >
-                  {formatTimestamp(version.createdAt)}
-                </time>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Button asChild variant="ghost" size="sm" className="rounded-lg">
-                    <Link
-                      href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
-                    >
-                      عرض اللقطة
-                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                    </Link>
-                  </Button>
-                  {canEdit && !current ? (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="rounded-lg"
-                      disabled={dirty || isSaving}
-                      onClick={() => void restoreVersion(version.versionNumber)}
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-                      استعادة
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  const inspectorPanel = (
-    <div className="space-y-5 p-4">
-      <section>
-        <p className="text-xs font-semibold text-primary">حالة المسودة</p>
-        <Surface
-          tone="raised"
-          elevation="xs"
-          radius="xl"
-          padding="sm"
-          className="mt-3"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-sm font-semibold">
-              {draftArchived ? "مؤرشفة للقراءة" : "نشطة"}
-            </span>
-            <span className="rounded-full bg-brand-soft px-2.5 py-1 text-xs font-semibold text-primary">
-              v{detail.draft.currentVersion}
-            </span>
-          </div>
-          <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <dt className="text-ink-subtle">الإصدارات</dt>
-              <dd className="mt-1 font-semibold">
-                {detail.draft.versionCount.toLocaleString("ar-IQ")}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-ink-subtle">المراجع</dt>
-              <dd className="mt-1 font-semibold">
-                {detail.draft.provenanceCount.toLocaleString("ar-IQ")}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-3 text-xs leading-6 text-ink-muted">
-            آخر حفظ {formatTimestamp(detail.draft.lastSavedAt)}
-          </p>
-        </Surface>
-      </section>
-
-      <section className="border-t border-line/70 pt-5">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-semibold text-primary">المنشأ والمراجع</p>
-          <Quote className="h-4 w-4 text-primary" aria-hidden="true" />
-        </div>
-        {detail.draft.conversationId ? (
-          <Button asChild variant="outline" size="sm" className="mt-3 w-full rounded-xl">
-            <Link
-              href={`/workspaces/${workspaceId}/conversations/${detail.draft.conversationId}`}
-            >
-              فتح المحادثة الأصلية
-              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
-          </Button>
-        ) : null}
-
-        {detail.provenance.length > 0 ? (
-          <div className="mt-3 space-y-2">
-            {detail.provenance.map((provenance) => {
-              const body = (
-                <>
-                  <span className="rounded-full bg-brand-soft px-2 py-0.5 font-mono text-[0.65rem] font-semibold text-primary">
-                    [{provenance.label}]
-                  </span>
-                  <span dir="auto" className="min-w-0 flex-1 truncate">
-                    {provenance.fileNameSnapshot}
-                  </span>
-                  <span className="text-ink-subtle">
-                    {provenanceLocator(provenance)}
-                  </span>
-                </>
-              );
-              return provenance.sourceId && provenance.attachmentId ? (
-                <Link
-                  key={provenance.id}
-                  href={`/workspaces/${workspaceId}/sources/${provenance.attachmentId}#source-${provenance.sourceId}`}
-                  className="flex min-h-11 items-center gap-2 rounded-xl border border-line/70 bg-surface-raised px-3 py-2 text-xs outline-none transition-colors hover:border-primary/30 hover:bg-brand-soft/35 focus-visible:ring-4 focus-visible:ring-ring/20"
-                >
-                  {body}
-                  <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                </Link>
-              ) : (
-                <div
-                  key={provenance.id}
-                  className="flex min-h-11 items-center gap-2 rounded-xl border border-dashed border-line bg-surface-sunken px-3 py-2 text-xs"
-                  title="The original source is no longer available."
-                >
-                  {body}
-                  <FileWarning className="h-3.5 w-3.5 shrink-0 text-ink-muted" aria-hidden="true" />
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="mt-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
-            أُنشئت المسودة من إجابة بلا مراجع محفوظة؛ لا تُعرض على أنها موثقة
-            تلقائياً.
-          </p>
-        )}
-      </section>
-
-      <section className="border-t border-line/70 pt-5">
-        <p className="text-xs font-semibold text-primary">التصدير</p>
-        <p className="mt-2 text-xs leading-6 text-ink-muted">
-          آخر إصدار محفوظ بصيغ UTF-8 آمنة. HTML مستقل بلا scripts أو موارد
-          خارجية. PDF وDOCX غير مفعّلين.
-        </p>
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {(["txt", "md", "html"] as const).map((format) => (
-            <Button
-              key={format}
-              type="button"
-              variant="outline"
-              size="sm"
-              className="rounded-xl px-2 uppercase"
-              onClick={() => download(format)}
-            >
-              <Download className="h-3.5 w-3.5" aria-hidden="true" />
-              {format}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-line/70 pt-5">
-        <div className="flex items-start gap-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
-          <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-          <p>
-            العمل المقبول منفصل عن الاقتراح. الاستعادة والتطبيق يضيفان إصداراً
-            جديداً ولا يغيران اللقطات السابقة.
-          </p>
-        </div>
-      </section>
-
-      <section className="border-t border-line/70 pt-5">
-        <p className="text-xs font-semibold text-primary">دورة الحياة</p>
-        {canManageLifecycle ? (
-          <div className="mt-3 space-y-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full justify-start rounded-xl"
-              disabled={dirty || isGenerating}
-              onClick={() => void setArchived(!draftArchived)}
-            >
-              {draftArchived ? (
-                <ArchiveRestore className="h-4 w-4" aria-hidden="true" />
-              ) : (
-                <Archive className="h-4 w-4" aria-hidden="true" />
-              )}
-              {draftArchived ? "استعادة إلى العمل" : "نقل إلى الأرشيف"}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              className="w-full justify-start rounded-xl"
-              disabled={dirty || isGenerating}
-              onClick={() => void removeDraft()}
-            >
-              <Trash2 className="h-4 w-4" aria-hidden="true" />
-              حذف المسودة وتاريخها
-            </Button>
-          </div>
-        ) : (
-          <p className="mt-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
-            {workspaceArchived
-              ? "استعد مساحة العمل قبل تغيير حالة المسودة."
-              : "عضوية القراءة لا تسمح بالأرشفة أو الحذف."}
-          </p>
-        )}
-      </section>
-    </div>
-  );
-
-  const editorCanvas = (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="border-b border-line/70 bg-surface-overlay/75 px-4 py-4 sm:px-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
-          <label className="min-w-0 flex-1">
-            <span className="sr-only">عنوان المسودة</span>
-            <input
-              aria-label="عنوان المسودة"
-              value={editor.title}
-              onChange={(event) => updateEditor({ title: event.target.value })}
-              maxLength={200}
-              readOnly={!canEdit}
-              dir="auto"
-              className="min-h-11 w-full border-0 bg-transparent px-0 font-arabic-heading text-2xl font-semibold outline-none ring-0 focus:border-0 focus:ring-0 read-only:cursor-default"
-            />
-          </label>
-          <div className="grid shrink-0 grid-cols-2 gap-2 lg:w-[20rem]">
-            <select
-              aria-label="نوع المسودة"
-              value={editor.kind}
-              onChange={(event) =>
-                updateEditor({ kind: event.target.value as DraftKind })
-              }
-              disabled={!canEdit}
-              className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
-            >
-              {kindOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="اتجاه محتوى المسودة"
-              value={editor.direction}
-              onChange={(event) =>
-                updateEditor({
-                  direction: event.target.value as "auto" | "rtl" | "ltr",
-                })
-              }
-              disabled={!canEdit}
-              className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
-            >
-              <option value="auto">تلقائي</option>
-              <option value="rtl">RTL</option>
-              <option value="ltr">LTR</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <textarea
-        aria-label="محتوى المسودة"
-        value={editor.content}
-        onChange={(event) => updateEditor({ content: event.target.value })}
-        maxLength={100000}
-        readOnly={!canEdit}
-        dir={editor.direction}
-        className="min-h-[32rem] flex-1 resize-none border-0 bg-surface px-5 py-6 text-sm leading-8 outline-none ring-0 focus:border-0 focus:ring-0 read-only:cursor-default sm:px-8 sm:py-8 sm:text-[0.95rem] sm:leading-9"
-      />
-
-      <div className="flex flex-col gap-3 border-t border-line/70 bg-surface-overlay/90 px-3 py-3 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-4">
-        <div className="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
-          <span
-            className={`inline-flex min-h-8 items-center gap-2 rounded-lg px-2.5 font-semibold ${
-              saveError
-                ? "bg-destructive/10 text-destructive"
-                : dirty
-                  ? "bg-surface-sunken"
-                  : "bg-brand-soft text-primary"
-            }`}
-            role="status"
-            aria-live="polite"
-          >
-            {isSaving ? (
-              <ActivityOrb state="working" size="sm" />
-            ) : saveError ? (
-              <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-            ) : dirty ? (
-              <FileClock className="h-3.5 w-3.5" aria-hidden="true" />
-            ) : (
-              <Check className="h-3.5 w-3.5" aria-hidden="true" />
-            )}
-            {isSaving
-              ? "جاري الحفظ"
-              : saveError
-                ? "فشل الحفظ"
-                : dirty
-                  ? "تغييرات غير محفوظة"
-                  : `محفوظ · v${detail.draft.currentVersion}`}
-          </span>
-          <span>{editor.content.length.toLocaleString("ar-IQ")} / ١٠٠٬٠٠٠</span>
-          <span className="hidden sm:inline">Ctrl/Cmd+S</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            className="rounded-xl"
-            onClick={() => void copyEditor()}
-          >
-            <Clipboard className="h-4 w-4" aria-hidden="true" />
-            {copyState === "copied"
-              ? "نُسخ"
-              : copyState === "failed"
-                ? "فشل النسخ"
-                : "نسخ"}
-          </Button>
-          {canEdit ? (
-            <Button
-              type="button"
-              className="rounded-xl"
-              disabled={!dirty || isSaving}
-              onClick={() => void saveDraft()}
-            >
-              {isSaving ? (
-                <ActivityOrb state="working" size="sm" />
-              ) : (
-                <Save className="h-4 w-4" aria-hidden="true" />
-              )}
-              حفظ إصدار
-            </Button>
-          ) : null}
-        </div>
-      </div>
-      {saveError ? (
-        <p
-          className="border-t border-destructive/20 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
-          role="alert"
-        >
-          {saveError}
-        </p>
-      ) : null}
-    </div>
-  );
-
-  const proposalCanvas = (
-    <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
-      <div className="mx-auto max-w-5xl space-y-5">
-        <div className="border-b border-line/70 pb-5">
-          <p className="text-xs font-semibold text-primary">مراجعة الاقتراح</p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            اقتراح منفصل عن العمل المقبول
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
-            يقرأ المزود آخر إصدار محفوظ فقط. لا يتغير المحرر حتى تطبيق الاقتراح
-            صراحةً كإصدار جديد.
-          </p>
-        </div>
-
-        <div className="grid gap-5 xl:grid-cols-[19rem_minmax(0,1fr)]">
-          <Surface
-            tone="raised"
-            elevation="xs"
-            radius="2xl"
-            padding="md"
-            className="h-fit xl:sticky xl:top-0"
-          >
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-primary">
-                <Sparkles className="h-4 w-4" aria-hidden="true" />
-              </span>
-              <div>
-                <p className="text-xs text-ink-muted">تعليمات المراجعة</p>
-                <p className="mt-1 text-sm font-semibold">Continue with AI</p>
-              </div>
-            </div>
-
-            {canEdit ? (
-              <div className="mt-5 space-y-4">
-                <select
-                  aria-label="إجراء اقتراح المسودة"
-                  value={action}
-                  disabled={isGenerating}
-                  onChange={(event) => {
-                    const nextAction = event.target.value as DraftGenerationAction;
-                    setAction(nextAction);
-                    setInstruction(
-                      actionOptions.find((option) => option.value === nextAction)
-                        ?.instruction ?? "Revise the draft.",
-                    );
-                    setProposalError(null);
-                  }}
-                  className="min-h-11 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-sm outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
-                >
-                  {actionOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <textarea
-                  aria-label="تعليمات اقتراح المسودة"
-                  value={instruction}
-                  onChange={(event) => setInstruction(event.target.value)}
-                  maxLength={2000}
-                  rows={7}
-                  disabled={isGenerating}
-                  dir="auto"
-                  className="w-full resize-y rounded-xl border border-line/80 bg-surface-raised px-3 py-3 text-sm leading-7 outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
-                />
-                {isGenerating ? (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    className="w-full rounded-xl"
-                    onClick={() =>
-                      proposalController.current?.abort(
-                        new DOMException("Cancelled by user", "AbortError"),
-                      )
-                    }
-                  >
-                    <Square className="h-4 w-4" aria-hidden="true" />
-                    إيقاف وحفظ الجزئي
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    className="w-full rounded-xl"
-                    disabled={!instruction.trim() || dirty}
-                    onClick={() => void startProposal()}
-                  >
-                    <Send className="h-4 w-4" aria-hidden="true" />
-                    بدء اقتراح
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <p className="mt-5 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
-                {workspaceArchived
-                  ? "مساحة العمل مؤرشفة؛ الاقتراحات للقراءة فقط حتى استعادة المساحة."
-                  : draftArchived
-                    ? "استعد المسودة قبل طلب اقتراح جديد."
-                    : "عضوية القراءة لا تسمح بإرسال المسودة إلى المزود."}
-              </p>
-            )}
-          </Surface>
-
-          <div className="min-w-0 space-y-4">
-            {isGenerating ? (
-              <div className="flex items-center gap-3 rounded-xl bg-brand-soft/60 px-4 py-3 text-sm text-ink-muted">
-                <ActivityOrb state="shaping" size="sm" />
-                <span>جاري تشكيل اقتراح منفصل وحفظ حالته…</span>
-              </div>
-            ) : null}
-            {proposalError ? (
-              <div
-                role="alert"
-                className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
-              >
-                {proposalError}
-              </div>
-            ) : null}
-
-            <div className="grid gap-4 2xl:grid-cols-2">
-              <Surface tone="muted" elevation="none" radius="2xl" padding="md">
-                <p className="text-xs font-semibold text-primary">العمل المقبول</p>
-                <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
-                  الإصدار {detail.draft.currentVersion}
-                </h3>
-                <pre
-                  dir={editor.direction}
-                  className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface-raised p-4 font-sans text-sm leading-8"
-                >
-                  {editor.content}
-                </pre>
-              </Surface>
-
-              <Surface tone="raised" elevation="xs" radius="2xl" padding="md">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold text-primary">المقترح</p>
-                    <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
-                      {proposal ? generationLabel(proposal.status) : "لا يوجد اقتراح"}
-                    </h3>
-                  </div>
-                  {isGenerating ? (
-                    <ActivityOrb state="shaping" size="sm" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
-                  )}
-                </div>
-                {proposalText ? (
-                  <pre
-                    dir="auto"
-                    className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface-sunken/55 p-4 font-sans text-sm leading-8"
-                  >
-                    {proposalText}
-                  </pre>
-                ) : (
-                  <div className="mt-4 flex min-h-64 items-center justify-center rounded-xl border border-dashed border-line bg-surface-sunken/35 p-6 text-center text-sm leading-7 text-ink-muted">
-                    اكتب تعليمات واضحة، وسيظهر الاقتراح هنا من دون تغيير العمل
-                    المقبول.
-                  </div>
-                )}
-                {proposal?.status === "complete" ? (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      className="rounded-xl"
-                      disabled={dirty}
-                      onClick={() => void settleProposal("apply")}
-                    >
-                      <Check className="h-4 w-4" aria-hidden="true" />
-                      تطبيق كإصدار جديد
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="rounded-xl"
-                      onClick={() => void settleProposal("discard")}
-                    >
-                      <X className="h-4 w-4" aria-hidden="true" />
-                      رفض الاقتراح
-                    </Button>
-                  </div>
-                ) : null}
-              </Surface>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+function DraftEditorWorkspace() {
+  const {
+    workspaceId,
+    detail,
+    notice,
+    proposal,
+    isGenerating,
+  } = useDraftEditorContext();
+  const viewMode: ViewMode = proposal ? "proposal" : "editor";
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-view-mode={viewMode}>
+      <span className="sr-only">
+        العمل المقبول منفصل عن المقترح. يمكنك تطبيق كإصدار جديد أو رفض الاقتراح.
+        استخدم Ctrl/Cmd+S للحفظ.
+      </span>
+
       {notice ? (
-        <Surface
-          tone={notice.tone === "info" ? "muted" : "raised"}
-          elevation="xs"
-          radius="xl"
-          padding="sm"
-          className={
+        <div
+          role={notice.tone === "error" ? "alert" : "status"}
+          className={`rounded-xl border px-4 py-3 text-sm leading-7 ${
             notice.tone === "error"
               ? "border-destructive/30 bg-destructive/10 text-destructive"
               : notice.tone === "success"
-                ? "border-primary/25 bg-brand-soft/60"
-                : undefined
-          }
-          role={notice.tone === "error" ? "alert" : "status"}
-          aria-live={notice.tone === "error" ? "assertive" : "polite"}
+                ? "border-primary/30 bg-brand-soft text-foreground"
+                : "border-line bg-surface-sunken text-ink-muted"
+          }`}
         >
-          <div className="flex items-start gap-3 text-sm leading-7">
-            {notice.tone === "error" ? (
-              <AlertTriangle className="mt-1 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
-            ) : (
-              <Check className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-            )}
-            <p>{notice.message}</p>
-          </div>
-        </Surface>
+          {notice.message}
+        </div>
       ) : null}
 
       <DraftWorkspaceFrame
-        title={editor.title || detail.draft.title}
-        subtitle={`v${detail.draft.currentVersion} · ${
-          kindOptions.find((option) => option.value === editor.kind)?.label ??
-          editor.kind
-        }`}
-        status={draftArchived ? "archived" : "active"}
+        title={detail.draft.title}
+        subtitle={`الإصدار ${detail.draft.currentVersion} · ${detail.draft.provenanceCount} مرجع · Ctrl/Cmd+S`}
+        status={detail.draft.status}
         backHref={`/workspaces/${workspaceId}/drafts${
-          draftArchived ? "/archived" : ""
+          detail.draft.status === "archived" ? "/archived" : ""
         }`}
-        toolbar={toolbar}
-        versions={versionsPanel}
-        inspector={inspectorPanel}
+        toolbar={
+          isGenerating ? (
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1.5 text-xs font-semibold text-primary">
+              <ActivityOrb state="shaping" size="sm" />
+              تشكيل المقترح
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-2 rounded-full bg-surface-sunken px-3 py-1.5 text-xs text-ink-muted">
+              <FileClock className="h-3.5 w-3.5" aria-hidden="true" />
+              {detail.draft.status === "archived" ? "مؤرشفة" : "مسودة نشطة"}
+            </span>
+          )
+        }
+        versions={<DraftVersionSidebar />}
+        inspector={<DraftToolsPanel />}
       >
-        {viewMode === "editor" ? editorCanvas : proposalCanvas}
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-start">
+          <DraftEditorMain />
+          <aside className="space-y-4 xl:sticky xl:top-0">
+            <DraftAssistantPanel />
+          </aside>
+        </div>
       </DraftWorkspaceFrame>
     </div>
+  );
+}
+
+export function DraftEditor(props: DraftEditorProps) {
+  return (
+    <DraftEditorProvider {...props}>
+      <DraftEditorWorkspace />
+    </DraftEditorProvider>
   );
 }

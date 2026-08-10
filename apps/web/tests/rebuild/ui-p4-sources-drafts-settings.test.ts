@@ -44,7 +44,8 @@ describe("UI P4 sources, drafts, and settings experience", () => {
     expect(page).toContain("<SearchResultCard");
     expect(page).toContain("<DocumentCard");
     expect(page).toContain('name="q"');
-    expect(page).toContain("Private bucket · RLS · 2 MiB");
+    expect(page).toContain("الملف خاص بهذه المساحة");
+    expect(page).toContain("دعم PDF وOCR غير متاح حالياً");
     expect(upload).toContain("onDrop={handleDrop}");
     expect(upload).toContain('<ActivityOrb state="working"');
     expect(page).not.toContain("P3 ·");
@@ -114,10 +115,11 @@ describe("UI P4 sources, drafts, and settings experience", () => {
     expect(page).toContain("<PageShell");
     expect(page).toContain("<PageHeader");
     expect(settings).toContain('type="password"');
-    expect(settings).toContain("OpenRouter BYOK");
-    expect(settings).toContain("Search by model name or ID");
-    expect(settings).toContain("Free only");
-    expect(settings).toContain("Validate and use");
+    expect(settings).toContain("إعدادات OpenRouter");
+    expect(settings).toContain('aria-label="Search OpenRouter models"');
+    expect(settings).toContain('aria-label="Free only"');
+    expect(settings).toContain('aria-label="Validate and use"');
+    expect(settings).toContain("النماذج المجانية فقط");
     expect(settings).toContain("currentModel");
     expect(settings).toContain('<ActivityOrb state="searching"');
     expect(settings).not.toContain("localStorage");

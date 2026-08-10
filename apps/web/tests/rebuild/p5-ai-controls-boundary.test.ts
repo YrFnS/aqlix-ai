@@ -69,6 +69,19 @@ describe("P5 AI resource-control boundary", () => {
     expect(controls).not.toContain("finishPermittedDraftGeneration");
   });
 
+  test("keeps direct settlement internal and conversation mutation creator-bound", () => {
+    const hardening = readRepo(
+      "supabase/migrations/202608100002_p5_ai_generation_privilege_hardening.sql",
+    );
+
+    expect(hardening).toContain("from public, anon, authenticated");
+    expect(hardening).toContain("message.created_by = auth.uid()");
+    expect(hardening).toContain("generation.created_by = auth.uid()");
+    expect(hardening).toContain("raise insufficient_privilege");
+    expect(hardening).toContain("assistant message is unavailable for this account");
+    expect(hardening).toContain("generation is unavailable for this account");
+  });
+
   test("turns an expired lease into an honest failed generation", () => {
     const expiry = readRepo(
       "supabase/migrations/202608080020_p5_ai_permit_expiry_recovery.sql",
@@ -101,10 +114,11 @@ describe("P5 AI resource-control boundary", () => {
     expect(panel.replace(/\s+/g, " ")).toContain("Only the workspace owner");
   });
 
-  test("runs a dedicated database lifecycle gate", () => {
+  test("runs a dedicated database lifecycle and privilege gate", () => {
     const workflow = readRepo(".github/workflows/p5-ai-controls.yml");
 
     expect(workflow).toContain("p5_ai_generation_controls.test.sql");
+    expect(workflow).toContain("p5_ai_generation_privileges.test.sql");
     expect(workflow).toContain("P5 AI Resource Controls Success Gate");
     expect(workflow).toContain("bunx supabase start");
     expect(workflow).not.toContain("SUPABASE_SERVICE_ROLE_KEY");

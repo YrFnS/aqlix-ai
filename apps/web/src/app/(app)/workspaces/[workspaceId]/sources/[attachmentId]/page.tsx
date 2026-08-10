@@ -7,6 +7,7 @@ import { DocumentStatusNotice } from "@/components/documents/document-status-not
 import { DocumentWorkspace } from "@/components/documents/document-workspace";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
+import { Surface } from "@/components/ui/surface";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   getWorkspaceDocument,
@@ -98,6 +99,20 @@ export default async function SourceDocumentPage({
               : firstValue(query.status)
         }
       />
+      <Surface
+        tone="muted"
+        elevation="none"
+        radius="xl"
+        padding="sm"
+      >
+        <h1 className="text-sm font-semibold text-foreground">
+          التفاصيل التقنية وسجل المعالجة
+        </h1>
+        <p className="mt-1 text-xs leading-6 text-ink-muted">
+          هذا المستند خاص بمساحة العمل. يمكنك فحص المقاطع المستخرجة وسجل
+          المعالجة، ثم فتح المصدر أو حذفه بحسب صلاحيتك.
+        </p>
+      </Surface>
       <DocumentWorkspace
         workspaceId={workspace.id}
         document={document}

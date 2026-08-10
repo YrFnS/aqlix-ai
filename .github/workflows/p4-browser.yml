@@ -2,9 +2,9 @@ name: P4 Ask Ground Draft Continue Journey
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   pull_request:
-    branches: [develop]
+    branches: [main]
 
 permissions:
   contents: read

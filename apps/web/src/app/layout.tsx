@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body
         data-ui-foundation="p0"
-        className="flex min-h-screen flex-col bg-background font-sans text-foreground antialiased selection:bg-primary/20"
+        className="flex min-h-screen flex-col bg-background font-arabic text-foreground antialiased selection:bg-primary/20"
       >
         <AccessibilityRuntime />
         <DirectionProvider>

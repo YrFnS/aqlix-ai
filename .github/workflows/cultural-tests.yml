@@ -2,9 +2,9 @@ name: Product Language & Claims Safeguards
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 permissions:
   contents: read
@@ -39,7 +39,7 @@ jobs:
         run: bun run --filter @iraqi-ai/ui test
 
   public-claims:
-    name: Public Brand & Claims Guard
+    name: Complete Public Route & Claims Guard
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -53,8 +53,10 @@ jobs:
       - name: Install dependencies
         run: bash scripts/ci/install-dependencies.sh
 
-      - name: Verify focused bilingual brand and public claims
-        run: bun run test:brand
+      - name: Verify brand and every routable page
+        run: |
+          bun run test:brand
+          bun test apps/web/tests/rebuild/public-route-surface.test.ts
 
   safeguards-success:
     name: Product Safeguards Success Gate
@@ -67,9 +69,9 @@ jobs:
         run: |
           if [[ "${{ needs.language-utilities.result }}" != "success" ]] || \
              [[ "${{ needs.public-claims.result }}" != "success" ]]; then
-            echo "Product language or public-claims safeguards failed"
+            echo "Product language or complete public-route safeguards failed"
             exit 1
           fi
 
-          echo "Arabic utility tests and public-claims safeguards passed."
+          echo "Arabic utility tests and complete routable-surface safeguards passed."
           echo "These checks do not certify cultural, religious, legal, or professional compliance."

@@ -9,6 +9,16 @@ const readWeb = (path: string) =>
   readFileSync(resolve(webRoot, path), "utf8");
 const readRepo = (path: string) =>
   readFileSync(resolve(repoRoot, path), "utf8");
+const readDraftSurface = () =>
+  [
+    "src/components/drafts/draft-editor.tsx",
+    "src/components/drafts/draft-editor-context.tsx",
+    "src/components/drafts/draft-editor-main.tsx",
+    "src/components/drafts/draft-assistant-panel.tsx",
+    "src/components/drafts/draft-tools-panel.tsx",
+  ]
+    .map(readWeb)
+    .join("\n");
 
 describe("P4 durable draft boundary", () => {
   test("ships the complete active draft route graph", () => {
@@ -48,6 +58,23 @@ describe("P4 durable draft boundary", () => {
     expect(migration).toContain("draft_versions_select_member");
   });
 
+  test("fails stale draft versions without retryable serialization loops", () => {
+    const route = readWeb(
+      "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/route.ts",
+    );
+    const migration = readRepo(
+      "supabase/migrations/202608100003_p4_draft_conflict_fast_fail.sql",
+    );
+
+    expect(route).toContain(
+      "existing.draft.currentVersion !== parsed.data.expectedVersion",
+    );
+    expect(route).toContain('error.databaseCode === "P4091"');
+    expect(migration).toContain("errcode = 'P4091'");
+    expect(migration).toContain("message = 'draft version conflict'");
+    expect(migration).not.toContain("raise serialization_failure");
+  });
+
   test("creates deterministic scaffolds without a hidden provider request", () => {
     const scaffold = readWeb("src/lib/drafts/scaffold.ts");
     const collectionRoute = readWeb(
@@ -68,7 +95,7 @@ describe("P4 durable draft boundary", () => {
     const applyRoute = readWeb(
       "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/[generationId]/apply/route.ts",
     );
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
 
     expect(streamRoute).toContain("beginDraftGeneration");
     expect(streamRoute).toContain("checkpointDraftGeneration");
@@ -104,7 +131,7 @@ describe("P4 durable draft boundary", () => {
     const exportRoute = readWeb(
       "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/export/route.ts",
     );
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
 
     expect(exportBuilder).toContain("escapeDraftHtml");
     expect(exportBuilder).toContain('<pre dir="auto">');
@@ -117,7 +144,7 @@ describe("P4 durable draft boundary", () => {
   });
 
   test("renders accepted and proposed content without raw HTML injection", () => {
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
     const version = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/drafts/[draftId]/versions/[versionNumber]/page.tsx",
     );

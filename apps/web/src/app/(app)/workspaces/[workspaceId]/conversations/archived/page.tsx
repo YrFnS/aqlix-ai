@@ -9,10 +9,8 @@ import { Surface } from "@/components/ui/surface";
 import { ConversationCard } from "@/components/conversations/conversation-card";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
-import {
-  listConversations,
-  ConversationRepositoryError,
-} from "@/lib/conversations/repository";
+import { ConversationRepositoryError } from "@/lib/conversations/repository";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -49,7 +47,7 @@ export default async function ArchivedConversationsPage({
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
     if (workspace) {
-      allConversations = await listConversations(supabase, workspaceId, {
+      allConversations = await listConversationSummaries(supabase, workspaceId, {
         includeArchived: true,
       });
     }

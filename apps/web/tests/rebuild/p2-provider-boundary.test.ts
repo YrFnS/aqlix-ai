@@ -22,6 +22,7 @@ describe("P2 provider and conversation boundary", () => {
       "src/app/(app)/workspaces/[workspaceId]/conversations/[conversationId]/not-found.tsx",
       "src/app/api/v1/workspaces/[workspaceId]/conversations/route.ts",
       "src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/route.ts",
+      "src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/messages/route.ts",
       "src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/stream/route.ts",
     ];
 
@@ -106,6 +107,90 @@ describe("P2 provider and conversation boundary", () => {
     expect(client).toContain("retryMessageId");
   });
 
+  test("batches stream deltas and respects the reader's scroll position", () => {
+    const client = readWeb(
+      "src/components/conversations/conversation-shell.tsx",
+    );
+
+    expect(client).toContain("pendingDeltasRef");
+    expect(client).toContain("window.requestAnimationFrame(flushPendingDeltas)");
+    expect(client).toContain("shouldAutoScrollRef");
+    expect(client).toContain("AUTO_SCROLL_THRESHOLD_PX");
+    expect(client).toContain("onScroll={updateAutoScrollPreference}");
+    expect(client).toContain("readyReceived && !terminalReceived");
+    expect(client).not.toContain("router.refresh()");
+    expect(client).not.toContain("scrollIntoView");
+    expect(client).not.toContain('behavior: "smooth"');
+  });
+
+  test("loads only bounded visible message pages and their telemetry", () => {
+    const pageRepository = readWeb(
+      "src/lib/conversations/message-pages.ts",
+    );
+    const detailPage = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/conversations/[conversationId]/page.tsx",
+    );
+    const detailRoute = readWeb(
+      "src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/route.ts",
+    );
+    const messageRoute = readWeb(
+      "src/app/api/v1/workspaces/[workspaceId]/conversations/[conversationId]/messages/route.ts",
+    );
+
+    expect(pageRepository).toContain("limit + 1");
+    expect(pageRepository).toContain('.order("sequence", { ascending: false })');
+    expect(pageRepository).toContain('.lt("sequence", input.beforeSequence)');
+    expect(pageRepository).toContain('.in("message_id", assistantMessageIds)');
+    expect(pageRepository).toContain("descendingRows.slice(0, limit)");
+    expect(detailPage).toContain("listConversationMessagePage");
+    expect(detailPage).not.toContain("listConversationMessages(");
+    expect(detailRoute).toContain("messagePage.messages");
+    expect(detailRoute).toContain("nextCursor: messagePage.nextCursor");
+    expect(messageRoute).toContain("listConversationMessagesInputSchema");
+  });
+
+  test("prepends older pages while preserving the visual scroll anchor", () => {
+    const client = readWeb(
+      "src/components/conversations/conversation-shell.tsx",
+    );
+
+    expect(client).toContain("useLayoutEffect");
+    expect(client).toContain("prependPositionRef");
+    expect(client).toContain("viewport.scrollHeight - position.scrollHeight");
+    expect(client).toContain("تحميل رسائل أقدم");
+    expect(client).toContain("conversationMessagePageSchema.safeParse");
+    expect(client).toContain("loadedOlderRef");
+    expect(client).toContain("DraftFromConversationPanel");
+  });
+
+  test("aggregates conversation counts in PostgreSQL instead of scanning messages", () => {
+    const summaries = readWeb("src/lib/conversations/summaries.ts");
+    const collectionPage = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/conversations/page.tsx",
+    );
+    const archivedPage = readWeb(
+      "src/app/(app)/workspaces/[workspaceId]/conversations/archived/page.tsx",
+    );
+    const collectionRoute = readWeb(
+      "src/app/api/v1/workspaces/[workspaceId]/conversations/route.ts",
+    );
+    const migration = readRepo(
+      "supabase/migrations/202608100004_p2_conversation_pagination.sql",
+    );
+
+    expect(summaries).toContain('"list_conversation_summaries"');
+    expect(collectionPage).toContain("listConversationSummaries");
+    expect(archivedPage).toContain("listConversationSummaries");
+    expect(collectionRoute).toContain("listConversationSummaries");
+    expect(collectionPage).not.toContain("listConversations(");
+    expect(collectionRoute).not.toContain("listConversations(");
+    expect(migration).toContain("count(message.id)::integer");
+    expect(migration).toContain("max(message.created_at)");
+    expect(migration).toContain(
+      "messages_workspace_conversation_sequence_desc_idx",
+    );
+  });
+
   test("keeps PostgreSQL as the only durable conversation authority", () => {
     const repository = readWeb("src/lib/conversations/repository.ts");
     const migration = readRepo(
@@ -122,12 +207,21 @@ describe("P2 provider and conversation boundary", () => {
     expect(repository).not.toContain("new Map<string, Conversation");
   });
 
-  test("renders text, URLs, and code without raw HTML injection", () => {
+  test("renders structured Markdown without enabling raw HTML", () => {
     const renderer = readWeb("src/components/conversations/message-content.tsx");
+    const rendererTest = readWeb("tests/rebuild/message-markdown.test.ts");
 
     expect(renderer).toContain('dir="auto"');
     expect(renderer).toContain('dir="ltr"');
     expect(renderer).toContain('rel="noreferrer noopener"');
+    expect(renderer).toContain('kind: "heading"');
+    expect(renderer).toContain('kind: "unordered-list"');
+    expect(renderer).toContain('kind: "ordered-list"');
+    expect(renderer).toContain('kind: "blockquote"');
+    expect(renderer).toContain('kind: "table"');
+    expect(renderer).toContain('kind: "code"');
+    expect(renderer).toContain("safeLink");
+    expect(rendererTest).toContain("keeps raw HTML inert");
     expect(renderer).not.toContain("dangerouslySetInnerHTML");
     expect(renderer).not.toContain("innerHTML");
   });

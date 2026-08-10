@@ -93,24 +93,30 @@ const config: Config = {
       fontFamily: {
         sans: [
           "var(--font-inter)",
+          "var(--font-arabic-primary)",
           "var(--font-noto-sans-arabic)",
           "system-ui",
           "sans-serif",
         ],
         arabic: [
+          "var(--font-arabic-primary)",
           "var(--font-noto-sans-arabic)",
           "Tahoma",
           "Arial Unicode MS",
           "sans-serif",
         ],
         "arabic-heading": [
+          "var(--font-arabic-heading)",
           "var(--font-cairo)",
+          "var(--font-arabic-primary)",
           "var(--font-noto-sans-arabic)",
           "Tahoma",
           "sans-serif",
         ],
         "arabic-formal": [
+          "var(--font-arabic-formal)",
           "var(--font-amiri)",
+          "var(--font-arabic-primary)",
           "var(--font-noto-sans-arabic)",
           "Tahoma",
           "serif",

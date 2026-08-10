@@ -16,6 +16,7 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/motion/motion-primitives";
+import { ProductJourneyPreview } from "@/components/marketing/product-journey-preview";
 import { WorkflowPreview } from "@/components/marketing/workflow-preview";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
@@ -50,6 +51,14 @@ const journey = [
     description:
       "أنشئ ملخصاً أو مقارنة أو رسالة أو مذكرة، واحفظها كمسودة قابلة للتحرير والمتابعة بإصدارات واضحة.",
     icon: PenLine,
+  },
+  {
+    number: "04",
+    title: "تابع وراجع الإصدارات",
+    titleEn: "Continue",
+    description:
+      "عد إلى العمل المقبول، راجع النسخ والمراجع، ثم طبّق الاقتراح فقط عندما يصبح مناسباً.",
+    icon: FileText,
   },
 ] as const;
 
@@ -121,8 +130,8 @@ export default function Home() {
                 {brand.categoryAr}
               </p>
               <h1 className="mt-4 max-w-4xl text-balance font-arabic-heading text-4xl font-semibold leading-[1.16] tracking-tight sm:text-5xl lg:text-6xl xl:text-[4.4rem]">
-                أحضر السياق.
-                <span className="block text-primary">حوّله إلى عمل واضح.</span>
+                من سؤال مبعثر إلى
+                <span className="block text-primary">مسودة موثّقة.</span>
               </h1>
             </StaggerItem>
 
@@ -142,7 +151,7 @@ export default function Home() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="rounded-full">
-                  <Link href="/#product">شاهد كيف يعمل</Link>
+                  <Link href="/#how-it-works">شاهد كيف يعمل</Link>
                 </Button>
               </div>
             </StaggerItem>
@@ -191,7 +200,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="product" className="scroll-mt-24 py-20 sm:py-28">
+      <section id="product" className="relative scroll-mt-24 py-20 sm:py-28">
+        <span id="how-it-works" className="absolute -top-24" aria-hidden="true" />
         <div className="container-responsive">
           <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
             <div>
@@ -206,7 +216,7 @@ export default function Home() {
             </p>
           </div>
 
-          <Stagger className="mt-12 grid gap-5 lg:grid-cols-3">
+          <Stagger className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {journey.map(({ number, title, titleEn, description, icon: Icon }) => (
               <StaggerItem key={number} className="h-full">
                 <MotionSurface className="h-full">
@@ -242,6 +252,10 @@ export default function Home() {
               </StaggerItem>
             ))}
           </Stagger>
+
+          <div className="mt-12">
+            <ProductJourneyPreview />
+          </div>
         </div>
       </section>
 
@@ -249,6 +263,7 @@ export default function Home() {
         id="capabilities"
         className="scroll-mt-24 border-y border-line/70 bg-surface-sunken/55 py-20 sm:py-28"
       >
+        <span id="why-tuppra" className="block scroll-mt-24" aria-hidden="true" />
         <div className="container-responsive">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold text-primary">قدرات تخدم العمل</p>
@@ -384,7 +399,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="principles" className="scroll-mt-24 py-20 sm:py-28">
+      <section id="principles" className="relative scroll-mt-24 py-20 sm:py-28">
+        <span id="use-cases" className="absolute -top-24" aria-hidden="true" />
         <div className="container-responsive grid gap-12 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
           <div className="max-w-xl lg:sticky lg:top-28">
             <p className="text-sm font-semibold text-primary">مبادئ التجربة</p>

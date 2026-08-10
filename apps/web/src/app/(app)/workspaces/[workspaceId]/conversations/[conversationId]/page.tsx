@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import type {
   Conversation,
-  ConversationMessage,
+  ConversationMessagePage,
   ConversationSummary,
   WorkspaceAccess,
 } from "@iraqi-ai/types";
@@ -19,10 +19,13 @@ import { PageShell } from "@/components/ui/page-shell";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   getConversation,
-  listConversationMessages,
-  listConversations,
   ConversationRepositoryError,
 } from "@/lib/conversations/repository";
+import {
+  DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+  listConversationMessagePage,
+} from "@/lib/conversations/message-pages";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -54,18 +57,31 @@ export default async function ConversationPage({
   const { user, supabase } = await requireAuthenticatedUser(returnTo);
   let workspace: WorkspaceAccess | null = null;
   let conversation: Conversation | null = null;
-  let messages: ConversationMessage[] = [];
+  let messagePage: ConversationMessagePage = {
+    messages: [],
+    hasMore: false,
+    nextCursor: null,
+  };
   let conversations: ConversationSummary[] = [];
   let persistenceFailed = false;
 
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
     if (workspace) {
-      [conversation, messages, conversations] = await Promise.all([
+      [conversation, conversations] = await Promise.all([
         getConversation(supabase, workspaceId, conversationId),
-        listConversationMessages(supabase, workspaceId, conversationId),
-        listConversations(supabase, workspaceId, { includeArchived: true }),
+        listConversationSummaries(supabase, workspaceId, {
+          includeArchived: true,
+        }),
       ]);
+
+      if (conversation) {
+        messagePage = await listConversationMessagePage(supabase, {
+          workspaceId,
+          conversationId,
+          limit: DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+        });
+      }
     }
   } catch (error) {
     persistenceFailed = true;
@@ -105,7 +121,7 @@ export default async function ConversationPage({
   const visibleStatus = persistenceFailed
     ? "persistence-error"
     : firstValue(query.status);
-  const reusableMessages = messages
+  const reusableMessages = messagePage.messages
     .filter(
       (message) => message.role === "assistant" && message.status === "complete",
     )
@@ -115,6 +131,9 @@ export default async function ConversationPage({
       content: message.content,
       citationCount: message.citations.length,
     }));
+  const messageCount =
+    conversations.find((candidate) => candidate.id === conversation.id)
+      ?.messageCount ?? messagePage.messages.length;
   const roleLabel =
     workspace.role === "owner"
       ? "مالك"
@@ -128,9 +147,13 @@ export default async function ConversationPage({
         status={isWorkspaceArchived ? "workspace-archived" : visibleStatus}
       />
 
+      <div className="rounded-xl border border-line/70 bg-surface-sunken/55 px-4 py-3 text-sm leading-7 text-ink-muted">
+        تابع الحوار بالعربية أو English. إذا توقفت استجابة أو فشلت، يمكنك إعادة المحاولة من الرسالة نفسها من دون فقدان السجل المحفوظ.
+      </div>
+
       <ConversationWorkspaceFrame
         title={conversation.title}
-        subtitle={`${workspace.name} · ${roleLabel} · ${messages.length} رسالة`}
+        subtitle={`${workspace.name} · ${roleLabel} · ${messageCount} رسالة`}
         status={conversation.status}
         history={
           <ConversationSwitcher
@@ -143,7 +166,7 @@ export default async function ConversationPage({
           <ConversationInspector
             workspace={workspace}
             conversation={conversation}
-            messageCount={messages.length}
+            messageCount={messageCount}
             reusableMessages={reusableMessages}
             canWrite={canWrite}
           />
@@ -153,7 +176,7 @@ export default async function ConversationPage({
           <ConversationShell
             workspaceId={workspace.id}
             conversation={conversation}
-            initialMessages={messages}
+            initialPage={messagePage}
             canWrite={canWrite}
             readOnlyReason={
               isWorkspaceArchived ? "workspace-archived" : "membership"
