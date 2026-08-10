@@ -25,7 +25,8 @@ import {
 
 export const metadata: Metadata = {
   title: "المحادثات",
-  description: "Persistent bilingual conversations inside an authorized workspace.",
+  description:
+    "ابدأ محادثات جديدة وتابع الأسئلة والإجابات داخل مساحة العمل.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -110,7 +111,7 @@ export default async function ConversationsPage({
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold text-primary">
-              P2 · Persistent bilingual conversation
+              اسأل، تابع، وارجع إلى إجاباتك
             </p>
             <h1
               dir="auto"
@@ -119,8 +120,8 @@ export default async function ConversationsPage({
               محادثات {workspace.name}
             </h1>
             <p className="mt-4 text-base leading-8 text-muted-foreground">
-              الرسائل وحالات التوليد محفوظة في PostgreSQL وتخضع لعضوية مساحة
-              العمل. العربية وEnglish والنص المختلط تُعرض باتجاه تلقائي.
+              ابدأ سؤالاً جديداً أو أكمل محادثة سابقة. يمكنك الكتابة بالعربية أو
+              English، وإضافة مصادر المساحة عندما تحتاج إلى سياق أدق.
             </p>
           </div>
 
@@ -179,8 +180,8 @@ export default async function ConversationsPage({
           ) : (
             <div className="mt-7 rounded-2xl border border-border bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
               {isWorkspaceArchived
-                ? "مساحة العمل مؤرشفة. يمكن مراجعة المحادثات، لكن إنشاء محادثة أو إرسال رسالة يتطلب استعادة المساحة أولاً."
-                : "عضويتك للقراءة فقط. يمكنك فتح المحادثات الحالية ومراجعة الرسائل وحالة المزود، لكن إنشاء محادثة أو إرسال رسالة يحتاج دور المحرر أو المالك."}
+                ? "مساحة العمل مؤرشفة. يمكنك مراجعة المحادثات، لكن إنشاء محادثة أو إرسال رسالة يتطلب استعادة المساحة أولاً."
+                : "عضويتك للقراءة فقط. يمكنك فتح المحادثات ومراجعة الردود، بينما يحتاج إنشاء محادثة أو إرسال رسالة إلى دور المحرر أو المالك."}
             </div>
           )}
 
@@ -190,8 +191,8 @@ export default async function ConversationsPage({
               aria-hidden="true"
             />
             <p>
-              لا تُستخدم ذاكرة عملية أو محادثة مستضافة عند المزود كمصدر للحقيقة.
-              كل استمرارية تُعاد من السجلات المصرح بها داخل هذه المساحة.
+              تبقى محادثات هذه المساحة متاحة لأعضائها فقط، ويمكنك العودة إليها
+              ومتابعتها من أي جهاز بعد تسجيل الدخول.
             </p>
           </div>
         </section>
@@ -228,8 +229,8 @@ export default async function ConversationsPage({
               </h3>
               <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
                 {canWrite
-                  ? "أنشئ أول محادثة. لن نضع رسائل مثال أو استجابات غير صادرة عن المسار الحقيقي."
-                  : "لم تُشارك معك محادثة نشطة قابلة للكتابة في هذه المساحة."}
+                  ? "أنشئ أول محادثة وابدأ بالسؤال الذي تريد العمل عليه."
+                  : "لا توجد محادثة نشطة متاحة لك في هذه المساحة حالياً."}
               </p>
             </div>
           )}
