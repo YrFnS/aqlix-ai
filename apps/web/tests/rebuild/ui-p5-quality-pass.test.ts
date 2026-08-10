@@ -28,6 +28,19 @@ describe("UI P5 final quality pass", () => {
     expect(runtime).toContain("restoreFocusRef");
   });
 
+  test("turns public mobile navigation into a modal focus boundary", () => {
+    const mobileMenu = readSource("src/components/navigation/mobile-menu.tsx");
+
+    expect(mobileMenu).toContain('role="dialog"');
+    expect(mobileMenu).toContain('aria-modal="true"');
+    expect(mobileMenu).toContain('aria-label="قائمة التنقل على الهاتف"');
+    expect(mobileMenu).toContain('document.body.style.overflow = "hidden"');
+    expect(mobileMenu).toContain("h-[100dvh]");
+    expect(mobileMenu).toContain("safe-block-end");
+    expect(mobileMenu).toContain("shouldReduceMotion");
+    expect(mobileMenu).toContain("{ duration: 0 }");
+  });
+
   test("adds mobile viewport, contrast, transparency, and forced-colour fallbacks", () => {
     const quality = readSource("src/app/quality.css");
 
@@ -92,5 +105,24 @@ describe("UI P5 final quality pass", () => {
     expect(offline).toContain("قبل افتراض");
     expect(offline).toContain("حفظ أو توليد جديد اكتمل");
     expect(offline).not.toContain("bg-foreground px-4 py-3 text-sm text-background");
+  });
+
+  test("defines a cross-viewport browser audit with durable artifacts", () => {
+    const config = readSource("playwright.p5.config.ts");
+    const browserAudit = readSource("tests/e2e/p5/ui-quality.spec.ts");
+
+    expect(config).toContain('name: "p5-desktop-chromium"');
+    expect(config).toContain('name: "p5-tablet-chromium"');
+    expect(config).toContain('name: "p5-mobile-chromium"');
+    expect(config).toContain('timezoneId: "Asia/Baghdad"');
+    expect(config).toContain('outputDir: "test-results/p5/artifacts"');
+    expect(config).toContain('outputFile: "test-results/p5/results.json"');
+
+    expect(browserAudit).toContain("AxeBuilder");
+    expect(browserAudit).toContain("expectNoHorizontalOverflow");
+    expect(browserAudit).toContain("تجاوز إلى المحتوى");
+    expect(browserAudit).toContain("قائمة التنقل على الهاتف");
+    expect(browserAudit).toContain('reducedMotion: "reduce"');
+    expect(browserAudit).toContain("longestAnimationMs");
   });
 });
