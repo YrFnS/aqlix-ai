@@ -24,6 +24,14 @@ async function openAiSettings(page: Page): Promise<void> {
   ).toBeVisible();
 }
 
+async function sendMessage(page: Page, content: string): Promise<void> {
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("اكتب رسالة").fill(content);
+  const sendButton = page.getByRole("button", { name: "إرسال" });
+  await expect(sendButton).toBeEnabled();
+  await sendButton.click();
+}
+
 async function conversationPayload(
   request: APIRequestContext,
   workspaceId: string,
@@ -134,10 +142,10 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
 
-  await page
-    .getByLabel("اكتب رسالة")
-    .fill("اختبر OpenRouter بالعربية وEnglish مع الرقم 2026");
-  await page.getByRole("button", { name: "إرسال" }).click();
+  await sendMessage(
+    page,
+    "اختبر OpenRouter بالعربية وEnglish مع الرقم 2026",
+  );
   const assistantMessage = page
     .locator('article[data-message-id]')
     .filter({ hasText: /استجابة OpenRouter اختبارية محفوظة/ })
@@ -171,8 +179,7 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await page.goto(
     `/workspaces/${workspaceId}/conversations/${conversationId}`,
   );
-  await page.getByLabel("اكتب رسالة").fill("This must fail without a user key.");
-  await page.getByRole("button", { name: "إرسال" }).click();
+  await sendMessage(page, "This must fail without a user key.");
   await expect(
     page.getByText("PROVIDER_UNCONFIGURED", { exact: true }),
   ).toBeVisible();
