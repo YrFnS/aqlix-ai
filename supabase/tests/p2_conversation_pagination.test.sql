@@ -64,7 +64,7 @@ select
   'auto',
   sequence,
   '2026-08-10T00:00:00Z'::timestamptz + make_interval(secs => sequence)
-from generate_series(0, 59) as sequence;
+from generate_series(0, 59) as generated(sequence);
 
 do $$
 declare
