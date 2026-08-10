@@ -96,6 +96,35 @@ describe("UI experience P0 foundation", () => {
     expect(appLayout).toContain("<PageReveal");
   });
 
+  test("migrates representative workspace surfaces to the shared system", () => {
+    const listPage = readSource("src/app/(app)/workspaces/page.tsx");
+    const detailPage = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/page.tsx",
+    );
+    const card = readSource("src/components/workspaces/workspace-card.tsx");
+    const notice = readSource(
+      "src/components/workspaces/workspace-status-notice.tsx",
+    );
+
+    expect(listPage).toContain("<PageShell");
+    expect(listPage).toContain("<PageHeader");
+    expect(listPage).toContain("<PageSection");
+    expect(listPage).toContain("<Surface");
+    expect(listPage).toContain("<Stagger");
+    expect(detailPage).toContain("<PageShell");
+    expect(detailPage).toContain("<PageSection");
+    expect(detailPage).toContain("<Surface");
+    expect(detailPage).toContain("<Stagger");
+    expect(card).toContain("<MotionSurface");
+    expect(card).toContain("<Surface");
+    expect(card).toContain("focus-visible:ring-ring/20");
+    expect(notice).toContain("<Surface");
+    expect(listPage).not.toContain("P1 ·");
+    expect(detailPage).not.toContain("P2 + P3");
+    expect(detailPage).not.toContain("P3 · يعمل");
+    expect(detailPage).not.toContain("P4 · يعمل");
+  });
+
   test("uses semantic focus and elevation tokens in shared buttons", () => {
     const button = readSource("src/components/ui/button.tsx");
 
