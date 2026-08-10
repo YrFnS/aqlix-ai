@@ -32,7 +32,7 @@ const navItems = [
   },
   {
     href: "/docs",
-    label: "خطة المنتج",
+    label: "الدليل",
     icon: FileText,
     exact: true,
   },
@@ -78,21 +78,23 @@ export function AppNav({ userEmail }: AppNavProps) {
         <div className="flex h-full flex-col">
           <Link
             href={brand.links.workspace}
-            className="flex items-center justify-between gap-4 rounded-2xl px-3 py-2"
+            className="flex items-center gap-3 rounded-2xl px-3 py-2"
             onClick={() => setIsOpen(false)}
           >
-            <div>
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-sm font-bold text-primary-foreground shadow-sm shadow-primary/20"
+              aria-hidden="true"
+            >
+              T
+            </span>
+            <div className="min-w-0">
               <p className="font-arabic-heading text-2xl font-semibold tracking-tight">
                 {brand.name}
               </p>
-              <p dir="ltr" className="mt-1 text-xs text-muted-foreground">
-                {brand.category}
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                {brand.taglineAr}
               </p>
             </div>
-            <span
-              className="h-2.5 w-2.5 rounded-full bg-primary shadow-sm shadow-primary/40"
-              aria-hidden="true"
-            />
           </Link>
 
           <div className="my-6 h-px bg-border/70" />
@@ -115,22 +117,12 @@ export function AppNav({ userEmail }: AppNavProps) {
 
           <div className="mt-auto space-y-3">
             <div className="rounded-2xl border border-border/70 bg-secondary/60 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-semibold text-foreground">
-                  رحلة عمل محفوظة
-                </p>
-                <span
-                  dir="ltr"
-                  className="text-[0.65rem] font-semibold text-primary"
-                >
-                  P1–P5
-                </span>
-              </div>
+              <p className="text-xs font-semibold text-foreground">
+                من السؤال إلى العمل
+              </p>
               <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                الحساب والمساحة والمحادثات والمصادر والمراجع والمسودات والإصدارات
-                تعمل ضمن Ask → Ground → Draft → Continue. اتصال النموذج أصبح
-                مملوكاً للمستخدم عبر OpenRouter، بينما تبقى الجاهزية التشغيلية
-                والإطلاق العام ضمن P5.
+                ابدأ بمحادثة، أضف مصادر عند الحاجة، ثم حوّل أفضل إجابة إلى مسودة
+                يمكنك حفظها وتطويرها.
               </p>
             </div>
 
