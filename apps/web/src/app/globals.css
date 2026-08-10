@@ -121,6 +121,31 @@
     --shadow-color: 220 50% 2%;
   }
 
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      color-scheme: dark;
+      --surface-canvas: 222 25% 8%;
+      --surface-base: 222 22% 11%;
+      --surface-raised: 221 21% 13%;
+      --surface-sunken: 220 17% 15%;
+      --surface-overlay: 221 22% 12%;
+      --ink: 42 30% 94%;
+      --ink-muted: 42 11% 68%;
+      --ink-subtle: 42 9% 55%;
+      --line: 220 14% 23%;
+      --line-strong: 220 14% 30%;
+      --brand: 157 52% 55%;
+      --brand-foreground: 222 28% 9%;
+      --brand-soft: 158 23% 18%;
+      --secondary: 221 18% 16%;
+      --secondary-foreground: 42 24% 92%;
+      --accent-foreground: 157 55% 78%;
+      --destructive: 2 61% 43%;
+      --destructive-foreground: 0 0% 100%;
+      --shadow-color: 220 50% 2%;
+    }
+  }
+
   * {
     @apply border-border;
   }

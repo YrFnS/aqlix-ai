@@ -79,6 +79,8 @@ describe("UI experience P0 foundation", () => {
     expect(motion).toContain("motionSpring");
     expect(motion).toContain("staggerContainerVariants");
     expect(globals).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(globals).toContain("@media (prefers-color-scheme: dark)");
+    expect(globals).toContain(":root:not(.light)");
   });
 
   test("provides reusable shell and surface primitives on real routes", () => {
