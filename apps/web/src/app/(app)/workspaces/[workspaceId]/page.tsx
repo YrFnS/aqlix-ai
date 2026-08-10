@@ -52,7 +52,7 @@ const workspaceAreas = [
     key: "conversations",
     href: (workspace: WorkspaceAccess) =>
       `/workspaces/${workspace.id}/conversations`,
-    eyebrow: "حوار محفوظ",
+    eyebrow: "اسأل وتابع",
     title: "المحادثات",
     description:
       "تابع الأسئلة والإجابات داخل سياق المساحة، مع إمكانية الرجوع إلى المحادثات السابقة ومصادرها.",
@@ -62,7 +62,7 @@ const workspaceAreas = [
   {
     key: "sources",
     href: (workspace: WorkspaceAccess) => `/workspaces/${workspace.id}/sources`,
-    eyebrow: "مصادر خاصة",
+    eyebrow: "أضف سياقك",
     title: "المصادر",
     description:
       "أضف ملفات نصية إلى هذه المساحة، وابحث داخلها، وافتح المراجع المرتبطة بالمقاطع المستخدمة.",
@@ -72,7 +72,7 @@ const workspaceAreas = [
   {
     key: "drafts",
     href: (workspace: WorkspaceAccess) => `/workspaces/${workspace.id}/drafts`,
-    eyebrow: "تحرير بإصدارات",
+    eyebrow: "حوّل الإجابة إلى عمل",
     title: "المسودات",
     description:
       "حوّل الإجابات إلى عمل قابل للتحرير، واحفظ إصداراته، وراجع أصل المحتوى قبل التصدير أو التطبيق.",
@@ -247,8 +247,8 @@ export default async function WorkspacePage({
       </Surface>
 
       <PageSection
-        title="اختر مسار العمل"
-        description="انتقل مباشرة إلى الجزء الذي تحتاجه، مع بقاء كل شيء ضمن سياق هذه المساحة وصلاحياتها."
+        title="اسأل، استند إلى مصادرك، ثم اكتب"
+        description="ابدأ من المحادثة، افتح الأدلة عند الحاجة، ثم حوّل الإجابة إلى عمل قابل للتحرير والحفظ."
       >
         <Stagger className="grid gap-4 md:grid-cols-3">
           {workspaceAreas.map((area) => {

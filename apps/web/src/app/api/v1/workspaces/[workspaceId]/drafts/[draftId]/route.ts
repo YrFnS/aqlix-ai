@@ -187,6 +187,13 @@ export async function PATCH(request: Request, context: RouteContext) {
         { status: 409, requestId: auth.context.requestId },
       );
     }
+    if (existing.draft.currentVersion !== parsed.data.expectedVersion) {
+      return jsonFailure(
+        "CONFLICT",
+        "The draft changed in another request. Reload before saving again.",
+        { status: 409, requestId: auth.context.requestId },
+      );
+    }
 
     const result = await saveDraft(auth.context.supabase, parsed.data);
     const detail = await getDraftDetail(
@@ -207,7 +214,10 @@ export async function PATCH(request: Request, context: RouteContext) {
       { requestId: auth.context.requestId },
     );
   } catch (error) {
-    if (error instanceof DraftRepositoryError && error.databaseCode === "40001") {
+    if (
+      error instanceof DraftRepositoryError &&
+      (error.databaseCode === "P4091" || error.databaseCode === "40001")
+    ) {
       return jsonFailure(
         "CONFLICT",
         "The draft changed in another request. Reload before saving again.",

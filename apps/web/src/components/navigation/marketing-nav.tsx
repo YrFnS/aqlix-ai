@@ -8,10 +8,11 @@ import { MobileMenu } from "./mobile-menu";
 import { brand } from "@/config/brand";
 
 const navItems = [
-  { href: "/#product", label: "كيف يعمل" },
+  { href: "/#how-it-works", label: "كيف يعمل" },
   { href: "/#capabilities", label: "القدرات" },
+  { href: "/#why-tuppra", label: "لماذا Tuppra" },
   { href: "/#principles", label: "المبادئ" },
-  { href: brand.links.documentation, label: "المستندات" },
+  { href: brand.links.documentation, label: "الدليل" },
 ];
 
 const mobileItems = [

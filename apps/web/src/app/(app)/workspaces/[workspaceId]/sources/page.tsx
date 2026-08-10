@@ -310,12 +310,12 @@ export default async function WorkspaceSourcesPage({
     <PageShell width="wide" className="space-y-8">
       <PageHeader
         eyebrow="مكتبة المصادر"
-        title={<span dir="auto">مصادر {workspace.name}</span>}
+        title="أضف السياق الذي تريد الرجوع إليه"
         description={
           <>
             ارفع مستندات نصية خاصة، ابحث في المقاطع المستخرجة، ثم افتح الدليل
-            نفسه داخل المستند. يدعم هذا المسار TXT وMarkdown بصيغة UTF-8 فقط؛
-            لا يدّعي دعم PDF أو OCR.
+            نفسه داخل المستند. يدعم هذا المسار ملفات TXT وMarkdown النصية فقط.
+            دعم PDF وOCR غير متاح حالياً.
           </>
         }
         actions={
@@ -366,7 +366,7 @@ export default async function WorkspaceSourcesPage({
               <div>
                 <p className="text-xs font-semibold text-primary">مصدر جديد</p>
                 <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
-                  أضف ملفاً إلى السياق
+                  أضف ملفاً إلى هذه المساحة
                 </h2>
               </div>
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
@@ -399,8 +399,8 @@ export default async function WorkspaceSourcesPage({
                 aria-hidden="true"
               />
               <p>
-                Private bucket · RLS · 2 MiB. البحث محصور في هذه المساحة ولا
-                يستبدل غياب الدليل بنتيجة عامة.
+                الملف خاص بهذه المساحة، والبحث يقتصر على المقاطع التي أضفتها
+                أنت أو أعضاء المساحة.
               </p>
             </div>
           </Surface>

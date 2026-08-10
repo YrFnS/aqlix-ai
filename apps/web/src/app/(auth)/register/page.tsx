@@ -174,7 +174,7 @@ export default async function RegisterPage({
 
       {!configured ? (
         <AuthNotice tone="info" className="mt-5">
-          يلزم ضبط متغيري Supabase العامين لتفعيل الحسابات في هذه البيئة.
+          إعداد خدمة الحساب غير مكتمل في هذه البيئة. حاول مجدداً بعد تفعيلها.
         </AuthNotice>
       ) : null}
     </AuthFrame>

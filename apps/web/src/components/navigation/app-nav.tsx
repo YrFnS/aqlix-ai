@@ -55,8 +55,8 @@ const primaryNavItems = [
   },
   {
     href: "/docs",
-    label: "المستندات",
-    description: "نطاق المنتج وحدوده الحالية",
+    label: "الدليل",
+    description: "البدء السريع وحدود ما يدعمه المنتج",
     icon: FileText,
     exact: true,
   },
@@ -223,8 +223,8 @@ function getRouteContext(
   if (pathname === "/docs") {
     return {
       eyebrow: "Tuppra",
-      title: "المستندات",
-      breadcrumbs: [{ label: "المستندات" }],
+      title: "الدليل",
+      breadcrumbs: [{ label: "الدليل" }],
     };
   }
 
@@ -387,10 +387,10 @@ function NavigationPanel({
         ) : (
           <div className="rounded-xl border border-line/70 bg-surface-sunken px-3 py-3">
             <p className="text-xs font-semibold text-foreground">
-              {brand.taglineAr}
+              من السؤال إلى العمل
             </p>
             <p className="mt-1 text-xs leading-6 text-ink-muted">
-              انتقل بين السياق والمصادر والعمل المحفوظ من مكان واحد.
+              ابدأ بمحادثة، أضف مصادر عند الحاجة، ثم حوّل الإجابة إلى مسودة محفوظة.
             </p>
           </div>
         )}
@@ -734,7 +734,7 @@ export function AppNav({ userEmail, children }: AppNavProps) {
                             className="flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium outline-none transition-colors hover:bg-surface-sunken focus-visible:ring-4 focus-visible:ring-ring/20"
                           >
                             <FileText className="h-4 w-4" aria-hidden="true" />
-                            المستندات
+                            الدليل
                           </Link>
                         </div>
 

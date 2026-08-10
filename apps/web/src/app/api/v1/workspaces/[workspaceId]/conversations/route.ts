@@ -10,9 +10,9 @@ import {
 } from "@/lib/api/responses";
 import {
   createConversation,
-  listConversations,
   ConversationRepositoryError,
 } from "@/lib/conversations/repository";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import { getWorkspaceAccess } from "@/lib/workspaces/repository";
 
 export const dynamic = "force-dynamic";
@@ -69,7 +69,7 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const conversations = await listConversations(
+    const conversations = await listConversationSummaries(
       auth.context.supabase,
       params.data.workspaceId,
       { includeArchived },

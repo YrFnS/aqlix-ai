@@ -2,9 +2,9 @@ name: Arabic & RTL Foundation
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 permissions:
   contents: read
@@ -33,7 +33,9 @@ jobs:
         run: bun run build:packages
 
       - name: Test active RTL product foundation
-        run: bun run test:rtl
+        run: |
+          bun run test:rtl
+          bun test apps/web/tests/rebuild/typography-and-primary-copy.test.ts
 
       - name: Test Arabic processing package
         run: bun run --filter @iraqi-ai/arabic-nlp test
@@ -41,11 +43,16 @@ jobs:
       - name: Test bidirectional UI utilities
         run: bun run --filter @iraqi-ai/ui test
 
-      - name: Verify committed Arabic font configuration
+      - name: Verify committed bilingual font configuration
         run: |
           grep -q "Noto_Sans_Arabic" apps/web/src/lib/fonts.ts
           grep -q "Cairo" apps/web/src/lib/fonts.ts
           grep -q "Amiri" apps/web/src/lib/fonts.ts
+          grep -q "Inter" apps/web/src/lib/fonts.ts
+          grep -q -- '--font-arabic-primary' apps/web/src/lib/fonts.ts
+          grep -q -- '--font-arabic-heading' apps/web/src/lib/fonts.ts
+          grep -q -- '--font-arabic-formal' apps/web/src/lib/fonts.ts
+          grep -q -- '--font-inter' apps/web/src/lib/fonts.ts
           grep -q 'display: "swap"' apps/web/src/lib/fonts.ts
 
   arabic-success:
@@ -58,9 +65,9 @@ jobs:
       - name: Check Arabic foundation tests
         run: |
           if [[ "${{ needs.rtl-foundation.result }}" != "success" ]]; then
-            echo "Arabic and RTL foundation validation failed"
+            echo "Arabic, RTL, or bilingual typography validation failed"
             exit 1
           fi
 
-          echo "Arabic text utilities, RTL defaults, and font configuration passed."
+          echo "Arabic text utilities, RTL defaults, and bilingual font wiring passed."
           echo "No dialect-recognition or accuracy percentage is claimed by this workflow."

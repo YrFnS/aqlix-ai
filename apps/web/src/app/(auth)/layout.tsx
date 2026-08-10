@@ -49,7 +49,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
               href={brand.links.documentation}
               className="hidden rounded-md font-medium text-ink-muted outline-none transition-colors hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/20 sm:inline-flex"
             >
-              المستندات
+              الدليل
             </Link>
             <Link
               href={brand.links.home}
@@ -71,7 +71,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           <p>
             © {year} {brand.name}
           </p>
-          <p>جلسات الحساب تقود إلى المساحات المسموح لك بالوصول إليها فقط.</p>
+          <p>مساحة عمل عربية أولاً، مع دعم واضح للعربية وEnglish.</p>
         </div>
       </footer>
     </div>

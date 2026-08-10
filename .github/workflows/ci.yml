@@ -2,9 +2,9 @@ name: CI Quality Gates
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 permissions:
   contents: read
@@ -42,14 +42,20 @@ jobs:
         run: bun run typecheck
 
   build:
-    name: Build Validation
+    name: Release Build Validation
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     needs: quality-checks
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Setup Node LTS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.14.1
+          package-manager-cache: false
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -60,21 +66,22 @@ jobs:
       - name: Build packages in dependency order
         run: bun run build:packages
 
-      - name: Build web application
+      - name: Build complete release web application
         working-directory: apps/web
-        run: bun run build
+        run: bun run build:release
 
-      - name: Upload build artifacts
+      - name: Upload release build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: release-build-artifacts
           path: |
             apps/web/.next
             packages/*/dist
+          include-hidden-files: true
           retention-days: 7
 
   test:
-    name: P0 Foundation Tests
+    name: Active Rebuild Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: quality-checks
@@ -108,4 +115,4 @@ jobs:
             exit 1
           fi
 
-          echo "All required CI checks passed."
+          echo "All required lint, type, test, and complete release build checks passed."

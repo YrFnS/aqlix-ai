@@ -16,8 +16,8 @@ const deferredAccountRoutes = [
   .map(readSource)
   .join("\n");
 
-describe("P1 account boundary", () => {
-  test("keeps account capabilities outside P1 redirected to the active login route", () => {
+describe("account boundary", () => {
+  test("keeps deferred account capabilities redirected to the active login route", () => {
     expect(deferredAccountRoutes).toContain('redirect("/login")');
     expect(deferredAccountRoutes).not.toContain("@/components/auth");
     expect(deferredAccountRoutes).not.toContain("@/lib/supabase/server");
@@ -33,11 +33,12 @@ describe("P1 account boundary", () => {
     expect(callback).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
   });
 
-  test("refreshes server sessions and protects the P1 application routes", () => {
+  test("refreshes server sessions and protects application routes without phase headers", () => {
     const middleware = readSource("src/middleware.ts");
 
-    expect(middleware).toContain("x-ai-workspace-product-phase");
-    expect(middleware).toContain('"p1"');
+    expect(middleware).toContain("x-ai-workspace-auth-state");
+    expect(middleware).not.toContain("x-ai-workspace-product-phase");
+    expect(middleware).not.toContain('"p1"');
     expect(middleware).toContain("refreshSession");
     expect(middleware).toContain('"/workspaces"');
     expect(middleware).toContain('new URL("/login", request.url)');
@@ -54,15 +55,20 @@ describe("P1 account boundary", () => {
     expect(session).not.toContain("userId:");
   });
 
-  test("presents configured and unconfigured sign-in and registration states honestly", () => {
+  test("presents configured and unconfigured account states honestly", () => {
+    const layout = readSource("src/app/(auth)/layout.tsx");
     const login = readSource("src/app/(auth)/login/page.tsx");
     const register = readSource("src/app/(auth)/register/page.tsx");
     const authFrame = readSource("src/components/auth/auth-frame.tsx");
     const actions = readSource("src/lib/auth/actions.ts");
+    const accountSurface = `${layout}\n${login}\n${register}`;
 
     expect(login).toContain("<AuthFrame");
     expect(register).toContain("<AuthFrame");
     expect(authFrame).toContain('data-auth-frame="true"');
+    expect(login).toContain("مرحباً بعودتك");
+    expect(register).toContain("ابدأ مساحة عملك");
+    expect(layout).toContain("مساحة عمل عربية أولاً");
     expect(login).toContain("isSupabaseConfigured");
     expect(register).toContain("isSupabaseConfigured");
     expect(login).toContain("<AuthNotice");
@@ -71,9 +77,13 @@ describe("P1 account boundary", () => {
     expect(actions).toContain("auth.signUp");
     expect(actions).toContain("auth.signOut");
     expect(actions).toContain('value.startsWith("//")');
-    expect(login).not.toContain("P1 · Account access");
-    expect(register).not.toContain("P1 · Account access");
     expect(login).not.toContain("<LoginForm");
     expect(register).not.toContain("<RegisterForm");
+
+    expect(accountSurface).not.toContain("P1 · Account access");
+    expect(accountSurface).not.toContain("Product rebuild in progress");
+    expect(accountSurface).not.toContain("اسم عمل مؤقت");
+    expect(accountSurface).not.toContain("متغيري Supabase");
+    expect(accountSurface).not.toContain("صلاحيات الوصول من قاعدة البيانات");
   });
 });

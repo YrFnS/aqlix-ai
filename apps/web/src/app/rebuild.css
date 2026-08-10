@@ -1,4 +1,5 @@
 /*
  * UI P0 moved the active semantic tokens and shell primitives into globals.css.
  * This file remains only as a temporary history marker and must not be imported.
+ * The active LTR rule lives in globals.css: [dir="ltr"] uses var(--font-inter).
  */

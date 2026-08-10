@@ -16,10 +16,8 @@ import { ConversationCard } from "@/components/conversations/conversation-card";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import { createConversationAction } from "@/lib/conversations/actions";
-import {
-  listConversations,
-  ConversationRepositoryError,
-} from "@/lib/conversations/repository";
+import { ConversationRepositoryError } from "@/lib/conversations/repository";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -56,7 +54,7 @@ export default async function ConversationsPage({
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
     if (workspace) {
-      conversations = await listConversations(supabase, workspaceId);
+      conversations = await listConversationSummaries(supabase, workspaceId);
     }
   } catch (error) {
     persistenceFailed = true;
@@ -105,8 +103,8 @@ export default async function ConversationsPage({
 
       <PageHeader
         eyebrow={<span dir="auto">{workspace.name}</span>}
-        title="المحادثات"
-        description="ابدأ سؤالاً جديداً أو عد مباشرة إلى محادثة محفوظة. الرسائل، محاولات التوليد، والمراجع تبقى داخل سياق مساحة العمل وصلاحياتها."
+        title="اسأل، تابع، وارجع إلى إجاباتك"
+        description="ابدأ سؤالاً جديداً أو أكمل محادثة سابقة بالعربية أو English. فعّل مصادر المساحة فقط عندما تحتاج إلى سياق أدق ومراجع قابلة للفحص."
         actions={
           <>
             <Button asChild variant="outline" className="rounded-full">

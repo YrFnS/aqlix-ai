@@ -11,10 +11,13 @@ import {
 import {
   deleteConversation,
   getConversation,
-  listConversationMessages,
   updateConversation,
   ConversationRepositoryError,
 } from "@/lib/conversations/repository";
+import {
+  DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+  listConversationMessagePage,
+} from "@/lib/conversations/message-pages";
 import { getWorkspaceAccess } from "@/lib/workspaces/repository";
 
 export const dynamic = "force-dynamic";
@@ -87,16 +90,22 @@ export async function GET(request: Request, context: RouteContext) {
       );
     }
 
-    const messages = await listConversationMessages(
+    const messagePage = await listConversationMessagePage(
       auth.context.supabase,
-      parsed.data.workspaceId,
-      parsed.data.conversationId,
+      {
+        workspaceId: parsed.data.workspaceId,
+        conversationId: parsed.data.conversationId,
+        limit: DEFAULT_CONVERSATION_MESSAGE_PAGE_SIZE,
+      },
     );
 
     return jsonSuccess(
       {
         conversation,
-        messages,
+        messages: messagePage.messages,
+        messagePage,
+        hasMore: messagePage.hasMore,
+        nextCursor: messagePage.nextCursor,
         workspaceRole: access.role,
         workspaceArchived: access.archivedAt !== null,
       },

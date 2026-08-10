@@ -118,7 +118,11 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     })
     .first();
   await expect(groundedAssistantMessage).toBeVisible();
-  await expect(page.getByText(/Response and inspectable citations saved/)).toBeVisible();
+  await expect(
+    page.getByText("تم حفظ الاستجابة والمراجع القابلة للفتح.", {
+      exact: true,
+    }),
+  ).toBeVisible();
   const citationLink = page.getByRole("link", {
     name: new RegExp(`فتح المرجع S1 من ${documentName}`),
   });

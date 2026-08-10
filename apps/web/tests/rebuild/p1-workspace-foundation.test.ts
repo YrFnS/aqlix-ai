@@ -92,7 +92,7 @@ describe("P1 workspace foundation", () => {
     expect(migration).toContain("is_workspace_member");
   });
 
-  test("keeps P1 intact while exposing conversation, source, and draft work", () => {
+  test("keeps the workspace foundation intact while exposing the complete work loop", () => {
     const detail = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/page.tsx",
     );
@@ -101,18 +101,14 @@ describe("P1 workspace foundation", () => {
     );
 
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/conversations`);
-    expect(detail).toContain("حوار محفوظ");
+    expect(detail).toContain("اسأل وتابع");
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/sources`);
-    expect(detail).toContain("مصادر خاصة");
-    expect(detail).toContain("المراجع المرتبطة بالمقاطع المستخدمة");
-    expect(sources).toContain("Private bucket · RLS · 2 MiB");
+    expect(detail).toContain("أضف سياقك");
+    expect(sources).toContain("الملف خاص بهذه المساحة");
+    expect(sources).toContain("دعم PDF وOCR غير متاح حالياً");
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/drafts`);
-    expect(detail).toContain("تحرير بإصدارات");
-    expect(detail).toContain("سياق واحد، وصلاحيات مرتبطة بالعضوية");
-    expect(detail).toContain("يبقى العمل المقترح منفصلاً");
-    expect(detail).not.toContain("P2 + P3 · يعمل");
-    expect(detail).not.toContain("P3 · يعمل");
-    expect(detail).not.toContain("P4 · يعمل");
+    expect(detail).toContain("حوّل الإجابة إلى عمل");
+    expect(detail).toContain("اسأل، استند إلى مصادرك، ثم اكتب");
     expect(detail).not.toContain("غير مفعّل بعد");
     expect(detail).not.toMatch(/production[- ]ready/i);
   });

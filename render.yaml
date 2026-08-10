@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: kiteb-staging
+    name: tuppra-staging
     runtime: node
-    branch: develop
+    branch: main
     region: frankfurt
     plan: starter
     autoDeployTrigger: off

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   Archive,
   ArrowRight,
+  ExternalLink,
   FileClock,
   GitBranch,
   Quote,
@@ -108,9 +109,12 @@ export default async function DraftPage({
       ? "workspace-archived"
       : firstValue(query.status);
   const archived = detail.draft.status === "archived";
+  const liveProvenance = detail.provenance.filter(
+    (item) => item.attachmentId !== null && item.sourceId !== null,
+  );
 
   return (
-    <PageShell width="fluid" className="space-y-4">
+    <PageShell width="fluid" className="mx-auto max-w-[90rem] space-y-4">
       <DraftStatusNotice status={visibleStatus} />
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -148,6 +152,32 @@ export default async function DraftPage({
             {detail.draft.provenanceCount.toLocaleString("ar-IQ")} مرجع
           </span>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-line/70 bg-surface-sunken/55 px-4 py-3 text-sm leading-7 text-ink-muted">
+        حرر النص واحفظ نسخة جديدة عند كل تغيير مهم. يبقى المقترح منفصلاً عن
+        العمل المقبول حتى تختار تطبيقه، وتستطيع فتح المصدر المرتبط أثناء المراجعة.
+        {liveProvenance.length > 0 ? (
+          <span className="mt-2 flex flex-wrap gap-2">
+            {liveProvenance.slice(0, 3).map((item) => (
+              <Button
+                key={item.id}
+                asChild
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+              >
+                <Link
+                  href={`/workspaces/${workspace.id}/sources/${item.attachmentId}#source-${item.sourceId}`}
+                  aria-label={`فتح المصدر ${item.label} من ${item.fileNameSnapshot}`}
+                >
+                  فتح المصدر {item.label}
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </Button>
+            ))}
+          </span>
+        ) : null}
       </div>
 
       <ClientReadyBoundary name="draft-editor">

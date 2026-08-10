@@ -3,13 +3,13 @@
 import {
   useEffect,
   useId,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type FormEvent,
   type KeyboardEvent,
 } from "react";
-import { useRouter } from "next/navigation";
-import { useReducedMotion } from "motion/react";
 import {
   AlertTriangle,
   ArrowRight,
@@ -27,14 +27,16 @@ import {
 import type {
   Conversation,
   ConversationMessage,
+  ConversationMessagePage,
   ConversationStreamEvent,
   GroundingMode,
   MessageCitation,
 } from "@iraqi-ai/types";
 import {
-  conversationMessageSchema,
+  conversationMessagePageSchema,
   conversationStreamEventSchema,
 } from "@iraqi-ai/types";
+import { DraftFromConversationPanel } from "@/components/drafts/draft-from-conversation-panel";
 import { Button } from "@/components/ui/button";
 import { ActivityOrb } from "./activity-orb";
 import { CitationInspector } from "./citation-inspector";
@@ -44,7 +46,7 @@ import { MessageContent } from "./message-content";
 interface ConversationShellProps {
   workspaceId: string;
   conversation: Conversation;
-  initialMessages: ConversationMessage[];
+  initialPage: ConversationMessagePage;
   canWrite: boolean;
   readOnlyReason: "workspace-archived" | "membership";
 }
@@ -54,8 +56,16 @@ type Notice = {
   message: string;
 } | null;
 
+type PrependPosition = {
+  scrollHeight: number;
+  scrollTop: number;
+};
+
+const AUTO_SCROLL_THRESHOLD_PX = 120;
+const MESSAGE_PAGE_SIZE = 40;
+
 const statusLabels = {
-  pending: "بانتظار المزود",
+  pending: "جاري التحضير",
   streaming: "جاري الكتابة",
   complete: "مكتملة",
   failed: "فشلت",
@@ -227,6 +237,7 @@ function MessageBubble({
       <article
         className="mx-auto flex w-full max-w-4xl justify-end gap-3"
         data-message-id={message.id}
+        data-message-sequence={message.sequence}
       >
         <div className="max-w-[88%] rounded-2xl rounded-bl-md bg-primary px-4 py-3 text-primary-foreground shadow-surface-xs sm:max-w-[75%] sm:px-5 sm:py-4">
           <MessageContent content={message.content} />
@@ -248,6 +259,7 @@ function MessageBubble({
     <article
       className="mx-auto grid w-full max-w-4xl grid-cols-[auto_minmax(0,1fr)] gap-3"
       data-message-id={message.id}
+      data-message-sequence={message.sequence}
     >
       {isActive ? (
         <ActivityOrb state={activityState} size="sm" className="mt-1" />
@@ -341,14 +353,15 @@ function MessageBubble({
 export function ConversationShell({
   workspaceId,
   conversation,
-  initialMessages,
+  initialPage,
   canWrite,
   readOnlyReason,
 }: ConversationShellProps) {
-  const router = useRouter();
-  const shouldReduceMotion = useReducedMotion();
   const composerHintId = useId();
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState(initialPage.messages);
+  const [hasMore, setHasMore] = useState(initialPage.hasMore);
+  const [nextCursor, setNextCursor] = useState(initialPage.nextCursor);
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
   const [input, setInput] = useState("");
   const [groundingMode, setGroundingMode] = useState<GroundingMode>("off");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -357,24 +370,80 @@ export function ConversationShell({
   const [inspectedCitation, setInspectedCitation] =
     useState<MessageCitation | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
-  const endRef = useRef<HTMLDivElement | null>(null);
-  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const shouldAutoScrollRef = useRef(true);
+  const loadedOlderRef = useRef(false);
+  const prependPositionRef = useRef<PrependPosition | null>(null);
+  const pendingDeltasRef = useRef<Map<string, string>>(new Map());
+  const deltaFrameRef = useRef<number | null>(null);
+
+  const reusableMessages = useMemo(
+    () =>
+      messages
+        .filter(
+          (message) =>
+            message.role === "assistant" && message.status === "complete",
+        )
+        .map((message) => ({
+          id: message.id,
+          sequence: message.sequence,
+          content: message.content,
+          citationCount: message.citations.length,
+        })),
+    [messages],
+  );
+
+  const clearPendingDeltas = () => {
+    pendingDeltasRef.current.clear();
+    if (deltaFrameRef.current !== null) {
+      window.cancelAnimationFrame(deltaFrameRef.current);
+      deltaFrameRef.current = null;
+    }
+  };
+
+  const discardPendingDelta = (messageId: string) => {
+    pendingDeltasRef.current.delete(messageId);
+  };
+
+  const flushPendingDeltas = () => {
+    deltaFrameRef.current = null;
+    if (pendingDeltasRef.current.size === 0) return;
+
+    const pending = new Map(pendingDeltasRef.current);
+    pendingDeltasRef.current.clear();
+
+    setMessages((current) =>
+      current.map((message) => {
+        const delta = pending.get(message.id);
+        if (!delta) return message;
+
+        return {
+          ...message,
+          status: "streaming",
+          content: `${message.content}${delta}`,
+        };
+      }),
+    );
+  };
+
+  const queueDelta = (messageId: string, delta: string) => {
+    pendingDeltasRef.current.set(
+      messageId,
+      `${pendingDeltasRef.current.get(messageId) ?? ""}${delta}`,
+    );
+
+    if (deltaFrameRef.current === null) {
+      deltaFrameRef.current = window.requestAnimationFrame(flushPendingDeltas);
+    }
+  };
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      endRef.current?.scrollIntoView({ block: "end" });
-    });
-    return () => window.cancelAnimationFrame(frame);
+    return () => {
+      clearPendingDeltas();
+      controllerRef.current?.abort();
+    };
   }, []);
-
-  useEffect(() => {
-    if (!isNearBottom) return;
-    endRef.current?.scrollIntoView({
-      behavior: shouldReduceMotion ? "auto" : "smooth",
-      block: "end",
-    });
-  }, [isNearBottom, messages, shouldReduceMotion]);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -383,32 +452,114 @@ export function ConversationShell({
     textarea.style.height = `${Math.min(textarea.scrollHeight, 208)}px`;
   }, [input]);
 
-  const refreshMessages = async () => {
+  const updateAutoScrollPreference = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const distanceFromBottom =
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    const nearBottom = distanceFromBottom <= AUTO_SCROLL_THRESHOLD_PX;
+    shouldAutoScrollRef.current = nearBottom;
+    setIsNearBottom(nearBottom);
+  };
+
+  useLayoutEffect(() => {
+    const position = prependPositionRef.current;
+    const viewport = viewportRef.current;
+    if (!position || !viewport) return;
+
+    viewport.scrollTop =
+      position.scrollTop + (viewport.scrollHeight - position.scrollHeight);
+    prependPositionRef.current = null;
+  }, [messages]);
+
+  useEffect(() => {
+    if (!shouldAutoScrollRef.current) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      viewport.scrollTo({ top: viewport.scrollHeight, behavior: "auto" });
+      setIsNearBottom(true);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages]);
+
+  const fetchMessagePage = async (before?: number) => {
+    const query = new URLSearchParams({ limit: String(MESSAGE_PAGE_SIZE) });
+    if (before !== undefined) query.set("before", String(before));
+
     const response = await fetch(
-      `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}`,
+      `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}/messages?${query.toString()}`,
       { cache: "no-store" },
     );
     const payload = (await response.json()) as {
       ok?: boolean;
-      data?: { messages?: unknown };
+      data?: { page?: unknown };
       error?: { message?: string };
     };
 
-    if (!response.ok || !payload.ok) {
+    if (!response.ok || payload.ok !== true) {
       throw new Error(
-        payload.error?.message || "Conversation history could not be refreshed.",
+        payload.error?.message || "Conversation history could not be loaded.",
       );
     }
 
-    const parsed = conversationMessageSchema.array().safeParse(
-      payload.data?.messages,
-    );
+    const parsed = conversationMessagePageSchema.safeParse(payload.data?.page);
     if (!parsed.success) {
-      throw new Error("Conversation history returned an invalid shape.");
+      throw new Error("Conversation history returned an invalid page.");
     }
 
-    setMessages(parsed.data);
-    router.refresh();
+    return parsed.data;
+  };
+
+  const loadOlderMessages = async () => {
+    if (!hasMore || nextCursor === null || isLoadingOlder) return;
+
+    const viewport = viewportRef.current;
+    const position = viewport
+      ? {
+          scrollHeight: viewport.scrollHeight,
+          scrollTop: viewport.scrollTop,
+        }
+      : null;
+
+    setIsLoadingOlder(true);
+    setNotice(null);
+
+    try {
+      const page = await fetchMessagePage(nextCursor);
+      shouldAutoScrollRef.current = false;
+      setIsNearBottom(false);
+      loadedOlderRef.current = true;
+      prependPositionRef.current = position;
+      setMessages((current) => mergeMessages(current, page.messages));
+      setHasMore(page.hasMore);
+      setNextCursor(page.nextCursor);
+    } catch (error) {
+      prependPositionRef.current = null;
+      setNotice({
+        tone: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "تعذر تحميل الرسائل الأقدم.",
+      });
+    } finally {
+      setIsLoadingOlder(false);
+    }
+  };
+
+  const refreshMessages = async () => {
+    const page = await fetchMessagePage();
+    clearPendingDeltas();
+    setMessages((current) => mergeMessages(current, page.messages));
+
+    if (!loadedOlderRef.current) {
+      setHasMore(page.hasMore);
+      setNextCursor(page.nextCursor);
+    }
   };
 
   const startTurn = async (command: {
@@ -419,10 +570,12 @@ export function ConversationShell({
 
     const controller = new AbortController();
     controllerRef.current = controller;
+    shouldAutoScrollRef.current = true;
     setIsNearBottom(true);
     setIsStreaming(true);
     setNotice(null);
     let readyReceived = false;
+    let terminalReceived = false;
 
     try {
       const response = await fetch(
@@ -461,21 +614,13 @@ export function ConversationShell({
         }
 
         if (event.type === "delta") {
-          setMessages((current) =>
-            current.map((message) =>
-              message.id === event.messageId
-                ? {
-                    ...message,
-                    status: "streaming",
-                    content: `${message.content}${event.delta}`,
-                  }
-                : message,
-            ),
-          );
+          queueDelta(event.messageId, event.delta);
           return;
         }
 
         if (event.type === "complete") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
@@ -488,6 +633,8 @@ export function ConversationShell({
         }
 
         if (event.type === "failed") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "error",
@@ -497,6 +644,8 @@ export function ConversationShell({
         }
 
         if (event.type === "cancelled") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
@@ -505,9 +654,12 @@ export function ConversationShell({
         }
       });
 
-      await refreshMessages();
+      if (readyReceived && !terminalReceived) {
+        await refreshMessages();
+      }
     } catch (error) {
       if (controller.signal.aborted) {
+        clearPendingDeltas();
         await new Promise((resolve) => setTimeout(resolve, 250));
         try {
           await refreshMessages();
@@ -527,7 +679,7 @@ export function ConversationShell({
               : "تعذر بدء الاستجابة / Generation could not start.",
         });
 
-        if (readyReceived) {
+        if (readyReceived && !terminalReceived) {
           try {
             await refreshMessages();
           } catch {
@@ -557,19 +709,12 @@ export function ConversationShell({
     }
   };
 
-  const handleScroll = () => {
-    const element = scrollAreaRef.current;
-    if (!element) return;
-    const distance = element.scrollHeight - element.scrollTop - element.clientHeight;
-    setIsNearBottom(distance < 120);
-  };
-
   const scrollToLatest = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    shouldAutoScrollRef.current = true;
     setIsNearBottom(true);
-    endRef.current?.scrollIntoView({
-      behavior: shouldReduceMotion ? "auto" : "smooth",
-      block: "end",
-    });
+    viewport.scrollTo({ top: viewport.scrollHeight, behavior: "auto" });
   };
 
   const prompts = [
@@ -581,211 +726,246 @@ export function ConversationShell({
   const readOnlyMessage =
     readOnlyReason === "workspace-archived"
       ? "مساحة العمل مؤرشفة. يمكنك مراجعة السجل، لكن يجب استعادة المساحة قبل إرسال رسالة أو إعادة محاولة."
-      : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وحالة التوليد من دون إرسال أو إعادة محاولة.";
+      : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وتفاصيل الإجابات من دون إرسال أو إعادة محاولة.";
 
   const streamingState =
     groundingMode === "workspace_sources" ? "searching" : "composing";
 
   return (
-    <section className="relative flex min-h-0 flex-1 flex-col bg-surface">
-      <div
-        ref={scrollAreaRef}
-        onScroll={handleScroll}
-        className="min-h-0 flex-1 overflow-y-auto px-3 py-6 sm:px-6 lg:px-8"
-        aria-label="رسائل المحادثة"
-      >
-        {messages.length === 0 ? (
-          <div className="flex min-h-full flex-col items-center justify-center px-4 py-12 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-brand-soft text-primary shadow-surface-xs">
-              <Sparkles className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
-              ابدأ من سؤال واحد
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-8 text-ink-muted">
-              اكتب بالعربية أو English. فعّل المصادر فقط عندما تريد إجابة تعتمد
-              على المقاطع المحفوظة وتعرض مراجع يمكن فتحها هنا.
-            </p>
-            {canWrite ? (
-              <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
-                {prompts.map((prompt) => (
-                  <button
-                    key={prompt}
-                    type="button"
-                    dir="auto"
-                    className="min-h-11 rounded-xl border border-line/80 bg-surface-raised px-4 py-2 text-sm text-ink-muted outline-none transition-[border-color,background-color,color,box-shadow] duration-fast hover:border-primary/25 hover:bg-brand-soft/45 hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/20"
-                    onClick={() => {
-                      setInput(prompt);
-                      textareaRef.current?.focus();
-                    }}
-                  >
-                    {prompt}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="space-y-8 pb-4">
-            {messages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                workspaceId={workspaceId}
-                message={message}
-                canRetry={
-                  canWrite &&
-                  message.role === "assistant" &&
-                  (message.status === "failed" ||
-                    message.status === "cancelled")
-                }
-                retryDisabled={isStreaming}
-                onInspectCitation={setInspectedCitation}
-                onRetry={(messageId) =>
-                  void startTurn({ retryMessageId: messageId })
-                }
-              />
-            ))}
-            <div ref={endRef} />
-          </div>
-        )}
-      </div>
-
-      {!isNearBottom ? (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="absolute bottom-36 left-1/2 z-10 -translate-x-1/2 rounded-full bg-surface-overlay shadow-surface-md backdrop-blur"
-          onClick={scrollToLatest}
+    <>
+      <section className="relative flex min-h-0 flex-1 flex-col bg-surface">
+        <div
+          ref={viewportRef}
+          data-testid="conversation-viewport"
+          onScroll={updateAutoScrollPreference}
+          className="min-h-0 flex-1 overflow-y-auto px-3 py-6 sm:px-6 lg:px-8"
+          aria-label="رسائل المحادثة"
         >
-          آخر الرسائل
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-        </Button>
-      ) : null}
-
-      <div className="border-t border-line/75 bg-surface-overlay/92 p-3 backdrop-blur-xl sm:p-4">
-        {notice ? (
-          <div
-            className={`mb-3 rounded-xl border px-3 py-2 text-xs leading-6 ${
-              notice.tone === "error"
-                ? "border-destructive/30 bg-destructive/10 text-destructive"
-                : "border-line bg-surface-sunken text-ink-muted"
-            }`}
-            role={notice.tone === "error" ? "alert" : "status"}
-            aria-live={notice.tone === "error" ? "assertive" : "polite"}
-          >
-            {notice.message}
-          </div>
-        ) : null}
-
-        {isStreaming ? (
-          <div className="mb-3 flex items-center gap-3 rounded-xl bg-brand-soft/55 px-3 py-2 text-xs text-ink-muted">
-            <ActivityOrb state={streamingState} size="sm" />
-            <span>
-              {streamingState === "searching"
-                ? "يبحث في مصادر مساحة العمل ثم ينشئ الإجابة."
-                : "ينشئ الاستجابة ويحفظ تقدمها في السجل."}
-            </span>
-          </div>
-        ) : null}
-
-        {canWrite && conversation.status === "active" ? (
-          <form onSubmit={submit}>
-            <div className="overflow-hidden rounded-2xl border border-line-strong/80 bg-surface-raised shadow-surface-sm transition-[border-color,box-shadow] duration-fast focus-within:border-primary/45 focus-within:shadow-surface-md">
-              <label htmlFor="conversation-message" className="sr-only">
-                اكتب رسالة
-              </label>
-              <textarea
-                ref={textareaRef}
-                id="conversation-message"
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={handleKeyDown}
-                maxLength={20000}
-                rows={1}
-                dir="auto"
-                disabled={isStreaming}
-                placeholder="اكتب بالعربية أو English…"
-                aria-describedby={composerHintId}
-                className="max-h-52 min-h-20 w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-7 outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-70 sm:px-5 sm:py-4"
-              />
-
-              <div className="flex flex-wrap items-center gap-2 border-t border-line/70 bg-surface-sunken/45 px-2.5 py-2 sm:px-3">
-                <button
-                  type="button"
-                  aria-pressed={groundingMode === "workspace_sources"}
-                  disabled={isStreaming}
-                  onClick={() =>
-                    setGroundingMode((current) =>
-                      current === "workspace_sources"
-                        ? "off"
-                        : "workspace_sources",
-                    )
-                  }
-                  className={`inline-flex min-h-9 items-center gap-2 rounded-lg border px-3 text-xs font-semibold outline-none transition-[border-color,background-color,color] duration-fast focus-visible:ring-4 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60 ${
-                    groundingMode === "workspace_sources"
-                      ? "border-primary/30 bg-brand-soft text-primary"
-                      : "border-line/80 bg-surface-raised text-ink-muted hover:text-foreground"
-                  }`}
-                >
-                  <FileSearch className="h-3.5 w-3.5" aria-hidden="true" />
-                  مصادر المساحة
-                </button>
-
-                <span className="me-auto text-[0.68rem] text-ink-subtle">
-                  {formatNumber(input.length)} / ٢٠٬٠٠٠
-                </span>
-
-                {isStreaming ? (
+          {messages.length === 0 ? (
+            <div className="flex min-h-full flex-col items-center justify-center px-4 py-12 text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-brand-soft text-primary shadow-surface-xs">
+                <Sparkles className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
+                ابدأ محادثتك
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-8 text-ink-muted">
+                اكتب بالعربية أو English. فعّل المصادر فقط عندما تريد إجابة تعتمد
+                على المقاطع المحفوظة وتعرض مراجع يمكن فتحها هنا.
+              </p>
+              {canWrite ? (
+                <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+                  {prompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      dir="auto"
+                      className="min-h-11 rounded-xl border border-line/80 bg-surface-raised px-4 py-2 text-sm text-ink-muted outline-none transition-[border-color,background-color,color,box-shadow] duration-fast hover:border-primary/25 hover:bg-brand-soft/45 hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/20"
+                      onClick={() => {
+                        setInput(prompt);
+                        textareaRef.current?.focus();
+                      }}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <div className="space-y-8 pb-4">
+              {hasMore ? (
+                <div className="flex justify-center">
                   <Button
                     type="button"
-                    variant="destructive"
-                    className="rounded-xl"
+                    variant="outline"
+                    className="rounded-full"
+                    disabled={isLoadingOlder}
+                    onClick={() => void loadOlderMessages()}
+                  >
+                    {isLoadingOlder ? (
+                      <ActivityOrb state="working" size="sm" />
+                    ) : (
+                      <Clock3 className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    {isLoadingOlder ? "جاري التحميل…" : "تحميل رسائل أقدم"}
+                  </Button>
+                </div>
+              ) : null}
+
+              {messages.map((message) => (
+                <MessageBubble
+                  key={message.id}
+                  workspaceId={workspaceId}
+                  message={message}
+                  canRetry={
+                    canWrite &&
+                    message.role === "assistant" &&
+                    (message.status === "failed" ||
+                      message.status === "cancelled")
+                  }
+                  retryDisabled={isStreaming}
+                  onInspectCitation={setInspectedCitation}
+                  onRetry={(messageId) =>
+                    void startTurn({ retryMessageId: messageId })
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {!isNearBottom ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="absolute bottom-36 left-1/2 z-10 -translate-x-1/2 rounded-full bg-surface-overlay shadow-surface-md backdrop-blur"
+            onClick={scrollToLatest}
+          >
+            آخر الرسائل
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Button>
+        ) : null}
+
+        <div className="border-t border-line/75 bg-surface-overlay/92 p-3 backdrop-blur-xl sm:p-4">
+          {notice ? (
+            <div
+              className={`mb-3 rounded-xl border px-3 py-2 text-xs leading-6 ${
+                notice.tone === "error"
+                  ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : "border-line bg-surface-sunken text-ink-muted"
+              }`}
+              role={notice.tone === "error" ? "alert" : "status"}
+              aria-live={notice.tone === "error" ? "assertive" : "polite"}
+            >
+              {notice.message}
+            </div>
+          ) : null}
+
+          {isStreaming ? (
+            <div className="mb-3 flex items-center gap-3 rounded-xl bg-brand-soft/55 px-3 py-2 text-xs text-ink-muted">
+              <ActivityOrb state={streamingState} size="sm" />
+              <span>
+                {streamingState === "searching"
+                  ? "يبحث في مصادر مساحة العمل ثم ينشئ الإجابة."
+                  : "ينشئ الاستجابة ويحفظ تقدمها في السجل."}
+              </span>
+            </div>
+          ) : null}
+
+          {canWrite && conversation.status === "active" ? (
+            <form onSubmit={submit}>
+              <div className="overflow-hidden rounded-2xl border border-line-strong/80 bg-surface-raised shadow-surface-sm transition-[border-color,box-shadow] duration-fast focus-within:border-primary/45 focus-within:shadow-surface-md">
+                <label htmlFor="conversation-message" className="sr-only">
+                  اكتب رسالة
+                </label>
+                <textarea
+                  ref={textareaRef}
+                  id="conversation-message"
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={20000}
+                  rows={1}
+                  dir="auto"
+                  disabled={isStreaming}
+                  placeholder="اكتب بالعربية أو English…"
+                  aria-describedby={composerHintId}
+                  className="max-h-52 min-h-20 w-full resize-none border-0 bg-transparent px-4 py-3 text-sm leading-7 outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-70 sm:px-5 sm:py-4"
+                />
+
+                <div className="flex flex-wrap items-center gap-2 border-t border-line/70 bg-surface-sunken/45 px-2.5 py-2 sm:px-3">
+                  <button
+                    type="button"
+                    aria-label="استخدام مصادر مساحة العمل"
+                    aria-pressed={groundingMode === "workspace_sources"}
+                    disabled={isStreaming}
                     onClick={() =>
-                      controllerRef.current?.abort(
-                        new DOMException("Cancelled by user", "AbortError"),
+                      setGroundingMode((current) =>
+                        current === "workspace_sources"
+                          ? "off"
+                          : "workspace_sources",
                       )
                     }
+                    className={`inline-flex min-h-9 items-center gap-2 rounded-lg border px-3 text-xs font-semibold outline-none transition-[border-color,background-color,color] duration-fast focus-visible:ring-4 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:opacity-60 ${
+                      groundingMode === "workspace_sources"
+                        ? "border-primary/30 bg-brand-soft text-primary"
+                        : "border-line/80 bg-surface-raised text-ink-muted hover:text-foreground"
+                    }`}
                   >
-                    <Square className="h-4 w-4" aria-hidden="true" />
-                    إيقاف
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    className="rounded-xl"
-                    disabled={!input.trim()}
-                  >
-                    <Send className="h-4 w-4" aria-hidden="true" />
-                    إرسال
-                  </Button>
-                )}
+                    <FileSearch className="h-3.5 w-3.5" aria-hidden="true" />
+                    مصادر المساحة
+                  </button>
+
+                  <span className="me-auto text-[0.68rem] text-ink-subtle">
+                    {formatNumber(input.length)} / ٢٠٬٠٠٠
+                  </span>
+
+                  {isStreaming ? (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      className="rounded-xl"
+                      onClick={() =>
+                        controllerRef.current?.abort(
+                          new DOMException("Cancelled by user", "AbortError"),
+                        )
+                      }
+                    >
+                      <Square className="h-4 w-4" aria-hidden="true" />
+                      إيقاف
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      className="rounded-xl"
+                      disabled={!input.trim()}
+                    >
+                      <Send className="h-4 w-4" aria-hidden="true" />
+                      إرسال
+                    </Button>
+                  )}
+                </div>
               </div>
+              <p
+                id={composerHintId}
+                className="mt-2 px-1 text-[0.68rem] leading-5 text-ink-subtle"
+              >
+                Enter للإرسال · Shift+Enter لسطر جديد ·
+                {groundingMode === "workspace_sources"
+                  ? " الإجابة المكتملة تتطلب مرجعاً صالحاً من هذه المساحة."
+                  : " الاستمرارية تُعاد من الرسائل المحفوظة فقط."}
+              </p>
+            </form>
+          ) : (
+            <div className="rounded-xl bg-surface-sunken px-4 py-3 text-sm leading-7 text-ink-muted">
+              {conversation.status === "archived"
+                ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
+                : readOnlyMessage}
             </div>
-            <p
-              id={composerHintId}
-              className="mt-2 px-1 text-[0.68rem] leading-5 text-ink-subtle"
-            >
-              Enter للإرسال · Shift+Enter لسطر جديد ·
-              {groundingMode === "workspace_sources"
-                ? " الإجابة المكتملة تتطلب مرجعاً صالحاً من هذه المساحة."
-                : " الاستمرارية تُعاد من الرسائل المحفوظة فقط."}
-            </p>
-          </form>
-        ) : (
-          <div className="rounded-xl bg-surface-sunken px-4 py-3 text-sm leading-7 text-ink-muted">
-            {conversation.status === "archived"
-              ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
-              : readOnlyMessage}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </section>
+
+      <details className="rounded-2xl border border-line/75 bg-surface-raised xl:hidden">
+        <summary className="min-h-11 cursor-pointer px-4 py-3 text-sm font-semibold">
+          تحويل إجابة محفوظة إلى مسودة
+        </summary>
+        <DraftFromConversationPanel
+          workspaceId={workspaceId}
+          conversationId={conversation.id}
+          messages={reusableMessages}
+          canWrite={canWrite}
+          compact
+        />
+      </details>
 
       <CitationInspector
         workspaceId={workspaceId}
         citation={inspectedCitation}
         onClose={() => setInspectedCitation(null)}
       />
-    </section>
+    </>
   );
 }

@@ -88,8 +88,8 @@ export default async function WorkspacesPage({
             مساحاتك المحفوظة
           </span>
         }
-        title="مساحات العمل"
-        description="نظّم كل موضوع في مساحة مستقلة، ثم ارجع إلى محادثاته ومصادره ومسوداته من نقطة واحدة واضحة."
+        title="مساحاتك، في مكان واحد"
+        description="اجمع محادثاتك ومصادرك ومسوداتك داخل مساحة مستقلة لكل موضوع، وارجع إلى آخر ما عملت عليه من نقطة واحدة واضحة."
         actions={
           <Button asChild variant="outline" size="lg" className="rounded-full">
             <Link href="/workspaces/archived">
@@ -199,8 +199,7 @@ export default async function WorkspacesPage({
                 aria-hidden="true"
               />
               <p>
-                تُنشأ عضوية المالك تلقائياً من حسابك الموثّق، وتبقى المساحة
-                مرتبطة بصلاحيات أعضائها.
+                تبقى المساحة خاصة بحسابك، ولا يراها إلا من تمنحه وصولاً إليها.
               </p>
             </div>
           </Surface>
