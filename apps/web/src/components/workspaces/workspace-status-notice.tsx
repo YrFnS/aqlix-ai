@@ -1,4 +1,4 @@
-import { CircleCheck, Info, TriangleAlert } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { Surface } from "@/components/ui/surface";
 
 const statusMessages: Record<
@@ -70,8 +70,8 @@ const toneIconClasses = {
 } as const;
 
 const toneIcons = {
-  error: TriangleAlert,
-  success: CircleCheck,
+  error: AlertTriangle,
+  success: CheckCircle2,
   info: Info,
 } as const;
 
