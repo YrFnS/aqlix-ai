@@ -208,7 +208,6 @@ export function DraftFromConversationPanel({
       }
 
       router.push(`/workspaces/${workspaceId}/drafts/${draftId}?status=created`);
-      router.refresh();
     } catch (creationError) {
       setError(
         creationError instanceof Error
@@ -278,7 +277,11 @@ export function DraftFromConversationPanel({
           onClick={() => void createDraft()}
         >
           {isCreating ? (
-            <ActivityOrb state="shaping" size="sm" className="border-white/20 bg-white/10" />
+            <ActivityOrb
+              state="shaping"
+              size="sm"
+              className="border-white/20 bg-white/10"
+            />
           ) : (
             <FilePlus2 className="h-4 w-4" aria-hidden="true" />
           )}
