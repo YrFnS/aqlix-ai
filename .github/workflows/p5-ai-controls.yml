@@ -1,0 +1,105 @@
+name: P5 AI Resource Controls
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_APP_ENV: "development"
+  APP_ENV: "test"
+  AI_PROVIDER: "fixture"
+  P2_ALLOW_FIXTURE_PROVIDER: "true"
+
+jobs:
+  ai-controls:
+    name: PostgreSQL Budgets Concurrency & Lease Recovery
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Start canonical local Supabase migration chain
+        run: bunx supabase start
+
+      - name: Export local database connection
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          if [[ -z "${DB_URL:-}" ]]; then
+            echo "Local Supabase did not expose DB_URL"
+            exit 1
+          fi
+
+          echo "P5_TEST_DB_URL=$DB_URL" >> "$GITHUB_ENV"
+
+      - name: Build shared contracts
+        run: bun run build:packages
+
+      - name: Validate static AI control boundaries
+        run: |
+          bun test packages/types/src/contracts/ai-controls.test.ts
+          bun test apps/web/tests/rebuild/p5-ai-controls-boundary.test.ts
+
+      - name: Verify quotas concurrency settlement and expiry recovery
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$P5_TEST_DB_URL" \
+            -v ON_ERROR_STOP=1 \
+            -f supabase/tests/p5_ai_generation_controls.test.sql \
+            | tee p5-ai-controls.log
+
+      - name: Upload non-secret control evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-ai-resource-controls-evidence
+          path: p5-ai-controls.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  controls-success:
+    name: P5 AI Resource Controls Success Gate
+    runs-on: ubuntu-latest
+    needs: [ai-controls]
+    if: always()
+
+    steps:
+      - name: Check AI resource controls
+        run: |
+          if [[ "${{ needs.ai-controls.result }}" != "success" ]]; then
+            echo "P5 request, token, concurrency, settlement, expiry, or role control validation failed"
+            exit 1
+          fi
+
+          echo "P5 owner limits, viewer visibility, editor permits, daily request/input/output ceilings, concurrency denial, atomic terminal settlement, expired-lease recovery, draft parity, archive guards, and outsider isolation passed."
