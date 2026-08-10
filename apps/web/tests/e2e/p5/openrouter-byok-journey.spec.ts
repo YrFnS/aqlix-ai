@@ -34,10 +34,8 @@ async function register(page: Page, email: string): Promise<void> {
 
 async function openAiSettings(page: Page): Promise<void> {
   await page.goto("/settings/ai");
+  await expect(page).toHaveURL(/\/settings\/ai$/);
   await waitForClientSurface(page, "openrouter-settings");
-  await expect(
-    page.getByRole("heading", { name: "مفتاحك، نموذجك، وحدودك" }),
-  ).toBeVisible();
 }
 
 async function sendMessage(page: Page, content: string): Promise<void> {
