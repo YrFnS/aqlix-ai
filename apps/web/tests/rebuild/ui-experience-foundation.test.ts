@@ -40,22 +40,30 @@ describe("UI experience P0 foundation", () => {
     expect(tailwind).toContain('"var(--font-noto-sans-arabic)"');
   });
 
-  test("uses the current Motion package without legacy imports", () => {
+  test("uses the current Motion package without legacy direct imports", () => {
     const provider = readSource("src/components/providers/MotionProvider.tsx");
     const primitives = readSource(
       "src/components/motion/motion-primitives.tsx",
     );
+    const languageSwitcher = readSource(
+      "src/components/language/LanguageSwitcher.tsx",
+    );
     const motion = readSource("src/lib/motion.ts");
     const webPackage = readSource("package.json");
     const sharedUiPackage = readRepoSource("packages/ui/package.json");
+    const lockfile = readRepoSource("bun.lock");
 
     expect(provider).toContain('from "motion/react"');
     expect(primitives).toContain('from "motion/react"');
+    expect(languageSwitcher).toContain('from "motion/react"');
     expect(motion).toContain('from "motion/react"');
+    expect(languageSwitcher).not.toContain('from "framer-motion"');
     expect(webPackage).toContain('"motion": "12.43.0"');
     expect(sharedUiPackage).toContain('"motion": "12.43.0"');
     expect(webPackage).not.toContain('"framer-motion"');
     expect(sharedUiPackage).not.toContain('"framer-motion"');
+    expect(lockfile).toContain('"motion": ["motion@12.43.0"');
+    expect(lockfile).not.toContain('framer-motion@10.18.0');
   });
 
   test("shares restrained motion defaults and respects user preferences", () => {
