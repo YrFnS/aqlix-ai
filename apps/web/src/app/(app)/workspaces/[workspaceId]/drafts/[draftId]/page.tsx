@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import {
   Archive,
   ArrowRight,
+  ExternalLink,
   FileClock,
   GitBranch,
   Quote,
@@ -24,7 +25,8 @@ import {
 
 export const metadata: Metadata = {
   title: "مسودة",
-  description: "Editable durable draft with versions, provenance, and proposals.",
+  description:
+    "حرر مسودتك، راجع نسخها ومصادرها، ثم صدّرها عندما تصبح جاهزة.",
 };
 
 type PageParams = Promise<{ workspaceId: string; draftId: string }>;
@@ -161,27 +163,49 @@ export default async function DraftPage({
               {detail.draft.title}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
-              مسودة مقبولة ذات تاريخ غير قابل لإعادة الكتابة. كل حفظ أو تطبيق
-              اقتراح يضيف إصداراً جديداً، والمراجع الأصلية تبقى قابلة للفحص حتى
-              بعد حذف المصدر.
+              حرر النص واحفظ نسخة جديدة عند كل تغيير مهم. يمكنك الرجوع إلى النسخ
+              السابقة وفتح المصادر المرتبطة ثم تصدير النتيجة عندما تصبح جاهزة.
             </p>
+
+            {detail.provenance.some(
+              (item) => item.attachmentId !== null && item.sourceId !== null,
+            ) && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {detail.provenance.slice(0, 3).map((item) =>
+                  item.attachmentId && item.sourceId ? (
+                    <Link
+                      key={item.id}
+                      href={`/workspaces/${workspace.id}/sources/${item.attachmentId}#source-${item.sourceId}`}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-background/20 bg-background/10 px-4 text-xs font-semibold text-background transition-colors hover:bg-background/15"
+                      aria-label={`فتح المصدر ${item.label} من ${item.fileNameSnapshot}`}
+                    >
+                      فتح المصدر {item.label}
+                      <span dir="auto" className="max-w-48 truncate text-background/65">
+                        {item.fileNameSnapshot}
+                      </span>
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  ) : null,
+                )}
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
             <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-3">
               <GitBranch className="mx-auto h-4 w-4" aria-hidden="true" />
               <p className="mt-2 font-semibold">{detail.draft.versionCount}</p>
-              <p className="mt-1 text-background/55">إصدارات</p>
+              <p className="mt-1 text-background/55">نسخ محفوظة</p>
             </div>
             <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-3">
               <Quote className="mx-auto h-4 w-4" aria-hidden="true" />
               <p className="mt-2 font-semibold">{detail.draft.provenanceCount}</p>
-              <p className="mt-1 text-background/55">مراجع</p>
+              <p className="mt-1 text-background/55">مصادر</p>
             </div>
             <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-3">
               <ShieldCheck className="mx-auto h-4 w-4" aria-hidden="true" />
-              <p className="mt-2 font-semibold">RLS</p>
-              <p className="mt-1 text-background/55">معزولة</p>
+              <p className="mt-2 font-semibold">خاص</p>
+              <p className="mt-1 text-background/55">بالمساحة</p>
             </div>
           </div>
         </div>
