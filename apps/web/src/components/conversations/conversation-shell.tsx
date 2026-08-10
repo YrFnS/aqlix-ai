@@ -7,7 +7,6 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from "react";
-import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   Bot,
@@ -50,12 +49,14 @@ type Notice = {
 } | null;
 
 const statusLabels = {
-  pending: "بانتظار المزود",
+  pending: "قيد البدء",
   streaming: "جاري الكتابة",
   complete: "مكتملة",
   failed: "فشلت",
   cancelled: "أُلغيت",
 } as const;
+
+const AUTO_SCROLL_THRESHOLD_PX = 120;
 
 function mergeMessages(
   current: ConversationMessage[],
@@ -286,17 +287,88 @@ export function ConversationShell({
   canWrite,
   readOnlyReason,
 }: ConversationShellProps) {
-  const router = useRouter();
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState("");
   const [groundingMode, setGroundingMode] = useState<GroundingMode>("off");
   const [isStreaming, setIsStreaming] = useState(false);
   const [notice, setNotice] = useState<Notice>(null);
   const controllerRef = useRef<AbortController | null>(null);
-  const endRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const shouldAutoScrollRef = useRef(true);
+  const pendingDeltasRef = useRef<Map<string, string>>(new Map());
+  const deltaFrameRef = useRef<number | null>(null);
+
+  const clearPendingDeltas = () => {
+    pendingDeltasRef.current.clear();
+    if (deltaFrameRef.current !== null) {
+      window.cancelAnimationFrame(deltaFrameRef.current);
+      deltaFrameRef.current = null;
+    }
+  };
+
+  const discardPendingDelta = (messageId: string) => {
+    pendingDeltasRef.current.delete(messageId);
+  };
+
+  const flushPendingDeltas = () => {
+    deltaFrameRef.current = null;
+    if (pendingDeltasRef.current.size === 0) return;
+
+    const pending = new Map(pendingDeltasRef.current);
+    pendingDeltasRef.current.clear();
+
+    setMessages((current) =>
+      current.map((message) => {
+        const delta = pending.get(message.id);
+        if (!delta) return message;
+
+        return {
+          ...message,
+          status: "streaming",
+          content: `${message.content}${delta}`,
+        };
+      }),
+    );
+  };
+
+  const queueDelta = (messageId: string, delta: string) => {
+    pendingDeltasRef.current.set(
+      messageId,
+      `${pendingDeltasRef.current.get(messageId) ?? ""}${delta}`,
+    );
+
+    if (deltaFrameRef.current === null) {
+      deltaFrameRef.current = window.requestAnimationFrame(flushPendingDeltas);
+    }
+  };
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    return () => {
+      clearPendingDeltas();
+      controllerRef.current?.abort();
+    };
+  }, []);
+
+  const updateAutoScrollPreference = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const distanceFromBottom =
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    shouldAutoScrollRef.current =
+      distanceFromBottom <= AUTO_SCROLL_THRESHOLD_PX;
+  };
+
+  useEffect(() => {
+    if (!shouldAutoScrollRef.current) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      viewport.scrollTo({ top: viewport.scrollHeight, behavior: "auto" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [messages]);
 
   const refreshMessages = async () => {
@@ -323,8 +395,8 @@ export function ConversationShell({
       throw new Error("Conversation history returned an invalid shape.");
     }
 
+    clearPendingDeltas();
     setMessages(parsed.data);
-    router.refresh();
   };
 
   const startTurn = async (command: {
@@ -335,9 +407,11 @@ export function ConversationShell({
 
     const controller = new AbortController();
     controllerRef.current = controller;
+    shouldAutoScrollRef.current = true;
     setIsStreaming(true);
     setNotice(null);
     let readyReceived = false;
+    let terminalReceived = false;
 
     try {
       const response = await fetch(
@@ -376,54 +450,52 @@ export function ConversationShell({
         }
 
         if (event.type === "delta") {
-          setMessages((current) =>
-            current.map((message) =>
-              message.id === event.messageId
-                ? {
-                    ...message,
-                    status: "streaming",
-                    content: `${message.content}${event.delta}`,
-                  }
-                : message,
-            ),
-          );
+          queueDelta(event.messageId, event.delta);
           return;
         }
 
         if (event.type === "complete") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
             message:
               event.message.citations.length > 0
-                ? "تم حفظ الاستجابة والمراجع القابلة للفتح / Response and inspectable citations saved."
-                : "تم حفظ الاستجابة والمحادثة / Response and conversation saved.",
+                ? "تم حفظ الاستجابة والمراجع القابلة للفتح."
+                : "تم حفظ الاستجابة والمحادثة.",
           });
           return;
         }
 
         if (event.type === "failed") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "error",
-            message: `تعذر إكمال الاستجابة / Generation failed: ${event.code}`,
+            message: `تعذر إكمال الاستجابة: ${event.code}`,
           });
           return;
         }
 
         if (event.type === "cancelled") {
+          terminalReceived = true;
+          discardPendingDelta(event.message.id);
           setMessages((current) => replaceMessage(current, event.message));
           setNotice({
             tone: "info",
-            message:
-              "تم إيقاف الاستجابة وحفظ النص الجزئي / Generation stopped and partial text saved.",
+            message: "تم إيقاف الاستجابة وحفظ النص المكتوب حتى الآن.",
           });
         }
       });
 
-      await refreshMessages();
+      if (readyReceived && !terminalReceived) {
+        await refreshMessages();
+      }
     } catch (error) {
       if (controller.signal.aborted) {
+        clearPendingDeltas();
         await new Promise((resolve) => setTimeout(resolve, 250));
         try {
           await refreshMessages();
@@ -431,7 +503,7 @@ export function ConversationShell({
           setNotice({
             tone: "error",
             message:
-              "أُوقفت الاستجابة، لكن تعذر تحديث الحالة المحفوظة / Generation stopped, but the saved state could not be refreshed.",
+              "أُوقفت الاستجابة، لكن تعذر تحديث حالتها المحفوظة. أعد تحميل الصفحة للتحقق.",
           });
         }
       } else {
@@ -440,10 +512,10 @@ export function ConversationShell({
           message:
             error instanceof Error
               ? error.message
-              : "تعذر بدء الاستجابة / Generation could not start.",
+              : "تعذر بدء الاستجابة.",
         });
 
-        if (readyReceived) {
+        if (readyReceived && !terminalReceived) {
           try {
             await refreshMessages();
           } catch {
@@ -481,22 +553,26 @@ export function ConversationShell({
   const readOnlyMessage =
     readOnlyReason === "workspace-archived"
       ? "مساحة العمل مؤرشفة. يمكنك مراجعة السجل، لكن يجب استعادة المساحة قبل إرسال رسالة أو إعادة محاولة."
-      : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل وحالة التوليد من دون إرسال أو إعادة محاولة.";
+      : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل والردود من دون إرسال أو إعادة محاولة.";
 
   return (
     <section className="grid min-h-[70vh] overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm lg:grid-rows-[1fr_auto]">
-      <div className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]">
+      <div
+        ref={viewportRef}
+        onScroll={updateAutoScrollPreference}
+        className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]"
+      >
         {messages.length === 0 ? (
           <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <Sparkles className="h-6 w-6" aria-hidden="true" />
             </div>
             <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
-              ابدأ محادثة محفوظة
+              ابدأ محادثتك
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
-              اكتب بالعربية أو English. فعّل وضع المصادر عندما تريد إجابة تعتمد
-              فقط على المقاطع المحفوظة وتعرض مراجع قابلة للفتح.
+              اكتب بالعربية أو English. فعّل مصادر المساحة عندما تريد أن ترتبط
+              الإجابة بالمقاطع المحفوظة وتعرض مراجع يمكنك فتحها.
             </p>
             {canWrite && (
               <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
@@ -533,7 +609,6 @@ export function ConversationShell({
                 }
               />
             ))}
-            <div ref={endRef} />
           </div>
         )}
       </div>
@@ -580,11 +655,11 @@ export function ConversationShell({
               />
               <span>
                 <span className="block font-semibold">
-                  استخدام مصادر مساحة العمل / Use workspace sources
+                  استخدام مصادر مساحة العمل
                 </span>
                 <span className="mt-1 block text-xs leading-6 text-muted-foreground">
-                  يبحث في المقاطع الجاهزة فقط، يرفض الإجابة عند غياب دليل مناسب،
-                  ويحفظ كل مرجع مع رابط للمقطع نفسه.
+                  يبحث في المقاطع الجاهزة ويضيف روابط إلى المراجع المستخدمة في
+                  الإجابة.
                 </span>
               </span>
             </label>
@@ -607,8 +682,8 @@ export function ConversationShell({
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs leading-6 text-muted-foreground">
                 {groundingMode === "workspace_sources"
-                  ? "لن تُعرض الاستجابة كمكتملة ما لم تتضمن مرجعاً صالحاً من هذه المساحة."
-                  : "تُرسل آخر الرسائل المحفوظة فقط، وتبقى الاستمرارية داخل PostgreSQL."}
+                  ? "ستتضمن الإجابة مرجعاً قابلاً للفتح من هذه المساحة."
+                  : "تُستخدم رسائل هذه المحادثة للحفاظ على السياق."}
               </p>
               {isStreaming ? (
                 <Button
