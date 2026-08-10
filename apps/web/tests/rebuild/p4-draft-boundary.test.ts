@@ -48,6 +48,23 @@ describe("P4 durable draft boundary", () => {
     expect(migration).toContain("draft_versions_select_member");
   });
 
+  test("fails stale draft versions without retryable serialization loops", () => {
+    const route = readWeb(
+      "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/route.ts",
+    );
+    const migration = readRepo(
+      "supabase/migrations/202608100003_p4_draft_conflict_fast_fail.sql",
+    );
+
+    expect(route).toContain(
+      "existing.draft.currentVersion !== parsed.data.expectedVersion",
+    );
+    expect(route).toContain('error.databaseCode === "P4091"');
+    expect(migration).toContain("errcode = 'P4091'");
+    expect(migration).toContain("message = 'draft version conflict'");
+    expect(migration).not.toContain("raise serialization_failure");
+  });
+
   test("creates deterministic scaffolds without a hidden provider request", () => {
     const scaffold = readWeb("src/lib/drafts/scaffold.ts");
     const collectionRoute = readWeb(
