@@ -3,7 +3,7 @@
 **Branch:** `agent/ui-experience-rework`  
 **Base:** `main` at `a19f75a43d9f37e6558a964b0dd5b3d72c729876`  
 **Draft pull request:** `#10`  
-**Status:** UI P0 engineering complete; browser review waived; UI P1 and UI P2 source implementation complete
+**Status:** UI P0 engineering complete; browser review waived; UI P1, UI P2, and UI P3 source implementation complete
 
 This work improves the interface without changing Tuppra's authenticated data, authorization, provider, source, citation, draft, or operational contracts.
 
@@ -106,7 +106,7 @@ UI P1 source implementation is complete. The waived browser-review items remain 
 
 ### Regression coverage
 
-Focused source safeguards now verify:
+Focused source safeguards verify:
 
 - the authenticated layout is wrapped by one shell rather than a separate navigation and page-reveal composition;
 - desktop rail collapse state and persistence remain available;
@@ -119,12 +119,12 @@ Focused source safeguards now verify:
 
 ### Validation evidence
 
-The P2 implementation head immediately preceding this status record passed every normal repository safeguard:
+The P2 implementation head passed every normal repository safeguard:
 
 1. frozen Bun dependency installation;
 2. shared-package builds;
 3. ESLint and focused TypeScript validation;
-4. the complete active rebuild test suite, including the new P2 shell safeguards;
+4. the complete active rebuild test suite, including the P2 shell safeguards;
 5. the optimized Next.js web build;
 6. PR scope validation;
 7. Arabic and RTL foundation checks;
@@ -132,7 +132,7 @@ The P2 implementation head immediately preceding this status record passed every
 9. public brand and claims safeguards;
 10. Arabic text and bidirectional-input utility tests.
 
-The validation pass also caught and corrected three integration defects before this record:
+The validation pass also caught and corrected three integration defects:
 
 - an unused icon import rejected by exact TypeScript validation;
 - a reduced-motion test coupled to source formatting rather than behavior;
@@ -142,7 +142,89 @@ The validation pass also caught and corrected three integration defects before t
 
 UI P2 source implementation is complete. The previously waived browser-review items remain unverified and continue as residual risk.
 
-The next source phase is the workspace and conversation experience: focused conversation composition, conversation switching, source inspection, generation feedback, and contextual secondary controls. It has not started in this status record.
+## UI P3 — Workspace and conversation experience
+
+### Conversation discovery
+
+- rebuilt the active and archived conversation lists with the shared page and surface primitives;
+- made each conversation one complete keyboard-focusable row instead of a card with a nested open button;
+- surfaced message count and last activity without exposing implementation phases;
+- kept the new-conversation action in a focused sticky panel on wide screens and a stable anchor on small screens;
+- retained the real create, archive, restore, and persistence boundaries without adding sample conversations or artificial messages.
+
+### Focused conversation workspace
+
+- replaced the long detail page with a bounded conversation workspace that keeps the message canvas dominant;
+- separated the experience into conversation history, the active conversation, and a contextual inspector;
+- added responsive history and inspector sheets with dialog semantics, Escape handling, route cleanup, and scroll locking;
+- loaded the workspace's active and archived conversation summaries for fast switching without changing the repository contract;
+- added searchable conversation switching with active-route semantics, message counts, activity timestamps, archive access, and a direct path to create another conversation;
+- moved title editing, archive and restore, delete controls, draft conversion, access metadata, and trust notes into the contextual inspector;
+- kept destructive actions inside a collapsed disclosure rather than competing with the conversation.
+
+### Message canvas and composer
+
+- made assistant responses visually quieter and more document-like while keeping user messages distinct;
+- collapsed provider, model, token, latency, grounding, and status metadata behind an inspectable generation-details disclosure;
+- replaced the generic loading spinner with reduced-motion-aware activity orbs for searching, composing, working, and shaping states;
+- reserved activity animation for real processing states rather than continuous decoration;
+- added an auto-sizing composer with an explicit height cap, IME-safe Enter handling, Shift+Enter support, character count, and compact send or stop controls;
+- changed source grounding from a large explanatory block into an explicit pressed-state control while preserving the same `workspace_sources` request value;
+- added near-bottom tracking and a return-to-latest control so new streaming content does not forcibly pull users away from older messages;
+- preserved streamed deltas, retries, cancellation, partial persistence, server-owned history, and refresh behavior.
+
+### Inline citation inspection
+
+- kept citations derived exclusively from persisted `message.citations` records;
+- made available citations open an inline inspector before navigating away from the conversation;
+- loaded the existing authorized document-detail API and validated the payload with `documentDetailSchema`;
+- resolved the exact cited source identifier first, with the persisted ordinal snapshot as a bounded fallback;
+- rendered source content as safe text without raw HTML injection;
+- preserved the full document link and deleted-source snapshot behavior;
+- did not add a new unrestricted source endpoint or change storage authorization.
+
+### Draft conversion and secondary controls
+
+- converted the draft-from-conversation surface into a compact inspector control;
+- removed user-facing implementation labels from draft conversion;
+- preserved deterministic scaffold creation, origin snapshots, citation copying, existing draft kinds, and the current API route;
+- used the shaping activity state only while a draft is actually being created.
+
+### Regression coverage
+
+Focused P3 safeguards verify:
+
+- active and archived conversation discovery use the shared product system;
+- history, active conversation, and secondary controls remain separated;
+- conversation switching is searchable and workspace-scoped;
+- processing states use reduced-motion-aware activity orbs rather than a generic spinner;
+- citations open through the persisted citation boundary and validated document-detail response;
+- the composer remains auto-sizing, IME-safe, source-explicit, and able to return to the latest message;
+- draft conversion remains compact and free from implementation-phase labels;
+- the original provider, persistence, citation, and safe-rendering boundaries remain intact.
+
+### Validation evidence
+
+The P3 implementation head `036993a4fea6732a73ef14d84cd0c959408fd3ce` passed every normal repository safeguard:
+
+1. frozen Bun dependency installation;
+2. all shared-package builds;
+3. ESLint and focused TypeScript validation;
+4. **139 active rebuild tests across 22 files**, including the new P3 conversation-experience suite and the existing grounded-citation boundary;
+5. the optimized Next.js web build and artifact upload;
+6. PR scope validation;
+7. Arabic and RTL foundation checks;
+8. accessibility foundation checks;
+9. product language and public-claims safeguards;
+10. Arabic text and bidirectional-input utility tests.
+
+The first P3 validation pass found one stale regression assertion that required the old oversized source-toggle wording. It was updated to protect the new explicit grounding control and inline persisted-citation inspector instead of restoring obsolete UI copy.
+
+### Completion boundary
+
+UI P3 source implementation is complete. The previously waived browser-review items remain unverified and continue as residual risk.
+
+The next source phase is the sources, drafts, and settings experience: document-oriented source browsing, focused draft editing and version review, proposal inspection, and a cleaner AI settings flow. It has not started in this status record.
 
 ## Guardrails
 
