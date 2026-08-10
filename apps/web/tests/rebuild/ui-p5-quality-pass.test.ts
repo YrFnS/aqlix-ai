@@ -164,7 +164,7 @@ describe("UI P5 final quality pass", () => {
     expect(productJourney).not.toContain("grantPermissions");
     expect(roleJourney).toContain('role: "owner"');
     expect(roleJourney).toContain('role: "editor"');
-    expect(roleJourney).toContain('role: "viewer"');
+    expect(roleJourney).toContain('workspaceRole: "viewer"');
     expect(roleJourney).toContain("outsiderReadAttempt.status()).toBe(404)");
     expect(roleJourney).toContain("editorArchiveAttempt.status()).toBe(403)");
     expect(byokJourney).toContain("Free-tier key");
