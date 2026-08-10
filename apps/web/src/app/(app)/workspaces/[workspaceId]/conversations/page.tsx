@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import type { ConversationSummary, WorkspaceAccess } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
+import { PageHeader, PageSection, PageShell } from "@/components/ui/page-shell";
+import { Surface } from "@/components/ui/surface";
 import { ConversationCard } from "@/components/conversations/conversation-card";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
@@ -75,16 +77,15 @@ export default async function ConversationsPage({
 
   if (!workspace) {
     return (
-      <div className="mx-auto max-w-5xl space-y-6">
+      <PageShell width="compact">
         <ConversationStatusNotice status="persistence-error" />
-        <Link
-          href="/workspaces"
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold"
-        >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى المساحات
-        </Link>
-      </div>
+        <Button asChild variant="outline" className="w-fit rounded-full">
+          <Link href="/workspaces">
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            العودة إلى المساحات
+          </Link>
+        </Button>
+      </PageShell>
     );
   }
 
@@ -97,63 +98,96 @@ export default async function ConversationsPage({
     : firstValue(query.status);
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <header className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <Link
-          href={`/workspaces/${workspace.id}`}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-secondary"
-        >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى مساحة العمل
-        </Link>
-
-        <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">
-              P2 · Persistent bilingual conversation
-            </p>
-            <h1
-              dir="auto"
-              className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl"
-            >
-              محادثات {workspace.name}
-            </h1>
-            <p className="mt-4 text-base leading-8 text-muted-foreground">
-              الرسائل وحالات التوليد محفوظة في PostgreSQL وتخضع لعضوية مساحة
-              العمل. العربية وEnglish والنص المختلط تُعرض باتجاه تلقائي.
-            </p>
-          </div>
-
-          <Link
-            href={`/workspaces/${workspace.id}/conversations/archived`}
-            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold transition-colors hover:bg-secondary"
-          >
-            <Archive className="h-4 w-4" aria-hidden="true" />
-            أرشيف المحادثات
-          </Link>
-        </div>
-      </header>
-
+    <PageShell width="wide">
       <ConversationStatusNotice
         status={isWorkspaceArchived ? "workspace-archived" : visibleStatus}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[0.72fr_1.28fr]">
-        <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
+      <PageHeader
+        eyebrow={<span dir="auto">{workspace.name}</span>}
+        title="المحادثات"
+        description="ابدأ سؤالاً جديداً أو عد مباشرة إلى محادثة محفوظة. الرسائل، محاولات التوليد، والمراجع تبقى داخل سياق مساحة العمل وصلاحياتها."
+        actions={
+          <>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href={`/workspaces/${workspace.id}`}>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                مساحة العمل
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href={`/workspaces/${workspace.id}/conversations/archived`}>
+                <Archive className="h-4 w-4" aria-hidden="true" />
+                الأرشيف
+              </Link>
+            </Button>
+          </>
+        }
+      />
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
+        <PageSection
+          title="المحادثات النشطة"
+          description="مرتبة حسب آخر نشاط حتى تستطيع متابعة العمل من حيث توقف."
+          actions={
+            <span className="rounded-full bg-brand-soft px-3 py-1.5 text-xs font-semibold text-primary">
+              {conversations.length} محادثة
+            </span>
+          }
+        >
+          {conversations.length > 0 ? (
+            <div className="space-y-3">
+              {conversations.map((conversation) => (
+                <ConversationCard
+                  key={conversation.id}
+                  conversation={conversation}
+                />
+              ))}
+            </div>
+          ) : (
+            <Surface
+              tone="muted"
+              radius="2xl"
+              padding="lg"
+              className="flex min-h-80 flex-col items-center justify-center border-dashed text-center"
+            >
+              <div className="rounded-xl bg-surface-raised p-4 text-primary shadow-surface-xs">
+                <MessageSquareText className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h3 className="mt-5 font-arabic-heading text-xl font-semibold">
+                لا توجد محادثة نشطة
+              </h3>
+              <p className="mt-3 max-w-md text-sm leading-7 text-ink-muted">
+                {canWrite
+                  ? "أنشئ أول محادثة من اللوحة الجانبية. لن نضيف رسائل مثال أو استجابات غير صادرة عن المسار الحقيقي."
+                  : "لم تُشارك معك محادثة نشطة قابلة للكتابة في هذه المساحة."}
+              </p>
+            </Surface>
+          )}
+        </PageSection>
+
+        <Surface
+          id="new-conversation"
+          tone="raised"
+          elevation="sm"
+          radius="2xl"
+          padding="lg"
+          className="scroll-mt-28 lg:sticky lg:top-24"
+        >
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-primary">محادثة جديدة</p>
-              <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
+              <p className="text-xs font-semibold text-primary">محادثة جديدة</p>
+              <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
                 ابدأ من سؤال واضح
               </h2>
             </div>
-            <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+            <div className="rounded-xl bg-brand-soft p-3 text-primary">
               <MessageSquarePlus className="h-5 w-5" aria-hidden="true" />
             </div>
           </div>
 
           {canWrite ? (
-            <form action={createConversationAction} className="mt-7 space-y-5">
+            <form action={createConversationAction} className="mt-6 space-y-4">
               <input type="hidden" name="workspaceId" value={workspace.id} />
               <div className="space-y-2">
                 <label
@@ -168,73 +202,34 @@ export default async function ConversationsPage({
                   maxLength={200}
                   dir="auto"
                   placeholder="محادثة جديدة"
-                  className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary"
+                  className="min-h-12 w-full rounded-xl border border-input bg-surface-raised px-4 text-sm outline-none transition-[border-color,box-shadow] duration-fast placeholder:text-ink-subtle focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
                 />
               </div>
-              <Button type="submit" className="w-full rounded-full">
-                إنشاء وفتح المحادثة
+              <Button type="submit" className="w-full rounded-xl">
                 <MessageSquareText className="h-4 w-4" aria-hidden="true" />
+                إنشاء وفتح
               </Button>
             </form>
           ) : (
-            <div className="mt-7 rounded-2xl border border-border bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
+            <div className="mt-6 rounded-xl bg-surface-sunken p-4 text-sm leading-7 text-ink-muted">
               {isWorkspaceArchived
-                ? "مساحة العمل مؤرشفة. يمكن مراجعة المحادثات، لكن إنشاء محادثة أو إرسال رسالة يتطلب استعادة المساحة أولاً."
-                : "عضويتك للقراءة فقط. يمكنك فتح المحادثات الحالية ومراجعة الرسائل وحالة المزود، لكن إنشاء محادثة أو إرسال رسالة يحتاج دور المحرر أو المالك."}
+                ? "مساحة العمل مؤرشفة. استعدها أولاً لإنشاء محادثة جديدة."
+                : "عضويتك للقراءة فقط. إنشاء محادثة يحتاج دور المحرر أو المالك."}
             </div>
           )}
 
-          <div className="mt-6 flex gap-3 rounded-2xl bg-secondary/60 p-4 text-xs leading-6 text-muted-foreground">
+          <div className="mt-5 flex items-start gap-3 border-t border-line/70 pt-5 text-xs leading-6 text-ink-muted">
             <ShieldCheck
-              className="mt-1 h-4 w-4 shrink-0 text-primary"
+              className="mt-1 h-3.5 w-3.5 shrink-0 text-primary"
               aria-hidden="true"
             />
             <p>
-              لا تُستخدم ذاكرة عملية أو محادثة مستضافة عند المزود كمصدر للحقيقة.
-              كل استمرارية تُعاد من السجلات المصرح بها داخل هذه المساحة.
+              استمرارية المحادثة تُعاد من السجلات المصرح بها داخل هذه المساحة، لا
+              من ذاكرة مستضافة عند المزود.
             </p>
           </div>
-        </section>
-
-        <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-primary">المحادثات النشطة</p>
-              <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                أكمل من حيث توقفت
-              </h2>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {conversations.length} محادثة
-            </p>
-          </div>
-
-          {conversations.length > 0 ? (
-            <div className="mt-7 grid gap-4 md:grid-cols-2">
-              {conversations.map((conversation) => (
-                <ConversationCard
-                  key={conversation.id}
-                  conversation={conversation}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="mt-7 flex min-h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-border bg-secondary/35 p-8 text-center">
-              <div className="rounded-2xl bg-background p-4 text-primary shadow-sm">
-                <MessageSquareText className="h-6 w-6" aria-hidden="true" />
-              </div>
-              <h3 className="mt-5 font-arabic-heading text-xl font-semibold">
-                لا توجد محادثة نشطة
-              </h3>
-              <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-                {canWrite
-                  ? "أنشئ أول محادثة. لن نضع رسائل مثال أو استجابات غير صادرة عن المسار الحقيقي."
-                  : "لم تُشارك معك محادثة نشطة قابلة للكتابة في هذه المساحة."}
-              </p>
-            </div>
-          )}
-        </section>
+        </Surface>
       </div>
-    </div>
+    </PageShell>
   );
 }
