@@ -192,6 +192,7 @@ jobs:
           bunx playwright test
           tests/e2e/p5/openrouter-byok-journey.spec.ts
           --config=playwright.p5.config.ts
+          --project=p5-desktop-chromium
 
       - name: Upload authenticated AI evidence
         if: always()
