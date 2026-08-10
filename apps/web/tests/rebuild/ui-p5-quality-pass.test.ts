@@ -89,7 +89,8 @@ describe("UI P5 final quality pass", () => {
     expect(offline).toContain('data-network-status="offline"');
     expect(offline).toContain('aria-atomic="true"');
     expect(offline).toContain("env(safe-area-inset-bottom)");
-    expect(offline).toContain("لم يكتمل");
+    expect(offline).toContain("قبل افتراض");
+    expect(offline).toContain("حفظ أو توليد جديد اكتمل");
     expect(offline).not.toContain("bg-foreground px-4 py-3 text-sm text-background");
   });
 });
