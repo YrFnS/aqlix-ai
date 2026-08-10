@@ -57,16 +57,22 @@ describe("P1 account boundary", () => {
   test("presents configured and unconfigured sign-in and registration states honestly", () => {
     const login = readSource("src/app/(auth)/login/page.tsx");
     const register = readSource("src/app/(auth)/register/page.tsx");
+    const authFrame = readSource("src/components/auth/auth-frame.tsx");
     const actions = readSource("src/lib/auth/actions.ts");
 
-    expect(login).toContain("P1 · Account access");
-    expect(register).toContain("P1 · Account access");
+    expect(login).toContain("<AuthFrame");
+    expect(register).toContain("<AuthFrame");
+    expect(authFrame).toContain('data-auth-frame="true"');
     expect(login).toContain("isSupabaseConfigured");
     expect(register).toContain("isSupabaseConfigured");
+    expect(login).toContain("<AuthNotice");
+    expect(register).toContain("<AuthNotice");
     expect(actions).toContain("signInWithPassword");
     expect(actions).toContain("auth.signUp");
     expect(actions).toContain("auth.signOut");
     expect(actions).toContain('value.startsWith("//")');
+    expect(login).not.toContain("P1 · Account access");
+    expect(register).not.toContain("P1 · Account access");
     expect(login).not.toContain("<LoginForm");
     expect(register).not.toContain("<RegisterForm");
   });
