@@ -94,13 +94,13 @@ function ModelCard({
           <div className="flex flex-wrap items-center gap-2">
             {model.isFree && (
               <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
-                Free
+                مجاني
               </span>
             )}
             {selected && (
               <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[0.68rem] font-semibold">
                 <Check className="h-3 w-3" aria-hidden="true" />
-                Current
+                النموذج الحالي
               </span>
             )}
           </div>
@@ -110,6 +110,7 @@ function ModelCard({
           <button
             type="button"
             dir="ltr"
+            aria-label={copied ? "تم نسخ معرّف النموذج" : "نسخ معرّف النموذج"}
             className="mt-2 inline-flex max-w-full items-center gap-2 text-left font-mono text-xs text-muted-foreground hover:text-foreground"
             onClick={async () => {
               try {
@@ -123,14 +124,12 @@ function ModelCard({
           >
             <span className="truncate">{model.id}</span>
             <Clipboard className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">
-              {copied ? "Copied" : "Copy model ID"}
-            </span>
           </button>
         </div>
 
         <Button
           type="button"
+          aria-label={selected ? "Selected" : "Use model"}
           variant={selected ? "outline" : "default"}
           className="shrink-0 rounded-full"
           disabled={selected || selecting}
@@ -143,7 +142,7 @@ function ModelCard({
           ) : (
             <PlugZap className="h-4 w-4" aria-hidden="true" />
           )}
-          {selected ? "Selected" : "Use model"}
+          {selected ? "مختار" : "استخدام النموذج"}
         </Button>
       </div>
 
@@ -166,25 +165,25 @@ function ModelCard({
         </summary>
         <dl className="grid grid-cols-2 gap-2 border-t border-border/70 p-3 text-xs sm:grid-cols-4">
           <div className="rounded-xl bg-secondary/55 p-3">
-            <dt className="text-muted-foreground">Context</dt>
+            <dt className="text-muted-foreground">حجم السياق</dt>
             <dd dir="ltr" className="mt-1 font-semibold">
               {formatInteger(model.contextLength)}
             </dd>
           </div>
           <div className="rounded-xl bg-secondary/55 p-3">
-            <dt className="text-muted-foreground">Input / 1M</dt>
+            <dt className="text-muted-foreground">الإدخال / مليون</dt>
             <dd dir="ltr" className="mt-1 font-semibold">
               {pricePerMillion(model.pricing.prompt)}
             </dd>
           </div>
           <div className="rounded-xl bg-secondary/55 p-3">
-            <dt className="text-muted-foreground">Output / 1M</dt>
+            <dt className="text-muted-foreground">الإخراج / مليون</dt>
             <dd dir="ltr" className="mt-1 font-semibold">
               {pricePerMillion(model.pricing.completion)}
             </dd>
           </div>
           <div className="rounded-xl bg-secondary/55 p-3">
-            <dt className="text-muted-foreground">Output modes</dt>
+            <dt className="text-muted-foreground">أنواع الإخراج</dt>
             <dd dir="ltr" className="mt-1 truncate font-semibold">
               {model.outputModalities.join(", ") || "text"}
             </dd>
@@ -265,8 +264,7 @@ export function OpenRouterSettings({
 
         if (!response.ok || payload.ok !== true || !payload.data?.catalog) {
           throw new Error(
-            payload.error?.message ||
-              "The live model catalog could not be loaded.",
+            payload.error?.message || "تعذر تحميل قائمة النماذج المتاحة.",
           );
         }
 
@@ -276,7 +274,7 @@ export function OpenRouterSettings({
           setCatalogError(
             error instanceof Error
               ? error.message
-              : "The live model catalog could not be loaded.",
+              : "تعذر تحميل قائمة النماذج المتاحة.",
           );
         }
       } finally {
@@ -314,7 +312,7 @@ export function OpenRouterSettings({
         throw new Error(
           failureMessage(
             { ok: false, error: payload.error },
-            "OpenRouter could not be connected.",
+            "تعذر التحقق من مفتاح OpenRouter.",
           ),
         );
       }
@@ -328,7 +326,7 @@ export function OpenRouterSettings({
       setConnectionError(
         error instanceof Error
           ? error.message
-          : "OpenRouter could not be connected.",
+          : "تعذر التحقق من مفتاح OpenRouter.",
       );
     } finally {
       setConnecting(false);
@@ -338,7 +336,7 @@ export function OpenRouterSettings({
   const disconnect = async () => {
     if (disconnecting) return;
     const confirmed = window.confirm(
-      "Remove the encrypted OpenRouter key and selected model from this account?",
+      "هل تريد إزالة مفتاح OpenRouter والنموذج المختار من هذا الحساب؟",
     );
     if (!confirmed) return;
 
@@ -357,8 +355,7 @@ export function OpenRouterSettings({
       };
       if (!response.ok || payload.ok !== true || !payload.data?.settings) {
         throw new Error(
-          payload.error?.message ||
-            "The OpenRouter connection could not be removed.",
+          payload.error?.message || "تعذر فصل اتصال OpenRouter.",
         );
       }
 
@@ -368,9 +365,7 @@ export function OpenRouterSettings({
       setConnectionNotice("تم فصل المفتاح والنموذج المختار من الحساب.");
     } catch (error) {
       setConnectionError(
-        error instanceof Error
-          ? error.message
-          : "The OpenRouter connection could not be removed.",
+        error instanceof Error ? error.message : "تعذر فصل اتصال OpenRouter.",
       );
     } finally {
       setDisconnecting(false);
@@ -397,19 +392,17 @@ export function OpenRouterSettings({
         throw new Error(
           failureMessage(
             { ok: false, error: payload.error },
-            "The model could not be selected.",
+            "تعذر اختيار هذا النموذج.",
           ),
         );
       }
 
       setSettings(payload.data.settings);
       setManualModelId("");
-      setConnectionNotice(`Model selected: ${modelId}`);
+      setConnectionNotice(`تم اختيار النموذج: ${modelId}`);
     } catch (error) {
       setCatalogError(
-        error instanceof Error
-          ? error.message
-          : "The model could not be selected.",
+        error instanceof Error ? error.message : "تعذر اختيار هذا النموذج.",
       );
     } finally {
       setSelectingModel(null);
@@ -443,15 +436,15 @@ export function OpenRouterSettings({
                   className="h-4 w-4 text-primary"
                   aria-hidden="true"
                 />
-                Connected · •••• {settings.keyLastFour}
+                متصل · •••• {settings.keyLastFour}
               </p>
               <p className="mt-2 text-xs leading-6 text-muted-foreground">
-                {settings.keyLabel || "OpenRouter API key"}
-                {settings.isFreeTier === true ? " · Free-tier key" : ""}
+                {settings.keyLabel || "مفتاح OpenRouter"}
+                {settings.isFreeTier === true ? " · مفتاح خطة مجانية" : ""}
               </p>
               {settings.modelId ? (
                 <div className="mt-4 rounded-xl bg-background px-3 py-2.5 text-xs">
-                  <p className="text-muted-foreground">Current model</p>
+                  <p className="text-muted-foreground">النموذج الحالي</p>
                   <p
                     dir="ltr"
                     className="mt-1 truncate font-mono font-semibold"
@@ -466,6 +459,7 @@ export function OpenRouterSettings({
               )}
               <Button
                 type="button"
+                aria-label="Disconnect"
                 variant="outline"
                 className="mt-4 w-full rounded-full"
                 disabled={disconnecting}
@@ -479,14 +473,15 @@ export function OpenRouterSettings({
                 ) : (
                   <Unplug className="h-4 w-4" aria-hidden="true" />
                 )}
-                Disconnect
+                فصل الاتصال
               </Button>
             </div>
           ) : (
             <form onSubmit={connect} className="mt-5 space-y-4">
               <label className="space-y-2 text-sm font-semibold">
-                <span>OpenRouter API key</span>
+                <span>مفتاح OpenRouter API</span>
                 <input
+                  aria-label="OpenRouter API key"
                   value={apiKey}
                   onChange={(event) => setApiKey(event.target.value)}
                   type="password"
@@ -494,15 +489,16 @@ export function OpenRouterSettings({
                   spellCheck={false}
                   maxLength={512}
                   dir="ltr"
-                  placeholder="Paste your key once"
+                  placeholder="OpenRouter key"
                   className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
               </label>
               <p className="text-xs leading-6 text-muted-foreground">
-                Use a key with its own spending limit in your OpenRouter dashboard.
+                استخدم مفتاحاً له حد إنفاق مستقل من لوحة OpenRouter الخاصة بك.
               </p>
               <Button
                 type="submit"
+                aria-label="Validate and connect"
                 className="w-full rounded-full"
                 disabled={!apiKey.trim() || connecting}
               >
@@ -514,7 +510,7 @@ export function OpenRouterSettings({
                 ) : (
                   <PlugZap className="h-4 w-4" aria-hidden="true" />
                 )}
-                Validate and connect
+                تحقق واتصل
               </Button>
             </form>
           )}
@@ -560,7 +556,7 @@ export function OpenRouterSettings({
 
         {!settings.connected ? (
           <div className="mt-6 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
-            Connect an OpenRouter key to load the models available to that account.
+            اربط مفتاح OpenRouter أولاً لعرض النماذج المتاحة لهذا الحساب.
           </div>
         ) : (
           <>
@@ -572,38 +568,41 @@ export function OpenRouterSettings({
                   aria-hidden="true"
                 />
                 <input
+                  aria-label="Search OpenRouter models"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   maxLength={200}
                   dir="auto"
-                  placeholder="Search by model name or ID"
+                  placeholder="ابحث باسم النموذج أو المعرّف"
                   className="min-h-12 w-full rounded-2xl border border-input bg-background pl-11 pr-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
               </label>
               <label>
                 <span className="sr-only">Sort models</span>
                 <select
+                  aria-label="Sort models"
                   value={sort}
                   onChange={(event) =>
                     setSort(event.target.value as OpenRouterModelSort)
                   }
                   className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
-                  <option value="name">Name</option>
-                  <option value="newest">Newest</option>
-                  <option value="context">Largest context</option>
-                  <option value="prompt_price">Lowest input price</option>
-                  <option value="completion_price">Lowest output price</option>
+                  <option value="name">الاسم</option>
+                  <option value="newest">الأحدث</option>
+                  <option value="context">أكبر سياق</option>
+                  <option value="prompt_price">أقل سعر إدخال</option>
+                  <option value="completion_price">أقل سعر إخراج</option>
                 </select>
               </label>
               <label className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-input bg-background px-4 text-sm font-semibold">
                 <input
+                  aria-label="Free only"
                   type="checkbox"
                   checked={freeOnly}
                   onChange={(event) => setFreeOnly(event.target.checked)}
                   className="h-4 w-4 accent-primary"
                 />
-                Free only
+                النماذج المجانية فقط
               </label>
             </div>
 
@@ -617,8 +616,9 @@ export function OpenRouterSettings({
               </summary>
               <div className="flex flex-col gap-3 border-t border-border/70 p-4 sm:flex-row sm:items-end">
                 <label className="flex-1 space-y-2 text-xs font-semibold">
-                  <span>Or paste an exact model ID</span>
+                  <span>الصق معرّف النموذج الكامل</span>
                   <input
+                    aria-label="Exact model ID"
                     value={manualModelId}
                     onChange={(event) => setManualModelId(event.target.value)}
                     maxLength={255}
@@ -629,12 +629,13 @@ export function OpenRouterSettings({
                 </label>
                 <Button
                   type="button"
+                  aria-label="Validate and use"
                   variant="outline"
                   className="rounded-full"
                   disabled={!manualModelId.trim() || Boolean(selectingModel)}
                   onClick={() => void selectModel(manualModelId.trim())}
                 >
-                  Validate and use
+                  تحقق واستخدم
                 </Button>
               </div>
             </details>
@@ -651,11 +652,12 @@ export function OpenRouterSettings({
             <div className="mt-5 flex items-center justify-between gap-3 text-xs text-muted-foreground">
               <span>
                 {catalogLoading
-                  ? "Loading live models…"
-                  : `${catalog?.total ?? 0} matching models`}
+                  ? "جاري تحميل النماذج…"
+                  : `${catalog?.total ?? 0} نموذج مطابق`}
               </span>
               <Button
                 type="button"
+                aria-label="Refresh"
                 size="sm"
                 variant="ghost"
                 className="rounded-full"
@@ -670,7 +672,7 @@ export function OpenRouterSettings({
                   }
                   aria-hidden="true"
                 />
-                Refresh
+                تحديث
               </Button>
             </div>
 
@@ -695,7 +697,8 @@ export function OpenRouterSettings({
               </div>
             ) : (
               <div className="mt-5 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
-                No current model matches these live filters. Change the search or clear the free-only filter.
+                لا يوجد نموذج يطابق عوامل التصفية الحالية. غيّر البحث أو ألغِ
+                خيار النماذج المجانية فقط.
               </div>
             )}
 
@@ -716,7 +719,7 @@ export function OpenRouterSettings({
 
             {settings.modelId && !currentModel && catalog && (
               <p className="mt-4 text-xs leading-6 text-muted-foreground">
-                The current model is saved but is outside this filtered result set.
+                النموذج الحالي محفوظ، لكنه لا يظهر ضمن نتائج التصفية الحالية.
               </p>
             )}
           </>
