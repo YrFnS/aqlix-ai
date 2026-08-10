@@ -57,6 +57,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080005_p1_workspace_owner_select.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080006_p2_conversation_generations.sql
           psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608080007_p2_archived_workspace_guard.sql
+          psql -v ON_ERROR_STOP=1 -f supabase/migrations/202608100004_p2_conversation_pagination.sql
 
       - name: Re-run P1 ownership and isolation regressions
         run: |
@@ -65,6 +66,9 @@ jobs:
 
       - name: Verify P2 conversation lifecycle
         run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p2_conversation_lifecycle.test.sql
+
+      - name: Verify P2 pagination summaries and isolation
+        run: psql -v ON_ERROR_STOP=1 -f supabase/tests/p2_conversation_pagination.test.sql
 
   data-contract-success:
     name: P2 Conversation Data Success Gate
@@ -76,8 +80,8 @@ jobs:
       - name: Check conversation data contract
         run: |
           if [[ "${{ needs.postgres-contract.result }}" != "success" ]]; then
-            echo "P2 conversation migration, lifecycle, or RLS validation failed"
+            echo "P2 conversation migration, lifecycle, pagination, or RLS validation failed"
             exit 1
           fi
 
-          echo "P2 atomic turns, telemetry, cancellation, retry, archive guards, isolation, and cascades passed."
+          echo "P2 atomic turns, pagination, telemetry, cancellation, retry, archive guards, isolation, and cascades passed."
