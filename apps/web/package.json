@@ -1,7 +1,7 @@
 {
   "name": "@iraqi-ai/web",
   "version": "1.0.0",
-  "description": "Web application under controlled rebuild for an Arabic-first bilingual AI workspace",
+  "description": "Tuppra web application for an Arabic-first bilingual AI workspace",
   "private": true,
   "type": "module",
   "scripts": {
@@ -96,6 +96,7 @@
     "typescript": "^5.3.3"
   },
   "keywords": [
+    "tuppra",
     "arabic",
     "ai",
     "workspace",
@@ -106,11 +107,11 @@
     "nextjs",
     "react"
   ],
-  "author": "Iraqi AI Development Team",
+  "author": "Tuppra",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YrFnS/aqlix-ai.git",
+    "url": "https://github.com/YrFnS/tuppra.git",
     "directory": "apps/web"
   },
   "engines": {
