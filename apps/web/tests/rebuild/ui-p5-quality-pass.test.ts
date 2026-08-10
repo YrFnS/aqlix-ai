@@ -134,10 +134,13 @@ describe("UI P5 final quality pass", () => {
     expect(browserAudit).toContain("longestAnimationMs");
   });
 
-  test("defines isolated authenticated browser journeys for product and BYOK flows", () => {
+  test("defines isolated authenticated browser journeys for product, role, and BYOK flows", () => {
     const config = readSource("playwright.p5.authenticated.config.ts");
     const productJourney = readSource(
       "tests/e2e/p5/authenticated-product-journey.spec.ts",
+    );
+    const roleJourney = readSource(
+      "tests/e2e/p5/role-matrix-journey.spec.ts",
     );
     const byokJourney = readSource(
       "tests/e2e/p5/openrouter-byok-journey.spec.ts",
@@ -152,19 +155,25 @@ describe("UI P5 final quality pass", () => {
     expect(config).toContain('devices["Desktop Firefox"]');
     expect(config).toContain('devices["Desktop Safari"]');
     expect(config).toContain('timezoneId: "Asia/Baghdad"');
-    expect(productJourney).toContain("مصادر المساحة");
+    expect(productJourney).toContain("استخدام مصادر مساحة العمل");
     expect(productJourney).toContain("معاينة المرجع");
     expect(productJourney).toContain("تطبيق كإصدار جديد");
     expect(productJourney).toContain("viewerPatch.status()).toBe(403)");
     expect(productJourney).toContain("outsiderApi.status()).toBe(404)");
     expect(productJourney).toContain("waitForHydration");
     expect(productJourney).not.toContain("grantPermissions");
+    expect(roleJourney).toContain('role: "owner"');
+    expect(roleJourney).toContain('role: "editor"');
+    expect(roleJourney).toContain('role: "viewer"');
+    expect(roleJourney).toContain("outsiderReadAttempt.status()).toBe(404)");
+    expect(roleJourney).toContain("editorArchiveAttempt.status()).toBe(403)");
     expect(byokJourney).toContain("Free-tier key");
     expect(byokJourney).toContain("PROVIDER_UNCONFIGURED");
     expect(byokJourney).toContain("waitForHydration");
     expect(workflow).toContain(
       "playwright install --with-deps chromium firefox webkit",
     );
+    expect(workflow).toContain("role-matrix-journey.spec.ts");
     expect(workflow).toContain("journey across all engines");
     expect(workflow).toContain("bunx supabase start");
     expect(workflow).toContain("p5_user_openrouter_settings.test.sql");
