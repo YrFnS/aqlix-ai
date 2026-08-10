@@ -20,6 +20,7 @@ describe("P3 private document source boundary", () => {
       "src/app/api/v1/workspaces/[workspaceId]/sources/[attachmentId]/download/route.ts",
       "src/components/documents/document-upload-form.tsx",
       "src/components/documents/document-delete-button.tsx",
+      "src/components/documents/document-workspace.tsx",
       "src/lib/documents/processor.ts",
       "src/lib/documents/repository.ts",
     ]) {
@@ -92,13 +93,17 @@ describe("P3 private document source boundary", () => {
   });
 
   test("renders extracted content without raw HTML injection", () => {
-    const detail = readWeb(
+    const detailRoute = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/sources/[attachmentId]/page.tsx",
     );
+    const workspace = readWeb(
+      "src/components/documents/document-workspace.tsx",
+    );
 
-    expect(detail).toContain('dir="auto"');
-    expect(detail).toContain("whitespace-pre-wrap");
-    expect(detail).not.toContain("dangerouslySetInnerHTML");
-    expect(detail).not.toContain("innerHTML");
+    expect(detailRoute).toContain("<DocumentWorkspace");
+    expect(workspace).toContain('dir="auto"');
+    expect(workspace).toContain("whitespace-pre-wrap");
+    expect(workspace).not.toContain("dangerouslySetInnerHTML");
+    expect(workspace).not.toContain("innerHTML");
   });
 });
