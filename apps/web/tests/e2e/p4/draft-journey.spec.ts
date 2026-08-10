@@ -216,7 +216,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await register(page, ownerEmail);
   const workspaceId = await createWorkspace(page, workspaceName);
 
-  await page.getByRole("link", { name: "المصادر" }).click();
+  await page.getByRole("link", { name: "المصادر", exact: true }).click();
   await page.getByLabel("ملف TXT أو Markdown").setInputFiles({
     name: "launch-decision.md",
     mimeType: "text/markdown",
