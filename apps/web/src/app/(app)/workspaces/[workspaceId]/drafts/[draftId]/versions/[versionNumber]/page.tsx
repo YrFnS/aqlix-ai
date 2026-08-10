@@ -7,8 +7,12 @@ import {
   FileText,
   GitBranch,
   RotateCcw,
+  ShieldCheck,
 } from "lucide-react";
 import type { Draft, DraftVersion, WorkspaceAccess } from "@iraqi-ai/types";
+import { Button } from "@/components/ui/button";
+import { PageHeader, PageShell } from "@/components/ui/page-shell";
+import { Surface } from "@/components/ui/surface";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import {
   getDraft,
@@ -81,99 +85,133 @@ export default async function DraftVersionPage({
   if (!persistenceFailed && (!workspace || !draft || !version)) notFound();
   if (!workspace || !draft || !version) {
     return (
-      <div className="mx-auto max-w-4xl rounded-3xl border border-destructive/25 bg-card p-8 text-center">
-        <h1 className="font-arabic-heading text-3xl font-semibold">
-          تعذر تحميل لقطة الإصدار
-        </h1>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          لم تُعرض لقطة بديلة أو محتوى مثال.
-        </p>
-        <Link
-          href={`/workspaces/${workspaceId}/drafts/${draftId}`}
-          className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold"
+      <PageShell width="compact">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="2xl"
+          padding="lg"
+          className="border-destructive/25 text-center"
         >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى المسودة
-        </Link>
-      </div>
+          <h1 className="font-arabic-heading text-3xl font-semibold">
+            تعذر تحميل لقطة الإصدار
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-ink-muted">
+            لم تُعرض لقطة بديلة أو محتوى مثال.
+          </p>
+          <Button asChild variant="outline" className="mt-6 rounded-full">
+            <Link href={`/workspaces/${workspaceId}/drafts/${draftId}`}>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              العودة إلى المسودة
+            </Link>
+          </Button>
+        </Surface>
+      </PageShell>
     );
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <header className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <Link
-          href={`/workspaces/${workspace.id}/drafts/${draft.id}`}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold transition-colors hover:bg-secondary"
-        >
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          العودة إلى المسودة
-        </Link>
+    <PageShell width="default" className="space-y-8">
+      <PageHeader
+        eyebrow={
+          <span className="inline-flex items-center gap-2">
+            <GitBranch className="h-4 w-4" aria-hidden="true" />
+            لقطة غير قابلة لإعادة الكتابة
+          </span>
+        }
+        title={
+          <span>
+            الإصدار {version.versionNumber.toLocaleString("ar-IQ")}
+          </span>
+        }
+        description={<span dir="auto">{version.title}</span>}
+        actions={
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href={`/workspaces/${workspace.id}/drafts/${draft.id}`}>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              العودة إلى المسودة
+            </Link>
+          </Button>
+        }
+      />
 
-        <div className="mt-7 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-primary">
-              Immutable snapshot
-            </p>
-            <h1 className="mt-2 font-arabic-heading text-3xl font-semibold sm:text-4xl">
-              الإصدار {version.versionNumber}
-            </h1>
-            <p dir="auto" className="mt-3 text-lg font-semibold">
-              {version.title}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-            <GitBranch className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className="mt-6 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">
-            <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
+      <Surface
+        tone="muted"
+        elevation="none"
+        radius="xl"
+        padding="sm"
+      >
+        <div className="flex flex-wrap gap-2 text-xs text-ink-muted">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-raised px-3 py-1.5 shadow-surface-xs">
+            <Clock3 className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
             {formatTimestamp(version.createdAt)}
           </span>
-          <span className="rounded-full bg-secondary px-3 py-1.5">
+          <span className="rounded-full bg-surface-raised px-3 py-1.5 shadow-surface-xs">
             {version.sourceKind}
           </span>
-          <span className="rounded-full bg-secondary px-3 py-1.5">
+          <span className="rounded-full bg-surface-raised px-3 py-1.5 shadow-surface-xs">
             {version.kind}
           </span>
-          <span className="rounded-full bg-secondary px-3 py-1.5">
+          <span className="rounded-full bg-surface-raised px-3 py-1.5 shadow-surface-xs">
             {version.direction}
           </span>
-          {version.restoredFromVersion && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5">
-              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+          {version.restoredFromVersion ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-raised px-3 py-1.5 shadow-surface-xs">
+              <RotateCcw className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
               restored from v{version.restoredFromVersion}
             </span>
-          )}
+          ) : null}
         </div>
-      </header>
+      </Surface>
 
-      <article className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <div className="flex items-center gap-3">
-          <div className="rounded-2xl bg-secondary p-3 text-primary">
-            <FileText className="h-5 w-5" aria-hidden="true" />
+      <Surface
+        tone="raised"
+        elevation="sm"
+        radius="2xl"
+        padding="none"
+        className="overflow-hidden"
+      >
+        <div className="flex items-center justify-between gap-4 border-b border-line/70 bg-surface-sunken/55 px-5 py-4 sm:px-7">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-primary">
+              <FileText className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <div>
+              <p className="text-xs font-semibold text-primary">Read-only</p>
+              <h2 className="mt-1 font-arabic-heading text-lg font-semibold">
+                محتوى اللقطة
+              </h2>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-primary">Read-only</p>
-            <h2 className="font-arabic-heading text-xl font-semibold">
-              محتوى اللقطة
-            </h2>
-          </div>
+          <span className="rounded-full border border-line/70 bg-surface-raised px-3 py-1 text-xs font-semibold text-ink-muted">
+            v{version.versionNumber}
+          </span>
         </div>
         <pre
           dir={version.direction}
-          className="mt-6 whitespace-pre-wrap break-words rounded-3xl bg-secondary/35 p-5 font-sans text-sm leading-8"
+          className="min-h-[28rem] whitespace-pre-wrap break-words px-5 py-7 font-sans text-sm leading-8 text-foreground sm:px-8 sm:py-9 sm:text-[0.95rem] sm:leading-9"
         >
           {version.content}
         </pre>
-      </article>
+      </Surface>
 
-      <section className="rounded-3xl border border-border/70 bg-secondary/35 p-5 text-sm leading-7 text-muted-foreground">
-        هذه اللقطة غير قابلة للتعديل. استعادتها من صفحة المسودة ينشئ إصداراً
-        جديداً ولا يغيّر التاريخ السابق.
-      </section>
-    </div>
+      <Surface
+        tone="muted"
+        elevation="none"
+        radius="xl"
+        padding="sm"
+      >
+        <div className="flex items-start gap-3 text-sm leading-7 text-ink-muted">
+          <ShieldCheck
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
+          <p>
+            هذه اللقطة غير قابلة للتعديل. استعادتها من مساحة تحرير المسودة تنشئ
+            إصداراً جديداً ولا تغيّر التاريخ السابق.
+          </p>
+        </div>
+      </Surface>
+    </PageShell>
   );
 }
