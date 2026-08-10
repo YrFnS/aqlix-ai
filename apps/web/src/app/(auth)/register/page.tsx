@@ -8,7 +8,7 @@ import { signUpAction } from "@/lib/auth/actions";
 
 export const metadata: Metadata = {
   title: "إنشاء حساب",
-  description: `Create an account for ${brand.name}`,
+  description: `أنشئ حساباً جديداً في ${brand.name}.`,
 };
 
 type SearchParams = Promise<
@@ -16,12 +16,11 @@ type SearchParams = Promise<
 >;
 
 const statusMessages: Record<string, string> = {
-  configuration:
-    "خدمة الحساب غير مضبوطة في هذه البيئة بعد / Account service configuration is unavailable in this environment.",
+  configuration: "إنشاء الحساب غير متاح في هذه البيئة حالياً.",
   "invalid-input":
-    "اكتب بريداً صحيحاً، وكلمة مرور من 8 أحرف على الأقل، وتأكد من تطابقها / Enter a valid email, use at least 8 characters, and make sure both passwords match.",
+    "اكتب بريداً صحيحاً، واستخدم كلمة مرور من 8 أحرف على الأقل، وتأكد من تطابقها.",
   "registration-failed":
-    "تعذر إنشاء الحساب حالياً. قد يكون البريد مستخدماً أو الخدمة غير متاحة / The account could not be created. The email may already be used or the service may be unavailable.",
+    "تعذر إنشاء الحساب حالياً. قد يكون البريد مستخدماً أو الخدمة غير متاحة.",
 };
 
 function firstValue(value: string | string[] | undefined): string | undefined {
@@ -54,13 +53,13 @@ export default async function RegisterPage({
       </div>
 
       <div className="mt-6 text-center">
-        <p className="text-sm font-semibold text-primary">P1 · Account access</p>
+        <p className="text-sm font-semibold text-primary">ابدأ مساحة عملك</p>
         <h1 className="mt-3 font-arabic-heading text-3xl font-semibold">
           إنشاء حساب
         </h1>
         <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          حساب واحد يحفظ عضويتك في مساحات العمل ويطبّق صلاحيات الوصول من قاعدة
-          البيانات.
+          أنشئ حساباً واحداً لتنظيم محادثاتك ومصادرك ومسوداتك ومتابعتها من أي
+          جهاز.
         </p>
       </div>
 
@@ -141,8 +140,8 @@ export default async function RegisterPage({
         </div>
 
         <p className="text-xs leading-6 text-muted-foreground">
-          قد تطلب البيئة التحقق من البريد قبل إنشاء الجلسة الأولى. لا تُخزّن كلمة
-          المرور داخل تطبيق الويب؛ تديرها خدمة المصادقة المختارة.
+          قد تحتاج إلى فتح رابط يصل إلى بريدك قبل تسجيل الدخول للمرة الأولى.
+          استخدم كلمة مرور قوية لا تستعملها في حساب آخر.
         </p>
 
         <Button
@@ -167,7 +166,7 @@ export default async function RegisterPage({
 
       {!configured && (
         <p className="mt-5 text-center text-xs leading-6 text-muted-foreground">
-          يلزم ضبط متغيري Supabase العامين لتفعيل الحسابات في هذه البيئة.
+          الحسابات غير مفعلة في هذه البيئة حالياً.
         </p>
       )}
     </div>
