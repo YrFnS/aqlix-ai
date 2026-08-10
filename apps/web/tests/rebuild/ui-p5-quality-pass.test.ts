@@ -146,6 +146,10 @@ describe("UI P5 final quality pass", () => {
     );
 
     expect(config).toContain('name: "p5-authenticated-chromium"');
+    expect(config).toContain('name: "p5-authenticated-firefox"');
+    expect(config).toContain('name: "p5-authenticated-webkit"');
+    expect(config).toContain('devices["Desktop Firefox"]');
+    expect(config).toContain('devices["Desktop Safari"]');
     expect(config).toContain('timezoneId: "Asia/Baghdad"');
     expect(productJourney).toContain("مصادر المساحة");
     expect(productJourney).toContain("معاينة المرجع");
@@ -154,6 +158,10 @@ describe("UI P5 final quality pass", () => {
     expect(productJourney).toContain("outsiderApi.status()).toBe(404)");
     expect(byokJourney).toContain("Free-tier key");
     expect(byokJourney).toContain("PROVIDER_UNCONFIGURED");
+    expect(workflow).toContain(
+      "playwright install --with-deps chromium firefox webkit",
+    );
+    expect(workflow).toContain("journey across all engines");
     expect(workflow).toContain("bunx supabase start");
     expect(workflow).toContain("p5_user_openrouter_settings.test.sql");
     expect(workflow).toContain("UI P5 Authenticated Success Gate");
