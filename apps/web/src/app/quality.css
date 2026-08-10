@@ -1,44 +1,40 @@
-@layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
-
-  body {
-    overflow-wrap: break-word;
-  }
-
-  main:focus {
-    outline: none;
-  }
-
-  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-    scroll-margin-block: 5rem;
-  }
-
-  :where(button, [role="button"], a[href]) {
-    touch-action: manipulation;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-@layer utilities {
-  .break-anywhere {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
+body {
+  overflow-wrap: break-word;
+}
 
-  .safe-inline {
-    padding-inline-start: max(1rem, env(safe-area-inset-left));
-    padding-inline-end: max(1rem, env(safe-area-inset-right));
-  }
+main:focus {
+  outline: none;
+}
 
-  .safe-block-start {
-    padding-block-start: max(1rem, env(safe-area-inset-top));
-  }
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  scroll-margin-block: 5rem;
+}
 
-  .safe-block-end {
-    padding-block-end: max(1rem, env(safe-area-inset-bottom));
-  }
+:where(button, [role="button"], a[href]) {
+  touch-action: manipulation;
+}
+
+.break-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.safe-inline {
+  padding-inline-start: max(1rem, env(safe-area-inset-left));
+  padding-inline-end: max(1rem, env(safe-area-inset-right));
+}
+
+.safe-block-start {
+  padding-block-start: max(1rem, env(safe-area-inset-top));
+}
+
+.safe-block-end {
+  padding-block-end: max(1rem, env(safe-area-inset-bottom));
 }
 
 @supports (height: 100dvh) {
