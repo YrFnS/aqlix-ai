@@ -32,7 +32,7 @@ const answer = 42;
 \`\`\``);
 
     expect(html).toContain("<h1");
-    expect(html).toContain("عنوان رئيسي</h1>");
+    expect(html).toContain("<span>عنوان رئيسي</span></h1>");
     expect(html).toContain("<strong>نص عريض</strong>");
     expect(html).toContain("<em>نص مائل</em>");
     expect(html).toContain("inline code</code>");
