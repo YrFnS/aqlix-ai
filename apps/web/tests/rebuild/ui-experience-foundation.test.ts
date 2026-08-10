@@ -85,6 +85,7 @@ describe("UI experience P0 foundation", () => {
     const shell = readSource("src/components/ui/page-shell.tsx");
     const surface = readSource("src/components/ui/surface.tsx");
     const loading = readSource("src/app/loading.tsx");
+    const routeState = readSource("src/components/system/route-state.tsx");
     const appLayout = readSource("src/app/(app)/layout.tsx");
     const appNavigation = readSource("src/components/navigation/app-nav.tsx");
 
@@ -92,8 +93,9 @@ describe("UI experience P0 foundation", () => {
     expect(shell).toContain('data-slot="page-header"');
     expect(surface).toContain('data-slot="surface"');
     expect(surface).toContain("surfaceVariants");
-    expect(loading).toContain("<PageShell");
-    expect(loading).toContain("<Surface");
+    expect(loading).toContain("<RouteLoadingState");
+    expect(routeState).toContain("<PageShell");
+    expect(routeState).toContain("<Surface");
     expect(appLayout).toContain("<AppNav");
     expect(appNavigation).toContain("key={pathname}");
   });
