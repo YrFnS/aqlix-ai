@@ -2,9 +2,9 @@ name: P2 Conversation Data Contract
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
   pull_request:
-    branches: [develop]
+    branches: [main]
 
 permissions:
   contents: read
@@ -23,13 +23,13 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: kiteb_p2_test
+          POSTGRES_DB: tuppra_p2_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres -d kiteb_p2_test"
+          --health-cmd "pg_isready -U postgres -d tuppra_p2_test"
           --health-interval 5s
           --health-timeout 5s
           --health-retries 10
@@ -37,7 +37,7 @@ jobs:
     env:
       PGHOST: 127.0.0.1
       PGPORT: "5432"
-      PGDATABASE: kiteb_p2_test
+      PGDATABASE: tuppra_p2_test
       PGUSER: postgres
       PGPASSWORD: postgres
 
