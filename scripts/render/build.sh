@@ -33,7 +33,7 @@ if [[ "${NEXT_PUBLIC_APP_ENV:-}" != "${APP_ENV}" ]]; then
   exit 1
 fi
 
-echo "Building Kiteb release ${RELEASE_SHA:0:12} for ${APP_ENV}."
+echo "Building Tuppra release ${RELEASE_SHA:0:12} for ${APP_ENV}."
 
 bash scripts/ci/install-dependencies.sh
 bun run validate:release-env
