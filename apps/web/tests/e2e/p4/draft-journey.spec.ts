@@ -217,7 +217,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   const workspaceId = await createWorkspace(page, workspaceName);
 
   await page.getByRole("link", { name: "المصادر", exact: true }).click();
-  await page.getByLabel("ملف TXT أو Markdown").setInputFiles({
+  await page.locator("#document-file").setInputFiles({
     name: "launch-decision.md",
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
@@ -231,14 +231,19 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
   await page.getByLabel("عنوان اختياري").fill("P4 launch decision");
-  await page.getByRole("button", { name: "إنشاء وفتح المحادثة" }).click();
+  await page.getByRole("button", { name: "إنشاء وفتح", exact: true }).click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
 
-  await page.getByLabel(/استخدام مصادر مساحة العمل/).check();
+  const groundingButton = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+  await groundingButton.click();
+  await expect(groundingButton).toHaveAttribute("aria-pressed", "true");
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");
@@ -250,8 +255,8 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     ),
   ).toBeVisible();
   await expect(
-    page.getByText("تم حفظ الاستجابة والمراجع القابلة للفتح.", {
-      exact: true,
+    page.getByRole("status").filter({
+      hasText: "حُفظت الاستجابة ومراجعها القابلة للفحص.",
     }),
   ).toBeVisible();
 
@@ -271,7 +276,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(messageId).toBeTruthy();
   expect(sourceId).toBeTruthy();
 
-  await page.getByLabel("البداية").selectOption("memo");
+  await page.getByLabel("نوع البداية").selectOption("memo");
   await page.getByRole("button", { name: "إنشاء المسودة" }).click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/,
