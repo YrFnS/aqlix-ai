@@ -247,7 +247,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await waitForClientSurface(page, "conversation");
 
   const groundingButton = page.getByRole("button", {
-    name: "مصادر المساحة",
+    name: "استخدام مصادر مساحة العمل",
     exact: true,
   });
   await groundingButton.click();
