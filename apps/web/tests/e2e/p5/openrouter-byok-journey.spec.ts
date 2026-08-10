@@ -17,6 +17,13 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+async function openAiSettings(page: Page): Promise<void> {
+  await page.goto("/settings/ai");
+  await expect(
+    page.getByRole("heading", { name: "مفتاحك، نموذجك، وحدودك" }),
+  ).toBeVisible();
+}
+
 async function conversationPayload(
   request: APIRequestContext,
   workspaceId: string,
@@ -57,21 +64,17 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   const conversationTitle = "Live selected model";
 
   await register(page, ownerEmail);
-  await page
-    .getByRole("link", { name: "إعدادات الذكاء الاصطناعي" })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "إعدادات الذكاء الاصطناعي" }),
-  ).toBeVisible();
+  await openAiSettings(page);
 
   await page.getByLabel("OpenRouter API key").fill(apiKey);
   await page.getByRole("button", { name: "Validate and connect" }).click();
-  await expect(page.getByText(/Connected · •••• 2026/)).toBeVisible();
-  await expect(page.getByText(/Free-tier key/)).toBeVisible();
+  await expect(page.getByText("Connected", { exact: true })).toBeVisible();
+  await expect(page.getByText("•••• 2026", { exact: true })).toBeVisible();
+  await expect(page.getByText("Free-tier key", { exact: true })).toBeVisible();
   await expect(page.getByLabel("OpenRouter API key")).toHaveCount(0);
 
   await page.getByLabel("Search OpenRouter models").fill("fixture");
-  await page.getByText("Free only").click();
+  await page.getByText("Free only", { exact: true }).click();
   const freeCard = page
     .locator("article")
     .filter({ hasText: "Live Free Fixture Model" });
@@ -91,9 +94,11 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   });
   const outsiderPage = await outsiderContext.newPage();
   await register(outsiderPage, outsiderEmail);
-  await outsiderPage.goto("/settings/ai");
+  await openAiSettings(outsiderPage);
   await expect(outsiderPage.getByLabel("OpenRouter API key")).toBeVisible();
-  await expect(outsiderPage.getByText(/Connected · ••••/)).toHaveCount(0);
+  await expect(
+    outsiderPage.getByText("Connected", { exact: true }),
+  ).toHaveCount(0);
   const outsiderSettings = await outsiderContext.request.get(
     "/api/v1/ai/settings",
   );
@@ -158,7 +163,7 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
     },
   });
 
-  await page.goto("/settings/ai");
+  await openAiSettings(page);
   page.once("dialog", (dialog) => void dialog.accept());
   await page.getByRole("button", { name: "Disconnect" }).click();
   await expect(page.getByLabel("OpenRouter API key")).toBeVisible();
