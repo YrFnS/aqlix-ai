@@ -116,9 +116,8 @@ export function DraftFromConversationPanel({
           }
         }
       } catch {
-        // The main conversation surface owns visible request failures. This
-        // helper retries only while the first completed answer is not yet
-        // available to the server-rendered sibling panel.
+        // The conversation owns visible request failures. This helper retries
+        // only while the first completed answer is not yet available here.
       }
 
       if (!cancelled) {
@@ -137,7 +136,7 @@ export function DraftFromConversationPanel({
   if (availableMessages.length === 0) {
     return (
       <section className="rounded-3xl border border-dashed border-border bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold text-primary">P4 · Draft</p>
+        <p className="text-sm font-semibold text-primary">من الإجابة إلى المسودة</p>
         <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
           لا توجد إجابة مكتملة بعد
         </h2>
@@ -152,7 +151,7 @@ export function DraftFromConversationPanel({
   if (!canWrite) {
     return (
       <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold text-primary">P4 · Draft</p>
+        <p className="text-sm font-semibold text-primary">من الإجابة إلى المسودة</p>
         <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
           نتائج قابلة للمراجعة
         </h2>
@@ -184,13 +183,13 @@ export function DraftFromConversationPanel({
 
       if (!response.ok || payload.ok !== true) {
         throw new Error(
-          payload.error?.message || "The reusable draft could not be created.",
+          payload.error?.message || "تعذر إنشاء المسودة من الإجابة المختارة.",
         );
       }
 
       const draftId = payload.data?.detail?.draft?.id;
       if (!draftId) {
-        throw new Error("The created draft identity is missing.");
+        throw new Error("تعذر تحديد المسودة التي أُنشئت.");
       }
 
       router.push(`/workspaces/${workspaceId}/drafts/${draftId}?status=created`);
@@ -199,7 +198,7 @@ export function DraftFromConversationPanel({
       setError(
         creationError instanceof Error
           ? creationError.message
-          : "تعذر إنشاء المسودة / Draft creation failed.",
+          : "تعذر إنشاء المسودة.",
       );
     } finally {
       setIsCreating(false);
@@ -211,14 +210,14 @@ export function DraftFromConversationPanel({
       <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-primary">
-            P4 · Ask → Ground → Draft
+            إجابة محفوظة → مسودة
           </p>
           <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            حوّل إجابة محفوظة إلى عمل قابل للتحرير
+            حوّل الإجابة إلى عمل قابل للتحرير
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            الهيكل الأولي حتمي ومرئي، ولا يجري اتصالاً إضافياً بالمزود. المراجع
-            المحفوظة في الإجابة تُنسخ كلقطة منشأ للمسودة.
+            اختر الإجابة والصيغة المناسبة. تُحفظ المراجع المرتبطة مع المسودة حتى
+            تستطيع الرجوع إلى منشئها ومصادرها لاحقاً.
           </p>
         </div>
         <div className="rounded-2xl bg-primary/10 p-3 text-primary">
@@ -236,7 +235,8 @@ export function DraftFromConversationPanel({
           >
             {orderedMessages.map((message) => (
               <option key={message.id} value={message.id}>
-                #{message.sequence} · {preview(message.content)} · {message.citationCount} refs
+                #{message.sequence} · {preview(message.content)} · {message.citationCount}{" "}
+                مرجع
               </option>
             ))}
           </select>
