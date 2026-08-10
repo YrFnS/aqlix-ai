@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import {
   AlertTriangle,
   ArrowRight,
+  BookOpen,
+  ChevronDown,
   Clock3,
   Download,
   FileText,
@@ -25,7 +27,7 @@ import {
 
 export const metadata: Metadata = {
   title: "مقاطع المصدر",
-  description: "Inspect the exact persisted passages extracted from a document.",
+  description: "راجع المقاطع المحفوظة التي يمكن فتحها والاستشهاد بها.",
 };
 
 type PageParams = Promise<{ workspaceId: string; attachmentId: string }>;
@@ -54,6 +56,12 @@ function locatorFor(source: DocumentDetail["sources"][number]): string {
     return `الأسطر ${source.startLine}–${source.endLine}`;
   }
   return `المقطع ${source.ordinal + 1}`;
+}
+
+function statusLabel(status: DocumentDetail["attachment"]["status"]): string {
+  if (status === "ready") return "جاهز للاستخدام";
+  if (status === "failed") return "فشلت المعالجة";
+  return "قيد المعالجة";
 }
 
 export default async function SourceDocumentPage({
@@ -143,11 +151,7 @@ export default async function SourceDocumentPage({
 
             <div className="mt-7 flex flex-wrap gap-2">
               <span className="rounded-full bg-background/10 px-3 py-1.5 text-xs font-semibold text-background/80">
-                {attachment.status === "ready"
-                  ? "جاهز"
-                  : attachment.status === "failed"
-                    ? "فشل"
-                    : "قيد المعالجة"}
+                {statusLabel(attachment.status)}
               </span>
               <span className="rounded-full border border-background/20 px-3 py-1.5 text-xs font-semibold text-background/70">
                 {attachment.mediaType}
@@ -164,8 +168,8 @@ export default async function SourceDocumentPage({
               {attachment.fileName}
             </h1>
             <p className="mt-4 text-sm leading-8 text-background/65 sm:text-base">
-              هذه المقاطع ناتجة عن فك UTF-8 حتمي. Markdown معروض كنص آمن، ولا
-              تُحوّل محتويات الملف إلى HTML.
+              المحتوى محفوظ كنص آمن ومقسّم إلى مقاطع ثابتة يمكنك فتحها والرجوع
+              إليها من الإجابات والمسودات.
             </p>
           </div>
 
@@ -176,7 +180,7 @@ export default async function SourceDocumentPage({
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:bg-background/90"
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
-                تنزيل خاص
+                تنزيل الملف
               </Link>
             )}
           </div>
@@ -186,33 +190,27 @@ export default async function SourceDocumentPage({
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-3xl border border-border/70 bg-card p-5">
           <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
-          <p className="mt-4 text-xs text-muted-foreground">الحجم الأصلي</p>
+          <p className="mt-4 text-xs text-muted-foreground">حجم الملف</p>
           <p dir="ltr" className="mt-1 font-semibold">
             {formatBytes(attachment.byteSize)}
           </p>
         </div>
         <div className="rounded-3xl border border-border/70 bg-card p-5">
           <Clock3 className="h-5 w-5 text-primary" aria-hidden="true" />
-          <p className="mt-4 text-xs text-muted-foreground">وقت الرفع</p>
+          <p className="mt-4 text-xs text-muted-foreground">تاريخ الإضافة</p>
           <p className="mt-1 text-sm font-semibold">
             {formatTimestamp(attachment.createdAt)}
           </p>
         </div>
         <div className="rounded-3xl border border-border/70 bg-card p-5">
-          <Hash className="h-5 w-5 text-primary" aria-hidden="true" />
-          <p className="mt-4 text-xs text-muted-foreground">SHA-256</p>
-          <p dir="ltr" className="mt-1 break-all font-mono text-xs">
-            {attachment.contentSha256 ?? "غير متاح"}
-          </p>
+          <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
+          <p className="mt-4 text-xs text-muted-foreground">المقاطع المتاحة</p>
+          <p className="mt-1 font-semibold">{attachment.sourceCount}</p>
         </div>
         <div className="rounded-3xl border border-border/70 bg-card p-5">
           <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-          <p className="mt-4 text-xs text-muted-foreground">المعالج</p>
-          <p dir="ltr" className="mt-1 text-sm font-semibold">
-            {latestRun
-              ? `${latestRun.processor}@${latestRun.processorVersion}`
-              : attachment.processorVersion ?? "غير متاح"}
-          </p>
+          <p className="mt-4 text-xs text-muted-foreground">الوصول</p>
+          <p className="mt-1 text-sm font-semibold">خاص بمساحة العمل</p>
         </div>
       </section>
 
@@ -227,11 +225,11 @@ export default async function SourceDocumentPage({
                 {attachment.failureCode ?? "PROCESSING_FAILED"}
               </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                لم يُقدّم المستند كمصدر جاهز
+                لم يصبح الملف مصدراً جاهزاً
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {attachment.failureReason ??
-                  "فشلت المعالجة ولم تُعرض مقاطع بديلة أو محتوى مفبرك."}
+                  "فشلت معالجة الملف ولم تُنشأ مقاطع بديلة."}
               </p>
             </div>
           </div>
@@ -242,7 +240,7 @@ export default async function SourceDocumentPage({
         <div>
           <p className="text-sm font-semibold text-primary">المقاطع المستخرجة</p>
           <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            دليل قابل للفتح بعنوان ثابت
+            راجع النص الذي يمكن الاستشهاد به
           </h2>
         </div>
 
@@ -259,8 +257,7 @@ export default async function SourceDocumentPage({
                     S{source.ordinal + 1}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {locatorFor(source)} · offsets {source.startOffset}–
-                    {source.endOffset}
+                    {locatorFor(source)}
                   </span>
                 </div>
                 <pre
@@ -273,41 +270,63 @@ export default async function SourceDocumentPage({
                   href={`#source-${source.id}`}
                   className="mt-5 inline-flex min-h-10 items-center text-xs font-semibold text-primary"
                 >
-                  رابط ثابت لهذا المقطع
+                  نسخ رابط هذا المقطع
                 </a>
               </article>
             ))}
           </div>
         ) : (
           <div className="mt-6 rounded-3xl border border-dashed border-border bg-card p-8 text-center text-sm leading-7 text-muted-foreground">
-            لا توجد مقاطع محفوظة لهذا المستند. لا تعرض الصفحة نصاً مثالياً أو
-            نتيجة بديلة.
+            لا توجد مقاطع محفوظة لهذا الملف.
           </div>
         )}
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-          <p className="text-sm font-semibold text-primary">سجل المعالجة</p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            محاولات قابلة للفحص
-          </h2>
-          <div className="mt-6 space-y-3">
+      <details className="group rounded-3xl border border-border/70 bg-card">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary sm:px-6 [&::-webkit-details-marker]:hidden">
+          التفاصيل التقنية وسجل المعالجة
+          <ChevronDown
+            className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180"
+            aria-hidden="true"
+          />
+        </summary>
+        <div className="space-y-5 border-t border-border/70 p-5 sm:p-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl bg-secondary/45 p-4">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Hash className="h-4 w-4" aria-hidden="true" />
+                SHA-256
+              </div>
+              <p dir="ltr" className="mt-2 break-all font-mono text-xs">
+                {attachment.contentSha256 ?? "غير متاح"}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-secondary/45 p-4">
+              <p className="text-xs text-muted-foreground">نسخة المعالج</p>
+              <p dir="ltr" className="mt-2 break-all font-mono text-xs">
+                {latestRun
+                  ? `${latestRun.processor}@${latestRun.processorVersion}`
+                  : attachment.processorVersion ?? "غير متاح"}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
             {document.processingRuns.map((run) => (
               <div
                 key={run.id}
-                className="rounded-2xl bg-secondary/55 p-4 text-sm"
+                className="rounded-2xl border border-border/70 bg-background p-4 text-sm"
               >
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="font-semibold">
-                    محاولة {run.attempt} · {run.status}
+                    المحاولة {run.attempt} · {run.status}
                   </span>
                   <span dir="ltr" className="text-xs text-muted-foreground">
                     {run.processor}@{run.processorVersion}
                   </span>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {run.sourceCount} passages · {run.characterCount} characters
+                  {run.sourceCount} مقطع · {run.characterCount} حرف
                 </p>
                 {run.failureCode && (
                   <p className="mt-2 text-xs text-destructive">
@@ -318,31 +337,31 @@ export default async function SourceDocumentPage({
             ))}
           </div>
         </div>
+      </details>
 
-        <div className="rounded-3xl border border-destructive/25 bg-card p-6 sm:p-8">
-          <p className="text-sm font-semibold text-destructive">حذف منسق</p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            الملف الخاص ثم البيانات المشتقة
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            لا يُحذف سجل PostgreSQL قبل نجاح إزالة الملف الخاص. عند فشل التخزين
-            تبقى البيانات ظاهرة لإعادة المحاولة بدلاً من ادعاء الحذف.
-          </p>
-          <div className="mt-6">
-            {canWrite ? (
-              <DocumentDeleteButton
-                workspaceId={workspace.id}
-                attachmentId={attachment.id}
-                fileName={attachment.fileName}
-              />
-            ) : (
-              <div className="rounded-2xl bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
-                {workspaceArchived
-                  ? "استعد مساحة العمل قبل حذف مستند."
-                  : "عضوية القراءة لا تسمح بالحذف."}
-              </div>
-            )}
-          </div>
+      <section className="rounded-3xl border border-destructive/25 bg-card p-6 sm:p-8">
+        <p className="text-sm font-semibold text-destructive">حذف المصدر</p>
+        <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
+          احذف الملف والمقاطع المرتبطة به
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+          لا تُحذف بيانات المصدر قبل نجاح إزالة الملف الخاص. إذا تعذر حذف الملف،
+          يبقى المصدر ظاهراً حتى تستطيع إعادة المحاولة بدلاً من فقدان أثره.
+        </p>
+        <div className="mt-6">
+          {canWrite ? (
+            <DocumentDeleteButton
+              workspaceId={workspace.id}
+              attachmentId={attachment.id}
+              fileName={attachment.fileName}
+            />
+          ) : (
+            <div className="rounded-2xl bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
+              {workspaceArchived
+                ? "استعد مساحة العمل قبل حذف مصدر."
+                : "عضوية القراءة لا تسمح بالحذف."}
+            </div>
+          )}
         </div>
       </section>
     </div>
