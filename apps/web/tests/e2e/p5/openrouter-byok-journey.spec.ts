@@ -83,10 +83,9 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await expect(
     page.getByText(`تم اختيار النموذج: ${freeModelId}`),
   ).toBeVisible();
-  const currentModelSummary = page
-    .getByText("النموذج الحالي", { exact: true })
-    .locator("..");
-  await expect(currentModelSummary).toContainText(freeModelId);
+  await expect(
+    page.locator("aside").getByText(freeModelId, { exact: true }),
+  ).toBeVisible();
 
   const outsiderContext = await browser.newContext({
     baseURL: "http://127.0.0.1:3000",
