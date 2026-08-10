@@ -39,7 +39,7 @@ import {
 export const metadata: Metadata = {
   title: "محادثة",
   description:
-    "Persistent bilingual conversation with optional sources and reusable drafts.",
+    "تابع محادثة بالعربية أو English، واستخدم المصادر، وحوّل الإجابات إلى مسودات.",
 };
 
 type PageParams = Promise<{ workspaceId: string; conversationId: string }>;
@@ -185,9 +185,8 @@ export default async function ConversationPage({
               {conversation.title}
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
-              الرسائل، النص الجزئي، حالة المزود، النموذج، الرموز، زمن الاستجابة،
-              والمراجع الاختيارية تُعاد من السجل المحفوظ. يمكن تحويل أي إجابة
-              مكتملة إلى مسودة ذات إصدارات ومنشأ محفوظ.
+              تابع الحوار بالعربية أو English، فعّل مصادر المساحة عندما تحتاج
+              إلى مراجع، ثم حوّل الإجابة المناسبة إلى مسودة قابلة للتحرير.
             </p>
           </div>
 
@@ -254,9 +253,9 @@ export default async function ConversationPage({
               <PencilLine className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-primary">إدارة المحادثة</p>
+              <p className="text-sm font-semibold text-primary">تنظيم المحادثة</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                العنوان والسجل
+                غيّر العنوان عند الحاجة
               </h2>
             </div>
           </div>
@@ -288,8 +287,8 @@ export default async function ConversationPage({
           ) : (
             <p className="mt-6 text-sm leading-7 text-muted-foreground">
               {isWorkspaceArchived
-                ? "مساحة العمل مؤرشفة، لذلك يبقى عنوان المحادثة والسجل للقراءة فقط حتى استعادة المساحة."
-                : "يمكن لحسابك قراءة العنوان والسجل، لكن تعديله يحتاج دور المحرر أو المالك."}
+                ? "مساحة العمل مؤرشفة، لذلك يبقى عنوان المحادثة للقراءة فقط حتى استعادة المساحة."
+                : "يمكنك قراءة المحادثة، لكن تعديل عنوانها يحتاج دور المحرر أو المالك."}
             </p>
           )}
 
@@ -299,8 +298,8 @@ export default async function ConversationPage({
               aria-hidden="true"
             />
             <p>
-              فشل المزود أو الإلغاء لا يمسح المحاولة السابقة. إعادة المحاولة تضيف
-              رسالة مساعد جديدة وتحافظ على التسلسل الكامل.
+              إذا توقفت استجابة أو فشلت، يبقى ما سبق محفوظاً ويمكنك إعادة
+              المحاولة دون فقدان المحادثة.
             </p>
           </div>
         </div>
@@ -311,13 +310,13 @@ export default async function ConversationPage({
               <Trash2 className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-destructive">منطقة دائمة</p>
+              <p className="text-sm font-semibold text-destructive">إجراء نهائي</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
                 حذف المحادثة
               </h2>
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                يحذف هذا الإجراء الرسائل ومحاولات التوليد والمراجع المرتبطة عبر
-                علاقات قاعدة البيانات. مساحة العمل نفسها لا تتأثر.
+                يحذف هذا الإجراء المحادثة ورسائلها ومراجعها نهائياً. لن تتأثر
+                بقية محتويات مساحة العمل.
               </p>
             </div>
           </div>
@@ -352,10 +351,9 @@ export default async function ConversationPage({
             aria-hidden="true"
           />
           <p>
-            وضع المصادر اختياري وغير مفعّل افتراضياً. عند تفعيله تبحث المحادثة
-            في المقاطع الجاهزة داخل هذه المساحة فقط، ولا تحفظ الاستجابة كمكتملة
-            بلا مرجع صالح. تحويل الإجابة إلى مسودة ينسخ المراجع الحالية كلقطة
-            منشأ قابلة للفحص.
+            مصادر المساحة اختيارية. عند تفعيلها، تظهر المراجع المستخدمة مع
+            روابط إلى المقاطع الداعمة. وعند تحويل إجابة إلى مسودة، تبقى هذه
+            المراجع مرتبطة بها للرجوع إليها لاحقاً.
           </p>
         </div>
       </section>
