@@ -106,6 +106,22 @@ describe("P2 provider and conversation boundary", () => {
     expect(client).toContain("retryMessageId");
   });
 
+  test("batches stream deltas and respects the reader's scroll position", () => {
+    const client = readWeb(
+      "src/components/conversations/conversation-shell.tsx",
+    );
+
+    expect(client).toContain("pendingDeltasRef");
+    expect(client).toContain("window.requestAnimationFrame(flushPendingDeltas)");
+    expect(client).toContain("shouldAutoScrollRef");
+    expect(client).toContain("AUTO_SCROLL_THRESHOLD_PX");
+    expect(client).toContain("onScroll={updateAutoScrollPreference}");
+    expect(client).toContain("readyReceived && !terminalReceived");
+    expect(client).not.toContain("router.refresh()");
+    expect(client).not.toContain("scrollIntoView");
+    expect(client).not.toContain('behavior: "smooth"');
+  });
+
   test("keeps PostgreSQL as the only durable conversation authority", () => {
     const repository = readWeb("src/lib/conversations/repository.ts");
     const migration = readRepo(
