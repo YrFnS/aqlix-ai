@@ -3,7 +3,7 @@
 **Branch:** `agent/ui-experience-rework`  
 **Base:** `main` at `a19f75a43d9f37e6558a964b0dd5b3d72c729876`  
 **Draft pull request:** `#10`  
-**Status:** UI P0 engineering complete; browser review waived; UI P1 source implementation in progress
+**Status:** UI P0 engineering complete; browser review waived; UI P1 source implementation complete
 
 This work improves the interface without changing Tuppra's authenticated data, authorization, provider, source, citation, draft, or operational contracts.
 
@@ -50,18 +50,6 @@ The authenticated workspace list and workspace overview prove the foundation aga
 - mixed workspace names and descriptions retain `dir="auto"` boundaries;
 - static regression coverage protects this representative migration from reverting to phase labels or local visual ownership.
 
-### Validation evidence
-
-The dependency migration gate and the normal repository safeguards previously completed successfully on the exact recorded P0 heads. They covered:
-
-1. frozen Bun dependency installation;
-2. shared-package builds;
-3. lint and focused TypeScript validation;
-4. the complete rebuild test suite;
-5. the optimized Next.js release build;
-6. Arabic and RTL safeguards;
-7. accessibility and product-language safeguards.
-
 ### Browser-review decision
 
 On **August 10, 2026**, the product owner explicitly chose to skip the P0 browser-review gate and continue to UI P1.
@@ -78,25 +66,40 @@ The residual visual risk remains open and should be revisited before the interfa
 
 ## UI P1 — Marketing and authentication experience
 
-### Source implementation
+### Implemented
 
 - replaced the rebuild-oriented homepage language with a product-focused value proposition;
 - replaced the static mock dashboard with an interactive, user-controlled Ask → Ground → Draft preview;
 - limited the preview to implemented TXT and Markdown source capabilities rather than implying PDF or OCR support;
 - used finite Motion transitions and reduced-motion handling instead of endless decorative animation;
 - added a reusable Tuppra brand mark across public and account surfaces;
-- rebuilt the marketing navigation, mobile sheet, and footer around the shared semantic system;
+- rebuilt the marketing navigation, animated mobile sheet, and footer around the shared semantic system;
 - added capability, workflow, principle, and final-action sections to the homepage;
 - removed implementation-phase labels and rebuild-status copy from authentication screens;
 - introduced one shared authentication frame and semantic status notice for sign-in and registration;
 - preserved Supabase configuration gates, safe return paths, server actions, and account-boundary honesty;
 - added focused regression coverage for public product language, supported-source claims, motion preferences, navigation accessibility, and the shared authentication shell.
 
-### Remaining for UI P1
+### Validation evidence
 
-- pass all exact-head repository safeguards for the new marketing and authentication changes;
-- inspect and fix any dependency-version, TypeScript, accessibility, RTL, or static-contract regressions found by CI;
-- keep the pull request draft while later product-surface phases continue.
+The implementation head immediately preceding this status record passed every normal repository safeguard:
+
+1. frozen Bun dependency installation;
+2. shared-package builds;
+3. ESLint and focused TypeScript validation;
+4. the complete active rebuild test suite;
+5. the optimized Next.js web build;
+6. PR scope validation;
+7. Arabic and RTL foundation checks;
+8. accessibility foundation checks;
+9. public brand and claims safeguards;
+10. Arabic text and bidirectional-input utility tests.
+
+### Completion boundary
+
+UI P1 source implementation is complete. The waived browser-review items remain residual risk and are not counted as passed visual evidence.
+
+The next source phase is the authenticated product-shell rework: navigation rail, contextual command bar, responsive sheets, and route-level transitions. It has not started in this status record.
 
 ## Guardrails
 
