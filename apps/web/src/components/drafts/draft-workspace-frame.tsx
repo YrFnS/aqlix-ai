@@ -2,9 +2,10 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useId, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { GitBranch, Settings, X } from "lucide-react";
+import { ArrowRight, GitBranch, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motionSpring } from "@/lib/motion";
 
@@ -12,6 +13,7 @@ export function DraftWorkspaceFrame({
   title,
   subtitle,
   status,
+  backHref,
   toolbar,
   versions,
   inspector,
@@ -20,6 +22,7 @@ export function DraftWorkspaceFrame({
   title: string;
   subtitle?: string;
   status: "active" | "archived";
+  backHref: string;
   toolbar?: ReactNode;
   versions: ReactNode;
   inspector: ReactNode;
@@ -61,6 +64,12 @@ export function DraftWorkspaceFrame({
   return (
     <section className="flex min-h-[46rem] flex-col overflow-hidden rounded-2xl border border-line/80 bg-surface-raised shadow-surface-md lg:h-[calc(100svh-8.5rem)]">
       <header className="flex min-h-16 items-center gap-3 border-b border-line/75 bg-surface-overlay/90 px-3 backdrop-blur-xl sm:px-4">
+        <Button asChild variant="ghost" size="icon" className="rounded-xl">
+          <Link href={backHref} aria-label="العودة إلى مكتبة المسودات">
+            <ArrowRight className="h-5 w-5" aria-hidden="true" />
+          </Link>
+        </Button>
+
         <Button
           type="button"
           variant="ghost"
