@@ -46,13 +46,22 @@ function collectHydrationErrors(page: Page): string[] {
   return errors;
 }
 
+async function waitForHydration(page: Page): Promise<void> {
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-app-hydrated",
+    "true",
+  );
+}
+
 async function register(page: Page, email: string): Promise<void> {
   await page.goto("/register");
+  await waitForHydration(page);
   await page.getByLabel(/البريد الإلكتروني/).fill(email);
   await page.getByLabel(/^كلمة المرور/).fill(password);
   await page.getByLabel(/تأكيد كلمة المرور/).fill(password);
   await page.getByRole("button", { name: /إنشاء الحساب/ }).click();
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
+  await waitForHydration(page);
 }
 
 function isolatedClient(key = publicKey): SupabaseClient<Database> {
@@ -190,9 +199,6 @@ test("completes the current source, grounded conversation, citation, draft, prop
     "المراجعة الأسبوعية مسؤولية فريق المنصة.",
   ].join("\n");
 
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-    origin: "http://127.0.0.1:3000",
-  });
   await register(page, ownerEmail);
 
   await page.getByLabel("اسم المساحة", { exact: true }).fill(workspaceName);
@@ -205,6 +211,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   expect(workspaceId).toBeTruthy();
 
   await page.goto(`/workspaces/${workspaceId}/sources`);
+  await waitForHydration(page);
   await page.locator("#document-file").setInputFiles({
     name: documentName,
     mimeType: "text/markdown",
@@ -222,6 +229,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   ).toBeVisible();
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
+  await waitForHydration(page);
   await page.getByLabel("عنوان اختياري").fill("P5 grounded decision");
   await page.getByRole("button", { name: "إنشاء وفتح", exact: true }).click();
   await expect(page).toHaveURL(
@@ -354,6 +362,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await register(viewerPage, viewerEmail);
   await addViewerMembership(workspaceId!, viewerEmail);
   await viewerPage.goto(`/workspaces/${workspaceId}/drafts/${draftId}`);
+  await waitForHydration(viewerPage);
   await expect(draftContentEditor(viewerPage)).not.toBeEditable();
   await expect(
     viewerPage.getByRole("button", { name: "حفظ إصدار" }),
@@ -389,6 +398,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   );
   expect(outsiderApi.status()).toBe(404);
   await outsiderPage.goto(`/workspaces/${workspaceId}/drafts/${draftId}`);
+  await waitForHydration(outsiderPage);
   await expect(
     outsiderPage.getByRole("heading", { name: "المسودة غير متاحة" }),
   ).toBeVisible();
