@@ -193,6 +193,13 @@ function versionCard(page: Page, version: number) {
     .filter({ has: page.getByText(`v${version}`, { exact: true }) });
 }
 
+function draftContentField(page: Page) {
+  return page.getByRole("textbox", {
+    name: "محتوى المسودة",
+    exact: true,
+  });
+}
+
 test("completes Ask Ground Draft Continue with durable versions and provenance", async ({
   browser,
   context,
@@ -301,7 +308,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   ]);
 
   const savedContent = `${primaryDraft.data.draft.content}\n\nقرار بشري محفوظ 2026`;
-  await page.getByLabel("محتوى المسودة").fill(savedContent);
+  await draftContentField(page).fill(savedContent);
   await page.getByRole("button", { name: "حفظ إصدار" }).click();
   await expect(page.getByText(/New immutable version saved/)).toBeVisible();
 
@@ -512,10 +519,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(
     viewerPage.getByRole("heading", { name: primaryDraft.data.draft.title }),
   ).toBeVisible();
-  await expect(viewerPage.getByLabel("محتوى المسودة")).toHaveAttribute(
-    "readonly",
-    "",
-  );
+  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");
   await expect(
     viewerPage.getByRole("button", { name: "حفظ إصدار" }),
   ).toHaveCount(0);
@@ -606,10 +610,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await page.goto(`/workspaces/${workspaceId}`);
   await page.getByRole("button", { name: "أرشفة" }).click();
   await page.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
-  await expect(page.getByLabel("محتوى المسودة")).toHaveAttribute(
-    "readonly",
-    "",
-  );
+  await expect(draftContentField(page)).toHaveAttribute("readonly", "");
   await expect(
     page.getByRole("button", { name: "بدء اقتراح" }),
   ).toHaveCount(0);
