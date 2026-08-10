@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpLeft, UserRoundPlus } from "lucide-react";
+import { AuthFrame, AuthNotice } from "@/components/auth/auth-frame";
 import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
 import { isSupabaseConfigured } from "@/config/env";
@@ -15,14 +16,29 @@ type SearchParams = Promise<
   Record<string, string | string[] | undefined>
 >;
 
-const statusMessages: Record<string, string> = {
-  configuration:
-    "خدمة الحساب غير مضبوطة في هذه البيئة بعد / Account service configuration is unavailable in this environment.",
-  "invalid-input":
-    "اكتب بريداً صحيحاً، وكلمة مرور من 8 أحرف على الأقل، وتأكد من تطابقها / Enter a valid email, use at least 8 characters, and make sure both passwords match.",
-  "registration-failed":
-    "تعذر إنشاء الحساب حالياً. قد يكون البريد مستخدماً أو الخدمة غير متاحة / The account could not be created. The email may already be used or the service may be unavailable.",
+const statusMessages: Record<
+  string,
+  { tone: "error" | "info"; message: string }
+> = {
+  configuration: {
+    tone: "info",
+    message:
+      "خدمة الحساب غير مضبوطة في هذه البيئة بعد / Account service configuration is unavailable in this environment.",
+  },
+  "invalid-input": {
+    tone: "error",
+    message:
+      "اكتب بريداً صحيحاً، وكلمة مرور من 8 أحرف على الأقل، وتأكد من تطابقها / Enter a valid email, use at least 8 characters, and make sure both passwords match.",
+  },
+  "registration-failed": {
+    tone: "error",
+    message:
+      "تعذر إنشاء الحساب حالياً. قد يكون البريد مستخدماً أو الخدمة غير متاحة / The account could not be created. The email may already be used or the service may be unavailable.",
+  },
 };
+
+const fieldClassName =
+  "min-h-12 w-full rounded-xl border border-input bg-surface-raised px-4 text-sm text-foreground shadow-surface-xs outline-none transition-[border-color,box-shadow,background-color] duration-fast placeholder:text-ink-subtle focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20 disabled:cursor-not-allowed disabled:bg-surface-sunken disabled:opacity-60";
 
 function firstValue(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
@@ -45,41 +61,39 @@ export default async function RegisterPage({
   const configured = isSupabaseConfigured();
   const nextPath = getSafeNextPath(params.next);
   const statusKey = firstValue(params.status);
-  const statusMessage = statusKey ? statusMessages[statusKey] : undefined;
+  const status = statusKey ? statusMessages[statusKey] : undefined;
 
   return (
-    <div className="mx-auto w-full max-w-xl rounded-[2rem] border border-border/70 bg-card p-6 shadow-2xl shadow-foreground/5 sm:p-10">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-        <UserRoundPlus className="h-6 w-6" aria-hidden="true" />
-      </div>
-
-      <div className="mt-6 text-center">
-        <p className="text-sm font-semibold text-primary">P1 · Account access</p>
-        <h1 className="mt-3 font-arabic-heading text-3xl font-semibold">
-          إنشاء حساب
-        </h1>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          حساب واحد يحفظ عضويتك في مساحات العمل ويطبّق صلاحيات الوصول من قاعدة
-          البيانات.
+    <AuthFrame
+      eyebrow="ابدأ مساحة عملك"
+      title="أنشئ حساباً يحفظ سياقك"
+      description="حساب واحد يربطك بمساحات العمل ويجعل صلاحيات الوصول جزءاً من كل محادثة ومصدر ومسودة."
+      icon={<UserRoundPlus className="h-5 w-5" aria-hidden="true" />}
+      footer={
+        <p>
+          لديك حساب؟{" "}
+          <Link
+            href={`/login?next=${encodeURIComponent(nextPath)}`}
+            className="rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-4 focus-visible:ring-ring/20"
+          >
+            سجّل الدخول
+          </Link>
         </p>
-      </div>
+      }
+    >
+      {status ? (
+        <AuthNotice tone={status.tone} className="mb-6">
+          {status.message}
+        </AuthNotice>
+      ) : null}
 
-      {statusMessage && (
-        <div
-          className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm leading-7 text-destructive"
-          role="alert"
-        >
-          {statusMessage}
-        </div>
-      )}
-
-      <form action={signUpAction} className="mt-7 space-y-5">
+      <form action={signUpAction} className="space-y-5" aria-label="نموذج إنشاء الحساب">
         <input type="hidden" name="next" value={nextPath} />
 
         <div className="space-y-2">
           <label htmlFor="email" className="text-sm font-semibold">
             البريد الإلكتروني
-            <span className="mr-2 text-xs font-normal text-muted-foreground">
+            <span className="mr-2 text-xs font-normal text-ink-subtle">
               Email
             </span>
           </label>
@@ -92,7 +106,7 @@ export default async function RegisterPage({
             required
             disabled={!configured}
             placeholder="name@example.com"
-            className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+            className={fieldClassName}
           />
         </div>
 
@@ -100,7 +114,7 @@ export default async function RegisterPage({
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-semibold">
               كلمة المرور
-              <span className="mr-2 text-xs font-normal text-muted-foreground">
+              <span className="mr-2 text-xs font-normal text-ink-subtle">
                 Password
               </span>
             </label>
@@ -114,14 +128,15 @@ export default async function RegisterPage({
               maxLength={72}
               required
               disabled={!configured}
-              className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              aria-describedby="password-help"
+              className={fieldClassName}
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="confirmPassword" className="text-sm font-semibold">
               تأكيد كلمة المرور
-              <span className="mr-2 text-xs font-normal text-muted-foreground">
+              <span className="mr-2 text-xs font-normal text-ink-subtle">
                 Confirm
               </span>
             </label>
@@ -135,18 +150,20 @@ export default async function RegisterPage({
               maxLength={72}
               required
               disabled={!configured}
-              className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
+              aria-describedby="password-help"
+              className={fieldClassName}
             />
           </div>
         </div>
 
-        <p className="text-xs leading-6 text-muted-foreground">
-          قد تطلب البيئة التحقق من البريد قبل إنشاء الجلسة الأولى. لا تُخزّن كلمة
-          المرور داخل تطبيق الويب؛ تديرها خدمة المصادقة المختارة.
+        <p id="password-help" className="text-xs leading-6 text-ink-subtle">
+          استخدم 8 أحرف على الأقل. قد تطلب البيئة التحقق من البريد قبل إنشاء
+          الجلسة الأولى، وتدير خدمة المصادقة كلمة المرور خارج تطبيق الويب.
         </p>
 
         <Button
           type="submit"
+          size="lg"
           className="w-full rounded-full"
           disabled={!configured}
         >
@@ -155,21 +172,11 @@ export default async function RegisterPage({
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        لديك حساب؟{" "}
-        <Link
-          href={`/login?next=${encodeURIComponent(nextPath)}`}
-          className="font-semibold text-primary hover:underline"
-        >
-          سجّل الدخول
-        </Link>
-      </p>
-
-      {!configured && (
-        <p className="mt-5 text-center text-xs leading-6 text-muted-foreground">
+      {!configured ? (
+        <AuthNotice tone="info" className="mt-5">
           يلزم ضبط متغيري Supabase العامين لتفعيل الحسابات في هذه البيئة.
-        </p>
-      )}
-    </div>
+        </AuthNotice>
+      ) : null}
+    </AuthFrame>
   );
 }
