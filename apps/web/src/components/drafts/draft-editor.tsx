@@ -20,10 +20,12 @@ import {
   FileClock,
   FileWarning,
   GitBranch,
-  RefreshCw,
+  PenLine,
+  Quote,
   RotateCcw,
   Save,
   Send,
+  ShieldCheck,
   Sparkles,
   Square,
   Trash2,
@@ -40,12 +42,15 @@ import {
   draftDetailSchema,
   draftProposalStreamEventSchema,
 } from "@iraqi-ai/types";
+import { ActivityOrb } from "@/components/conversations/activity-orb";
 import { Button } from "@/components/ui/button";
+import { Surface } from "@/components/ui/surface";
 import {
   draftEditorValue,
   isDraftEditorDirty,
   type DraftEditorValue,
 } from "@/lib/drafts/editor-state";
+import { DraftWorkspaceFrame } from "./draft-workspace-frame";
 
 interface DraftEditorProps {
   workspaceId: string;
@@ -59,6 +64,8 @@ type Notice = {
   tone: "success" | "error" | "info";
   message: string;
 } | null;
+
+type ViewMode = "editor" | "proposal";
 
 const kindOptions: Array<{ value: DraftKind; label: string }> = [
   { value: "freeform", label: "مسودة حرة" },
@@ -209,7 +216,7 @@ function provenanceLocator(
 function generationLabel(status: DraftGeneration["status"]): string {
   const labels: Record<DraftGeneration["status"], string> = {
     pending: "بانتظار المزود",
-    streaming: "جاري الاقتراح",
+    streaming: "جاري تشكيل الاقتراح",
     complete: "جاهز للمراجعة",
     failed: "فشل",
     cancelled: "أُلغي وحُفظ الجزئي",
@@ -221,6 +228,13 @@ function generationLabel(status: DraftGeneration["status"]): string {
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
+}
+
+function contentPreview(value: string): string {
+  const normalized = value.replace(/\s+/gu, " ").trim();
+  return normalized.length <= 86
+    ? normalized
+    : `${normalized.slice(0, 83).trimEnd()}…`;
 }
 
 export function DraftEditor({
@@ -235,6 +249,7 @@ export function DraftEditor({
   const [editor, setEditor] = useState<DraftEditorValue>(() =>
     draftEditorValue(initialDetail.draft),
   );
+  const [viewMode, setViewMode] = useState<ViewMode>("editor");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice>(null);
@@ -455,6 +470,7 @@ export function DraftEditor({
       }
 
       acceptDetail(parseDetailPayload(payload.data?.detail));
+      setViewMode("editor");
       setNotice({
         tone: "success",
         message:
@@ -560,6 +576,7 @@ export function DraftEditor({
 
     const controller = new AbortController();
     proposalController.current = controller;
+    setViewMode("proposal");
     setIsGenerating(true);
     setProposalError(null);
     setProposal(null);
@@ -665,6 +682,7 @@ export function DraftEditor({
       acceptDetail(parseDetailPayload(payload.data?.detail));
       setProposal(null);
       setProposalText("");
+      setViewMode("editor");
       setNotice({
         tone: "success",
         message:
@@ -696,6 +714,7 @@ export function DraftEditor({
       setDetail(parseDetailPayload(payload.data?.detail));
       setProposal(null);
       setProposalText("");
+      setViewMode("editor");
       setNotice({
         tone: "info",
         message:
@@ -707,531 +726,274 @@ export function DraftEditor({
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {notice && (
-        <div
-          role={notice.tone === "error" ? "alert" : "status"}
-          className={`rounded-2xl border px-4 py-3 text-sm leading-7 ${
-            notice.tone === "error"
-              ? "border-destructive/30 bg-destructive/10 text-destructive"
-              : notice.tone === "success"
-                ? "border-primary/30 bg-primary/10 text-foreground"
-                : "border-border bg-secondary/60 text-muted-foreground"
-          }`}
-        >
-          {notice.message}
-        </div>
-      )}
+  const toolbar = (
+    <div className="inline-flex rounded-xl border border-line/75 bg-surface-sunken p-1">
+      <button
+        type="button"
+        aria-pressed={viewMode === "editor"}
+        onClick={() => setViewMode("editor")}
+        className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
+          viewMode === "editor"
+            ? "bg-surface-raised text-foreground shadow-surface-xs"
+            : "text-ink-muted hover:text-foreground"
+        }`}
+      >
+        <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
+        المحرر
+      </button>
+      <button
+        type="button"
+        aria-pressed={viewMode === "proposal"}
+        onClick={() => setViewMode("proposal")}
+        className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
+          viewMode === "proposal"
+            ? "bg-surface-raised text-foreground shadow-surface-xs"
+            : "text-ink-muted hover:text-foreground"
+        }`}
+      >
+        <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+        الاقتراح
+        {proposal || isGenerating ? (
+          <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+        ) : null}
+      </button>
+    </div>
+  );
 
-      <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-        <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-primary">المحرر المقبول</p>
-              <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                الإصدار {detail.draft.currentVersion}
-              </h2>
-            </div>
-            <div
-              className={`inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-xs font-semibold ${
-                saveState === "saved"
-                  ? "bg-primary/10 text-primary"
-                  : saveState === "error"
-                    ? "bg-destructive/10 text-destructive"
-                    : "bg-secondary text-muted-foreground"
-              }`}
-              role="status"
-              aria-live="polite"
-            >
-              {saveState === "saving" ? (
-                <RefreshCw className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-              ) : saveState === "saved" ? (
-                <Check className="h-3.5 w-3.5" aria-hidden="true" />
-              ) : saveState === "error" ? (
-                <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-              ) : (
-                <FileClock className="h-3.5 w-3.5" aria-hidden="true" />
-              )}
-              {saveState === "saving"
-                ? "جاري الحفظ"
-                : saveState === "saved"
-                  ? "محفوظ"
-                  : saveState === "error"
-                    ? "فشل الحفظ"
-                    : "تغييرات غير محفوظة"}
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <label className="space-y-2 text-sm font-semibold sm:col-span-2">
-              <span>العنوان</span>
-              <input
-                aria-label="عنوان المسودة"
-                value={editor.title}
-                onChange={(event) => updateEditor({ title: event.target.value })}
-                maxLength={200}
-                readOnly={!canEdit}
-                dir="auto"
-                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary read-only:cursor-default read-only:bg-secondary/45"
-              />
-            </label>
-
-            <label className="space-y-2 text-sm font-semibold">
-              <span>نوع العمل</span>
-              <select
-                aria-label="نوع المسودة"
-                value={editor.kind}
-                onChange={(event) =>
-                  updateEditor({ kind: event.target.value as DraftKind })
-                }
-                disabled={!canEdit}
-                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:bg-secondary/45"
-              >
-                {kindOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="space-y-2 text-sm font-semibold">
-              <span>اتجاه المحتوى</span>
-              <select
-                aria-label="اتجاه محتوى المسودة"
-                value={editor.direction}
-                onChange={(event) =>
-                  updateEditor({
-                    direction: event.target.value as "auto" | "rtl" | "ltr",
-                  })
-                }
-                disabled={!canEdit}
-                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:bg-secondary/45"
-              >
-                <option value="auto">تلقائي</option>
-                <option value="rtl">RTL</option>
-                <option value="ltr">LTR</option>
-              </select>
-            </label>
-
-            <label className="space-y-2 text-sm font-semibold sm:col-span-2">
-              <span>المحتوى</span>
-              <textarea
-                aria-label="محتوى المسودة"
-                value={editor.content}
-                onChange={(event) => updateEditor({ content: event.target.value })}
-                maxLength={100000}
-                rows={22}
-                readOnly={!canEdit}
-                dir={editor.direction}
-                className="w-full resize-y rounded-3xl border border-input bg-background px-5 py-4 text-sm font-normal leading-8 outline-none focus-visible:ring-2 focus-visible:ring-primary read-only:cursor-default read-only:bg-secondary/35"
-              />
-            </label>
-          </div>
-
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs leading-6 text-muted-foreground">
-              {editor.content.length.toLocaleString("ar-IQ")} / 100,000 · Ctrl/Cmd+S
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-full"
-                onClick={() => void copyEditor()}
-              >
-                <Clipboard className="h-4 w-4" aria-hidden="true" />
-                {copyState === "copied"
-                  ? "نُسخ"
-                  : copyState === "failed"
-                    ? "فشل النسخ"
-                    : "نسخ"}
-              </Button>
-              {canEdit && (
-                <Button
-                  type="button"
-                  className="rounded-full"
-                  disabled={!dirty || isSaving}
-                  onClick={() => void saveDraft()}
-                >
-                  {isSaving ? (
-                    <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  ) : (
-                    <Save className="h-4 w-4" aria-hidden="true" />
-                  )}
-                  حفظ إصدار
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {saveError && (
-            <p className="mt-3 text-sm leading-7 text-destructive" role="alert">
-              {saveError}
-            </p>
-          )}
-        </section>
-
-        <aside className="space-y-6">
-          <section className="rounded-3xl border border-border/70 bg-card p-5 sm:p-6">
-            <p className="text-sm font-semibold text-primary">المنشأ</p>
-            <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
-              المحادثة والمراجع
-            </h2>
-
-            {detail.draft.conversationId && (
-              <Link
-                href={`/workspaces/${workspaceId}/conversations/${detail.draft.conversationId}`}
-                className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold transition-colors hover:bg-secondary"
-              >
-                فتح المحادثة الأصلية
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-              </Link>
-            )}
-
-            {detail.provenance.length > 0 ? (
-              <div className="mt-5 space-y-3">
-                {detail.provenance.map((provenance) => {
-                  const body = (
-                    <>
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[0.65rem] font-semibold text-primary">
-                        [{provenance.label}]
-                      </span>
-                      <span dir="auto" className="min-w-0 flex-1 truncate">
-                        {provenance.fileNameSnapshot}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {provenanceLocator(provenance)}
-                      </span>
-                    </>
-                  );
-
-                  return provenance.sourceId && provenance.attachmentId ? (
-                    <Link
-                      key={provenance.id}
-                      href={`/workspaces/${workspaceId}/sources/${provenance.attachmentId}#source-${provenance.sourceId}`}
-                      className="flex min-h-11 items-center gap-2 rounded-2xl border border-border bg-background px-3 py-2 text-xs transition-colors hover:border-primary/40 hover:bg-secondary"
-                    >
-                      {body}
-                      <ExternalLink
-                        className="h-3.5 w-3.5 shrink-0"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  ) : (
-                    <div
-                      key={provenance.id}
-                      className="flex min-h-11 items-center gap-2 rounded-2xl border border-dashed border-border bg-secondary/45 px-3 py-2 text-xs"
-                      title="The original source is no longer available."
-                    >
-                      {body}
-                      <FileWarning
-                        className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                        aria-hidden="true"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="mt-5 text-sm leading-7 text-muted-foreground">
-                أُنشئت هذه المسودة من إجابة بلا مراجع محفوظة. لا تُعرض على أنها
-                موثقة تلقائياً.
-              </p>
-            )}
-          </section>
-
-          <section className="rounded-3xl border border-border/70 bg-card p-5 sm:p-6">
-            <p className="text-sm font-semibold text-primary">التصدير</p>
-            <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
-              UTF-8 فقط في P4
-            </h2>
-            <p className="mt-3 text-xs leading-6 text-muted-foreground">
-              التصدير يستخدم آخر إصدار محفوظ. HTML مستقل وآمن بلا scripts أو
-              موارد خارجية. PDF وDOCX غير مفعّلين.
-            </p>
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {(["txt", "md", "html"] as const).map((format) => (
-                <Button
-                  key={format}
-                  type="button"
-                  variant="outline"
-                  className="rounded-2xl px-2 uppercase"
-                  onClick={() => download(format)}
-                >
-                  <Download className="h-3.5 w-3.5" aria-hidden="true" />
-                  {format}
-                </Button>
-              ))}
-            </div>
-          </section>
-        </aside>
+  const versionsPanel = (
+    <div className="p-3">
+      <div className="px-2 pb-4">
+        <p className="text-xs font-semibold text-primary">سجل الإصدارات</p>
+        <p className="mt-1 text-xs leading-5 text-ink-muted">
+          كل حفظ أو تطبيق ينشئ لقطة جديدة ولا يعيد كتابة التاريخ.
+        </p>
       </div>
 
-      <section className="rounded-3xl border border-primary/25 bg-card p-5 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">Continue with AI</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              اقتراح منفصل لا يكتب فوق عملك
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              يقرأ المزود آخر إصدار مقبول فقط. الاقتراح المتدفق يبقى منفصلاً حتى
-              تطبيقه كإصدار جديد، ويمكن رفضه أو إيقافه مع حفظ النص الجزئي.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-            <Sparkles className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
-
-        {canEdit ? (
-          <div className="mt-6 grid gap-5 xl:grid-cols-[0.7fr_1.3fr]">
-            <div className="space-y-4">
-              <label className="space-y-2 text-sm font-semibold">
-                <span>الإجراء</span>
-                <select
-                  aria-label="إجراء اقتراح المسودة"
-                  value={action}
-                  disabled={isGenerating}
-                  onChange={(event) => {
-                    const nextAction = event.target.value as DraftGenerationAction;
-                    setAction(nextAction);
-                    const option = actionOptions.find(
-                      (candidate) => candidate.value === nextAction,
-                    );
-                    setInstruction(option?.instruction ?? "Revise the draft.");
-                    setProposalError(null);
-                  }}
-                  className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  {actionOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="space-y-2 text-sm font-semibold">
-                <span>التعليمات</span>
-                <textarea
-                  aria-label="تعليمات اقتراح المسودة"
-                  value={instruction}
-                  onChange={(event) => setInstruction(event.target.value)}
-                  maxLength={2000}
-                  rows={6}
-                  disabled={isGenerating}
-                  dir="auto"
-                  className="w-full resize-y rounded-2xl border border-input bg-background px-4 py-3 text-sm font-normal leading-7 outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                />
-              </label>
-
-              {isGenerating ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="w-full rounded-full"
-                  onClick={() =>
-                    proposalController.current?.abort(
-                      new DOMException("Cancelled by user", "AbortError"),
-                    )
-                  }
-                >
-                  <Square className="h-4 w-4" aria-hidden="true" />
-                  إيقاف وحفظ الجزئي
-                </Button>
-              ) : (
-                <Button
-                  type="button"
-                  className="w-full rounded-full"
-                  disabled={!instruction.trim() || dirty}
-                  onClick={() => void startProposal()}
-                >
-                  <Send className="h-4 w-4" aria-hidden="true" />
-                  بدء اقتراح
-                </Button>
-              )}
-
-              {proposalError && (
-                <div
-                  role="alert"
-                  className="rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
-                >
-                  {proposalError}
-                </div>
-              )}
-            </div>
-
-            <div className="rounded-3xl border border-border bg-background p-5 sm:p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold text-primary">
-                    proposal review
-                  </p>
-                  <h3 className="mt-1 font-arabic-heading text-xl font-semibold">
-                    {proposal ? generationLabel(proposal.status) : "لا يوجد اقتراح"}
-                  </h3>
-                </div>
-                {proposal && (
-                  <span className="rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
-                    base v{proposal.baseVersion}
+      <div className="relative ms-3 border-s border-line/80 ps-4">
+        {detail.versions.map((version) => {
+          const current = version.versionNumber === detail.draft.currentVersion;
+          return (
+            <article key={version.id} className="relative pb-5 last:pb-0">
+              <span
+                className={`absolute -start-[1.28rem] top-3 h-2.5 w-2.5 rounded-full border-2 border-surface-sunken ${
+                  current ? "bg-primary" : "bg-line-strong"
+                }`}
+                aria-hidden="true"
+              />
+              <div
+                className={`rounded-xl border p-3 ${
+                  current
+                    ? "border-primary/25 bg-brand-soft/55"
+                    : "border-line/70 bg-surface-raised"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold text-primary">
+                    v{version.versionNumber}
                   </span>
-                )}
-              </div>
-
-              {proposalText ? (
-                <pre
-                  dir="auto"
-                  className="mt-5 max-h-[34rem] overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-secondary/35 p-4 font-sans text-sm leading-8"
-                >
-                  {proposalText}
-                </pre>
-              ) : (
-                <div className="mt-5 flex min-h-64 items-center justify-center rounded-2xl border border-dashed border-border bg-secondary/20 p-6 text-center text-sm leading-7 text-muted-foreground">
-                  سيظهر الاقتراح المتدفق هنا من دون تغيير المحرر المقبول.
+                  <span className="rounded-full bg-surface-sunken px-2 py-0.5 text-[0.65rem] text-ink-muted">
+                    {version.sourceKind}
+                  </span>
                 </div>
-              )}
-
-              {proposal?.status === "complete" && (
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    className="rounded-full"
-                    disabled={dirty}
-                    onClick={() => void applyProposal()}
-                  >
-                    <Check className="h-4 w-4" aria-hidden="true" />
-                    تطبيق كإصدار جديد
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="rounded-full"
-                    onClick={() => void discardProposal()}
-                  >
-                    <X className="h-4 w-4" aria-hidden="true" />
-                    رفض الاقتراح
-                  </Button>
-                </div>
-              )}
-
-              {proposal && (
-                <p className="mt-4 text-xs leading-6 text-muted-foreground">
-                  {proposal.returnedModel ?? proposal.requestedModel}
-                  {proposal.totalTokens !== null
-                    ? ` · ${proposal.totalTokens} tokens`
-                    : ""}
-                  {proposal.latencyMs !== null
-                    ? ` · ${(proposal.latencyMs / 1000).toFixed(1)}s`
-                    : ""}
+                <p dir="auto" className="mt-2 truncate text-xs font-semibold">
+                  {version.title}
                 </p>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="mt-6 rounded-2xl bg-secondary/55 p-4 text-sm leading-7 text-muted-foreground">
-            {workspaceArchived
-              ? "مساحة العمل مؤرشفة؛ الاقتراحات للقراءة فقط حتى استعادة المساحة."
-              : draftArchived
-                ? "استعد المسودة قبل طلب اقتراح جديد."
-                : "عضوية القراءة لا تسمح بإرسال المسودة إلى المزود."}
-          </div>
-        )}
-      </section>
-
-      <section className="rounded-3xl border border-border/70 bg-card p-5 sm:p-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold text-primary">Version history</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              لقطات غير قابلة لإعادة الكتابة
-            </h2>
-          </div>
-          <div className="rounded-2xl bg-secondary p-3 text-primary">
-            <GitBranch className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className="mt-6 space-y-3">
-          {detail.versions.map((version) => (
-            <article
-              key={version.id}
-              className="rounded-2xl border border-border/70 bg-background p-4"
-            >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                      v{version.versionNumber}
-                    </span>
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-muted-foreground">
-                      {version.sourceKind}
-                    </span>
-                    {version.versionNumber === detail.draft.currentVersion && (
-                      <span className="text-xs font-semibold text-foreground">
-                        الحالي
-                      </span>
-                    )}
-                  </div>
-                  <p dir="auto" className="mt-3 truncate font-semibold">
-                    {version.title}
+                <p dir="auto" className="mt-2 line-clamp-2 text-xs leading-5 text-ink-muted">
+                  {contentPreview(version.content) || "Empty snapshot"}
+                </p>
+                <time
+                  dateTime={version.createdAt}
+                  className="mt-2 block text-[0.68rem] text-ink-subtle"
+                >
+                  {formatTimestamp(version.createdAt)}
+                </time>
+                {version.restoredFromVersion ? (
+                  <p className="mt-1 text-[0.68rem] text-ink-subtle">
+                    restored from v{version.restoredFromVersion}
                   </p>
-                  <p className="mt-2 line-clamp-2 text-xs leading-6 text-muted-foreground">
-                    {version.content.replace(/\s+/gu, " ") || "Empty snapshot"}
-                  </p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {formatTimestamp(version.createdAt)}
-                    {version.restoredFromVersion
-                      ? ` · restored from v${version.restoredFromVersion}`
-                      : ""}
-                  </p>
-                </div>
-                <div className="flex shrink-0 flex-wrap gap-2">
-                  <Link
-                    href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
-                    className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold transition-colors hover:bg-secondary"
-                  >
-                    عرض اللقطة
-                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                  </Link>
-                  {canEdit &&
-                    version.versionNumber !== detail.draft.currentVersion && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full"
-                        disabled={dirty || isSaving}
-                        onClick={() => void restoreVersion(version.versionNumber)}
-                      >
-                        <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-                        استعادة
-                      </Button>
-                    )}
+                ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button asChild variant="ghost" size="sm" className="rounded-lg">
+                    <Link
+                      href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
+                    >
+                      عرض اللقطة
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                  {canEdit && !current ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="rounded-lg"
+                      disabled={dirty || isSaving}
+                      onClick={() => void restoreVersion(version.versionNumber)}
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                      استعادة
+                    </Button>
+                  ) : null}
                 </div>
               </div>
             </article>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const inspectorPanel = (
+    <div className="space-y-5 p-4">
+      <section>
+        <p className="text-xs font-semibold text-primary">حالة المسودة</p>
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="mt-3"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm font-semibold">
+              {draftArchived ? "مؤرشفة للقراءة" : "نشطة"}
+            </span>
+            <span className="rounded-full bg-brand-soft px-2.5 py-1 text-xs font-semibold text-primary">
+              v{detail.draft.currentVersion}
+            </span>
+          </div>
+          <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <dt className="text-ink-subtle">الإصدارات</dt>
+              <dd className="mt-1 font-semibold">
+                {detail.draft.versionCount.toLocaleString("ar-IQ")}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-ink-subtle">المراجع</dt>
+              <dd className="mt-1 font-semibold">
+                {detail.draft.provenanceCount.toLocaleString("ar-IQ")}
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-3 text-xs leading-6 text-ink-muted">
+            آخر حفظ {formatTimestamp(detail.draft.lastSavedAt)}
+          </p>
+        </Surface>
+      </section>
+
+      <section className="border-t border-line/70 pt-5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-semibold text-primary">المنشأ والمراجع</p>
+          <Quote className="h-4 w-4 text-primary" aria-hidden="true" />
+        </div>
+        {detail.draft.conversationId ? (
+          <Button asChild variant="outline" size="sm" className="mt-3 w-full rounded-xl">
+            <Link
+              href={`/workspaces/${workspaceId}/conversations/${detail.draft.conversationId}`}
+            >
+              فتح المحادثة الأصلية
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            </Link>
+          </Button>
+        ) : null}
+
+        {detail.provenance.length > 0 ? (
+          <div className="mt-3 space-y-2">
+            {detail.provenance.map((provenance) => {
+              const body = (
+                <>
+                  <span className="rounded-full bg-brand-soft px-2 py-0.5 font-mono text-[0.65rem] font-semibold text-primary">
+                    [{provenance.label}]
+                  </span>
+                  <span dir="auto" className="min-w-0 flex-1 truncate">
+                    {provenance.fileNameSnapshot}
+                  </span>
+                  <span className="text-ink-subtle">
+                    {provenanceLocator(provenance)}
+                  </span>
+                </>
+              );
+
+              return provenance.sourceId && provenance.attachmentId ? (
+                <Link
+                  key={provenance.id}
+                  href={`/workspaces/${workspaceId}/sources/${provenance.attachmentId}#source-${provenance.sourceId}`}
+                  className="flex min-h-11 items-center gap-2 rounded-xl border border-line/70 bg-surface-raised px-3 py-2 text-xs outline-none transition-colors hover:border-primary/30 hover:bg-brand-soft/35 focus-visible:ring-4 focus-visible:ring-ring/20"
+                >
+                  {body}
+                  <ExternalLink
+                    className="h-3.5 w-3.5 shrink-0"
+                    aria-hidden="true"
+                  />
+                </Link>
+              ) : (
+                <div
+                  key={provenance.id}
+                  className="flex min-h-11 items-center gap-2 rounded-xl border border-dashed border-line bg-surface-sunken px-3 py-2 text-xs"
+                  title="The original source is no longer available."
+                >
+                  {body}
+                  <FileWarning
+                    className="h-3.5 w-3.5 shrink-0 text-ink-muted"
+                    aria-hidden="true"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="mt-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
+            أُنشئت المسودة من إجابة بلا مراجع محفوظة؛ لا تُعرض على أنها موثقة
+            تلقائياً.
+          </p>
+        )}
+      </section>
+
+      <section className="border-t border-line/70 pt-5">
+        <p className="text-xs font-semibold text-primary">التصدير</p>
+        <p className="mt-2 text-xs leading-6 text-ink-muted">
+          آخر إصدار محفوظ بصيغ UTF-8 آمنة. HTML مستقل بلا scripts أو موارد
+          خارجية. PDF وDOCX غير مفعّلين.
+        </p>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {(["txt", "md", "html"] as const).map((format) => (
+            <Button
+              key={format}
+              type="button"
+              variant="outline"
+              size="sm"
+              className="rounded-xl px-2 uppercase"
+              onClick={() => download(format)}
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              {format}
+            </Button>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl border border-border/70 bg-card p-5 sm:p-8">
-          <p className="text-sm font-semibold text-primary">حالة المسودة</p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            {draftArchived ? "مؤرشفة للقراءة" : "نشطة وقابلة للمتابعة"}
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            آخر حفظ {formatTimestamp(detail.draft.lastSavedAt)} · {detail.draft.versionCount}{" "}
-            إصدار · {detail.draft.provenanceCount} مرجع منشأ.
+      <section className="border-t border-line/70 pt-5">
+        <div className="flex items-start gap-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
+          <ShieldCheck
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
+          <p>
+            العمل المقبول منفصل عن الاقتراح. الاستعادة والتطبيق يضيفان إصداراً
+            جديداً ولا يغيران اللقطات السابقة.
           </p>
-          {canManageLifecycle && (
+        </div>
+      </section>
+
+      <section className="border-t border-line/70 pt-5">
+        <p className="text-xs font-semibold text-primary">دورة الحياة</p>
+        {canManageLifecycle ? (
+          <div className="mt-3 space-y-2">
             <Button
               type="button"
               variant="outline"
-              className="mt-6 rounded-full"
+              className="w-full justify-start rounded-xl"
               disabled={dirty || isGenerating}
               onClick={() => void setArchived(!draftArchived)}
             >
@@ -1242,36 +1004,476 @@ export function DraftEditor({
               )}
               {draftArchived ? "استعادة إلى العمل" : "نقل إلى الأرشيف"}
             </Button>
-          )}
-        </div>
-
-        <div className="rounded-3xl border border-destructive/25 bg-card p-5 sm:p-8">
-          <p className="text-sm font-semibold text-destructive">منطقة دائمة</p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            حذف كل تاريخ المسودة
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            يحذف المسودة وإصداراتها ومنشأها ومحاولات الاستمرار. لا يحذف المحادثة
-            أو الملفات الأصلية.
-          </p>
-          {canManageLifecycle ? (
             <Button
               type="button"
               variant="destructive"
-              className="mt-6 rounded-full"
+              className="w-full justify-start rounded-xl"
               disabled={dirty || isGenerating}
               onClick={() => void removeDraft()}
             >
               <Trash2 className="h-4 w-4" aria-hidden="true" />
-              حذف المسودة
+              حذف المسودة وتاريخها
             </Button>
-          ) : (
-            <p className="mt-6 text-sm text-muted-foreground">
-              لا تملك صلاحية حذف هذه المسودة.
-            </p>
-          )}
-        </div>
+          </div>
+        ) : (
+          <p className="mt-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
+            {workspaceArchived
+              ? "استعد مساحة العمل قبل تغيير حالة المسودة."
+              : "عضوية القراءة لا تسمح بالأرشفة أو الحذف."}
+          </p>
+        )}
       </section>
+    </div>
+  );
+
+  const editorCanvas = (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="border-b border-line/70 bg-surface-overlay/75 px-4 py-4 sm:px-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+          <label className="min-w-0 flex-1">
+            <span className="sr-only">عنوان المسودة</span>
+            <input
+              aria-label="عنوان المسودة"
+              value={editor.title}
+              onChange={(event) => updateEditor({ title: event.target.value })}
+              maxLength={200}
+              readOnly={!canEdit}
+              dir="auto"
+              className="min-h-11 w-full border-0 bg-transparent px-0 font-arabic-heading text-2xl font-semibold outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 read-only:cursor-default"
+            />
+          </label>
+
+          <div className="grid shrink-0 grid-cols-2 gap-2 lg:w-[20rem]">
+            <label>
+              <span className="sr-only">نوع المسودة</span>
+              <select
+                aria-label="نوع المسودة"
+                value={editor.kind}
+                onChange={(event) =>
+                  updateEditor({ kind: event.target.value as DraftKind })
+                }
+                disabled={!canEdit}
+                className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
+              >
+                {kindOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="sr-only">اتجاه محتوى المسودة</span>
+              <select
+                aria-label="اتجاه محتوى المسودة"
+                value={editor.direction}
+                onChange={(event) =>
+                  updateEditor({
+                    direction: event.target.value as "auto" | "rtl" | "ltr",
+                  })
+                }
+                disabled={!canEdit}
+                className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
+              >
+                <option value="auto">تلقائي</option>
+                <option value="rtl">RTL</option>
+                <option value="ltr">LTR</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <label className="flex min-h-0 flex-1 flex-col">
+        <span className="sr-only">محتوى المسودة</span>
+        <textarea
+          aria-label="محتوى المسودة"
+          value={editor.content}
+          onChange={(event) => updateEditor({ content: event.target.value })}
+          maxLength={100000}
+          readOnly={!canEdit}
+          dir={editor.direction}
+          className="min-h-[32rem] flex-1 resize-none border-0 bg-surface px-5 py-6 text-sm font-normal leading-8 outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 read-only:cursor-default sm:px-8 sm:py-8 sm:text-[0.95rem] sm:leading-9"
+        />
+      </label>
+
+      <div className="flex flex-col gap-3 border-t border-line/70 bg-surface-overlay/90 px-3 py-3 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-4">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+          <span
+            className={`inline-flex min-h-8 items-center gap-2 rounded-lg px-2.5 font-semibold ${
+              saveState === "saved"
+                ? "bg-brand-soft text-primary"
+                : saveState === "error"
+                  ? "bg-destructive/10 text-destructive"
+                  : "bg-surface-sunken"
+            }`}
+            role="status"
+            aria-live="polite"
+          >
+            {saveState === "saving" ? (
+              <ActivityOrb state="working" size="sm" />
+            ) : saveState === "saved" ? (
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : saveState === "error" ? (
+              <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <FileClock className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+            {saveState === "saving"
+              ? "جاري الحفظ"
+              : saveState === "saved"
+                ? `محفوظ · v${detail.draft.currentVersion}`
+                : saveState === "error"
+                  ? "فشل الحفظ"
+                  : "تغييرات غير محفوظة"}
+          </span>
+          <span>
+            {editor.content.length.toLocaleString("ar-IQ")} / ١٠٠٬٠٠٠
+          </span>
+          <span className="hidden sm:inline">Ctrl/Cmd+S</span>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            className="rounded-xl"
+            onClick={() => void copyEditor()}
+          >
+            <Clipboard className="h-4 w-4" aria-hidden="true" />
+            {copyState === "copied"
+              ? "نُسخ"
+              : copyState === "failed"
+                ? "فشل النسخ"
+                : "نسخ"}
+          </Button>
+          {canEdit ? (
+            <Button
+              type="button"
+              className="rounded-xl"
+              disabled={!dirty || isSaving}
+              onClick={() => void saveDraft()}
+            >
+              {isSaving ? (
+                <ActivityOrb state="working" size="sm" />
+              ) : (
+                <Save className="h-4 w-4" aria-hidden="true" />
+              )}
+              حفظ إصدار
+            </Button>
+          ) : null}
+        </div>
+      </div>
+
+      {saveError ? (
+        <p className="border-t border-destructive/20 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
+          {saveError}
+        </p>
+      ) : null}
+    </div>
+  );
+
+  const proposalCanvas = (
+    <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+      <div className="mx-auto max-w-5xl space-y-5">
+        <div className="flex flex-col gap-4 border-b border-line/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold text-primary">مراجعة الاقتراح</p>
+            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
+              اقتراح منفصل عن العمل المقبول
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
+              يقرأ المزود آخر إصدار محفوظ فقط. لا يتغير المحرر حتى تطبيق الاقتراح
+              صراحةً كإصدار جديد.
+            </p>
+          </div>
+          {proposal ? (
+            <span className="rounded-full bg-surface-sunken px-3 py-1.5 text-xs font-semibold text-ink-muted">
+              base v{proposal.baseVersion} · {generationLabel(proposal.status)}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="grid gap-5 xl:grid-cols-[19rem_minmax(0,1fr)]">
+          <Surface
+            tone="raised"
+            elevation="xs"
+            radius="2xl"
+            padding="md"
+            className="h-fit xl:sticky xl:top-0"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-primary">
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-xs text-ink-muted">تعليمات المراجعة</p>
+                <p className="mt-1 text-sm font-semibold">Continue with AI</p>
+              </div>
+            </div>
+
+            {canEdit ? (
+              <div className="mt-5 space-y-4">
+                <label className="space-y-2 text-xs font-semibold">
+                  <span>الإجراء</span>
+                  <select
+                    aria-label="إجراء اقتراح المسودة"
+                    value={action}
+                    disabled={isGenerating}
+                    onChange={(event) => {
+                      const nextAction = event.target.value as DraftGenerationAction;
+                      setAction(nextAction);
+                      const option = actionOptions.find(
+                        (candidate) => candidate.value === nextAction,
+                      );
+                      setInstruction(option?.instruction ?? "Revise the draft.");
+                      setProposalError(null);
+                    }}
+                    className="min-h-11 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-sm font-normal outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+                  >
+                    {actionOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="space-y-2 text-xs font-semibold">
+                  <span>التعليمات</span>
+                  <textarea
+                    aria-label="تعليمات اقتراح المسودة"
+                    value={instruction}
+                    onChange={(event) => setInstruction(event.target.value)}
+                    maxLength={2000}
+                    rows={7}
+                    disabled={isGenerating}
+                    dir="auto"
+                    className="w-full resize-y rounded-xl border border-line/80 bg-surface-raised px-3 py-3 text-sm font-normal leading-7 outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+                  />
+                </label>
+
+                {isGenerating ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="w-full rounded-xl"
+                    onClick={() =>
+                      proposalController.current?.abort(
+                        new DOMException("Cancelled by user", "AbortError"),
+                      )
+                    }
+                  >
+                    <Square className="h-4 w-4" aria-hidden="true" />
+                    إيقاف وحفظ الجزئي
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="w-full rounded-xl"
+                    disabled={!instruction.trim() || dirty}
+                    onClick={() => void startProposal()}
+                  >
+                    <Send className="h-4 w-4" aria-hidden="true" />
+                    بدء اقتراح
+                  </Button>
+                )}
+
+                {dirty ? (
+                  <p className="text-xs leading-6 text-ink-muted">
+                    احفظ تغييرات المحرر أولاً حتى يستند الاقتراح إلى إصدار واضح.
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p className="mt-5 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
+                {workspaceArchived
+                  ? "مساحة العمل مؤرشفة؛ الاقتراحات للقراءة فقط حتى استعادة المساحة."
+                  : draftArchived
+                    ? "استعد المسودة قبل طلب اقتراح جديد."
+                    : "عضوية القراءة لا تسمح بإرسال المسودة إلى المزود."}
+              </p>
+            )}
+          </Surface>
+
+          <div className="min-w-0 space-y-4">
+            {isGenerating ? (
+              <div className="flex items-center gap-3 rounded-xl bg-brand-soft/60 px-4 py-3 text-sm text-ink-muted">
+                <ActivityOrb state="shaping" size="sm" />
+                <span>جاري تشكيل اقتراح منفصل وحفظ حالته…</span>
+              </div>
+            ) : null}
+
+            {proposalError ? (
+              <div
+                role="alert"
+                className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+              >
+                {proposalError}
+              </div>
+            ) : null}
+
+            <div className="grid gap-4 2xl:grid-cols-2">
+              <Surface
+                tone="muted"
+                elevation="none"
+                radius="2xl"
+                padding="md"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-primary">المقبول</p>
+                    <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
+                      الإصدار {detail.draft.currentVersion}
+                    </h3>
+                  </div>
+                  <Check className="h-4 w-4 text-primary" aria-hidden="true" />
+                </div>
+                <pre
+                  dir={editor.direction}
+                  className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface-raised p-4 font-sans text-sm leading-8"
+                >
+                  {editor.content}
+                </pre>
+              </Surface>
+
+              <Surface
+                tone="raised"
+                elevation="xs"
+                radius="2xl"
+                padding="md"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-primary">المقترح</p>
+                    <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
+                      {proposal ? generationLabel(proposal.status) : "لا يوجد اقتراح"}
+                    </h3>
+                  </div>
+                  {isGenerating ? (
+                    <ActivityOrb state="shaping" size="sm" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
+                  )}
+                </div>
+
+                {proposalText ? (
+                  <pre
+                    dir="auto"
+                    className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface-sunken/55 p-4 font-sans text-sm leading-8"
+                  >
+                    {proposalText}
+                  </pre>
+                ) : (
+                  <div className="mt-4 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-line bg-surface-sunken/35 p-6 text-center">
+                    <Sparkles className="h-6 w-6 text-primary" aria-hidden="true" />
+                    <p className="mt-3 text-sm leading-7 text-ink-muted">
+                      اكتب تعليمات واضحة، وسيظهر الاقتراح هنا من دون تغيير العمل
+                      المقبول.
+                    </p>
+                  </div>
+                )}
+
+                {proposal?.status === "complete" ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      className="rounded-xl"
+                      disabled={dirty}
+                      onClick={() => void applyProposal()}
+                    >
+                      <Check className="h-4 w-4" aria-hidden="true" />
+                      تطبيق كإصدار جديد
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-xl"
+                      onClick={() => void discardProposal()}
+                    >
+                      <X className="h-4 w-4" aria-hidden="true" />
+                      رفض الاقتراح
+                    </Button>
+                  </div>
+                ) : null}
+
+                {proposal ? (
+                  <details className="mt-4 rounded-xl border border-line/70 bg-surface-sunken/45 text-xs">
+                    <summary className="min-h-10 cursor-pointer px-3 py-2 font-semibold text-ink-muted outline-none focus-visible:ring-4 focus-visible:ring-ring/20">
+                      تفاصيل التوليد
+                    </summary>
+                    <p dir="ltr" className="border-t border-line/70 p-3 text-ink-muted">
+                      {proposal.returnedModel ?? proposal.requestedModel}
+                      {proposal.totalTokens !== null
+                        ? ` · ${proposal.totalTokens} tokens`
+                        : ""}
+                      {proposal.latencyMs !== null
+                        ? ` · ${(proposal.latencyMs / 1000).toFixed(1)}s`
+                        : ""}
+                    </p>
+                  </details>
+                ) : null}
+              </Surface>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      {notice ? (
+        <Surface
+          tone={notice.tone === "info" ? "muted" : "raised"}
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className={
+            notice.tone === "error"
+              ? "border-destructive/30 bg-destructive/10 text-destructive"
+              : notice.tone === "success"
+                ? "border-primary/25 bg-brand-soft/60"
+                : undefined
+          }
+          role={notice.tone === "error" ? "alert" : "status"}
+          aria-live={notice.tone === "error" ? "assertive" : "polite"}
+        >
+          <div className="flex items-start gap-3 text-sm leading-7">
+            {notice.tone === "error" ? (
+              <AlertTriangle
+                className="mt-1 h-4 w-4 shrink-0 text-destructive"
+                aria-hidden="true"
+              />
+            ) : notice.tone === "success" ? (
+              <Check
+                className="mt-1 h-4 w-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+            ) : (
+              <FileClock
+                className="mt-1 h-4 w-4 shrink-0 text-primary"
+                aria-hidden="true"
+              />
+            )}
+            <p>{notice.message}</p>
+          </div>
+        </Surface>
+      ) : null}
+
+      <DraftWorkspaceFrame
+        title={editor.title || detail.draft.title}
+        subtitle={`v${detail.draft.currentVersion} · ${
+          kindOptions.find((option) => option.value === editor.kind)?.label ??
+          editor.kind
+        }`}
+        status={draftArchived ? "archived" : "active"}
+        toolbar={toolbar}
+        versions={versionsPanel}
+        inspector={inspectorPanel}
+      >
+        {viewMode === "editor" ? editorCanvas : proposalCanvas}
+      </DraftWorkspaceFrame>
     </div>
   );
 }
