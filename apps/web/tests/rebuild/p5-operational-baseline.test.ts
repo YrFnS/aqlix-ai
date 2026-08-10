@@ -244,8 +244,12 @@ describe("P5 health and release boundaries", () => {
 
     expect(template).toContain("APP_ENV=staging");
     expect(template).toContain("RELEASE_SHA=");
+    expect(template).toContain(
+      "NEXT_PUBLIC_API_URL=https://tuppra-staging.example.test",
+    );
     expect(template).toContain("READINESS_PROBE_DEPENDENCIES=true");
     expect(template).toContain("AI_PROVIDER=openrouter");
+    expect(template).not.toContain("kiteb-staging");
     expect(template).not.toContain("OPENAI_API_KEY=");
     expect(template).not.toContain("OPENROUTER_API_KEY=");
     expect(template).not.toMatch(/sk-[A-Za-z0-9_-]{20,}/u);
@@ -255,9 +259,11 @@ describe("P5 health and release boundaries", () => {
   test("defines a manual fail-closed Render staging service", () => {
     const blueprint = readRepo("render.yaml");
 
-    expect(blueprint).toContain("name: kiteb-staging");
+    expect(blueprint).toContain("name: tuppra-staging");
     expect(blueprint).toContain("runtime: node");
-    expect(blueprint).toContain("branch: develop");
+    expect(blueprint).toContain("branch: main");
+    expect(blueprint).not.toContain("name: kiteb-staging");
+    expect(blueprint).not.toContain("branch: develop");
     expect(blueprint).toContain("region: frankfurt");
     expect(blueprint).toContain("plan: starter");
     expect(blueprint).toContain("autoDeployTrigger: off");
@@ -296,6 +302,8 @@ describe("P5 health and release boundaries", () => {
 
     expect(buildScript).toContain("RENDER_GIT_COMMIT");
     expect(buildScript).toContain("RENDER_EXTERNAL_URL");
+    expect(buildScript).toContain("Building Tuppra release");
+    expect(buildScript).not.toContain("Building Kiteb release");
     expect(buildScript).toContain("scripts/ci/install-dependencies.sh");
     expect(buildScript).toContain("bun run validate:release-env");
     expect(buildScript).toContain("bun run build:release");
