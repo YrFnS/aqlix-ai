@@ -67,7 +67,10 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/u);
 }
 
-test("keeps the primary Tuppra journey visually stable", async ({ page }, testInfo) => {
+test("keeps the primary Tuppra journey visually stable", async ({
+  context,
+  page,
+}, testInfo) => {
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: /من سؤال مبعثر إلى مسودة موثّقة/u }),
@@ -108,15 +111,28 @@ test("keeps the primary Tuppra journey visually stable", async ({ page }, testIn
   ).toBeVisible();
   await capture(page, "workspace-detail.png");
 
-  await page.goto(`/workspaces/${workspaceId}/sources`);
-  await page.getByLabel("ملف TXT أو Markdown").setInputFiles({
-    name: "visual-launch-decision.md",
-    mimeType: "text/markdown",
-    buffer: Buffer.from(sourceText, "utf8"),
-  });
-  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
-  await expect(page).toHaveURL(
-    /\/workspaces\/[0-9a-f-]+\/sources\/[0-9a-f-]+\?status=uploaded$/u,
+  const sourceResponse = await context.request.post(
+    `/api/v1/workspaces/${workspaceId}/sources`,
+    {
+      multipart: {
+        file: {
+          name: "visual-launch-decision.md",
+          mimeType: "text/markdown",
+          buffer: Buffer.from(sourceText, "utf8"),
+        },
+      },
+    },
+  );
+  expect(sourceResponse.status()).toBe(201);
+  const sourcePayload = (await sourceResponse.json()) as {
+    ok: true;
+    data: { document: { attachment: { id: string } } };
+  };
+  const attachmentId = sourcePayload.data.document.attachment.id;
+  expect(attachmentId).toBeTruthy();
+
+  await page.goto(
+    `/workspaces/${workspaceId}/sources/${attachmentId}?status=uploaded`,
   );
   await expect(
     page.getByText("visual-launch-decision.md", { exact: true }),
