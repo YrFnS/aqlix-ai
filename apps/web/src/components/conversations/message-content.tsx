@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { JSX, ReactNode } from "react";
 
 type MarkdownBlock =
   | { kind: "paragraph"; content: string }
