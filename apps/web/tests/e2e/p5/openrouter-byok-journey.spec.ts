@@ -126,7 +126,7 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await page.getByRole("link", { name: /فتح المحادثات/ }).click();
   await page.getByLabel("عنوان اختياري").fill(conversationTitle);
   await page
-    .getByRole("button", { name: "إنشاء وفتح المحادثة" })
+    .getByRole("button", { name: "إنشاء وفتح", exact: true })
     .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
