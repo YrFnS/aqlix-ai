@@ -14,10 +14,8 @@ import { ConversationCard } from "@/components/conversations/conversation-card";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
 import { createConversationAction } from "@/lib/conversations/actions";
-import {
-  listConversations,
-  ConversationRepositoryError,
-} from "@/lib/conversations/repository";
+import { ConversationRepositoryError } from "@/lib/conversations/repository";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -55,7 +53,7 @@ export default async function ConversationsPage({
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
     if (workspace) {
-      conversations = await listConversations(supabase, workspaceId);
+      conversations = await listConversationSummaries(supabase, workspaceId);
     }
   } catch (error) {
     persistenceFailed = true;
