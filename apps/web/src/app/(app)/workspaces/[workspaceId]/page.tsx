@@ -50,6 +50,8 @@ const roleLabels = {
 const workspaceAreas = [
   {
     key: "conversations",
+    href: (workspace: WorkspaceAccess) =>
+      `/workspaces/${workspace.id}/conversations`,
     eyebrow: "حوار محفوظ",
     title: "المحادثات",
     description:
@@ -59,6 +61,7 @@ const workspaceAreas = [
   },
   {
     key: "sources",
+    href: (workspace: WorkspaceAccess) => `/workspaces/${workspace.id}/sources`,
     eyebrow: "مصادر خاصة",
     title: "المصادر",
     description:
@@ -68,6 +71,7 @@ const workspaceAreas = [
   },
   {
     key: "drafts",
+    href: (workspace: WorkspaceAccess) => `/workspaces/${workspace.id}/drafts`,
     eyebrow: "تحرير بإصدارات",
     title: "المسودات",
     description:
@@ -254,7 +258,7 @@ export default async function WorkspacePage({
               <StaggerItem key={area.key} className="h-full">
                 <MotionSurface className="h-full">
                   <Link
-                    href={`/workspaces/${workspace.id}/${area.key}`}
+                    href={area.href(workspace)}
                     aria-label={`${area.action}: ${workspace.name}`}
                     className="group block h-full rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/20 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
                   >
