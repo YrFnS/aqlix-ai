@@ -22,7 +22,7 @@ export function DraftWorkspaceFrame({
   title: string;
   subtitle?: string;
   status: "active" | "archived";
-  backHref: string;
+  backHref?: string;
   toolbar?: ReactNode;
   versions: ReactNode;
   inspector: ReactNode;
@@ -64,11 +64,13 @@ export function DraftWorkspaceFrame({
   return (
     <section className="flex min-h-[46rem] flex-col overflow-hidden rounded-2xl border border-line/80 bg-surface-raised shadow-surface-md lg:h-[calc(100svh-8.5rem)]">
       <header className="flex min-h-16 items-center gap-3 border-b border-line/75 bg-surface-overlay/90 px-3 backdrop-blur-xl sm:px-4">
-        <Button asChild variant="ghost" size="icon" className="rounded-xl">
-          <Link href={backHref} aria-label="العودة إلى مكتبة المسودات">
-            <ArrowRight className="h-5 w-5" aria-hidden="true" />
-          </Link>
-        </Button>
+        {backHref ? (
+          <Button asChild variant="ghost" size="icon" className="rounded-xl">
+            <Link href={backHref} aria-label="العودة إلى مكتبة المسودات">
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </Link>
+          </Button>
+        ) : null}
 
         <Button
           type="button"
