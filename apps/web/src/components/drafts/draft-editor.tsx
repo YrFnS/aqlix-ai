@@ -19,7 +19,6 @@ import {
   ExternalLink,
   FileClock,
   FileWarning,
-  GitBranch,
   PenLine,
   Quote,
   RotateCcw,
@@ -119,6 +118,12 @@ const actionOptions: Array<{
   },
 ];
 
+function parseDetail(value: unknown): DraftDetail {
+  const parsed = draftDetailSchema.safeParse(value);
+  if (!parsed.success) throw new Error("Draft state returned an invalid shape.");
+  return parsed.data;
+}
+
 function mergeGeneration(
   detail: DraftDetail,
   generation: DraftGeneration,
@@ -127,7 +132,6 @@ function mergeGeneration(
     detail.generations.map((candidate) => [candidate.id, candidate]),
   );
   byId.set(generation.id, generation);
-
   return {
     ...detail,
     generations: Array.from(byId.values()).sort((left, right) =>
@@ -153,21 +157,12 @@ async function parseEventStream(
       .map((line) => line.slice(5).trimStart())
       .join("\n")
       .trim();
-
     if (!data) return;
 
-    let value: unknown;
-    try {
-      value = JSON.parse(data);
-    } catch {
-      throw new Error("The server returned an invalid proposal event.");
-    }
-
-    const parsed = draftProposalStreamEventSchema.safeParse(value);
+    const parsed = draftProposalStreamEventSchema.safeParse(JSON.parse(data));
     if (!parsed.success) {
       throw new Error("The server returned an unsupported proposal event.");
     }
-
     onEvent(parsed.data);
   };
 
@@ -175,12 +170,11 @@ async function parseEventStream(
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
-
       buffer += decoder.decode(value, { stream: true });
+
       while (true) {
         const boundary = buffer.match(/\r?\n\r?\n/u);
         if (!boundary || boundary.index === undefined) break;
-
         const frame = buffer.slice(0, boundary.index);
         buffer = buffer.slice(boundary.index + boundary[0].length);
         processFrame(frame);
@@ -214,7 +208,7 @@ function provenanceLocator(
 }
 
 function generationLabel(status: DraftGeneration["status"]): string {
-  const labels: Record<DraftGeneration["status"], string> = {
+  return {
     pending: "بانتظار المزود",
     streaming: "جاري تشكيل الاقتراح",
     complete: "جاهز للمراجعة",
@@ -222,8 +216,7 @@ function generationLabel(status: DraftGeneration["status"]): string {
     cancelled: "أُلغي وحُفظ الجزئي",
     applied: "طُبق",
     discarded: "رُفض",
-  };
-  return labels[status];
+  }[status];
 }
 
 function errorMessage(error: unknown, fallback: string): string {
@@ -260,20 +253,18 @@ export function DraftEditor({
   const [instruction, setInstruction] = useState(
     actionOptions[0]?.instruction ?? "Improve the draft.",
   );
-  const initialProposal =
+  const firstProposal =
     initialDetail.generations.find((generation) =>
       ["pending", "streaming", "complete", "failed", "cancelled"].includes(
         generation.status,
       ),
     ) ?? null;
-  const [proposal, setProposal] = useState<DraftGeneration | null>(
-    initialProposal,
-  );
+  const [proposal, setProposal] = useState<DraftGeneration | null>(firstProposal);
   const [proposalText, setProposalText] = useState(
-    initialProposal?.proposedContent ?? "",
+    firstProposal?.proposedContent ?? "",
   );
-  const [isGenerating, setIsGenerating] = useState(false);
   const [proposalError, setProposalError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const proposalController = useRef<AbortController | null>(null);
 
   const dirty = useMemo(
@@ -281,13 +272,12 @@ export function DraftEditor({
     [detail.draft, editor],
   );
   const draftArchived = detail.draft.status === "archived";
-  const saveState = isSaving
-    ? "saving"
-    : saveError
-      ? "error"
-      : dirty
-        ? "unsaved"
-        : "saved";
+
+  const syncDetail = useCallback((next: DraftDetail) => {
+    setDetail(next);
+    setEditor(draftEditorValue(next.draft));
+    setSaveError(null);
+  }, []);
 
   const updateEditor = (patch: Partial<DraftEditorValue>) => {
     setEditor((current) => ({ ...current, ...patch }));
@@ -295,19 +285,7 @@ export function DraftEditor({
     setNotice(null);
   };
 
-  const acceptDetail = useCallback((next: DraftDetail) => {
-    setDetail(next);
-    setEditor(draftEditorValue(next.draft));
-    setSaveError(null);
-  }, []);
-
-  const parseDetailPayload = (payload: unknown): DraftDetail => {
-    const parsed = draftDetailSchema.safeParse(payload);
-    if (!parsed.success) throw new Error("Draft state returned an invalid shape.");
-    return parsed.data;
-  };
-
-  const reloadDetail = useCallback(async (): Promise<DraftDetail> => {
+  const reloadDetail = useCallback(async () => {
     const response = await fetch(
       `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}`,
       { cache: "no-store" },
@@ -317,19 +295,16 @@ export function DraftEditor({
       data?: { detail?: unknown };
       error?: { message?: string };
     };
-
     if (!response.ok || payload.ok !== true) {
       throw new Error(payload.error?.message || "Draft state could not be reloaded.");
     }
-
-    const next = parseDetailPayload(payload.data?.detail);
+    const next = parseDetail(payload.data?.detail);
     setDetail(next);
     return next;
   }, [detail.draft.id, workspaceId]);
 
   const saveDraft = useCallback(async () => {
     if (!canEdit || !dirty || isSaving) return;
-
     setIsSaving(true);
     setSaveError(null);
     setNotice(null);
@@ -351,13 +326,11 @@ export function DraftEditor({
         data?: { detail?: unknown; createdVersion?: boolean };
         error?: { message?: string };
       };
-
       if (!response.ok || payload.ok !== true) {
         throw new Error(payload.error?.message || "The draft could not be saved.");
       }
 
-      const next = parseDetailPayload(payload.data?.detail);
-      acceptDetail(next);
+      syncDetail(parseDetail(payload.data?.detail));
       setNotice({
         tone: "success",
         message: payload.data?.createdVersion
@@ -366,17 +339,13 @@ export function DraftEditor({
       });
       router.refresh();
     } catch (error) {
-      const message = errorMessage(
-        error,
-        "تعذر حفظ المسودة / Draft save failed.",
-      );
+      const message = errorMessage(error, "تعذر حفظ المسودة / Draft save failed.");
       setSaveError(message);
       setNotice({ tone: "error", message });
     } finally {
       setIsSaving(false);
     }
   }, [
-    acceptDetail,
     canEdit,
     detail.draft.currentVersion,
     detail.draft.id,
@@ -384,6 +353,7 @@ export function DraftEditor({
     editor,
     isSaving,
     router,
+    syncDetail,
     workspaceId,
   ]);
 
@@ -393,7 +363,6 @@ export function DraftEditor({
       event.preventDefault();
       event.returnValue = "";
     };
-
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
@@ -405,7 +374,6 @@ export function DraftEditor({
         void saveDraft();
       }
     };
-
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [saveDraft]);
@@ -414,7 +382,7 @@ export function DraftEditor({
     try {
       await navigator.clipboard.writeText(editor.content);
       setCopyState("copied");
-      window.setTimeout(() => setCopyState("idle"), 1800);
+      window.setTimeout(() => setCopyState("idle"), 1600);
     } catch {
       setCopyState("failed");
     }
@@ -429,25 +397,24 @@ export function DraftEditor({
       });
       return;
     }
-
     window.location.assign(
       `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/export?format=${format}`,
     );
   };
 
   const restoreVersion = async (versionNumber: number) => {
-    if (!canEdit || isSaving) return;
-    if (dirty) {
-      setNotice({
-        tone: "error",
-        message:
-          "احفظ أو ألغِ تغييرات المحرر قبل استعادة إصدار / Save or clear editor changes before restoring a version.",
-      });
+    if (!canEdit || isSaving || dirty) {
+      if (dirty) {
+        setNotice({
+          tone: "error",
+          message:
+            "احفظ أو ألغِ تغييرات المحرر قبل استعادة إصدار / Save or clear editor changes before restoring a version.",
+        });
+      }
       return;
     }
 
     setIsSaving(true);
-    setNotice(null);
     try {
       const response = await fetch(
         `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions`,
@@ -468,8 +435,7 @@ export function DraftEditor({
       if (!response.ok || payload.ok !== true) {
         throw new Error(payload.error?.message || "Version restore failed.");
       }
-
-      acceptDetail(parseDetailPayload(payload.data?.detail));
+      syncDetail(parseDetail(payload.data?.detail));
       setViewMode("editor");
       setNotice({
         tone: "success",
@@ -478,23 +444,21 @@ export function DraftEditor({
       });
       router.refresh();
     } catch (error) {
-      setNotice({
-        tone: "error",
-        message: errorMessage(error, "Version restore failed."),
-      });
+      setNotice({ tone: "error", message: errorMessage(error, "Version restore failed.") });
     } finally {
       setIsSaving(false);
     }
   };
 
   const setArchived = async (archived: boolean) => {
-    if (!canManageLifecycle || isGenerating) return;
-    if (dirty) {
-      setNotice({
-        tone: "error",
-        message:
-          "احفظ التغييرات قبل تغيير حالة المسودة / Save changes before changing draft state.",
-      });
+    if (!canManageLifecycle || dirty || isGenerating) {
+      if (dirty) {
+        setNotice({
+          tone: "error",
+          message:
+            "احفظ التغييرات قبل تغيير حالة المسودة / Save changes before changing draft state.",
+        });
+      }
       return;
     }
 
@@ -514,7 +478,6 @@ export function DraftEditor({
       if (!response.ok || payload.ok !== true) {
         throw new Error(payload.error?.message || "Draft lifecycle failed.");
       }
-
       router.push(
         archived
           ? `/workspaces/${workspaceId}/drafts?status=archived`
@@ -522,19 +485,19 @@ export function DraftEditor({
       );
       router.refresh();
     } catch (error) {
-      setNotice({
-        tone: "error",
-        message: errorMessage(error, "Draft lifecycle failed."),
-      });
+      setNotice({ tone: "error", message: errorMessage(error, "Draft lifecycle failed.") });
     }
   };
 
   const removeDraft = async () => {
     if (!canManageLifecycle || dirty || isGenerating) return;
-    const confirmed = window.confirm(
-      "حذف المسودة وكل إصداراتها ومحاولات الاستمرار؟\n\nDelete this draft, every version, and every proposal?",
-    );
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "حذف المسودة وكل إصداراتها ومحاولات الاستمرار؟\n\nDelete this draft, every version, and every proposal?",
+      )
+    ) {
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -548,14 +511,10 @@ export function DraftEditor({
       if (!response.ok || payload.ok !== true) {
         throw new Error(payload.error?.message || "Draft deletion failed.");
       }
-
       router.push(`/workspaces/${workspaceId}/drafts?status=deleted`);
       router.refresh();
     } catch (error) {
-      setNotice({
-        tone: "error",
-        message: errorMessage(error, "Draft deletion failed."),
-      });
+      setNotice({ tone: "error", message: errorMessage(error, "Draft deletion failed.") });
     }
   };
 
@@ -567,7 +526,6 @@ export function DraftEditor({
       );
       return;
     }
-
     const boundedInstruction = instruction.trim();
     if (!boundedInstruction) {
       setProposalError("تعليمات الاستمرار مطلوبة / A revision instruction is required.");
@@ -608,10 +566,7 @@ export function DraftEditor({
           setProposal(event.generation);
           setProposalText(event.generation.proposedContent);
           setDetail((current) => mergeGeneration(current, event.generation));
-          return;
-        }
-
-        if (event.type === "delta") {
+        } else if (event.type === "delta") {
           setProposalText((current) => `${current}${event.delta}`);
           setProposal((current) =>
             current
@@ -622,10 +577,7 @@ export function DraftEditor({
                 }
               : current,
           );
-          return;
-        }
-
-        if (
+        } else if (
           event.type === "complete" ||
           event.type === "failed" ||
           event.type === "cancelled"
@@ -662,44 +614,13 @@ export function DraftEditor({
     }
   };
 
-  const applyProposal = async () => {
-    if (!proposal || proposal.status !== "complete" || dirty) return;
-
-    try {
-      const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/continue/${proposal.id}/apply`,
-        { method: "POST" },
-      );
-      const payload = (await response.json()) as {
-        ok?: boolean;
-        data?: { detail?: unknown };
-        error?: { message?: string };
-      };
-      if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "Proposal apply failed.");
-      }
-
-      acceptDetail(parseDetailPayload(payload.data?.detail));
-      setProposal(null);
-      setProposalText("");
-      setViewMode("editor");
-      setNotice({
-        tone: "success",
-        message:
-          "طُبق الاقتراح كإصدار جديد / Proposal applied as a new immutable version.",
-      });
-      router.refresh();
-    } catch (error) {
-      setProposalError(errorMessage(error, "Proposal apply failed."));
-    }
-  };
-
-  const discardProposal = async () => {
+  const settleProposal = async (decision: "apply" | "discard") => {
     if (!proposal || proposal.status !== "complete") return;
+    if (decision === "apply" && dirty) return;
 
     try {
       const response = await fetch(
-        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/continue/${proposal.id}/discard`,
+        `/api/v1/workspaces/${workspaceId}/drafts/${detail.draft.id}/continue/${proposal.id}/${decision}`,
         { method: "POST" },
       );
       const payload = (await response.json()) as {
@@ -708,55 +629,53 @@ export function DraftEditor({
         error?: { message?: string };
       };
       if (!response.ok || payload.ok !== true) {
-        throw new Error(payload.error?.message || "Proposal discard failed.");
+        throw new Error(payload.error?.message || `Proposal ${decision} failed.`);
       }
 
-      setDetail(parseDetailPayload(payload.data?.detail));
+      const next = parseDetail(payload.data?.detail);
+      if (decision === "apply") syncDetail(next);
+      else setDetail(next);
       setProposal(null);
       setProposalText("");
       setViewMode("editor");
       setNotice({
-        tone: "info",
+        tone: decision === "apply" ? "success" : "info",
         message:
-          "رُفض الاقتراح وبقي العمل المقبول دون تغيير / Proposal discarded; accepted work is unchanged.",
+          decision === "apply"
+            ? "طُبق الاقتراح كإصدار جديد / Proposal applied as a new immutable version."
+            : "رُفض الاقتراح وبقي العمل المقبول دون تغيير / Proposal discarded; accepted work is unchanged.",
       });
       router.refresh();
     } catch (error) {
-      setProposalError(errorMessage(error, "Proposal discard failed."));
+      setProposalError(errorMessage(error, `Proposal ${decision} failed.`));
     }
   };
 
   const toolbar = (
     <div className="inline-flex rounded-xl border border-line/75 bg-surface-sunken p-1">
-      <button
-        type="button"
-        aria-pressed={viewMode === "editor"}
-        onClick={() => setViewMode("editor")}
-        className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
-          viewMode === "editor"
-            ? "bg-surface-raised text-foreground shadow-surface-xs"
-            : "text-ink-muted hover:text-foreground"
-        }`}
-      >
-        <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
-        المحرر
-      </button>
-      <button
-        type="button"
-        aria-pressed={viewMode === "proposal"}
-        onClick={() => setViewMode("proposal")}
-        className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
-          viewMode === "proposal"
-            ? "bg-surface-raised text-foreground shadow-surface-xs"
-            : "text-ink-muted hover:text-foreground"
-        }`}
-      >
-        <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-        الاقتراح
-        {proposal || isGenerating ? (
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-        ) : null}
-      </button>
+      {(["editor", "proposal"] as const).map((mode) => (
+        <button
+          key={mode}
+          type="button"
+          aria-pressed={viewMode === mode}
+          onClick={() => setViewMode(mode)}
+          className={`inline-flex min-h-9 items-center gap-2 rounded-lg px-3 text-xs font-semibold outline-none transition-colors focus-visible:ring-4 focus-visible:ring-ring/20 ${
+            viewMode === mode
+              ? "bg-surface-raised text-foreground shadow-surface-xs"
+              : "text-ink-muted hover:text-foreground"
+          }`}
+        >
+          {mode === "editor" ? (
+            <PenLine className="h-3.5 w-3.5" aria-hidden="true" />
+          ) : (
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
+          {mode === "editor" ? "المحرر" : "الاقتراح"}
+          {mode === "proposal" && (proposal || isGenerating) ? (
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+          ) : null}
+        </button>
+      ))}
     </div>
   );
 
@@ -768,7 +687,6 @@ export function DraftEditor({
           كل حفظ أو تطبيق ينشئ لقطة جديدة ولا يعيد كتابة التاريخ.
         </p>
       </div>
-
       <div className="relative ms-3 border-s border-line/80 ps-4">
         {detail.versions.map((version) => {
           const current = version.versionNumber === detail.draft.currentVersion;
@@ -807,11 +725,6 @@ export function DraftEditor({
                 >
                   {formatTimestamp(version.createdAt)}
                 </time>
-                {version.restoredFromVersion ? (
-                  <p className="mt-1 text-[0.68rem] text-ink-subtle">
-                    restored from v{version.restoredFromVersion}
-                  </p>
-                ) : null}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Button asChild variant="ghost" size="sm" className="rounded-lg">
                     <Link
@@ -914,7 +827,6 @@ export function DraftEditor({
                   </span>
                 </>
               );
-
               return provenance.sourceId && provenance.attachmentId ? (
                 <Link
                   key={provenance.id}
@@ -922,10 +834,7 @@ export function DraftEditor({
                   className="flex min-h-11 items-center gap-2 rounded-xl border border-line/70 bg-surface-raised px-3 py-2 text-xs outline-none transition-colors hover:border-primary/30 hover:bg-brand-soft/35 focus-visible:ring-4 focus-visible:ring-ring/20"
                 >
                   {body}
-                  <ExternalLink
-                    className="h-3.5 w-3.5 shrink-0"
-                    aria-hidden="true"
-                  />
+                  <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 </Link>
               ) : (
                 <div
@@ -934,10 +843,7 @@ export function DraftEditor({
                   title="The original source is no longer available."
                 >
                   {body}
-                  <FileWarning
-                    className="h-3.5 w-3.5 shrink-0 text-ink-muted"
-                    aria-hidden="true"
-                  />
+                  <FileWarning className="h-3.5 w-3.5 shrink-0 text-ink-muted" aria-hidden="true" />
                 </div>
               );
             })}
@@ -975,10 +881,7 @@ export function DraftEditor({
 
       <section className="border-t border-line/70 pt-5">
         <div className="flex items-start gap-3 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
-          <ShieldCheck
-            className="mt-1 h-4 w-4 shrink-0 text-primary"
-            aria-hidden="true"
-          />
+          <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
           <p>
             العمل المقبول منفصل عن الاقتراح. الاستعادة والتطبيق يضيفان إصداراً
             جديداً ولا يغيران اللقطات السابقة.
@@ -1039,100 +942,87 @@ export function DraftEditor({
               maxLength={200}
               readOnly={!canEdit}
               dir="auto"
-              className="min-h-11 w-full border-0 bg-transparent px-0 font-arabic-heading text-2xl font-semibold outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 read-only:cursor-default"
+              className="min-h-11 w-full border-0 bg-transparent px-0 font-arabic-heading text-2xl font-semibold outline-none ring-0 focus:border-0 focus:ring-0 read-only:cursor-default"
             />
           </label>
-
           <div className="grid shrink-0 grid-cols-2 gap-2 lg:w-[20rem]">
-            <label>
-              <span className="sr-only">نوع المسودة</span>
-              <select
-                aria-label="نوع المسودة"
-                value={editor.kind}
-                onChange={(event) =>
-                  updateEditor({ kind: event.target.value as DraftKind })
-                }
-                disabled={!canEdit}
-                className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
-              >
-                {kindOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span className="sr-only">اتجاه محتوى المسودة</span>
-              <select
-                aria-label="اتجاه محتوى المسودة"
-                value={editor.direction}
-                onChange={(event) =>
-                  updateEditor({
-                    direction: event.target.value as "auto" | "rtl" | "ltr",
-                  })
-                }
-                disabled={!canEdit}
-                className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
-              >
-                <option value="auto">تلقائي</option>
-                <option value="rtl">RTL</option>
-                <option value="ltr">LTR</option>
-              </select>
-            </label>
+            <select
+              aria-label="نوع المسودة"
+              value={editor.kind}
+              onChange={(event) =>
+                updateEditor({ kind: event.target.value as DraftKind })
+              }
+              disabled={!canEdit}
+              className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
+            >
+              {kindOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="اتجاه محتوى المسودة"
+              value={editor.direction}
+              onChange={(event) =>
+                updateEditor({
+                  direction: event.target.value as "auto" | "rtl" | "ltr",
+                })
+              }
+              disabled={!canEdit}
+              className="min-h-10 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-xs outline-none focus-visible:ring-4 focus-visible:ring-ring/20 disabled:bg-surface-sunken"
+            >
+              <option value="auto">تلقائي</option>
+              <option value="rtl">RTL</option>
+              <option value="ltr">LTR</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <label className="flex min-h-0 flex-1 flex-col">
-        <span className="sr-only">محتوى المسودة</span>
-        <textarea
-          aria-label="محتوى المسودة"
-          value={editor.content}
-          onChange={(event) => updateEditor({ content: event.target.value })}
-          maxLength={100000}
-          readOnly={!canEdit}
-          dir={editor.direction}
-          className="min-h-[32rem] flex-1 resize-none border-0 bg-surface px-5 py-6 text-sm font-normal leading-8 outline-none ring-0 placeholder:text-ink-subtle focus:border-0 focus:ring-0 read-only:cursor-default sm:px-8 sm:py-8 sm:text-[0.95rem] sm:leading-9"
-        />
-      </label>
+      <textarea
+        aria-label="محتوى المسودة"
+        value={editor.content}
+        onChange={(event) => updateEditor({ content: event.target.value })}
+        maxLength={100000}
+        readOnly={!canEdit}
+        dir={editor.direction}
+        className="min-h-[32rem] flex-1 resize-none border-0 bg-surface px-5 py-6 text-sm leading-8 outline-none ring-0 focus:border-0 focus:ring-0 read-only:cursor-default sm:px-8 sm:py-8 sm:text-[0.95rem] sm:leading-9"
+      />
 
       <div className="flex flex-col gap-3 border-t border-line/70 bg-surface-overlay/90 px-3 py-3 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-muted">
           <span
             className={`inline-flex min-h-8 items-center gap-2 rounded-lg px-2.5 font-semibold ${
-              saveState === "saved"
-                ? "bg-brand-soft text-primary"
-                : saveState === "error"
-                  ? "bg-destructive/10 text-destructive"
-                  : "bg-surface-sunken"
+              saveError
+                ? "bg-destructive/10 text-destructive"
+                : dirty
+                  ? "bg-surface-sunken"
+                  : "bg-brand-soft text-primary"
             }`}
             role="status"
             aria-live="polite"
           >
-            {saveState === "saving" ? (
+            {isSaving ? (
               <ActivityOrb state="working" size="sm" />
-            ) : saveState === "saved" ? (
-              <Check className="h-3.5 w-3.5" aria-hidden="true" />
-            ) : saveState === "error" ? (
+            ) : saveError ? (
               <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
-            ) : (
+            ) : dirty ? (
               <FileClock className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
             )}
-            {saveState === "saving"
+            {isSaving
               ? "جاري الحفظ"
-              : saveState === "saved"
-                ? `محفوظ · v${detail.draft.currentVersion}`
-                : saveState === "error"
-                  ? "فشل الحفظ"
-                  : "تغييرات غير محفوظة"}
+              : saveError
+                ? "فشل الحفظ"
+                : dirty
+                  ? "تغييرات غير محفوظة"
+                  : `محفوظ · v${detail.draft.currentVersion}`}
           </span>
-          <span>
-            {editor.content.length.toLocaleString("ar-IQ")} / ١٠٠٬٠٠٠
-          </span>
+          <span>{editor.content.length.toLocaleString("ar-IQ")} / ١٠٠٬٠٠٠</span>
           <span className="hidden sm:inline">Ctrl/Cmd+S</span>
         </div>
-
         <div className="flex flex-wrap gap-2">
           <Button
             type="button"
@@ -1164,9 +1054,11 @@ export function DraftEditor({
           ) : null}
         </div>
       </div>
-
       {saveError ? (
-        <p className="border-t border-destructive/20 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
+        <p
+          className="border-t border-destructive/20 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+          role="alert"
+        >
           {saveError}
         </p>
       ) : null}
@@ -1176,22 +1068,15 @@ export function DraftEditor({
   const proposalCanvas = (
     <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
       <div className="mx-auto max-w-5xl space-y-5">
-        <div className="flex flex-col gap-4 border-b border-line/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold text-primary">مراجعة الاقتراح</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              اقتراح منفصل عن العمل المقبول
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
-              يقرأ المزود آخر إصدار محفوظ فقط. لا يتغير المحرر حتى تطبيق الاقتراح
-              صراحةً كإصدار جديد.
-            </p>
-          </div>
-          {proposal ? (
-            <span className="rounded-full bg-surface-sunken px-3 py-1.5 text-xs font-semibold text-ink-muted">
-              base v{proposal.baseVersion} · {generationLabel(proposal.status)}
-            </span>
-          ) : null}
+        <div className="border-b border-line/70 pb-5">
+          <p className="text-xs font-semibold text-primary">مراجعة الاقتراح</p>
+          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
+            اقتراح منفصل عن العمل المقبول
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
+            يقرأ المزود آخر إصدار محفوظ فقط. لا يتغير المحرر حتى تطبيق الاقتراح
+            صراحةً كإصدار جديد.
+          </p>
         </div>
 
         <div className="grid gap-5 xl:grid-cols-[19rem_minmax(0,1fr)]">
@@ -1214,45 +1099,37 @@ export function DraftEditor({
 
             {canEdit ? (
               <div className="mt-5 space-y-4">
-                <label className="space-y-2 text-xs font-semibold">
-                  <span>الإجراء</span>
-                  <select
-                    aria-label="إجراء اقتراح المسودة"
-                    value={action}
-                    disabled={isGenerating}
-                    onChange={(event) => {
-                      const nextAction = event.target.value as DraftGenerationAction;
-                      setAction(nextAction);
-                      const option = actionOptions.find(
-                        (candidate) => candidate.value === nextAction,
-                      );
-                      setInstruction(option?.instruction ?? "Revise the draft.");
-                      setProposalError(null);
-                    }}
-                    className="min-h-11 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-sm font-normal outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
-                  >
-                    {actionOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label className="space-y-2 text-xs font-semibold">
-                  <span>التعليمات</span>
-                  <textarea
-                    aria-label="تعليمات اقتراح المسودة"
-                    value={instruction}
-                    onChange={(event) => setInstruction(event.target.value)}
-                    maxLength={2000}
-                    rows={7}
-                    disabled={isGenerating}
-                    dir="auto"
-                    className="w-full resize-y rounded-xl border border-line/80 bg-surface-raised px-3 py-3 text-sm font-normal leading-7 outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
-                  />
-                </label>
-
+                <select
+                  aria-label="إجراء اقتراح المسودة"
+                  value={action}
+                  disabled={isGenerating}
+                  onChange={(event) => {
+                    const nextAction = event.target.value as DraftGenerationAction;
+                    setAction(nextAction);
+                    setInstruction(
+                      actionOptions.find((option) => option.value === nextAction)
+                        ?.instruction ?? "Revise the draft.",
+                    );
+                    setProposalError(null);
+                  }}
+                  className="min-h-11 w-full rounded-xl border border-line/80 bg-surface-raised px-3 text-sm outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+                >
+                  {actionOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <textarea
+                  aria-label="تعليمات اقتراح المسودة"
+                  value={instruction}
+                  onChange={(event) => setInstruction(event.target.value)}
+                  maxLength={2000}
+                  rows={7}
+                  disabled={isGenerating}
+                  dir="auto"
+                  className="w-full resize-y rounded-xl border border-line/80 bg-surface-raised px-3 py-3 text-sm leading-7 outline-none focus-visible:ring-4 focus-visible:ring-ring/20"
+                />
                 {isGenerating ? (
                   <Button
                     type="button"
@@ -1278,12 +1155,6 @@ export function DraftEditor({
                     بدء اقتراح
                   </Button>
                 )}
-
-                {dirty ? (
-                  <p className="text-xs leading-6 text-ink-muted">
-                    احفظ تغييرات المحرر أولاً حتى يستند الاقتراح إلى إصدار واضح.
-                  </p>
-                ) : null}
               </div>
             ) : (
               <p className="mt-5 rounded-xl bg-surface-sunken p-3 text-xs leading-6 text-ink-muted">
@@ -1303,7 +1174,6 @@ export function DraftEditor({
                 <span>جاري تشكيل اقتراح منفصل وحفظ حالته…</span>
               </div>
             ) : null}
-
             {proposalError ? (
               <div
                 role="alert"
@@ -1314,21 +1184,11 @@ export function DraftEditor({
             ) : null}
 
             <div className="grid gap-4 2xl:grid-cols-2">
-              <Surface
-                tone="muted"
-                elevation="none"
-                radius="2xl"
-                padding="md"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold text-primary">المقبول</p>
-                    <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
-                      الإصدار {detail.draft.currentVersion}
-                    </h3>
-                  </div>
-                  <Check className="h-4 w-4 text-primary" aria-hidden="true" />
-                </div>
+              <Surface tone="muted" elevation="none" radius="2xl" padding="md">
+                <p className="text-xs font-semibold text-primary">العمل المقبول</p>
+                <h3 className="mt-1 font-arabic-heading text-lg font-semibold">
+                  الإصدار {detail.draft.currentVersion}
+                </h3>
                 <pre
                   dir={editor.direction}
                   className="mt-4 max-h-[32rem] overflow-auto whitespace-pre-wrap break-words rounded-xl bg-surface-raised p-4 font-sans text-sm leading-8"
@@ -1337,12 +1197,7 @@ export function DraftEditor({
                 </pre>
               </Surface>
 
-              <Surface
-                tone="raised"
-                elevation="xs"
-                radius="2xl"
-                padding="md"
-              >
+              <Surface tone="raised" elevation="xs" radius="2xl" padding="md">
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold text-primary">المقترح</p>
@@ -1356,7 +1211,6 @@ export function DraftEditor({
                     <Sparkles className="h-4 w-4 text-primary" aria-hidden="true" />
                   )}
                 </div>
-
                 {proposalText ? (
                   <pre
                     dir="auto"
@@ -1365,22 +1219,18 @@ export function DraftEditor({
                     {proposalText}
                   </pre>
                 ) : (
-                  <div className="mt-4 flex min-h-64 flex-col items-center justify-center rounded-xl border border-dashed border-line bg-surface-sunken/35 p-6 text-center">
-                    <Sparkles className="h-6 w-6 text-primary" aria-hidden="true" />
-                    <p className="mt-3 text-sm leading-7 text-ink-muted">
-                      اكتب تعليمات واضحة، وسيظهر الاقتراح هنا من دون تغيير العمل
-                      المقبول.
-                    </p>
+                  <div className="mt-4 flex min-h-64 items-center justify-center rounded-xl border border-dashed border-line bg-surface-sunken/35 p-6 text-center text-sm leading-7 text-ink-muted">
+                    اكتب تعليمات واضحة، وسيظهر الاقتراح هنا من دون تغيير العمل
+                    المقبول.
                   </div>
                 )}
-
                 {proposal?.status === "complete" ? (
                   <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                       type="button"
                       className="rounded-xl"
                       disabled={dirty}
-                      onClick={() => void applyProposal()}
+                      onClick={() => void settleProposal("apply")}
                     >
                       <Check className="h-4 w-4" aria-hidden="true" />
                       تطبيق كإصدار جديد
@@ -1389,29 +1239,12 @@ export function DraftEditor({
                       type="button"
                       variant="outline"
                       className="rounded-xl"
-                      onClick={() => void discardProposal()}
+                      onClick={() => void settleProposal("discard")}
                     >
                       <X className="h-4 w-4" aria-hidden="true" />
                       رفض الاقتراح
                     </Button>
                   </div>
-                ) : null}
-
-                {proposal ? (
-                  <details className="mt-4 rounded-xl border border-line/70 bg-surface-sunken/45 text-xs">
-                    <summary className="min-h-10 cursor-pointer px-3 py-2 font-semibold text-ink-muted outline-none focus-visible:ring-4 focus-visible:ring-ring/20">
-                      تفاصيل التوليد
-                    </summary>
-                    <p dir="ltr" className="border-t border-line/70 p-3 text-ink-muted">
-                      {proposal.returnedModel ?? proposal.requestedModel}
-                      {proposal.totalTokens !== null
-                        ? ` · ${proposal.totalTokens} tokens`
-                        : ""}
-                      {proposal.latencyMs !== null
-                        ? ` · ${(proposal.latencyMs / 1000).toFixed(1)}s`
-                        : ""}
-                    </p>
-                  </details>
                 ) : null}
               </Surface>
             </div>
@@ -1441,20 +1274,9 @@ export function DraftEditor({
         >
           <div className="flex items-start gap-3 text-sm leading-7">
             {notice.tone === "error" ? (
-              <AlertTriangle
-                className="mt-1 h-4 w-4 shrink-0 text-destructive"
-                aria-hidden="true"
-              />
-            ) : notice.tone === "success" ? (
-              <Check
-                className="mt-1 h-4 w-4 shrink-0 text-primary"
-                aria-hidden="true"
-              />
+              <AlertTriangle className="mt-1 h-4 w-4 shrink-0 text-destructive" aria-hidden="true" />
             ) : (
-              <FileClock
-                className="mt-1 h-4 w-4 shrink-0 text-primary"
-                aria-hidden="true"
-              />
+              <Check className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
             )}
             <p>{notice.message}</p>
           </div>
@@ -1468,6 +1290,9 @@ export function DraftEditor({
           editor.kind
         }`}
         status={draftArchived ? "archived" : "active"}
+        backHref={`/workspaces/${workspaceId}/drafts${
+          draftArchived ? "/archived" : ""
+        }`}
         toolbar={toolbar}
         versions={versionsPanel}
         inspector={inspectorPanel}
