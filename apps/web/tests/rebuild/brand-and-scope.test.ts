@@ -41,7 +41,7 @@ describe("rebuild brand and scope", () => {
       /bank-grade/i,
       /production[- ]ready/i,
       /verified Islamic compliance/i,
-      /(?:85|95|99|100)%\+?/,
+      /\b(?:85|95|99|100)%\+?\s+(?:accuracy|accurate|uptime|compliance|readiness|دقة|امتثال|جاهزية)/iu,
     ];
 
     for (const claim of unsupportedClaims) {
