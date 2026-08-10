@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FilePlus2, RefreshCw } from "lucide-react";
+import { FilePlus2 } from "lucide-react";
 import type { ConversationMessage, DraftKind } from "@iraqi-ai/types";
 import { conversationMessageSchema } from "@iraqi-ai/types";
+import { ActivityOrb } from "@/components/conversations/activity-orb";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface AssistantMessageOption {
   id: string;
@@ -26,11 +28,14 @@ const kindOptions: Array<{
   { value: "decision_note", label: "ملاحظة قرار" },
 ];
 
+const fieldClassName =
+  "min-h-11 w-full rounded-xl border border-input bg-surface-raised px-3 text-sm font-normal outline-none transition-[border-color,box-shadow] duration-fast focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20";
+
 function preview(value: string): string {
   const normalized = value.replace(/\s+/gu, " ").trim();
-  return normalized.length <= 90
+  return normalized.length <= 76
     ? normalized
-    : `${normalized.slice(0, 87).trimEnd()}…`;
+    : `${normalized.slice(0, 73).trimEnd()}…`;
 }
 
 function reusableMessagesFrom(
@@ -53,11 +58,13 @@ export function DraftFromConversationPanel({
   conversationId,
   messages,
   canWrite,
+  compact = false,
 }: {
   workspaceId: string;
   conversationId: string;
   messages: AssistantMessageOption[];
   canWrite: boolean;
+  compact?: boolean;
 }) {
   const router = useRouter();
   const [availableMessages, setAvailableMessages] = useState(messages);
@@ -116,9 +123,8 @@ export function DraftFromConversationPanel({
           }
         }
       } catch {
-        // The main conversation surface owns visible request failures. This
-        // helper retries only while the first completed answer is not yet
-        // available to the server-rendered sibling panel.
+        // The conversation surface owns visible request failures. This helper
+        // only waits for the first persisted assistant answer.
       }
 
       if (!cancelled) {
@@ -134,31 +140,39 @@ export function DraftFromConversationPanel({
     };
   }, [availableMessages.length, conversationId, workspaceId]);
 
+  const containerClassName = cn(
+    compact
+      ? "p-4 sm:p-5"
+      : "rounded-2xl border border-primary/25 bg-surface-raised p-5 shadow-surface-xs sm:p-6",
+  );
+
   if (availableMessages.length === 0) {
     return (
-      <section className="rounded-3xl border border-dashed border-border bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold text-primary">P4 · Draft</p>
-        <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-          لا توجد إجابة مكتملة بعد
-        </h2>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          أكمل إجابة مساعد أولاً، ثم حوّلها إلى ملخص أو مقارنة أو رسالة أو مذكرة
-          أو قائمة عمل أو ملاحظة قرار.
-        </p>
+      <section className={containerClassName} data-slot="draft-from-conversation">
+        <div className="flex items-start gap-3">
+          <span className="rounded-lg bg-brand-soft p-2 text-primary">
+            <FilePlus2 className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-xs font-semibold text-primary">تحويل إلى مسودة</p>
+            <h2 className="mt-1 text-sm font-semibold">بانتظار إجابة مكتملة</h2>
+            <p className="mt-2 text-xs leading-6 text-ink-muted">
+              بعد اكتمال إجابة المساعد يمكنك تحويلها إلى عمل قابل للتحرير مع حفظ
+              المراجع كمنشأ للمسودة.
+            </p>
+          </div>
+        </div>
       </section>
     );
   }
 
   if (!canWrite) {
     return (
-      <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <p className="text-sm font-semibold text-primary">P4 · Draft</p>
-        <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-          نتائج قابلة للمراجعة
-        </h2>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">
-          عضويتك للقراءة فقط. إنشاء مسودة قابلة للتحرير يحتاج دور المحرر أو
-          المالك.
+      <section className={containerClassName} data-slot="draft-from-conversation">
+        <p className="text-xs font-semibold text-primary">تحويل إلى مسودة</p>
+        <h2 className="mt-1 text-sm font-semibold">النتائج متاحة للمراجعة</h2>
+        <p className="mt-2 text-xs leading-6 text-ink-muted">
+          إنشاء مسودة قابلة للتحرير يحتاج دور المحرر أو المالك.
         </p>
       </section>
     );
@@ -207,32 +221,28 @@ export function DraftFromConversationPanel({
   };
 
   return (
-    <section className="rounded-3xl border border-primary/25 bg-card p-6 shadow-sm sm:p-8">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold text-primary">
-            P4 · Ask → Ground → Draft
+    <section className={containerClassName} data-slot="draft-from-conversation">
+      <div className="flex items-start gap-3">
+        <span className="rounded-lg bg-brand-soft p-2 text-primary">
+          <FilePlus2 className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <div>
+          <p className="text-xs font-semibold text-primary">تحويل إلى مسودة</p>
+          <h2 className="mt-1 text-sm font-semibold">ابدأ من إجابة محفوظة</h2>
+          <p className="mt-2 text-xs leading-6 text-ink-muted">
+            لا يجري هذا الإجراء اتصالاً إضافياً بالمزوّد، ويحتفظ بمنشأ الإجابة
+            ومراجعها.
           </p>
-          <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-            حوّل إجابة محفوظة إلى عمل قابل للتحرير
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            الهيكل الأولي حتمي ومرئي، ولا يجري اتصالاً إضافياً بالمزود. المراجع
-            المحفوظة في الإجابة تُنسخ كلقطة منشأ للمسودة.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-          <FilePlus2 className="h-5 w-5" aria-hidden="true" />
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.3fr_0.7fr_auto] lg:items-end">
-        <label className="space-y-2 text-sm font-semibold">
+      <div className="mt-4 space-y-3">
+        <label className="block space-y-1.5 text-xs font-semibold">
           <span>إجابة المساعد</span>
           <select
             value={messageId}
             onChange={(event) => setMessageId(event.target.value)}
-            className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className={fieldClassName}
           >
             {orderedMessages.map((message) => (
               <option key={message.id} value={message.id}>
@@ -242,8 +252,8 @@ export function DraftFromConversationPanel({
           </select>
         </label>
 
-        <label className="space-y-2 text-sm font-semibold">
-          <span>البداية</span>
+        <label className="block space-y-1.5 text-xs font-semibold">
+          <span>نوع البداية</span>
           <select
             value={kind}
             onChange={(event) =>
@@ -251,7 +261,7 @@ export function DraftFromConversationPanel({
                 event.target.value as Exclude<DraftKind, "freeform">,
               )
             }
-            className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm font-normal outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className={fieldClassName}
           >
             {kindOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -263,27 +273,27 @@ export function DraftFromConversationPanel({
 
         <Button
           type="button"
-          className="rounded-full px-6"
+          className="w-full rounded-xl"
           disabled={isCreating || !messageId}
           onClick={() => void createDraft()}
         >
           {isCreating ? (
-            <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <ActivityOrb state="shaping" size="sm" className="border-white/20 bg-white/10" />
           ) : (
             <FilePlus2 className="h-4 w-4" aria-hidden="true" />
           )}
-          {isCreating ? "جاري الإنشاء…" : "إنشاء المسودة"}
+          {isCreating ? "جاري إنشاء المسودة…" : "إنشاء المسودة"}
         </Button>
       </div>
 
-      {error && (
+      {error ? (
         <div
           role="alert"
-          className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+          className="mt-3 rounded-xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs leading-6 text-destructive"
         >
           {error}
         </div>
-      )}
+      ) : null}
     </section>
   );
 }
