@@ -30,7 +30,8 @@ import {
 
 export const metadata: Metadata = {
   title: "المصادر",
-  description: "Private workspace documents and inspectable text passages.",
+  description:
+    "أضف ملفاتك النصية وابحث داخلها وافتح المقاطع التي تدعم عملك.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -116,9 +117,7 @@ function DocumentCard({ document }: { document: Attachment }) {
               aria-hidden="true"
             />
             <div>
-              <p className="font-semibold">
-                {document.failureCode ?? "PROCESSING_FAILED"}
-              </p>
+              <p className="font-semibold">تعذر تجهيز الملف</p>
               {document.failureReason && (
                 <p className="mt-1 text-muted-foreground">
                   {document.failureReason}
@@ -155,16 +154,11 @@ function SearchResultCard({
 
   return (
     <article className="rounded-3xl border border-border/70 bg-card p-5 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p dir="auto" className="font-semibold">
-            {result.fileName}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">{locator}</p>
-        </div>
-        <span className="rounded-full bg-secondary px-2.5 py-1 text-[0.68rem] text-muted-foreground">
-          rank {result.rank.toFixed(3)}
-        </span>
+      <div>
+        <p dir="auto" className="font-semibold">
+          {result.fileName}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">{locator}</p>
       </div>
       <p
         dir="auto"
@@ -270,19 +264,19 @@ export default async function WorkspaceSourcesPage({
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold text-primary">
-              P3 · Private documents and inspectable passages
+              أضف السياق الذي تريد الرجوع إليه
             </p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
               مصادر {workspace.name}
             </h1>
             <p className="mt-4 text-base leading-8 text-muted-foreground">
-              الملفات أصلية وخاصة، والمقاطع قابلة للبحث والفتح بسطر حقيقي. يدعم
-              هذا المسار TXT وMarkdown بصيغة UTF-8 فقط؛ لا يدّعي دعم PDF أو OCR.
+              أضف ملفات TXT أو Markdown، وابحث داخلها، وافتح المقطع نفسه عندما
+              تحتاج إلى التحقق من معلومة. دعم PDF وOCR غير متاح حالياً.
             </p>
           </div>
           <div className="flex items-center gap-3 rounded-2xl bg-secondary/60 px-4 py-3 text-sm text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-            Private bucket · RLS · 2 MiB
+            خاص بأعضاء المساحة · حتى 2 MiB
           </div>
         </div>
       </header>
@@ -295,7 +289,7 @@ export default async function WorkspaceSourcesPage({
             <div>
               <p className="text-sm font-semibold text-primary">إضافة مصدر</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                ملف خاص ومقاطع حقيقية
+                أضف ملفاً تريد الرجوع إليه
               </h2>
             </div>
             <div className="rounded-2xl bg-primary/10 p-3 text-primary">
@@ -312,8 +306,8 @@ export default async function WorkspaceSourcesPage({
           </div>
 
           <div className="mt-6 rounded-2xl bg-secondary/55 p-4 text-xs leading-6 text-muted-foreground">
-            لا تُرسل الملفات إلى نموذج أثناء الاستخراج. يتم فك UTF-8 وتقسيم النص
-            بشكل حتمي، ثم تخزين المقاطع وفهرستها داخل PostgreSQL.
+            يُجهز النص للبحث داخل المساحة، ولا يُضاف إلى أي محادثة تلقائياً.
+            أنت تختار متى تستخدم مصادر المساحة مع سؤالك.
           </div>
         </section>
 
@@ -322,7 +316,7 @@ export default async function WorkspaceSourcesPage({
             <div>
               <p className="text-sm font-semibold text-primary">البحث في المقاطع</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                افتح الدليل نفسه
+                اعثر على المعلومة وافتح سياقها
               </h2>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -373,15 +367,14 @@ export default async function WorkspaceSourcesPage({
                   لا يوجد مقطع مطابق
                 </h3>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  لم تُنشأ إجابة عامة بديلة. غيّر عبارة البحث أو أضف مستنداً
-                  يحتوي على السياق المطلوب.
+                  غيّر عبارة البحث أو أضف مستنداً يحتوي على السياق المطلوب.
                 </p>
               </div>
             )
           ) : (
             <div className="mt-7 rounded-3xl bg-secondary/35 p-6 text-sm leading-8 text-muted-foreground">
-              يستخدم البحث فهرس PostgreSQL داخل مساحة العمل فقط. لا توجد نتائج
-              من الإنترنت أو من مساحات أخرى.
+              ابحث داخل الملفات المحفوظة في هذه المساحة. لن تظهر نتائج من
+              الإنترنت أو من مساحات عمل أخرى.
             </div>
           )}
         </section>
@@ -392,7 +385,7 @@ export default async function WorkspaceSourcesPage({
           <div>
             <p className="text-sm font-semibold text-primary">المستندات المحفوظة</p>
             <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              الحالة والمقاطع بعد إعادة التحميل
+              ملفاتك الجاهزة للرجوع إليها
             </h2>
           </div>
         </div>
@@ -411,8 +404,8 @@ export default async function WorkspaceSourcesPage({
             </h3>
             <p className="mt-3 max-w-lg text-sm leading-7 text-muted-foreground">
               {canWrite
-                ? "ارفع ملف TXT أو Markdown حقيقياً. لن تظهر بيانات مثال أو نتائج مفبركة."
-                : "لم يشارك معك مستند محفوظ في هذه المساحة بعد."}
+                ? "أضف ملف TXT أو Markdown لتبدأ البحث والرجوع إلى المقاطع الداعمة."
+                : "لم يشارك معك عضو آخر مستنداً محفوظاً في هذه المساحة بعد."}
             </p>
           </div>
         )}
