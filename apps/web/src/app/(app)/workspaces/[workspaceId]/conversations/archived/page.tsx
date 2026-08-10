@@ -6,10 +6,8 @@ import type { ConversationSummary, WorkspaceAccess } from "@iraqi-ai/types";
 import { ConversationCard } from "@/components/conversations/conversation-card";
 import { ConversationStatusNotice } from "@/components/conversations/conversation-status-notice";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
-import {
-  listConversations,
-  ConversationRepositoryError,
-} from "@/lib/conversations/repository";
+import { ConversationRepositoryError } from "@/lib/conversations/repository";
+import { listConversationSummaries } from "@/lib/conversations/summaries";
 import {
   getWorkspaceAccess,
   WorkspaceRepositoryError,
@@ -46,9 +44,11 @@ export default async function ArchivedConversationsPage({
   try {
     workspace = await getWorkspaceAccess(supabase, user.id, workspaceId);
     if (workspace) {
-      allConversations = await listConversations(supabase, workspaceId, {
-        includeArchived: true,
-      });
+      allConversations = await listConversationSummaries(
+        supabase,
+        workspaceId,
+        { includeArchived: true },
+      );
     }
   } catch (error) {
     persistenceFailed = true;
@@ -102,7 +102,9 @@ export default async function ArchivedConversationsPage({
 
         <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">P2 · Archive state</p>
+            <p className="text-sm font-semibold text-primary">
+              محفوظة خارج القائمة النشطة
+            </p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
               أرشيف المحادثات
             </h1>
