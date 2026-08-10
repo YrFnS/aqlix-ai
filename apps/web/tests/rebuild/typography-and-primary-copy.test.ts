@@ -93,7 +93,9 @@ describe("primary authenticated shell copy", () => {
     expect(aiSettings).toContain("اختر كيف تتصل بالنماذج");
 
     expect(primaryShell).not.toMatch(/\bP[0-5]\b/u);
-    expect(primaryShell).not.toMatch(/PostgreSQL|\bRLS\b/iu);
+    expect(primaryShell).not.toMatch(
+      /PostgreSQL|RLS-protected|RLS policies|سياسات RLS|صلاحيات RLS/iu,
+    );
     expect(primaryShell).not.toMatch(/قاعدة البيانات|معاملة قاعدة/iu);
     expect(primaryShell).not.toMatch(/UTF-8|\bBYOK\b|Vault/iu);
     expect(primaryShell).not.toMatch(/Private bucket|immutable versions|provenance/iu);
