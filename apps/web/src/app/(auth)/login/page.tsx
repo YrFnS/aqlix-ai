@@ -14,7 +14,7 @@ import { signInAction } from "@/lib/auth/actions";
 
 export const metadata: Metadata = {
   title: "تسجيل الدخول",
-  description: `Sign in to ${brand.name}`,
+  description: `سجّل الدخول إلى ${brand.name} لمتابعة مساحات عملك.`,
 };
 
 type SearchParams = Promise<
@@ -27,37 +27,31 @@ const statusMessages: Record<
 > = {
   configuration: {
     tone: "info",
-    message:
-      "خدمة الحساب غير مضبوطة في هذه البيئة بعد / Account service configuration is unavailable in this environment.",
+    message: "تسجيل الدخول غير متاح في هذه البيئة حالياً.",
   },
   "invalid-input": {
     tone: "error",
-    message:
-      "اكتب بريداً صحيحاً وكلمة مرور من 8 أحرف على الأقل / Enter a valid email and a password of at least 8 characters.",
+    message: "اكتب بريداً صحيحاً وكلمة مرور من 8 أحرف على الأقل.",
   },
   "invalid-credentials": {
     tone: "error",
-    message:
-      "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور / Sign-in failed. Check the email and password.",
+    message: "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور.",
   },
   "check-email": {
     tone: "success",
-    message:
-      "أرسل رابط التحقق إلى بريدك. افتحه لإكمال الحساب / A verification link was sent. Open it to finish creating the account.",
+    message: "أرسلنا رابط التحقق إلى بريدك. افتحه لإكمال إنشاء الحساب.",
   },
   "signed-out": {
     tone: "success",
-    message: "تم تسجيل الخروج بأمان / You have been signed out.",
+    message: "تم تسجيل الخروج بأمان.",
   },
   "invalid-link": {
     tone: "error",
-    message:
-      "رابط التحقق غير مكتمل أو غير صالح / The verification link is incomplete or invalid.",
+    message: "رابط التحقق غير مكتمل أو غير صالح.",
   },
   "verification-failed": {
     tone: "error",
-    message:
-      "تعذر التحقق من الرابط. اطلب رابطاً جديداً أو حاول لاحقاً / The link could not be verified. Request a new link or try again later.",
+    message: "تعذر التحقق من الرابط. اطلب رابطاً جديداً أو حاول لاحقاً.",
   },
 };
 
@@ -103,29 +97,28 @@ export default async function LoginPage({
             {brand.categoryAr}
           </p>
           <h1 className="mt-5 text-balance font-arabic-heading text-4xl font-semibold leading-tight">
-            ارجع إلى السياق، وأكمل العمل من حيث توقفت.
+            ارجع إلى عملك، وأكمل من حيث توقفت.
           </h1>
           <p className="mt-5 text-sm leading-8 text-background/65">
-            جلسة واحدة موثوقة تقود إلى مساحات العمل والمحادثات والمصادر والمسودات
-            التابعة لك فقط.
+            محادثاتك ومصادرك ومسوداتك تبقى منظمة داخل مساحات العمل الخاصة بك.
           </p>
         </div>
 
         <div className="relative mt-12 space-y-4">
           {[
             {
-              title: "العربية والإنجليزية",
-              description: "اتجاه صحيح للنص والواجهة والمحتوى المختلط.",
+              title: "العربية وEnglish",
+              description: "اكتب باللغة التي تناسب عملك، حتى داخل النص المختلط.",
               icon: Languages,
             },
             {
-              title: "مساحات محفوظة",
-              description: "سياق دائم يعود بعد إغلاق التطبيق وإعادة فتحه.",
+              title: "سياق لكل مشروع",
+              description: "احتفظ بالمحادثات والملفات والمسودات معاً.",
               icon: BookOpen,
             },
             {
-              title: "مصادر قابلة للفحص",
-              description: "المستندات والمقاطع الداعمة تبقى جزءاً من العمل.",
+              title: "مصادر يمكنك فتحها",
+              description: "ارجع إلى المقطع الداعم عندما تحتاج إلى التحقق.",
               icon: FileText,
             },
           ].map(({ title, description, icon: Icon }) => (
@@ -154,7 +147,7 @@ export default async function LoginPage({
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-sm font-semibold text-primary">P1 · Account access</p>
+            <p className="text-sm font-semibold text-primary">مرحباً بعودتك</p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold">
               تسجيل الدخول
             </h1>
@@ -238,7 +231,7 @@ export default async function LoginPage({
 
           {!configured && (
             <p className="mt-5 text-center text-xs leading-6 text-muted-foreground">
-              يلزم ضبط متغيري Supabase العامين لتفعيل الحسابات في هذه البيئة.
+              الحسابات غير مفعلة في هذه البيئة حالياً.
             </p>
           )}
         </div>
