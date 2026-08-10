@@ -1,0 +1,107 @@
+name: UI P0 Motion Migration
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+  NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: "local-public-key"
+  APP_ENV: "test"
+  AI_PROVIDER: "fixture"
+  P2_ALLOW_FIXTURE_PROVIDER: "true"
+  AI_REQUEST_TIMEOUT_MS: "15000"
+  RELEASE_SHA: ${{ github.sha }}
+
+jobs:
+  motion-migration:
+    name: Generate lockfile and validate Motion migration
+    if: github.head_ref == 'agent/ui-experience-rework'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node LTS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.14.1
+          package-manager-cache: false
+
+      - name: Setup pinned Bun package manager
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Generate the Bun lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --version
+          bun --version
+          bun install --lockfile-only
+
+      - name: Upload generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-p0-generated-lockfile-${{ github.sha }}
+          path: bun.lock
+          if-no-files-found: error
+          retention-days: 2
+
+      - name: Verify the dependency migration
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          CHANGED_FILES="$(git diff --name-only)"
+          if [[ "$CHANGED_FILES" != "bun.lock" ]]; then
+            echo "Lockfile generation changed unexpected files:"
+            printf '%s\n' "$CHANGED_FILES"
+            exit 1
+          fi
+
+          grep -q '"motion": "12.43.0"' apps/web/package.json
+          grep -q '"motion": "12.43.0"' packages/ui/package.json
+          grep -q 'from "motion/react"' apps/web/src/components/providers/MotionProvider.tsx
+          grep -q 'from "motion/react"' apps/web/src/components/motion/motion-primitives.tsx
+          grep -q 'from "motion/react"' apps/web/src/lib/motion.ts
+
+          if grep -R --line-number --fixed-strings 'framer-motion' \
+            apps/web/src packages/ui/src apps/web/package.json packages/ui/package.json; then
+            echo "Legacy framer-motion reference remains in the active UI graph"
+            exit 1
+          fi
+
+          if ! grep -q 'motion@12.43.0' bun.lock; then
+            echo "Generated lockfile does not contain motion@12.43.0"
+            exit 1
+          fi
+
+      - name: Install from the generated frozen lockfile
+        run: bun install --frozen-lockfile
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Run focused quality gates
+        run: |
+          bun run lint
+          bun run typecheck
+          bun run test:p5
+
+      - name: Build the release web application
+        working-directory: apps/web
+        run: bun run build:release
