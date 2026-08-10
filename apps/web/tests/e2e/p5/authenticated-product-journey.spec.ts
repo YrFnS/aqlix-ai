@@ -53,6 +53,13 @@ async function waitForHydration(page: Page): Promise<void> {
   );
 }
 
+async function waitForClientSurface(page: Page, name: string): Promise<void> {
+  await expect(page.locator(`[data-client-surface="${name}"]`)).toHaveAttribute(
+    "data-client-ready",
+    "true",
+  );
+}
+
 async function register(page: Page, email: string): Promise<void> {
   await page.goto("/register");
   await waitForHydration(page);
@@ -237,6 +244,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   );
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
+  await waitForClientSurface(page, "conversation");
 
   const groundingButton = page.getByRole("button", {
     name: "مصادر المساحة",
@@ -300,6 +308,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   );
   const draftId = new URL(page.url()).pathname.split("/").pop();
   expect(draftId).toBeTruthy();
+  await waitForClientSurface(page, "draft-editor");
 
   await expect(
     page.getByText(/Draft, version one, and provenance saved/),
@@ -316,7 +325,9 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await expect(
     page.getByRole("status").filter({ hasText: "تغييرات غير محفوظة" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "حفظ إصدار" }).click();
+  const saveButton = page.getByRole("button", { name: "حفظ إصدار" });
+  await expect(saveButton).toBeEnabled();
+  await saveButton.click();
   await expect(page.getByText(/New immutable version saved/)).toBeVisible();
   await expect(
     page.getByRole("status").filter({ hasText: "محفوظ · v2" }),
@@ -362,7 +373,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await register(viewerPage, viewerEmail);
   await addViewerMembership(workspaceId!, viewerEmail);
   await viewerPage.goto(`/workspaces/${workspaceId}/drafts/${draftId}`);
-  await waitForHydration(viewerPage);
+  await waitForClientSurface(viewerPage, "draft-editor");
   await expect(draftContentEditor(viewerPage)).not.toBeEditable();
   await expect(
     viewerPage.getByRole("button", { name: "حفظ إصدار" }),
