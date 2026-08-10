@@ -138,12 +138,21 @@ describe("P2 provider and conversation boundary", () => {
     expect(repository).not.toContain("new Map<string, Conversation");
   });
 
-  test("renders text, URLs, and code without raw HTML injection", () => {
+  test("renders structured Markdown without enabling raw HTML", () => {
     const renderer = readWeb("src/components/conversations/message-content.tsx");
+    const rendererTest = readWeb("tests/rebuild/message-markdown.test.ts");
 
     expect(renderer).toContain('dir="auto"');
     expect(renderer).toContain('dir="ltr"');
     expect(renderer).toContain('rel="noreferrer noopener"');
+    expect(renderer).toContain('kind: "heading"');
+    expect(renderer).toContain('kind: "unordered-list"');
+    expect(renderer).toContain('kind: "ordered-list"');
+    expect(renderer).toContain('kind: "blockquote"');
+    expect(renderer).toContain('kind: "table"');
+    expect(renderer).toContain('kind: "code"');
+    expect(renderer).toContain("safeLink");
+    expect(rendererTest).toContain("keeps raw HTML inert");
     expect(renderer).not.toContain("dangerouslySetInnerHTML");
     expect(renderer).not.toContain("innerHTML");
   });
