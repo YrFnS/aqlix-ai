@@ -81,12 +81,25 @@ describe("UI P5 authenticated cross-engine readiness", () => {
     );
   });
 
-  test("keeps all authenticated engines owned by the fail-closed workflow", () => {
+  test("synchronizes native file selection across browser event timing", () => {
+    const upload = readWeb(
+      "src/components/documents/document-upload-form.tsx",
+    );
+
+    expect(upload).toContain('input.addEventListener("input"');
+    expect(upload).toContain('input.addEventListener("change"');
+    expect(upload).toContain('input.removeEventListener("input"');
+    expect(upload).toContain('input.removeEventListener("change"');
+    expect(upload).toContain('inputRef.current.value = ""');
+  });
+
+  test("keeps all authenticated engines owned by a zero-retry fail-closed workflow", () => {
     const config = readWeb("playwright.p5.authenticated.config.ts");
     const workflow = readRepo(
       ".github/workflows/ui-p5-authenticated-product.yml",
     );
 
+    expect(config).toContain("retries: 0");
     expect(config).toContain('name: "p5-authenticated-chromium"');
     expect(config).toContain('name: "p5-authenticated-firefox"');
     expect(config).toContain('name: "p5-authenticated-webkit"');
