@@ -119,8 +119,8 @@ export function AccessibilityRuntime() {
         return;
       }
 
-      const first = focusable[0];
-      const last = focusable.at(-1) ?? first;
+      const first = focusable[0]!;
+      const last = focusable[focusable.length - 1]!;
       const current =
         document.activeElement instanceof HTMLElement
           ? document.activeElement
