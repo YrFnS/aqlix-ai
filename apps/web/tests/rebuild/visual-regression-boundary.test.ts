@@ -42,10 +42,11 @@ describe("desktop and mobile visual regression boundary", () => {
       "draft-detail.png",
       "ai-settings.png",
     ]) {
-      expect(spec).toContain(`capture(page, \"${snapshot}\")`);
+      expect(spec).toContain(`capture(page, "${snapshot}")`);
     }
 
-    expect(spec).toContain("animations: 0s");
+    expect(spec).toContain("animation-duration: 0s");
+    expect(spec).toContain("transition-duration: 0s");
     expect(spec).toContain("document.fonts.ready");
     expect(spec).toContain("dynamicMasks(page)");
     expect(spec).toContain("Visual QA مساحة العمل");
