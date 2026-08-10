@@ -68,7 +68,8 @@ describe("UI P2 authenticated product shell", () => {
     expect(shell).toContain('mode="wait"');
     expect(shell).toContain("key={pathname}");
     expect(shell).toContain("shouldReduceMotion ? false");
-    expect(shell).toContain("shouldReduceMotion ? { duration: 0 }");
+    expect(shell).toContain("duration: 0");
+    expect(shell).toContain("motionDurations.base");
   });
 
   test("marks active links and keeps implementation phases out of navigation", () => {
