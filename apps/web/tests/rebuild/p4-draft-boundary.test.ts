@@ -9,6 +9,16 @@ const readWeb = (path: string) =>
   readFileSync(resolve(webRoot, path), "utf8");
 const readRepo = (path: string) =>
   readFileSync(resolve(repoRoot, path), "utf8");
+const readDraftSurface = () =>
+  [
+    "src/components/drafts/draft-editor.tsx",
+    "src/components/drafts/draft-editor-context.tsx",
+    "src/components/drafts/draft-editor-main.tsx",
+    "src/components/drafts/draft-assistant-panel.tsx",
+    "src/components/drafts/draft-tools-panel.tsx",
+  ]
+    .map(readWeb)
+    .join("\n");
 
 describe("P4 durable draft boundary", () => {
   test("ships the complete active draft route graph", () => {
@@ -85,7 +95,7 @@ describe("P4 durable draft boundary", () => {
     const applyRoute = readWeb(
       "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/continue/[generationId]/apply/route.ts",
     );
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
 
     expect(streamRoute).toContain("beginDraftGeneration");
     expect(streamRoute).toContain("checkpointDraftGeneration");
@@ -121,7 +131,7 @@ describe("P4 durable draft boundary", () => {
     const exportRoute = readWeb(
       "src/app/api/v1/workspaces/[workspaceId]/drafts/[draftId]/export/route.ts",
     );
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
 
     expect(exportBuilder).toContain("escapeDraftHtml");
     expect(exportBuilder).toContain('<pre dir="auto">');
@@ -134,7 +144,7 @@ describe("P4 durable draft boundary", () => {
   });
 
   test("renders accepted and proposed content without raw HTML injection", () => {
-    const editor = readWeb("src/components/drafts/draft-editor.tsx");
+    const editor = readDraftSurface();
     const version = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/drafts/[draftId]/versions/[versionNumber]/page.tsx",
     );
