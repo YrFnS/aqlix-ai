@@ -27,12 +27,23 @@ test("paginates long bilingual history with stable scroll and visible citations"
     .getByLabel("وصف مختصر")
     .fill("Cursor pagination, citations, streaming, and mobile validation.");
   await page.getByRole("button", { name: "إنشاء مساحة العمل" }).click();
+  await expect(page).toHaveURL(
+    /\/workspaces\/[0-9a-f-]+\?status=created$/,
+  );
   const workspaceId = new URL(page.url()).pathname.split("/").pop();
   expect(workspaceId).toBeTruthy();
 
   await page.getByRole("link", { name: /فتح المحادثات/ }).click();
+  await expect(page).toHaveURL(
+    new RegExp(`/workspaces/${workspaceId}/conversations$`),
+  );
   await page.getByLabel("عنوان اختياري").fill("84-message bilingual history");
   await page.getByRole("button", { name: "إنشاء وفتح المحادثة" }).click();
+  await expect(page).toHaveURL(
+    new RegExp(
+      `/workspaces/${workspaceId}/conversations/[0-9a-f-]+\\?status=created$`,
+    ),
+  );
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
 
