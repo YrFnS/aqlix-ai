@@ -41,7 +41,7 @@ describe("UI P1 marketing and authentication experience", () => {
     expect(login).toContain("<AuthFrame");
     expect(register).toContain("<AuthFrame");
     expect(frame).toContain('data-auth-frame="true"');
-    expect(frame).toContain("<AuthNotice");
+    expect(frame).toContain("export function AuthNotice");
     expect(login).toContain('aria-label="نموذج تسجيل الدخول"');
     expect(register).toContain('aria-label="نموذج إنشاء الحساب"');
     expect(login).not.toContain("P1 · Account access");
