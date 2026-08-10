@@ -1,3 +1,6 @@
+import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { Surface } from "@/components/ui/surface";
+
 const messages: Record<
   string,
   { tone: "success" | "error" | "info"; text: string }
@@ -44,26 +47,44 @@ const messages: Record<
   },
 };
 
-function classes(tone: "success" | "error" | "info"): string {
-  if (tone === "error") {
-    return "border-destructive/30 bg-destructive/10 text-destructive";
-  }
-  if (tone === "success") {
-    return "border-primary/30 bg-primary/10 text-foreground";
-  }
-  return "border-border bg-secondary/60 text-muted-foreground";
-}
+const toneClasses = {
+  error: "border-destructive/30 bg-destructive/10 text-foreground",
+  success: "border-primary/25 bg-brand-soft/60 text-foreground",
+  info: "border-line bg-surface-sunken text-ink-muted",
+} as const;
+
+const toneIconClasses = {
+  error: "bg-destructive/10 text-destructive",
+  success: "bg-primary/10 text-primary",
+  info: "bg-surface-raised text-ink-muted",
+} as const;
+
+const toneIcons = {
+  error: AlertTriangle,
+  success: CheckCircle2,
+  info: Info,
+} as const;
 
 export function ConversationStatusNotice({ status }: { status?: string }) {
   if (!status || !messages[status]) return null;
   const item = messages[status];
+  const Icon = toneIcons[item.tone];
 
   return (
-    <div
-      className={`rounded-2xl border px-4 py-3 text-sm leading-7 ${classes(item.tone)}`}
+    <Surface
+      padding="sm"
+      radius="lg"
+      elevation="xs"
+      className={toneClasses[item.tone]}
       role={item.tone === "error" ? "alert" : "status"}
+      aria-live={item.tone === "error" ? "assertive" : "polite"}
     >
-      {item.text}
-    </div>
+      <div className="flex items-start gap-3 text-sm leading-7">
+        <span className={`mt-0.5 rounded-md p-2 ${toneIconClasses[item.tone]}`}>
+          <Icon className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <p>{item.text}</p>
+      </div>
+    </Surface>
   );
 }
