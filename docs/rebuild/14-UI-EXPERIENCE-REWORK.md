@@ -3,7 +3,7 @@
 **Branch:** `agent/ui-experience-rework`  
 **Base:** `main` at `a19f75a43d9f37e6558a964b0dd5b3d72c729876`  
 **Draft pull request:** `#10`  
-**Status:** UI P0 engineering complete; browser review waived; UI P1 source implementation complete
+**Status:** UI P0 engineering complete; browser review waived; UI P1 and UI P2 source implementation complete
 
 This work improves the interface without changing Tuppra's authenticated data, authorization, provider, source, citation, draft, or operational contracts.
 
@@ -80,14 +80,51 @@ The residual visual risk remains open and should be revisited before the interfa
 - preserved Supabase configuration gates, safe return paths, server actions, and account-boundary honesty;
 - added focused regression coverage for public product language, supported-source claims, motion preferences, navigation accessibility, and the shared authentication shell.
 
+### Completion boundary
+
+UI P1 source implementation is complete. The waived browser-review items remain residual risk and are not counted as passed visual evidence.
+
+## UI P2 — Authenticated product shell
+
+### Implemented
+
+- replaced the fixed, documentation-like sidebar with one adaptive authenticated application shell;
+- added a desktop workspace rail that can collapse to an icon rail and remembers the user's preference locally;
+- kept global destinations limited to implemented routes: workspaces, AI settings, and product documentation;
+- added contextual navigation for the active workspace: overview, conversations, sources, drafts, and workspace settings;
+- added active-route semantics through `aria-current="page"` and token-driven active states;
+- introduced a sticky contextual command bar with compact breadcrumbs for workspace and account routes;
+- added a keyboard-accessible route command palette opened with `Command/Ctrl + K`;
+- made the command palette searchable across global routes and the current workspace's contextual routes;
+- added a compact account menu with account identity, AI settings, documentation, and explicit sign-out;
+- replaced the old mobile navigation overlay with a Motion-powered modal sheet and explicit dialog semantics;
+- closed navigation, command, and account overlays on route changes and Escape;
+- locked document scrolling while modal navigation or the command palette is open;
+- moved authenticated route transitions into the shell with `AnimatePresence`, stable pathname keys, and reduced-motion fallbacks;
+- removed the old release-phase explanation and other implementation-status language from authenticated navigation;
+- preserved all existing route, session, authorization, server-action, workspace, source, conversation, draft, and provider boundaries.
+
+### Regression coverage
+
+Focused source safeguards now verify:
+
+- the authenticated layout is wrapped by one shell rather than a separate navigation and page-reveal composition;
+- desktop rail collapse state and persistence remain available;
+- contextual workspace routes remain explicit and no dead global chat, source, or draft routes are introduced;
+- command-palette keyboard access, dialog semantics, search, and navigation remain wired;
+- mobile sheet and account-menu accessibility semantics remain present;
+- route transitions keep their reduced-motion fallback;
+- active navigation exposes `aria-current`;
+- user-facing navigation does not regress to implementation-phase copy.
+
 ### Validation evidence
 
-The implementation head immediately preceding this status record passed every normal repository safeguard:
+The P2 implementation head immediately preceding this status record passed every normal repository safeguard:
 
 1. frozen Bun dependency installation;
 2. shared-package builds;
 3. ESLint and focused TypeScript validation;
-4. the complete active rebuild test suite;
+4. the complete active rebuild test suite, including the new P2 shell safeguards;
 5. the optimized Next.js web build;
 6. PR scope validation;
 7. Arabic and RTL foundation checks;
@@ -95,11 +132,17 @@ The implementation head immediately preceding this status record passed every no
 9. public brand and claims safeguards;
 10. Arabic text and bidirectional-input utility tests.
 
+The validation pass also caught and corrected three integration defects before this record:
+
+- an unused icon import rejected by exact TypeScript validation;
+- a reduced-motion test coupled to source formatting rather than behavior;
+- a public-claims regex that misread CSS `calc(100%...)` syntax as a marketing metric.
+
 ### Completion boundary
 
-UI P1 source implementation is complete. The waived browser-review items remain residual risk and are not counted as passed visual evidence.
+UI P2 source implementation is complete. The previously waived browser-review items remain unverified and continue as residual risk.
 
-The next source phase is the authenticated product-shell rework: navigation rail, contextual command bar, responsive sheets, and route-level transitions. It has not started in this status record.
+The next source phase is the workspace and conversation experience: focused conversation composition, conversation switching, source inspection, generation feedback, and contextual secondary controls. It has not started in this status record.
 
 ## Guardrails
 
