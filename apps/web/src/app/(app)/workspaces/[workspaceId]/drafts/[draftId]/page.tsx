@@ -11,6 +11,7 @@ import {
 import type { DraftDetail, WorkspaceAccess } from "@iraqi-ai/types";
 import { DraftEditor } from "@/components/drafts/draft-editor";
 import { DraftStatusNotice } from "@/components/drafts/draft-status-notice";
+import { ClientReadyBoundary } from "@/components/system/client-ready-boundary";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/page-shell";
 import { requireAuthenticatedUser } from "@/lib/auth/session";
@@ -149,13 +150,15 @@ export default async function DraftPage({
         </div>
       </div>
 
-      <DraftEditor
-        workspaceId={workspace.id}
-        initialDetail={detail}
-        canEdit={canEdit}
-        canManageLifecycle={canManageLifecycle}
-        workspaceArchived={workspaceArchived}
-      />
+      <ClientReadyBoundary name="draft-editor">
+        <DraftEditor
+          workspaceId={workspace.id}
+          initialDetail={detail}
+          canEdit={canEdit}
+          canManageLifecycle={canManageLifecycle}
+          workspaceArchived={workspaceArchived}
+        />
+      </ClientReadyBoundary>
     </PageShell>
   );
 }
