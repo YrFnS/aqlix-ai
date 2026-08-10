@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, KeyRound, Router, ShieldCheck } from "lucide-react";
 import type { UserAiSettings } from "@iraqi-ai/types";
 import { OpenRouterSettings } from "@/components/ai/openrouter-settings";
+import { ClientReadyBoundary } from "@/components/system/client-ready-boundary";
 import { Button } from "@/components/ui/button";
 import { PageHeader, PageShell } from "@/components/ui/page-shell";
 import { Surface } from "@/components/ui/surface";
@@ -129,7 +130,9 @@ export default async function AiSettingsPage() {
           </p>
         </Surface>
       ) : (
-        <OpenRouterSettings initialSettings={settings} />
+        <ClientReadyBoundary name="openrouter-settings">
+          <OpenRouterSettings initialSettings={settings} />
+        </ClientReadyBoundary>
       )}
 
       <Surface
