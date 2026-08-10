@@ -184,9 +184,11 @@ async function waitForProposal(
   page: Page,
   instruction: string,
 ): Promise<void> {
+  await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");
   await page.getByLabel("تعليمات اقتراح المسودة").fill(instruction);
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
   await expect(page.getByText("جاهز للمراجعة", { exact: true })).toBeVisible();
+  await expect(page.locator("pre").filter({ hasText: instruction })).toBeVisible();
 }
 
 function versionCard(page: Page, version: number) {
@@ -421,13 +423,11 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(htmlBody).not.toContain("https://");
 
   await waitForProposal(page, "Add one concise implementation risk.");
-  await expect(
-    page.getByText(/deterministic draft continuation/),
-  ).toBeVisible();
   await page.getByRole("button", { name: "رفض الاقتراح" }).click();
   await expect(page.getByText(/Proposal discarded/)).toBeVisible();
 
-  await waitForProposal(page, "Apply a final concise implementation step.");
+  const appliedInstruction = "Apply a final concise implementation step.";
+  await waitForProposal(page, appliedInstruction);
   await page.getByRole("button", { name: "تطبيق كإصدار جديد" }).click();
   await expect(
     page.getByText(/Proposal applied as a new immutable version/),
@@ -442,6 +442,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     currentVersion: 4,
     versionCount: 4,
   });
+  expect(primaryDraft.data.draft.content).toContain(appliedInstruction);
   expect(primaryDraft.data.versions).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
@@ -453,7 +454,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page
     .getByLabel("تعليمات اقتراح المسودة")
-    .fill("SLOW STREAM cancel this");
+    .fill("[fixture:slow] cancel this proposal");
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
   await expect(
     page.getByRole("button", { name: "إيقاف وحفظ الجزئي" }),
@@ -465,9 +466,9 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page
     .getByLabel("تعليمات اقتراح المسودة")
-    .fill("PROVIDER_FAILURE validate failure persistence");
+    .fill("[fixture:fail] validate failure persistence");
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
-  await expect(page.getByText(/PROVIDER_FAILURE/)).toBeVisible();
+  await expect(page.getByText(/PROVIDER_UNAVAILABLE/)).toBeVisible();
 
   for (const kind of [
     "summary",
