@@ -20,7 +20,8 @@ import {
 
 export const metadata: Metadata = {
   title: "مساحات العمل",
-  description: "Persistent, membership-protected workspaces.",
+  description:
+    "نظّم محادثاتك ومصادرك ومسوداتك داخل مساحة مستقلة لكل مشروع أو مهمة.",
 };
 
 type SearchParams = Promise<
@@ -68,33 +69,36 @@ export default async function WorkspacesPage({
 
   return (
     <div className="mx-auto max-w-7xl space-y-6">
-      <header className="flex flex-col gap-6 rounded-3xl border border-border/70 bg-card p-6 sm:p-8 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
-            <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
-            P1 · Persistent workspace boundary
+      <header className="relative overflow-hidden rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
+        <div className="pointer-events-none absolute -left-20 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+        <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+              <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+              مساحاتك، في مكان واحد
+            </div>
+            <h1 className="mt-5 font-arabic-heading text-3xl font-semibold tracking-tight sm:text-5xl">
+              مساحات العمل
+            </h1>
+            <p className="mt-4 text-base leading-8 text-muted-foreground sm:text-lg">
+              اجمع محادثاتك ومصادرك ومسوداتك داخل مساحة مستقلة لكل مشروع أو
+              مهمة، وارجع إلى عملك من حيث توقفت.
+            </p>
           </div>
-          <h1 className="mt-5 font-arabic-heading text-3xl font-semibold tracking-tight sm:text-5xl">
-            مساحات العمل
-          </h1>
-          <p className="mt-4 text-base leading-8 text-muted-foreground sm:text-lg">
-            كل مساحة محفوظة في PostgreSQL، وترتبط بعضويتك، وتُحمى بصلاحيات قاعدة
-            البيانات. لا تعتمد هذه القائمة على بيانات تجريبية أو ذاكرة مؤقتة.
-          </p>
-        </div>
 
-        <Link
-          href="/workspaces/archived"
-          className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
-        >
-          <Archive className="h-4 w-4" aria-hidden="true" />
-          الأرشيف
-          {archivedCount > 0 && (
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
-              {archivedCount}
-            </span>
-          )}
-        </Link>
+          <Link
+            href="/workspaces/archived"
+            className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold transition-colors hover:bg-secondary"
+          >
+            <Archive className="h-4 w-4" aria-hidden="true" />
+            الأرشيف
+            {archivedCount > 0 && (
+              <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-muted-foreground">
+                {archivedCount}
+              </span>
+            )}
+          </Link>
+        </div>
       </header>
 
       <WorkspaceStatusNotice status={visibleStatus} />
@@ -105,7 +109,7 @@ export default async function WorkspacesPage({
             <div>
               <p className="text-sm font-semibold text-primary">مساحة جديدة</p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-                ابدأ بسياق واضح
+                أنشئ مساحة لعملك القادم
               </h2>
             </div>
             <div className="rounded-2xl bg-primary/10 p-3 text-primary">
@@ -176,8 +180,7 @@ export default async function WorkspacesPage({
               aria-hidden="true"
             />
             <p>
-              تُشتق هوية المالك من الجلسة الموثّقة، ثم تُنشأ عضوية المالك داخل
-              معاملة قاعدة البيانات نفسها.
+              تبقى المساحة خاصة بحسابك وبالأعضاء الذين تمنحهم حق الوصول.
             </p>
           </div>
         </section>
@@ -210,8 +213,7 @@ export default async function WorkspacesPage({
                 لا توجد مساحة نشطة بعد
               </h3>
               <p className="mt-3 max-w-md text-sm leading-7 text-muted-foreground">
-                أنشئ أول مساحة من النموذج. لن نضع بيانات مثال داخل حسابك أو نعرض
-                نشاطاً غير حقيقي.
+                أنشئ أول مساحة، ثم ابدأ محادثة أو أضف مصدراً عندما تحتاجه.
               </p>
             </div>
           )}
