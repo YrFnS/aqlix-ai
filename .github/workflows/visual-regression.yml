@@ -1,0 +1,129 @@
+name: Visual Regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+  APP_ENV: "test"
+  AI_PROVIDER: "fixture"
+  P2_ALLOW_FIXTURE_PROVIDER: "true"
+  AI_REQUEST_TIMEOUT_MS: "15000"
+
+jobs:
+  visual-regression:
+    name: Desktop & Mobile Visual Baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node LTS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.14.1
+          package-manager-cache: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium
+        working-directory: apps/web
+        run: bunx playwright install chromium --with-deps
+
+      - name: Start local Supabase
+        run: bunx supabase start
+
+      - name: Export local public and test-admin configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, a public key, and a test admin key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Validate visual regression boundary
+        run: bun test apps/web/tests/rebuild/visual-regression-boundary.test.ts
+
+      - name: Build web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Compare or bootstrap visual baselines
+        working-directory: apps/web
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find tests/visual -type f -path '*-snapshots/*.png' -print -quit | grep -q .; then
+            bun run test:e2e:visual
+          else
+            echo "No committed visual baselines found; generating the initial Linux baseline artifact."
+            bun run test:e2e:visual:update
+          fi
+
+      - name: Upload visual evidence and baseline candidates
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-evidence
+          path: |
+            apps/web/tests/visual/**/*-snapshots/*.png
+            apps/web/playwright-report/visual
+            apps/web/test-results
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup
+
+  visual-success:
+    name: Visual Regression Success Gate
+    runs-on: ubuntu-latest
+    needs: [visual-regression]
+    if: always()
+
+    steps:
+      - name: Check visual regression evidence
+        run: |
+          if [[ "${{ needs.visual-regression.result }}" != "success" ]]; then
+            echo "Desktop or mobile visual regression validation failed"
+            exit 1
+          fi
+
+          echo "Primary public and authenticated desktop/mobile visual surfaces passed."
