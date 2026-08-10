@@ -8,8 +8,16 @@ function uniqueEmail(prefix: string): string {
   return `${prefix}-${crypto.randomUUID()}@example.test`;
 }
 
+async function waitForHydration(page: Page): Promise<void> {
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-app-hydrated",
+    "true",
+  );
+}
+
 async function register(page: Page, email: string): Promise<void> {
   await page.goto("/register");
+  await waitForHydration(page);
   await page.getByLabel(/البريد الإلكتروني/).fill(email);
   await page.getByLabel(/^كلمة المرور/).fill(password);
   await page.getByLabel(/تأكيد كلمة المرور/).fill(password);
@@ -19,13 +27,14 @@ async function register(page: Page, email: string): Promise<void> {
 
 async function openAiSettings(page: Page): Promise<void> {
   await page.goto("/settings/ai");
+  await waitForHydration(page);
   await expect(
     page.getByRole("heading", { name: "مفتاحك، نموذجك، وحدودك" }),
   ).toBeVisible();
 }
 
 async function sendMessage(page: Page, content: string): Promise<void> {
-  await page.waitForLoadState("networkidle");
+  await waitForHydration(page);
   await page.getByLabel("اكتب رسالة").fill(content);
   const sendButton = page.getByRole("button", { name: "إرسال" });
   await expect(sendButton).toBeEnabled();
@@ -74,8 +83,13 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await register(page, ownerEmail);
   await openAiSettings(page);
 
-  await page.getByLabel("OpenRouter API key").fill(apiKey);
-  await page.getByRole("button", { name: "Validate and connect" }).click();
+  const apiKeyField = page.getByLabel("OpenRouter API key");
+  const connectButton = page.getByRole("button", {
+    name: "Validate and connect",
+  });
+  await apiKeyField.fill(apiKey);
+  await expect(connectButton).toBeEnabled();
+  await connectButton.click();
   await expect(page.getByText("Connected", { exact: true })).toBeVisible();
   await expect(page.getByText("•••• 2026", { exact: true })).toBeVisible();
   await expect(page.getByText("Free-tier key", { exact: true })).toBeVisible();
@@ -125,6 +139,7 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await outsiderContext.close();
 
   await page.goto("/workspaces");
+  await waitForHydration(page);
   await page.getByLabel("اسم المساحة", { exact: true }).fill(workspaceName);
   await page.getByRole("button", { name: "إنشاء مساحة العمل" }).click();
   await expect(page).toHaveURL(/\/workspaces\/[0-9a-f-]+\?status=created$/);
