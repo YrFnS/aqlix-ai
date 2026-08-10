@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, type ComponentType } from "react";
+import { useState } from "react";
 import {
   BookOpenCheck,
   Check,
-  FilePenLine,
   Files,
   MessageSquareText,
+  PenLine,
   Sparkles,
+  type LucideIcon,
 } from "lucide-react";
 
 interface JourneyStage {
   id: "ask" | "ground" | "draft" | "continue";
   label: string;
   labelEn: string;
-  icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  icon: LucideIcon;
 }
 
 const stages: JourneyStage[] = [
@@ -34,7 +35,7 @@ const stages: JourneyStage[] = [
     id: "draft",
     label: "أنشئ مسودة",
     labelEn: "Draft",
-    icon: FilePenLine,
+    icon: PenLine,
   },
   {
     id: "continue",
@@ -184,7 +185,7 @@ function DraftPreview() {
         <div className="rounded-3xl border border-border/70 bg-background p-4">
           <p className="text-xs font-semibold text-muted-foreground">التصدير</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
-            {['TXT', 'Markdown', 'HTML'].map((format) => (
+            {["TXT", "Markdown", "HTML"].map((format) => (
               <span key={format} className="rounded-full bg-secondary px-3 py-1.5">
                 {format}
               </span>
@@ -291,7 +292,9 @@ export function ProductJourneyPreview() {
                     <span
                       dir="ltr"
                       className={`mt-0.5 block truncate text-[0.65rem] ${
-                        active ? "text-primary-foreground/70" : "text-muted-foreground"
+                        active
+                          ? "text-primary-foreground/70"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {labelEn}
