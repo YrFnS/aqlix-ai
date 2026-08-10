@@ -98,7 +98,7 @@ describe("P5 AI resource-control boundary", () => {
     expect(panel).toContain("Input tokens today");
     expect(panel).toContain("Output tokens today");
     expect(panel).toContain("Active generations");
-    expect(panel).toContain("Only the workspace owner");
+    expect(panel.replace(/\s+/g, " ")).toContain("Only the workspace owner");
   });
 
   test("runs a dedicated database lifecycle gate", () => {
