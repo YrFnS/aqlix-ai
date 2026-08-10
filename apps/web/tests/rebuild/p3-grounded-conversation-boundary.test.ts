@@ -66,18 +66,26 @@ describe("P3 grounded conversation boundary", () => {
     );
   });
 
-  test("renders only persisted citations as inspectable links", () => {
+  test("renders only persisted citations as inspectable controls", () => {
     const shell = readWeb("src/components/conversations/conversation-shell.tsx");
     const citations = readWeb(
       "src/components/conversations/message-citations.tsx",
     );
+    const inspector = readWeb(
+      "src/components/conversations/citation-inspector.tsx",
+    );
 
-    expect(shell).toContain("استخدام مصادر مساحة العمل");
+    expect(shell).toContain("مصادر المساحة");
     expect(shell).toContain("groundingMode");
     expect(shell).toContain("message.citations");
+    expect(shell).toContain("onInspectCitation");
     expect(citations).toContain("citation.sourceId && citation.attachmentId");
+    expect(citations).toContain("onInspect(citation)");
     expect(citations).toContain("#source-${citation.sourceId}");
     expect(citations).toContain("The original source was deleted");
+    expect(inspector).toContain("documentDetailSchema.safeParse");
+    expect(inspector).toContain("source.content");
     expect(citations).not.toContain("dangerouslySetInnerHTML");
+    expect(inspector).not.toContain("dangerouslySetInnerHTML");
   });
 });
