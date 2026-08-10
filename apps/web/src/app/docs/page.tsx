@@ -1,22 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArchiveRestore,
   ArrowUpLeft,
-  BookOpenCheck,
+  BookOpen,
   Check,
   ChevronDown,
-  CircleHelp,
   Download,
-  FileClock,
   FileText,
-  KeyRound,
+  Key,
   Languages,
-  MessageSquareText,
+  MessageSquare,
   PenLine,
   ShieldCheck,
   Sparkles,
-  UsersRound,
+  Users,
 } from "lucide-react";
 import { Footer } from "@/app/components/footer";
 import { MarketingNav } from "@/components/navigation/marketing-nav";
@@ -36,7 +33,7 @@ const quickStart = [
       "أدخل مفتاحك مرة واحدة، ثم اختر نموذجاً من القائمة المتاحة لحسابك.",
     href: "/settings/ai",
     action: "فتح إعدادات الذكاء الاصطناعي",
-    icon: KeyRound,
+    icon: Key,
   },
   {
     step: "02",
@@ -45,7 +42,7 @@ const quickStart = [
       "استخدم مساحة مستقلة لكل مشروع أو عميل أو قرار حتى تبقى المحادثات والمصادر والمسودات منظمة.",
     href: "/workspaces",
     action: "فتح مساحات العمل",
-    icon: BookOpenCheck,
+    icon: BookOpen,
   },
   {
     step: "03",
@@ -72,13 +69,13 @@ const workLoop = [
     label: "Ask",
     title: "المحادثة",
     text: "اكتب السؤال بالعربية أو English. تبقى الرسائل محفوظة، ويمكن تحميل الرسائل الأقدم في المحادثات الطويلة.",
-    icon: MessageSquareText,
+    icon: MessageSquare,
   },
   {
     label: "Ground",
     title: "المصادر",
     text: "فعّل استخدام مصادر المساحة عندما تريد إجابة مرتبطة بملفاتك. المراجع تفتح المقطع الداعم نفسه.",
-    icon: BookOpenCheck,
+    icon: BookOpen,
   },
   {
     label: "Draft",
@@ -147,7 +144,7 @@ export default function GuidePage() {
           <div className="container-responsive relative grid gap-10 lg:grid-cols-[1.18fr_0.82fr] lg:items-end">
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-background/15 bg-background/5 px-3 py-1.5 text-xs font-semibold text-background/70">
-                <BookOpenCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                <BookOpen className="h-3.5 w-3.5" aria-hidden="true" />
                 دليل {brand.name}
               </div>
               <h1 className="mt-6 text-balance font-arabic-heading text-4xl font-semibold leading-tight sm:text-6xl">
@@ -213,34 +210,36 @@ export default function GuidePage() {
             </div>
 
             <div className="mt-12 grid gap-4 md:grid-cols-2">
-              {quickStart.map(({ step, title, description, href, action, icon: Icon }) => (
-                <article
-                  key={step}
-                  className="group rounded-3xl border border-border/75 bg-card p-6"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </span>
-                    <span className="font-mono text-xs font-semibold tracking-[0.16em] text-muted-foreground">
-                      {step}
-                    </span>
-                  </div>
-                  <h3 className="mt-6 font-arabic-heading text-xl font-semibold">
-                    {title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                    {description}
-                  </p>
-                  <Link
-                    href={href}
-                    className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold transition-colors group-hover:border-primary/30 group-hover:bg-secondary"
+              {quickStart.map(
+                ({ step, title, description, href, action, icon: Icon }) => (
+                  <article
+                    key={step}
+                    className="group rounded-3xl border border-border/75 bg-card p-6"
                   >
-                    {action}
-                    <ArrowUpLeft className="h-3.5 w-3.5" aria-hidden="true" />
-                  </Link>
-                </article>
-              ))}
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span className="font-mono text-xs font-semibold tracking-[0.16em] text-muted-foreground">
+                        {step}
+                      </span>
+                    </div>
+                    <h3 className="mt-6 font-arabic-heading text-xl font-semibold">
+                      {title}
+                    </h3>
+                    <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                      {description}
+                    </p>
+                    <Link
+                      href={href}
+                      className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold transition-colors group-hover:border-primary/30 group-hover:bg-secondary"
+                    >
+                      {action}
+                      <ArrowUpLeft className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                  </article>
+                ),
+              )}
             </div>
           </div>
         </section>
@@ -309,7 +308,7 @@ export default function GuidePage() {
 
             <article className="rounded-[2rem] border border-border/75 bg-card p-6 sm:p-8">
               <div className="flex items-center gap-3">
-                <FileClock className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                <FileText className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                 <p className="text-sm font-semibold text-muted-foreground">
                   ليس ضمن الواجهة الحالية
                 </p>
@@ -323,7 +322,10 @@ export default function GuidePage() {
                     key={item}
                     className="flex gap-3 text-sm leading-7 text-muted-foreground"
                   >
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" aria-hidden="true" />
+                    <span
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground"
+                      aria-hidden="true"
+                    />
                     {item}
                   </li>
                 ))}
@@ -336,7 +338,7 @@ export default function GuidePage() {
           <div className="container-responsive grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
             <div>
               <div className="flex items-center gap-3">
-                <CircleHelp className="h-5 w-5 text-primary" aria-hidden="true" />
+                <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
                 <p className="text-sm font-semibold text-primary">حل المشكلات</p>
               </div>
               <h2 className="mt-4 font-arabic-heading text-3xl font-semibold sm:text-4xl">
@@ -391,7 +393,7 @@ export default function GuidePage() {
               </p>
             </article>
             <article className="rounded-3xl border border-border/75 bg-card p-6">
-              <ArchiveRestore className="h-5 w-5 text-primary" aria-hidden="true" />
+              <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
               <h2 className="mt-5 font-arabic-heading text-xl font-semibold">
                 الأرشفة لا تحذف العمل
               </h2>
@@ -409,7 +411,7 @@ export default function GuidePage() {
               <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
                 <div className="max-w-3xl">
                   <div className="flex items-center gap-2 text-xs font-semibold text-primary-foreground/70">
-                    <UsersRound className="h-4 w-4" aria-hidden="true" />
+                    <Users className="h-4 w-4" aria-hidden="true" />
                     ابدأ بمشروع واحد
                   </div>
                   <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold sm:text-5xl">
