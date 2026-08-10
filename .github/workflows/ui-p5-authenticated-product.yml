@@ -7,10 +7,9 @@ on:
     paths:
       - ".github/workflows/ui-p5-authenticated-product.yml"
       - "apps/web/package.json"
-      - "apps/web/playwright.p4.config.ts"
-      - "apps/web/playwright.p5.config.ts"
+      - "apps/web/playwright.p5.authenticated.config.ts"
       - "apps/web/src/**"
-      - "apps/web/tests/e2e/p4/draft-journey.spec.ts"
+      - "apps/web/tests/e2e/p5/authenticated-product-journey.spec.ts"
       - "apps/web/tests/e2e/p5/openrouter-byok-journey.spec.ts"
       - "apps/web/tests/fixtures/openrouter-mock-server.ts"
       - "packages/**"
@@ -86,12 +85,12 @@ jobs:
         working-directory: apps/web
         run: bun run build
 
-      - name: Run authenticated Ask Ground Draft Continue journey
+      - name: Run authenticated source-to-draft product journey
         working-directory: apps/web
         run: >-
           bunx playwright test
-          tests/e2e/p4/draft-journey.spec.ts
-          --config=playwright.p4.config.ts
+          tests/e2e/p5/authenticated-product-journey.spec.ts
+          --config=playwright.p5.authenticated.config.ts
 
       - name: Upload authenticated product evidence
         if: always()
@@ -99,8 +98,8 @@ jobs:
         with:
           name: ui-p5-authenticated-product-evidence
           path: |
-            apps/web/playwright-report/p4
-            apps/web/test-results
+            apps/web/playwright-report/p5-authenticated
+            apps/web/test-results/p5-authenticated
           if-no-files-found: warn
           retention-days: 14
 
@@ -191,8 +190,7 @@ jobs:
         run: >-
           bunx playwright test
           tests/e2e/p5/openrouter-byok-journey.spec.ts
-          --config=playwright.p5.config.ts
-          --project=p5-desktop-chromium
+          --config=playwright.p5.authenticated.config.ts
 
       - name: Upload authenticated AI evidence
         if: always()
@@ -200,8 +198,8 @@ jobs:
         with:
           name: ui-p5-authenticated-ai-evidence
           path: |
-            apps/web/playwright-report/p5
-            apps/web/test-results
+            apps/web/playwright-report/p5-authenticated
+            apps/web/test-results/p5-authenticated
             p5-openrouter-mock.log
           if-no-files-found: warn
           retention-days: 14
@@ -234,4 +232,4 @@ jobs:
             exit 1
           fi
 
-          echo "Authenticated workspace, private source, grounded conversation, citation, durable draft, proposal, role-isolation, BYOK, Vault, model-selection, streaming, and disconnect journeys passed."
+          echo "Authenticated workspace, private source, grounded conversation, citation inspection, durable draft editing, proposal application, role isolation, BYOK, Vault, model selection, streaming, and disconnect journeys passed."
