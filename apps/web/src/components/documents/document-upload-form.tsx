@@ -72,16 +72,33 @@ export function DocumentUploadForm({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const selectedBeforeHydration = inputRef.current?.files?.[0] ?? null;
-    if (!selectedBeforeHydration) return;
+    const input = inputRef.current;
+    if (!input) return;
 
-    setFile(selectedBeforeHydration);
-    setError(localFileError(selectedBeforeHydration));
+    const syncNativeSelection = () => {
+      const selected = input.files?.[0] ?? null;
+      setFile(selected);
+      setError(selected ? localFileError(selected) : null);
+    };
+
+    syncNativeSelection();
+    input.addEventListener("input", syncNativeSelection);
+    input.addEventListener("change", syncNativeSelection);
+
+    return () => {
+      input.removeEventListener("input", syncNativeSelection);
+      input.removeEventListener("change", syncNativeSelection);
+    };
   }, []);
 
   const chooseFile = (selected: File | null) => {
     setFile(selected);
     setError(selected ? localFileError(selected) : null);
+  };
+
+  const clearFile = () => {
+    if (inputRef.current) inputRef.current.value = "";
+    chooseFile(null);
   };
 
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
@@ -224,7 +241,7 @@ export function DocumentUploadForm({
             size="icon"
             className="h-9 w-9 min-h-9 rounded-lg"
             disabled={isUploading}
-            onClick={() => chooseFile(null)}
+            onClick={clearFile}
             aria-label="إزالة الملف المختار"
           >
             <X className="h-4 w-4" aria-hidden="true" />
