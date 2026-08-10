@@ -612,6 +612,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page.goto(`/workspaces/${workspaceId}`);
   await page.getByRole("button", { name: "أرشفة" }).click();
+  await expect(page).toHaveURL(/\/workspaces\?status=archived$/);
   await page.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
   await expect(draftContentField(page)).toHaveAttribute("readonly", "");
   await expect(
