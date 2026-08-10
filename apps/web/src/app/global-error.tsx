@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
+import { RouteFailureState } from "@/components/system/route-state";
+import { amiri, cairo, inter, notoSansArabic } from "@/lib/fonts";
+import "./globals.css";
+import "./quality.css";
 
 export default function GlobalError({
   error,
@@ -10,31 +14,37 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log error - will integrate with Sentry later
-    console.error("Global error caught:", error);
+    console.error("Global application error", {
+      message: error.message,
+      digest: error.digest,
+    });
   }, [error]);
 
   return (
-    <html>
-      <body>
-        <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-50">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">
-              Application Error
-            </h1>
-            <p className="text-gray-700 mb-6">
-              {process.env.NODE_ENV === "development"
-                ? error.message
-                : "An unexpected error occurred. Our team has been notified."}
-            </p>
-            <button
-              onClick={reset}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
+    <html
+      lang="ar"
+      dir="rtl"
+      className={`
+        ${inter.variable}
+        ${notoSansArabic.variable}
+        ${cairo.variable}
+        ${amiri.variable}
+      `.trim()}
+    >
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+        <RouteFailureState
+          eyebrow="تعذر تشغيل Tuppra"
+          title="تعذر تحميل التطبيق"
+          description={
+            process.env.NODE_ENV === "development"
+              ? error.message
+              : "حدث خطأ قبل اكتمال واجهة التطبيق. أعد المحاولة؛ لم نعرض بيانات بديلة أو ندّعِ حفظ أي تغيير لم يكتمل."
+          }
+          reset={reset}
+          backHref="/"
+          backLabel="العودة إلى البداية"
+          reference={error.digest}
+        />
       </body>
     </html>
   );
