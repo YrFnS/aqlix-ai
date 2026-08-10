@@ -8,6 +8,7 @@ import {
 } from "react";
 import {
   Check,
+  ChevronDown,
   Clipboard,
   KeyRound,
   PlugZap,
@@ -36,11 +37,17 @@ interface ApiFailure {
   };
 }
 
+const INITIAL_MODEL_COUNT = 12;
+const MODEL_PAGE_SIZE = 12;
+
 function failureMessage(payload: ApiFailure, fallback: string): string {
   const fieldMessage = Object.values(payload.error?.fieldErrors ?? {})
     .flat()
     .find(Boolean);
-  return [payload.error?.message, fieldMessage].filter(Boolean).join(" · ") || fallback;
+  return (
+    [payload.error?.message, fieldMessage].filter(Boolean).join(" · ") ||
+    fallback
+  );
 }
 
 function formatInteger(value: number | null): string {
@@ -75,7 +82,13 @@ function ModelCard({
   const [copied, setCopied] = useState(false);
 
   return (
-    <article className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
+    <article
+      className={`rounded-3xl border p-5 transition-colors ${
+        selected
+          ? "border-primary/40 bg-primary/5"
+          : "border-border/70 bg-card"
+      }`}
+    >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -110,7 +123,9 @@ function ModelCard({
           >
             <span className="truncate">{model.id}</span>
             <Clipboard className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">{copied ? "Copied" : "Copy model ID"}</span>
+            <span className="sr-only">
+              {copied ? "Copied" : "Copy model ID"}
+            </span>
           </button>
         </div>
 
@@ -133,37 +148,49 @@ function ModelCard({
       </div>
 
       {model.description && (
-        <p dir="auto" className="mt-4 line-clamp-3 text-sm leading-7 text-muted-foreground">
+        <p
+          dir="auto"
+          className="mt-4 line-clamp-2 text-sm leading-7 text-muted-foreground"
+        >
           {model.description}
         </p>
       )}
 
-      <dl className="mt-5 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Context</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {formatInteger(model.contextLength)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Input / 1M</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {pricePerMillion(model.pricing.prompt)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Output / 1M</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {pricePerMillion(model.pricing.completion)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Output modes</dt>
-          <dd dir="ltr" className="mt-1 truncate font-semibold">
-            {model.outputModalities.join(", ") || "text"}
-          </dd>
-        </div>
-      </dl>
+      <details className="group mt-4 rounded-2xl border border-border/70 bg-background/65">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-3 text-xs font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-details-marker]:hidden">
+          التفاصيل والأسعار
+          <ChevronDown
+            className="h-3.5 w-3.5 text-muted-foreground transition-transform group-open:rotate-180"
+            aria-hidden="true"
+          />
+        </summary>
+        <dl className="grid grid-cols-2 gap-2 border-t border-border/70 p-3 text-xs sm:grid-cols-4">
+          <div className="rounded-xl bg-secondary/55 p-3">
+            <dt className="text-muted-foreground">Context</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {formatInteger(model.contextLength)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-secondary/55 p-3">
+            <dt className="text-muted-foreground">Input / 1M</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {pricePerMillion(model.pricing.prompt)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-secondary/55 p-3">
+            <dt className="text-muted-foreground">Output / 1M</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {pricePerMillion(model.pricing.completion)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-secondary/55 p-3">
+            <dt className="text-muted-foreground">Output modes</dt>
+            <dd dir="ltr" className="mt-1 truncate font-semibold">
+              {model.outputModalities.join(", ") || "text"}
+            </dd>
+          </div>
+        </dl>
+      </details>
     </article>
   );
 }
@@ -187,11 +214,25 @@ export function OpenRouterSettings({
   const [selectingModel, setSelectingModel] = useState<string | null>(null);
   const [manualModelId, setManualModelId] = useState("");
   const [refreshIndex, setRefreshIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_MODEL_COUNT);
 
   const currentModel = useMemo(
     () => catalog?.models.find((model) => model.id === settings.modelId) ?? null,
     [catalog, settings.modelId],
   );
+  const orderedModels = useMemo(() => {
+    const models = catalog?.models ?? [];
+    if (!settings.modelId) return models;
+    const selected = models.find((model) => model.id === settings.modelId);
+    if (!selected) return models;
+    return [selected, ...models.filter((model) => model.id !== selected.id)];
+  }, [catalog, settings.modelId]);
+  const visibleModels = orderedModels.slice(0, visibleCount);
+  const hasMoreModels = visibleCount < orderedModels.length;
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_MODEL_COUNT);
+  }, [freeOnly, query, sort]);
 
   useEffect(() => {
     if (!settings.connected) {
@@ -224,7 +265,8 @@ export function OpenRouterSettings({
 
         if (!response.ok || payload.ok !== true || !payload.data?.catalog) {
           throw new Error(
-            payload.error?.message || "The live model catalog could not be loaded.",
+            payload.error?.message ||
+              "The live model catalog could not be loaded.",
           );
         }
 
@@ -280,7 +322,7 @@ export function OpenRouterSettings({
       setSettings(payload.data.settings);
       setApiKey("");
       setConnectionNotice(
-        "تم التحقق من المفتاح وتخزينه بشكل مشفر. اختر نموذجاً حياً للبدء.",
+        "تم التحقق من المفتاح وحفظه بأمان. اختر نموذجاً للبدء.",
       );
     } catch (error) {
       setConnectionError(
@@ -315,14 +357,15 @@ export function OpenRouterSettings({
       };
       if (!response.ok || payload.ok !== true || !payload.data?.settings) {
         throw new Error(
-          payload.error?.message || "The OpenRouter connection could not be removed.",
+          payload.error?.message ||
+            "The OpenRouter connection could not be removed.",
         );
       }
 
       setSettings(payload.data.settings);
       setCatalog(null);
       setManualModelId("");
-      setConnectionNotice("تم حذف المفتاح المشفر والنموذج المختار من الحساب.");
+      setConnectionNotice("تم فصل المفتاح والنموذج المختار من الحساب.");
     } catch (error) {
       setConnectionError(
         error instanceof Error
@@ -364,7 +407,9 @@ export function OpenRouterSettings({
       setConnectionNotice(`Model selected: ${modelId}`);
     } catch (error) {
       setCatalogError(
-        error instanceof Error ? error.message : "The model could not be selected.",
+        error instanceof Error
+          ? error.message
+          : "The model could not be selected.",
       );
     } finally {
       setSelectingModel(null);
@@ -372,134 +417,160 @@ export function OpenRouterSettings({
   };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">OpenRouter BYOK</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              مفتاحك أنت، وليس مفتاح المنصة
-            </h2>
-            <p className="mt-3 text-sm leading-8 text-muted-foreground">
-              يتحقق الخادم من المفتاح مرة واحدة ثم يخزنه مشفراً في Supabase Vault.
-              بعد الحفظ لا تعيد الواجهة المفتاح الخام. يمكن استبداله أو حذفه في أي
-              وقت.
-            </p>
+    <div className="grid gap-5 xl:grid-cols-[20rem_minmax(0,1fr)] xl:items-start">
+      <aside className="xl:sticky xl:top-6">
+        <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold text-primary">الاتصال</p>
+              <h2 className="mt-1 font-arabic-heading text-xl font-semibold">
+                مفتاح OpenRouter
+              </h2>
+            </div>
+            <div className="rounded-2xl bg-primary/10 p-2.5 text-primary">
+              <KeyRound className="h-4 w-4" aria-hidden="true" />
+            </div>
           </div>
-          <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-            <KeyRound className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
+          <p className="mt-3 text-xs leading-6 text-muted-foreground">
+            أدخل مفتاحك مرة واحدة. بعد التحقق لا تعرض الواجهة قيمته الكاملة مرة
+            أخرى.
+          </p>
 
-        {settings.connected ? (
-          <div className="mt-7 rounded-3xl border border-primary/25 bg-primary/5 p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="inline-flex items-center gap-2 font-semibold">
-                  <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-                  Connected · •••• {settings.keyLastFour}
+          {settings.connected ? (
+            <div className="mt-5 rounded-2xl border border-primary/25 bg-primary/5 p-4">
+              <p className="inline-flex items-center gap-2 font-semibold">
+                <ShieldCheck
+                  className="h-4 w-4 text-primary"
+                  aria-hidden="true"
+                />
+                Connected · •••• {settings.keyLastFour}
+              </p>
+              <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                {settings.keyLabel || "OpenRouter API key"}
+                {settings.isFreeTier === true ? " · Free-tier key" : ""}
+              </p>
+              {settings.modelId ? (
+                <div className="mt-4 rounded-xl bg-background px-3 py-2.5 text-xs">
+                  <p className="text-muted-foreground">Current model</p>
+                  <p
+                    dir="ltr"
+                    className="mt-1 truncate font-mono font-semibold"
+                  >
+                    {settings.modelId}
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-4 text-xs leading-6 text-muted-foreground">
+                  الاتصال جاهز. اختر نموذجاً من القائمة.
                 </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {settings.keyLabel || "OpenRouter API key"}
-                  {settings.isFreeTier === true ? " · Free-tier key" : ""}
-                </p>
-              </div>
+              )}
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-full"
+                className="mt-4 w-full rounded-full"
                 disabled={disconnecting}
                 onClick={() => void disconnect()}
               >
                 {disconnecting ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <RefreshCw
+                    className="h-4 w-4 animate-spin"
+                    aria-hidden="true"
+                  />
                 ) : (
                   <Unplug className="h-4 w-4" aria-hidden="true" />
                 )}
                 Disconnect
               </Button>
             </div>
-          </div>
-        ) : (
-          <form onSubmit={connect} className="mt-7 space-y-4">
-            <label className="space-y-2 text-sm font-semibold">
-              <span>OpenRouter API key</span>
-              <input
-                value={apiKey}
-                onChange={(event) => setApiKey(event.target.value)}
-                type="password"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={512}
-                dir="ltr"
-                placeholder="Paste your key once"
-                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              />
-            </label>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          ) : (
+            <form onSubmit={connect} className="mt-5 space-y-4">
+              <label className="space-y-2 text-sm font-semibold">
+                <span>OpenRouter API key</span>
+                <input
+                  value={apiKey}
+                  onChange={(event) => setApiKey(event.target.value)}
+                  type="password"
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={512}
+                  dir="ltr"
+                  placeholder="Paste your key once"
+                  className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                />
+              </label>
               <p className="text-xs leading-6 text-muted-foreground">
                 Use a key with its own spending limit in your OpenRouter dashboard.
               </p>
               <Button
                 type="submit"
-                className="rounded-full"
+                className="w-full rounded-full"
                 disabled={!apiKey.trim() || connecting}
               >
                 {connecting ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <RefreshCw
+                    className="h-4 w-4 animate-spin"
+                    aria-hidden="true"
+                  />
                 ) : (
                   <PlugZap className="h-4 w-4" aria-hidden="true" />
                 )}
                 Validate and connect
               </Button>
+            </form>
+          )}
+
+          {connectionError && (
+            <div
+              className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+              role="alert"
+            >
+              {connectionError}
             </div>
-          </form>
-        )}
+          )}
+          {connectionNotice && (
+            <div
+              className="mt-4 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-3 text-sm leading-7"
+              role="status"
+            >
+              {connectionNotice}
+            </div>
+          )}
+        </section>
+      </aside>
 
-        {connectionError && (
-          <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
-            {connectionError}
-          </div>
-        )}
-        {connectionNotice && (
-          <div className="mt-4 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-3 text-sm leading-7" role="status">
-            {connectionNotice}
-          </div>
-        )}
-      </section>
-
-      <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">Live model catalog</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              ابحث واختر بدون قائمة ثابتة
+      <section className="min-w-0 rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-7">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold text-primary">اختيار النموذج</p>
+            <h2 className="mt-1 font-arabic-heading text-2xl font-semibold">
+              ابحث ثم اختر
             </h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              القائمة تُطلب مباشرةً من OpenRouter باستخدام مفتاحك وتراعي إعدادات
-              المزود والخصوصية الخاصة بحسابك. لا يوجد نموذج افتراضي مخفي في الكود.
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
+              تظهر النماذج المتاحة لهذا الحساب مباشرةً، ويمكن تغيير الاختيار في
+              أي وقت.
             </p>
           </div>
           {settings.modelId && (
-            <div className="max-w-full rounded-2xl bg-secondary/60 px-4 py-3 text-xs">
-              <p className="text-muted-foreground">Current model</p>
-              <p dir="ltr" className="mt-1 truncate font-mono font-semibold">
-                {settings.modelId}
-              </p>
-            </div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+              <Check className="h-3.5 w-3.5" aria-hidden="true" />
+              نموذج مختار
+            </span>
           )}
         </div>
 
         {!settings.connected ? (
-          <div className="mt-7 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
+          <div className="mt-6 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
             Connect an OpenRouter key to load the models available to that account.
           </div>
         ) : (
           <>
-            <div className="mt-7 grid gap-3 lg:grid-cols-[1fr_13rem_auto]">
+            <div className="mt-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_12rem_auto]">
               <label className="relative">
                 <span className="sr-only">Search OpenRouter models</span>
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Search
+                  className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <input
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -513,7 +584,9 @@ export function OpenRouterSettings({
                 <span className="sr-only">Sort models</span>
                 <select
                   value={sort}
-                  onChange={(event) => setSort(event.target.value as OpenRouterModelSort)}
+                  onChange={(event) =>
+                    setSort(event.target.value as OpenRouterModelSort)
+                  }
                   className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <option value="name">Name</option>
@@ -534,36 +607,48 @@ export function OpenRouterSettings({
               </label>
             </div>
 
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-secondary/45 p-4 sm:flex-row sm:items-end">
-              <label className="flex-1 space-y-2 text-xs font-semibold">
-                <span>Or paste an exact model ID</span>
-                <input
-                  value={manualModelId}
-                  onChange={(event) => setManualModelId(event.target.value)}
-                  maxLength={255}
-                  dir="ltr"
-                  placeholder="author/model or author/model:free"
-                  className="min-h-11 w-full rounded-xl border border-input bg-background px-3 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            <details className="group mt-3 rounded-2xl border border-border/70 bg-secondary/25">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-details-marker]:hidden">
+                اختيار نموذج بمعرّفه الكامل
+                <ChevronDown
+                  className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180"
+                  aria-hidden="true"
                 />
-              </label>
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-full"
-                disabled={!manualModelId.trim() || Boolean(selectingModel)}
-                onClick={() => void selectModel(manualModelId.trim())}
-              >
-                Validate and use
-              </Button>
-            </div>
+              </summary>
+              <div className="flex flex-col gap-3 border-t border-border/70 p-4 sm:flex-row sm:items-end">
+                <label className="flex-1 space-y-2 text-xs font-semibold">
+                  <span>Or paste an exact model ID</span>
+                  <input
+                    value={manualModelId}
+                    onChange={(event) => setManualModelId(event.target.value)}
+                    maxLength={255}
+                    dir="ltr"
+                    placeholder="author/model or author/model:free"
+                    className="min-h-11 w-full rounded-xl border border-input bg-background px-3 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  />
+                </label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full"
+                  disabled={!manualModelId.trim() || Boolean(selectingModel)}
+                  onClick={() => void selectModel(manualModelId.trim())}
+                >
+                  Validate and use
+                </Button>
+              </div>
+            </details>
 
             {catalogError && (
-              <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
+              <div
+                className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+                role="alert"
+              >
                 {catalogError}
               </div>
             )}
 
-            <div className="mt-6 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+            <div className="mt-5 flex items-center justify-between gap-3 text-xs text-muted-foreground">
               <span>
                 {catalogLoading
                   ? "Loading live models…"
@@ -577,18 +662,28 @@ export function OpenRouterSettings({
                 disabled={catalogLoading}
                 onClick={() => setRefreshIndex((value) => value + 1)}
               >
-                <RefreshCw className={catalogLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} aria-hidden="true" />
+                <RefreshCw
+                  className={
+                    catalogLoading
+                      ? "h-3.5 w-3.5 animate-spin"
+                      : "h-3.5 w-3.5"
+                  }
+                  aria-hidden="true"
+                />
                 Refresh
               </Button>
             </div>
 
             {catalogLoading && !catalog ? (
-              <div className="mt-6 flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-border">
-                <RefreshCw className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
+              <div className="mt-5 flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-border">
+                <RefreshCw
+                  className="h-6 w-6 animate-spin text-primary"
+                  aria-hidden="true"
+                />
               </div>
-            ) : catalog?.models.length ? (
-              <div className="mt-6 grid gap-4 xl:grid-cols-2">
-                {catalog.models.map((model) => (
+            ) : visibleModels.length ? (
+              <div className="mt-5 grid gap-4 2xl:grid-cols-2">
+                {visibleModels.map((model) => (
                   <ModelCard
                     key={model.id}
                     model={model}
@@ -599,8 +694,23 @@ export function OpenRouterSettings({
                 ))}
               </div>
             ) : (
-              <div className="mt-6 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
+              <div className="mt-5 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
                 No current model matches these live filters. Change the search or clear the free-only filter.
+              </div>
+            )}
+
+            {hasMoreModels && (
+              <div className="mt-5 flex justify-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full px-7"
+                  onClick={() =>
+                    setVisibleCount((value) => value + MODEL_PAGE_SIZE)
+                  }
+                >
+                  عرض المزيد من النماذج
+                </Button>
               </div>
             )}
 
