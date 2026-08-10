@@ -60,7 +60,7 @@ function isBlockStart(lines: string[], index: number): boolean {
 }
 
 function parseMarkdownBlocks(content: string): MarkdownBlock[] {
-  const lines = content.replaceAll("\r\n", "\n").split("\n");
+  const lines = content.replace(/\r\n/gu, "\n").split("\n");
   const blocks: MarkdownBlock[] = [];
   let index = 0;
 
