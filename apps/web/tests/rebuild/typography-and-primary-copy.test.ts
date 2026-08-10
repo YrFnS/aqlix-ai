@@ -42,6 +42,9 @@ describe("primary authenticated shell copy", () => {
     const conversations = readSource(
       "src/app/(app)/workspaces/[workspaceId]/conversations/page.tsx",
     );
+    const conversationDetail = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/conversations/[conversationId]/page.tsx",
+    );
     const conversationShell = readSource(
       "src/components/conversations/conversation-shell.tsx",
     );
@@ -57,6 +60,7 @@ describe("primary authenticated shell copy", () => {
       workspaces,
       workspaceDetail,
       conversations,
+      conversationDetail,
       conversationShell,
       sources,
       drafts,
@@ -74,6 +78,8 @@ describe("primary authenticated shell copy", () => {
     expect(workspaceDetail).toContain("اسأل، استند إلى مصادرك، ثم اكتب");
     expect(workspaceDetail).toContain("حوّل الإجابة إلى عمل");
     expect(conversations).toContain("اسأل، تابع، وارجع إلى إجاباتك");
+    expect(conversationDetail).toContain("تابع الحوار بالعربية أو English");
+    expect(conversationDetail).toContain("إذا توقفت استجابة أو فشلت");
     expect(conversationShell).toContain("ابدأ محادثتك");
     expect(conversationShell).toContain("استخدام مصادر مساحة العمل");
     expect(sources).toContain("أضف السياق الذي تريد الرجوع إليه");
@@ -85,7 +91,7 @@ describe("primary authenticated shell copy", () => {
     expect(primaryShell).not.toMatch(/قاعدة البيانات|معاملة قاعدة/iu);
     expect(primaryShell).not.toMatch(/UTF-8|\bBYOK\b|Vault/iu);
     expect(primaryShell).not.toMatch(/Private bucket|immutable versions|provenance/iu);
-    expect(primaryShell).not.toMatch(/بانتظار المزود|حالة التوليد/iu);
+    expect(primaryShell).not.toMatch(/بانتظار المزود|حالة التوليد|محاولات التوليد/iu);
     expect(primaryShell).not.toMatch(/جاهزية تشغيلية|إطلاق عام/iu);
   });
 });
