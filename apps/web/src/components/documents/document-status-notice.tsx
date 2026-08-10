@@ -1,3 +1,6 @@
+import { AlertTriangle, CheckCircle2, Info } from "lucide-react";
+import { Surface } from "@/components/ui/surface";
+
 const notices: Record<
   string,
   { tone: "success" | "error" | "info"; text: string }
@@ -20,26 +23,41 @@ const notices: Record<
   },
 };
 
-function classes(tone: "success" | "error" | "info"): string {
-  if (tone === "error") {
-    return "border-destructive/30 bg-destructive/10 text-destructive";
-  }
-  if (tone === "success") {
-    return "border-primary/30 bg-primary/10 text-foreground";
-  }
-  return "border-border bg-secondary/60 text-muted-foreground";
-}
-
 export function DocumentStatusNotice({ status }: { status?: string }) {
   if (!status || !notices[status]) return null;
   const notice = notices[status];
+  const Icon =
+    notice.tone === "error"
+      ? AlertTriangle
+      : notice.tone === "success"
+        ? CheckCircle2
+        : Info;
 
   return (
-    <div
-      className={`rounded-2xl border px-4 py-3 text-sm leading-7 ${classes(notice.tone)}`}
+    <Surface
+      tone={notice.tone === "info" ? "muted" : "raised"}
+      elevation="xs"
+      radius="xl"
+      padding="sm"
+      className={
+        notice.tone === "error"
+          ? "border-destructive/30 bg-destructive/10 text-destructive"
+          : notice.tone === "success"
+            ? "border-primary/25 bg-brand-soft/60"
+            : undefined
+      }
       role={notice.tone === "error" ? "alert" : "status"}
+      aria-live={notice.tone === "error" ? "assertive" : "polite"}
     >
-      {notice.text}
-    </div>
+      <div className="flex items-start gap-3 text-sm leading-7">
+        <Icon
+          className={`mt-1 h-4 w-4 shrink-0 ${
+            notice.tone === "error" ? "text-destructive" : "text-primary"
+          }`}
+          aria-hidden="true"
+        />
+        <p>{notice.text}</p>
+      </div>
+    </Surface>
   );
 }
