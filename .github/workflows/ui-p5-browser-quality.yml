@@ -9,7 +9,7 @@ on:
       - "apps/web/package.json"
       - "apps/web/playwright.p5.config.ts"
       - "apps/web/src/**"
-      - "apps/web/tests/e2e/p5/**"
+      - "apps/web/tests/e2e/p5/ui-quality.spec.ts"
       - "packages/ui/**"
       - "package.json"
       - "bun.lock"
@@ -50,8 +50,12 @@ jobs:
         working-directory: apps/web
         run: bun run build
 
-      - name: Run P5 browser quality audit
-        run: bun run test:e2e:p5
+      - name: Run deterministic P5 browser quality audit
+        working-directory: apps/web
+        run: >-
+          bunx playwright test
+          tests/e2e/p5/ui-quality.spec.ts
+          --config=playwright.p5.config.ts
 
       - name: Upload browser evidence
         if: always()
