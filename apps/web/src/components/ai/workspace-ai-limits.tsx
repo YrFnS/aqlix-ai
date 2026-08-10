@@ -191,7 +191,7 @@ export function WorkspaceAiLimitsPanel({
             حدود الاستخدام والتزامن
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            تحمي هذه الحدود موارد Kiteb حتى عندما يستخدم كل شخص مفتاح OpenRouter
+            تحمي هذه الحدود موارد Tuppra حتى عندما يستخدم كل شخص مفتاح OpenRouter
             الخاص به. هي حدود يومية داخل التطبيق وليست وعداً بتكلفة أو رصيد لدى
             OpenRouter.
           </p>
