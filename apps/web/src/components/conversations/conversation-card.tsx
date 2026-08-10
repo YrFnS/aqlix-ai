@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { ArrowUpLeft, Archive, MessageSquareText } from "lucide-react";
+import { ArrowRight, Archive, MessageSquareText } from "lucide-react";
 import type { ConversationSummary } from "@iraqi-ai/types";
+import { MotionSurface } from "@/components/motion/motion-primitives";
+import { Surface } from "@/components/ui/surface";
 
 function formatTimestamp(value: string | null): string {
   if (!value) return "لا توجد رسائل بعد";
@@ -16,46 +18,60 @@ export function ConversationCard({
 }: {
   conversation: ConversationSummary;
 }) {
+  const lastActivity = conversation.lastMessageAt ?? conversation.updatedAt;
+
   return (
-    <article className="group flex h-full flex-col rounded-3xl border border-border/70 bg-card p-5 transition-transform hover:-translate-y-0.5 hover:shadow-lg hover:shadow-foreground/5 sm:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.65rem] font-semibold text-primary">
-              {conversation.messageCount} رسالة
-            </span>
-            {conversation.status === "archived" && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-border bg-secondary/70 px-2.5 py-1 text-[0.65rem] font-semibold text-muted-foreground">
-                <Archive className="h-3 w-3" aria-hidden="true" />
-                مؤرشفة
-              </span>
-            )}
-          </div>
-          <h2
-            dir="auto"
-            className="mt-4 truncate font-arabic-heading text-xl font-semibold"
-          >
-            {conversation.title}
-          </h2>
-        </div>
-        <div className="rounded-2xl bg-secondary p-3 text-primary">
-          <MessageSquareText className="h-5 w-5" aria-hidden="true" />
-        </div>
-      </div>
-
-      <p className="mt-4 text-sm leading-7 text-muted-foreground">
-        آخر نشاط: {formatTimestamp(conversation.lastMessageAt ?? conversation.updatedAt)}
-      </p>
-
-      <div className="mt-auto border-t border-border/70 pt-4">
+    <article>
+      <MotionSurface>
         <Link
           href={`/workspaces/${conversation.workspaceId}/conversations/${conversation.id}`}
-          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+          className="group block rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/20 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          aria-label={`فتح المحادثة: ${conversation.title}`}
         >
-          فتح المحادثة
-          <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+          <Surface
+            tone="raised"
+            elevation="xs"
+            radius="2xl"
+            padding="md"
+            className="grid gap-4 transition-[border-color,box-shadow] duration-base ease-standard group-hover:border-primary/30 group-hover:shadow-surface-md sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-soft text-primary">
+              <MessageSquareText className="h-5 w-5" aria-hidden="true" />
+            </span>
+
+            <span className="min-w-0">
+              <span className="flex flex-wrap items-center gap-2">
+                <span
+                  dir="auto"
+                  className="truncate font-arabic-heading text-lg font-semibold text-foreground"
+                >
+                  {conversation.title}
+                </span>
+                {conversation.status === "archived" ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-sunken px-2 py-0.5 text-[0.65rem] font-semibold text-ink-muted">
+                    <Archive className="h-3 w-3" aria-hidden="true" />
+                    مؤرشفة
+                  </span>
+                ) : null}
+              </span>
+              <span className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-muted">
+                <span>{conversation.messageCount} رسالة</span>
+                <time dateTime={lastActivity}>
+                  آخر نشاط: {formatTimestamp(lastActivity)}
+                </time>
+              </span>
+            </span>
+
+            <span className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-primary sm:justify-self-end">
+              فتح
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-fast group-hover:-translate-x-0.5"
+                aria-hidden="true"
+              />
+            </span>
+          </Surface>
         </Link>
-      </div>
+      </MotionSurface>
     </article>
   );
 }
