@@ -98,7 +98,9 @@ describe("primary authenticated shell copy", () => {
     );
     expect(primaryShell).not.toMatch(/قاعدة البيانات|معاملة قاعدة/iu);
     expect(primaryShell).not.toMatch(/UTF-8|\bBYOK\b|Vault/iu);
-    expect(primaryShell).not.toMatch(/Private bucket|immutable versions|provenance/iu);
+    expect(primaryShell).not.toMatch(
+      /Private bucket|immutable versions|provenance snapshots|saved provenance|منشأ محفوظ|سجل المنشأ/iu,
+    );
     expect(primaryShell).not.toMatch(/بانتظار المزود|حالة التوليد|محاولات التوليد/iu);
     expect(primaryShell).not.toMatch(/جاهزية تشغيلية|إطلاق عام/iu);
   });
