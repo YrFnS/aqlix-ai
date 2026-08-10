@@ -21,8 +21,8 @@ describe("active RTL foundation", () => {
 
   test("detects Arabic script in Arabic and mixed text", () => {
     expect(isArabicText("مرحبا")).toBe(true);
-    expect(isArabicText("Kiteb مساحة عمل")).toBe(true);
-    expect(isArabicText("Kiteb workspace")).toBe(false);
+    expect(isArabicText("Tuppra مساحة عمل")).toBe(true);
+    expect(isArabicText("Tuppra workspace")).toBe(false);
   });
 
   test("ships an Arabic RTL document default", () => {
