@@ -23,7 +23,8 @@ import {
 
 export const metadata: Metadata = {
   title: "المسودات",
-  description: "Durable reusable drafts, versions, provenance, and exports.",
+  description:
+    "حوّل الإجابات إلى مستندات قابلة للتحرير والحفظ والمراجعة والتصدير.",
 };
 
 type PageParams = Promise<{ workspaceId: string }>;
@@ -115,20 +116,19 @@ export default async function WorkspaceDraftsPage({
         <div className="mt-6 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold text-primary">
-              P4 · Durable drafts
+              حوّل الإجابات إلى عمل قابل للاستخدام
             </p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
               مسودات {workspace.name}
             </h1>
             <p className="mt-4 text-base leading-8 text-muted-foreground">
-              العمل المقبول محفوظ في PostgreSQL مع إصدارات غير قابلة لإعادة
-              الكتابة، منشأ المحادثة والمراجع، وتصدير UTF-8. الاقتراحات الآلية
-              تبقى منفصلة حتى تطبيقها صراحةً.
+              أنشئ ملخصاً أو رسالة أو مذكرة من إجابة مكتملة، ثم حررها واحفظ
+              نسخها وراجع مصدرها قبل التصدير أو المشاركة.
             </p>
           </div>
           <div className="flex items-center gap-3 rounded-2xl bg-secondary/60 px-4 py-3 text-sm text-muted-foreground">
             <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-            RLS · immutable versions · provenance
+            نسخ محفوظة · مصدر واضح
           </div>
         </div>
       </header>
@@ -161,10 +161,10 @@ export default async function WorkspaceDraftsPage({
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
             {workspaceArchived
-              ? "مساحة العمل مؤرشفة. يمكن مراجعة المسودات المؤرشفة وتصديرها، لكن إنشاء عمل جديد يحتاج استعادة المساحة."
+              ? "مساحة العمل مؤرشفة. يمكنك مراجعة المسودات المؤرشفة وتصديرها، لكن إنشاء عمل جديد يحتاج إلى استعادة المساحة."
               : workspace.role === "viewer"
                 ? "لم يشارك معك محرر أو مالك مسودة في هذه المساحة بعد."
-                : "افتح محادثة فيها إجابة مكتملة، ثم اختر ملخصاً أو مقارنة أو رسالة أو مذكرة أو قائمة عمل أو ملاحظة قرار."}
+                : "افتح محادثة فيها إجابة مكتملة، ثم حوّلها إلى ملخص أو مقارنة أو رسالة أو مذكرة أو قائمة عمل أو ملاحظة قرار."}
           </p>
           {!workspaceArchived && workspace.role !== "viewer" && (
             <Link
