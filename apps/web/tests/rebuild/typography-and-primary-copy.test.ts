@@ -54,6 +54,9 @@ describe("primary authenticated shell copy", () => {
     const drafts = readSource(
       "src/app/(app)/workspaces/[workspaceId]/drafts/page.tsx",
     );
+    const draftDetail = readSource(
+      "src/app/(app)/workspaces/[workspaceId]/drafts/[draftId]/page.tsx",
+    );
     const aiSettings = readSource("src/app/(app)/settings/ai/page.tsx");
     const primaryShell = [
       navigation,
@@ -64,6 +67,7 @@ describe("primary authenticated shell copy", () => {
       conversationShell,
       sources,
       drafts,
+      draftDetail,
       aiSettings,
     ].join("\n");
 
@@ -84,6 +88,8 @@ describe("primary authenticated shell copy", () => {
     expect(conversationShell).toContain("استخدام مصادر مساحة العمل");
     expect(sources).toContain("أضف السياق الذي تريد الرجوع إليه");
     expect(drafts).toContain("حوّل الإجابات إلى عمل قابل للاستخدام");
+    expect(draftDetail).toContain("حرر النص واحفظ نسخة جديدة");
+    expect(draftDetail).toContain("فتح المصدر");
     expect(aiSettings).toContain("اختر كيف تتصل بالنماذج");
 
     expect(primaryShell).not.toMatch(/\bP[0-5]\b/u);
