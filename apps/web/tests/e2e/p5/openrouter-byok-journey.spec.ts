@@ -15,6 +15,13 @@ async function waitForHydration(page: Page): Promise<void> {
   );
 }
 
+async function waitForClientSurface(page: Page, name: string): Promise<void> {
+  await expect(page.locator(`[data-client-surface="${name}"]`)).toHaveAttribute(
+    "data-client-ready",
+    "true",
+  );
+}
+
 async function register(page: Page, email: string): Promise<void> {
   await page.goto("/register");
   await waitForHydration(page);
@@ -27,14 +34,14 @@ async function register(page: Page, email: string): Promise<void> {
 
 async function openAiSettings(page: Page): Promise<void> {
   await page.goto("/settings/ai");
-  await waitForHydration(page);
+  await waitForClientSurface(page, "openrouter-settings");
   await expect(
     page.getByRole("heading", { name: "مفتاحك، نموذجك، وحدودك" }),
   ).toBeVisible();
 }
 
 async function sendMessage(page: Page, content: string): Promise<void> {
-  await waitForHydration(page);
+  await waitForClientSurface(page, "conversation");
   await page.getByLabel("اكتب رسالة").fill(content);
   const sendButton = page.getByRole("button", { name: "إرسال" });
   await expect(sendButton).toBeEnabled();
