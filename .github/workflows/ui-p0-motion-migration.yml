@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -31,8 +31,11 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout code
+      - name: Checkout the pull-request branch
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
       - name: Setup Node LTS
         uses: actions/setup-node@v6
@@ -56,7 +59,7 @@ jobs:
       - name: Upload generated lockfile
         uses: actions/upload-artifact@v4
         with:
-          name: ui-p0-generated-lockfile-${{ github.sha }}
+          name: ui-p0-generated-lockfile-${{ github.event.pull_request.head.sha }}
           path: bun.lock
           if-no-files-found: error
           retention-days: 2
@@ -78,6 +81,7 @@ jobs:
           grep -q 'from "motion/react"' apps/web/src/components/providers/MotionProvider.tsx
           grep -q 'from "motion/react"' apps/web/src/components/motion/motion-primitives.tsx
           grep -q 'from "motion/react"' apps/web/src/lib/motion.ts
+          grep -q 'from "motion/react"' apps/web/src/components/language/LanguageSwitcher.tsx
 
           if grep -R --line-number --fixed-strings 'framer-motion' \
             apps/web/src packages/ui/src apps/web/package.json packages/ui/package.json; then
@@ -105,3 +109,20 @@ jobs:
       - name: Build the release web application
         working-directory: apps/web
         run: bun run build:release
+
+      - name: Commit the verified generated lockfile
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+
+          if git diff --cached --quiet; then
+            echo "The generated lockfile is already committed."
+            exit 0
+          fi
+
+          git commit -m "chore(ui): regenerate Bun lockfile"
+          git push origin "HEAD:${{ github.head_ref }}"
