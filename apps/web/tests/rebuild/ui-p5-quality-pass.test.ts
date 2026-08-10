@@ -4,8 +4,11 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
+const repoRoot = resolve(webRoot, "../..");
 const readSource = (path: string) =>
   readFileSync(resolve(webRoot, path), "utf8");
+const readRepoSource = (path: string) =>
+  readFileSync(resolve(repoRoot, path), "utf8");
 
 describe("UI P5 final quality pass", () => {
   test("installs a skip link, route announcer, and modal focus boundary", () => {
@@ -55,24 +58,28 @@ describe("UI P5 final quality pass", () => {
 
   test("replaces legacy and phase-labelled failure surfaces", () => {
     const failureState = readSource("src/components/system/route-state.tsx");
-    const errors = [
+    const failureSurfaces = [
       "src/app/error.tsx",
       "src/app/global-error.tsx",
       "src/app/(app)/workspaces/[workspaceId]/conversations/error.tsx",
       "src/app/(app)/workspaces/[workspaceId]/sources/error.tsx",
       "src/app/(app)/workspaces/[workspaceId]/drafts/error.tsx",
+      "src/app/(app)/workspaces/[workspaceId]/conversations/[conversationId]/not-found.tsx",
+      "src/app/(app)/workspaces/[workspaceId]/sources/[attachmentId]/not-found.tsx",
+      "src/app/(app)/workspaces/[workspaceId]/drafts/[draftId]/not-found.tsx",
     ].map(readSource);
 
     expect(failureState).toContain("RouteFailureState");
     expect(failureState).toContain('role="alert"');
     expect(failureState).toContain("مرجع الخطأ");
 
-    for (const source of errors) {
+    for (const source of failureSurfaces) {
       expect(source).toContain("RouteFailureState");
       expect(source).not.toMatch(/P[0-9]\s*[·–-]/u);
       expect(source).not.toMatch(/bg-blue|text-blue|bg-gray|text-gray|bg-red-100/u);
       expect(source).not.toContain("Something went wrong");
       expect(source).not.toContain("Application Error");
+      expect(source).not.toContain("Missing or forbidden");
     }
   });
 
@@ -124,5 +131,31 @@ describe("UI P5 final quality pass", () => {
     expect(browserAudit).toContain("قائمة التنقل على الهاتف");
     expect(browserAudit).toContain('reducedMotion: "reduce"');
     expect(browserAudit).toContain("longestAnimationMs");
+  });
+
+  test("defines isolated authenticated browser journeys for product and BYOK flows", () => {
+    const config = readSource("playwright.p5.authenticated.config.ts");
+    const productJourney = readSource(
+      "tests/e2e/p5/authenticated-product-journey.spec.ts",
+    );
+    const byokJourney = readSource(
+      "tests/e2e/p5/openrouter-byok-journey.spec.ts",
+    );
+    const workflow = readRepoSource(
+      ".github/workflows/ui-p5-authenticated-product.yml",
+    );
+
+    expect(config).toContain('name: "p5-authenticated-chromium"');
+    expect(config).toContain('timezoneId: "Asia/Baghdad"');
+    expect(productJourney).toContain("مصادر المساحة");
+    expect(productJourney).toContain("معاينة المرجع");
+    expect(productJourney).toContain("تطبيق كإصدار جديد");
+    expect(productJourney).toContain("viewerPatch.status()).toBe(403)");
+    expect(productJourney).toContain("outsiderApi.status()).toBe(404)");
+    expect(byokJourney).toContain("Free-tier key");
+    expect(byokJourney).toContain("PROVIDER_UNCONFIGURED");
+    expect(workflow).toContain("bunx supabase start");
+    expect(workflow).toContain("p5_user_openrouter_settings.test.sql");
+    expect(workflow).toContain("UI P5 Authenticated Success Gate");
   });
 });
