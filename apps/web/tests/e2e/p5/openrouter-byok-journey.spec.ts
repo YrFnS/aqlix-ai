@@ -101,7 +101,9 @@ test("connects a user key, selects a live model, streams, isolates, and disconne
   await expect(page.getByLabel("OpenRouter API key")).toHaveCount(0);
 
   await page.getByLabel("Search OpenRouter models").fill("fixture");
-  await page.getByText("Free only", { exact: true }).click();
+  const freeOnlyFilter = page.getByLabel("Free only");
+  await freeOnlyFilter.check();
+  await expect(freeOnlyFilter).toBeChecked();
   const freeCard = page
     .locator("article")
     .filter({ hasText: "Live Free Fixture Model" });
