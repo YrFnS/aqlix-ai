@@ -11,7 +11,7 @@ import {
 
 export const metadata: Metadata = {
   title: "إعدادات الذكاء الاصطناعي",
-  description: "Connect a user-owned OpenRouter key and select a live model.",
+  description: "اربط مفتاح OpenRouter الخاص بك واختر النموذج الذي ستستخدمه.",
 };
 
 const disconnectedSettings: UserAiSettings = {
@@ -60,28 +60,27 @@ export default async function AiSettingsPage() {
             </Link>
 
             <p className="mt-7 text-sm font-semibold text-primary-foreground/80">
-              P5 · User-owned AI connection
+              اختر كيف تتصل بالنماذج
             </p>
             <h1 className="mt-3 font-arabic-heading text-3xl font-semibold sm:text-5xl">
               إعدادات الذكاء الاصطناعي
             </h1>
             <p className="mt-4 max-w-2xl text-sm leading-8 text-background/65 sm:text-base">
-              اربط مفتاح OpenRouter الخاص بك واختر نموذجاً من القائمة الحية.
-              المنصة لا تحتاج مفتاح نموذج مركزي، ولا تفرض اسماً ثابتاً لنموذج قد
-              يتغير أو يختفي لاحقاً.
+              اربط مفتاح OpenRouter الخاص بك، ثم اختر النموذج الذي يناسب عملك.
+              يمكنك تغيير النموذج أو فصل المفتاح لاحقاً من الصفحة نفسها.
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-center text-xs">
             <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-4">
               <KeyRound className="mx-auto h-5 w-5" aria-hidden="true" />
-              <p className="mt-2 font-semibold">BYOK</p>
-              <p className="mt-1 text-background/55">Your key</p>
+              <p className="mt-2 font-semibold">مفتاحك الخاص</p>
+              <p className="mt-1 text-background/55">تحكم كامل بالاتصال</p>
             </div>
             <div className="rounded-2xl border border-background/15 bg-background/5 px-4 py-4">
               <Router className="mx-auto h-5 w-5" aria-hidden="true" />
-              <p className="mt-2 font-semibold">Live</p>
-              <p className="mt-1 text-background/55">Model catalog</p>
+              <p className="mt-2 font-semibold">نماذج متاحة</p>
+              <p className="mt-1 text-background/55">اختر ما يناسبك</p>
             </div>
           </div>
         </div>
@@ -90,11 +89,11 @@ export default async function AiSettingsPage() {
       {persistenceFailed ? (
         <section className="rounded-3xl border border-destructive/25 bg-destructive/5 p-6 sm:p-8">
           <h2 className="font-arabic-heading text-2xl font-semibold">
-            تعذر تحميل اتصال الذكاء الاصطناعي
+            تعذر تحميل إعدادات الذكاء الاصطناعي
           </h2>
           <p className="mt-3 text-sm leading-7 text-muted-foreground">
-            لم تُعرض حالة افتراضية على أنها محفوظة. تحقق من تطبيق migrations وVault
-            ثم أعد تحميل الصفحة.
+            لم نتمكن من قراءة حالة الاتصال الآن. أعد تحميل الصفحة، وإن استمرت
+            المشكلة فتحقق من إعدادات الخدمة.
           </p>
         </section>
       ) : (
@@ -103,12 +102,14 @@ export default async function AiSettingsPage() {
 
       <section className="rounded-3xl border border-border/70 bg-secondary/35 p-5 text-sm leading-7 text-muted-foreground">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+          <ShieldCheck
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
           <p>
-            يُخزن المفتاح مشفراً في Supabase Vault ولا يظهر مجدداً في واجهة
-            الإعدادات. حدّد أيضاً سقف إنفاق للمفتاح من OpenRouter؛ النماذج المجانية
-            وتوفرها وحدودها قد تتغير، لذلك تُقرأ القائمة عند الاستخدام بدلاً من
-            تثبيتها في الكود.
+            يُحفظ مفتاحك مشفراً ولا يُعرض مرة أخرى بعد الاتصال. من الأفضل أيضاً
+            وضع حد إنفاق من حساب OpenRouter، لأن توفر النماذج وأسعارها وحدودها قد
+            يتغير مع الوقت.
           </p>
         </div>
       </section>
