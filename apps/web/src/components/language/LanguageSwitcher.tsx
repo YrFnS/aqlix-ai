@@ -5,7 +5,7 @@
  * Features:
  * - Dropdown menu with language options
  * - Visual feedback on selection
- * - Smooth animations with framer-motion
+ * - Smooth animations with Motion
  * - Full accessibility support (ARIA labels, keyboard navigation)
  * - RTL-aware positioning
  *
@@ -15,7 +15,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Languages, Check, ChevronDown } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useDirection } from "@/components/providers/DirectionProvider";
