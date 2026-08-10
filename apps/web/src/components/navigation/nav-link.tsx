@@ -11,6 +11,7 @@ interface NavLinkProps {
   exact?: boolean;
   className?: string;
   activeClassName?: string;
+  title?: string;
   onClick?: () => void;
 }
 
@@ -20,6 +21,7 @@ export function NavLink({
   exact = true,
   className,
   activeClassName = "font-semibold text-primary",
+  title,
   onClick,
 }: NavLinkProps) {
   const pathname = usePathname();
@@ -30,6 +32,8 @@ export function NavLink({
   return (
     <Link
       href={href}
+      title={title}
+      aria-current={isActive ? "page" : undefined}
       className={cn(
         "transition-colors hover:text-foreground",
         isActive ? activeClassName : "text-muted-foreground",
