@@ -130,10 +130,7 @@ export function RouteLoadingState({
           <div className="skeleton h-5 w-4/5 max-w-2xl rounded" />
         </div>
 
-        <div
-          className="grid gap-3"
-          style={{ gridTemplateColumns: `repeat(${metricCount}, minmax(0, 1fr))` }}
-        >
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: metricCount }, (_, index) => (
             <Surface
               key={index}
