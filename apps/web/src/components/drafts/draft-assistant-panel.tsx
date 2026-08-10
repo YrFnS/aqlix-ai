@@ -2,7 +2,6 @@
 
 import {
   Check,
-  RefreshCw,
   Send,
   Sparkles,
   Square,
