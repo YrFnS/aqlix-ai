@@ -27,6 +27,17 @@ export function MobileMenu({ items }: MobileMenuProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
+
   return (
     <>
       <Button
@@ -51,8 +62,10 @@ export function MobileMenu({ items }: MobileMenuProps) {
             className="fixed inset-0 z-50 md:hidden"
             initial={shouldReduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
+            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+            transition={
+              shouldReduceMotion ? { duration: 0 } : { duration: 0.18 }
+            }
           >
             <motion.button
               type="button"
@@ -61,17 +74,26 @@ export function MobileMenu({ items }: MobileMenuProps) {
               aria-label="إغلاق قائمة التنقل"
               initial={shouldReduceMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+              transition={
+                shouldReduceMotion ? { duration: 0 } : { duration: 0.18 }
+              }
             />
 
-            <motion.nav
+            <motion.aside
               id={panelId}
-              aria-label="التنقل على الهاتف"
-              className="safe-top fixed right-0 top-0 flex h-full w-[min(22rem,88vw)] flex-col border-l border-line bg-surface-overlay p-5 shadow-surface-lg backdrop-blur-xl"
+              role="dialog"
+              aria-modal="true"
+              aria-label="قائمة التنقل على الهاتف"
+              className="safe-top safe-block-end fixed right-0 top-0 flex h-[100dvh] max-h-[100dvh] w-[min(22rem,88vw)] flex-col overscroll-contain border-l border-line bg-surface-overlay p-5 shadow-surface-lg backdrop-blur-xl"
               initial={shouldReduceMotion ? false : { x: "100%" }}
               animate={{ x: 0 }}
-              exit={shouldReduceMotion ? { opacity: 0 } : { x: "100%" }}
-              transition={{ type: "spring", stiffness: 360, damping: 34 }}
+              exit={shouldReduceMotion ? undefined : { x: "100%" }}
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0 }
+                  : { type: "spring", stiffness: 360, damping: 34 }
+              }
             >
               <div className="flex items-center justify-between gap-4 border-b border-line/70 pb-5">
                 <BrandMark size="sm" />
@@ -86,13 +108,20 @@ export function MobileMenu({ items }: MobileMenuProps) {
                 </Button>
               </div>
 
-              <div className="mt-6 flex flex-1 flex-col gap-2">
+              <nav
+                aria-label="التنقل على الهاتف"
+                className="mt-6 flex flex-1 flex-col gap-2 overflow-y-auto overscroll-contain"
+              >
                 {items.map((item, index) => (
                   <motion.div
                     key={item.href}
                     initial={shouldReduceMotion ? false : { opacity: 0, x: 12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: shouldReduceMotion ? 0 : index * 0.035 }}
+                    transition={
+                      shouldReduceMotion
+                        ? { duration: 0 }
+                        : { delay: index * 0.035 }
+                    }
                   >
                     <Link
                       href={item.href}
@@ -103,12 +132,12 @@ export function MobileMenu({ items }: MobileMenuProps) {
                     </Link>
                   </motion.div>
                 ))}
-              </div>
+              </nav>
 
               <p className="border-t border-line/70 pt-5 text-xs leading-6 text-ink-subtle">
                 السؤال، المصادر، والمسودة تبقى ضمن مساحة العمل نفسها.
               </p>
-            </motion.nav>
+            </motion.aside>
           </motion.div>
         ) : null}
       </AnimatePresence>
