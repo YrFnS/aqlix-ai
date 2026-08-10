@@ -92,7 +92,7 @@ describe("P1 workspace foundation", () => {
     expect(migration).toContain("is_workspace_member");
   });
 
-  test("keeps P1 intact while activating Ask, Ground, Draft, and Continue", () => {
+  test("keeps the workspace foundation intact while exposing the complete work loop", () => {
     const detail = readWeb(
       "src/app/(app)/workspaces/[workspaceId]/page.tsx",
     );
@@ -101,14 +101,14 @@ describe("P1 workspace foundation", () => {
     );
 
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/conversations`);
-    expect(detail).toContain("P2 + P3 · يعمل");
-    expect(detail).toContain("مراجع قابلة للفتح");
+    expect(detail).toContain("اسأل وتابع");
+    expect(detail).toContain("مصادر المساحة");
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/sources`);
-    expect(detail).toContain("P3 · يعمل");
-    expect(sources).toContain("Private bucket · RLS · 2 MiB");
+    expect(detail).toContain("أضف سياقك");
+    expect(sources).toContain("خاص بأعضاء المساحة · حتى 2 MiB");
     expect(detail).toContain(`/workspaces/${"${workspace.id}"}/drafts`);
-    expect(detail).toContain("P4 · يعمل");
-    expect(detail).toContain("Ask → Ground → Draft → Continue");
+    expect(detail).toContain("حوّل الإجابة إلى عمل");
+    expect(detail).toContain("اسأل، استند إلى مصادرك، ثم اكتب");
     expect(detail).not.toContain("غير مفعّل بعد");
     expect(detail).not.toMatch(/production[- ]ready/i);
   });
