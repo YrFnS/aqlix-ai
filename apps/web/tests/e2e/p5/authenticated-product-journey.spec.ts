@@ -180,10 +180,12 @@ test("completes the current source, grounded conversation, citation, draft, prop
   const outsiderEmail = uniqueEmail("p5-product-outsider");
   const workspaceName = "مساحة P5 الموثقة";
   const documentName = "قرار P5.md";
+  const supportingPassage =
+    "The English roadmap confirms the 2026 launch milestone.";
   const documentText = [
     "# قرار P5",
     "",
-    "The English roadmap confirms the 2026 launch milestone.",
+    supportingPassage,
     "",
     "المراجعة الأسبوعية مسؤولية فريق المنصة.",
   ].join("\n");
@@ -216,9 +218,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   expect(attachmentId).toBeTruthy();
   await expect(page.getByRole("heading", { name: documentName })).toBeVisible();
   await expect(
-    page.getByText("The English roadmap confirms the 2026 launch milestone.", {
-      exact: true,
-    }),
+    page.locator("pre").filter({ hasText: supportingPassage }).first(),
   ).toBeVisible();
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
@@ -271,15 +271,15 @@ test("completes the current source, grounded conversation, citation, draft, prop
   });
 
   await page
-    .getByRole("button", { name: new RegExp(`معاينة المرجع S1 من ${documentName}`) })
+    .getByRole("button", {
+      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
+    })
     .click();
   const citationDialog = page.getByRole("dialog", {
     name: "معاينة المرجع S1",
   });
   await expect(citationDialog).toBeVisible();
-  await expect(citationDialog).toContainText(
-    "The English roadmap confirms the 2026 launch milestone.",
-  );
+  await expect(citationDialog).toContainText(supportingPassage);
   await citationDialog
     .getByRole("button", { name: "إغلاق معاينة المرجع" })
     .click();
