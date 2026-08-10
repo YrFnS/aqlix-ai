@@ -22,7 +22,9 @@ import type {
   OpenRouterModelSort,
   UserAiSettings,
 } from "@iraqi-ai/types";
+import { ActivityOrb } from "@/components/conversations/activity-orb";
 import { Button } from "@/components/ui/button";
+import { Surface } from "@/components/ui/surface";
 
 interface OpenRouterSettingsProps {
   initialSettings: UserAiSettings;
@@ -75,95 +77,116 @@ function ModelCard({
   const [copied, setCopied] = useState(false);
 
   return (
-    <article className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            {model.isFree && (
-              <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
-                Free
+    <article className="h-full">
+      <Surface
+        tone="raised"
+        elevation="xs"
+        radius="2xl"
+        padding="md"
+        className={`flex h-full flex-col transition-[border-color,box-shadow] duration-fast ${
+          selected
+            ? "border-primary/30 shadow-surface-sm"
+            : "hover:border-primary/20 hover:shadow-surface-sm"
+        }`}
+      >
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              {model.isFree ? (
+                <span className="rounded-full bg-brand-soft px-2.5 py-1 text-[0.68rem] font-semibold text-primary">
+                  Free
+                </span>
+              ) : null}
+              {selected ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-surface-sunken px-2.5 py-1 text-[0.68rem] font-semibold text-foreground">
+                  <Check className="h-3 w-3" aria-hidden="true" />
+                  Current
+                </span>
+              ) : null}
+            </div>
+            <h3 dir="auto" className="mt-3 text-lg font-semibold">
+              {model.name}
+            </h3>
+            <button
+              type="button"
+              dir="ltr"
+              className="mt-2 inline-flex max-w-full items-center gap-2 rounded-md text-left font-mono text-xs text-ink-muted outline-none transition-colors hover:text-foreground focus-visible:ring-4 focus-visible:ring-ring/20"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(model.id);
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 1600);
+                } catch {
+                  setCopied(false);
+                }
+              }}
+            >
+              <span className="truncate">{model.id}</span>
+              {copied ? (
+                <Check className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              ) : (
+                <Clipboard className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              )}
+              <span className="sr-only">
+                {copied ? "Copied" : "Copy model ID"}
               </span>
-            )}
-            {selected && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[0.68rem] font-semibold">
-                <Check className="h-3 w-3" aria-hidden="true" />
-                Current
-              </span>
-            )}
+            </button>
           </div>
-          <h3 dir="auto" className="mt-3 text-lg font-semibold">
-            {model.name}
-          </h3>
-          <button
+
+          <Button
             type="button"
-            dir="ltr"
-            className="mt-2 inline-flex max-w-full items-center gap-2 text-left font-mono text-xs text-muted-foreground hover:text-foreground"
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(model.id);
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1600);
-              } catch {
-                setCopied(false);
-              }
-            }}
+            variant={selected ? "outline" : "default"}
+            className="shrink-0 rounded-xl"
+            disabled={selected || selecting}
+            onClick={() => onSelect(model.id)}
           >
-            <span className="truncate">{model.id}</span>
-            <Clipboard className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">{copied ? "Copied" : "Copy model ID"}</span>
-          </button>
+            {selecting ? (
+              <ActivityOrb state="working" size="sm" />
+            ) : selected ? (
+              <Check className="h-4 w-4" aria-hidden="true" />
+            ) : (
+              <PlugZap className="h-4 w-4" aria-hidden="true" />
+            )}
+            {selected ? "Selected" : "Use model"}
+          </Button>
         </div>
 
-        <Button
-          type="button"
-          variant={selected ? "outline" : "default"}
-          className="shrink-0 rounded-full"
-          disabled={selected || selecting}
-          onClick={() => onSelect(model.id)}
-        >
-          {selecting ? (
-            <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
-          ) : selected ? (
-            <Check className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <PlugZap className="h-4 w-4" aria-hidden="true" />
-          )}
-          {selected ? "Selected" : "Use model"}
-        </Button>
-      </div>
+        {model.description ? (
+          <p
+            dir="auto"
+            className="mt-4 line-clamp-3 text-sm leading-7 text-ink-muted"
+          >
+            {model.description}
+          </p>
+        ) : null}
 
-      {model.description && (
-        <p dir="auto" className="mt-4 line-clamp-3 text-sm leading-7 text-muted-foreground">
-          {model.description}
-        </p>
-      )}
-
-      <dl className="mt-5 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Context</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {formatInteger(model.contextLength)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Input / 1M</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {pricePerMillion(model.pricing.prompt)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Output / 1M</dt>
-          <dd dir="ltr" className="mt-1 font-semibold">
-            {pricePerMillion(model.pricing.completion)}
-          </dd>
-        </div>
-        <div className="rounded-2xl bg-secondary/55 p-3">
-          <dt className="text-muted-foreground">Output modes</dt>
-          <dd dir="ltr" className="mt-1 truncate font-semibold">
-            {model.outputModalities.join(", ") || "text"}
-          </dd>
-        </div>
-      </dl>
+        <dl className="mt-5 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
+          <div className="rounded-xl bg-surface-sunken/70 p-3">
+            <dt className="text-ink-subtle">Context</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {formatInteger(model.contextLength)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-surface-sunken/70 p-3">
+            <dt className="text-ink-subtle">Input / 1M</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {pricePerMillion(model.pricing.prompt)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-surface-sunken/70 p-3">
+            <dt className="text-ink-subtle">Output / 1M</dt>
+            <dd dir="ltr" className="mt-1 font-semibold">
+              {pricePerMillion(model.pricing.completion)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-surface-sunken/70 p-3">
+            <dt className="text-ink-subtle">Output modes</dt>
+            <dd dir="ltr" className="mt-1 truncate font-semibold">
+              {model.outputModalities.join(", ") || "text"}
+            </dd>
+          </div>
+        </dl>
+      </Surface>
     </article>
   );
 }
@@ -372,199 +395,289 @@ export function OpenRouterSettings({
   };
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">OpenRouter BYOK</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              مفتاحك أنت، وليس مفتاح المنصة
-            </h2>
-            <p className="mt-3 text-sm leading-8 text-muted-foreground">
-              يتحقق الخادم من المفتاح مرة واحدة ثم يخزنه مشفراً في Supabase Vault.
-              بعد الحفظ لا تعيد الواجهة المفتاح الخام. يمكن استبداله أو حذفه في أي
-              وقت.
-            </p>
+    <div className="grid gap-8 xl:grid-cols-[22rem_minmax(0,1fr)]">
+      <aside className="xl:sticky xl:top-24 xl:self-start">
+        <Surface
+          tone="raised"
+          elevation="sm"
+          radius="2xl"
+          padding="md"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold text-primary">OpenRouter BYOK</p>
+              <h2 className="mt-2 font-arabic-heading text-xl font-semibold">
+                اتصال الحساب
+              </h2>
+            </div>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
+              <KeyRound className="h-4 w-4" aria-hidden="true" />
+            </span>
           </div>
-          <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-            <KeyRound className="h-5 w-5" aria-hidden="true" />
-          </div>
-        </div>
+          <p className="mt-3 text-sm leading-7 text-ink-muted">
+            يتحقق الخادم من المفتاح ثم يخزنه مشفراً. لا تعيد الواجهة المفتاح الخام
+            بعد الحفظ.
+          </p>
 
-        {settings.connected ? (
-          <div className="mt-7 rounded-3xl border border-primary/25 bg-primary/5 p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="inline-flex items-center gap-2 font-semibold">
-                  <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
-                  Connected · •••• {settings.keyLastFour}
-                </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {settings.keyLabel || "OpenRouter API key"}
-                  {settings.isFreeTier === true ? " · Free-tier key" : ""}
+          {settings.connected ? (
+            <div className="mt-5 space-y-4">
+              <div className="rounded-xl border border-primary/25 bg-brand-soft/55 p-4">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-raised text-primary shadow-surface-xs">
+                    <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-semibold">Connected</p>
+                    <p dir="ltr" className="mt-1 text-xs text-ink-muted">
+                      •••• {settings.keyLastFour}
+                    </p>
+                    <p className="mt-1 truncate text-xs text-ink-muted">
+                      {settings.keyLabel || "OpenRouter API key"}
+                    </p>
+                    {settings.isFreeTier === true ? (
+                      <span className="mt-2 inline-flex rounded-full bg-surface-raised px-2 py-0.5 text-[0.65rem] font-semibold text-primary">
+                        Free-tier key
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-surface-sunken p-4">
+                <p className="text-xs text-ink-subtle">النموذج الحالي</p>
+                <p
+                  dir="ltr"
+                  className="mt-2 break-all font-mono text-xs font-semibold"
+                >
+                  {settings.modelId ?? "لم يُختر نموذج بعد"}
                 </p>
               </div>
+
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-full"
+                className="w-full justify-start rounded-xl"
                 disabled={disconnecting}
                 onClick={() => void disconnect()}
               >
                 {disconnecting ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <ActivityOrb state="working" size="sm" />
                 ) : (
                   <Unplug className="h-4 w-4" aria-hidden="true" />
                 )}
                 Disconnect
               </Button>
             </div>
-          </div>
-        ) : (
-          <form onSubmit={connect} className="mt-7 space-y-4">
-            <label className="space-y-2 text-sm font-semibold">
-              <span>OpenRouter API key</span>
-              <input
-                value={apiKey}
-                onChange={(event) => setApiKey(event.target.value)}
-                type="password"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={512}
-                dir="ltr"
-                placeholder="Paste your key once"
-                className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              />
-            </label>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs leading-6 text-muted-foreground">
+          ) : (
+            <form onSubmit={connect} className="mt-5 space-y-4">
+              <label className="space-y-2 text-xs font-semibold">
+                <span>OpenRouter API key</span>
+                <input
+                  value={apiKey}
+                  onChange={(event) => setApiKey(event.target.value)}
+                  type="password"
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={512}
+                  dir="ltr"
+                  placeholder="Paste your key once"
+                  className="min-h-12 w-full rounded-xl border border-input bg-surface-raised px-4 font-mono text-sm outline-none placeholder:text-ink-subtle focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
+                />
+              </label>
+              <p className="text-xs leading-6 text-ink-muted">
                 Use a key with its own spending limit in your OpenRouter dashboard.
               </p>
               <Button
                 type="submit"
-                className="rounded-full"
+                className="w-full rounded-xl"
                 disabled={!apiKey.trim() || connecting}
               >
                 {connecting ? (
-                  <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <ActivityOrb state="working" size="sm" />
                 ) : (
                   <PlugZap className="h-4 w-4" aria-hidden="true" />
                 )}
                 Validate and connect
               </Button>
+            </form>
+          )}
+
+          {connectionError ? (
+            <div
+              className="mt-4 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+              role="alert"
+            >
+              {connectionError}
             </div>
-          </form>
-        )}
+          ) : null}
+          {connectionNotice ? (
+            <div
+              className="mt-4 rounded-xl border border-primary/25 bg-brand-soft/55 px-4 py-3 text-sm leading-7"
+              role="status"
+              aria-live="polite"
+            >
+              {connectionNotice}
+            </div>
+          ) : null}
+        </Surface>
 
-        {connectionError && (
-          <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
-            {connectionError}
-          </div>
-        )}
-        {connectionNotice && (
-          <div className="mt-4 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-3 text-sm leading-7" role="status">
-            {connectionNotice}
-          </div>
-        )}
-      </section>
-
-      <section className="rounded-3xl border border-border/70 bg-card p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">Live model catalog</p>
-            <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
-              ابحث واختر بدون قائمة ثابتة
-            </h2>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              القائمة تُطلب مباشرةً من OpenRouter باستخدام مفتاحك وتراعي إعدادات
-              المزود والخصوصية الخاصة بحسابك. لا يوجد نموذج افتراضي مخفي في الكود.
+        <Surface
+          tone="muted"
+          elevation="none"
+          radius="xl"
+          padding="sm"
+          className="mt-4 text-xs leading-6 text-ink-muted"
+        >
+          <div className="flex items-start gap-3">
+            <ShieldCheck
+              className="mt-1 h-4 w-4 shrink-0 text-primary"
+              aria-hidden="true"
+            />
+            <p>
+              المفتاح محفوظ في Vault. اختيار النموذج يُتحقق منه مباشرةً قبل حفظ
+              المعرّف في حسابك.
             </p>
           </div>
-          {settings.modelId && (
-            <div className="max-w-full rounded-2xl bg-secondary/60 px-4 py-3 text-xs">
-              <p className="text-muted-foreground">Current model</p>
-              <p dir="ltr" className="mt-1 truncate font-mono font-semibold">
+        </Surface>
+      </aside>
+
+      <section className="min-w-0 space-y-6">
+        <div className="flex flex-col gap-4 border-b border-line/70 pb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-primary">Live model catalog</p>
+            <h2 className="mt-2 font-arabic-heading text-3xl font-semibold">
+              ابحث واختر نموذجاً متاحاً لحسابك
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-ink-muted">
+              القائمة تُطلب مباشرةً من OpenRouter باستخدام مفتاحك. لا يوجد نموذج
+              افتراضي مخفي أو قائمة ثابتة داخل التطبيق.
+            </p>
+          </div>
+          {settings.modelId ? (
+            <span className="max-w-full rounded-xl border border-line/70 bg-surface-raised px-4 py-3 text-xs shadow-surface-xs">
+              <span className="text-ink-subtle">Current model</span>
+              <span
+                dir="ltr"
+                className="mt-1 block max-w-[24rem] truncate font-mono font-semibold"
+                title={settings.modelId}
+              >
                 {settings.modelId}
-              </p>
-            </div>
-          )}
+              </span>
+            </span>
+          ) : null}
         </div>
 
         {!settings.connected ? (
-          <div className="mt-7 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
-            Connect an OpenRouter key to load the models available to that account.
-          </div>
+          <Surface
+            tone="muted"
+            elevation="none"
+            radius="2xl"
+            padding="lg"
+            className="text-center"
+          >
+            <KeyRound className="mx-auto h-7 w-7 text-primary" aria-hidden="true" />
+            <h3 className="mt-4 font-arabic-heading text-2xl font-semibold">
+              اربط المفتاح أولاً
+            </h3>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-ink-muted">
+              Connect an OpenRouter key to load the models available to that
+              account.
+            </p>
+          </Surface>
         ) : (
           <>
-            <div className="mt-7 grid gap-3 lg:grid-cols-[1fr_13rem_auto]">
-              <label className="relative">
-                <span className="sr-only">Search OpenRouter models</span>
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-                <input
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  maxLength={200}
-                  dir="auto"
-                  placeholder="Search by model name or ID"
-                  className="min-h-12 w-full rounded-2xl border border-input bg-background pl-11 pr-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                />
-              </label>
-              <label>
-                <span className="sr-only">Sort models</span>
-                <select
-                  value={sort}
-                  onChange={(event) => setSort(event.target.value as OpenRouterModelSort)}
-                  className="min-h-12 w-full rounded-2xl border border-input bg-background px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  <option value="name">Name</option>
-                  <option value="newest">Newest</option>
-                  <option value="context">Largest context</option>
-                  <option value="prompt_price">Lowest input price</option>
-                  <option value="completion_price">Lowest output price</option>
-                </select>
-              </label>
-              <label className="inline-flex min-h-12 items-center gap-2 rounded-2xl border border-input bg-background px-4 text-sm font-semibold">
-                <input
-                  type="checkbox"
-                  checked={freeOnly}
-                  onChange={(event) => setFreeOnly(event.target.checked)}
-                  className="h-4 w-4 accent-primary"
-                />
-                Free only
-              </label>
-            </div>
+            <Surface
+              tone="raised"
+              elevation="xs"
+              radius="2xl"
+              padding="sm"
+            >
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_13rem_auto]">
+                <label className="relative">
+                  <span className="sr-only">Search OpenRouter models</span>
+                  <Search
+                    className="pointer-events-none absolute inset-y-0 start-4 my-auto h-4 w-4 text-ink-subtle"
+                    aria-hidden="true"
+                  />
+                  <input
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    maxLength={200}
+                    dir="auto"
+                    placeholder="Search by model name or ID"
+                    className="min-h-12 w-full rounded-xl border border-input bg-surface-raised ps-11 pe-4 text-sm outline-none placeholder:text-ink-subtle focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
+                  />
+                </label>
+                <label>
+                  <span className="sr-only">Sort models</span>
+                  <select
+                    value={sort}
+                    onChange={(event) =>
+                      setSort(event.target.value as OpenRouterModelSort)
+                    }
+                    className="min-h-12 w-full rounded-xl border border-input bg-surface-raised px-4 text-sm outline-none focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
+                  >
+                    <option value="name">Name</option>
+                    <option value="newest">Newest</option>
+                    <option value="context">Largest context</option>
+                    <option value="prompt_price">Lowest input price</option>
+                    <option value="completion_price">Lowest output price</option>
+                  </select>
+                </label>
+                <label className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-input bg-surface-raised px-4 text-sm font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={freeOnly}
+                    onChange={(event) => setFreeOnly(event.target.checked)}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  Free only
+                </label>
+              </div>
 
-            <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-secondary/45 p-4 sm:flex-row sm:items-end">
-              <label className="flex-1 space-y-2 text-xs font-semibold">
-                <span>Or paste an exact model ID</span>
-                <input
-                  value={manualModelId}
-                  onChange={(event) => setManualModelId(event.target.value)}
-                  maxLength={255}
-                  dir="ltr"
-                  placeholder="author/model or author/model:free"
-                  className="min-h-11 w-full rounded-xl border border-input bg-background px-3 font-mono text-xs outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                />
-              </label>
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-full"
-                disabled={!manualModelId.trim() || Boolean(selectingModel)}
-                onClick={() => void selectModel(manualModelId.trim())}
+              <details className="mt-3 rounded-xl border border-line/70 bg-surface-sunken/45">
+                <summary className="min-h-11 cursor-pointer px-4 py-3 text-xs font-semibold text-ink-muted outline-none focus-visible:ring-4 focus-visible:ring-ring/20">
+                  اختيار متقدم بمعرّف نموذج دقيق
+                </summary>
+                <div className="flex flex-col gap-3 border-t border-line/70 p-4 sm:flex-row sm:items-end">
+                  <label className="min-w-0 flex-1 space-y-2 text-xs font-semibold">
+                    <span>Or paste an exact model ID</span>
+                    <input
+                      value={manualModelId}
+                      onChange={(event) => setManualModelId(event.target.value)}
+                      maxLength={255}
+                      dir="ltr"
+                      placeholder="author/model or author/model:free"
+                      className="min-h-11 w-full rounded-xl border border-input bg-surface-raised px-3 font-mono text-xs outline-none focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring/20"
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-xl"
+                    disabled={!manualModelId.trim() || Boolean(selectingModel)}
+                    onClick={() => void selectModel(manualModelId.trim())}
+                  >
+                    Validate and use
+                  </Button>
+                </div>
+              </details>
+            </Surface>
+
+            {catalogError ? (
+              <div
+                className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+                role="alert"
               >
-                Validate and use
-              </Button>
-            </div>
-
-            {catalogError && (
-              <div className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive" role="alert">
                 {catalogError}
               </div>
-            )}
+            ) : null}
 
-            <div className="mt-6 flex items-center justify-between gap-3 text-xs text-muted-foreground">
-              <span>
+            <div className="flex items-center justify-between gap-3 text-xs text-ink-muted">
+              <span className="inline-flex items-center gap-2">
+                {catalogLoading ? (
+                  <ActivityOrb state="searching" size="sm" />
+                ) : null}
                 {catalogLoading
                   ? "Loading live models…"
                   : `${catalog?.total ?? 0} matching models`}
@@ -573,21 +686,30 @@ export function OpenRouterSettings({
                 type="button"
                 size="sm"
                 variant="ghost"
-                className="rounded-full"
+                className="rounded-xl"
                 disabled={catalogLoading}
                 onClick={() => setRefreshIndex((value) => value + 1)}
               >
-                <RefreshCw className={catalogLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} aria-hidden="true" />
+                <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
                 Refresh
               </Button>
             </div>
 
             {catalogLoading && !catalog ? (
-              <div className="mt-6 flex min-h-64 items-center justify-center rounded-3xl border border-dashed border-border">
-                <RefreshCw className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
-              </div>
+              <Surface
+                tone="muted"
+                elevation="none"
+                radius="2xl"
+                padding="lg"
+                className="flex min-h-64 flex-col items-center justify-center text-center"
+              >
+                <ActivityOrb state="searching" />
+                <p className="mt-4 text-sm text-ink-muted">
+                  جاري قراءة النماذج المتاحة لحسابك…
+                </p>
+              </Surface>
             ) : catalog?.models.length ? (
-              <div className="mt-6 grid gap-4 xl:grid-cols-2">
+              <div className="grid gap-4 2xl:grid-cols-2">
                 {catalog.models.map((model) => (
                   <ModelCard
                     key={model.id}
@@ -599,16 +721,29 @@ export function OpenRouterSettings({
                 ))}
               </div>
             ) : (
-              <div className="mt-6 rounded-3xl border border-dashed border-border bg-secondary/25 p-8 text-center text-sm leading-7 text-muted-foreground">
-                No current model matches these live filters. Change the search or clear the free-only filter.
-              </div>
+              <Surface
+                tone="muted"
+                elevation="none"
+                radius="2xl"
+                padding="lg"
+                className="text-center"
+              >
+                <Search className="mx-auto h-7 w-7 text-primary" aria-hidden="true" />
+                <h3 className="mt-4 font-arabic-heading text-2xl font-semibold">
+                  لا يوجد نموذج مطابق
+                </h3>
+                <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-ink-muted">
+                  No current model matches these live filters. Change the search
+                  or clear the free-only filter.
+                </p>
+              </Surface>
             )}
 
-            {settings.modelId && !currentModel && catalog && (
-              <p className="mt-4 text-xs leading-6 text-muted-foreground">
+            {settings.modelId && !currentModel && catalog ? (
+              <p className="text-xs leading-6 text-ink-muted">
                 The current model is saved but is outside this filtered result set.
               </p>
-            )}
+            ) : null}
           </>
         )}
       </section>
