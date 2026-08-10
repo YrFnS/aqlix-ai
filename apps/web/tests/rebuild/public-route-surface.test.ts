@@ -5,13 +5,18 @@ import { fileURLToPath } from "node:url";
 
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const appRoot = resolve(webRoot, "src/app");
+const marketingComponentRoot = resolve(webRoot, "src/components/marketing");
 
-function collectPageFiles(directory: string): string[] {
+function collectNamedFiles(
+  directory: string,
+  predicate: (name: string) => boolean,
+): string[] {
+  if (!existsSync(directory)) return [];
+
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const absolute = resolve(directory, entry.name);
-
-    if (entry.isDirectory()) return collectPageFiles(absolute);
-    if (entry.isFile() && entry.name === "page.tsx") return [absolute];
+    if (entry.isDirectory()) return collectNamedFiles(absolute, predicate);
+    if (entry.isFile() && predicate(entry.name)) return [absolute];
     return [];
   });
 }
@@ -31,10 +36,18 @@ const removedLegacyPages = [
   "src/app/test-errors/page.tsx",
 ] as const;
 
+const sharedPublicFiles = [
+  "src/components/navigation/marketing-nav.tsx",
+  "src/app/components/footer.tsx",
+  "src/config/brand.ts",
+].map((path) => resolve(webRoot, path));
+
 const retiredOrUnsupportedClaims = [
   /Iraqi AI Chat System/iu,
   /Aqlix AI/iu,
   /\bKiteb\b/iu,
+  /Product rebuild|Product reset/iu,
+  /إعادة بناء المنتج|خطة إعادة البناء|اسم المنتج النهائي قيد المراجعة/iu,
   /95%\+?\s+accuracy/iu,
   /SLA guarantees/iu,
   /Unlimited AI responses/iu,
@@ -43,7 +56,7 @@ const retiredOrUnsupportedClaims = [
   /contact@iraqiai\.com/iu,
   /\+964\s+XXX/iu,
   /POST\s+\/api\/chat/iu,
-  /production[- ]ready:\s*yes/iu,
+  /production[- ]ready/iu,
   /bank-grade/iu,
 ] as const;
 
@@ -54,11 +67,21 @@ describe("complete public route surface", () => {
     }
   });
 
-  test("scans every routable page for retired identities and unsupported claims", () => {
-    const pageFiles = collectPageFiles(appRoot).sort();
+  test("scans routable pages and their shared marketing components", () => {
+    const pageFiles = collectNamedFiles(appRoot, (name) => name === "page.tsx");
+    const marketingComponents = collectNamedFiles(
+      marketingComponentRoot,
+      (name) => name.endsWith(".tsx"),
+    );
+    const publicFiles = [
+      ...pageFiles,
+      ...marketingComponents,
+      ...sharedPublicFiles,
+    ].sort();
     expect(pageFiles.length).toBeGreaterThan(0);
+    expect(marketingComponents.length).toBeGreaterThan(0);
 
-    const routableSurface = pageFiles
+    const publicSurface = publicFiles
       .map((file) => {
         const label = relative(webRoot, file);
         return `\n/* ${label} */\n${readFileSync(file, "utf8")}`;
@@ -66,7 +89,7 @@ describe("complete public route surface", () => {
       .join("\n");
 
     for (const claim of retiredOrUnsupportedClaims) {
-      expect(routableSurface).not.toMatch(claim);
+      expect(publicSurface).not.toMatch(claim);
     }
   });
 });
