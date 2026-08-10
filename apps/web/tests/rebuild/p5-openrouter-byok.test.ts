@@ -65,9 +65,10 @@ describe("P5 OpenRouter BYOK boundary", () => {
     expect(client).toContain('model.outputModalities.includes("text")');
     expect(client).toContain('id.endsWith(":free")');
     expect(route).toContain("openRouterModelCatalogQuerySchema");
-    expect(ui).toContain("Search by model name or ID");
-    expect(ui).toContain("Free only");
-    expect(ui).toContain("Validate and use");
+    expect(ui).toContain('aria-label="Search OpenRouter models"');
+    expect(ui).toContain("ابحث باسم النموذج أو المعرّف");
+    expect(ui).toContain('aria-label="Free only"');
+    expect(ui).toContain('aria-label="Validate and use"');
   });
 
   test("validates an exact live model before persisting its ID", () => {
