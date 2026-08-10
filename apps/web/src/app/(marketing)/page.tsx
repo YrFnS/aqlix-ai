@@ -1,342 +1,368 @@
 import Link from "next/link";
 import {
   ArrowUpLeft,
-  BookOpen,
-  CheckCircle2,
+  BookOpenCheck,
+  Check,
+  FileClock,
   FileText,
   Languages,
-  MessageSquare,
+  MessageSquareText,
   PenLine,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
+import { ProductJourneyPreview } from "@/components/marketing/product-journey-preview";
 import { brand } from "@/config/brand";
 
 const workflow = [
   {
     step: "01",
-    title: "اسأل",
+    title: "اسأل بوضوح",
     titleEn: "Ask",
     description:
-      "ابدأ بسؤال أو مهمة واضحة بالعربية أو الإنجليزية، من دون اختيار وكيل أو بناء تدفق معقّد.",
-    icon: MessageSquare,
+      "ابدأ بسؤال أو مهمة بالعربية أو الإنجليزية داخل محادثة تبقى محفوظة في مساحة العمل.",
+    icon: MessageSquareText,
   },
   {
     step: "02",
-    title: "أضف السياق",
+    title: "اربط السياق",
     titleEn: "Ground",
     description:
-      "اربط السؤال بالمستندات ذات الصلة، وابقِ المصادر مرئية وقابلة للفحص أثناء العمل.",
-    icon: BookOpen,
+      "أضف ملفات TXT أو Markdown عندما تحتاج إلى إجابة مرتبطة بمقاطع يمكن فتحها ومراجعتها.",
+    icon: BookOpenCheck,
   },
   {
     step: "03",
-    title: "أنشئ العمل",
+    title: "حوّلها إلى مسودة",
     titleEn: "Draft",
     description:
-      "حوّل النتيجة إلى ملخص أو مقارنة أو رسالة أو مذكرة قابلة للتعديل والحفظ والمتابعة.",
+      "أنشئ ملخصاً أو مقارنة أو رسالة أو مذكرة أو قائمة عمل قابلة للتحرير والحفظ.",
     icon: PenLine,
   },
-];
-
-const principles = [
   {
-    title: "العربية جزء من البنية",
+    step: "04",
+    title: "راجع ثم طوّر",
+    titleEn: "Continue",
     description:
-      "اتجاه النص، المحتوى المختلط، لوحة المفاتيح، المستندات، والتحرير تُصمَّم للعربية والإنجليزية من البداية.",
+      "اطلب اقتراحاً، افحصه منفصلاً عن النص المقبول، ثم طبّقه كإصدار جديد أو ارفضه.",
+    icon: Sparkles,
+  },
+] as const;
+
+const strengths = [
+  {
+    title: "العربية وEnglish في المساحة نفسها",
+    description:
+      "اتجاه النص والمحتوى المختلط والتحرير مصممة للعمل الثنائي اللغة، لا كإضافة لاحقة.",
     icon: Languages,
   },
   {
-    title: "المصادر قبل الاستعراض",
+    title: "المصدر يبقى قابلاً للفتح",
     description:
-      "الهدف هو فهم الإجابة ومصدرها وحدودها، لا إخفاء العمل خلف مؤثرات أو مصطلحات وكلاء مبهمة.",
+      "المراجع تقود إلى المقطع الداعم، وتنتقل لقطة المنشأ مع المسودة حتى يبقى السياق مفهوماً.",
     icon: FileText,
   },
   {
-    title: "حالة المنتج واضحة",
+    title: "كل تغيير مهم له إصدار",
     description:
-      "لن نعرض بيانات تجريبية كأنها حقيقية، أو نعلن جاهزية وامتثالاً وأرقام أداء قبل وجود دليل قابل للتكرار.",
-    icon: ShieldCheck,
+      "احفظ لقطات واضحة، راجع النسخ السابقة، واستعد نسخة قديمة من دون الكتابة فوق تاريخ العمل.",
+    icon: FileClock,
   },
-];
+] as const;
+
+const outcomes = [
+  {
+    title: "مذكرة قرار",
+    description:
+      "اجمع سؤالاً ومصادر وموافقات معلّقة في وثيقة واحدة قابلة للمراجعة.",
+  },
+  {
+    title: "مقارنة واضحة",
+    description:
+      "حوّل إجابة طويلة إلى خيارات وفروقات وخطوات تالية يمكن للفريق مناقشتها.",
+  },
+  {
+    title: "رسالة أو قائمة عمل",
+    description:
+      "انقل النتيجة من المحادثة إلى صيغة عملية تستطيع تعديلها وتصديرها.",
+  },
+] as const;
 
 export default function Home() {
   return (
     <div className="overflow-hidden">
       <section className="relative border-b border-border/70 bg-background">
-        <div className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-        <div className="pointer-events-none absolute -right-32 bottom-0 h-80 w-80 rounded-full bg-accent blur-3xl" />
+        <div className="pointer-events-none absolute -left-40 top-16 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-40 bottom-10 h-[28rem] w-[28rem] rounded-full bg-accent/80 blur-3xl" />
 
-        <div className="container-responsive relative grid min-h-[calc(100svh-4rem)] gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-24">
+        <div className="container-responsive relative grid gap-12 py-14 lg:grid-cols-[0.86fr_1.14fr] lg:items-center lg:py-20 xl:gap-16">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-3 rounded-full border border-border/80 bg-card/80 px-4 py-2 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-primary" />
-              <span>إعادة بناء المنتج</span>
-              <span className="text-border">/</span>
-              <span dir="ltr" className="uppercase tracking-[0.14em]">
-                Product reset
-              </span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-xs font-semibold text-primary shadow-sm">
+              <span className="h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+              {brand.categoryAr}
             </div>
 
-            <p className="mt-8 text-sm font-semibold text-primary">
-              {brand.categoryAr}
-            </p>
-            <h1 className="mt-4 max-w-3xl text-balance font-arabic-heading text-4xl font-semibold leading-[1.2] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-              حوّل مستنداتك ومحادثاتك إلى{" "}
-              <span className="text-primary">عمل واضح.</span>
+            <h1 className="mt-7 text-balance font-arabic-heading text-4xl font-semibold leading-[1.18] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+              من سؤال مبعثر إلى{" "}
+              <span className="text-primary">مسودة موثّقة.</span>
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-9 text-muted-foreground sm:text-xl">
-              {brand.descriptionAr} نبني مساراً واحداً متكاملاً: سؤال، مصادر
-              قابلة للفحص، ثم مسودة يمكنك حفظها وتطويرها.
+            <p className="mt-6 max-w-2xl text-lg leading-9 text-muted-foreground sm:text-xl">
+              اجمع المحادثة والمصادر والمسودة في مكان واحد. اسأل بالعربية أو
+              الإنجليزية، افتح المقطع الذي استندت إليه الإجابة، ثم احفظ النتيجة
+              كعمل يمكنك مراجعته وتطويره.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href={brand.links.workspace}
+                href={brand.links.registration}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/15 transition-transform hover:-translate-y-0.5"
               >
-                استكشف مساحة العمل
+                ابدأ مساحة عمل
                 <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
-                href={brand.links.documentation}
+                href="#how-it-works"
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
               >
-                اقرأ خطة إعادة البناء
+                شاهد طريقة العمل
               </Link>
             </div>
 
-            <div className="mt-8 flex max-w-2xl items-start gap-3 rounded-2xl border border-border/70 bg-secondary/50 p-4 text-sm leading-7 text-muted-foreground">
-              <CheckCircle2
-                className="mt-1 h-4 w-4 shrink-0 text-primary"
-                aria-hidden="true"
-              />
-              <p>
-                <strong className="font-semibold text-foreground">
-                  حالة صادقة:
-                </strong>{" "}
-                اسم المنتج النهائي قيد المراجعة، والمنتج في مرحلة إعادة البناء.
-                هذه الصفحة تشرح الاتجاه المعتمد ولا تدّعي اكتمال الوظائف بعد.
-              </p>
+            <div className="mt-8 grid max-w-2xl gap-2 sm:grid-cols-3">
+              {[
+                "عربية + English",
+                "مصادر قابلة للفتح",
+                "إصدارات محفوظة",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="flex min-h-11 items-center gap-2 rounded-2xl border border-border/70 bg-card/70 px-3 text-xs font-semibold text-muted-foreground backdrop-blur"
+                >
+                  <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-2xl lg:mx-0">
-            <div className="pointer-events-none absolute inset-x-16 -top-10 h-40 rounded-full bg-primary/15 blur-3xl" />
-            <div className="relative rounded-[2rem] border border-border/80 bg-card/90 p-3 shadow-2xl shadow-foreground/10 backdrop-blur">
-              <div className="overflow-hidden rounded-[1.45rem] border border-border/80 bg-background">
-                <div className="flex items-center justify-between border-b border-border/70 px-5 py-4">
-                  <div>
-                    <p className="text-sm font-semibold">مساحة عمل تجريبية</p>
-                    <p dir="ltr" className="mt-1 text-xs text-muted-foreground">
-                      Product direction preview
-                    </p>
-                  </div>
-                  <span className="rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                    قيد البناء
+          <div className="relative mx-auto w-full max-w-3xl lg:mx-0">
+            <div className="pointer-events-none absolute inset-x-20 -top-8 h-40 rounded-full bg-primary/15 blur-3xl" />
+            <ProductJourneyPreview />
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-border/70 bg-card/45 py-8">
+        <div className="container-responsive grid gap-3 sm:grid-cols-3">
+          {strengths.map(({ title, description, icon: Icon }) => (
+            <article
+              key={title}
+              className="flex gap-4 rounded-3xl border border-border/70 bg-background p-5"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Icon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <h2 className="text-sm font-semibold">{title}</h2>
+                <p className="mt-2 text-xs leading-6 text-muted-foreground">
+                  {description}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="how-it-works" className="py-20 sm:py-28">
+        <div className="container-responsive">
+          <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+            <div>
+              <p className="text-sm font-semibold text-primary">كيف يعمل Tuppra</p>
+              <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
+                رحلة واحدة تحافظ على السياق من البداية إلى النهاية.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-muted-foreground lg:justify-self-end">
+              لا تحتاج إلى بناء تدفق أو توزيع المهمة بين أدوات منفصلة. ابدأ
+              بالمحادثة، أضف المصادر عند الحاجة، ثم حوّل أفضل نتيجة إلى عمل محفوظ.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-4">
+            {workflow.map(({ step, title, titleEn, description, icon: Icon }) => (
+              <article
+                key={step}
+                className="group relative rounded-3xl border border-border/75 bg-card p-6 transition-transform hover:-translate-y-1"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-xs font-semibold tracking-[0.16em] text-muted-foreground">
+                    {step}
                   </span>
                 </div>
-
-                <div className="grid min-h-[440px] md:grid-cols-[0.38fr_0.62fr]">
-                  <aside className="border-b border-border/70 bg-secondary/35 p-4 md:border-b-0 md:border-l">
-                    <div className="mb-4 flex items-center justify-between">
-                      <p className="text-xs font-semibold text-muted-foreground">
-                        المصادر
-                      </p>
-                      <span className="text-[0.65rem] text-muted-foreground">
-                        2
-                      </span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="rounded-xl border border-border/70 bg-card p-3">
-                        <div className="flex items-start gap-3">
-                          <div className="rounded-lg bg-primary/10 p-2 text-primary">
-                            <FileText className="h-4 w-4" aria-hidden="true" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-xs font-semibold">
-                              تقرير المشروع.pdf
-                            </p>
-                            <p className="mt-1 text-[0.65rem] text-muted-foreground">
-                              مصدر مرتبط بالسؤال
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="rounded-xl border border-dashed border-border bg-background/70 p-3">
-                        <p className="text-xs font-medium">ملاحظات الاجتماع</p>
-                        <p className="mt-1 text-[0.65rem] text-muted-foreground">
-                          سياق إضافي
-                        </p>
-                      </div>
-                    </div>
-                  </aside>
-
-                  <div className="flex flex-col p-5 sm:p-6">
-                    <div className="self-end rounded-2xl rounded-bl-sm bg-primary px-4 py-3 text-sm leading-7 text-primary-foreground">
-                      لخّص القرارات، ووضّح ما يحتاج متابعة هذا الأسبوع.
-                    </div>
-
-                    <div className="mt-5 rounded-2xl border border-border/70 bg-card p-4 shadow-sm">
-                      <div className="mb-4 flex items-center justify-between gap-4">
-                        <p className="text-xs font-semibold text-primary">
-                          إجابة مرتبطة بالمصادر
-                        </p>
-                        <span className="rounded-md bg-secondary px-2 py-1 text-[0.65rem] text-muted-foreground">
-                          معاينة
-                        </span>
-                      </div>
-                      <div className="space-y-3 text-sm leading-7 text-muted-foreground">
-                        <p>
-                          اتُّفق على تثبيت نطاق الإصدار الأول، مع حصر التنفيذ في
-                          مسار المستندات والمحادثة والمسودات.
-                          <sup className="mx-1 font-semibold text-primary">
-                            1
-                          </sup>
-                        </p>
-                        <p>
-                          تحتاج سياسة الاحتفاظ بالملفات ومسؤولية مراجعة المصادر
-                          إلى قرار موثّق قبل الاختبار المغلق.
-                          <sup className="mx-1 font-semibold text-primary">
-                            2
-                          </sup>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-5">
-                      <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4">
-                        <div>
-                          <p className="text-xs font-semibold text-primary">
-                            الخطوة التالية
-                          </p>
-                          <p className="mt-1 text-sm font-medium">
-                            حوّل النتيجة إلى مذكرة قرار
-                          </p>
-                        </div>
-                        <div className="rounded-full bg-primary p-2 text-primary-foreground">
-                          <PenLine className="h-4 w-4" aria-hidden="true" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="product"
-        className="border-b border-border/70 bg-card/40 py-20 sm:py-28"
-      >
-        <div className="container-responsive">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-primary">
-              مسار المنتج الأول
-            </p>
-            <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
-              لا مزيد من العروض المنفصلة. مسار واحد من السؤال إلى العمل.
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              الإصدار الأول يركّز على رحلة يمكن اختبارها بالكامل، بدلاً من توسيع
-              قائمة الميزات قبل اكتمال الأساس.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {workflow.map(
-              ({ step, title, titleEn, description, icon: Icon }) => (
-                <article
-                  key={step}
-                  className="group rounded-3xl border border-border/80 bg-background p-6 transition-transform hover:-translate-y-1"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-                      <Icon className="h-5 w-5" aria-hidden="true" />
-                    </div>
-                    <span className="text-xs font-semibold tracking-[0.18em] text-muted-foreground">
-                      {step}
-                    </span>
-                  </div>
-                  <h3 className="mt-7 text-xl font-semibold">{title}</h3>
-                  <p
-                    dir="ltr"
-                    className="mt-1 text-xs uppercase tracking-[0.16em] text-primary"
-                  >
-                    {titleEn}
-                  </p>
-                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                    {description}
-                  </p>
-                </article>
-              ),
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section id="principles" className="py-20 sm:py-28">
-        <div className="container-responsive grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
-          <div className="max-w-xl lg:sticky lg:top-28">
-            <p className="text-sm font-semibold text-primary">
-              مبادئ إعادة البناء
-            </p>
-            <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
-              منتج أكثر هدوءاً، وأكثر دقة، وأسهل في الثقة.
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              كل قرار جديد يُقاس بقدرته على تحسين الفهم، حفظ السياق، وإنهاء مهمة
-              حقيقية للمستخدم.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {principles.map(({ title, description, icon: Icon }, index) => (
-              <article
-                key={title}
-                className="grid gap-5 rounded-3xl border border-border/80 bg-card p-6 sm:grid-cols-[auto_1fr_auto] sm:items-start"
-              >
-                <div className="rounded-2xl bg-secondary p-3 text-primary">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold">{title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                    {description}
-                  </p>
-                </div>
-                <span className="text-xs font-semibold text-muted-foreground">
-                  0{index + 1}
-                </span>
+                <h3 className="mt-7 font-arabic-heading text-xl font-semibold">
+                  {title}
+                </h3>
+                <p dir="ltr" className="mt-1 text-xs font-semibold text-primary">
+                  {titleEn}
+                </p>
+                <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                  {description}
+                </p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-border/70 bg-foreground py-20 text-background sm:py-24">
-        <div className="container-responsive grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold text-background/65">
-              الأساس قبل التوسّع
+      <section
+        id="why-tuppra"
+        className="border-y border-border/70 bg-foreground py-20 text-background sm:py-28"
+      >
+        <div className="container-responsive grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
+          <div className="max-w-xl lg:sticky lg:top-28">
+            <p className="text-sm font-semibold text-background/60">
+              لماذا Tuppra
             </p>
             <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
-              نبدأ برحلة واحدة تعمل فعلاً، ثم نضيف القدرات التي يثبت احتياجها.
+              أقل تشتيتاً من صندوق دردشة، وأكثر مرونة من محرر منفصل.
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-background/70">
-              الدفعات، الوكلاء المتعددون، الصوت، الأتمتة، والتخصصات المهنية
-              مؤجلة إلى أن يكتمل مسار السؤال والمصدر والمسودة ببيانات حقيقية
-              واختبارات قابلة للتكرار.
+            <p className="mt-6 text-lg leading-8 text-background/65">
+              القيمة ليست في إجابة مؤقتة فقط، بل في الاحتفاظ بالمصدر والقرار
+              والنسخ السابقة داخل مساحة يمكن الرجوع إليها.
             </p>
           </div>
-          <Link
-            href={brand.links.documentation}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:-translate-y-0.5"
-          >
-            راجع خارطة الطريق
-            <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
-          </Link>
+
+          <div className="space-y-4">
+            <article className="rounded-3xl border border-background/15 bg-background/5 p-6 backdrop-blur">
+              <div className="flex items-center gap-3">
+                <Languages className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h3 className="text-lg font-semibold">العربية ليست وضعاً ثانوياً</h3>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div dir="rtl" className="rounded-2xl bg-background/10 p-4 text-sm leading-7">
+                  راجع قرار الإطلاق وحدد الخطوة التالية.
+                </div>
+                <div dir="ltr" className="rounded-2xl bg-background/10 p-4 text-sm leading-7">
+                  Review the launch decision and define the next step.
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-background/15 bg-background/5 p-6 backdrop-blur">
+              <div className="flex items-center gap-3">
+                <BookOpenCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h3 className="text-lg font-semibold">المصدر قريب من الجملة</h3>
+              </div>
+              <p className="mt-4 text-sm leading-8 text-background/65">
+                عندما تكون الإجابة مرتبطة بالمستندات، تظهر المراجع كروابط إلى
+                المقاطع الداعمة بدلاً من إخفائها خلف ملخص عام.
+              </p>
+              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-background/10 px-4 py-2 text-xs font-semibold">
+                <span className="rounded-md bg-primary px-1.5 py-0.5 text-primary-foreground">
+                  S1
+                </span>
+                فتح قرار-المشروع.md · المقطع 3
+              </div>
+            </article>
+
+            <article className="rounded-3xl border border-background/15 bg-background/5 p-6 backdrop-blur">
+              <div className="flex items-center gap-3">
+                <FileClock className="h-5 w-5 text-primary" aria-hidden="true" />
+                <h3 className="text-lg font-semibold">التطوير لا يمحو التاريخ</h3>
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-semibold">
+                {["v1 · منشأ", "v2 · تحرير", "v3 · استعادة", "v4 · اقتراح مقبول"].map(
+                  (version, index) => (
+                    <span
+                      key={version}
+                      className={`rounded-full px-3 py-2 ${
+                        index === 3
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background/10 text-background/75"
+                      }`}
+                    >
+                      {version}
+                    </span>
+                  ),
+                )}
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="use-cases" className="py-20 sm:py-28">
+        <div className="container-responsive">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold text-primary">من الإجابة إلى نتيجة</p>
+            <h2 className="mt-4 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
+              أنشئ الصيغة التي يحتاجها العمل فعلاً.
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-muted-foreground">
+              ابدأ من إجابة مكتملة، ثم اختر الهيكل الأقرب لما تريد إرساله أو
+              مراجعته أو تنفيذه.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {outcomes.map((outcome, index) => (
+              <article
+                key={outcome.title}
+                className="rounded-3xl border border-border/75 bg-card p-6"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary font-mono text-xs font-semibold text-primary">
+                  0{index + 1}
+                </span>
+                <h3 className="mt-6 font-arabic-heading text-xl font-semibold">
+                  {outcome.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {outcome.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-border/70 bg-card/55 py-16 sm:py-20">
+        <div className="container-responsive">
+          <div className="relative overflow-hidden rounded-[2rem] bg-primary p-7 text-primary-foreground sm:p-10 lg:p-12">
+            <div className="pointer-events-none absolute -left-20 -top-24 h-72 w-72 rounded-full bg-background/15 blur-3xl" />
+            <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div className="max-w-3xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-background/10 px-3 py-1.5 text-xs font-semibold">
+                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                  مساحة واحدة، وسياق واضح
+                </div>
+                <h2 className="mt-5 text-balance font-arabic-heading text-3xl font-semibold leading-tight sm:text-5xl">
+                  ابدأ بالسؤال. أضف المصدر عندما تحتاجه. احتفظ بالعمل.
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-8 text-primary-foreground/75">
+                  يشرح الدليل أنواع الملفات والصيغ المتاحة وخطوات ربط النموذج،
+                  حتى تبدأ بما يعمل فعلاً داخل المنتج.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                <Link
+                  href={brand.links.registration}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:-translate-y-0.5"
+                >
+                  إنشاء حساب
+                  <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+                </Link>
+                <Link
+                  href={brand.links.documentation}
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-primary-foreground/25 px-6 py-3 text-sm font-semibold transition-colors hover:bg-primary-foreground/10"
+                >
+                  افتح دليل الاستخدام
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
