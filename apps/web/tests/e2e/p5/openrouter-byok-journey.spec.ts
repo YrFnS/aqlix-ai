@@ -16,10 +16,13 @@ async function waitForHydration(page: Page): Promise<void> {
 }
 
 async function waitForClientSurface(page: Page, name: string): Promise<void> {
-  await expect(page.locator(`[data-client-surface="${name}"]`)).toHaveAttribute(
-    "data-client-ready",
-    "true",
-  );
+  await expect(
+    page
+      .locator(
+        `[data-client-surface="${name}"][data-client-ready="true"]`,
+      )
+      .first(),
+  ).toHaveAttribute("data-client-ready", "true");
 }
 
 async function register(page: Page, email: string): Promise<void> {
