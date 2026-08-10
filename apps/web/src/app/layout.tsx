@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
-import { notoSansArabic, cairo, amiri } from "@/lib/fonts";
+import { amiri, cairo, inter, notoSansArabic } from "@/lib/fonts";
 import { DirectionProvider } from "@/components/providers/DirectionProvider";
 import { DirectionSync } from "@/components/providers/DirectionSync";
 import { brand } from "@/config/brand";
@@ -33,9 +33,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         ${notoSansArabic.variable}
         ${cairo.variable}
         ${amiri.variable}
+        ${inter.variable}
       `.trim()}
     >
-      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-primary/20">
+      <body className="flex min-h-screen flex-col bg-background font-arabic text-foreground antialiased selection:bg-primary/20">
         <DirectionProvider>
           <DirectionSync />
           {children}
