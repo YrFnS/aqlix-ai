@@ -141,7 +141,7 @@ describe("P2 provider and conversation boundary", () => {
     expect(pageRepository).toContain('.order("sequence", { ascending: false })');
     expect(pageRepository).toContain('.lt("sequence", input.beforeSequence)');
     expect(pageRepository).toContain('.in("message_id", assistantMessageIds)');
-    expect(pageRepository).toContain("visibleRows.slice");
+    expect(pageRepository).toContain("descendingRows.slice(0, limit)");
     expect(detailPage).toContain("listConversationMessagePage");
     expect(detailPage).not.toContain("listConversationMessages(");
     expect(detailRoute).toContain("messagePage.messages");
