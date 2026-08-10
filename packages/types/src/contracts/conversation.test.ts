@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import {
+  conversationMessagePageSchema,
   conversationStreamEventSchema,
   createConversationInputSchema,
+  listConversationMessagesInputSchema,
   messageCitationSchema,
   providerFailureCodeSchema,
   streamConversationInputSchema,
@@ -75,6 +77,42 @@ describe("P2 and P3 conversation contracts", () => {
       streamConversationInputSchema.safeParse({ workspaceId, conversationId })
         .success,
     ).toBe(false);
+  });
+
+  test("bounds message pages and accepts sequence zero", () => {
+    expect(
+      listConversationMessagesInputSchema.parse({ workspaceId, conversationId }),
+    ).toEqual({ workspaceId, conversationId, limit: 40 });
+
+    expect(
+      listConversationMessagesInputSchema.parse({
+        workspaceId,
+        conversationId,
+        beforeSequence: 0,
+        limit: 50,
+      }),
+    ).toEqual({
+      workspaceId,
+      conversationId,
+      beforeSequence: 0,
+      limit: 50,
+    });
+
+    expect(
+      listConversationMessagesInputSchema.safeParse({
+        workspaceId,
+        conversationId,
+        limit: 51,
+      }).success,
+    ).toBe(false);
+
+    expect(
+      conversationMessagePageSchema.parse({
+        messages: [],
+        hasMore: false,
+        nextCursor: null,
+      }),
+    ).toEqual({ messages: [], hasMore: false, nextCursor: null });
   });
 
   test("validates normalized completion events with citation telemetry", () => {
