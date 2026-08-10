@@ -2,6 +2,8 @@
 
 import {
   useEffect,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type FormEvent,
@@ -24,13 +26,15 @@ import {
 import type {
   Conversation,
   ConversationMessage,
+  ConversationMessagePage,
   ConversationStreamEvent,
   GroundingMode,
 } from "@iraqi-ai/types";
 import {
-  conversationMessageSchema,
+  conversationMessagePageSchema,
   conversationStreamEventSchema,
 } from "@iraqi-ai/types";
+import { DraftFromConversationPanel } from "@/components/drafts/draft-from-conversation-panel";
 import { Button } from "@/components/ui/button";
 import { MessageCitations } from "./message-citations";
 import { MessageContent } from "./message-content";
@@ -38,7 +42,7 @@ import { MessageContent } from "./message-content";
 interface ConversationShellProps {
   workspaceId: string;
   conversation: Conversation;
-  initialMessages: ConversationMessage[];
+  initialPage: ConversationMessagePage;
   canWrite: boolean;
   readOnlyReason: "workspace-archived" | "membership";
 }
@@ -47,6 +51,11 @@ type Notice = {
   tone: "error" | "info";
   message: string;
 } | null;
+
+type PrependPosition = {
+  scrollHeight: number;
+  scrollTop: number;
+};
 
 const statusLabels = {
   pending: "قيد البدء",
@@ -57,6 +66,7 @@ const statusLabels = {
 } as const;
 
 const AUTO_SCROLL_THRESHOLD_PX = 120;
+const MESSAGE_PAGE_SIZE = 40;
 
 function mergeMessages(
   current: ConversationMessage[],
@@ -200,6 +210,7 @@ function MessageBubble({
     <article
       className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
       data-message-id={message.id}
+      data-message-sequence={message.sequence}
     >
       {!isUser && (
         <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -283,11 +294,14 @@ function MessageBubble({
 export function ConversationShell({
   workspaceId,
   conversation,
-  initialMessages,
+  initialPage,
   canWrite,
   readOnlyReason,
 }: ConversationShellProps) {
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState(initialPage.messages);
+  const [hasMore, setHasMore] = useState(initialPage.hasMore);
+  const [nextCursor, setNextCursor] = useState(initialPage.nextCursor);
+  const [isLoadingOlder, setIsLoadingOlder] = useState(false);
   const [input, setInput] = useState("");
   const [groundingMode, setGroundingMode] = useState<GroundingMode>("off");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -295,8 +309,26 @@ export function ConversationShell({
   const controllerRef = useRef<AbortController | null>(null);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const shouldAutoScrollRef = useRef(true);
+  const loadedOlderRef = useRef(false);
+  const prependPositionRef = useRef<PrependPosition | null>(null);
   const pendingDeltasRef = useRef<Map<string, string>>(new Map());
   const deltaFrameRef = useRef<number | null>(null);
+
+  const reusableMessages = useMemo(
+    () =>
+      messages
+        .filter(
+          (message) =>
+            message.role === "assistant" && message.status === "complete",
+        )
+        .map((message) => ({
+          id: message.id,
+          sequence: message.sequence,
+          content: message.content,
+          citationCount: message.citations.length,
+        })),
+    [messages],
+  );
 
   const clearPendingDeltas = () => {
     pendingDeltasRef.current.clear();
@@ -359,6 +391,16 @@ export function ConversationShell({
       distanceFromBottom <= AUTO_SCROLL_THRESHOLD_PX;
   };
 
+  useLayoutEffect(() => {
+    const position = prependPositionRef.current;
+    const viewport = viewportRef.current;
+    if (!position || !viewport) return;
+
+    viewport.scrollTop =
+      position.scrollTop + (viewport.scrollHeight - position.scrollHeight);
+    prependPositionRef.current = null;
+  }, [messages]);
+
   useEffect(() => {
     if (!shouldAutoScrollRef.current) return;
 
@@ -371,32 +413,79 @@ export function ConversationShell({
     return () => window.cancelAnimationFrame(frame);
   }, [messages]);
 
-  const refreshMessages = async () => {
+  const fetchMessagePage = async (before?: number) => {
+    const query = new URLSearchParams({ limit: String(MESSAGE_PAGE_SIZE) });
+    if (before !== undefined) query.set("before", String(before));
+
     const response = await fetch(
-      `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}`,
+      `/api/v1/workspaces/${workspaceId}/conversations/${conversation.id}/messages?${query.toString()}`,
       { cache: "no-store" },
     );
     const payload = (await response.json()) as {
       ok?: boolean;
-      data?: { messages?: unknown };
+      data?: { page?: unknown };
       error?: { message?: string };
     };
 
-    if (!response.ok || !payload.ok) {
+    if (!response.ok || payload.ok !== true) {
       throw new Error(
-        payload.error?.message || "Conversation history could not be refreshed.",
+        payload.error?.message || "Conversation history could not be loaded.",
       );
     }
 
-    const parsed = conversationMessageSchema.array().safeParse(
-      payload.data?.messages,
-    );
+    const parsed = conversationMessagePageSchema.safeParse(payload.data?.page);
     if (!parsed.success) {
-      throw new Error("Conversation history returned an invalid shape.");
+      throw new Error("Conversation history returned an invalid page.");
     }
 
+    return parsed.data;
+  };
+
+  const loadOlderMessages = async () => {
+    if (!hasMore || nextCursor === null || isLoadingOlder) return;
+
+    const viewport = viewportRef.current;
+    const position = viewport
+      ? {
+          scrollHeight: viewport.scrollHeight,
+          scrollTop: viewport.scrollTop,
+        }
+      : null;
+
+    setIsLoadingOlder(true);
+    setNotice(null);
+
+    try {
+      const page = await fetchMessagePage(nextCursor);
+      shouldAutoScrollRef.current = false;
+      loadedOlderRef.current = true;
+      prependPositionRef.current = position;
+      setMessages((current) => mergeMessages(current, page.messages));
+      setHasMore(page.hasMore);
+      setNextCursor(page.nextCursor);
+    } catch (error) {
+      prependPositionRef.current = null;
+      setNotice({
+        tone: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "تعذر تحميل الرسائل الأقدم.",
+      });
+    } finally {
+      setIsLoadingOlder(false);
+    }
+  };
+
+  const refreshMessages = async () => {
+    const page = await fetchMessagePage();
     clearPendingDeltas();
-    setMessages(parsed.data);
+    setMessages((current) => mergeMessages(current, page.messages));
+
+    if (!loadedOlderRef.current) {
+      setHasMore(page.hasMore);
+      setNextCursor(page.nextCursor);
+    }
   };
 
   const startTurn = async (command: {
@@ -556,169 +645,201 @@ export function ConversationShell({
       : "عضويتك للقراءة فقط. يمكنك مراجعة الرسائل والردود من دون إرسال أو إعادة محاولة.";
 
   return (
-    <section className="grid min-h-[70vh] overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm lg:grid-rows-[1fr_auto]">
-      <div
-        ref={viewportRef}
-        onScroll={updateAutoScrollPreference}
-        className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]"
-      >
-        {messages.length === 0 ? (
-          <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Sparkles className="h-6 w-6" aria-hidden="true" />
-            </div>
-            <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
-              ابدأ محادثتك
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
-              اكتب بالعربية أو English. فعّل مصادر المساحة عندما تريد أن ترتبط
-              الإجابة بالمقاطع المحفوظة وتعرض مراجع يمكنك فتحها.
-            </p>
-            {canWrite && (
-              <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
-                {prompts.map((prompt) => (
-                  <button
-                    key={prompt}
-                    type="button"
-                    dir="auto"
-                    className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                    onClick={() => setInput(prompt)}
-                  >
-                    {prompt}
-                  </button>
-                ))}
+    <>
+      <section className="grid min-h-[70vh] overflow-hidden rounded-3xl border border-border/70 bg-card shadow-sm lg:grid-rows-[1fr_auto]">
+        <div
+          ref={viewportRef}
+          data-testid="conversation-viewport"
+          onScroll={updateAutoScrollPreference}
+          className="min-h-0 overflow-y-auto p-4 sm:p-6 lg:max-h-[calc(100vh-16rem)]"
+        >
+          {messages.length === 0 ? (
+            <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <Sparkles className="h-6 w-6" aria-hidden="true" />
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {messages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                workspaceId={workspaceId}
-                message={message}
-                canRetry={
-                  canWrite &&
-                  message.role === "assistant" &&
-                  (message.status === "failed" ||
-                    message.status === "cancelled")
-                }
-                retryDisabled={isStreaming}
-                onRetry={(messageId) =>
-                  void startTurn({ retryMessageId: messageId })
-                }
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="border-t border-border/70 bg-background/85 p-4 backdrop-blur sm:p-5">
-        {notice && (
-          <div
-            className={`mb-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${
-              notice.tone === "error"
-                ? "border-destructive/30 bg-destructive/10 text-destructive"
-                : "border-border bg-secondary/55 text-muted-foreground"
-            }`}
-            role={notice.tone === "error" ? "alert" : "status"}
-          >
-            {notice.message}
-          </div>
-        )}
-
-        {canWrite && conversation.status === "active" ? (
-          <form onSubmit={submit} className="space-y-3">
-            <label
-              htmlFor="conversation-grounding"
-              className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3 text-sm transition-colors ${
-                groundingMode === "workspace_sources"
-                  ? "border-primary/35 bg-primary/10"
-                  : "border-border bg-card hover:bg-secondary/45"
-              }`}
-            >
-              <input
-                id="conversation-grounding"
-                type="checkbox"
-                className="mt-1 h-4 w-4 accent-primary"
-                checked={groundingMode === "workspace_sources"}
-                disabled={isStreaming}
-                onChange={(event) =>
-                  setGroundingMode(
-                    event.target.checked ? "workspace_sources" : "off",
-                  )
-                }
-              />
-              <FileSearch
-                className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                aria-hidden="true"
-              />
-              <span>
-                <span className="block font-semibold">
-                  استخدام مصادر مساحة العمل
-                </span>
-                <span className="mt-1 block text-xs leading-6 text-muted-foreground">
-                  يبحث في المقاطع الجاهزة ويضيف روابط إلى المراجع المستخدمة في
-                  الإجابة.
-                </span>
-              </span>
-            </label>
-
-            <label htmlFor="conversation-message" className="sr-only">
-              اكتب رسالة
-            </label>
-            <textarea
-              id="conversation-message"
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={handleKeyDown}
-              maxLength={20000}
-              rows={3}
-              dir="auto"
-              disabled={isStreaming}
-              placeholder="اكتب بالعربية أو English… (Enter للإرسال، Shift+Enter لسطر جديد)"
-              className="w-full resize-y rounded-3xl border border-input bg-card px-5 py-4 text-sm leading-7 outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-70"
-            />
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs leading-6 text-muted-foreground">
-                {groundingMode === "workspace_sources"
-                  ? "ستتضمن الإجابة مرجعاً قابلاً للفتح من هذه المساحة."
-                  : "تُستخدم رسائل هذه المحادثة للحفاظ على السياق."}
+              <h2 className="mt-5 font-arabic-heading text-2xl font-semibold">
+                ابدأ محادثتك
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-8 text-muted-foreground">
+                اكتب بالعربية أو English. فعّل مصادر المساحة عندما تريد أن ترتبط
+                الإجابة بالمقاطع المحفوظة وتعرض مراجع يمكنك فتحها.
               </p>
-              {isStreaming ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="rounded-full"
-                  onClick={() =>
-                    controllerRef.current?.abort(
-                      new DOMException("Cancelled by user", "AbortError"),
-                    )
-                  }
-                >
-                  <Square className="h-4 w-4" aria-hidden="true" />
-                  إيقاف وحفظ الجزئي
-                </Button>
-              ) : (
-                <Button
-                  type="submit"
-                  className="rounded-full"
-                  disabled={!input.trim()}
-                >
-                  <Send className="h-4 w-4" aria-hidden="true" />
-                  إرسال
-                </Button>
+              {canWrite && (
+                <div className="mt-6 flex max-w-2xl flex-wrap justify-center gap-2">
+                  {prompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      dir="auto"
+                      className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                      onClick={() => setInput(prompt)}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
-          </form>
-        ) : (
-          <div className="rounded-2xl bg-secondary/60 px-4 py-3 text-sm leading-7 text-muted-foreground">
-            {conversation.status === "archived"
-              ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
-              : readOnlyMessage}
-          </div>
-        )}
-      </div>
-    </section>
+          ) : (
+            <div className="space-y-6">
+              {hasMore && (
+                <div className="flex justify-center">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full"
+                    disabled={isLoadingOlder}
+                    onClick={() => void loadOlderMessages()}
+                  >
+                    {isLoadingOlder ? (
+                      <RefreshCw
+                        className="h-4 w-4 animate-spin"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <Clock3 className="h-4 w-4" aria-hidden="true" />
+                    )}
+                    {isLoadingOlder ? "جاري التحميل…" : "تحميل رسائل أقدم"}
+                  </Button>
+                </div>
+              )}
+
+              {messages.map((message) => (
+                <MessageBubble
+                  key={message.id}
+                  workspaceId={workspaceId}
+                  message={message}
+                  canRetry={
+                    canWrite &&
+                    message.role === "assistant" &&
+                    (message.status === "failed" ||
+                      message.status === "cancelled")
+                  }
+                  retryDisabled={isStreaming}
+                  onRetry={(messageId) =>
+                    void startTurn({ retryMessageId: messageId })
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="border-t border-border/70 bg-background/85 p-4 backdrop-blur sm:p-5">
+          {notice && (
+            <div
+              className={`mb-3 rounded-2xl border px-4 py-3 text-sm leading-6 ${
+                notice.tone === "error"
+                  ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : "border-border bg-secondary/55 text-muted-foreground"
+              }`}
+              role={notice.tone === "error" ? "alert" : "status"}
+            >
+              {notice.message}
+            </div>
+          )}
+
+          {canWrite && conversation.status === "active" ? (
+            <form onSubmit={submit} className="space-y-3">
+              <label
+                htmlFor="conversation-grounding"
+                className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3 text-sm transition-colors ${
+                  groundingMode === "workspace_sources"
+                    ? "border-primary/35 bg-primary/10"
+                    : "border-border bg-card hover:bg-secondary/45"
+                }`}
+              >
+                <input
+                  id="conversation-grounding"
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 accent-primary"
+                  checked={groundingMode === "workspace_sources"}
+                  disabled={isStreaming}
+                  onChange={(event) =>
+                    setGroundingMode(
+                      event.target.checked ? "workspace_sources" : "off",
+                    )
+                  }
+                />
+                <FileSearch
+                  className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span className="block font-semibold">
+                    استخدام مصادر مساحة العمل
+                  </span>
+                  <span className="mt-1 block text-xs leading-6 text-muted-foreground">
+                    يبحث في المقاطع الجاهزة ويضيف روابط إلى المراجع المستخدمة في
+                    الإجابة.
+                  </span>
+                </span>
+              </label>
+
+              <label htmlFor="conversation-message" className="sr-only">
+                اكتب رسالة
+              </label>
+              <textarea
+                id="conversation-message"
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleKeyDown}
+                maxLength={20000}
+                rows={3}
+                dir="auto"
+                disabled={isStreaming}
+                placeholder="اكتب بالعربية أو English… (Enter للإرسال، Shift+Enter لسطر جديد)"
+                className="w-full resize-y rounded-3xl border border-input bg-card px-5 py-4 text-sm leading-7 outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-70"
+              />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs leading-6 text-muted-foreground">
+                  {groundingMode === "workspace_sources"
+                    ? "ستتضمن الإجابة مرجعاً قابلاً للفتح من هذه المساحة."
+                    : "تُستخدم رسائل هذه المحادثة للحفاظ على السياق."}
+                </p>
+                {isStreaming ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="rounded-full"
+                    onClick={() =>
+                      controllerRef.current?.abort(
+                        new DOMException("Cancelled by user", "AbortError"),
+                      )
+                    }
+                  >
+                    <Square className="h-4 w-4" aria-hidden="true" />
+                    إيقاف وحفظ الجزئي
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="rounded-full"
+                    disabled={!input.trim()}
+                  >
+                    <Send className="h-4 w-4" aria-hidden="true" />
+                    إرسال
+                  </Button>
+                )}
+              </div>
+            </form>
+          ) : (
+            <div className="rounded-2xl bg-secondary/60 px-4 py-3 text-sm leading-7 text-muted-foreground">
+              {conversation.status === "archived"
+                ? "هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."
+                : readOnlyMessage}
+            </div>
+          )}
+        </div>
+      </section>
+
+      <DraftFromConversationPanel
+        workspaceId={workspaceId}
+        conversationId={conversation.id}
+        messages={reusableMessages}
+        canWrite={canWrite}
+      />
+    </>
   );
 }
