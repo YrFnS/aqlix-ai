@@ -173,8 +173,10 @@ async function inspectDownload(
   expect(response.headers()["content-type"]).toMatch(expectedContentType);
   expect(response.headers()["content-disposition"]).toMatch(expectedExtension);
   const body = await response.text();
-  expect(body).toContain("Launch");
-  expect(body).toContain("Q4");
+  expect(body).toContain("P4 launch decision");
+  expect(body).toContain(
+    "The saved workspace passage supports this deterministic answer [S1].",
+  );
   return body;
 }
 
