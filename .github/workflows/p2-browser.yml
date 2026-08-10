@@ -45,7 +45,7 @@ jobs:
       - name: Start local Supabase
         run: bunx supabase start
 
-      - name: Export local public configuration
+      - name: Export local public and test-admin configuration
         shell: bash
         run: |
           set -euo pipefail
@@ -56,13 +56,15 @@ jobs:
           set +a
 
           PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
-          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]]; then
-            echo "Local Supabase did not expose API_URL and a public key"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, a public key, and a test admin key"
             exit 1
           fi
 
           echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
           echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
 
       - name: Build shared packages
         run: bun run build:packages
@@ -108,4 +110,4 @@ jobs:
             exit 1
           fi
 
-          echo "P2 streaming, persistence, cancellation, retry, provider failure, isolation, lifecycle, responsive, and hydration checks passed."
+          echo "P2 streaming, persistence, cancellation, retry, provider failure, pagination, isolation, lifecycle, responsive, and hydration checks passed."
