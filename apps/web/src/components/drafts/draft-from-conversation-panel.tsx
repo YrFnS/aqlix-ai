@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { FilePlus2 } from "lucide-react";
 import type { ConversationMessage, DraftKind } from "@iraqi-ai/types";
 import { conversationMessageSchema } from "@iraqi-ai/types";
@@ -66,7 +65,6 @@ export function DraftFromConversationPanel({
   canWrite: boolean;
   compact?: boolean;
 }) {
-  const router = useRouter();
   const [availableMessages, setAvailableMessages] = useState(messages);
   const orderedMessages = useMemo(
     () =>
@@ -207,14 +205,15 @@ export function DraftFromConversationPanel({
         throw new Error("The created draft identity is missing.");
       }
 
-      router.push(`/workspaces/${workspaceId}/drafts/${draftId}?status=created`);
+      window.location.assign(
+        `/workspaces/${workspaceId}/drafts/${draftId}?status=created`,
+      );
     } catch (creationError) {
       setError(
         creationError instanceof Error
           ? creationError.message
           : "تعذر إنشاء المسودة / Draft creation failed.",
       );
-    } finally {
       setIsCreating(false);
     }
   };
