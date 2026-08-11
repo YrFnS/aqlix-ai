@@ -198,7 +198,9 @@ test("paginates long bilingual history with stable scroll and visible citations"
     .getByLabel("اكتب رسالة")
     .fill("رسالة جديدة بعد السجل الطويل / new message after long history");
   await page.getByRole("button", { name: "إرسال" }).click();
-  await expect(page.getByText(/تم حفظ الاستجابة والمحادثة/)).toBeVisible();
+  await expect(
+    page.getByText("حُفظت الاستجابة داخل المحادثة.", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator('[data-message-sequence="85"]')).toBeVisible();
 
   const collectionResponse = await context.request.get(
