@@ -13,9 +13,9 @@ const readRepo = (path: string) =>
 
 describe("account password and MFA hardening", () => {
   test("requires long complex non-common passwords for new accounts", () => {
-    expect(strongPasswordSchema.safeParse("P5-MFA-Security-Test-2026!").success).toBe(
-      true,
-    );
+    expect(
+      strongPasswordSchema.safeParse("P5-MFA-Security-Test-2026!").success,
+    ).toBe(true);
 
     for (const weakPassword of [
       "Password1!",
@@ -33,6 +33,7 @@ describe("account password and MFA hardening", () => {
     const actions = readWeb("src/lib/auth/actions.ts");
 
     expect(policy).toContain("PASSWORD_MIN_LENGTH = 12");
+    expect(policy).toContain("isLowEntropyPassword");
     expect(policy).toContain("Password is too common or predictable");
     expect(registration).toContain("passwordInputPattern");
     expect(registration).toContain("PASSWORD_MIN_LENGTH");
@@ -46,11 +47,13 @@ describe("account password and MFA hardening", () => {
     const apiSession = readWeb("src/lib/api/auth.ts");
     const challengePage = readWeb("src/app/(auth)/mfa/page.tsx");
 
-    for (const source of [actions, pageSession, apiSession, challengePage]) {
+    for (const source of [actions, pageSession, apiSession]) {
       expect(source).toContain("getAuthenticatorAssuranceLevel");
       expect(source).toContain('nextLevel === "aal2"');
+      expect(source).toContain("currentLevel !== assurance.nextLevel");
     }
 
+    expect(challengePage).toContain("getAuthenticatorAssuranceLevel");
     expect(actions).toContain("mfaRedirect(nextPath)");
     expect(pageSession).toContain("mfaChallengePath(returnTo)");
     expect(apiSession).toContain('"MFA_REQUIRED"');
