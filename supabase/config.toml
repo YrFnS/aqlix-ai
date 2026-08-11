@@ -69,6 +69,13 @@ max_frequency = "1s"
 enable_signup = false
 enable_confirmations = false
 
+[auth.mfa]
+max_enrolled_factors = 10
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
 [edge_runtime]
 enabled = false
 policy = "oneshot"
