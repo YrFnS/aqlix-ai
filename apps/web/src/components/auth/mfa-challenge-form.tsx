@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { KeyRound, LoaderCircle, ShieldCheck } from "lucide-react";
+import { KeyRound, Loader2, ShieldCheck } from "lucide-react";
 import { createClient } from "@iraqi-ai/supabase-client/browser";
 import { Button } from "@/components/ui/button";
 
@@ -101,7 +101,7 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
           role="status"
           className="flex min-h-24 items-center justify-center gap-3 rounded-xl border border-line/70 bg-surface-sunken text-sm text-ink-muted"
         >
-          <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           جاري تحميل وسائل التحقق
         </div>
       ) : factors.length === 0 ? (
@@ -175,7 +175,7 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
           disabled={loading || factors.length === 0 || !factorId || code.length < 6 || verifying}
         >
           {verifying ? (
-            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
           ) : (
             <KeyRound className="h-4 w-4" aria-hidden="true" />
           )}
