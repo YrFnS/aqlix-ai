@@ -4,6 +4,8 @@ import { expect, test, type Page } from "@playwright/test";
 const password = "P5-MFA-Security-Test-2026!";
 const base32Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
+type RuntimeErrors = string[];
+
 function uniqueEmail(prefix: string): string {
   return `${prefix}-${crypto.randomUUID()}@example.test`;
 }
@@ -47,14 +49,52 @@ function totpCode(secret: string, stepOffset = 0): string {
   return String(binary % 1_000_000).padStart(6, "0");
 }
 
-async function waitForClientSurface(page: Page, name: string): Promise<void> {
-  await expect(
-    page
-      .locator(
-        `[data-client-surface="${name}"][data-client-ready="true"]`,
-      )
-      .last(),
-  ).toHaveAttribute("data-client-ready", "true");
+function collectRuntimeErrors(page: Page): RuntimeErrors {
+  const errors: RuntimeErrors = [];
+
+  page.on("pageerror", (error) => {
+    errors.push(`pageerror: ${error.stack ?? error.message}`);
+  });
+
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      errors.push(`console: ${message.text()}`);
+    }
+  });
+
+  page.on("requestfailed", (request) => {
+    errors.push(
+      `requestfailed: ${request.method()} ${request.url()} — ${request.failure()?.errorText ?? "unknown failure"}`,
+    );
+  });
+
+  return errors;
+}
+
+async function waitForClientSurface(
+  page: Page,
+  name: string,
+  runtimeErrors: RuntimeErrors,
+): Promise<void> {
+  try {
+    await expect(
+      page
+        .locator(
+          `[data-client-surface="${name}"][data-client-ready="true"]`,
+        )
+        .last(),
+    ).toHaveAttribute("data-client-ready", "true");
+  } catch (error) {
+    throw new Error(
+      [
+        error instanceof Error ? error.message : String(error),
+        `URL: ${page.url()}`,
+        runtimeErrors.length > 0
+          ? `Runtime errors:\n${runtimeErrors.join("\n")}`
+          : "Runtime errors: none captured",
+      ].join("\n\n"),
+    );
+  }
 }
 
 async function register(page: Page, email: string): Promise<void> {
@@ -82,11 +122,12 @@ async function signIn(page: Page, email: string): Promise<void> {
 test("enrolls TOTP, requires AAL2 after sign-in, and removes the factor", async ({
   page,
 }) => {
+  const runtimeErrors = collectRuntimeErrors(page);
   const email = uniqueEmail("p5-mfa-owner");
 
   await register(page, email);
   await page.goto("/settings/security");
-  await waitForClientSurface(page, "mfa-security-settings");
+  await waitForClientSurface(page, "mfa-security-settings", runtimeErrors);
 
   await page.getByLabel("اسم الوسيلة").fill("P5 Browser Authenticator");
   await page.getByRole("button", { name: "إضافة تطبيق" }).click();
@@ -110,14 +151,14 @@ test("enrolls TOTP, requires AAL2 after sign-in, and removes the factor", async 
   await signOut(page);
   await signIn(page, email);
   await expect(page).toHaveURL(/\/mfa\?next=%2Fworkspaces$/);
-  await waitForClientSurface(page, "mfa-challenge");
+  await waitForClientSurface(page, "mfa-challenge", runtimeErrors);
 
   await page.getByLabel("رمز التحقق").fill(totpCode(secret!));
   await page.getByRole("button", { name: "تحقق وادخل" }).click();
   await expect(page).toHaveURL(/\/workspaces$/);
 
   await page.goto("/settings/security");
-  await waitForClientSurface(page, "mfa-security-settings");
+  await waitForClientSurface(page, "mfa-security-settings", runtimeErrors);
   page.once("dialog", (dialog) => void dialog.accept());
   await page
     .locator("article")
