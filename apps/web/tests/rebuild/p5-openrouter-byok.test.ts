@@ -27,26 +27,50 @@ describe("P5 OpenRouter BYOK boundary", () => {
     }
   });
 
-  test("stores user credentials in Vault and exposes only masked settings", () => {
-    const migration = readRepo(
+  test("stores credentials in Vault and resolves plaintext only on the server", () => {
+    const vaultMigration = readRepo(
       "supabase/migrations/202608080018_p5_user_openrouter_settings.sql",
+    );
+    const boundaryMigration = readRepo(
+      "supabase/migrations/202608110002_supabase_function_boundary_hardening.sql",
     );
     const repository = readWeb("src/lib/ai/user-settings.ts");
     const settingsRoute = readWeb("src/app/api/v1/ai/settings/route.ts");
     const settingsUi = readWeb("src/components/ai/openrouter-settings.tsx");
 
-    expect(migration).toContain(
+    expect(vaultMigration).toContain(
       "create extension if not exists supabase_vault",
     );
-    expect(migration).toContain("vault.create_secret");
-    expect(migration).toContain("vault.update_secret");
-    expect(migration).toContain("vault.decrypted_secrets");
-    expect(migration).toContain("user_ai_settings_select_own");
-    expect(migration).toContain(
+    expect(vaultMigration).toContain("vault.create_secret");
+    expect(vaultMigration).toContain("vault.update_secret");
+    expect(vaultMigration).toContain("vault.decrypted_secrets");
+    expect(vaultMigration).toContain("user_ai_settings_select_own");
+    expect(vaultMigration).toContain(
       "revoke all on vault.decrypted_secrets from anon, authenticated",
     );
+
+    expect(boundaryMigration).toContain("create schema if not exists private");
+    expect(boundaryMigration).toContain("security invoker");
+    expect(boundaryMigration).toContain(
+      "resolve_user_openrouter_credential_for_user",
+    );
+    expect(boundaryMigration).toContain(
+      "resolve_user_openrouter_runtime_for_user",
+    );
+    expect(boundaryMigration).toContain(
+      "from public, anon, authenticated, service_role",
+    );
+    expect(boundaryMigration).toContain("to service_role");
+
+    expect(repository).toContain("createAdminClient");
+    expect(repository).toContain(
+      '"resolve_user_openrouter_credential_for_user"',
+    );
+    expect(repository).toContain('"resolve_user_openrouter_runtime_for_user"');
+    expect(repository).toContain("target_user_id: userId");
     expect(repository).toContain("keyLastFour");
     expect(repository).not.toContain("localStorage");
+
     expect(settingsRoute).toContain("saveUserOpenRouterCredential");
     expect(settingsRoute).not.toContain("jsonSuccess({ apiKey");
     expect(settingsRoute).not.toContain("console.log(parsed.data.apiKey");
@@ -65,6 +89,7 @@ describe("P5 OpenRouter BYOK boundary", () => {
     expect(client).toContain('model.outputModalities.includes("text")');
     expect(client).toContain('id.endsWith(":free")');
     expect(route).toContain("openRouterModelCatalogQuerySchema");
+    expect(route).toContain("resolveUserOpenRouterCredential");
     expect(ui).toContain('aria-label="Search OpenRouter models"');
     expect(ui).toContain("ابحث باسم النموذج أو المعرّف");
     expect(ui).toContain('aria-label="Free only"');
@@ -114,14 +139,22 @@ describe("P5 OpenRouter BYOK boundary", () => {
     const runtime = readWeb("src/lib/operations/runtime-contract.ts");
 
     expect(blueprint).toContain("key: AI_PROVIDER\n        value: openrouter");
+    expect(blueprint).toContain(
+      "key: SUPABASE_SERVICE_ROLE_KEY\n        sync: false",
+    );
     expect(blueprint).not.toContain("OPENAI_API_KEY");
     expect(blueprint).not.toContain("OPENAI_MODEL");
     expect(blueprint).not.toContain("OPENROUTER_API_KEY");
+
     expect(releaseTemplate).toContain("AI_PROVIDER=openrouter");
+    expect(releaseTemplate).toContain("SUPABASE_SERVICE_ROLE_KEY=");
     expect(releaseTemplate).not.toContain("OPENAI_API_KEY=");
     expect(releaseTemplate).not.toContain("OPENROUTER_API_KEY=");
+
     expect(runtime).toContain(
       'provider: environment.AI_PROVIDER?.trim() || "openrouter"',
     );
+    expect(runtime).toContain("supabaseServiceRoleKey");
+    expect(runtime).toContain("OpenRouter Vault resolution requires");
   });
 });
