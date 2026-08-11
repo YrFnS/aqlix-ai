@@ -86,7 +86,7 @@ describe("primary authenticated shell copy", () => {
     expect(conversationDetail).toContain("إذا توقفت استجابة أو فشلت");
     expect(conversationShell).toContain("ابدأ محادثتك");
     expect(conversationShell).toContain("استخدام مصادر مساحة العمل");
-    expect(sources).toContain("أضف السياق الذي تريد الرجوع إليه");
+    expect(sources).toContain("مصادر ${workspace.name}");
     expect(drafts).toContain("حوّل الإجابات إلى عمل قابل للاستخدام");
     expect(draftDetail).toContain("حرر النص واحفظ نسخة جديدة");
     expect(draftDetail).toContain("فتح المصدر");
