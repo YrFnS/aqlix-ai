@@ -135,9 +135,9 @@ function DraftEditorWorkspace() {
         versions={<DraftVersionSidebar />}
         inspector={<DraftToolsPanel />}
       >
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-start">
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 min-[1800px]:grid-cols-[minmax(0,1fr)_23rem] min-[1800px]:items-start">
           <DraftEditorMain />
-          <aside className="space-y-4 xl:sticky xl:top-0">
+          <aside className="space-y-4 min-[1800px]:sticky min-[1800px]:top-0">
             <DraftAssistantPanel />
           </aside>
         </div>
