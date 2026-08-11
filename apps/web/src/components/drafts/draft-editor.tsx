@@ -56,7 +56,7 @@ function DraftVersionSidebar() {
               <Link
                 href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
               >
-                فتح
+                عرض اللقطة
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </Button>
