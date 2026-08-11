@@ -55,6 +55,10 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+function firstPassageButton(page: Page) {
+  return page.getByRole("button", { name: /^S1\s/u }).first();
+}
+
 function isolatedSupabaseClient(key = publicKey): SupabaseClient<Database> {
   return createClient<Database>(supabaseUrl, key, {
     auth: {
@@ -207,7 +211,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     page.getByRole("heading", { name: markdownFileName }),
   ).toBeVisible();
   await expect(page.getByText(/Private document stored/)).toBeVisible();
-  await expect(page.getByText("S1", { exact: true })).toBeVisible();
+  await expect(firstPassageButton(page)).toBeVisible();
   await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
   await expect(page.getByText(/الأسطر/)).toBeVisible();
 
@@ -426,7 +430,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   ).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByText("S1", { exact: true })).toBeVisible();
+  await expect(firstPassageButton(page)).toBeVisible();
   await page.setViewportSize({ width: 1280, height: 900 });
 
   page.once("dialog", (dialog) => void dialog.accept());
