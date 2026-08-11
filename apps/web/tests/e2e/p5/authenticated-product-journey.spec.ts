@@ -241,7 +241,12 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await page.goto(`/workspaces/${workspaceId}/conversations`);
   await waitForHydration(page);
   await page.getByLabel("عنوان اختياري").fill("P5 grounded decision");
-  await page.getByRole("button", { name: "إنشاء وفتح", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: "إنشاء وفتح المحادثة",
+      exact: true,
+    })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
