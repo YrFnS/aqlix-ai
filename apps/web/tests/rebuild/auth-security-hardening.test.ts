@@ -62,9 +62,12 @@ describe("account password and MFA hardening", () => {
     expect(challengePage).toContain('nextLevel !== "aal2"');
   });
 
-  test("ships complete TOTP enrollment, challenge, and removal surfaces", () => {
+  test("ships complete TOTP enrollment challenge and removal surfaces", () => {
     const settingsPage = readWeb(
       "src/app/(app)/settings/security/page.tsx",
+    );
+    const settingsClient = readWeb(
+      "src/components/auth/mfa-security-settings-client.tsx",
     );
     const settings = readWeb(
       "src/components/auth/mfa-security-settings.tsx",
@@ -75,15 +78,19 @@ describe("account password and MFA hardening", () => {
     const aiSettings = readWeb("src/app/(app)/settings/ai/page.tsx");
 
     expect(settingsPage).toContain('name="mfa-security-settings"');
-    expect(settingsPage).toContain("MfaSecuritySettings");
+    expect(settingsPage).toContain("MfaSecuritySettingsClient");
+    expect(settingsClient).toContain("dynamic(");
+    expect(settingsClient).toContain("ssr: false");
     expect(settings).toContain("supabase.auth.mfa.enroll");
     expect(settings).toContain("factorType: \"totp\"");
     expect(settings).toContain("challengeAndVerify");
     expect(settings).toContain("supabase.auth.mfa.unenroll");
     expect(settings).toContain('data-testid="mfa-enrollment-secret"');
-    expect(challenge).toContain("supabase.auth.mfa.listFactors");
+    expect(challenge).toContain("useRef<SupabaseBrowserClient | null>");
+    expect(challenge).toContain("client.auth.mfa.listFactors");
     expect(challenge).toContain("challengeAndVerify");
     expect(challenge).toContain('autoComplete="one-time-code"');
+    expect(challenge).not.toContain("useMemo(() => createClient()");
     expect(aiSettings).toContain('href="/settings/security"');
   });
 
