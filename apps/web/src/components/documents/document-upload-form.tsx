@@ -109,9 +109,16 @@ export function DocumentUploadForm({
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!file || isUploading || !canWrite || workspaceArchived) return;
 
-    const validationError = localFileError(file);
+    // Read the native input first. WebKit can dispatch submit immediately after
+    // a programmatic or very fast file selection, before React's state closure
+    // observes the selected file. The native FileList is the authoritative
+    // source and keeps both fast users and browser automation from losing a
+    // valid upload.
+    const selectedFile = inputRef.current?.files?.[0] ?? file;
+    if (!selectedFile || isUploading || !canWrite || workspaceArchived) return;
+
+    const validationError = localFileError(selectedFile);
     if (validationError) {
       setError(validationError);
       return;
@@ -122,7 +129,7 @@ export function DocumentUploadForm({
 
     try {
       const formData = new FormData();
-      formData.set("file", file);
+      formData.set("file", selectedFile);
 
       const response = await fetch(
         `/api/v1/workspaces/${workspaceId}/sources`,
