@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { KeyRound, Loader2, ShieldCheck } from "lucide-react";
-import { createClient } from "@iraqi-ai/supabase-client/browser";
+import {
+  createClient,
+  type SupabaseBrowserClient,
+} from "@iraqi-ai/supabase-client/browser";
 import { Button } from "@/components/ui/button";
 
 interface TotpFactorSummary {
@@ -11,7 +14,7 @@ interface TotpFactorSummary {
 }
 
 export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
-  const supabase = useMemo(() => createClient(), []);
+  const supabaseRef = useRef<SupabaseBrowserClient | null>(null);
   const [factors, setFactors] = useState<TotpFactorSummary[]>([]);
   const [factorId, setFactorId] = useState("");
   const [code, setCode] = useState("");
@@ -19,15 +22,24 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadFactors = async () => {
+  const loadFactors = async (client = supabaseRef.current) => {
+    if (!client) {
+      setError(
+        "تعذر بدء عميل التحقق في المتصفح / The browser MFA client is unavailable.",
+      );
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
-    const { data, error: factorError } =
-      await supabase.auth.mfa.listFactors();
+    const { data, error: factorError } = await client.auth.mfa.listFactors();
 
     if (factorError) {
-      setError("تعذر تحميل وسائل التحقق. أعد المحاولة / Could not load MFA factors.");
+      setError(
+        "تعذر تحميل وسائل التحقق. أعد المحاولة / Could not load MFA factors.",
+      );
       setLoading(false);
       return;
     }
@@ -50,14 +62,29 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
   };
 
   useEffect(() => {
-    void loadFactors();
-    // The browser client is intentionally stable for this component lifetime.
+    const client = createClient();
+    supabaseRef.current = client;
+    void loadFactors(client);
+
+    return () => {
+      supabaseRef.current = null;
+    };
+    // The client must be created only after browser mount; loadFactors is
+    // intentionally invoked with that exact stable instance.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [supabase]);
+  }, []);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!factorId || !/^\d{6,8}$/u.test(code) || verifying) return;
+    const supabase = supabaseRef.current;
+    if (
+      !supabase ||
+      !factorId ||
+      !/^\d{6,8}$/u.test(code) ||
+      verifying
+    ) {
+      return;
+    }
 
     setVerifying(true);
     setError(null);
@@ -105,7 +132,10 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
           جاري تحميل وسائل التحقق
         </div>
       ) : factors.length === 0 ? (
-        <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm leading-7 text-destructive">
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm leading-7 text-destructive"
+        >
           لا توجد وسيلة TOTP موثقة لهذا الحساب. سجّل الخروج ثم أعد المحاولة، أو
           افتح إعدادات أمان الحساب من جلسة موثقة.
         </div>
@@ -162,7 +192,10 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
       )}
 
       {error ? (
-        <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive">
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+        >
           {error}
         </div>
       ) : null}
@@ -172,7 +205,13 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
           type="submit"
           size="lg"
           className="rounded-full"
-          disabled={loading || factors.length === 0 || !factorId || code.length < 6 || verifying}
+          disabled={
+            loading ||
+            factors.length === 0 ||
+            !factorId ||
+            code.length < 6 ||
+            verifying
+          }
         >
           {verifying ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
