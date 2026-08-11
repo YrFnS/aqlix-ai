@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
 import { isSupabaseConfigured } from "@/config/env";
 import { signUpAction } from "@/lib/auth/actions";
+import {
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  passwordInputPattern,
+} from "@/lib/auth/password-policy";
 
 export const metadata: Metadata = {
   title: "إنشاء حساب",
@@ -28,7 +33,7 @@ const statusMessages: Record<
   "invalid-input": {
     tone: "error",
     message:
-      "اكتب بريداً صحيحاً، وكلمة مرور من 8 أحرف على الأقل، وتأكد من تطابقها / Enter a valid email, use at least 8 characters, and make sure both passwords match.",
+      "اكتب بريداً صحيحاً، واستخدم 12 حرفاً على الأقل تشمل حرفاً كبيراً وصغيراً ورقماً ورمزاً، وتأكد من تطابق الكلمتين / Enter a valid email and use at least 12 characters with uppercase, lowercase, a number, and a symbol.",
   },
   "registration-failed": {
     tone: "error",
@@ -124,8 +129,9 @@ export default async function RegisterPage({
               type="password"
               dir="ltr"
               autoComplete="new-password"
-              minLength={8}
-              maxLength={72}
+              minLength={PASSWORD_MIN_LENGTH}
+              maxLength={PASSWORD_MAX_LENGTH}
+              pattern={passwordInputPattern}
               required
               disabled={!configured}
               aria-describedby="password-help"
@@ -146,8 +152,9 @@ export default async function RegisterPage({
               type="password"
               dir="ltr"
               autoComplete="new-password"
-              minLength={8}
-              maxLength={72}
+              minLength={PASSWORD_MIN_LENGTH}
+              maxLength={PASSWORD_MAX_LENGTH}
+              pattern={passwordInputPattern}
               required
               disabled={!configured}
               aria-describedby="password-help"
@@ -157,8 +164,8 @@ export default async function RegisterPage({
         </div>
 
         <p id="password-help" className="text-xs leading-6 text-ink-subtle">
-          استخدم 8 أحرف على الأقل. قد تطلب البيئة التحقق من البريد قبل إنشاء
-          الجلسة الأولى، وتدير خدمة المصادقة كلمة المرور خارج تطبيق الويب.
+          استخدم 12 حرفاً على الأقل مع حرف كبير وحرف صغير ورقم ورمز. لا تستخدم
+          كلمة شائعة أو متوقعة، واحفظها في مدير كلمات مرور.
         </p>
 
         <Button
