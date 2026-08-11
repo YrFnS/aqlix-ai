@@ -112,7 +112,11 @@ jobs:
         run: bun run build
 
       - name: Run OpenRouter BYOK browser journey
-        run: bun run test:e2e:p5
+        working-directory: apps/web
+        run: >-
+          bunx playwright test
+          tests/e2e/p5/openrouter-byok-journey.spec.ts
+          --config=playwright.p5.config.ts
 
       - name: Upload OpenRouter evidence
         if: always()
