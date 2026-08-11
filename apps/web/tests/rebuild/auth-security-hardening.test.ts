@@ -129,6 +129,7 @@ describe("account password and MFA hardening", () => {
     const spec = readWeb("tests/e2e/p5/mfa-security-journey.spec.ts");
     const config = readWeb("playwright.p5.authenticated.config.ts");
     const workflow = readRepo(".github/workflows/ui-p5-mfa-security.yml");
+    const localAuthConfig = readRepo("supabase/config.toml");
 
     expect(spec).toContain("createHmac");
     expect(spec).toContain("totpCode");
@@ -145,6 +146,9 @@ describe("account password and MFA hardening", () => {
     expect(workflow).toContain("mfa-security-journey.spec.ts");
     expect(workflow).toContain("--trace=retain-on-failure");
     expect(workflow).toContain("bunx supabase start");
+    expect(localAuthConfig).toContain(
+      "[auth.mfa.totp]\nenroll_enabled = true\nverify_enabled = true",
+    );
   });
 
   test("keeps phone MFA and leaked-password claims honest", () => {
