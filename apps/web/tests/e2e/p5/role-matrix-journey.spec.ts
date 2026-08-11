@@ -140,7 +140,12 @@ test("enforces owner, editor, viewer, and outsider workspace capabilities", asyn
   await editorPage
     .getByLabel("عنوان اختياري")
     .fill("Editor-created role-matrix conversation");
-  await editorPage.getByRole("button", { name: "إنشاء وفتح", exact: true }).click();
+  await editorPage
+    .getByRole("button", {
+      name: "إنشاء وفتح المحادثة",
+      exact: true,
+    })
+    .click();
   await expect(editorPage).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
@@ -179,7 +184,10 @@ test("enforces owner, editor, viewer, and outsider workspace capabilities", asyn
   await viewerPage.goto(`/workspaces/${workspaceId}/conversations`);
   await waitForHydration(viewerPage);
   await expect(
-    viewerPage.getByRole("button", { name: "إنشاء وفتح", exact: true }),
+    viewerPage.getByRole("button", {
+      name: "إنشاء وفتح المحادثة",
+      exact: true,
+    }),
   ).toHaveCount(0);
   await viewerContext.close();
 
