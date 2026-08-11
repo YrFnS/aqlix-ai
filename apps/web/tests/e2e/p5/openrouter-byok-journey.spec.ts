@@ -8,6 +8,12 @@ function uniqueEmail(prefix: string): string {
   return `${prefix}-${crypto.randomUUID()}@example.test`;
 }
 
+function clientSurface(page: Page, name: string) {
+  return page
+    .locator(`[data-client-surface="${name}"][data-client-ready="true"]`)
+    .last();
+}
+
 async function waitForHydration(page: Page): Promise<void> {
   await expect(page.locator("html")).toHaveAttribute(
     "data-app-hydrated",
@@ -16,13 +22,10 @@ async function waitForHydration(page: Page): Promise<void> {
 }
 
 async function waitForClientSurface(page: Page, name: string): Promise<void> {
-  await expect(
-    page
-      .locator(
-        `[data-client-surface="${name}"][data-client-ready="true"]`,
-      )
-      .first(),
-  ).toHaveAttribute("data-client-ready", "true");
+  await expect(clientSurface(page, name)).toHaveAttribute(
+    "data-client-ready",
+    "true",
+  );
 }
 
 async function register(page: Page, email: string): Promise<void> {
@@ -43,10 +46,28 @@ async function openAiSettings(page: Page): Promise<void> {
 
 async function sendMessage(page: Page, content: string): Promise<void> {
   await waitForClientSurface(page, "conversation");
-  await page.getByLabel("اكتب رسالة").fill(content);
-  const sendButton = page.getByRole("button", { name: "إرسال" });
-  await expect(sendButton).toBeEnabled();
-  await sendButton.click();
+
+  // A newly created conversation can replace its hydrated shell once while
+  // the server component refreshes the persisted message count. Re-resolve
+  // the confirmed client surface and refill if that handoff happens between
+  // typing and submit instead of clicking a detached, empty composer.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const conversation = clientSurface(page, "conversation");
+    const input = conversation.getByLabel("اكتب رسالة");
+    const sendButton = conversation.getByRole("button", { name: "إرسال" });
+
+    await input.fill(content);
+    await expect(input).toHaveValue(content);
+
+    try {
+      await expect(sendButton).toBeEnabled({ timeout: 4_000 });
+      await sendButton.click({ timeout: 4_000 });
+      return;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await waitForClientSurface(page, "conversation");
+    }
+  }
 }
 
 async function conversationPayload(
