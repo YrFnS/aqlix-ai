@@ -131,7 +131,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     .first();
   await expect(groundedAssistantMessage).toBeVisible();
   await expect(
-    page.getByText("تم حفظ الاستجابة والمراجع القابلة للفتح.", {
+    page.getByText("حُفظت الاستجابة ومراجعها القابلة للفحص.", {
       exact: true,
     }),
   ).toBeVisible();
@@ -139,7 +139,12 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     name: new RegExp(`فتح المرجع S1 من ${documentName}`),
   });
   await expect(citationLink).toBeVisible();
-  await expect(page.getByText(/١ مرجع من ١ مقطع/)).toBeVisible();
+  await groundedAssistantMessage
+    .getByText("تفاصيل التوليد", { exact: true })
+    .click();
+  await expect(
+    groundedAssistantMessage.getByText(/١ مرجع من ١ مقطع/),
+  ).toBeVisible();
 
   let payload = await conversationPayload(
     context.request,
