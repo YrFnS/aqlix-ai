@@ -9,6 +9,10 @@ import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
 import { isSupabaseConfigured } from "@/config/env";
 import { signOutAction } from "@/lib/auth/actions";
+import {
+  getValidatedSessionAssurance,
+  SessionAssuranceError,
+} from "@/lib/auth/assurance";
 
 export const metadata: Metadata = {
   title: "التحقق بخطوتين",
@@ -55,20 +59,18 @@ export default async function MfaChallengePage({
     redirect(`/login?next=${encodeURIComponent(nextPath)}`);
   }
 
-  const { data: assurance, error: assuranceError } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-  if (assuranceError) {
-    redirect(
-      `/login?status=mfa-check-failed&next=${encodeURIComponent(nextPath)}`,
-    );
-  }
-
-  if (
-    assurance.currentLevel === "aal2" ||
-    assurance.nextLevel !== "aal2"
-  ) {
-    redirect(nextPath);
+  try {
+    const assurance = await getValidatedSessionAssurance(supabase, user);
+    if (!assurance.hasVerifiedFactor || assurance.currentLevel === "aal2") {
+      redirect(nextPath);
+    }
+  } catch (assuranceError) {
+    if (assuranceError instanceof SessionAssuranceError) {
+      redirect(
+        `/login?status=mfa-check-failed&next=${encodeURIComponent(nextPath)}`,
+      );
+    }
+    throw assuranceError;
   }
 
   return (
