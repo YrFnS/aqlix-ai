@@ -11,6 +11,11 @@ export interface AuthenticatedContext {
   supabase: SupabaseServerClient;
 }
 
+function mfaChallengePath(returnTo: string): string {
+  const params = new URLSearchParams({ next: returnTo });
+  return `/mfa?${params.toString()}`;
+}
+
 export async function getOptionalUser(): Promise<User | null> {
   if (!isSupabaseConfigured()) return null;
 
@@ -40,6 +45,21 @@ export async function requireAuthenticatedUser(
 
   if (error || !user) {
     redirect(`/login?${loginParams.toString()}`);
+  }
+
+  const { data: assurance, error: assuranceError } =
+    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+  if (assuranceError) {
+    loginParams.set("status", "mfa-check-failed");
+    redirect(`/login?${loginParams.toString()}`);
+  }
+
+  if (
+    assurance.nextLevel === "aal2" &&
+    assurance.currentLevel !== assurance.nextLevel
+  ) {
+    redirect(mfaChallengePath(returnTo));
   }
 
   return { user, supabase };
