@@ -1,93 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import {
   AlertTriangle,
   Check,
   ChevronDown,
   Clipboard,
-  ExternalLink,
   FileClock,
-  GitBranch,
   RefreshCw,
-  RotateCcw,
   Save,
 } from "lucide-react";
-import type { DraftDetail, DraftKind } from "@iraqi-ai/types";
+import type { DraftKind } from "@iraqi-ai/types";
 import { Button } from "@/components/ui/button";
 import { useDraftEditorContext } from "./draft-editor-context";
-import { formatTimestamp, kindOptions } from "./draft-editor-utils";
-
-function DraftVersionCard({
-  version,
-}: {
-  version: DraftDetail["versions"][number];
-}) {
-  const {
-    workspaceId,
-    detail,
-    canEdit,
-    dirty,
-    isSaving,
-    restoreVersion,
-  } = useDraftEditorContext();
-
-  return (
-    <article className="rounded-2xl border border-border/70 bg-background p-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-              v{version.versionNumber}
-            </span>
-            <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-muted-foreground">
-              {version.sourceKind}
-            </span>
-            {version.versionNumber === detail.draft.currentVersion && (
-              <span className="text-xs font-semibold text-foreground">
-                الحالي
-              </span>
-            )}
-          </div>
-          <p dir="auto" className="mt-3 truncate font-semibold">
-            {version.title}
-          </p>
-          <p className="mt-2 line-clamp-2 text-xs leading-6 text-muted-foreground">
-            {version.content.replace(/\s+/gu, " ") || "Empty snapshot"}
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {formatTimestamp(version.createdAt)}
-            {version.restoredFromVersion
-              ? ` · restored from v${version.restoredFromVersion}`
-              : ""}
-          </p>
-        </div>
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <Link
-            href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
-            className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-semibold transition-colors hover:bg-secondary"
-          >
-            عرض اللقطة
-            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
-          {canEdit && version.versionNumber !== detail.draft.currentVersion && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="rounded-full"
-              disabled={dirty || isSaving}
-              onClick={() => void restoreVersion(version.versionNumber)}
-            >
-              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-              استعادة
-            </Button>
-          )}
-        </div>
-      </div>
-    </article>
-  );
-}
+import { kindOptions } from "./draft-editor-utils";
 
 export function DraftEditorMain() {
   const {
@@ -95,8 +20,6 @@ export function DraftEditorMain() {
     editor,
     canEdit,
     dirty,
-    visibleVersions,
-    olderVersions,
     saveState,
     isSaving,
     saveError,
@@ -107,7 +30,7 @@ export function DraftEditorMain() {
   } = useDraftEditorContext();
 
   return (
-    <main className="min-w-0 space-y-5">
+    <main className="min-w-0">
       <section className="rounded-3xl border border-border/70 bg-card p-5 shadow-sm sm:p-7">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -273,49 +196,6 @@ export function DraftEditorMain() {
           <p className="mt-3 text-sm leading-7 text-destructive" role="alert">
             {saveError}
           </p>
-        )}
-      </section>
-
-      <section className="rounded-3xl border border-border/70 bg-card p-5 sm:p-7">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-semibold text-primary">سجل النسخ</p>
-            <h2 className="mt-1 font-arabic-heading text-xl font-semibold">
-              أحدث الإصدارات
-            </h2>
-            <p className="mt-2 text-xs leading-6 text-muted-foreground">
-              تظهر أحدث ثلاث لقطات أولاً، وتبقى النسخ الأقدم متاحة عند الحاجة.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-secondary p-2.5 text-primary">
-            <GitBranch className="h-4 w-4" aria-hidden="true" />
-          </div>
-        </div>
-
-        <div className="mt-5 space-y-3">
-          {visibleVersions.map((version) => (
-            <DraftVersionCard key={version.id} version={version} />
-          ))}
-        </div>
-
-        {olderVersions.length > 0 && (
-          <details className="group mt-3 rounded-2xl border border-border/70 bg-secondary/20">
-            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-details-marker]:hidden">
-              عرض الإصدارات الأقدم
-              <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                {olderVersions.length}
-                <ChevronDown
-                  className="h-4 w-4 transition-transform group-open:rotate-180"
-                  aria-hidden="true"
-                />
-              </span>
-            </summary>
-            <div className="space-y-3 border-t border-border/70 p-3">
-              {olderVersions.map((version) => (
-                <DraftVersionCard key={version.id} version={version} />
-              ))}
-            </div>
-          </details>
         )}
       </section>
     </main>
