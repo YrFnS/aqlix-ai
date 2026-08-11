@@ -17,9 +17,9 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { createClient } from "@iraqi-ai/supabase-client/browser";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
+import { createAuthBrowserClient } from "@/lib/auth/browser-client";
 
 interface TotpFactorSummary {
   id: string;
@@ -43,7 +43,7 @@ function formatTimestamp(value: string | null): string {
 }
 
 export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
-  const supabase = useMemo(() => createClient(), []);
+  const supabase = useMemo(() => createAuthBrowserClient(), []);
   const [factors, setFactors] = useState<TotpFactorSummary[]>([]);
   const [pending, setPending] = useState<PendingEnrollment | null>(null);
   const [friendlyName, setFriendlyName] = useState("Tuppra Authenticator");
@@ -211,13 +211,19 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
   return (
     <div className="space-y-6">
       {notice ? (
-        <div role="status" className="rounded-xl border border-primary/30 bg-brand-soft px-4 py-3 text-sm leading-7">
+        <div
+          role="status"
+          className="rounded-xl border border-primary/30 bg-brand-soft px-4 py-3 text-sm leading-7"
+        >
           {notice}
         </div>
       ) : null}
 
       {error ? (
-        <div role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive">
+        <div
+          role="alert"
+          className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm leading-7 text-destructive"
+        >
           {error}
         </div>
       ) : null}
@@ -226,7 +232,9 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
         <Surface tone="raised" elevation="sm" radius="2xl" padding="lg">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold text-primary">تطبيق المصادقة</p>
+              <p className="text-xs font-semibold text-primary">
+                تطبيق المصادقة
+              </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
                 التحقق بخطوتين عبر TOTP
               </h2>
@@ -241,7 +249,10 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
           </div>
 
           {loading ? (
-            <div role="status" className="mt-6 flex min-h-28 items-center justify-center gap-3 rounded-xl border border-line/70 bg-surface-sunken text-sm text-ink-muted">
+            <div
+              role="status"
+              className="mt-6 flex min-h-28 items-center justify-center gap-3 rounded-xl border border-line/70 bg-surface-sunken text-sm text-ink-muted"
+            >
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               جاري تحميل وسائل التحقق
             </div>
@@ -321,7 +332,10 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
 
         <Surface tone="muted" elevation="none" radius="2xl" padding="md">
           <div className="flex items-start gap-3">
-            <Smartphone className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+            <Smartphone
+              className="mt-1 h-4 w-4 shrink-0 text-primary"
+              aria-hidden="true"
+            />
             <div>
               <h2 className="text-sm font-semibold">حالة الحساب</h2>
               <p dir="ltr" className="mt-2 break-all text-xs text-ink-muted">
@@ -340,7 +354,9 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
         <Surface tone="raised" elevation="sm" radius="2xl" padding="lg">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold text-primary">إعداد وسيلة جديدة</p>
+              <p className="text-xs font-semibold text-primary">
+                إعداد وسيلة جديدة
+              </p>
               <h2 className="mt-2 font-arabic-heading text-2xl font-semibold">
                 امسح الرمز ثم تحقق
               </h2>
@@ -410,7 +426,10 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
               </div>
 
               <form onSubmit={verifyEnrollment} className="space-y-3">
-                <label htmlFor="enrollment-code" className="text-sm font-semibold">
+                <label
+                  htmlFor="enrollment-code"
+                  className="text-sm font-semibold"
+                >
                   الرمز الحالي من التطبيق
                 </label>
                 <input
