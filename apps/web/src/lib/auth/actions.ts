@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import { evaluateSessionAssurance } from "./assurance";
 import { strongPasswordSchema } from "./password-policy";
 
 const emailSchema = z.string().trim().min(1).email();
@@ -73,24 +74,19 @@ export async function signInAction(formData: FormData): Promise<never> {
   }
 
   const supabase = await createActionClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
     accountRedirect("/login", "invalid-credentials", nextPath);
   }
 
-  const { data: assurance, error: assuranceError } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-  if (assuranceError) {
+  if (!data.user || !data.session) {
     await supabase.auth.signOut();
     accountRedirect("/login", "mfa-check-failed", nextPath);
   }
 
-  if (
-    assurance.nextLevel === "aal2" &&
-    assurance.currentLevel !== assurance.nextLevel
-  ) {
+  const assurance = evaluateSessionAssurance(data.user, data.session);
+  if (assurance.requiresChallenge) {
     mfaRedirect(nextPath);
   }
 
