@@ -28,12 +28,17 @@ const statusMessages: Record<
   "invalid-input": {
     tone: "error",
     message:
-      "اكتب بريداً صحيحاً وكلمة مرور من 8 أحرف على الأقل / Enter a valid email and a password of at least 8 characters.",
+      "اكتب بريداً صحيحاً وكلمة المرور كاملة / Enter a valid email and your complete password.",
   },
   "invalid-credentials": {
     tone: "error",
     message:
       "تعذر تسجيل الدخول. تحقق من البريد وكلمة المرور / Sign-in failed. Check the email and password.",
+  },
+  "mfa-check-failed": {
+    tone: "error",
+    message:
+      "تعذر التحقق من مستوى حماية الجلسة. أعد تسجيل الدخول لاحقاً / The session assurance level could not be verified. Sign in again later.",
   },
   "check-email": {
     tone: "success",
@@ -142,7 +147,7 @@ export default async function LoginPage({
             type="password"
             dir="ltr"
             autoComplete="current-password"
-            minLength={8}
+            minLength={1}
             maxLength={72}
             required
             disabled={!configured}
