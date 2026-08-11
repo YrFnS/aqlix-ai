@@ -5,19 +5,20 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import { strongPasswordSchema } from "./password-policy";
 
 const emailSchema = z.string().trim().min(1).email();
-const passwordSchema = z.string().min(8).max(72);
+const signInPasswordSchema = z.string().min(1).max(72);
 
 const signInSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: signInPasswordSchema,
 });
 
 const signUpSchema = z
   .object({
     email: emailSchema,
-    password: passwordSchema,
+    password: strongPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((input) => input.password === input.confirmPassword, {
@@ -37,6 +38,11 @@ function accountRedirect(
 ): never {
   const params = new URLSearchParams({ status, next: nextPath });
   redirect(`${page}?${params.toString()}`);
+}
+
+function mfaRedirect(nextPath: string): never {
+  const params = new URLSearchParams({ next: nextPath });
+  redirect(`/mfa?${params.toString()}`);
 }
 
 async function getRequestOrigin(): Promise<string | null> {
@@ -71,6 +77,21 @@ export async function signInAction(formData: FormData): Promise<never> {
 
   if (error) {
     accountRedirect("/login", "invalid-credentials", nextPath);
+  }
+
+  const { data: assurance, error: assuranceError } =
+    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+  if (assuranceError) {
+    await supabase.auth.signOut();
+    accountRedirect("/login", "mfa-check-failed", nextPath);
+  }
+
+  if (
+    assurance.nextLevel === "aal2" &&
+    assurance.currentLevel !== assurance.nextLevel
+  ) {
+    mfaRedirect(nextPath);
   }
 
   redirect(nextPath);
