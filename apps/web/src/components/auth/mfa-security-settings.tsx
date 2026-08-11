@@ -10,7 +10,7 @@ import {
   Check,
   Clipboard,
   KeyRound,
-  LoaderCircle,
+  Loader2,
   Plus,
   ShieldCheck,
   Smartphone,
@@ -242,7 +242,7 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
 
           {loading ? (
             <div role="status" className="mt-6 flex min-h-28 items-center justify-center gap-3 rounded-xl border border-line/70 bg-surface-sunken text-sm text-ink-muted">
-              <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
               جاري تحميل وسائل التحقق
             </div>
           ) : verifiedFactors.length > 0 ? (
@@ -309,7 +309,7 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
                 onClick={() => void startEnrollment()}
               >
                 {working ? (
-                  <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                 ) : (
                   <Plus className="h-4 w-4" aria-hidden="true" />
                 )}
@@ -439,7 +439,7 @@ export function MfaSecuritySettings({ userEmail }: { userEmail: string }) {
                   disabled={working || verificationCode.length < 6}
                 >
                   {working ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
                     <KeyRound className="h-4 w-4" aria-hidden="true" />
                   )}
