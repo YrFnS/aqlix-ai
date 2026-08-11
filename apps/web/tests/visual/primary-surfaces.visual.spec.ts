@@ -112,7 +112,9 @@ test("keeps the primary Tuppra journey visually stable", async ({
   expect(workspaceId).toBeTruthy();
 
   await page.goto("/workspaces");
-  await expect(page.getByText("Visual QA مساحة العمل", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Visual QA مساحة العمل", { exact: true }).last(),
+  ).toBeVisible();
   await capture(page, "workspaces.png");
 
   await page.goto(`/workspaces/${workspaceId}`);
@@ -168,8 +170,13 @@ test("keeps the primary Tuppra journey visually stable", async ({
   ).toBeVisible();
   await capture(page, "conversation-detail.png");
 
-  await page.getByLabel("البداية").selectOption("memo");
-  await page.getByRole("button", { name: "إنشاء المسودة" }).click();
+  const conversationDetails = page.getByRole("complementary", {
+    name: "تفاصيل المحادثة",
+  });
+  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
+  await conversationDetails
+    .getByRole("button", { name: "إنشاء المسودة" })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/u,
   );
