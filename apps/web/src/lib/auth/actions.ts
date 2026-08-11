@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -82,8 +83,11 @@ export async function signInAction(formData: FormData): Promise<never> {
 
   if (!data.user || !data.session) {
     await supabase.auth.signOut();
+    revalidatePath("/", "layout");
     accountRedirect("/login", "mfa-check-failed", nextPath);
   }
+
+  revalidatePath("/", "layout");
 
   const assurance = evaluateSessionAssurance(data.user, data.session);
   if (assurance.requiresChallenge) {
@@ -129,6 +133,7 @@ export async function signUpAction(formData: FormData): Promise<never> {
   }
 
   if (data.session) {
+    revalidatePath("/", "layout");
     redirect(nextPath);
   }
 
@@ -141,5 +146,6 @@ export async function signOutAction(): Promise<never> {
     await supabase.auth.signOut();
   }
 
+  revalidatePath("/", "layout");
   redirect("/login?status=signed-out");
 }
