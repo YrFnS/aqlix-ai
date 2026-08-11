@@ -90,10 +90,13 @@ jobs:
 
       - name: Run TOTP account security journey across all engines
         working-directory: apps/web
+        env:
+          DEBUG: pw:webserver
         run: >-
           bunx playwright test
           tests/e2e/p5/mfa-security-journey.spec.ts
           --config=playwright.p5.authenticated.config.ts
+          --trace=retain-on-failure
 
       - name: Upload MFA browser evidence
         if: always()
