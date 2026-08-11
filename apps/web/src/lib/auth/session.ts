@@ -5,6 +5,10 @@ import {
   type SupabaseServerClient,
 } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import {
+  getValidatedSessionAssurance,
+  SessionAssuranceError,
+} from "./assurance";
 
 export interface AuthenticatedContext {
   user: User;
@@ -47,19 +51,17 @@ export async function requireAuthenticatedUser(
     redirect(`/login?${loginParams.toString()}`);
   }
 
-  const { data: assurance, error: assuranceError } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-  if (assuranceError) {
-    loginParams.set("status", "mfa-check-failed");
-    redirect(`/login?${loginParams.toString()}`);
-  }
-
-  if (
-    assurance.nextLevel === "aal2" &&
-    assurance.currentLevel !== assurance.nextLevel
-  ) {
-    redirect(mfaChallengePath(returnTo));
+  try {
+    const assurance = await getValidatedSessionAssurance(supabase, user);
+    if (assurance.requiresChallenge) {
+      redirect(mfaChallengePath(returnTo));
+    }
+  } catch (assuranceError) {
+    if (assuranceError instanceof SessionAssuranceError) {
+      loginParams.set("status", "mfa-check-failed");
+      redirect(`/login?${loginParams.toString()}`);
+    }
+    throw assuranceError;
   }
 
   return { user, supabase };
