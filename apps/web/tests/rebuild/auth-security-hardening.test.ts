@@ -41,25 +41,45 @@ describe("account password and MFA hardening", () => {
     expect(actions).toContain("signInPasswordSchema");
   });
 
-  test("requires AAL2 only for accounts that enrolled a verified factor", () => {
+  test("requires AAL2 only for accounts with a verified factor", () => {
+    const assurance = readWeb("src/lib/auth/assurance.ts");
     const actions = readWeb("src/lib/auth/actions.ts");
     const pageSession = readWeb("src/lib/auth/session.ts");
     const apiSession = readWeb("src/lib/api/auth.ts");
     const challengePage = readWeb("src/app/(auth)/mfa/page.tsx");
 
-    for (const source of [actions, pageSession, apiSession]) {
-      expect(source).toContain("getAuthenticatorAssuranceLevel");
-      expect(source).toContain('nextLevel === "aal2"');
-      expect(source).toContain("currentLevel !== assurance.nextLevel");
-    }
+    expect(assurance).toContain("user.factors ?? []");
+    expect(assurance).toContain('factor.status === "verified"');
+    expect(assurance).toContain('factor.factor_type === "totp"');
+    expect(assurance).toContain('payload.aal === "aal1"');
+    expect(assurance).toContain('payload.aal === "aal2"');
+    expect(assurance).toContain("Buffer.from(encodedPayload, \"base64url\")");
+    expect(assurance).toContain("await supabase.auth.getSession()");
+    expect(assurance).toContain(
+      'hasVerifiedFactor && currentLevel !== "aal2"',
+    );
+    expect(assurance).toContain(
+      "The account identity must be validated with auth.getUser()",
+    );
 
-    expect(challengePage).toContain("getAuthenticatorAssuranceLevel");
+    expect(actions).toContain("evaluateSessionAssurance");
+    expect(actions).toContain("assurance.requiresChallenge");
     expect(actions).toContain("mfaRedirect(nextPath)");
+    expect(pageSession).toContain("getValidatedSessionAssurance");
+    expect(pageSession).toContain("assurance.requiresChallenge");
     expect(pageSession).toContain("mfaChallengePath(returnTo)");
+    expect(apiSession).toContain("getValidatedSessionAssurance");
     expect(apiSession).toContain('"MFA_REQUIRED"');
     expect(apiSession).toContain("status: 403");
-    expect(challengePage).toContain('currentLevel === "aal2"');
-    expect(challengePage).toContain('nextLevel !== "aal2"');
+    expect(challengePage).toContain("getValidatedSessionAssurance");
+    expect(challengePage).toContain("!assurance.hasVerifiedFactor");
+    expect(challengePage).toContain('assurance.currentLevel === "aal2"');
+
+    for (const source of [actions, pageSession, apiSession, challengePage]) {
+      expect(source).not.toContain(
+        "auth.mfa.getAuthenticatorAssuranceLevel",
+      );
+    }
   });
 
   test("ships complete TOTP enrollment challenge and removal surfaces", () => {
