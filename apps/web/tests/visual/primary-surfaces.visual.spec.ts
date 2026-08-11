@@ -67,6 +67,16 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/u);
 }
 
+async function enableWorkspaceGrounding(page: Page): Promise<void> {
+  const toggle = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+}
+
 test("keeps the primary Tuppra journey visually stable", async ({
   context,
   page,
@@ -145,7 +155,7 @@ test("keeps the primary Tuppra journey visually stable", async ({
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/u,
   );
-  await page.getByLabel(/استخدام مصادر مساحة العمل/u).check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the saved launch decision confirm?");
