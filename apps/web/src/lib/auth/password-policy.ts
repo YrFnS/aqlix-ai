@@ -22,8 +22,24 @@ function normalizedPassword(value: string): string {
   return value.toLocaleLowerCase("en-US").replace(/[^a-z0-9]/gu, "");
 }
 
-function isRepeatedCharacterPassword(value: string): boolean {
-  return new Set(value).size <= 2;
+function isLowEntropyPassword(value: string): boolean {
+  const normalized = value.toLocaleLowerCase("en-US");
+  const characters = Array.from(normalized);
+  const counts = new Map<string, number>();
+
+  for (const character of characters) {
+    counts.set(character, (counts.get(character) ?? 0) + 1);
+  }
+
+  const dominantCharacterCount = Math.max(...counts.values());
+  const dominantCharacterRatio = dominantCharacterCount / characters.length;
+
+  return (
+    counts.size <= 3 ||
+    dominantCharacterRatio >= 0.6 ||
+    /(.)\1{3,}/u.test(normalized) ||
+    /^(.{1,4})\1{2,}/u.test(normalized)
+  );
 }
 
 function isCommonPassword(value: string): boolean {
@@ -44,7 +60,7 @@ export const strongPasswordSchema = z
   .regex(/[0-9]/u)
   .regex(/[^A-Za-z0-9]/u)
   .superRefine((password, context) => {
-    if (isCommonPassword(password) || isRepeatedCharacterPassword(password)) {
+    if (isCommonPassword(password) || isLowEntropyPassword(password)) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         message: "Password is too common or predictable.",
