@@ -48,6 +48,34 @@ export async function requireApiUser(request: Request): Promise<ApiAuthResult> {
       };
     }
 
+    const { data: assurance, error: assuranceError } =
+      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+
+    if (assuranceError) {
+      return {
+        ok: false,
+        response: jsonFailure(
+          "SERVICE_UNAVAILABLE",
+          "The account assurance level could not be verified.",
+          { status: 503, requestId },
+        ),
+      };
+    }
+
+    if (
+      assurance.nextLevel === "aal2" &&
+      assurance.currentLevel !== assurance.nextLevel
+    ) {
+      return {
+        ok: false,
+        response: jsonFailure(
+          "MFA_REQUIRED",
+          "Complete multi-factor verification before continuing.",
+          { status: 403, requestId },
+        ),
+      };
+    }
+
     return {
       ok: true,
       context: { requestId, user, supabase },
