@@ -30,7 +30,10 @@ export function DraftToolsPanel() {
 
   return (
     <div className="space-y-4">
-      <details className="group rounded-3xl border border-border/70 bg-card">
+      <details
+        open={detail.provenance.length > 0}
+        className="group rounded-3xl border border-border/70 bg-card"
+      >
         <DisclosureSummary
           title="المحادثة والمصادر"
           description="افتح الأصل أو راجع المراجع المرتبطة"
