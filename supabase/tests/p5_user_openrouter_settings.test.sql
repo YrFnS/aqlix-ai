@@ -66,6 +66,8 @@ $$;
 select *
 from public.set_user_openrouter_model('fixture/live-free-model:free');
 
+-- The compatibility resolver remains account-scoped during the staged rollout.
+-- The application itself uses the service-role resolver tested below.
 do $$
 declare
   runtime record;
@@ -77,11 +79,73 @@ begin
   if credential.api_key <> 'openrouter-test-user-owned-key-2026'
     or runtime.api_key <> 'openrouter-test-user-owned-key-2026'
     or runtime.model_id <> 'fixture/live-free-model:free' then
-    raise exception 'OpenRouter runtime could not resolve the owner credential and model';
+    raise exception 'compatibility resolver lost the owner credential or model';
   end if;
 end;
 $$;
 
+-- Browser/authenticated sessions cannot call the new server-only resolver.
+do $$
+begin
+  begin
+    perform public.resolve_user_openrouter_credential_for_user(
+      '81111111-1111-4111-8111-111111111111'
+    );
+    raise exception 'authenticated called the server-only credential resolver';
+  exception
+    when insufficient_privilege then null;
+  end;
+
+  begin
+    perform public.resolve_user_openrouter_runtime_for_user(
+      '81111111-1111-4111-8111-111111111111'
+    );
+    raise exception 'authenticated called the server-only runtime resolver';
+  exception
+    when insufficient_privilege then null;
+  end;
+end;
+$$;
+
+reset role;
+set role service_role;
+
+do $$
+declare
+  runtime record;
+  credential record;
+begin
+  select *
+  into credential
+  from public.resolve_user_openrouter_credential_for_user(
+    '81111111-1111-4111-8111-111111111111'
+  );
+
+  select *
+  into runtime
+  from public.resolve_user_openrouter_runtime_for_user(
+    '81111111-1111-4111-8111-111111111111'
+  );
+
+  if credential.api_key <> 'openrouter-test-user-owned-key-2026'
+    or runtime.api_key <> 'openrouter-test-user-owned-key-2026'
+    or runtime.model_id <> 'fixture/live-free-model:free' then
+    raise exception 'service-role resolver could not resolve the requested account';
+  end if;
+
+  if exists (
+    select 1
+    from public.resolve_user_openrouter_credential_for_user(
+      '82222222-2222-4222-8222-222222222222'
+    )
+  ) then
+    raise exception 'service-role resolver returned a credential for an unconfigured account';
+  end if;
+end;
+$$;
+
+reset role;
+set role authenticated;
 select set_config(
   'request.jwt.claim.sub',
   '82222222-2222-4222-8222-222222222222',
