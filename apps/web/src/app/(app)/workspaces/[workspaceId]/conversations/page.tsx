@@ -205,7 +205,7 @@ export default async function ConversationsPage({
               </div>
               <Button type="submit" className="w-full rounded-xl">
                 <MessageSquareText className="h-4 w-4" aria-hidden="true" />
-                إنشاء وفتح
+                إنشاء وفتح المحادثة
               </Button>
             </form>
           ) : (
