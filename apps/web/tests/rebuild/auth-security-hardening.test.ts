@@ -41,6 +41,13 @@ describe("account password and MFA hardening", () => {
     expect(actions).toContain("signInPasswordSchema");
   });
 
+  test("invalidates cached layouts after authentication state changes", () => {
+    const actions = readWeb("src/lib/auth/actions.ts");
+
+    expect(actions).toContain('import { revalidatePath } from "next/cache"');
+    expect(actions.match(/revalidatePath\("\/", "layout"\);/gu)).toHaveLength(4);
+  });
+
   test("requires AAL2 only for accounts with a verified factor", () => {
     const assurance = readWeb("src/lib/auth/assurance.ts");
     const actions = readWeb("src/lib/auth/actions.ts");
