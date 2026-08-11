@@ -142,7 +142,7 @@ export function DraftEditorMain() {
             {saveState === "saving"
               ? "جاري الحفظ"
               : saveState === "saved"
-                ? "محفوظ"
+                ? `محفوظ · v${detail.draft.currentVersion}`
                 : saveState === "error"
                   ? "فشل الحفظ"
                   : "تغييرات غير محفوظة"}
