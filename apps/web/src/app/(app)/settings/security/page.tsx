@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, KeyRound, ShieldCheck, Smartphone } from "lucide-react";
-import { MfaSecuritySettings } from "@/components/auth/mfa-security-settings";
+import { MfaSecuritySettingsClient } from "@/components/auth/mfa-security-settings-client";
 import { ClientReadyBoundary } from "@/components/system/client-ready-boundary";
 import { Button } from "@/components/ui/button";
 import { PageHeader, PageShell } from "@/components/ui/page-shell";
@@ -83,7 +83,7 @@ export default async function AccountSecurityPage() {
       </div>
 
       <ClientReadyBoundary name="mfa-security-settings">
-        <MfaSecuritySettings
+        <MfaSecuritySettingsClient
           userEmail={user.email ?? "Authenticated account"}
         />
       </ClientReadyBoundary>
