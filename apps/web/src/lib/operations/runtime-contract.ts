@@ -65,6 +65,11 @@ const runtimeSchema = z
 			.string()
 			.trim()
 			.min(1, "Supabase public key is required"),
+		supabaseServiceRoleKey: z
+			.string()
+			.trim()
+			.min(1, "Supabase service role key is required")
+			.optional(),
 		provider: providerSchema,
 		openAiApiKey: z.string().trim().min(1).optional(),
 		openAiModel: z.string().trim().min(1).max(255).optional(),
@@ -102,6 +107,15 @@ const runtimeSchema = z
 						"The fixture provider is forbidden in staging and production",
 				});
 			}
+		}
+
+		if (value.provider === "openrouter" && !value.supabaseServiceRoleKey) {
+			context.addIssue({
+				code: z.ZodIssueCode.custom,
+				path: ["supabaseServiceRoleKey"],
+				message:
+					"OpenRouter Vault resolution requires a server-only Supabase service role key",
+			});
 		}
 
 		if (value.provider === "openai") {
@@ -171,6 +185,8 @@ export function parseOperationalRuntimeContract(
 		releaseSha: resolveReleaseSha(environment) ?? undefined,
 		supabaseUrl: environment.NEXT_PUBLIC_SUPABASE_URL?.trim() || "",
 		supabaseAnonKey: environment.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || "",
+		supabaseServiceRoleKey:
+			environment.SUPABASE_SERVICE_ROLE_KEY?.trim() || undefined,
 		provider: environment.AI_PROVIDER?.trim() || "openrouter",
 		openAiApiKey: environment.OPENAI_API_KEY?.trim() || undefined,
 		openAiModel: environment.OPENAI_MODEL?.trim() || undefined,
