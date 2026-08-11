@@ -75,21 +75,32 @@ describe("account password and MFA hardening", () => {
     const challenge = readWeb(
       "src/components/auth/mfa-challenge-form.tsx",
     );
+    const browserClient = readWeb("src/lib/auth/browser-client.ts");
     const aiSettings = readWeb("src/app/(app)/settings/ai/page.tsx");
 
     expect(settingsPage).toContain('name="mfa-security-settings"');
     expect(settingsPage).toContain("MfaSecuritySettingsClient");
     expect(settingsClient).toContain("dynamic(");
     expect(settingsClient).toContain("ssr: false");
+    expect(browserClient).toContain("requireSupabasePublicConfig");
+    expect(browserClient).toContain("createBrowserClient<Database>");
+    expect(settings).toContain("createAuthBrowserClient");
+    expect(settings).not.toContain(
+      '@iraqi-ai/supabase-client/browser',
+    );
     expect(settings).toContain("supabase.auth.mfa.enroll");
     expect(settings).toContain("factorType: \"totp\"");
     expect(settings).toContain("challengeAndVerify");
     expect(settings).toContain("supabase.auth.mfa.unenroll");
     expect(settings).toContain('data-testid="mfa-enrollment-secret"');
-    expect(challenge).toContain("useRef<SupabaseBrowserClient | null>");
+    expect(challenge).toContain("useRef<AuthBrowserClient | null>");
+    expect(challenge).toContain("createAuthBrowserClient");
     expect(challenge).toContain("client.auth.mfa.listFactors");
     expect(challenge).toContain("challengeAndVerify");
     expect(challenge).toContain('autoComplete="one-time-code"');
+    expect(challenge).not.toContain(
+      '@iraqi-ai/supabase-client/browser',
+    );
     expect(challenge).not.toContain("useMemo(() => createClient()");
     expect(aiSettings).toContain('href="/settings/security"');
   });
@@ -104,6 +115,7 @@ describe("account password and MFA hardening", () => {
     expect(spec).toContain("mfa-enrollment-secret");
     expect(spec).toContain("تحقق وادخل");
     expect(spec).toContain("تمت إزالة وسيلة التحقق من الحساب");
+    expect(spec).toContain("collectRuntimeErrors");
     expect(config).toContain('name: "p5-authenticated-chromium"');
     expect(config).toContain('name: "p5-authenticated-firefox"');
     expect(config).toContain('name: "p5-authenticated-webkit"');
@@ -111,6 +123,7 @@ describe("account password and MFA hardening", () => {
       "playwright install --with-deps chromium firefox webkit",
     );
     expect(workflow).toContain("mfa-security-journey.spec.ts");
+    expect(workflow).toContain("--trace=retain-on-failure");
     expect(workflow).toContain("bunx supabase start");
   });
 
