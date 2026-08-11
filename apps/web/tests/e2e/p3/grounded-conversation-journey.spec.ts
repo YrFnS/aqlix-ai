@@ -15,6 +15,19 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+async function enableWorkspaceGrounding(page: Page): Promise<void> {
+  const toggle = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+
+  if ((await toggle.getAttribute("aria-pressed")) !== "true") {
+    await toggle.click();
+  }
+
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+}
+
 async function conversationPayload(
   request: APIRequestContext,
   workspaceId: string,
@@ -104,8 +117,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   expect(conversationId).toBeTruthy();
   const conversationUrl = `/workspaces/${workspaceId}/conversations/${conversationId}`;
 
-  const groundingToggle = page.getByLabel(/استخدام مصادر مساحة العمل/);
-  await groundingToggle.check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");
@@ -196,7 +208,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     fileNameSnapshot: documentName,
   });
 
-  await page.getByLabel(/استخدام مصادر مساحة العمل/).check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");
