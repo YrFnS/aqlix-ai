@@ -33,7 +33,11 @@ describe("focused work surfaces", () => {
     expect(controller).toContain(
       "const olderVersions = detail.versions.slice(3)",
     );
+    expect(editor).toContain("function DraftVersionSidebar");
+    expect(editor).toContain("versions={<DraftVersionSidebar />}");
     expect(main).toContain("خيارات المسودة");
+    expect(main).not.toContain("DraftVersionCard");
+    expect(main).not.toContain("restoreVersion");
     expect(tools).toContain("المحادثة والمصادر");
     expect(tools).toContain("تصدير النسخة المحفوظة");
     expect(tools).toContain("حذف المسودة نهائياً");
