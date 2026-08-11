@@ -4,6 +4,10 @@ import {
   type SupabaseServerClient,
 } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import {
+  getValidatedSessionAssurance,
+  SessionAssuranceError,
+} from "@/lib/auth/assurance";
 import { getRequestId, jsonFailure } from "./responses";
 
 export interface ApiAuthContext {
@@ -48,24 +52,8 @@ export async function requireApiUser(request: Request): Promise<ApiAuthResult> {
       };
     }
 
-    const { data: assurance, error: assuranceError } =
-      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-    if (assuranceError) {
-      return {
-        ok: false,
-        response: jsonFailure(
-          "SERVICE_UNAVAILABLE",
-          "The account assurance level could not be verified.",
-          { status: 503, requestId },
-        ),
-      };
-    }
-
-    if (
-      assurance.nextLevel === "aal2" &&
-      assurance.currentLevel !== assurance.nextLevel
-    ) {
+    const assurance = await getValidatedSessionAssurance(supabase, user);
+    if (assurance.requiresChallenge) {
       return {
         ok: false,
         response: jsonFailure(
@@ -90,7 +78,9 @@ export async function requireApiUser(request: Request): Promise<ApiAuthResult> {
       ok: false,
       response: jsonFailure(
         "SERVICE_UNAVAILABLE",
-        "The account service is temporarily unavailable.",
+        error instanceof SessionAssuranceError
+          ? "The account assurance level could not be verified."
+          : "The account service is temporarily unavailable.",
         { status: 503, requestId },
       ),
     };
