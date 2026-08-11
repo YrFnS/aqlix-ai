@@ -56,17 +56,31 @@ export default async function AiSettingsPage() {
         title="إعدادات الذكاء الاصطناعي"
         description="خطوتان فقط: اربط مفتاح OpenRouter الخاص بك، ثم اختر النموذج الذي يناسب عملك. يمكنك تغيير الاختيار أو فصل الاتصال لاحقاً."
         actions={
-          <Button asChild variant="outline" className="rounded-full">
-            <Link href="/workspaces">
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              مساحات العمل
-            </Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/settings/security">
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                أمان الحساب
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/workspaces">
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                مساحات العمل
+              </Link>
+            </Button>
+          </div>
         }
       />
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Surface tone="raised" elevation="xs" radius="xl" padding="sm" className="flex items-center gap-4">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="flex items-center gap-4"
+        >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
             <KeyRound className="h-4 w-4" aria-hidden="true" />
           </span>
@@ -75,7 +89,13 @@ export default async function AiSettingsPage() {
             <p className="mt-1 text-sm font-semibold">اربط المفتاح</p>
           </div>
         </Surface>
-        <Surface tone="raised" elevation="xs" radius="xl" padding="sm" className="flex items-center gap-4">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="xl"
+          padding="sm"
+          className="flex items-center gap-4"
+        >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-primary">
             <Router className="h-4 w-4" aria-hidden="true" />
           </span>
@@ -87,12 +107,19 @@ export default async function AiSettingsPage() {
       </div>
 
       {persistenceFailed ? (
-        <Surface tone="raised" elevation="xs" radius="2xl" padding="lg" className="border-destructive/25 bg-destructive/10">
+        <Surface
+          tone="raised"
+          elevation="xs"
+          radius="2xl"
+          padding="lg"
+          className="border-destructive/25 bg-destructive/10"
+        >
           <h2 className="font-arabic-heading text-2xl font-semibold">
             تعذر تحميل إعدادات الذكاء الاصطناعي
           </h2>
           <p className="mt-3 text-sm leading-7 text-ink-muted">
-            لم نتمكن من قراءة حالة الاتصال الآن. أعد تحميل الصفحة، وإن استمرت المشكلة فتحقق من إعدادات الخدمة.
+            لم نتمكن من قراءة حالة الاتصال الآن. أعد تحميل الصفحة، وإن استمرت
+            المشكلة فتحقق من إعدادات الخدمة.
           </p>
         </Surface>
       ) : (
@@ -103,9 +130,13 @@ export default async function AiSettingsPage() {
 
       <Surface tone="muted" elevation="none" radius="xl" padding="sm">
         <div className="flex items-start gap-3 text-sm leading-7 text-ink-muted">
-          <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+          <ShieldCheck
+            className="mt-1 h-4 w-4 shrink-0 text-primary"
+            aria-hidden="true"
+          />
           <p>
-            لا يُعرض المفتاح كاملاً بعد الاتصال. ضع حد إنفاق من حساب OpenRouter وراجع سعر النموذج وحدوده قبل استخدامه في عمل طويل.
+            لا يُعرض المفتاح كاملاً بعد الاتصال. ضع حد إنفاق من حساب OpenRouter
+            وراجع سعر النموذج وحدوده قبل استخدامه في عمل طويل.
           </p>
         </div>
       </Surface>
