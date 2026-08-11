@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LogOut, ShieldCheck } from "lucide-react";
 import { createClient } from "@iraqi-ai/supabase-client/server";
@@ -79,26 +78,17 @@ export default async function MfaChallengePage({
       description="كلمة المرور صحيحة. أدخل الرمز الحالي من تطبيق المصادقة لرفع الجلسة إلى مستوى الحماية المطلوب."
       icon={<ShieldCheck className="h-5 w-5" aria-hidden="true" />}
       footer={
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/settings/security"
-            className="rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-4 focus-visible:ring-ring/20"
+        <form action={signOutAction}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="sm"
+            className="rounded-full"
           >
-            أمان الحساب
-          </Link>
-          <span aria-hidden="true">·</span>
-          <form action={signOutAction}>
-            <Button
-              type="submit"
-              variant="ghost"
-              size="sm"
-              className="rounded-full"
-            >
-              <LogOut className="h-4 w-4" aria-hidden="true" />
-              تسجيل الخروج
-            </Button>
-          </form>
-        </div>
+            <LogOut className="h-4 w-4" aria-hidden="true" />
+            تسجيل الخروج واستخدام حساب آخر
+          </Button>
+        </form>
       }
     >
       <AuthNotice tone="info" className="mb-6">
