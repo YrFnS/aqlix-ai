@@ -21,7 +21,12 @@ describe("focused work surfaces", () => {
     const surface = [editor, controller, main, tools].join("\n");
 
     expect(page).toContain('max-w-[90rem]');
-    expect(editor).toContain('xl:grid-cols-[minmax(0,1fr)_23rem]');
+    expect(editor).toContain(
+      'min-[1800px]:grid-cols-[minmax(0,1fr)_23rem]',
+    );
+    expect(editor).not.toContain(
+      'xl:grid-cols-[minmax(0,1fr)_23rem]',
+    );
     expect(controller).toContain(
       "const visibleVersions = detail.versions.slice(0, 3)",
     );
