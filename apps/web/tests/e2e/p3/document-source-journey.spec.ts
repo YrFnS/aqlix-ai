@@ -211,9 +211,10 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     page.getByRole("heading", { name: markdownFileName }),
   ).toBeVisible();
   await expect(page.getByText(/Private document stored/)).toBeVisible();
-  await expect(firstPassageButton(page)).toBeVisible();
-  await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
-  await expect(page.getByText(/الأسطر/)).toBeVisible();
+  const firstPassage = firstPassageButton(page);
+  await expect(firstPassage).toBeVisible();
+  await expect(firstPassage).toContainText(/English roadmap 2026/);
+  await expect(firstPassage).toContainText(/الأسطر/);
 
   const payload = await documentPayload(
     context.request,
@@ -243,7 +244,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(
     page.getByRole("heading", { name: markdownFileName }),
   ).toBeVisible();
-  await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
+  await expect(firstPassageButton(page)).toContainText(/English roadmap 2026/);
 
   const redirectResponse = await context.request.get(
     `/api/v1/workspaces/${workspaceId}/sources/${attachmentId}/download`,
