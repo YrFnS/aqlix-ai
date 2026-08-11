@@ -116,8 +116,17 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
     .filter({ hasText: /هذه إجابة اختبارية متدفقة ومحفوظة/ })
     .first();
   await expect(completedAssistantMessage).toBeVisible();
-  await expect(page.getByText("fixture-bilingual-v1")).toBeVisible();
-  await expect(page.getByText(/تم حفظ الاستجابة والمحادثة/)).toBeVisible();
+  await completedAssistantMessage
+    .getByText("تفاصيل التوليد", { exact: true })
+    .click();
+  await expect(
+    completedAssistantMessage.getByText("fixture-bilingual-v1", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("حُفظت الاستجابة داخل المحادثة.", { exact: true }),
+  ).toBeVisible();
 
   let payload = await conversationPayload(
     context.request,
@@ -145,7 +154,14 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
 
   await page.reload();
   await expect(completedAssistantMessage).toBeVisible();
-  await expect(page.getByText("fixture-bilingual-v1")).toBeVisible();
+  await completedAssistantMessage
+    .getByText("تفاصيل التوليد", { exact: true })
+    .click();
+  await expect(
+    completedAssistantMessage.getByText("fixture-bilingual-v1", {
+      exact: true,
+    }),
+  ).toBeVisible();
 
   await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
   await page.getByRole("button", { name: "إرسال" }).click();
@@ -175,7 +191,9 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   await expect(page.getByText("أُلغيت")).toBeVisible();
 
   await page.getByRole("button", { name: "إعادة المحاولة" }).last().click();
-  await expect(page.getByText(/تم حفظ الاستجابة والمحادثة/)).toBeVisible();
+  await expect(
+    page.getByText("حُفظت الاستجابة داخل المحادثة.", { exact: true }),
+  ).toBeVisible();
 
   payload = await conversationPayload(
     context.request,
