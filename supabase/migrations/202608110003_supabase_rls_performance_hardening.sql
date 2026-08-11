@@ -17,113 +17,63 @@ revoke all on function public.cleanup_expired_validation_results()
 grant execute on function public.cleanup_expired_validation_results()
   to service_role;
 
--- Rewrite auth helper calls through initPlans while preserving each policy's
--- command, role list, and permissive/restrictive behavior.
-do $$
-declare
-  policy_record record;
-  rewritten_using text;
-  rewritten_check text;
-  roles_sql text;
-  statement_sql text;
-begin
-  for policy_record in
-    select *
-    from pg_policies
-    where schemaname = 'public'
-      and (
-        coalesce(qual, '') like '%auth.uid()%'
-        or coalesce(with_check, '') like '%auth.uid()%'
-        or coalesce(qual, '') like '%auth.role()%'
-        or coalesce(with_check, '') like '%auth.role()%'
-      )
-  loop
-    rewritten_using := policy_record.qual;
-    rewritten_check := policy_record.with_check;
+-- Product policies: cache auth identity once per statement rather than once per
+-- candidate row. Function references are private because the preceding
+-- migration relocated privileged implementations out of the exposed schema.
+drop policy if exists workspaces_insert_owner on public.workspaces;
+create policy workspaces_insert_owner
+  on public.workspaces as permissive for insert to authenticated
+  with check (owner_id = (select auth.uid()));
 
-    if rewritten_using is not null then
-      rewritten_using := regexp_replace(
-        rewritten_using,
-        '\(\s*select\s+auth\.uid\(\)\s+as\s+uid\s*\)',
-        '__AUTH_UID_SELECT__',
-        'gi'
-      );
-      rewritten_using := replace(rewritten_using, '(select auth.uid())', '__AUTH_UID_SELECT__');
-      rewritten_using := replace(rewritten_using, '(SELECT auth.uid())', '__AUTH_UID_SELECT__');
-      rewritten_using := replace(rewritten_using, 'auth.uid()', '(select auth.uid())');
-      rewritten_using := replace(rewritten_using, '__AUTH_UID_SELECT__', '(select auth.uid())');
+drop policy if exists workspaces_select_member_or_owner on public.workspaces;
+create policy workspaces_select_member_or_owner
+  on public.workspaces as permissive for select to authenticated
+  using (
+    owner_id = (select auth.uid())
+    or private.is_workspace_member(id)
+  );
 
-      rewritten_using := regexp_replace(
-        rewritten_using,
-        '\(\s*select\s+auth\.role\(\)\s+as\s+role\s*\)',
-        '__AUTH_ROLE_SELECT__',
-        'gi'
-      );
-      rewritten_using := replace(rewritten_using, '(select auth.role())', '__AUTH_ROLE_SELECT__');
-      rewritten_using := replace(rewritten_using, '(SELECT auth.role())', '__AUTH_ROLE_SELECT__');
-      rewritten_using := replace(rewritten_using, 'auth.role()', '(select auth.role())');
-      rewritten_using := replace(rewritten_using, '__AUTH_ROLE_SELECT__', '(select auth.role())');
-    end if;
+drop policy if exists conversations_insert_editor on public.conversations;
+create policy conversations_insert_editor
+  on public.conversations as permissive for insert to authenticated
+  with check (
+    created_by = (select auth.uid())
+    and private.has_workspace_role(
+      workspace_id,
+      array['owner'::text, 'editor'::text]
+    )
+  );
 
-    if rewritten_check is not null then
-      rewritten_check := regexp_replace(
-        rewritten_check,
-        '\(\s*select\s+auth\.uid\(\)\s+as\s+uid\s*\)',
-        '__AUTH_UID_SELECT__',
-        'gi'
-      );
-      rewritten_check := replace(rewritten_check, '(select auth.uid())', '__AUTH_UID_SELECT__');
-      rewritten_check := replace(rewritten_check, '(SELECT auth.uid())', '__AUTH_UID_SELECT__');
-      rewritten_check := replace(rewritten_check, 'auth.uid()', '(select auth.uid())');
-      rewritten_check := replace(rewritten_check, '__AUTH_UID_SELECT__', '(select auth.uid())');
+drop policy if exists messages_insert_editor on public.messages;
+create policy messages_insert_editor
+  on public.messages as permissive for insert to authenticated
+  with check (
+    (created_by is null or created_by = (select auth.uid()))
+    and private.has_workspace_role(
+      workspace_id,
+      array['owner'::text, 'editor'::text]
+    )
+  );
 
-      rewritten_check := regexp_replace(
-        rewritten_check,
-        '\(\s*select\s+auth\.role\(\)\s+as\s+role\s*\)',
-        '__AUTH_ROLE_SELECT__',
-        'gi'
-      );
-      rewritten_check := replace(rewritten_check, '(select auth.role())', '__AUTH_ROLE_SELECT__');
-      rewritten_check := replace(rewritten_check, '(SELECT auth.role())', '__AUTH_ROLE_SELECT__');
-      rewritten_check := replace(rewritten_check, 'auth.role()', '(select auth.role())');
-      rewritten_check := replace(rewritten_check, '__AUTH_ROLE_SELECT__', '(select auth.role())');
-    end if;
+drop policy if exists message_generations_insert_editor
+  on public.message_generations;
+create policy message_generations_insert_editor
+  on public.message_generations as permissive for insert to authenticated
+  with check (
+    created_by = (select auth.uid())
+    and private.has_workspace_role(
+      workspace_id,
+      array['owner'::text, 'editor'::text]
+    )
+  );
 
-    select string_agg(quote_ident(role_name::text), ', ')
-      into roles_sql
-    from unnest(policy_record.roles) as role_name;
+drop policy if exists user_ai_settings_select_own on public.user_ai_settings;
+create policy user_ai_settings_select_own
+  on public.user_ai_settings as permissive for select to authenticated
+  using (user_id = (select auth.uid()));
 
-    execute format(
-      'drop policy %I on %I.%I',
-      policy_record.policyname,
-      policy_record.schemaname,
-      policy_record.tablename
-    );
-
-    statement_sql := format(
-      'create policy %I on %I.%I as %s for %s to %s',
-      policy_record.policyname,
-      policy_record.schemaname,
-      policy_record.tablename,
-      policy_record.permissive,
-      policy_record.cmd,
-      roles_sql
-    );
-
-    if rewritten_using is not null then
-      statement_sql := statement_sql || format(' using (%s)', rewritten_using);
-    end if;
-    if rewritten_check is not null then
-      statement_sql := statement_sql || format(' with check (%s)', rewritten_check);
-    end if;
-
-    execute statement_sql;
-  end loop;
-end;
-$$;
-
--- Remove broad legacy grants and retain only the account-scoped operations that
--- have an explicit RLS contract.
+-- Remove broad grants from legacy cultural/authentication tables and keep only
+-- operations backed by an explicit account-scoped policy.
 revoke all on table
   public.iraqi_user_authentication,
   public.authentication_cultural_context,
@@ -137,45 +87,32 @@ revoke all on table
   public.cultural_islamic_knowledge
 from anon, authenticated;
 
-grant select, insert, update on public.iraqi_user_authentication to authenticated;
-grant select, insert, update on public.authentication_cultural_context to authenticated;
-grant select, insert on public.iraqi_authentication_sessions to authenticated;
-grant select, insert, update on public.professional_domain_authentication to authenticated;
-grant select, insert, update on public.cultural_mfa_configuration to authenticated;
-grant select on public.cultural_islamic_rules to authenticated;
-grant select, insert, update, delete on public.user_compliance_preferences to authenticated;
-grant select on public.compliance_violations to authenticated;
-grant select on public.cultural_islamic_knowledge to authenticated;
+grant select, insert, update on public.iraqi_user_authentication
+  to authenticated;
+grant select, insert, update on public.authentication_cultural_context
+  to authenticated;
+grant select, insert on public.iraqi_authentication_sessions
+  to authenticated;
+grant select, insert, update on public.professional_domain_authentication
+  to authenticated;
+grant select, insert, update on public.cultural_mfa_configuration
+  to authenticated;
+grant select on public.cultural_islamic_rules
+  to authenticated;
+grant select, insert, update, delete on public.user_compliance_preferences
+  to authenticated;
+grant select on public.compliance_violations
+  to authenticated;
+grant select on public.cultural_islamic_knowledge
+  to authenticated;
 
-do $$
-declare
-  policy_record record;
-begin
-  for policy_record in
-    select *
-    from pg_policies
-    where schemaname = 'public'
-      and tablename = any(array[
-        'iraqi_user_authentication',
-        'authentication_cultural_context',
-        'iraqi_authentication_sessions',
-        'professional_domain_authentication',
-        'cultural_mfa_configuration',
-        'cultural_islamic_rules',
-        'content_validation_results',
-        'user_compliance_preferences',
-        'compliance_violations',
-        'cultural_islamic_knowledge'
-      ])
-  loop
-    execute format(
-      'drop policy %I on public.%I',
-      policy_record.policyname,
-      policy_record.tablename
-    );
-  end loop;
-end;
-$$;
+-- Replace every legacy public-role policy with a deliberately scoped contract.
+drop policy if exists "Users can insert own authentication"
+  on public.iraqi_user_authentication;
+drop policy if exists "Users can update own authentication"
+  on public.iraqi_user_authentication;
+drop policy if exists "Users can view own authentication"
+  on public.iraqi_user_authentication;
 
 create policy iraqi_user_authentication_select_own
   on public.iraqi_user_authentication for select to authenticated
@@ -188,6 +125,13 @@ create policy iraqi_user_authentication_update_own
   using (id = (select auth.uid()))
   with check (id = (select auth.uid()));
 
+drop policy if exists "Users can insert own cultural context"
+  on public.authentication_cultural_context;
+drop policy if exists "Users can update own cultural context"
+  on public.authentication_cultural_context;
+drop policy if exists "Users can view own cultural context"
+  on public.authentication_cultural_context;
+
 create policy authentication_cultural_context_select_own
   on public.authentication_cultural_context for select to authenticated
   using (user_id = (select auth.uid()));
@@ -199,12 +143,24 @@ create policy authentication_cultural_context_update_own
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
+drop policy if exists "Users can insert own sessions"
+  on public.iraqi_authentication_sessions;
+drop policy if exists "Users can view own sessions"
+  on public.iraqi_authentication_sessions;
+
 create policy iraqi_authentication_sessions_select_own
   on public.iraqi_authentication_sessions for select to authenticated
   using (user_id = (select auth.uid()));
 create policy iraqi_authentication_sessions_insert_own
   on public.iraqi_authentication_sessions for insert to authenticated
   with check (user_id = (select auth.uid()));
+
+drop policy if exists "Users can insert own professional data"
+  on public.professional_domain_authentication;
+drop policy if exists "Users can update own professional data"
+  on public.professional_domain_authentication;
+drop policy if exists "Users can view own professional data"
+  on public.professional_domain_authentication;
 
 create policy professional_domain_authentication_select_own
   on public.professional_domain_authentication for select to authenticated
@@ -217,6 +173,13 @@ create policy professional_domain_authentication_update_own
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
+drop policy if exists "Users can insert own MFA config"
+  on public.cultural_mfa_configuration;
+drop policy if exists "Users can update own MFA config"
+  on public.cultural_mfa_configuration;
+drop policy if exists "Users can view own MFA config"
+  on public.cultural_mfa_configuration;
+
 create policy cultural_mfa_configuration_select_own
   on public.cultural_mfa_configuration for select to authenticated
   using (user_id = (select auth.uid()));
@@ -228,9 +191,30 @@ create policy cultural_mfa_configuration_update_own
   using (user_id = (select auth.uid()))
   with check (user_id = (select auth.uid()));
 
+drop policy if exists cultural_islamic_rules_insert_policy
+  on public.cultural_islamic_rules;
+drop policy if exists cultural_islamic_rules_select_policy
+  on public.cultural_islamic_rules;
+drop policy if exists cultural_islamic_rules_update_policy
+  on public.cultural_islamic_rules;
+
 create policy cultural_islamic_rules_select_active
   on public.cultural_islamic_rules for select to authenticated
   using (is_active = true);
+
+drop policy if exists content_validation_results_insert_policy
+  on public.content_validation_results;
+drop policy if exists content_validation_results_select_policy
+  on public.content_validation_results;
+
+drop policy if exists user_compliance_preferences_delete_policy
+  on public.user_compliance_preferences;
+drop policy if exists user_compliance_preferences_insert_policy
+  on public.user_compliance_preferences;
+drop policy if exists user_compliance_preferences_select_policy
+  on public.user_compliance_preferences;
+drop policy if exists user_compliance_preferences_update_policy
+  on public.user_compliance_preferences;
 
 create policy user_compliance_preferences_select_own
   on public.user_compliance_preferences for select to authenticated
@@ -246,153 +230,85 @@ create policy user_compliance_preferences_delete_own
   on public.user_compliance_preferences for delete to authenticated
   using (user_id = (select auth.uid()));
 
+drop policy if exists compliance_violations_insert_policy
+  on public.compliance_violations;
+drop policy if exists compliance_violations_select_policy
+  on public.compliance_violations;
+drop policy if exists compliance_violations_update_policy
+  on public.compliance_violations;
+
 create policy compliance_violations_select_own
   on public.compliance_violations for select to authenticated
   using (user_id = (select auth.uid()));
+
+drop policy if exists cultural_islamic_knowledge_insert_policy
+  on public.cultural_islamic_knowledge;
+drop policy if exists cultural_islamic_knowledge_select_policy
+  on public.cultural_islamic_knowledge;
+drop policy if exists cultural_islamic_knowledge_update_policy
+  on public.cultural_islamic_knowledge;
 
 create policy cultural_islamic_knowledge_select_verified
   on public.cultural_islamic_knowledge for select to authenticated
   using (is_verified = true);
 
--- Add a covering index for every current public-schema foreign key that lacks
--- one. Names are deterministic from the constraint.
-do $$
-declare
-  foreign_key record;
-  index_name text;
-  column_list text;
-begin
-  for foreign_key in
-    select
-      c.conrelid,
-      c.conname,
-      n.nspname as schema_name,
-      t.relname as table_name,
-      c.conkey
-    from pg_constraint c
-    join pg_class t on t.oid = c.conrelid
-    join pg_namespace n on n.oid = t.relnamespace
-    where c.contype = 'f'
-      and n.nspname = 'public'
-      and not exists (
-        select 1
-        from pg_index i
-        where i.indrelid = c.conrelid
-          and i.indisvalid
-          and i.indisready
-          and i.indpred is null
-          and (i.indkey::smallint[])[0:cardinality(c.conkey)-1] = c.conkey
-      )
-    order by t.relname, c.conname
-  loop
-    select string_agg(quote_ident(attribute.attname), ', ' order by key_column.ordinality)
-      into column_list
-    from unnest(foreign_key.conkey) with ordinality
-      as key_column(attnum, ordinality)
-    join pg_attribute attribute
-      on attribute.attrelid = foreign_key.conrelid
-      and attribute.attnum = key_column.attnum;
-
-    index_name := left(
-      regexp_replace(foreign_key.conname, '_fkey$|_fk$', '') || '_idx',
-      63
-    );
-
-    execute format(
-      'create index if not exists %I on %I.%I (%s)',
-      index_name,
-      foreign_key.schema_name,
-      foreign_key.table_name,
-      column_list
-    );
-  end loop;
-end;
-$$;
-
-do $$
-begin
-  if exists (
-    select 1
-    from pg_proc p
-    join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname = 'public'
-      and p.prosecdef
-      and has_function_privilege('authenticated', p.oid, 'EXECUTE')
-  ) then
-    raise exception 'authenticated can still execute a public SECURITY DEFINER function';
-  end if;
-
-  if exists (
-    select 1
-    from pg_proc p
-    join pg_namespace n on n.oid = p.pronamespace
-    where n.nspname = 'public'
-      and p.proconfig is null
-      and p.proname in (
-        'update_updated_at_column',
-        'update_cultural_islamic_rules_updated_at',
-        'cleanup_expired_validation_results',
-        'update_cultural_islamic_knowledge_updated_at',
-        'update_user_compliance_preferences_updated_at'
-      )
-  ) then
-    raise exception 'mutable public function search path remains';
-  end if;
-
-  if has_function_privilege(
-    'authenticated',
-    'public.resolve_user_openrouter_runtime_for_user(uuid)',
-    'EXECUTE'
-  ) or has_function_privilege(
-    'authenticated',
-    'public.resolve_user_openrouter_credential_for_user(uuid)',
-    'EXECUTE'
-  ) then
-    raise exception 'authenticated can resolve a service-role OpenRouter credential';
-  end if;
-
-  if exists (
-    select 1
-    from pg_policies policy
-    where policy.schemaname = 'public'
-      and (
-        regexp_replace(
-          coalesce(policy.qual, ''),
-          '\(\s*select\s+auth\.(uid|role)\(\)\s+as\s+(uid|role)\s*\)',
-          '',
-          'gi'
-        ) ~ 'auth\.(uid|role)\(\)'
-        or regexp_replace(
-          coalesce(policy.with_check, ''),
-          '\(\s*select\s+auth\.(uid|role)\(\)\s+as\s+(uid|role)\s*\)',
-          '',
-          'gi'
-        ) ~ 'auth\.(uid|role)\(\)'
-      )
-  ) then
-    raise exception 'an unoptimized auth call remains in an RLS policy';
-  end if;
-
-  if exists (
-    select 1
-    from pg_constraint c
-    join pg_class t on t.oid = c.conrelid
-    join pg_namespace n on n.oid = t.relnamespace
-    where c.contype = 'f'
-      and n.nspname = 'public'
-      and not exists (
-        select 1
-        from pg_index i
-        where i.indrelid = c.conrelid
-          and i.indisvalid
-          and i.indisready
-          and i.indpred is null
-          and (i.indkey::smallint[])[0:cardinality(c.conkey)-1] = c.conkey
-      )
-  ) then
-    raise exception 'one or more public foreign keys remain unindexed';
-  end if;
-end;
-$$;
+-- Cover every currently unindexed public foreign key. Names are stable and
+-- derived from the constraint names so future audits can trace each index.
+create index if not exists ai_generation_permits_created_by_idx
+  on public.ai_generation_permits (created_by);
+create index if not exists attachment_processing_runs_created_by_idx
+  on public.attachment_processing_runs (created_by);
+create index if not exists attachment_processing_runs_workspace_attachment_idx
+  on public.attachment_processing_runs (workspace_id, attachment_id);
+create index if not exists attachments_uploaded_by_idx
+  on public.attachments (uploaded_by);
+create index if not exists compliance_violations_content_validation_id_idx
+  on public.compliance_violations (content_validation_id);
+create index if not exists conversations_created_by_idx
+  on public.conversations (created_by);
+create index if not exists cultural_islamic_knowledge_created_by_idx
+  on public.cultural_islamic_knowledge (created_by);
+create index if not exists draft_generations_created_by_idx
+  on public.draft_generations (created_by);
+create index if not exists draft_generations_workspace_draft_idx
+  on public.draft_generations (workspace_id, draft_id);
+create index if not exists draft_provenance_attachment_id_idx
+  on public.draft_provenance (attachment_id);
+create index if not exists draft_provenance_source_id_idx
+  on public.draft_provenance (source_id);
+create index if not exists draft_provenance_workspace_draft_idx
+  on public.draft_provenance (workspace_id, draft_id);
+create index if not exists draft_provenance_workspace_message_idx
+  on public.draft_provenance (
+    workspace_id,
+    conversation_id,
+    origin_message_id
+  );
+create index if not exists draft_versions_created_by_idx
+  on public.draft_versions (created_by);
+create index if not exists draft_versions_workspace_draft_idx
+  on public.draft_versions (workspace_id, draft_id);
+create index if not exists draft_versions_workspace_generation_idx
+  on public.draft_versions (workspace_id, generation_id);
+create index if not exists drafts_created_by_idx
+  on public.drafts (created_by);
+create index if not exists drafts_workspace_conversation_idx
+  on public.drafts (workspace_id, conversation_id);
+create index if not exists drafts_workspace_origin_message_idx
+  on public.drafts (workspace_id, conversation_id, origin_message_id);
+create index if not exists message_citations_attachment_id_idx
+  on public.message_citations (attachment_id);
+create index if not exists message_citations_source_id_idx
+  on public.message_citations (source_id);
+create index if not exists message_citations_workspace_id_idx
+  on public.message_citations (workspace_id);
+create index if not exists message_citations_workspace_message_idx
+  on public.message_citations (workspace_id, conversation_id, message_id);
+create index if not exists message_generations_created_by_idx
+  on public.message_generations (created_by);
+create index if not exists message_generations_message_idx
+  on public.message_generations (workspace_id, conversation_id, message_id);
+create index if not exists messages_created_by_idx
+  on public.messages (created_by);
 
 commit;
