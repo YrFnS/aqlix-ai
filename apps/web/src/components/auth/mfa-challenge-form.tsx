@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { KeyRound, Loader2, ShieldCheck } from "lucide-react";
 import {
-  createClient,
-  type SupabaseBrowserClient,
-} from "@iraqi-ai/supabase-client/browser";
+  createAuthBrowserClient,
+  type AuthBrowserClient,
+} from "@/lib/auth/browser-client";
 import { Button } from "@/components/ui/button";
 
 interface TotpFactorSummary {
@@ -14,7 +14,7 @@ interface TotpFactorSummary {
 }
 
 export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
-  const supabaseRef = useRef<SupabaseBrowserClient | null>(null);
+  const supabaseRef = useRef<AuthBrowserClient | null>(null);
   const [factors, setFactors] = useState<TotpFactorSummary[]>([]);
   const [factorId, setFactorId] = useState("");
   const [code, setCode] = useState("");
@@ -62,7 +62,7 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string }) {
   };
 
   useEffect(() => {
-    const client = createClient();
+    const client = createAuthBrowserClient();
     supabaseRef.current = client;
     void loadFactors(client);
 
