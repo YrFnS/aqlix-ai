@@ -48,6 +48,19 @@ describe("account password and MFA hardening", () => {
     expect(actions.match(/revalidatePath\("\/", "layout"\);/gu)).toHaveLength(4);
   });
 
+  test("commits authentication redirects with native browser navigation", () => {
+    const loginPage = readWeb("src/app/(auth)/login/page.tsx");
+    const nativeActionForm = readWeb(
+      "src/components/auth/native-action-form.tsx",
+    );
+
+    expect(loginPage).toContain("NativeActionForm");
+    expect(loginPage).toContain("action={signInAction}");
+    expect(nativeActionForm).toContain("event.preventDefault()");
+    expect(nativeActionForm).toContain(
+      "HTMLFormElement.prototype.submit.call(event.currentTarget)",
+    );
+  });
   test("requires AAL2 only for accounts with a verified factor", () => {
     const assurance = readWeb("src/lib/auth/assurance.ts");
     const actions = readWeb("src/lib/auth/actions.ts");

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpLeft, LockKeyhole } from "lucide-react";
 import { AuthFrame, AuthNotice } from "@/components/auth/auth-frame";
+import { NativeActionForm } from "@/components/auth/native-action-form";
 import { Button } from "@/components/ui/button";
 import { brand } from "@/config/brand";
 import { isSupabaseConfigured } from "@/config/env";
@@ -111,7 +112,11 @@ export default async function LoginPage({
         </AuthNotice>
       ) : null}
 
-      <form action={signInAction} className="space-y-5" aria-label="نموذج تسجيل الدخول">
+      <NativeActionForm
+        action={signInAction}
+        className="space-y-5"
+        aria-label="نموذج تسجيل الدخول"
+      >
         <input type="hidden" name="next" value={nextPath} />
 
         <div className="space-y-2">
@@ -164,7 +169,7 @@ export default async function LoginPage({
           تسجيل الدخول
           <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
         </Button>
-      </form>
+      </NativeActionForm>
 
       {!configured ? (
         <AuthNotice tone="info" className="mt-5">

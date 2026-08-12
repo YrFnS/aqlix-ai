@@ -198,12 +198,14 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   await page.goto(conversationUrl);
   await expect(groundedAssistantMessage).toBeVisible();
   await expect(
-    page.getByTitle(
-      "The original source was deleted or is no longer available.",
-    ),
+    page
+      .getByRole("main")
+      .getByTitle(
+        "The original source was deleted or is no longer available.",
+      ),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", {
+    page.getByRole("main").getByRole("button", {
       name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
     }),
   ).toHaveCount(0);

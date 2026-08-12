@@ -270,8 +270,13 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await page.getByLabel("البحث في المصادر").fill("English");
   await page.getByRole("button", { name: "بحث" }).click();
   await expect(page).toHaveURL(/\?q=English$/);
-  const supportingLink = page.getByRole("link", { name: "فتح المقطع الداعم" });
+  const supportingLink = page.locator(
+    `a[href="/workspaces/${workspaceId}/sources/${attachmentId}#source-${firstSourceId}"]`,
+  );
   await expect(supportingLink).toBeVisible();
+  await expect(supportingLink).toHaveAccessibleName(
+    new RegExp(`^فتح .+ من ${markdownFileName.replace(".", "\\.")}$`),
+  );
   await supportingLink.click();
   await expect(page).toHaveURL(
     new RegExp(

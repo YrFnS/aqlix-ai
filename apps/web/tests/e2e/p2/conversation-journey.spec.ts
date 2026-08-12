@@ -297,7 +297,7 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${workspaceId}/conversations\\?status=archived$`),
   );
-  await page.getByRole("link", { name: "أرشيف المحادثات" }).click();
+  await page.getByRole("link", { name: "الأرشيف", exact: true }).click();
   await page.getByRole("link", { name: "فتح المحادثة" }).click();
   await expect(
     page.getByText("هذه المحادثة مؤرشفة. استعدها قبل إرسال رسالة جديدة."),
