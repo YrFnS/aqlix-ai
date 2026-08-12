@@ -146,9 +146,13 @@ test("keeps the primary Tuppra journey visually stable", async ({
   await page.goto(
     `/workspaces/${workspaceId}/sources/${attachmentId}?status=uploaded`,
   );
-  await expect(
-    page.getByText("visual-launch-decision.md", { exact: true }),
-  ).toBeVisible();
+  const sourceHeading = page
+    .locator('h1[title="visual-launch-decision.md"]:visible')
+    .first();
+  await expect(sourceHeading).toHaveAccessibleName(
+    "visual-launch-decision.md",
+  );
+  await expect(sourceHeading).toBeVisible();
   await capture(page, "source-detail.png");
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
