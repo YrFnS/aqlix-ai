@@ -25,15 +25,19 @@ jobs:
           python <<'PY'
           from pathlib import Path
 
-          def replace(path: str, old: str, new: str, expected: int | None = 1) -> None:
+          def block(*lines: str) -> str:
+              return "\n".join(lines)
+
+          def replace(path: str, old: str, new: str, expected: int = 1) -> None:
               file = Path(path)
               text = file.read_text(encoding="utf-8")
               count = text.count(old)
-              if expected is not None and count != expected:
-                  raise RuntimeError(f"{path}: expected {expected} matches, found {count} for {old!r}")
+              if count != expected:
+                  raise RuntimeError(
+                      f"{path}: expected {expected} matches, found {count} for {old!r}"
+                  )
               file.write_text(text.replace(old, new), encoding="utf-8")
 
-          # The production create action uses the complete accessible label.
           for path in (
               "apps/web/tests/e2e/p4/draft-journey.spec.ts",
               "apps/web/tests/e2e/p5/openrouter-byok-journey.spec.ts",
@@ -44,7 +48,6 @@ jobs:
                   '"إنشاء وفتح المحادثة", exact: true',
               )
 
-          # Source detail navigation now exposes a descriptive accessible name.
           replace(
               "apps/web/tests/e2e/p3/document-source-journey.spec.ts",
               '"كل المصادر"',
@@ -52,129 +55,144 @@ jobs:
               expected=2,
           )
 
-          # Citations open in the inspector first, then navigate to the full source.
           grounded = "apps/web/tests/e2e/p3/grounded-conversation-journey.spec.ts"
           replace(
               grounded,
-              '''  const citationLink = page.getByRole("link", {
-            name: new RegExp(`فتح المرجع S1 من ${documentName}`),
-          });
-          await expect(citationLink).toBeVisible();''',
-              '''  const citationPreview = page.getByRole("button", {
-            name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
-          });
-          await expect(citationPreview).toBeVisible();''',
+              'const citationLink = page.getByRole("link", {',
+              'const citationPreview = page.getByRole("button", {',
           )
           replace(
               grounded,
-              '''  await citationLink.click();
-          await expect(page).toHaveURL(''',
-              '''  await citationPreview.click();
-          const citationDialog = page.getByRole("dialog", {
-            name: "معاينة المرجع S1",
-          });
-          await expect(citationDialog).toBeVisible();
-          await citationDialog
-            .getByRole("link", { name: "فتح المستند الكامل" })
-            .click();
-          await expect(page).toHaveURL(''',
+              'name: new RegExp(`فتح المرجع S1 من ${documentName}`),',
+              'name: new RegExp(`معاينة المرجع S1 من ${documentName}`),',
+              expected=2,
           )
           replace(
               grounded,
-              '''    page.getByRole("link", {
-                name: new RegExp(`فتح المرجع S1 من ${documentName}`),
-              }),''',
-              '''    page.getByRole("button", {
-                name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
-              }),''',
+              "await expect(citationLink).toBeVisible();",
+              "await expect(citationPreview).toBeVisible();",
+          )
+          replace(
+              grounded,
+              block(
+                  "  await citationLink.click();",
+                  "  await expect(page).toHaveURL(",
+              ),
+              block(
+                  "  await citationPreview.click();",
+                  '  const citationDialog = page.getByRole("dialog", {',
+                  '    name: "معاينة المرجع S1",',
+                  "  });",
+                  "  await expect(citationDialog).toBeVisible();",
+                  "  await citationDialog",
+                  '    .getByRole("link", { name: "فتح المستند الكامل" })',
+                  "    .click();",
+                  "  await expect(page).toHaveURL(",
+              ),
+          )
+          replace(
+              grounded,
+              block(
+                  '    page.getByRole("link", {',
+                  '      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),',
+                  "    }),",
+              ),
+              block(
+                  '    page.getByRole("button", {',
+                  '      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),',
+                  "    }),",
+              ),
           )
 
-          # Wait for React to acknowledge the selected file before submitting.
           authenticated = "apps/web/tests/e2e/p5/authenticated-product-journey.spec.ts"
           replace(
               authenticated,
-              '''  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();''',
-              '''  await expect(page.getByText(documentName, { exact: true })).toBeVisible();
-          const uploadButton = page.getByRole("button", {
-            name: "رفع واستخراج المقاطع",
-          });
-          await expect(uploadButton).toBeEnabled();
-          await uploadButton.click();''',
+              '  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();',
+              block(
+                  '  await expect(page.getByText(documentName, { exact: true })).toBeVisible();',
+                  '  const uploadButton = page.getByRole("button", {',
+                  '    name: "رفع واستخراج المقاطع",',
+                  "  });",
+                  "  await expect(uploadButton).toBeEnabled();",
+                  "  await uploadButton.click();",
+              ),
           )
 
-          # Follow the responsive details-dialog flow on mobile visual projects.
           visual = "apps/web/tests/visual/primary-surfaces.visual.spec.ts"
           replace(
               visual,
-              '''  const conversationDetails = page.getByRole("complementary", {
-            name: "تفاصيل المحادثة",
-          });
-          await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
-          await conversationDetails
-            .getByRole("button", { name: "إنشاء المسودة" })
-            .click();''',
-              '''  const desktopConversationDetails = page.getByRole("complementary", {
-            name: "تفاصيل المحادثة",
-          });
-          const mobileConversationDetails = page.getByRole("dialog", {
-            name: "تفاصيل المحادثة",
-          });
-          if (!(await desktopConversationDetails.isVisible())) {
-            await page
-              .getByRole("button", { name: "فتح تفاصيل المحادثة" })
-              .click();
-            await expect(mobileConversationDetails).toBeVisible();
-          }
-          const conversationDetails = (await desktopConversationDetails.isVisible())
-            ? desktopConversationDetails
-            : mobileConversationDetails;
-          await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
-          await conversationDetails
-            .getByRole("button", { name: "إنشاء المسودة" })
-            .click();''',
+              block(
+                  '  const conversationDetails = page.getByRole("complementary", {',
+                  '    name: "تفاصيل المحادثة",',
+                  "  });",
+                  '  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");',
+                  "  await conversationDetails",
+                  '    .getByRole("button", { name: "إنشاء المسودة" })',
+                  "    .click();",
+              ),
+              block(
+                  '  const desktopConversationDetails = page.getByRole("complementary", {',
+                  '    name: "تفاصيل المحادثة",',
+                  "  });",
+                  '  const mobileConversationDetails = page.getByRole("dialog", {',
+                  '    name: "تفاصيل المحادثة",',
+                  "  });",
+                  "  if (!(await desktopConversationDetails.isVisible())) {",
+                  "    await page",
+                  '      .getByRole("button", { name: "فتح تفاصيل المحادثة" })',
+                  "      .click();",
+                  "    await expect(mobileConversationDetails).toBeVisible();",
+                  "  }",
+                  "  const conversationDetails = (await desktopConversationDetails.isVisible())",
+                  "    ? desktopConversationDetails",
+                  "    : mobileConversationDetails;",
+                  '  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");',
+                  "  await conversationDetails",
+                  '    .getByRole("button", { name: "إنشاء المسودة" })',
+                  "    .click();",
+              ),
           )
 
-          # Use the route-owned client-ready boundary and current stop action.
           conversation = "apps/web/tests/e2e/p2/conversation-journey.spec.ts"
-          helpers = '''
-          function clientSurface(page: Page, name: string) {
-            return page
-              .locator(`[data-client-surface="${name}"][data-client-ready="true"]`)
-              .last();
-          }
-
-          async function waitForClientSurface(page: Page, name: string): Promise<void> {
-            await expect(clientSurface(page, name)).toHaveAttribute(
-              "data-client-ready",
-              "true",
-            );
-          }
-
-          async function sendMessage(page: Page, content: string): Promise<void> {
-            await waitForClientSurface(page, "conversation");
-
-            for (let attempt = 0; attempt < 3; attempt += 1) {
-              const conversationSurface = clientSurface(page, "conversation");
-              const input = conversationSurface.getByLabel("اكتب رسالة");
-              const sendButton = conversationSurface.getByRole("button", {
-                name: "إرسال",
-              });
-
-              await input.fill(content);
-              await expect(input).toHaveValue(content);
-
-              try {
-                await expect(sendButton).toBeEnabled({ timeout: 4_000 });
-                await sendButton.click({ timeout: 4_000 });
-                return;
-              } catch (error) {
-                if (attempt === 2) throw error;
-                await waitForClientSurface(page, "conversation");
-              }
-            }
-          }
-
-          '''
+          helpers = block(
+              "function clientSurface(page: Page, name: string) {",
+              "  return page",
+              '    .locator(`[data-client-surface="${name}"][data-client-ready="true"]`)',
+              "    .last();",
+              "}",
+              "",
+              "async function waitForClientSurface(page: Page, name: string): Promise<void> {",
+              "  await expect(clientSurface(page, name)).toHaveAttribute(",
+              '    "data-client-ready",',
+              '    "true",',
+              "  );",
+              "}",
+              "",
+              "async function sendMessage(page: Page, content: string): Promise<void> {",
+              '  await waitForClientSurface(page, "conversation");',
+              "",
+              "  for (let attempt = 0; attempt < 3; attempt += 1) {",
+              '    const conversationSurface = clientSurface(page, "conversation");',
+              '    const input = conversationSurface.getByLabel("اكتب رسالة");',
+              '    const sendButton = conversationSurface.getByRole("button", {',
+              '      name: "إرسال",',
+              "    });",
+              "",
+              "    await input.fill(content);",
+              "    await expect(input).toHaveValue(content);",
+              "",
+              "    try {",
+              "      await expect(sendButton).toBeEnabled({ timeout: 4_000 });",
+              "      await sendButton.click({ timeout: 4_000 });",
+              "      return;",
+              "    } catch (error) {",
+              "      if (attempt === 2) throw error;",
+              '      await waitForClientSurface(page, "conversation");',
+              "    }",
+              "  }",
+              "}",
+              "",
+          )
           replace(
               conversation,
               "async function conversationPayload(\n",
@@ -182,72 +200,87 @@ jobs:
           )
           replace(
               conversation,
-              '''  const composer = page.getByLabel("اكتب رسالة");
-          await expect(composer).toHaveAttribute("dir", "auto");
-          await composer.fill(
-            "اشرح الفكرة بالعربية وEnglish مع الرقم 2026 والرابط https://example.test",
-          );
-          await page.getByRole("button", { name: "إرسال" }).click();''',
-              '''  await waitForClientSurface(page, "conversation");
-          const composer = clientSurface(page, "conversation").getByLabel("اكتب رسالة");
-          await expect(composer).toHaveAttribute("dir", "auto");
-          await sendMessage(
-            page,
-            "اشرح الفكرة بالعربية وEnglish مع الرقم 2026 والرابط https://example.test",
-          );''',
+              block(
+                  '  const composer = page.getByLabel("اكتب رسالة");',
+                  '  await expect(composer).toHaveAttribute("dir", "auto");',
+                  "  await composer.fill(",
+                  '    "اشرح الفكرة بالعربية وEnglish مع الرقم 2026 والرابط https://example.test",',
+                  "  );",
+                  '  await page.getByRole("button", { name: "إرسال" }).click();',
+              ),
+              block(
+                  '  await waitForClientSurface(page, "conversation");',
+                  '  const composer = clientSurface(page, "conversation").getByLabel("اكتب رسالة");',
+                  '  await expect(composer).toHaveAttribute("dir", "auto");',
+                  "  await sendMessage(",
+                  "    page,",
+                  '    "اشرح الفكرة بالعربية وEnglish مع الرقم 2026 والرابط https://example.test",',
+                  "  );",
+              ),
           )
           replace(
               conversation,
-              '''  await page.reload();
-          await expect(completedAssistantMessage).toBeVisible();''',
-              '''  await page.reload();
-          await waitForClientSurface(page, "conversation");
-          await expect(completedAssistantMessage).toBeVisible();''',
+              block(
+                  "  await page.reload();",
+                  "  await expect(completedAssistantMessage).toBeVisible();",
+              ),
+              block(
+                  "  await page.reload();",
+                  '  await waitForClientSurface(page, "conversation");',
+                  "  await expect(completedAssistantMessage).toBeVisible();",
+              ),
           )
           replace(
               conversation,
-              '''  await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
-          await page.getByRole("button", { name: "إرسال" }).click();
-
-          const assistantAttemptsWithFixtureText = page
-            .locator('article[data-message-id]')
-            .filter({ hasText: "هذه إجابة اختبارية" });
-          await expect
-            .poll(async () => assistantAttemptsWithFixtureText.count())
-            .toBeGreaterThan(1);
-
-          await page
-            .getByRole("button", { name: "إيقاف وحفظ الجزئي" })
-            .click();''',
-              '''  await sendMessage(page, "[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
-          const stopButton = clientSurface(page, "conversation").getByRole("button", {
-            name: "إيقاف",
-            exact: true,
-          });
-          await expect(stopButton).toBeVisible();
-          await stopButton.click();''',
+              block(
+                  '  await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");',
+                  '  await page.getByRole("button", { name: "إرسال" }).click();',
+                  "",
+                  "  const assistantAttemptsWithFixtureText = page",
+                  "    .locator('article[data-message-id]')",
+                  '    .filter({ hasText: "هذه إجابة اختبارية" });',
+                  "  await expect",
+                  "    .poll(async () => assistantAttemptsWithFixtureText.count())",
+                  "    .toBeGreaterThan(1);",
+                  "",
+                  "  await page",
+                  '    .getByRole("button", { name: "إيقاف وحفظ الجزئي" })',
+                  "    .click();",
+              ),
+              block(
+                  '  await sendMessage(page, "[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");',
+                  '  const stopButton = clientSurface(page, "conversation").getByRole("button", {',
+                  '    name: "إيقاف",',
+                  "    exact: true,",
+                  "  });",
+                  "  await expect(stopButton).toBeVisible();",
+                  "  await stopButton.click();",
+              ),
           )
           replace(
               conversation,
-              '''  await composer.fill("[fixture:fail] اختبر فشل المزود");
-          await page.getByRole("button", { name: "إرسال" }).click();''',
-              '''  await sendMessage(page, "[fixture:fail] اختبر فشل المزود");''',
+              block(
+                  '  await composer.fill("[fixture:fail] اختبر فشل المزود");',
+                  '  await page.getByRole("button", { name: "إرسال" }).click();',
+              ),
+              '  await sendMessage(page, "[fixture:fail] اختبر فشل المزود");',
           )
 
-          # Wait for the server-action navigation rather than a browser-specific delay.
           mfa = "apps/web/tests/e2e/p5/mfa-security-journey.spec.ts"
           replace(
               mfa,
-              '''  await page.getByRole("button", { name: "تسجيل الدخول" }).click();''',
-              '''  const signInButton = page.getByRole("button", { name: "تسجيل الدخول" });
-          await expect(signInButton).toBeEnabled();
-          await Promise.all([
-            page.waitForURL(
-              (url) => url.pathname === "/mfa" || url.pathname === "/workspaces",
-              { timeout: 20_000 },
-            ),
-            signInButton.click(),
-          ]);''',
+              '  await page.getByRole("button", { name: "تسجيل الدخول" }).click();',
+              block(
+                  '  const signInButton = page.getByRole("button", { name: "تسجيل الدخول" });',
+                  "  await expect(signInButton).toBeEnabled();",
+                  "  await Promise.all([",
+                  "    page.waitForURL(",
+                  '      (url) => url.pathname === "/mfa" || url.pathname === "/workspaces",',
+                  "      { timeout: 20_000 },",
+                  "    ),",
+                  "    signInButton.click(),",
+                  "  ]);",
+              ),
           )
           PY
 
