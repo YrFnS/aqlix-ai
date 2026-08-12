@@ -1,5 +1,4 @@
 name: Apply P4 archived-card browser fix
-# trigger revision 2
 
 on:
   push:
@@ -28,20 +27,24 @@ jobs:
 
           path = Path("apps/web/tests/e2e/p4/draft-journey.spec.ts")
           text = path.read_text(encoding="utf-8")
-          old = '''  await page
-    .locator("article")
-    .filter({ hasText: primaryDraft.data.draft.title })
-    .getByRole("link", { name: "فتح المسودة" })
-    .click();'''
-          new = '''  const archivedDraftLink = page
-    .locator(
-      `a[href="/workspaces/${workspaceId}/drafts/${primaryDraftId}"]:visible`,
-    )
-    .first();
-  await expect(archivedDraftLink).toHaveAccessibleName(
-    `فتح المسودة ${primaryDraft.data.draft.title}`,
-  );
-  await archivedDraftLink.click();'''
+          old = "\n".join([
+              "  await page",
+              "    .locator(\"article\")",
+              "    .filter({ hasText: primaryDraft.data.draft.title })",
+              "    .getByRole(\"link\", { name: \"فتح المسودة\" })",
+              "    .click();",
+          ])
+          new = "\n".join([
+              "  const archivedDraftLink = page",
+              "    .locator(",
+              "      `a[href=\"/workspaces/${workspaceId}/drafts/${primaryDraftId}\"]:visible`,",
+              "    )",
+              "    .first();",
+              "  await expect(archivedDraftLink).toHaveAccessibleName(",
+              "    `فتح المسودة ${primaryDraft.data.draft.title}`,",
+              "  );",
+              "  await archivedDraftLink.click();",
+          ])
           if text.count(old) != 1:
               raise RuntimeError("P4 archived-card selector is missing or ambiguous")
           path.write_text(text.replace(old, new), encoding="utf-8")
