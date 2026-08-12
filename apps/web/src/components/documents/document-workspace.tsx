@@ -639,88 +639,88 @@ export function DocumentWorkspace({
         : createPortal(
             <>
               <AnimatePresence>
-        {passagePanelOpen ? (
-          <div className="fixed inset-0 z-[70] lg:hidden">
-            <motion.button
-              type="button"
-              className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
-              initial={shouldReduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-              transition={shouldReduceMotion ? { duration: 0 } : undefined}
-              onClick={() => setPassagePanelOpen(false)}
-              aria-label="إغلاق مقاطع المستند"
-            />
-            <motion.aside
-              id={passagePanelId}
-              role="dialog"
-              aria-modal="true"
-              aria-label="مقاطع المستند"
-              initial={shouldReduceMotion ? false : { x: "100%" }}
-              animate={{ x: 0 }}
-              exit={shouldReduceMotion ? undefined : { x: "100%" }}
-              transition={motionSpring}
-              className="absolute inset-y-0 right-0 w-[min(92vw,23rem)] overflow-y-auto border-l border-line/80 bg-surface-overlay shadow-surface-lg backdrop-blur-xl"
-            >
-              <div className="sticky top-0 z-10 flex justify-end border-b border-line/75 bg-surface-overlay/95 p-3 backdrop-blur-xl">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-xl"
-                  onClick={() => setPassagePanelOpen(false)}
-                  aria-label="إغلاق مقاطع المستند"
-                >
-                  <X className="h-5 w-5" aria-hidden="true" />
-                </Button>
-              </div>
-              {passageNavigation}
-            </motion.aside>
-          </div>
-        ) : null}
-      </AnimatePresence>
+                {passagePanelOpen ? (
+                  <div className="fixed inset-0 z-[70] lg:hidden">
+                    <motion.button
+                      type="button"
+                      className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+                      initial={shouldReduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+                      transition={shouldReduceMotion ? { duration: 0 } : undefined}
+                      onClick={() => setPassagePanelOpen(false)}
+                      aria-label="إغلاق مقاطع المستند"
+                    />
+                    <motion.aside
+                      id={passagePanelId}
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="مقاطع المستند"
+                      initial={shouldReduceMotion ? false : { x: "100%" }}
+                      animate={{ x: 0 }}
+                      exit={shouldReduceMotion ? undefined : { x: "100%" }}
+                      transition={motionSpring}
+                      className="absolute inset-y-0 right-0 w-[min(92vw,23rem)] overflow-y-auto border-l border-line/80 bg-surface-overlay shadow-surface-lg backdrop-blur-xl"
+                    >
+                      <div className="sticky top-0 z-10 flex justify-end border-b border-line/75 bg-surface-overlay/95 p-3 backdrop-blur-xl">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-xl"
+                          onClick={() => setPassagePanelOpen(false)}
+                          aria-label="إغلاق مقاطع المستند"
+                        >
+                          <X className="h-5 w-5" aria-hidden="true" />
+                        </Button>
+                      </div>
+                      {passageNavigation}
+                    </motion.aside>
+                  </div>
+                ) : null}
+              </AnimatePresence>
 
-      <AnimatePresence>
-        {inspectorOpen ? (
-          <div className="fixed inset-0 z-[70] xl:hidden">
-            <motion.button
-              type="button"
-              className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
-              initial={shouldReduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-              transition={shouldReduceMotion ? { duration: 0 } : undefined}
-              onClick={() => setInspectorOpen(false)}
-              aria-label="إغلاق بيانات المستند"
-            />
-            <motion.aside
-              id={inspectorPanelId}
-              role="dialog"
-              aria-modal="true"
-              aria-label="بيانات المستند"
-              initial={shouldReduceMotion ? false : { x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={shouldReduceMotion ? undefined : { x: "-100%" }}
-              transition={motionSpring}
-              className="absolute inset-y-0 left-0 w-[min(94vw,25rem)] overflow-y-auto border-r border-line/80 bg-surface-overlay shadow-surface-lg backdrop-blur-xl"
-            >
-              <div className="sticky top-0 z-10 flex justify-end border-b border-line/75 bg-surface-overlay/95 p-3 backdrop-blur-xl">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-xl"
-                  onClick={() => setInspectorOpen(false)}
-                  aria-label="إغلاق بيانات المستند"
-                >
-                  <X className="h-5 w-5" aria-hidden="true" />
-                </Button>
-              </div>
-              {inspector}
-            </motion.aside>
-          </div>
-        ) : null}
-      </AnimatePresence>
+              <AnimatePresence>
+                {inspectorOpen ? (
+                  <div className="fixed inset-0 z-[70] xl:hidden">
+                    <motion.button
+                      type="button"
+                      className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+                      initial={shouldReduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+                      transition={shouldReduceMotion ? { duration: 0 } : undefined}
+                      onClick={() => setInspectorOpen(false)}
+                      aria-label="إغلاق بيانات المستند"
+                    />
+                    <motion.aside
+                      id={inspectorPanelId}
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="بيانات المستند"
+                      initial={shouldReduceMotion ? false : { x: "-100%" }}
+                      animate={{ x: 0 }}
+                      exit={shouldReduceMotion ? undefined : { x: "-100%" }}
+                      transition={motionSpring}
+                      className="absolute inset-y-0 left-0 w-[min(94vw,25rem)] overflow-y-auto border-r border-line/80 bg-surface-overlay shadow-surface-lg backdrop-blur-xl"
+                    >
+                      <div className="sticky top-0 z-10 flex justify-end border-b border-line/75 bg-surface-overlay/95 p-3 backdrop-blur-xl">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-xl"
+                          onClick={() => setInspectorOpen(false)}
+                          aria-label="إغلاق بيانات المستند"
+                        >
+                          <X className="h-5 w-5" aria-hidden="true" />
+                        </Button>
+                      </div>
+                      {inspector}
+                    </motion.aside>
+                  </div>
+                ) : null}
+              </AnimatePresence>
             </>,
             globalThis.document.body,
           )}
