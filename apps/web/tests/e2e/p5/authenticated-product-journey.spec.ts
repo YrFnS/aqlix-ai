@@ -227,7 +227,14 @@ test("completes the current source, grounded conversation, citation, draft, prop
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
   });
-  await expect(page.getByText(documentName, { exact: true })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.locator("#document-file").evaluate((element) => {
+        const input = element as HTMLInputElement;
+        return input.files?.[0]?.name ?? null;
+      }),
+    )
+    .toBe(documentName);
   const uploadButton = page.getByRole("button", {
     name: "رفع واستخراج المقاطع",
   });

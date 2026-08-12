@@ -317,8 +317,12 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   await expect(page.getByRole("button", { name: "إرسال" })).toBeVisible();
   await page.setViewportSize({ width: 1280, height: 900 });
 
-  await page
-    .getByRole("button", { name: "حذف المحادثة ورسائلها" })
+  const deleteZone = page
+    .locator("details")
+    .filter({ hasText: "منطقة الحذف" });
+  await deleteZone.locator("summary").click();
+  await deleteZone
+    .getByRole("button", { name: "حذف المحادثة", exact: true })
     .click();
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${workspaceId}/conversations\\?status=deleted$`),

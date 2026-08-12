@@ -184,6 +184,14 @@ async function waitForProposal(
   page: Page,
   instruction: string,
 ): Promise<void> {
+  const proposalTab = page.getByRole("button", {
+    name: "الاقتراح",
+    exact: true,
+  });
+  if ((await proposalTab.getAttribute("aria-pressed")) !== "true") {
+    await proposalTab.click();
+  }
+  await expect(page.getByLabel("إجراء اقتراح المسودة")).toBeVisible();
   await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");
   await page.getByLabel("تعليمات اقتراح المسودة").fill(instruction);
   await page.getByRole("button", { name: "بدء اقتراح" }).click();

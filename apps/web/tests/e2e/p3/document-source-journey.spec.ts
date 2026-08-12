@@ -436,7 +436,20 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   ).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(firstPassageButton(page)).toBeVisible();
+  await page
+    .getByRole("button", { name: "فتح مقاطع المستند" })
+    .click();
+  const passageDialog = page.getByRole("dialog", {
+    name: "مقاطع المستند",
+  });
+  await expect(passageDialog).toBeVisible();
+  await expect(
+    passageDialog.getByRole("button", { name: /^S1\s/u }).first(),
+  ).toBeVisible();
+  await passageDialog
+    .getByRole("button", { name: "إغلاق مقاطع المستند" })
+    .click();
+  await expect(passageDialog).toBeHidden();
   await page.setViewportSize({ width: 1280, height: 900 });
 
   page.once("dialog", (dialog) => void dialog.accept());
