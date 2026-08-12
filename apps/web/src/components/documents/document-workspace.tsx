@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -633,7 +634,11 @@ export function DocumentWorkspace({
         </aside>
       </div>
 
-      <AnimatePresence>
+      {typeof globalThis.document === "undefined"
+        ? null
+        : createPortal(
+            <>
+              <AnimatePresence>
         {passagePanelOpen ? (
           <div className="fixed inset-0 z-[70] lg:hidden">
             <motion.button
@@ -716,6 +721,9 @@ export function DocumentWorkspace({
           </div>
         ) : null}
       </AnimatePresence>
+            </>,
+            globalThis.document.body,
+          )}
     </section>
   );
 }
