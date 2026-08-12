@@ -25,6 +25,9 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
+          def lines(*values: str) -> str:
+              return "\n".join(values)
+
           def replace_once(path: str, old: str, new: str) -> None:
               file = Path(path)
               text = file.read_text(encoding="utf-8")
@@ -37,33 +40,41 @@ jobs:
 
           replace_once(
               "apps/web/tests/e2e/p2/conversation-journey.spec.ts",
-              '''  await page.getByRole("button", { name: "تسجيل الخروج" }).click();''',
-              '''  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
-  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();''',
+              '  await page.getByRole("button", { name: "تسجيل الخروج" }).click();',
+              lines(
+                  '  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();',
+                  '  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();',
+              ),
           )
 
           replace_once(
               "apps/web/tests/e2e/p3/document-source-journey.spec.ts",
-              '''  await passageDialog
-    .getByRole("button", { name: "إغلاق مقاطع المستند" })
-    .click();
-  await expect(passageDialog).toBeHidden();''',
-              '''  await page.keyboard.press("Escape");
-  await expect(passageDialog).toBeHidden();''',
+              lines(
+                  "  await passageDialog",
+                  '    .getByRole("button", { name: "إغلاق مقاطع المستند" })',
+                  "    .click();",
+                  "  await expect(passageDialog).toBeHidden();",
+              ),
+              lines(
+                  '  await page.keyboard.press("Escape");',
+                  "  await expect(passageDialog).toBeHidden();",
+              ),
           )
 
           replace_once(
               "apps/web/tests/e2e/p4/draft-journey.spec.ts",
-              '''  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");''',
-              '''  const viewerEditorTab = viewerPage.getByRole("button", {
-    name: "التحرير",
-    exact: true,
-  });
-  if ((await viewerEditorTab.getAttribute("aria-pressed")) !== "true") {
-    await viewerEditorTab.click();
-  }
-  await expect(draftContentField(viewerPage)).toBeVisible();
-  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");''',
+              '  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");',
+              lines(
+                  '  const viewerEditorTab = viewerPage.getByRole("button", {',
+                  '    name: "التحرير",',
+                  "    exact: true,",
+                  "  });",
+                  '  if ((await viewerEditorTab.getAttribute("aria-pressed")) !== "true") {',
+                  "    await viewerEditorTab.click();",
+                  "  }",
+                  "  await expect(draftContentField(viewerPage)).toBeVisible();",
+                  '  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");',
+              ),
           )
           PY
 
