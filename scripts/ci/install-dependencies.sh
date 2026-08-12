@@ -7,16 +7,12 @@ readonly dependency_timeout_seconds=180
 readonly supabase_cli_timeout_seconds=420
 
 install_once() {
+  # An explicit empty trustedDependencies allowlist keeps the root workspace
+  # lifecycle intact while blocking dependency postinstall scripts, including
+  # Supabase's unbounded native-binary download.
   timeout --signal=TERM "${dependency_timeout_seconds}s" \
-    bun install --frozen-lockfile --ignore-scripts || return $?
+    bun install --frozen-lockfile || return $?
 
-  # Bun's root postinstall only verifies the resolved workspace graph. Run that
-  # check explicitly after suppressing third-party lifecycle scripts.
-  bun pm ls || return $?
-
-  # The Supabase npm package downloads its native binary in postinstall with no
-  # network retry. Install the same pinned version ourselves with bounded curl
-  # retries and checksum verification instead.
   timeout --signal=TERM "${supabase_cli_timeout_seconds}s" \
     bash scripts/ci/install-supabase-cli.sh || return $?
 }
