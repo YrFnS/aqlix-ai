@@ -270,9 +270,11 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await page.getByLabel("البحث في المصادر").fill("English");
   await page.getByRole("button", { name: "بحث" }).click();
   await expect(page).toHaveURL(/\?q=English$/);
-  const supportingLink = page.locator(
-    `a[href="/workspaces/${workspaceId}/sources/${attachmentId}#source-${firstSourceId}"]`,
-  );
+  const supportingLink = page
+    .locator(
+      `a[href="/workspaces/${workspaceId}/sources/${attachmentId}#source-${firstSourceId}"]:visible`,
+    )
+    .first();
   await expect(supportingLink).toBeVisible();
   await expect(supportingLink).toHaveAccessibleName(
     new RegExp(`^فتح .+ من ${markdownFileName.replace(".", "\\.")}$`),
@@ -469,7 +471,8 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   expect(deletedObjectDirectory.error).toBeNull();
   expect(deletedObjectDirectory.data).toEqual([]);
 
-  await page.getByRole("button", { name: "تسجيل الخروج" }).click();
+  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
+  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();
   await expect(page).toHaveURL(/\/login\?status=signed-out$/);
   expect(hydrationErrors).toEqual([]);
 });
