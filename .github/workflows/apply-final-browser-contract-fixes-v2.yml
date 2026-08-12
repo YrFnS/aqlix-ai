@@ -19,57 +19,43 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
-      - name: Apply guarded fix
+      - name: Format the guarded portal block
         shell: bash
         run: |
           python <<'PY'
           from pathlib import Path
 
-          def replace(path: str, old: str, new: str, expected: int = 1) -> None:
-              file = Path(path)
-              text = file.read_text(encoding="utf-8")
-              count = text.count(old)
-              if count != expected:
-                  raise RuntimeError(
-                      f"{path}: expected {expected} matches, found {count} for {old!r}"
-                  )
-              file.write_text(text.replace(old, new), encoding="utf-8")
-
-          document_workspace = (
+          file = Path(
               "apps/web/src/components/documents/document-workspace.tsx"
           )
-          replace(
-              document_workspace,
-              '} from "react";\nimport Link from "next/link";',
-              '} from "react";\nimport { createPortal } from "react-dom";\nimport Link from "next/link";',
-          )
-          replace(
-              document_workspace,
-              "      <AnimatePresence>\n        {passagePanelOpen ? (",
-              "      {typeof globalThis.document === \"undefined\"\n"
-              "        ? null\n"
-              "        : createPortal(\n"
-              "            <>\n"
+          text = file.read_text(encoding="utf-8")
+          start_marker = (
               "              <AnimatePresence>\n"
-              "        {passagePanelOpen ? (",
+              "        {passagePanelOpen ? ("
           )
-          replace(
-              document_workspace,
-              "      </AnimatePresence>\n    </section>",
-              "      </AnimatePresence>\n"
-              "            </>,\n"
-              "            globalThis.document.body,\n"
-              "          )}\n"
-              "    </section>",
+          end_marker = "      </AnimatePresence>\n            </>,"
+
+          if text.count(start_marker) != 1:
+              raise RuntimeError("portal block start is missing or ambiguous")
+          if text.count(end_marker) != 1:
+              raise RuntimeError("portal block end is missing or ambiguous")
+
+          start = text.index(start_marker)
+          end = text.index(end_marker, start) + len("      </AnimatePresence>")
+          block = text[start:end]
+          lines = block.splitlines()
+          formatted = "\n".join(
+              [lines[0], *[("        " + line) if line else line for line in lines[1:]]]
           )
+          file.write_text(text[:start] + formatted + text[end:], encoding="utf-8")
           PY
 
-      - name: Commit fix
+      - name: Commit formatting
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add apps/web/src/components/documents/document-workspace.tsx
           git diff --cached --check
-          git commit -m "fix: portal mobile document drawers above app shell"
+          git commit -m "style: format document drawer portal"
           git push origin HEAD:${{ github.ref_name }}
