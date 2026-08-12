@@ -622,7 +622,7 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${workspaceId}/drafts\\?status=archived$`),
   );
-  await page.getByRole("link", { name: "أرشيف المسودات" }).click();
+  await page.getByRole("link", { name: "الأرشيف", exact: true }).click();
   await page
     .locator("article")
     .filter({ hasText: primaryDraft.data.draft.title })
