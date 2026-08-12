@@ -1,0 +1,93 @@
+name: Apply final browser contract fixes v2
+
+on:
+  push:
+    branches:
+      - agent/e2e-role-security-hardening
+    paths:
+      - .github/workflows/apply-final-browser-contract-fixes-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Apply guarded fixes
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path: str, old: str, new: str, expected: int = 1) -> None:
+              file = Path(path)
+              text = file.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != expected:
+                  raise RuntimeError(
+                      f"{path}: expected {expected} matches, found {count} for {old!r}"
+                  )
+              file.write_text(text.replace(old, new), encoding="utf-8")
+
+          replace(
+              "apps/web/tests/e2e/p2/conversation-journey.spec.ts",
+              '  await page.getByRole("button", { name: "تسجيل الخروج" }).click();',
+              '''  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
+          await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();''',
+          )
+
+          replace(
+              "apps/web/tests/e2e/p4/draft-journey.spec.ts",
+              '  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");',
+              '''  await viewerPage
+            .getByRole("button", { name: "التحرير", exact: true })
+            .click();
+          await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");''',
+          )
+
+          document_workspace = (
+              "apps/web/src/components/documents/document-workspace.tsx"
+          )
+          replace(
+              document_workspace,
+              '} from "react";\nimport Link from "next/link";',
+              '} from "react";\nimport { createPortal } from "react-dom";\nimport Link from "next/link";',
+          )
+          replace(
+              document_workspace,
+              '''      <AnimatePresence>
+                {passagePanelOpen ? (''',
+              '''      {typeof globalThis.document === "undefined"
+                ? null
+                : createPortal(
+                    <>
+                      <AnimatePresence>
+                {passagePanelOpen ? (''',
+          )
+          replace(
+              document_workspace,
+              '''      </AnimatePresence>
+            </section>''',
+              '''      </AnimatePresence>
+                    </>,
+                    globalThis.document.body,
+                  )}
+            </section>''',
+          )
+          PY
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src apps/web/tests
+          git diff --cached --check
+          git commit -m "fix: stabilize final browser journeys"
+          git push origin HEAD:${{ github.ref_name }}
