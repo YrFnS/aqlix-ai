@@ -540,6 +540,14 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(
     viewerPage.getByRole("heading", { name: primaryDraft.data.draft.title }),
   ).toBeVisible();
+  const viewerEditorTab = viewerPage.getByRole("button", {
+    name: "التحرير",
+    exact: true,
+  });
+  if ((await viewerEditorTab.getAttribute("aria-pressed")) !== "true") {
+    await viewerEditorTab.click();
+  }
+  await expect(draftContentField(viewerPage)).toBeVisible();
   await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");
   await expect(
     viewerPage.getByRole("button", { name: "حفظ إصدار" }),

@@ -329,7 +329,8 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   );
   await expect(page.getByRole("heading", { name: conversationTitle })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "تسجيل الخروج" }).click();
+  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
+  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();
   await expect(page).toHaveURL(/\/login\?status=signed-out$/);
   expect(hydrationErrors).toEqual([]);
 });

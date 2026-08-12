@@ -446,9 +446,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(
     passageDialog.getByRole("button", { name: /^S1\s/u }).first(),
   ).toBeVisible();
-  await passageDialog
-    .getByRole("button", { name: "إغلاق مقاطع المستند" })
-    .click();
+  await page.keyboard.press("Escape");
   await expect(passageDialog).toBeHidden();
   await page.setViewportSize({ width: 1280, height: 900 });
 
