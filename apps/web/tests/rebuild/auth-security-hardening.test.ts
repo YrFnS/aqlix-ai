@@ -3,6 +3,11 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { strongPasswordSchema } from "../../src/lib/auth/password-policy";
+import {
+  buildTrustedAppUrl,
+  getSafeNextPath,
+  getTrustedAppOrigin,
+} from "../../src/lib/auth/redirects";
 
 const webRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const repoRoot = resolve(webRoot, "../..");
@@ -61,6 +66,81 @@ describe("account password and MFA hardening", () => {
       "HTMLFormElement.prototype.submit.call(event.currentTarget)",
     );
   });
+
+  test("keeps account redirects same-origin and avoids request-host trust", () => {
+    expect(getSafeNextPath("/workspaces?tab=recent#drafts")).toBe(
+      "/workspaces?tab=recent#drafts",
+    );
+
+    for (const unsafePath of [
+      null,
+      "workspaces",
+      "https://evil.example",
+      "//evil.example",
+      "/\\evil.example",
+      "/\n//evil.example",
+      "javascript:alert(1)",
+    ]) {
+      expect(getSafeNextPath(unsafePath)).toBe("/workspaces");
+    }
+
+    const trustedOriginKeys = [
+      "APP_BASE_URL",
+      "NEXT_PUBLIC_SITE_URL",
+      "RENDER_EXTERNAL_URL",
+    ] as const;
+    const previousValues = Object.fromEntries(
+      trustedOriginKeys.map((key) => [key, process.env[key]]),
+    ) as Record<(typeof trustedOriginKeys)[number], string | undefined>;
+
+    try {
+      for (const key of trustedOriginKeys) delete process.env[key];
+
+      process.env.APP_BASE_URL = "https://tuppra.example/deployment-path";
+      expect(getTrustedAppOrigin()).toBe("https://tuppra.example");
+      expect(
+        buildTrustedAppUrl("/auth/confirm?next=%2Fworkspaces"),
+      ).toBe("https://tuppra.example/auth/confirm?next=%2Fworkspaces");
+      expect(buildTrustedAppUrl("https://evil.example/confirm")).toBeNull();
+
+      process.env.APP_BASE_URL = "https://user:password@tuppra.example";
+      expect(getTrustedAppOrigin()).toBeNull();
+
+      process.env.APP_BASE_URL = "http://tuppra.example";
+      expect(getTrustedAppOrigin()).toBeNull();
+
+      process.env.APP_BASE_URL = "http://localhost:3000";
+      expect(getTrustedAppOrigin()).toBe("http://localhost:3000");
+    } finally {
+      for (const key of trustedOriginKeys) {
+        const previousValue = previousValues[key];
+        if (previousValue === undefined) delete process.env[key];
+        else process.env[key] = previousValue;
+      }
+    }
+
+    const actions = readWeb("src/lib/auth/actions.ts");
+    const redirects = readWeb("src/lib/auth/redirects.ts");
+    const confirmation = readWeb("src/app/auth/confirm/route.ts");
+    const developmentEnv = readWeb(".env.example");
+    const releaseEnv = readWeb(".env.release.example");
+
+    expect(actions).toContain("buildTrustedAppUrl");
+    expect(actions).toContain("getSafeNextPath");
+    expect(actions).not.toContain('from "next/headers"');
+    expect(actions).not.toContain("x-forwarded-host");
+    expect(actions).not.toContain("x-forwarded-proto");
+    expect(redirects).toContain("candidate.origin !== SAFE_REDIRECT_ORIGIN");
+    expect(redirects).toContain("process.env.APP_BASE_URL");
+    expect(redirects).toContain("process.env.RENDER_EXTERNAL_URL");
+    expect(confirmation).toContain("getTrustedAppOrigin");
+    expect(confirmation).toContain("getSafeNextPath");
+    expect(developmentEnv).toContain("APP_BASE_URL=http://localhost:3000");
+    expect(releaseEnv).toContain(
+      "APP_BASE_URL=https://tuppra-staging.example.test",
+    );
+  });
+
   test("requires AAL2 only for accounts with a verified factor", () => {
     const assurance = readWeb("src/lib/auth/assurance.ts");
     const actions = readWeb("src/lib/auth/actions.ts");

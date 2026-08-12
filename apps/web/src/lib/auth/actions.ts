@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
 import { evaluateSessionAssurance } from "./assurance";
 import { strongPasswordSchema } from "./password-policy";
+import { buildTrustedAppUrl, getSafeNextPath } from "./redirects";
 
 const emailSchema = z.string().trim().min(1).email();
 const signInPasswordSchema = z.string().min(1).max(72);
@@ -27,12 +27,6 @@ const signUpSchema = z
     path: ["confirmPassword"],
   });
 
-function getSafeNextPath(value: FormDataEntryValue | null): string {
-  if (typeof value !== "string") return "/workspaces";
-  if (!value.startsWith("/") || value.startsWith("//")) return "/workspaces";
-  return value;
-}
-
 function accountRedirect(
   page: "/login" | "/register",
   status: string,
@@ -45,17 +39,6 @@ function accountRedirect(
 function mfaRedirect(nextPath: string): never {
   const params = new URLSearchParams({ next: nextPath });
   redirect(`/mfa?${params.toString()}`);
-}
-
-async function getRequestOrigin(): Promise<string | null> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-
-  if (!host) return null;
-
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
-  return `${protocol}://${host}`;
 }
 
 export async function signInAction(formData: FormData): Promise<never> {
@@ -114,15 +97,17 @@ export async function signUpAction(formData: FormData): Promise<never> {
     accountRedirect("/register", "invalid-input", nextPath);
   }
 
-  const origin = await getRequestOrigin();
+  const emailRedirectTo = buildTrustedAppUrl(
+    `/auth/confirm?next=${encodeURIComponent(nextPath)}`,
+  );
   const supabase = await createActionClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    ...(origin
+    ...(emailRedirectTo
       ? {
           options: {
-            emailRedirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(nextPath)}`,
+            emailRedirectTo,
           },
         }
       : {}),
