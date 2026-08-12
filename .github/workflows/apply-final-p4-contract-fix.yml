@@ -1,0 +1,46 @@
+name: Apply final P4 browser contract fix
+
+on:
+  push:
+    branches:
+      - agent/e2e-role-security-hardening
+    paths:
+      - .github/workflows/apply-final-p4-contract-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Align the P4 archive link contract
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path("apps/web/tests/e2e/p4/draft-journey.spec.ts")
+          text = path.read_text(encoding="utf-8")
+          old = '  await page.getByRole("link", { name: "أرشيف المسودات" }).click();'
+          new = '  await page.getByRole("link", { name: "الأرشيف", exact: true }).click();'
+          if text.count(old) != 1:
+              raise RuntimeError("P4 archive-link contract is missing or ambiguous")
+          path.write_text(text.replace(old, new), encoding="utf-8")
+          PY
+
+      - name: Commit the fix and remove this temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/apply-final-p4-contract-fix.yml
+          git add apps/web/tests/e2e/p4/draft-journey.spec.ts
+          git diff --cached --check
+          git commit -m "test: align the final P4 archive journey"
+          git push origin HEAD:${{ github.ref_name }}
