@@ -1,0 +1,119 @@
+name: Apply final browser contract fixes
+
+on:
+  push:
+    branches:
+      - agent/e2e-role-security-hardening
+    paths:
+      - .github/workflows/apply-final-browser-contract-fixes.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Align browser journeys with current product surfaces
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              file = Path(path)
+              text = file.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != 1:
+                  raise RuntimeError(
+                      f"{path}: expected exactly one match, found {count} for {old!r}"
+                  )
+              file.write_text(text.replace(old, new), encoding="utf-8")
+
+          replace_once(
+              "apps/web/tests/e2e/p2/conversation-journey.spec.ts",
+              '''  await page
+            .getByRole("button", { name: "حذف المحادثة ورسائلها" })
+            .click();''',
+              '''  const deleteZone = page
+            .locator("details")
+            .filter({ hasText: "منطقة الحذف" });
+          await deleteZone.locator("summary").click();
+          await deleteZone
+            .getByRole("button", { name: "حذف المحادثة", exact: true })
+            .click();''',
+          )
+
+          replace_once(
+              "apps/web/tests/e2e/p3/document-source-journey.spec.ts",
+              '''  await page.setViewportSize({ width: 390, height: 844 });
+          await expect(firstPassageButton(page)).toBeVisible();
+          await page.setViewportSize({ width: 1280, height: 900 });''',
+              '''  await page.setViewportSize({ width: 390, height: 844 });
+          await page
+            .getByRole("button", { name: "فتح مقاطع المستند" })
+            .click();
+          const passageDialog = page.getByRole("dialog", {
+            name: "مقاطع المستند",
+          });
+          await expect(passageDialog).toBeVisible();
+          await expect(
+            passageDialog.getByRole("button", { name: /^S1\\s/u }).first(),
+          ).toBeVisible();
+          await passageDialog
+            .getByRole("button", { name: "إغلاق مقاطع المستند" })
+            .click();
+          await expect(passageDialog).toBeHidden();
+          await page.setViewportSize({ width: 1280, height: 900 });''',
+          )
+
+          replace_once(
+              "apps/web/tests/e2e/p4/draft-journey.spec.ts",
+              '''async function waitForProposal(
+            page: Page,
+            instruction: string,
+          ): Promise<void> {
+            await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");''',
+              '''async function waitForProposal(
+            page: Page,
+            instruction: string,
+          ): Promise<void> {
+            const proposalTab = page.getByRole("button", {
+              name: "الاقتراح",
+              exact: true,
+            });
+            if ((await proposalTab.getAttribute("aria-pressed")) !== "true") {
+              await proposalTab.click();
+            }
+            await expect(page.getByLabel("إجراء اقتراح المسودة")).toBeVisible();
+            await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");''',
+          )
+
+          replace_once(
+              "apps/web/tests/e2e/p5/authenticated-product-journey.spec.ts",
+              '''  await expect(page.getByText(documentName, { exact: true })).toBeVisible();''',
+              '''  await expect
+            .poll(() =>
+              page.locator("#document-file").evaluate((element) => {
+                const input = element as HTMLInputElement;
+                return input.files?.[0]?.name ?? null;
+              }),
+            )
+            .toBe(documentName);''',
+          )
+          PY
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/tests
+          git diff --cached --check
+          git commit -m "test: align final browser journeys with current UI"
+          git push origin HEAD:${{ github.ref_name }}
