@@ -1,0 +1,158 @@
+name: Apply final integration fixes
+
+on:
+  push:
+    branches:
+      - agent/e2e-role-security-hardening
+    paths:
+      - .github/workflows/apply-final-integration-fixes.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Apply guarded fixes
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path: str, old: str, new: str, expected: int = 1) -> None:
+              file = Path(path)
+              text = file.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != expected:
+                  raise RuntimeError(
+                      f"{path}: expected {expected} matches, found {count} for {old!r}"
+                  )
+              file.write_text(text.replace(old, new), encoding="utf-8")
+
+          native_form = Path(
+              "apps/web/src/components/auth/native-action-form.tsx"
+          )
+          if native_form.exists():
+              raise RuntimeError(f"{native_form}: file already exists")
+          native_form.write_text(
+              '''"use client";
+
+import type { ComponentProps, FormEvent } from "react";
+
+type NativeActionFormProps = ComponentProps<"form">;
+
+/**
+ * Forces a real browser navigation for security-sensitive server actions.
+ *
+ * React's enhanced action transition can receive the authentication cookies and
+ * redirect response without committing the route in WebKit. Native submission
+ * keeps progressive enhancement intact and makes the redirect authoritative.
+ */
+export function NativeActionForm({
+  onSubmit,
+  ...props
+}: NativeActionFormProps) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    onSubmit?.(event);
+    if (event.defaultPrevented) return;
+
+    event.preventDefault();
+    HTMLFormElement.prototype.submit.call(event.currentTarget);
+  }
+
+  return <form {...props} onSubmit={handleSubmit} />;
+}
+''',
+              encoding="utf-8",
+          )
+
+          login_page = "apps/web/src/app/(auth)/login/page.tsx"
+          replace(
+              login_page,
+              'import { AuthFrame, AuthNotice } from "@/components/auth/auth-frame";\n',
+              'import { AuthFrame, AuthNotice } from "@/components/auth/auth-frame";\nimport { NativeActionForm } from "@/components/auth/native-action-form";\n',
+          )
+          replace(
+              login_page,
+              '<form action={signInAction} className="space-y-5" aria-label="نموذج تسجيل الدخول">',
+              '<NativeActionForm\n        action={signInAction}\n        className="space-y-5"\n        aria-label="نموذج تسجيل الدخول"\n      >',
+          )
+          replace(login_page, "      </form>", "      </NativeActionForm>")
+
+          auth_test = "apps/web/tests/rebuild/auth-security-hardening.test.ts"
+          marker = '  test("requires AAL2 only for accounts with a verified factor", () => {'
+          native_test = '''  test("commits authentication redirects with native browser navigation", () => {
+    const loginPage = readWeb("src/app/(auth)/login/page.tsx");
+    const nativeActionForm = readWeb(
+      "src/components/auth/native-action-form.tsx",
+    );
+
+    expect(loginPage).toContain("NativeActionForm");
+    expect(loginPage).toContain("action={signInAction}");
+    expect(nativeActionForm).toContain("event.preventDefault()");
+    expect(nativeActionForm).toContain(
+      "HTMLFormElement.prototype.submit.call(event.currentTarget)",
+    );
+  });
+
+'''
+          replace(auth_test, marker, native_test + marker)
+
+          replace(
+              "apps/web/tests/e2e/p2/conversation-journey.spec.ts",
+              'page.getByRole("link", { name: "أرشيف المحادثات" })',
+              'page.getByRole("link", { name: "الأرشيف", exact: true })',
+          )
+
+          source_test = "apps/web/tests/e2e/p3/document-source-journey.spec.ts"
+          replace(
+              source_test,
+              '''  const supportingLink = page.getByRole("link", { name: "فتح المقطع الداعم" });
+  await expect(supportingLink).toBeVisible();''',
+              '''  const supportingLink = page.locator(
+    `a[href="/workspaces/${workspaceId}/sources/${attachmentId}#source-${firstSourceId}"]`,
+  );
+  await expect(supportingLink).toBeVisible();
+  await expect(supportingLink).toHaveAccessibleName(
+    new RegExp(`^فتح .+ من ${markdownFileName.replace(".", "\\\\.")}$`),
+  );''',
+          )
+
+          grounded_test = "apps/web/tests/e2e/p3/grounded-conversation-journey.spec.ts"
+          replace(
+              grounded_test,
+              '''    page.getByTitle(
+      "The original source was deleted or is no longer available.",
+    ),''',
+              '''    page
+      .getByRole("main")
+      .getByTitle(
+        "The original source was deleted or is no longer available.",
+      ),''',
+          )
+          replace(
+              grounded_test,
+              '''    page.getByRole("button", {
+      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
+    }),''',
+              '''    page.getByRole("main").getByRole("button", {
+      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
+    }),''',
+          )
+          PY
+
+      - name: Commit fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/src apps/web/tests
+          git diff --cached --check
+          git commit -m "fix: stabilize Safari auth and final browser contracts"
+          git push origin HEAD:${{ github.ref_name }}
