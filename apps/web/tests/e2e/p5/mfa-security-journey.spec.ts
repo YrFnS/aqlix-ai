@@ -116,7 +116,15 @@ async function signIn(page: Page, email: string): Promise<void> {
   await page.goto("/login?next=%2Fworkspaces");
   await page.getByLabel(/البريد الإلكتروني/).fill(email);
   await page.getByLabel(/^كلمة المرور/).fill(password);
-  await page.getByRole("button", { name: "تسجيل الدخول" }).click();
+  const signInButton = page.getByRole("button", { name: "تسجيل الدخول" });
+  await expect(signInButton).toBeEnabled();
+  await Promise.all([
+    page.waitForURL(
+      (url) => url.pathname === "/mfa" || url.pathname === "/workspaces",
+      { timeout: 20_000 },
+    ),
+    signInButton.click(),
+  ]);
 }
 
 test("enrolls TOTP, requires AAL2 after sign-in, and removes the factor", async ({

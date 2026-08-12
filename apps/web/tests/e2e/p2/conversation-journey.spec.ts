@@ -36,6 +36,42 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+function clientSurface(page: Page, name: string) {
+  return page
+    .locator(`[data-client-surface="${name}"][data-client-ready="true"]`)
+    .last();
+}
+
+async function waitForClientSurface(page: Page, name: string): Promise<void> {
+  await expect(clientSurface(page, name)).toHaveAttribute(
+    "data-client-ready",
+    "true",
+  );
+}
+
+async function sendMessage(page: Page, content: string): Promise<void> {
+  await waitForClientSurface(page, "conversation");
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const conversationSurface = clientSurface(page, "conversation");
+    const input = conversationSurface.getByLabel("اكتب رسالة");
+    const sendButton = conversationSurface.getByRole("button", {
+      name: "إرسال",
+    });
+
+    await input.fill(content);
+    await expect(input).toHaveValue(content);
+
+    try {
+      await expect(sendButton).toBeEnabled({ timeout: 4_000 });
+      await sendButton.click({ timeout: 4_000 });
+      return;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      await waitForClientSurface(page, "conversation");
+    }
+  }
+}
 async function conversationPayload(
   request: APIRequestContext,
   workspaceId: string,
@@ -104,12 +140,13 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
 
-  const composer = page.getByLabel("اكتب رسالة");
+  await waitForClientSurface(page, "conversation");
+  const composer = clientSurface(page, "conversation").getByLabel("اكتب رسالة");
   await expect(composer).toHaveAttribute("dir", "auto");
-  await composer.fill(
+  await sendMessage(
+    page,
     "اشرح الفكرة بالعربية وEnglish مع الرقم 2026 والرابط https://example.test",
   );
-  await page.getByRole("button", { name: "إرسال" }).click();
 
   const completedAssistantMessage = page
     .locator('article[data-message-id]')
@@ -153,6 +190,7 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
   expect(payload.data.messages[1]?.generation?.totalTokens).toBeGreaterThan(0);
 
   await page.reload();
+  await waitForClientSurface(page, "conversation");
   await expect(completedAssistantMessage).toBeVisible();
   await completedAssistantMessage
     .getByText("تفاصيل التوليد", { exact: true })
@@ -163,19 +201,13 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
     }),
   ).toBeVisible();
 
-  await composer.fill("[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
-  await page.getByRole("button", { name: "إرسال" }).click();
-
-  const assistantAttemptsWithFixtureText = page
-    .locator('article[data-message-id]')
-    .filter({ hasText: "هذه إجابة اختبارية" });
-  await expect
-    .poll(async () => assistantAttemptsWithFixtureText.count())
-    .toBeGreaterThan(1);
-
-  await page
-    .getByRole("button", { name: "إيقاف وحفظ الجزئي" })
-    .click();
+  await sendMessage(page, "[fixture:slow] أوقف هذه الاستجابة بعد بدء النص");
+  const stopButton = clientSurface(page, "conversation").getByRole("button", {
+    name: "إيقاف",
+    exact: true,
+  });
+  await expect(stopButton).toBeVisible();
+  await stopButton.click();
 
   await expect
     .poll(async () => {
@@ -216,8 +248,7 @@ test("streams, persists, cancels, retries, isolates, and manages a bilingual con
     sequence: 4,
   });
 
-  await composer.fill("[fixture:fail] اختبر فشل المزود");
-  await page.getByRole("button", { name: "إرسال" }).click();
+  await sendMessage(page, "[fixture:fail] اختبر فشل المزود");
   await expect(
     page.getByText("PROVIDER_UNAVAILABLE", { exact: true }),
   ).toBeVisible();

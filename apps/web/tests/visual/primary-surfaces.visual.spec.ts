@@ -170,9 +170,21 @@ test("keeps the primary Tuppra journey visually stable", async ({
   ).toBeVisible();
   await capture(page, "conversation-detail.png");
 
-  const conversationDetails = page.getByRole("complementary", {
+  const desktopConversationDetails = page.getByRole("complementary", {
     name: "تفاصيل المحادثة",
   });
+  const mobileConversationDetails = page.getByRole("dialog", {
+    name: "تفاصيل المحادثة",
+  });
+  if (!(await desktopConversationDetails.isVisible())) {
+    await page
+      .getByRole("button", { name: "فتح تفاصيل المحادثة" })
+      .click();
+    await expect(mobileConversationDetails).toBeVisible();
+  }
+  const conversationDetails = (await desktopConversationDetails.isVisible())
+    ? desktopConversationDetails
+    : mobileConversationDetails;
   await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
   await conversationDetails
     .getByRole("button", { name: "إنشاء المسودة" })

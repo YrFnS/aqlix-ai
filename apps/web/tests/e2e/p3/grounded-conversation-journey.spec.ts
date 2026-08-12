@@ -135,10 +135,10 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
       exact: true,
     }),
   ).toBeVisible();
-  const citationLink = page.getByRole("link", {
-    name: new RegExp(`فتح المرجع S1 من ${documentName}`),
+  const citationPreview = page.getByRole("button", {
+    name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
   });
-  await expect(citationLink).toBeVisible();
+  await expect(citationPreview).toBeVisible();
   await groundedAssistantMessage
     .getByText("تفاصيل التوليد", { exact: true })
     .click();
@@ -172,7 +172,14 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   const sourceId = groundedMessage?.citations[0]?.sourceId;
   expect(sourceId).toBeTruthy();
 
-  await citationLink.click();
+  await citationPreview.click();
+  const citationDialog = page.getByRole("dialog", {
+    name: "معاينة المرجع S1",
+  });
+  await expect(citationDialog).toBeVisible();
+  await citationDialog
+    .getByRole("link", { name: "فتح المستند الكامل" })
+    .click();
   await expect(page).toHaveURL(
     new RegExp(
       `/workspaces/${workspaceId}/sources/${attachmentId}#source-${sourceId}$`,
@@ -196,8 +203,8 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     ),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", {
-      name: new RegExp(`فتح المرجع S1 من ${documentName}`),
+    page.getByRole("button", {
+      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
     }),
   ).toHaveCount(0);
 

@@ -266,7 +266,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   expect(ownerDownload.error).toBeNull();
   expect(await ownerDownload.data?.text()).toBe(markdownText);
 
-  await page.getByRole("link", { name: "كل المصادر" }).click();
+  await page.getByRole("link", { name: "العودة إلى مكتبة المصادر" }).click();
   await page.getByLabel("البحث في المصادر").fill("English");
   await page.getByRole("button", { name: "بحث" }).click();
   await expect(page).toHaveURL(/\?q=English$/);
@@ -280,7 +280,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   );
   await expect(page.locator(`#source-${firstSourceId}`)).toBeVisible();
 
-  await page.getByRole("link", { name: "كل المصادر" }).click();
+  await page.getByRole("link", { name: "العودة إلى مكتبة المصادر" }).click();
   await page.locator("#document-file").setInputFiles({
     name: "نسخة.md",
     mimeType: "text/markdown",

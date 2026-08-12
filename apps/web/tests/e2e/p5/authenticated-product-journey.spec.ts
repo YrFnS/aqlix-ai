@@ -227,7 +227,12 @@ test("completes the current source, grounded conversation, citation, draft, prop
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
   });
-  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
+  await expect(page.getByText(documentName, { exact: true })).toBeVisible();
+  const uploadButton = page.getByRole("button", {
+    name: "رفع واستخراج المقاطع",
+  });
+  await expect(uploadButton).toBeEnabled();
+  await uploadButton.click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/sources\/[0-9a-f-]+\?status=uploaded$/,
   );
