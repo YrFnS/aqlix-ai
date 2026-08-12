@@ -19,7 +19,7 @@ jobs:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
 
-      - name: Apply guarded fixes
+      - name: Apply guarded fix
         shell: bash
         run: |
           python <<'PY'
@@ -35,22 +35,6 @@ jobs:
                   )
               file.write_text(text.replace(old, new), encoding="utf-8")
 
-          replace(
-              "apps/web/tests/e2e/p2/conversation-journey.spec.ts",
-              '  await page.getByRole("button", { name: "تسجيل الخروج" }).click();',
-              '''  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
-          await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();''',
-          )
-
-          replace(
-              "apps/web/tests/e2e/p4/draft-journey.spec.ts",
-              '  await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");',
-              '''  await viewerPage
-            .getByRole("button", { name: "التحرير", exact: true })
-            .click();
-          await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");''',
-          )
-
           document_workspace = (
               "apps/web/src/components/documents/document-workspace.tsx"
           )
@@ -61,33 +45,31 @@ jobs:
           )
           replace(
               document_workspace,
-              '''      <AnimatePresence>
-                {passagePanelOpen ? (''',
-              '''      {typeof globalThis.document === "undefined"
-                ? null
-                : createPortal(
-                    <>
-                      <AnimatePresence>
-                {passagePanelOpen ? (''',
+              "      <AnimatePresence>\n        {passagePanelOpen ? (",
+              "      {typeof globalThis.document === \"undefined\"\n"
+              "        ? null\n"
+              "        : createPortal(\n"
+              "            <>\n"
+              "              <AnimatePresence>\n"
+              "        {passagePanelOpen ? (",
           )
           replace(
               document_workspace,
-              '''      </AnimatePresence>
-            </section>''',
-              '''      </AnimatePresence>
-                    </>,
-                    globalThis.document.body,
-                  )}
-            </section>''',
+              "      </AnimatePresence>\n    </section>",
+              "      </AnimatePresence>\n"
+              "            </>,\n"
+              "            globalThis.document.body,\n"
+              "          )}\n"
+              "    </section>",
           )
           PY
 
-      - name: Commit fixes
+      - name: Commit fix
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps/web/src apps/web/tests
+          git add apps/web/src/components/documents/document-workspace.tsx
           git diff --cached --check
-          git commit -m "fix: stabilize final browser journeys"
+          git commit -m "fix: portal mobile document drawers above app shell"
           git push origin HEAD:${{ github.ref_name }}
