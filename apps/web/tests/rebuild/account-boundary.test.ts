@@ -25,11 +25,17 @@ describe("account boundary", () => {
 
   test("activates one Supabase confirmation callback with safe return paths", () => {
     const callback = readSource("src/app/auth/confirm/route.ts");
+    const redirects = readSource("src/lib/auth/redirects.ts");
 
     expect(callback).toContain("createActionClient");
     expect(callback).toContain("exchangeCodeForSession");
     expect(callback).toContain("verifyOtp");
-    expect(callback).toContain('value.startsWith("//")');
+    expect(callback).toContain("getSafeNextPath");
+    expect(callback).toContain("getTrustedAppOrigin");
+    expect(redirects).toContain(
+      "candidate.origin !== SAFE_REDIRECT_ORIGIN",
+    );
+    expect(redirects).toContain("return DEFAULT_NEXT_PATH");
     expect(callback).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
   });
 
@@ -61,6 +67,7 @@ describe("account boundary", () => {
     const register = readSource("src/app/(auth)/register/page.tsx");
     const authFrame = readSource("src/components/auth/auth-frame.tsx");
     const actions = readSource("src/lib/auth/actions.ts");
+    const redirects = readSource("src/lib/auth/redirects.ts");
     const accountSurface = `${layout}\n${login}\n${register}`;
 
     expect(login).toContain("<AuthFrame");
@@ -76,7 +83,12 @@ describe("account boundary", () => {
     expect(actions).toContain("signInWithPassword");
     expect(actions).toContain("auth.signUp");
     expect(actions).toContain("auth.signOut");
-    expect(actions).toContain('value.startsWith("//")');
+    expect(actions).toContain("getSafeNextPath");
+    expect(actions).toContain("buildTrustedAppUrl");
+    expect(actions).not.toContain("x-forwarded-host");
+    expect(redirects).toContain(
+      "candidate.origin !== SAFE_REDIRECT_ORIGIN",
+    );
     expect(login).not.toContain("<LoginForm");
     expect(register).not.toContain("<RegisterForm");
 
