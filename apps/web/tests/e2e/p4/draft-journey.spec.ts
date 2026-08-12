@@ -624,9 +624,11 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   );
   await page.getByRole("link", { name: "الأرشيف", exact: true }).click();
   await page
-    .locator("article")
-    .filter({ hasText: primaryDraft.data.draft.title })
-    .getByRole("link", { name: "فتح المسودة" })
+    .getByRole("main")
+    .getByRole("link", {
+      name: `فتح المسودة ${primaryDraft.data.draft.title}` ,
+      exact: true,
+    })
     .click();
   await page.getByRole("button", { name: "استعادة إلى العمل" }).click();
   await expect(page).toHaveURL(
@@ -640,6 +642,14 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await page.getByRole("button", { name: "أرشفة" }).click();
   await expect(page).toHaveURL(/\/workspaces\?status=archived$/);
   await page.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
+  const archivedWorkspaceEditorTab = page.getByRole("button", {
+    name: "التحرير",
+    exact: true,
+  });
+  if ((await archivedWorkspaceEditorTab.getAttribute("aria-pressed")) !== "true") {
+    await archivedWorkspaceEditorTab.click();
+  }
+  await expect(draftContentField(page)).toBeVisible();
   await expect(draftContentField(page)).toHaveAttribute("readonly", "");
   await expect(
     page.getByRole("button", { name: "بدء اقتراح" }),
