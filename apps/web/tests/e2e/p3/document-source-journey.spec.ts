@@ -55,6 +55,10 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+function firstPassageButton(page: Page) {
+  return page.getByRole("button", { name: /^S1\s/u }).first();
+}
+
 function isolatedSupabaseClient(key = publicKey): SupabaseClient<Database> {
   return createClient<Database>(supabaseUrl, key, {
     auth: {
@@ -207,9 +211,10 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
     page.getByRole("heading", { name: markdownFileName }),
   ).toBeVisible();
   await expect(page.getByText(/Private document stored/)).toBeVisible();
-  await expect(page.getByText("S1", { exact: true })).toBeVisible();
-  await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
-  await expect(page.getByText(/الأسطر/)).toBeVisible();
+  const firstPassage = firstPassageButton(page);
+  await expect(firstPassage).toBeVisible();
+  await expect(firstPassage).toContainText(/English roadmap 2026/);
+  await expect(firstPassage).toContainText(/الأسطر/);
 
   const payload = await documentPayload(
     context.request,
@@ -239,7 +244,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   await expect(
     page.getByRole("heading", { name: markdownFileName }),
   ).toBeVisible();
-  await expect(page.getByText(/English roadmap 2026/)).toBeVisible();
+  await expect(firstPassageButton(page)).toContainText(/English roadmap 2026/);
 
   const redirectResponse = await context.request.get(
     `/api/v1/workspaces/${workspaceId}/sources/${attachmentId}/download`,
@@ -261,12 +266,19 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   expect(ownerDownload.error).toBeNull();
   expect(await ownerDownload.data?.text()).toBe(markdownText);
 
-  await page.getByRole("link", { name: "كل المصادر" }).click();
+  await page.getByRole("link", { name: "العودة إلى مكتبة المصادر" }).click();
   await page.getByLabel("البحث في المصادر").fill("English");
   await page.getByRole("button", { name: "بحث" }).click();
   await expect(page).toHaveURL(/\?q=English$/);
-  const supportingLink = page.getByRole("link", { name: "فتح المقطع الداعم" });
+  const supportingLink = page
+    .locator(
+      `a[href="/workspaces/${workspaceId}/sources/${attachmentId}#source-${firstSourceId}"]:visible`,
+    )
+    .first();
   await expect(supportingLink).toBeVisible();
+  await expect(supportingLink).toHaveAccessibleName(
+    new RegExp(`^فتح .+ من ${markdownFileName.replace(".", "\\.")}$`),
+  );
   await supportingLink.click();
   await expect(page).toHaveURL(
     new RegExp(
@@ -275,7 +287,7 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   );
   await expect(page.locator(`#source-${firstSourceId}`)).toBeVisible();
 
-  await page.getByRole("link", { name: "كل المصادر" }).click();
+  await page.getByRole("link", { name: "العودة إلى مكتبة المصادر" }).click();
   await page.locator("#document-file").setInputFiles({
     name: "نسخة.md",
     mimeType: "text/markdown",
@@ -426,7 +438,18 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   ).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.getByText("S1", { exact: true })).toBeVisible();
+  await page
+    .getByRole("button", { name: "فتح مقاطع المستند" })
+    .click();
+  const passageDialog = page.getByRole("dialog", {
+    name: "مقاطع المستند",
+  });
+  await expect(passageDialog).toBeVisible();
+  await expect(
+    passageDialog.getByRole("button", { name: /^S1\s/u }).first(),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(passageDialog).toBeHidden();
   await page.setViewportSize({ width: 1280, height: 900 });
 
   page.once("dialog", (dialog) => void dialog.accept());
@@ -448,7 +471,8 @@ test("stores, searches, isolates, downloads, archives, and deletes private sourc
   expect(deletedObjectDirectory.error).toBeNull();
   expect(deletedObjectDirectory.data).toEqual([]);
 
-  await page.getByRole("button", { name: "تسجيل الخروج" }).click();
+  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
+  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();
   await expect(page).toHaveURL(/\/login\?status=signed-out$/);
   expect(hydrationErrors).toEqual([]);
 });

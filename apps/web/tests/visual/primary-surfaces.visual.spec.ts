@@ -67,6 +67,16 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/u);
 }
 
+async function enableWorkspaceGrounding(page: Page): Promise<void> {
+  const toggle = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+}
+
 test("keeps the primary Tuppra journey visually stable", async ({
   context,
   page,
@@ -102,7 +112,9 @@ test("keeps the primary Tuppra journey visually stable", async ({
   expect(workspaceId).toBeTruthy();
 
   await page.goto("/workspaces");
-  await expect(page.getByText("Visual QA مساحة العمل", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Visual QA مساحة العمل", { exact: true }).last(),
+  ).toBeVisible();
   await capture(page, "workspaces.png");
 
   await page.goto(`/workspaces/${workspaceId}`);
@@ -134,9 +146,13 @@ test("keeps the primary Tuppra journey visually stable", async ({
   await page.goto(
     `/workspaces/${workspaceId}/sources/${attachmentId}?status=uploaded`,
   );
-  await expect(
-    page.getByText("visual-launch-decision.md", { exact: true }),
-  ).toBeVisible();
+  const sourceHeading = page
+    .locator('h1[title="visual-launch-decision.md"]:visible')
+    .first();
+  await expect(sourceHeading).toHaveAccessibleName(
+    "visual-launch-decision.md",
+  );
+  await expect(sourceHeading).toBeVisible();
   await capture(page, "source-detail.png");
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
@@ -145,7 +161,7 @@ test("keeps the primary Tuppra journey visually stable", async ({
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/u,
   );
-  await page.getByLabel(/استخدام مصادر مساحة العمل/u).check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the saved launch decision confirm?");
@@ -158,8 +174,25 @@ test("keeps the primary Tuppra journey visually stable", async ({
   ).toBeVisible();
   await capture(page, "conversation-detail.png");
 
-  await page.getByLabel("البداية").selectOption("memo");
-  await page.getByRole("button", { name: "إنشاء المسودة" }).click();
+  const desktopConversationDetails = page.getByRole("complementary", {
+    name: "تفاصيل المحادثة",
+  });
+  const mobileConversationDetails = page.getByRole("dialog", {
+    name: "تفاصيل المحادثة",
+  });
+  if (!(await desktopConversationDetails.isVisible())) {
+    await page
+      .getByRole("button", { name: "فتح تفاصيل المحادثة" })
+      .click();
+    await expect(mobileConversationDetails).toBeVisible();
+  }
+  const conversationDetails = (await desktopConversationDetails.isVisible())
+    ? desktopConversationDetails
+    : mobileConversationDetails;
+  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
+  await conversationDetails
+    .getByRole("button", { name: "إنشاء المسودة" })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/u,
   );

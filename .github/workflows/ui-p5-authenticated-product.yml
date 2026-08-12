@@ -10,6 +10,7 @@ on:
       - "apps/web/playwright.p5.authenticated.config.ts"
       - "apps/web/src/**"
       - "apps/web/tests/e2e/p5/authenticated-product-journey.spec.ts"
+      - "apps/web/tests/e2e/p5/role-matrix-journey.spec.ts"
       - "apps/web/tests/e2e/p5/openrouter-byok-journey.spec.ts"
       - "apps/web/tests/fixtures/openrouter-mock-server.ts"
       - "packages/**"
@@ -85,11 +86,12 @@ jobs:
         working-directory: apps/web
         run: bun run build
 
-      - name: Run authenticated source-to-draft journey across all engines
+      - name: Run authenticated source-to-draft and role journeys across all engines
         working-directory: apps/web
         run: >-
           bunx playwright test
           tests/e2e/p5/authenticated-product-journey.spec.ts
+          tests/e2e/p5/role-matrix-journey.spec.ts
           --config=playwright.p5.authenticated.config.ts
 
       - name: Upload authenticated product evidence
@@ -232,4 +234,4 @@ jobs:
             exit 1
           fi
 
-          echo "Chromium, Firefox, and WebKit authenticated workspace, private source, grounded conversation, citation inspection, durable draft editing, proposal application, role isolation, BYOK, Vault, model selection, streaming, and disconnect journeys passed."
+          echo "Chromium, Firefox, and WebKit authenticated workspace, private source, grounded conversation, citation inspection, durable draft editing, proposal application, owner/editor/viewer/outsider role isolation, BYOK, Vault, model selection, streaming, and disconnect journeys passed."

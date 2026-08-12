@@ -1,34 +1,31 @@
 "use server";
 
-import { headers } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import { evaluateSessionAssurance } from "./assurance";
+import { strongPasswordSchema } from "./password-policy";
+import { buildTrustedAppUrl, getSafeNextPath } from "./redirects";
 
 const emailSchema = z.string().trim().min(1).email();
-const passwordSchema = z.string().min(8).max(72);
+const signInPasswordSchema = z.string().min(1).max(72);
 
 const signInSchema = z.object({
   email: emailSchema,
-  password: passwordSchema,
+  password: signInPasswordSchema,
 });
 
 const signUpSchema = z
   .object({
     email: emailSchema,
-    password: passwordSchema,
+    password: strongPasswordSchema,
     confirmPassword: z.string(),
   })
   .refine((input) => input.password === input.confirmPassword, {
     path: ["confirmPassword"],
   });
-
-function getSafeNextPath(value: FormDataEntryValue | null): string {
-  if (typeof value !== "string") return "/workspaces";
-  if (!value.startsWith("/") || value.startsWith("//")) return "/workspaces";
-  return value;
-}
 
 function accountRedirect(
   page: "/login" | "/register",
@@ -39,15 +36,9 @@ function accountRedirect(
   redirect(`${page}?${params.toString()}`);
 }
 
-async function getRequestOrigin(): Promise<string | null> {
-  const requestHeaders = await headers();
-  const host =
-    requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-
-  if (!host) return null;
-
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
-  return `${protocol}://${host}`;
+function mfaRedirect(nextPath: string): never {
+  const params = new URLSearchParams({ next: nextPath });
+  redirect(`/mfa?${params.toString()}`);
 }
 
 export async function signInAction(formData: FormData): Promise<never> {
@@ -67,10 +58,23 @@ export async function signInAction(formData: FormData): Promise<never> {
   }
 
   const supabase = await createActionClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
     accountRedirect("/login", "invalid-credentials", nextPath);
+  }
+
+  if (!data.user || !data.session) {
+    await supabase.auth.signOut();
+    revalidatePath("/", "layout");
+    accountRedirect("/login", "mfa-check-failed", nextPath);
+  }
+
+  revalidatePath("/", "layout");
+
+  const assurance = evaluateSessionAssurance(data.user, data.session);
+  if (assurance.requiresChallenge) {
+    mfaRedirect(nextPath);
   }
 
   redirect(nextPath);
@@ -93,15 +97,17 @@ export async function signUpAction(formData: FormData): Promise<never> {
     accountRedirect("/register", "invalid-input", nextPath);
   }
 
-  const origin = await getRequestOrigin();
+  const emailRedirectTo = buildTrustedAppUrl(
+    `/auth/confirm?next=${encodeURIComponent(nextPath)}`,
+  );
   const supabase = await createActionClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    ...(origin
+    ...(emailRedirectTo
       ? {
           options: {
-            emailRedirectTo: `${origin}/auth/confirm?next=${encodeURIComponent(nextPath)}`,
+            emailRedirectTo,
           },
         }
       : {}),
@@ -112,6 +118,7 @@ export async function signUpAction(formData: FormData): Promise<never> {
   }
 
   if (data.session) {
+    revalidatePath("/", "layout");
     redirect(nextPath);
   }
 
@@ -124,5 +131,6 @@ export async function signOutAction(): Promise<never> {
     await supabase.auth.signOut();
   }
 
+  revalidatePath("/", "layout");
   redirect("/login?status=signed-out");
 }

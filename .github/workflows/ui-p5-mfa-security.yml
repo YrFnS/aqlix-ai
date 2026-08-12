@@ -1,0 +1,114 @@
+name: UI P5 MFA Security
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/ui-p5-mfa-security.yml"
+      - "apps/web/package.json"
+      - "apps/web/playwright.p5.authenticated.config.ts"
+      - "apps/web/src/app/(auth)/mfa/**"
+      - "apps/web/src/app/(auth)/login/**"
+      - "apps/web/src/app/(auth)/register/**"
+      - "apps/web/src/app/(app)/settings/security/**"
+      - "apps/web/src/components/auth/mfa-**"
+      - "apps/web/src/lib/auth/**"
+      - "apps/web/src/lib/api/auth.ts"
+      - "apps/web/tests/e2e/p5/mfa-security-journey.spec.ts"
+      - "packages/**"
+      - "supabase/**"
+      - "package.json"
+      - "bun.lock"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_API_URL: "http://127.0.0.1:8000"
+  NEXT_PUBLIC_APP_ENV: "development"
+  APP_ENV: "test"
+  AI_PROVIDER: "fixture"
+  P2_ALLOW_FIXTURE_PROVIDER: "true"
+  AI_REQUEST_TIMEOUT_MS: "15000"
+  AI_MAX_OUTPUT_TOKENS: "1024"
+
+jobs:
+  totp-account-security:
+    name: TOTP enrollment, AAL2 challenge & removal — 3 engines
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bash scripts/ci/install-dependencies.sh
+
+      - name: Install Chromium, Firefox, and WebKit
+        run: bunx playwright install --with-deps chromium firefox webkit
+
+      - name: Start isolated local Supabase Auth
+        run: bunx supabase start
+
+      - name: Export isolated Supabase configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS_FILE="$(mktemp)"
+          bunx supabase status -o env > "$STATUS_FILE"
+          set -a
+          source "$STATUS_FILE"
+          set +a
+
+          PUBLIC_KEY="${ANON_KEY:-${PUBLISHABLE_KEY:-}}"
+          ADMIN_KEY="${SERVICE_ROLE_KEY:-${SECRET_KEY:-}}"
+          if [[ -z "${API_URL:-}" ]] || [[ -z "$PUBLIC_KEY" ]] || [[ -z "$ADMIN_KEY" ]]; then
+            echo "Local Supabase did not expose API_URL, a public key, and a test admin key"
+            exit 1
+          fi
+
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLIC_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=$ADMIN_KEY" >> "$GITHUB_ENV"
+
+      - name: Build shared packages
+        run: bun run build:packages
+
+      - name: Build production web application
+        working-directory: apps/web
+        run: bun run build
+
+      - name: Run TOTP account security journey across all engines
+        working-directory: apps/web
+        env:
+          DEBUG: pw:webserver
+        run: >-
+          bunx playwright test
+          tests/e2e/p5/mfa-security-journey.spec.ts
+          --config=playwright.p5.authenticated.config.ts
+          --trace=retain-on-failure
+
+      - name: Upload MFA browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-p5-mfa-security-evidence
+          path: |
+            apps/web/playwright-report/p5-authenticated
+            apps/web/test-results/p5-authenticated
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Stop isolated local Supabase
+        if: always()
+        run: bunx supabase stop --no-backup

@@ -37,6 +37,10 @@ function preview(value: string): string {
     : `${normalized.slice(0, 73).trimEnd()}…`;
 }
 
+function citationLabel(count: number): string {
+  return count === 1 ? "مرجع" : "مراجع";
+}
+
 function reusableMessagesFrom(
   messages: ConversationMessage[],
 ): AssistantMessageOption[] {
@@ -244,7 +248,7 @@ export function DraftFromConversationPanel({
           >
             {orderedMessages.map((message) => (
               <option key={message.id} value={message.id}>
-                #{message.sequence} · {preview(message.content)} · {message.citationCount} refs
+                #{message.sequence} · {preview(message.content)} · {message.citationCount} {citationLabel(message.citationCount)}
               </option>
             ))}
           </select>

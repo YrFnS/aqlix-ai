@@ -3,20 +3,21 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { createActionClient } from "@iraqi-ai/supabase-client/server";
 import { isSupabaseConfigured } from "@/config/env";
+import {
+  getSafeNextPath,
+  getTrustedAppOrigin,
+} from "@/lib/auth/redirects";
 
-function getSafeNextPath(value: string | null): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/workspaces";
-  }
-
-  return value;
+function appUrl(request: NextRequest, path: string): URL {
+  const origin = getTrustedAppOrigin() ?? request.nextUrl.origin;
+  return new URL(path, `${origin}/`);
 }
 
 function loginRedirect(
   request: NextRequest,
   status: "configuration" | "invalid-link" | "verification-failed",
 ): NextResponse {
-  const loginUrl = new URL("/login", request.url);
+  const loginUrl = appUrl(request, "/login");
   loginUrl.searchParams.set("status", status);
   return NextResponse.redirect(loginUrl);
 }
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     return error
       ? loginRedirect(request, "verification-failed")
-      : NextResponse.redirect(new URL(nextPath, request.url));
+      : NextResponse.redirect(appUrl(request, nextPath));
   }
 
   if (tokenHash && type) {
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     return error
       ? loginRedirect(request, "verification-failed")
-      : NextResponse.redirect(new URL(nextPath, request.url));
+      : NextResponse.redirect(appUrl(request, nextPath));
   }
 
   return loginRedirect(request, "invalid-link");

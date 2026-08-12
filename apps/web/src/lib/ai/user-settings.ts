@@ -5,6 +5,10 @@ import type {
   UserAiSettings,
 } from "@iraqi-ai/types";
 import { userAiSettingsSchema } from "@iraqi-ai/types";
+import {
+  createAdminClient,
+  type SupabaseAdminClient,
+} from "@iraqi-ai/supabase-client/admin";
 import type { SupabaseServerClient } from "@iraqi-ai/supabase-client/server";
 
 interface RpcError {
@@ -17,6 +21,7 @@ interface RpcResult<T> {
   error: RpcError | null;
 }
 
+type RpcCapableClient = SupabaseServerClient | SupabaseAdminClient;
 type UntypedRpc = <T>(
   functionName: string,
   args?: Record<string, unknown>,
@@ -57,7 +62,7 @@ export class UserAiSettingsRepositoryError extends Error {
   }
 }
 
-function rpcClient(supabase: SupabaseServerClient): UntypedRpc {
+function rpcClient(supabase: RpcCapableClient): UntypedRpc {
   return supabase.rpc.bind(supabase) as unknown as UntypedRpc;
 }
 
@@ -117,6 +122,39 @@ async function settingsRpc(
   return mapSettings(data?.[0]);
 }
 
+async function authenticatedUserId(
+  supabase: SupabaseServerClient,
+  operation: string,
+): Promise<string> {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    throw new UserAiSettingsRepositoryError(
+      operation,
+      error?.message || "A valid account session is required.",
+      error?.code,
+    );
+  }
+
+  return user.id;
+}
+
+function adminRpcClient(operation: string): SupabaseAdminClient {
+  try {
+    return createAdminClient();
+  } catch (error) {
+    throw new UserAiSettingsRepositoryError(
+      operation,
+      error instanceof Error
+        ? error.message
+        : "The server credential boundary is not configured.",
+    );
+  }
+}
+
 export async function getUserAiSettings(
   supabase: SupabaseServerClient,
 ): Promise<UserAiSettings> {
@@ -161,13 +199,17 @@ export async function selectUserOpenRouterModel(
 export async function resolveUserOpenRouterCredential(
   supabase: SupabaseServerClient,
 ): Promise<string | null> {
-  const { data, error } = await rpcClient(supabase)<RawOpenRouterCredential[]>(
-    "resolve_user_openrouter_credential",
+  const operation = "resolve-openrouter-credential";
+  const userId = await authenticatedUserId(supabase, operation);
+  const admin = adminRpcClient(operation);
+  const { data, error } = await rpcClient(admin)<RawOpenRouterCredential[]>(
+    "resolve_user_openrouter_credential_for_user",
+    { target_user_id: userId },
   );
 
   if (error) {
     throw new UserAiSettingsRepositoryError(
-      "resolve-openrouter-credential",
+      operation,
       error.message,
       error.code,
     );
@@ -180,13 +222,17 @@ export async function resolveUserOpenRouterCredential(
 export async function resolveUserOpenRouterRuntime(
   supabase: SupabaseServerClient,
 ): Promise<UserOpenRouterRuntime | null> {
-  const { data, error } = await rpcClient(supabase)<RawOpenRouterRuntime[]>(
-    "resolve_user_openrouter_runtime",
+  const operation = "resolve-openrouter-runtime";
+  const userId = await authenticatedUserId(supabase, operation);
+  const admin = adminRpcClient(operation);
+  const { data, error } = await rpcClient(admin)<RawOpenRouterRuntime[]>(
+    "resolve_user_openrouter_runtime_for_user",
+    { target_user_id: userId },
   );
 
   if (error) {
     throw new UserAiSettingsRepositoryError(
-      "resolve-openrouter-runtime",
+      operation,
       error.message,
       error.code,
     );

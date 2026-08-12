@@ -184,6 +184,14 @@ async function waitForProposal(
   page: Page,
   instruction: string,
 ): Promise<void> {
+  const proposalTab = page.getByRole("button", {
+    name: "الاقتراح",
+    exact: true,
+  });
+  if ((await proposalTab.getAttribute("aria-pressed")) !== "true") {
+    await proposalTab.click();
+  }
+  await expect(page.getByLabel("إجراء اقتراح المسودة")).toBeVisible();
   await page.getByLabel("إجراء اقتراح المسودة").selectOption("custom");
   await page.getByLabel("تعليمات اقتراح المسودة").fill(instruction);
   await page.getByRole("button", { name: "بدء اقتراح" }).click();
@@ -216,8 +224,8 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await register(page, ownerEmail);
   const workspaceId = await createWorkspace(page, workspaceName);
 
-  await page.getByRole("link", { name: "المصادر" }).click();
-  await page.getByLabel("ملف TXT أو Markdown").setInputFiles({
+  await page.getByRole("link", { name: "المصادر", exact: true }).click();
+  await page.locator("#document-file").setInputFiles({
     name: "launch-decision.md",
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
@@ -231,14 +239,19 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
 
   await page.goto(`/workspaces/${workspaceId}/conversations`);
   await page.getByLabel("عنوان اختياري").fill("P4 launch decision");
-  await page.getByRole("button", { name: "إنشاء وفتح المحادثة" }).click();
+  await page.getByRole("button", { name: "إنشاء وفتح المحادثة", exact: true }).click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
   const conversationId = new URL(page.url()).pathname.split("/").pop();
   expect(conversationId).toBeTruthy();
 
-  await page.getByLabel(/استخدام مصادر مساحة العمل/).check();
+  const groundingButton = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+  await groundingButton.click();
+  await expect(groundingButton).toHaveAttribute("aria-pressed", "true");
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");
@@ -250,8 +263,8 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
     ),
   ).toBeVisible();
   await expect(
-    page.getByText("تم حفظ الاستجابة والمراجع القابلة للفتح.", {
-      exact: true,
+    page.getByRole("status").filter({
+      hasText: "حُفظت الاستجابة ومراجعها القابلة للفحص.",
     }),
   ).toBeVisible();
 
@@ -271,8 +284,13 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   expect(messageId).toBeTruthy();
   expect(sourceId).toBeTruthy();
 
-  await page.getByLabel("البداية").selectOption("memo");
-  await page.getByRole("button", { name: "إنشاء المسودة" }).click();
+  const conversationDetails = page.getByRole("complementary", {
+    name: "تفاصيل المحادثة",
+  });
+  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
+  await conversationDetails
+    .getByRole("button", { name: "إنشاء المسودة" })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/,
   );
@@ -522,6 +540,14 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(
     viewerPage.getByRole("heading", { name: primaryDraft.data.draft.title }),
   ).toBeVisible();
+  const viewerEditorTab = viewerPage.getByRole("button", {
+    name: "التحرير",
+    exact: true,
+  });
+  if ((await viewerEditorTab.getAttribute("aria-pressed")) !== "true") {
+    await viewerEditorTab.click();
+  }
+  await expect(draftContentField(viewerPage)).toBeVisible();
   await expect(draftContentField(viewerPage)).toHaveAttribute("readonly", "");
   await expect(
     viewerPage.getByRole("button", { name: "حفظ إصدار" }),
@@ -596,11 +622,13 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await expect(page).toHaveURL(
     new RegExp(`/workspaces/${workspaceId}/drafts\\?status=archived$`),
   );
-  await page.getByRole("link", { name: "أرشيف المسودات" }).click();
+  await page.getByRole("link", { name: "الأرشيف", exact: true }).click();
   await page
-    .locator("article")
-    .filter({ hasText: primaryDraft.data.draft.title })
-    .getByRole("link", { name: "فتح المسودة" })
+    .getByRole("main")
+    .getByRole("link", {
+      name: `فتح المسودة ${primaryDraft.data.draft.title}` ,
+      exact: true,
+    })
     .click();
   await page.getByRole("button", { name: "استعادة إلى العمل" }).click();
   await expect(page).toHaveURL(
@@ -614,6 +642,14 @@ test("completes Ask Ground Draft Continue with durable versions and provenance",
   await page.getByRole("button", { name: "أرشفة" }).click();
   await expect(page).toHaveURL(/\/workspaces\?status=archived$/);
   await page.goto(`/workspaces/${workspaceId}/drafts/${primaryDraftId}`);
+  const archivedWorkspaceEditorTab = page.getByRole("button", {
+    name: "التحرير",
+    exact: true,
+  });
+  if ((await archivedWorkspaceEditorTab.getAttribute("aria-pressed")) !== "true") {
+    await archivedWorkspaceEditorTab.click();
+  }
+  await expect(draftContentField(page)).toBeVisible();
   await expect(draftContentField(page)).toHaveAttribute("readonly", "");
   await expect(
     page.getByRole("button", { name: "بدء اقتراح" }),

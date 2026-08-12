@@ -310,7 +310,7 @@ export default async function WorkspaceSourcesPage({
     <PageShell width="wide" className="space-y-8">
       <PageHeader
         eyebrow="مكتبة المصادر"
-        title="أضف السياق الذي تريد الرجوع إليه"
+        title={<span dir="auto">{`مصادر ${workspace.name}`}</span>}
         description={
           <>
             ارفع مستندات نصية خاصة، ابحث في المقاطع المستخرجة، ثم افتح الدليل

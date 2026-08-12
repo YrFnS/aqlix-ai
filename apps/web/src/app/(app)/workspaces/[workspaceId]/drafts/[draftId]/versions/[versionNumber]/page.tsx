@@ -120,7 +120,7 @@ export default async function DraftVersionPage({
           </span>
         }
         title={
-          <span>
+          <span aria-label={`الإصدار ${version.versionNumber}`}>
             الإصدار {version.versionNumber.toLocaleString("ar-IQ")}
           </span>
         }

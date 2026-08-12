@@ -3,6 +3,7 @@ import { z } from "zod";
 export const apiErrorCodeSchema = z.enum([
   "VALIDATION_ERROR",
   "UNAUTHENTICATED",
+  "MFA_REQUIRED",
   "FORBIDDEN",
   "NOT_FOUND",
   "CONFLICT",

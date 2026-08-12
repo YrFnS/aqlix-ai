@@ -42,7 +42,7 @@ async function registerWithForm(page: Page, email: string): Promise<void> {
 
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
   await expect(
-    page.getByRole("heading", { name: "مساحات العمل" }),
+    page.getByRole("heading", { name: "مساحاتك، في مكان واحد" }),
   ).toBeVisible();
 }
 
@@ -178,18 +178,24 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
     page.getByRole("heading", { name: "أرشيف مساحات العمل" }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
-  await page.getByRole("link", { name: "فتح المساحة" }).click();
+  await page
+    .getByRole("link", { name: `فتح مساحة ${updatedName}`, exact: true })
+    .click();
 
   await page.getByRole("button", { name: "استعادة" }).click();
   await expect(page).toHaveURL(/\/workspaces\?status=restored$/);
   await expect(page.getByText("أعيدت مساحة العمل")).toBeVisible();
   await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
-  await page.getByRole("link", { name: "فتح المساحة" }).click();
+  await page
+    .getByRole("link", { name: `فتح مساحة ${updatedName}`, exact: true })
+    .click();
   await expect(page).toHaveURL(new RegExp(`/workspaces/${workspaceId}$`));
   await expect(page.getByRole("heading", { name: updatedName })).toBeVisible();
 
   await context.setOffline(true);
-  await expect(page.getByText(/الاتصال غير متاح/)).toBeVisible();
+  await expect(
+    page.getByText("أنت غير متصل بالشبكة", { exact: true }),
+  ).toBeVisible();
   await context.setOffline(false);
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -208,7 +214,8 @@ test("persists and isolates the complete P1 workspace lifecycle", async ({
   await expect(page.getByText("حُذفت مساحة العمل")).toBeVisible();
   await expect(page.getByRole("heading", { name: updatedName })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "تسجيل الخروج" }).click();
+  await page.getByRole("button", { name: "فتح قائمة الحساب" }).click();
+  await page.getByRole("menuitem", { name: "تسجيل الخروج" }).click();
   await expect(page).toHaveURL(/\/login\?status=signed-out$/);
   await expect(page.getByText("تم تسجيل الخروج بأمان")).toBeVisible();
 

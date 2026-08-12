@@ -17,6 +17,16 @@ describe("web environment boundary", () => {
     expect(nextConfig).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
   });
 
+  test("finalizes split Next builds before starting browser journeys", () => {
+    const packageJson = JSON.parse(readSource("package.json")) as {
+      scripts?: Record<string, string>;
+    };
+
+    expect(packageJson.scripts?.build).toBe(
+      "next build --experimental-build-mode=compile && next build --experimental-build-mode=generate-env",
+    );
+  });
+
   test("keeps server secrets out of the public web configuration module", () => {
     const envModule = readSource("src/config/env.ts");
 

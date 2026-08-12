@@ -15,6 +15,19 @@ async function register(page: Page, email: string): Promise<void> {
   await expect(page).toHaveURL(/\/workspaces(?:\?.*)?$/);
 }
 
+async function enableWorkspaceGrounding(page: Page): Promise<void> {
+  const toggle = page.getByRole("button", {
+    name: "استخدام مصادر مساحة العمل",
+    exact: true,
+  });
+
+  if ((await toggle.getAttribute("aria-pressed")) !== "true") {
+    await toggle.click();
+  }
+
+  await expect(toggle).toHaveAttribute("aria-pressed", "true");
+}
+
 async function conversationPayload(
   request: APIRequestContext,
   workspaceId: string,
@@ -104,8 +117,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   expect(conversationId).toBeTruthy();
   const conversationUrl = `/workspaces/${workspaceId}/conversations/${conversationId}`;
 
-  const groundingToggle = page.getByLabel(/استخدام مصادر مساحة العمل/);
-  await groundingToggle.check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");
@@ -119,15 +131,20 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     .first();
   await expect(groundedAssistantMessage).toBeVisible();
   await expect(
-    page.getByText("تم حفظ الاستجابة والمراجع القابلة للفتح.", {
+    page.getByText("حُفظت الاستجابة ومراجعها القابلة للفحص.", {
       exact: true,
     }),
   ).toBeVisible();
-  const citationLink = page.getByRole("link", {
-    name: new RegExp(`فتح المرجع S1 من ${documentName}`),
+  const citationPreview = page.getByRole("button", {
+    name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
   });
-  await expect(citationLink).toBeVisible();
-  await expect(page.getByText(/١ مرجع من ١ مقطع/)).toBeVisible();
+  await expect(citationPreview).toBeVisible();
+  await groundedAssistantMessage
+    .getByText("تفاصيل التوليد", { exact: true })
+    .click();
+  await expect(
+    groundedAssistantMessage.getByText(/١ مرجع من ١ مقطع/),
+  ).toBeVisible();
 
   let payload = await conversationPayload(
     context.request,
@@ -155,7 +172,14 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   const sourceId = groundedMessage?.citations[0]?.sourceId;
   expect(sourceId).toBeTruthy();
 
-  await citationLink.click();
+  await citationPreview.click();
+  const citationDialog = page.getByRole("dialog", {
+    name: "معاينة المرجع S1",
+  });
+  await expect(citationDialog).toBeVisible();
+  await citationDialog
+    .getByRole("link", { name: "فتح المستند الكامل" })
+    .click();
   await expect(page).toHaveURL(
     new RegExp(
       `/workspaces/${workspaceId}/sources/${attachmentId}#source-${sourceId}$`,
@@ -174,13 +198,15 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
   await page.goto(conversationUrl);
   await expect(groundedAssistantMessage).toBeVisible();
   await expect(
-    page.getByTitle(
-      "The original source was deleted or is no longer available.",
-    ),
+    page
+      .getByRole("main")
+      .getByTitle(
+        "The original source was deleted or is no longer available.",
+      ),
   ).toBeVisible();
   await expect(
-    page.getByRole("link", {
-      name: new RegExp(`فتح المرجع S1 من ${documentName}`),
+    page.getByRole("main").getByRole("button", {
+      name: new RegExp(`معاينة المرجع S1 من ${documentName}`),
     }),
   ).toHaveCount(0);
 
@@ -196,7 +222,7 @@ test("grounds a streamed answer, opens its passage, and preserves a deleted-sour
     fileNameSnapshot: documentName,
   });
 
-  await page.getByLabel(/استخدام مصادر مساحة العمل/).check();
+  await enableWorkspaceGrounding(page);
   await page
     .getByLabel("اكتب رسالة")
     .fill("What does the English roadmap confirm about the launch milestone?");

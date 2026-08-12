@@ -1,7 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, FileClock, RotateCcw } from "lucide-react";
+import {
+  ExternalLink,
+  FileClock,
+  PenLine,
+  RotateCcw,
+  Sparkles,
+} from "lucide-react";
 import { ActivityOrb } from "@/components/conversations/activity-orb";
 import { Button } from "@/components/ui/button";
 import { DraftAssistantPanel } from "./draft-assistant-panel";
@@ -14,7 +21,7 @@ import { DraftEditorMain } from "./draft-editor-main";
 import { DraftToolsPanel } from "./draft-tools-panel";
 import { DraftWorkspaceFrame } from "./draft-workspace-frame";
 
-// The workbench keeps accepted writing and AI proposal review as separate modes.
+// Accepted writing and AI proposal review stay separate on focused viewports.
 type ViewMode = "editor" | "proposal";
 
 function DraftVersionSidebar() {
@@ -56,7 +63,7 @@ function DraftVersionSidebar() {
               <Link
                 href={`/workspaces/${workspaceId}/drafts/${detail.draft.id}/versions/${version.versionNumber}`}
               >
-                فتح
+                عرض اللقطة
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             </Button>
@@ -88,7 +95,13 @@ function DraftEditorWorkspace() {
     proposal,
     isGenerating,
   } = useDraftEditorContext();
-  const viewMode: ViewMode = proposal ? "proposal" : "editor";
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    proposal ? "proposal" : "editor",
+  );
+
+  useEffect(() => {
+    if (proposal || isGenerating) setViewMode("proposal");
+  }, [isGenerating, proposal]);
 
   return (
     <div className="space-y-4" data-view-mode={viewMode}>
@@ -135,9 +148,57 @@ function DraftEditorWorkspace() {
         versions={<DraftVersionSidebar />}
         inspector={<DraftToolsPanel />}
       >
-        <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-start">
-          <DraftEditorMain />
-          <aside className="space-y-4 xl:sticky xl:top-0">
+        <div
+          className="flex items-center gap-1 border-b border-line/70 bg-surface-sunken/35 p-2 min-[1800px]:hidden"
+          role="group"
+          aria-label="وضع مساحة المسودة"
+        >
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === "editor" ? "default" : "ghost"}
+            className="flex-1 rounded-lg"
+            aria-pressed={viewMode === "editor"}
+            aria-controls="draft-editor-pane"
+            onClick={() => setViewMode("editor")}
+          >
+            <PenLine className="h-4 w-4" aria-hidden="true" />
+            التحرير
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === "proposal" ? "default" : "ghost"}
+            className="flex-1 rounded-lg"
+            aria-pressed={viewMode === "proposal"}
+            aria-controls="draft-proposal-pane"
+            onClick={() => setViewMode("proposal")}
+          >
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
+            الاقتراح
+          </Button>
+        </div>
+
+        <div className="grid min-h-0 gap-4 overflow-y-auto p-3 sm:p-4 min-[1800px]:grid-cols-[minmax(0,1fr)_23rem] min-[1800px]:items-start">
+          <div
+            id="draft-editor-pane"
+            className={
+              viewMode === "editor"
+                ? "block"
+                : "hidden min-[1800px]:block"
+            }
+          >
+            <DraftEditorMain />
+          </div>
+          <aside
+            id="draft-proposal-pane"
+            className={`${
+              viewMode === "proposal"
+                ? "block"
+                : "hidden min-[1800px]:block"
+            } min-[1800px]:sticky min-[1800px]:top-0`}
+            aria-label="اقتراح المسودة"
+          >
             <DraftAssistantPanel />
           </aside>
         </div>

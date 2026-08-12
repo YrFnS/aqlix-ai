@@ -54,10 +54,13 @@ async function waitForHydration(page: Page): Promise<void> {
 }
 
 async function waitForClientSurface(page: Page, name: string): Promise<void> {
-  await expect(page.locator(`[data-client-surface="${name}"]`)).toHaveAttribute(
-    "data-client-ready",
-    "true",
-  );
+  await expect(
+    page
+      .locator(
+        `[data-client-surface="${name}"][data-client-ready="true"]`,
+      )
+      .first(),
+  ).toHaveAttribute("data-client-ready", "true");
 }
 
 async function register(page: Page, email: string): Promise<void> {
@@ -224,7 +227,19 @@ test("completes the current source, grounded conversation, citation, draft, prop
     mimeType: "text/markdown",
     buffer: Buffer.from(documentText, "utf8"),
   });
-  await page.getByRole("button", { name: "رفع واستخراج المقاطع" }).click();
+  await expect
+    .poll(() =>
+      page.locator("#document-file").evaluate((element) => {
+        const input = element as HTMLInputElement;
+        return input.files?.[0]?.name ?? null;
+      }),
+    )
+    .toBe(documentName);
+  const uploadButton = page.getByRole("button", {
+    name: "رفع واستخراج المقاطع",
+  });
+  await expect(uploadButton).toBeEnabled();
+  await uploadButton.click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/sources\/[0-9a-f-]+\?status=uploaded$/,
   );
@@ -238,7 +253,12 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await page.goto(`/workspaces/${workspaceId}/conversations`);
   await waitForHydration(page);
   await page.getByLabel("عنوان اختياري").fill("P5 grounded decision");
-  await page.getByRole("button", { name: "إنشاء وفتح", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: "إنشاء وفتح المحادثة",
+      exact: true,
+    })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/conversations\/[0-9a-f-]+\?status=created$/,
   );
@@ -247,7 +267,7 @@ test("completes the current source, grounded conversation, citation, draft, prop
   await waitForClientSurface(page, "conversation");
 
   const groundingButton = page.getByRole("button", {
-    name: "مصادر المساحة",
+    name: "استخدام مصادر مساحة العمل",
     exact: true,
   });
   await groundingButton.click();
@@ -301,8 +321,13 @@ test("completes the current source, grounded conversation, citation, draft, prop
     .click();
   await expect(citationDialog).toBeHidden();
 
-  await page.getByLabel("نوع البداية").selectOption("memo");
-  await page.getByRole("button", { name: "إنشاء المسودة" }).click();
+  const conversationDetails = page.getByRole("complementary", {
+    name: "تفاصيل المحادثة",
+  });
+  await conversationDetails.getByLabel("نوع البداية").selectOption("memo");
+  await conversationDetails
+    .getByRole("button", { name: "إنشاء المسودة" })
+    .click();
   await expect(page).toHaveURL(
     /\/workspaces\/[0-9a-f-]+\/drafts\/[0-9a-f-]+\?status=created$/,
   );

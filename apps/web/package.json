@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbo --port 3000",
-    "build": "next build --experimental-build-mode=compile",
+    "build": "next build --experimental-build-mode=compile && next build --experimental-build-mode=generate-env",
     "build:release": "node ../../node_modules/next/dist/bin/next build",
     "build:standalone": "next build && next export",
     "start": "next start",

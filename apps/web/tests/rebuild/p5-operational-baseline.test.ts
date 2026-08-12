@@ -69,7 +69,7 @@ describe("P5 operational runtime contract", () => {
     ).toThrow(OperationalRuntimeConfigurationError);
   });
 
-  test("requires a release identity but no platform model key for OpenRouter", () => {
+  test("requires release identity and server Vault access for OpenRouter", () => {
     try {
       parseOperationalRuntimeContract({
         APP_ENV: "production",
@@ -83,7 +83,7 @@ describe("P5 operational runtime contract", () => {
       expect(error).toBeInstanceOf(OperationalRuntimeConfigurationError);
       expect(
         (error as OperationalRuntimeConfigurationError).issuePaths,
-      ).toEqual(["releaseSha"]);
+      ).toEqual(["releaseSha", "supabaseServiceRoleKey"]);
     }
   });
 
@@ -108,16 +108,17 @@ describe("P5 operational runtime contract", () => {
   });
 
   test("accepts a bounded production OpenRouter runtime contract", () => {
-    expect(
-      parseOperationalRuntimeContract({
-        APP_ENV: "production",
-        NEXT_PUBLIC_APP_ENV: "production",
-        RENDER_GIT_COMMIT: "abcdef1234567890",
-        NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co/",
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
-        AI_PROVIDER: "openrouter",
-      }),
-    ).toMatchObject({
+    const runtime = parseOperationalRuntimeContract({
+      APP_ENV: "production",
+      NEXT_PUBLIC_APP_ENV: "production",
+      RENDER_GIT_COMMIT: "abcdef1234567890",
+      NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co/",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "public-key",
+      SUPABASE_SERVICE_ROLE_KEY: "server-only-service-role-key",
+      AI_PROVIDER: "openrouter",
+    });
+
+    expect(runtime).toMatchObject({
       appEnvironment: "production",
       publicEnvironment: "production",
       releaseSha: "abcdef1234567890",
@@ -126,6 +127,7 @@ describe("P5 operational runtime contract", () => {
       probeDependencies: true,
       readinessTimeoutMs: 2000,
     });
+    expect(runtime).not.toHaveProperty("supabaseServiceRoleKey");
   });
 });
 
@@ -249,11 +251,13 @@ describe("P5 health and release boundaries", () => {
     );
     expect(template).toContain("READINESS_PROBE_DEPENDENCIES=true");
     expect(template).toContain("AI_PROVIDER=openrouter");
+    expect(template).toContain(
+      "SUPABASE_SERVICE_ROLE_KEY=<supabase-service-role-key>",
+    );
     expect(template).not.toContain("kiteb-staging");
     expect(template).not.toContain("OPENAI_API_KEY=");
     expect(template).not.toContain("OPENROUTER_API_KEY=");
     expect(template).not.toMatch(/sk-[A-Za-z0-9_-]{20,}/u);
-    expect(template).not.toContain("SUPABASE_SERVICE_ROLE_KEY=");
   });
 
   test("defines a manual fail-closed Render staging service", () => {
@@ -282,6 +286,7 @@ describe("P5 health and release boundaries", () => {
     for (const secret of [
       "NEXT_PUBLIC_SUPABASE_URL",
       "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "SUPABASE_SERVICE_ROLE_KEY",
       "SUPABASE_ACCESS_TOKEN",
       "SUPABASE_DB_PASSWORD",
       "SUPABASE_PROJECT_ID",
@@ -293,7 +298,6 @@ describe("P5 health and release boundaries", () => {
     expect(blueprint).not.toContain("OPENAI_API_KEY");
     expect(blueprint).not.toContain("OPENAI_MODEL");
     expect(blueprint).not.toContain("OPENROUTER_API_KEY");
-    expect(blueprint).not.toContain("SUPABASE_SERVICE_ROLE_KEY");
     expect(blueprint).not.toContain("ALLOW_PRODUCTION_MIGRATIONS");
   });
 
